@@ -138,6 +138,7 @@
     "build": "vite build",
     "preview": "cross-env PORT=4173 vite preview",
     "typecheck": "tsc --noEmit",
+    "lang:check": "node scripts/lang-check.js",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "test": "node scripts/test.js",

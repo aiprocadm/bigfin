@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button, Intent } from '@blueprintjs/core';
 import { Form } from 'formik';
 import { Tooltip2 } from '@blueprintjs/popover2';
+import intl from 'react-intl-universal';
 
 import { FFormGroup, FInputGroup, FCheckbox, T } from '@/components';
 import { AuthSubmitButton } from './_components';
@@ -19,7 +20,7 @@ export default function LoginForm({ isSubmitting }) {
   };
 
   const lockButton = (
-    <Tooltip2 content={`${showPassword ? 'Hide' : 'Show'} Password`}>
+    <Tooltip2 content={intl.get(showPassword ? 'hide_password' : 'show_password')}>
       <Button
         icon={showPassword ? 'unlock' : 'lock'}
         intent={Intent.WARNING}

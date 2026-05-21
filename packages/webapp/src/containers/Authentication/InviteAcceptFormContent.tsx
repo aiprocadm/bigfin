@@ -31,7 +31,7 @@ export default function InviteUserFormContent() {
     setShowPassword(!showPassword);
   };
   const lockButton = (
-    <Tooltip2 content={`${showPassword ? 'Hide' : 'Show'} Password`}>
+    <Tooltip2 content={intl.get(showPassword ? 'hide_password' : 'show_password')}>
       <Button
         icon={showPassword ? 'unlock' : 'lock'}
         intent={Intent.WARNING}

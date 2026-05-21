@@ -9,12 +9,14 @@ import * as R from 'ramda';
 
 import { AppIntlProvider } from './AppIntlProvider';
 import { useSplashLoading } from '@/hooks/state';
+import { configureAccountingForLocale } from '@/utils/accountingFormat';
 
 import { useWatchImmediate } from '../hooks';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
 
 const SUPPORTED_LOCALES = [
   { name: 'English', value: 'en' },
+  { name: 'Русский', value: 'ru' },
   { name: 'العربية', value: 'ar' },
 ];
 
@@ -90,6 +92,7 @@ function useAppLoadLocales(currentLocale) {
       })
       .then(() => {
         moment.locale(transformMomentLocale(currentLocale));
+        configureAccountingForLocale(currentLocale);
         setIsLoading(false);
       });
   }, [currentLocale, stopLoading]);

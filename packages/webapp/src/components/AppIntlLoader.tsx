@@ -15,6 +15,7 @@ import { withDashboardActions } from '@/containers/Dashboard/withDashboardAction
 
 const SUPPORTED_LOCALES = [
   { name: 'English', value: 'en' },
+  { name: 'Русский', value: 'ru' },
   { name: 'العربية', value: 'ar' },
 ];
 

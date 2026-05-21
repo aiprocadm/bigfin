@@ -103,6 +103,8 @@
   "organization_tax_number": "Organization Tax Number",
   "email": "Email",
   "email_address": "Email Address",
+  "show_password": "Show Password",
+  "hide_password": "Hide Password",
   "register": "Register",
   "password_successfully_updated": "The Password for your account was successfully updated.",
   "choose_a_new_password": "Choose a new password",

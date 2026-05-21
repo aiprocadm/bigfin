@@ -9,6 +9,7 @@ import * as R from 'ramda';
 
 import { AppIntlProvider } from './AppIntlProvider';
 import { useSplashLoading } from '@/hooks/state';
+import { configureAccountingForLocale } from '@/utils/accountingFormat';
 
 import { useWatchImmediate } from '../hooks';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
@@ -91,6 +92,7 @@ function useAppLoadLocales(currentLocale) {
       })
       .then(() => {
         moment.locale(transformMomentLocale(currentLocale));
+        configureAccountingForLocale(currentLocale);
         setIsLoading(false);
       });
   }, [currentLocale, stopLoading]);

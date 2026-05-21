@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { Formik } from 'formik';
+import intl from 'react-intl-universal';
 import { FormattedMessage as T } from '@/components';
 import { x } from '@xstyled/emotion';
 
@@ -23,6 +24,21 @@ const defaultValues = {
 };
 
 /**
+ * Returns locale-aware defaults to layer on top of `defaultValues`.
+ * When the current UI locale is Russian, we pre-fill base currency (RUB)
+ * and language (ru) — typical for the target audience.
+ */
+function getLocaleAwareDefaults() {
+  const currentLocale =
+    (intl.getInitOptions && intl.getInitOptions()?.currentLocale) ||
+    (typeof localStorage !== 'undefined' && localStorage.getItem('lang'));
+  if (currentLocale === 'ru') {
+    return { baseCurrency: 'RUB', language: 'ru' };
+  }
+  return {};
+}
+
+/**
  * Setup organization form.
  */
 function SetupOrganizationPage({ wizard }) {
@@ -34,6 +50,7 @@ function SetupOrganizationPage({ wizard }) {
   // Initialize values.
   const initialValues = {
     ...defaultValues,
+    ...getLocaleAwareDefaults(),
   };
 
   // Handle the form submit.

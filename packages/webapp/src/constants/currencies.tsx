@@ -6,6 +6,7 @@ import { sortBy } from 'lodash';
 export const getCurrencies = () => [
   { name: intl.get('us_dollar'), code: 'USD' },
   { name: intl.get('euro'), code: 'EUR' },
+  { name: intl.get('russian_ruble'), code: 'RUB' },
   { name: intl.get('libyan_diner'), code: 'LYD' },
 ];
 

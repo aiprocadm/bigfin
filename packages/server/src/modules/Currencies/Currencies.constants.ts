@@ -2,6 +2,7 @@ export const InitialCurrencies = [
   'USD',
   'CAD',
   'EUR',
+  'RUB',
   'LYD',
   'GBP',
   'CNY',

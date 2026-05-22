@@ -1,5 +1,5 @@
 # WARNING!
-# This is a development version of THE Bigcapital docker-compose.yml file.
+# This is a development version of THE BigFin docker-compose.yml file.
 # Avoid using this file in your production environment.
 # We're exposing here sensitive ports and mounting code volumes for rapid development and debugging of the server stack.
 
@@ -45,9 +45,9 @@ services:
 # Volumes
 volumes:
   mysql:
-    name: bigcapital_dev_mysql
+    name: bigfin_dev_mysql
     driver: local
 
   redis:
-    name: bigcapital_dev_redis
+    name: bigfin_dev_redis
     driver: local

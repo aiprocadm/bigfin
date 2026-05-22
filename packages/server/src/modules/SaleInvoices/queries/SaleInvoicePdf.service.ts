@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { renderInvoicePaperTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderInvoicePaperTemplateHtml } from '@bigfin/pdf-templates';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { GetSaleInvoice } from './GetSaleInvoice.service';
 import { transformInvoiceToPdfTemplate } from '../utils';

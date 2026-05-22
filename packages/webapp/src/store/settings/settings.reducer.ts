@@ -9,7 +9,7 @@ import type { SettingAction } from './settings.type';
 const initialState = {
   data: {
     organization: {
-      name: 'Bigcapital, LLC',
+      name: 'BigFin, LLC',
     },
     manualJournals: {
       tableSize: 'small',
@@ -68,7 +68,7 @@ const initialState = {
   },
 };
 
-const STORAGE_KEY = 'bigcapital:settings';
+const STORAGE_KEY = 'bigfin:settings';
 
 const PRESIST_CONFIG = {
   key: STORAGE_KEY,

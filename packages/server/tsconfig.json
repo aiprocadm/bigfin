@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@bigcapital/server/*": ["../server/*"]
+      "@bigfin/server/*": ["../server/*"]
     }
   }
 }

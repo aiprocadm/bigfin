@@ -8,7 +8,7 @@ Templates requiring updates: ✅ plan-template.md (constitution check section), 
 Follow-up TODOs: None
 -->
 
-# Bigcapital Constitution
+# BigFin Constitution
 
 ## Core Principles
 
@@ -37,8 +37,8 @@ All user data MUST be encrypted in transit and at rest. Authentication tokens MU
 
 ### Code Organization
 - Monorepo structure with clear package boundaries
-- Shared utilities in `@bigcapital/utils` package
-- Component library in `@bigcapital/email-components` and `@bigcapital/pdf-templates`
+- Shared utilities in `@bigfin/utils` package
+- Component library in `@bigfin/email-components` and `@bigfin/pdf-templates`
 - Clear separation between frontend (`webapp`) and backend (`server`) concerns
 
 ### Documentation Requirements

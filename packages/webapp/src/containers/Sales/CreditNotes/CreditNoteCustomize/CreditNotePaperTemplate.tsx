@@ -85,7 +85,7 @@ export function CreditNotePaperTemplate({
   showCompanyLogo = true,
   companyLogoUri = '',
 
-  companyName = 'Bigcapital Technology, Inc.',
+  companyName = 'BigFin Technology, Inc.',
 
   // Address
   showCustomerAddress = true,

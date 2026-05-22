@@ -3,28 +3,28 @@ import React from 'react';
 import classNames from 'classnames';
 import { Icon } from '@/components';
 
-import '@/style/components/BigcapitalLoading.scss';
+import '@/style/components/BigFinLoading.scss';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 
 /**
- * Bigcapital logo loading.
+ * BigFin logo loading.
  */
-export default function BigcapitalLoading({ className }) {
+export default function BigFinLoading({ className }) {
   const isDarkmode = useIsDarkMode();
 
   return (
-    <div className={classNames('bigcapital-loading', className)}>
+    <div className={classNames('bigfin-loading', className)}>
       <div class="center">
         {isDarkmode ? (
           <Icon
-            icon="bigcapital-alt"
+            icon="bigfin-alt"
             height={37}
             width={228}
             color="#fff"
-            className="bigcapital-logo"
+            className="bigfin-logo"
           />
         ) : (
-          <Icon icon="bigcapital" height={37} width={228} />
+          <Icon icon="bigfin" height={37} width={228} />
         )}
       </div>
     </div>

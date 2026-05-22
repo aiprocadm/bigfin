@@ -22,7 +22,7 @@ const initialState: VendorsState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:vendors';
+const STORAGE_KEY = 'bigfin:vendors';
 
 const CONFIG = {
   key: STORAGE_KEY,

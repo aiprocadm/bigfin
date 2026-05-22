@@ -22,7 +22,7 @@ const initialState: PaymentReceivesState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:paymentReceives';
+const STORAGE_KEY = 'bigfin:paymentReceives';
 
 const CONFIG = {
   key: STORAGE_KEY,

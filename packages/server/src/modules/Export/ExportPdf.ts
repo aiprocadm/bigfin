@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ChromiumlyTenancy } from '../ChromiumlyTenancy/ChromiumlyTenancy.service';
-import { renderExportResourceTableTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderExportResourceTableTemplateHtml } from '@bigfin/pdf-templates';
 import { mapPdfRows } from './utils';
 
 @Injectable()

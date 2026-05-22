@@ -22,7 +22,7 @@ const initialState: CreditNoteState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:credit_notes';
+const STORAGE_KEY = 'bigfin:credit_notes';
 
 const CONFIG = {
   key: STORAGE_KEY,

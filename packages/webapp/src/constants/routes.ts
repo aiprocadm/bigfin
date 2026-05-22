@@ -1,2 +1,2 @@
-export const DOCS_BIGCAPITAL_LINK = 'https://docs.bigcapital.app';
-export const COMMUNITY_BIGCAPITAL_LINK = 'https://community.bigcapital.app';
+export const DOCS_BIGFIN_LINK = 'https://docs.bigfin.app';
+export const COMMUNITY_BIGFIN_LINK = 'https://community.bigfin.app';

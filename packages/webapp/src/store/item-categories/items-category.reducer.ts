@@ -17,7 +17,7 @@ const initialState: ItemCategoriesState = {
   },
 };
 
-const STORAGE_KEY = 'bigcapital:itemCategories';
+const STORAGE_KEY = 'bigfin:itemCategories';
 
 const CONFIG = {
   key: STORAGE_KEY,

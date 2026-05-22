@@ -1,1 +1,1 @@
-# @bigcapital/webapp
+# @bigfin/webapp

@@ -19,7 +19,7 @@ const initialState: CashflowAccountsState = {
   tableState: defaultTableQuery,
 };
 
-const STORAGE_KEY = 'bigcapital:cashflow_accounts';
+const STORAGE_KEY = 'bigfin:cashflow_accounts';
 
 const CONFIG = {
   key: STORAGE_KEY,

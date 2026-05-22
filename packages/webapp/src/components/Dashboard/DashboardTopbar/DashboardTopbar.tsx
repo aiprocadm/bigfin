@@ -34,8 +34,8 @@ import {
 
 import { DialogsName } from '@/constants/dialogs';
 import {
-  COMMUNITY_BIGCAPITAL_LINK,
-  DOCS_BIGCAPITAL_LINK,
+  COMMUNITY_BIGFIN_LINK,
+  DOCS_BIGFIN_LINK,
 } from '@/constants/routes';
 
 import { compose } from '@/utils';
@@ -136,12 +136,12 @@ function DashboardTopbar({
                 <Menu>
                   <MenuItem
                     text={'Documents'}
-                    onClick={() => window.open(DOCS_BIGCAPITAL_LINK)}
+                    onClick={() => window.open(DOCS_BIGFIN_LINK)}
                     labelElement={<Icon icon={'share'} iconSize={16} />}
                   />
                   <MenuItem
                     text={'Community support'}
-                    onClick={() => window.open(COMMUNITY_BIGCAPITAL_LINK)}
+                    onClick={() => window.open(COMMUNITY_BIGFIN_LINK)}
                     labelElement={<Icon icon={'share'} iconSize={16} />}
                   />
                   <MenuItem

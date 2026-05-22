@@ -11,7 +11,7 @@ export function AuthContainer({ children }: AuthContainerProps) {
     <AuthPage>
       <AuthInsider>
         <AuthLogo>
-          <Icon icon="bigcapital" height={37} width={214} />
+          <Icon icon="bigfin" height={37} width={214} />
         </AuthLogo>
 
         {children}

@@ -9,7 +9,7 @@ import { PdfTemplateModel } from '@/modules/PdfTemplate/models/PdfTemplate';
 import { ISaleReceiptBrandingTemplateAttributes } from '../types/SaleReceipts.types';
 import { events } from '@/common/events/events';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
-import { renderReceiptPaperTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderReceiptPaperTemplateHtml } from '@bigfin/pdf-templates';
 
 @Injectable()
 export class SaleReceiptsPdfService {

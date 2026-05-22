@@ -24,7 +24,7 @@ export default function TableWrapper({ children }) {
 
   return (
     <div
-      className={clsx('bigcapital-datatable', className, {
+      className={clsx('bigfin-datatable', className, {
         'has-sticky': sticky,
         'has-pagination': pagination,
         'is-expandable': expandable,

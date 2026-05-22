@@ -3,7 +3,7 @@ import { DEFAULT_LOAD_EXTENSIONS, FsMigrations } from './FsMigrations';
 const CONFIG_DEFAULT = Object.freeze({
   extension: 'js',
   loadExtensions: DEFAULT_LOAD_EXTENSIONS,
-  tableName: 'bigcapital_seeds',
+  tableName: 'bigfin_seeds',
   schemaName: null,
   directory: './migrations',
   disableTransactions: false,

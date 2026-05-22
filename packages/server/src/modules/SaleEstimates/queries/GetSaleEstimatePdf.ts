@@ -9,7 +9,7 @@ import { PdfTemplateModel } from '@/modules/PdfTemplate/models/PdfTemplate';
 import { events } from '@/common/events/events';
 import { SaleEstimate } from '../models/SaleEstimate';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
-import { renderEstimatePaperTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderEstimatePaperTemplateHtml } from '@bigfin/pdf-templates';
 
 @Injectable()
 export class GetSaleEstimatePdf {

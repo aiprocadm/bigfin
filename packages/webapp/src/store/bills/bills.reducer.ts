@@ -22,7 +22,7 @@ const initialState: BillsState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:bills';
+const STORAGE_KEY = 'bigfin:bills';
 
 const CONFIG = {
   key: STORAGE_KEY,

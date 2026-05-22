@@ -268,7 +268,7 @@ export const JournalSheetResponseExample = {
     },
   ],
   meta: {
-    organization_name: 'BIGCAPITAL, INC',
+    organization_name: 'BIGFIN, INC',
     base_currency: 'USD',
     date_format: 'DD MMM yyyy',
     is_cost_compute_running: false,

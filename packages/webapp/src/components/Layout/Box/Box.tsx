@@ -14,4 +14,4 @@ export const Box = forwardRef(
     return <Element className={className} ref={ref} {...rest} />;
   },
 );
-Box.displayName = '@bigcapital/Box';
+Box.displayName = '@bigfin/Box';

@@ -22,7 +22,7 @@ const initialState: VendorCreditState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:vendor_credits';
+const STORAGE_KEY = 'bigfin:vendor_credits';
 
 const CONFIG = {
   key: STORAGE_KEY,

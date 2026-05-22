@@ -1,11 +1,11 @@
 
-interface BigcapitalAltProps extends React.SVGProps<SVGSVGElement> {
+interface BigFinAltProps extends React.SVGProps<SVGSVGElement> {
 }
 
-export function BigcapitalAlt(props: BigcapitalAltProps) {
+export function BigFinAlt(props: BigFinAltProps) {
   return (
-    <svg data-icon="bigcapital-alt" width="214" height="37" viewBox="0 0 309.09 42.89" {...props}>
-      <desc>bigcapital</desc>
+    <svg data-icon="bigfin-alt" width="214" height="37" viewBox="0 0 309.09 42.89" {...props}>
+      <desc>bigfin</desc>
       <path fill="currentColor" d="M56,3.16,61.33,8.5,31.94,37.9l-5.35-5.35Z" fill-rule="evenodd"></path>
       <path fill="currentColor" d="M29.53,6.94l5.35,5.34L5.49,41.67.14,36.33l15.8-15.8Z" fill-rule="evenodd"></path>
       <path fill="currentColor" d="M94.36,38.87H79.62v-31H94c6.33,0,10.22,3.15,10.22,8V16a7.22,7.22,0,0,1-4.07,6.69c3.58,1.37,5.8,3.45,5.8,7.61v.09C106,36,101.35,38.87,94.36,38.87Zm3.1-21.81c0-2-1.59-3.19-4.47-3.19H86.26v6.55h6.29c3,0,4.91-1,4.91-3.28Zm1.72,12.39c0-2.08-1.54-3.37-5-3.37H86.26V32.9h8.1c3,0,4.82-1.06,4.82-3.36Z" fill-rule="evenodd"></path>

@@ -184,6 +184,6 @@
   "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
-  "projectName": "bigcapital",
-  "projectOwner": "bigcapitalhq"
+  "projectName": "bigfin",
+  "projectOwner": "bigfinhq"
 }

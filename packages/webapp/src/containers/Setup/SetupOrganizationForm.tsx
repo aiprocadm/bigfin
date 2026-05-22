@@ -4,7 +4,7 @@ import { FastField, Form, ErrorMessage } from 'formik';
 import { Button, Intent, FormGroup, Classes } from '@blueprintjs/core';
 import classNames from 'classnames';
 import { TimezonePicker } from '@blueprintjs/timezone';
-import { getAllCountries } from '@bigcapital/utils';
+import { getAllCountries } from '@bigfin/utils';
 import { x } from '@xstyled/emotion';
 import {
   FFormGroup,

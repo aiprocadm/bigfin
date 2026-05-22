@@ -4,7 +4,7 @@ import { FinancialTableStructure } from './FinancialTableStructure';
 import { tableClassNames } from '../utils';
 import { Injectable } from '@nestjs/common';
 import { ChromiumlyTenancy } from '../../ChromiumlyTenancy/ChromiumlyTenancy.service';
-import { renderFinancialSheetTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderFinancialSheetTemplateHtml } from '@bigfin/pdf-templates';
 
 @Injectable()
 export class TableSheetPdf {

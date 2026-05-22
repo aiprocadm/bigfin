@@ -1,4 +1,4 @@
-# This is a production version of the Bigcapital docker-compose.yml file.
+# This is a production version of the BigFin docker-compose.yml file.
 
 version: '3.3'
 
@@ -16,18 +16,18 @@ services:
       - ./docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml
     restart: on-failure
     networks:
-      - bigcapital_network
+      - bigfin_network
 
   webapp:
-    container_name: bigcapital-webapp
-    image: bigcapitalhq/webapp:latest
+    container_name: bigfin-webapp
+    image: ${WEBAPP_IMAGE:-bigfin-webapp:latest}
     restart: on-failure
     networks:
-      - bigcapital_network
+      - bigfin_network
 
   server:
-    container_name: bigcapital-server
-    image: bigcapitalhq/server:latest
+    container_name: bigfin-server
+    image: ${SERVER_IMAGE:-bigfin-server:latest}
     expose:
       - '3000'
     links:
@@ -38,7 +38,7 @@ services:
       - redis
     restart: on-failure
     networks:
-      - bigcapital_network
+      - bigfin_network
     environment:
       # Mail
       - MAIL_HOST=${MAIL_HOST}
@@ -102,7 +102,7 @@ services:
       - LEMONSQUEEZY_API_KEY=${LEMONSQUEEZY_API_KEY}
       - LEMONSQUEEZY_STORE_ID=${LEMONSQUEEZY_STORE_ID}
       - LEMONSQUEEZY_WEBHOOK_SECRET=${LEMONSQUEEZY_WEBHOOK_SECRET}
-      - HOSTED_ON_BIGCAPITAL_CLOUD=${HOSTED_ON_BIGCAPITAL_CLOUD}
+      - HOSTED_ON_BIGFIN_CLOUD=${HOSTED_ON_BIGFIN_CLOUD}
 
       # New Relic matrics tracking.
       - NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=${NEW_RELIC_DISTRIBUTED_TRACING_ENABLED}
@@ -128,7 +128,7 @@ services:
       - STRIPE_PAYMENT_REDIRECT_URL=${STRIPE_PAYMENT_REDIRECT_URL}
 
   database_migration:
-    container_name: bigcapital-database-migration
+    container_name: bigfin-database-migration
     build:
       context: ./
       dockerfile: docker/migration/Dockerfile
@@ -144,10 +144,10 @@ services:
     depends_on:
       - mysql
     networks:
-      - bigcapital_network
+      - bigfin_network
 
   mysql:
-    container_name: bigcapital-mysql
+    container_name: bigfin-mysql
     restart: on-failure
     build:
       context: ./docker/mariadb
@@ -161,10 +161,10 @@ services:
     expose:
       - '3306'
     networks:
-      - bigcapital_network
+      - bigfin_network
 
   redis:
-    container_name: bigcapital-redis
+    container_name: bigfin-redis
     restart: on-failure
     build:
       context: ./docker/redis
@@ -173,26 +173,26 @@ services:
     volumes:
       - redis:/data
     networks:
-      - bigcapital_network
+      - bigfin_network
 
   gotenberg:
     image: gotenberg/gotenberg:7
     expose:
       - '9000'
     networks:
-      - bigcapital_network
+      - bigfin_network
 
 # Volumes
 volumes:
   mysql:
-    name: bigcapital_prod_mysql
+    name: bigfin_prod_mysql
     driver: local
 
   redis:
-    name: bigcapital_prod_redis
+    name: bigfin_prod_redis
     driver: local
 
 # Networks
 networks:
-  bigcapital_network:
+  bigfin_network:
     driver: bridge

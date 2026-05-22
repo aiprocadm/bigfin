@@ -33,7 +33,7 @@ describe('Organization (e2e)', () => {
       .set('Authorization', `Bearer ${signinResponse.body.access_token}`)
       .set('organization-id', signupResponse.body.organization_id)
       .send({
-        name: 'BIGCAPITAL, INC',
+        name: 'BIGFIN, INC',
         baseCurrency: 'USD',
         location: 'US',
         language: 'en',
@@ -62,7 +62,7 @@ describe('Organization (e2e)', () => {
       .set('Authorization', `Bearer ${signinResponse.body.access_token}`)
       .set('organization-id', signupResponse.body.organization_id)
       .send({
-        name: 'BIGCAPITAL, INC',
+        name: 'BIGFIN, INC',
         baseCurrency: 'USD',
         location: 'US',
         language: 'en',

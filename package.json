@@ -47,5 +47,10 @@
   },
   "dependencies": {
     "tsup": "^8.3.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "bcrypt": "npm:bcryptjs@^2.4.3"
+    }
   }
 }

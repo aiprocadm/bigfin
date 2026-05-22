@@ -408,7 +408,7 @@ export const SidebarMenu = [
                 type: ISidebarMenuItemType.Link,
               },
               {
-                text: 'Tax Rates',
+                text: <T id={'sidebar.tax_rates'} />,
                 href: '/tax-rates',
                 type: ISidebarMenuItemType.Link,
                 permission: {
@@ -459,7 +459,7 @@ export const SidebarMenu = [
             },
           },
           {
-            text: 'Rules',
+            text: <T id={'sidebar.bank_rules'} />,
             href: '/bank-rules',
             type: ISidebarMenuItemType.Link,
           },
@@ -757,11 +757,11 @@ export const SidebarMenu = [
         ],
       },
       {
-        text: 'Taxes',
+        text: <T id={'sidebar.taxes'} />,
         type: ISidebarMenuItemType.Group,
         children: [
           {
-            text: 'Sales Tax Liability Summary',
+            text: <T id={'sidebar.sales_tax_liability_summary'} />,
             href: '/financial-reports/sales-tax-liability-summary',
             type: ISidebarMenuItemType.Link,
             permission: {

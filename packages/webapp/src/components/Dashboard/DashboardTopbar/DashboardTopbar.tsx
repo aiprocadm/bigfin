@@ -135,21 +135,21 @@ function DashboardTopbar({
               content={
                 <Menu>
                   <MenuItem
-                    text={'Documents'}
+                    text={<T id={'topbar.documents'} />}
                     onClick={() => window.open(DOCS_BIGFIN_LINK)}
                     labelElement={<Icon icon={'share'} iconSize={16} />}
                   />
                   <MenuItem
-                    text={'Community support'}
+                    text={<T id={'topbar.community_support'} />}
                     onClick={() => window.open(COMMUNITY_BIGFIN_LINK)}
                     labelElement={<Icon icon={'share'} iconSize={16} />}
                   />
                   <MenuItem
-                    text={'Keyboard shortcuts'}
+                    text={<T id={'topbar.keyboard_shortcuts'} />}
                     onClick={() => openDialog(DialogsName.KeyboardShortcutForm)}
                   />
                   <MenuDivider />
-                  <MenuItem text={'Share feedback'} />
+                  <MenuItem text={<T id={'topbar.share_feedback'} />} />
                 </Menu>
               }
             >

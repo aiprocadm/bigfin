@@ -18,7 +18,7 @@ export const Default: StoryFn<InvoicePaymentEmailProps> = Template.bind({});
 Default.args = {
   // Add default props here
   invoiceNumber: 'INV-12345',
-  companyName: 'Bigcapital, Inc.',
+  companyName: 'BigFin, Inc.',
   invoiceMessage: `Hi Ahmed Bouhuolia,
 
 Here's invoice # INV-00005 for $1,000.00
@@ -30,7 +30,7 @@ From your online payment page you can print a PDF or view your outstanding bills
 If you have any questions, please let us know.
 
 Thanks,
-Bigcapital`,
+BigFin`,
   dueDate: ' 10 Oct 2024',
   total: '$1,000.00',
   subtotal: '$1,000.00',

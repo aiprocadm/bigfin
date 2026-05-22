@@ -490,7 +490,7 @@ export const BalanceSheetResponseExample = {
     },
   ],
   meta: {
-    organization_name: 'BIGCAPITAL, INC',
+    organization_name: 'BIGFIN, INC',
     base_currency: 'USD',
     date_format: 'DD MMM yyyy',
     is_cost_compute_running: false,
@@ -1224,7 +1224,7 @@ export const BalanceSheetTableResponseExample = {
     previous_year_percentage_change: false,
   },
   meta: {
-    organization_name: 'BIGCAPITAL, INC',
+    organization_name: 'BIGFIN, INC',
     base_currency: 'USD',
     date_format: 'DD MMM yyyy',
     is_cost_compute_running: false,

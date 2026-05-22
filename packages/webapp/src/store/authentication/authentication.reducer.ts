@@ -26,7 +26,7 @@ const initialState: AuthenticationState = {
   errors: [],
 };
 
-const STORAGE_KEY = 'bigcapital:authentication';
+const STORAGE_KEY = 'bigfin:authentication';
 const CONFIG = { key: STORAGE_KEY, whitelist: [], storage };
 
 const reducerInstance = createReducer(initialState, {

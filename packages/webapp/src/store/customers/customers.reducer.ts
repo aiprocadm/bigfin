@@ -38,7 +38,7 @@ const reducerInstance = createReducer(initialState, {
   [RESET]: () => initialState,
 });
 
-const STORAGE_KEY = 'bigcapital:estimates';
+const STORAGE_KEY = 'bigfin:estimates';
 
 export const customersPersistReducer = persistReducer(
   {

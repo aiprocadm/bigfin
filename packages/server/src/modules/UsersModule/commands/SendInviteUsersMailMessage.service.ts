@@ -27,18 +27,18 @@ export class SendInviteUsersMailMessage {
     invite: ModelObject<UserInvite>,
   ) {
     const tenant = await this.tenancyContext.getTenant(true);
-    const root = path.join(global.__images_dirname, '/bigcapital.png');
+    const root = path.join(global.__images_dirname, '/bigfin.png');
     const baseURL = this.configService.get('app.baseUrl');
 
     const mail = new Mail()
-      .setSubject(`${fromUser.firstName} has invited you to join a Bigcapital`)
+      .setSubject(`${fromUser.firstName} has invited you to join a BigFin`)
       .setView('mail/UserInvite.html')
       .setTo(invite.email)
       .setAttachments([
         {
-          filename: 'bigcapital.png',
+          filename: 'bigfin.png',
           path: root,
-          cid: 'bigcapital_logo',
+          cid: 'bigfin_logo',
         },
       ])
       .setData({

@@ -1,5 +1,5 @@
 {
-  "name": "@bigcapital/server",
+  "name": "@bigfin/server",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -34,10 +34,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.576.0",
     "@aws-sdk/s3-request-presigner": "^3.583.0",
-    "@bigcapital/email-components": "workspace:*",
-    "@bigcapital/pdf-templates": "workspace:*",
-    "@bigcapital/utils": "workspace:*",
-    "@bigcapital/sdk-ts": "workspace:*",
+    "@bigfin/email-components": "workspace:*",
+    "@bigfin/pdf-templates": "workspace:*",
+    "@bigfin/utils": "workspace:*",
+    "@bigfin/sdk-ts": "workspace:*",
     "@bull-board/api": "^5.22.0",
     "@bull-board/express": "^5.22.0",
     "@bull-board/nestjs": "^5.22.0",

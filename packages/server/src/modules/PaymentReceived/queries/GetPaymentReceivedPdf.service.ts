@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { renderPaymentReceivedPaperTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderPaymentReceivedPaperTemplateHtml } from '@bigfin/pdf-templates';
 import { GetPaymentReceivedService } from './GetPaymentReceived.service';
 import { PaymentReceivedBrandingTemplate } from './PaymentReceivedBrandingTemplate.service';
 import { transformPaymentReceivedToPdfTemplate } from '../utils';

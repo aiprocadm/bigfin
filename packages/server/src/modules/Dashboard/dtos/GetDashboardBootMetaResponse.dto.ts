@@ -57,8 +57,8 @@ export class GetDashboardBootMetaResponseDto {
   features: DashboardFeatureResponseDto[];
 
   @ApiProperty({
-    description: 'Whether the app is running on Bigcapital Cloud',
+    description: 'Whether the app is running on BigFin Cloud',
     example: true,
   })
-  isBigcapitalCloud: boolean;
+  isBigFinCloud: boolean;
 }

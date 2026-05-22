@@ -20,7 +20,7 @@ const initialState: WarehouseTransferState = {
   tableState: defaultTableQuery,
 };
 
-const STORAGE_KEY = 'bigcapital:warehouse_transfers';
+const STORAGE_KEY = 'bigfin:warehouse_transfers';
 
 const CONFIG = {
   key: STORAGE_KEY,

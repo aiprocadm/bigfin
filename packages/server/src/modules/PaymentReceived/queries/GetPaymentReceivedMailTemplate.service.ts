@@ -1,7 +1,7 @@
 import {
   PaymentReceivedEmailTemplateProps,
   renderPaymentReceivedEmailTemplate,
-} from '@bigcapital/email-components';
+} from '@bigfin/email-components';
 import { Injectable } from '@nestjs/common';
 import { TransformerInjectable } from '@/modules/Transformer/TransformerInjectable.service';
 import { GetPdfTemplateService } from '@/modules/PdfTemplate/queries/GetPdfTemplate.service';

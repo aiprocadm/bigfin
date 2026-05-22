@@ -2,7 +2,7 @@
 
 $organizations-drawer-border: rgba(255, 255, 255, 0.08);
 
-.organizations-list-table.bigcapital-datatable {
+.organizations-list-table.bigfin-datatable {
   --color-datatable-head-background: transparent;
   --color-datatable-head-text: rgba(255, 255, 255, 0.45);
   --color-datatable-head-border: #{$organizations-drawer-border};
@@ -57,7 +57,7 @@ $organizations-drawer-border: rgba(255, 255, 255, 0.08);
   }
 
   // Use full BEM class names: `&__foo` under a compound parent would compile to
-  // `.organizations-list-table.bigcapital-datatable__foo`, which never matches the DOM.
+  // `.organizations-list-table.bigfin-datatable__foo`, which never matches the DOM.
   // Workspace name row (avatar + label) is styled via @xstyled/emotion in OrganizationsListTable.
 
   .organizations-list-table__current-indicator {

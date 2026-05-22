@@ -49,7 +49,7 @@ const initialState: DashboardState = {
   autofill: {},
 };
 
-const STORAGE_KEY = 'bigcapital:dashboard';
+const STORAGE_KEY = 'bigfin:dashboard';
 const CONFIG = { key: STORAGE_KEY, whitelist: [], storage };
 
 type DashboardAction = { type: string; payload?: Record<string, unknown>; [key: string]: unknown };

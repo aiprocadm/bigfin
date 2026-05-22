@@ -27,7 +27,7 @@ const initialState: ItemsState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:items';
+const STORAGE_KEY = 'bigfin:items';
 
 const CONFIG = {
   key: STORAGE_KEY,

@@ -21,7 +21,7 @@ const initialState: AccountsState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:accounts';
+const STORAGE_KEY = 'bigfin:accounts';
 
 const CONFIG = {
   key: STORAGE_KEY,

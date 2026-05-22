@@ -22,8 +22,8 @@ env:
   DB_USER: root
   DB_PASSWORD: root
   DB_CHARSET: utf8
-  SYSTEM_DB_NAME: bigcapital_system
-  TENANT_DB_NAME_PERFIX: bigcapital_tenant_
+  SYSTEM_DB_NAME: bigfin_system
+  TENANT_DB_NAME_PERFIX: bigfin_tenant_
   # Redis configuration
   REDIS_HOST: 127.0.0.1
   REDIS_PORT: 6379
@@ -74,7 +74,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: bigcapital_system
+          MYSQL_DATABASE: bigfin_system
         ports:
           - 3306:3306
         options: >-
@@ -115,7 +115,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build shared packages
-        run: pnpm run build --scope "@bigcapital/utils" --scope "@bigcapital/email-components" --scope "@bigcapital/pdf-templates"
+        run: pnpm run build --scope "@bigfin/utils" --scope "@bigfin/email-components" --scope "@bigfin/pdf-templates"
 
       - name: Generate OpenAPI spec and SDK types
         run: pnpm run generate:sdk-types

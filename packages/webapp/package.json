@@ -1,12 +1,12 @@
 {
-  "name": "@bigcapital/webapp",
+  "name": "@bigfin/webapp",
   "version": "0.10.2",
   "private": true,
   "dependencies": {
-    "@bigcapital/email-components": "workspace:*",
-    "@bigcapital/pdf-templates": "workspace:*",
-    "@bigcapital/sdk-ts": "workspace:*",
-    "@bigcapital/utils": "workspace:*",
+    "@bigfin/email-components": "workspace:*",
+    "@bigfin/pdf-templates": "workspace:*",
+    "@bigfin/sdk-ts": "workspace:*",
+    "@bigfin/utils": "workspace:*",
     "@blueprintjs-formik/core": "^0.3.7",
     "@blueprintjs-formik/datetime": "^0.4.0",
     "@blueprintjs-formik/select": "^0.4.5",

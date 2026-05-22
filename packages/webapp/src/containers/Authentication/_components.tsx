@@ -52,7 +52,7 @@ export const AuthInsiderCopyright = styled.div`
   color: #666;
   margin-top: 1.2rem;
 
-  .bp4-icon-bigcapital {
+  .bp4-icon-bigfin {
     svg {
       path {
         fill: #a3a3a3;

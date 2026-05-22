@@ -20,7 +20,7 @@ const initialState: ProjectsState = {
   tableState: defaultTableQuery,
 };
 
-const STORAGE_KEY = 'bigcapital:projects';
+const STORAGE_KEY = 'bigfin:projects';
 
 const CONFIG = {
   key: STORAGE_KEY,

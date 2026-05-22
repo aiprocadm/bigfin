@@ -22,7 +22,7 @@ const initialState: EstimatesState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:estimates';
+const STORAGE_KEY = 'bigfin:estimates';
 
 const CONFIG = {
   key: STORAGE_KEY,

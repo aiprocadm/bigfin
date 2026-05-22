@@ -9,7 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'components.umd.js',
     library: {
-      name: '@bigcapital/library-components',
+      name: '@bigfin/library-components',
       type: 'umd',
     },
     globalObject: 'this',

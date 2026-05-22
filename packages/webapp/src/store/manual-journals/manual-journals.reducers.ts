@@ -22,7 +22,7 @@ const initialState: ManualJournalsState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:manualJournals';
+const STORAGE_KEY = 'bigfin:manualJournals';
 
 const CONFIG = {
   key: STORAGE_KEY,

@@ -22,8 +22,8 @@ function BillingPageRoot({
     changePreferencesPageTitle('Billing');
   }, [changePreferencesPageTitle]);
 
-  // In case the edition is not Bigcapital Cloud, redirect to the homepage.
-  if (!dashboardMeta.is_bigcapital_cloud) {
+  // In case the edition is not BigFin Cloud, redirect to the homepage.
+  if (!dashboardMeta.is_bigfin_cloud) {
     return <Redirect to={{ pathname: '/' }} />;
   }
 

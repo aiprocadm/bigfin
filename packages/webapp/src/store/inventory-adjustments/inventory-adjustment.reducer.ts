@@ -18,7 +18,7 @@ const initialState: InventoryAdjustmentsState = {
   selectedRows: [],
 };
 
-const STORAGE_KEY = 'bigcapital:inventoryAdjustments';
+const STORAGE_KEY = 'bigfin:inventoryAdjustments';
 
 const CONFIG = {
   key: STORAGE_KEY,

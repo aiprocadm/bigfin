@@ -7,7 +7,7 @@ import { Button, FormGroup, Intent } from '@blueprintjs/core';
 import { TimezonePicker, getTimezoneMetadata } from '@blueprintjs/timezone';
 import { ErrorMessage } from 'formik';
 import { useHistory } from 'react-router-dom';
-import { getAllCountries } from '@bigcapital/utils';
+import { getAllCountries } from '@bigfin/utils';
 
 import {
   FieldRequiredHint,

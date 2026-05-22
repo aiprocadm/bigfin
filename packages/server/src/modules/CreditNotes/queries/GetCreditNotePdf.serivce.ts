@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { renderCreditNotePaperTemplateHtml } from '@bigcapital/pdf-templates';
+import { renderCreditNotePaperTemplateHtml } from '@bigfin/pdf-templates';
 import { GetCreditNoteService } from './GetCreditNote.service';
 import { CreditNoteBrandingTemplate } from './CreditNoteBrandingTemplate.service';
 import { transformCreditNoteToPdfTemplate } from '../utils';

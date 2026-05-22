@@ -21,7 +21,7 @@ const initialState: PaymentMadesState = {
   tableState: defaultTableQuery,
 };
 
-const STORAGE_KEY = 'bigcapital:paymentMades';
+const STORAGE_KEY = 'bigfin:paymentMades';
 
 const CONFIG = {
   key: STORAGE_KEY,

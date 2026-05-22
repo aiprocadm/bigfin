@@ -250,10 +250,10 @@ function SidebarHeadJSX({
 
       <div className="sidebar__head-logo">
         <Icon
-          icon={'mini-bigcapital'}
+          icon={'mini-bigfin'}
           width={28}
           height={28}
-          className="bigcapital--alt"
+          className="bigfin--alt"
         />
       </div>
     </div>

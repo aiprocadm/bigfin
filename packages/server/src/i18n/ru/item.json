@@ -1,0 +1,23 @@
+{
+  "field.type": "Тип товара",
+  "field.type.inventory": "Складской товар",
+  "field.type.service": "Услуга",
+  "field.type.non-inventory": "Без учёта остатков",
+  "field.name": "Название",
+  "field.code": "Код товара",
+  "field.sellable": "Доступен для продажи",
+  "field.purchasable": "Доступен для закупки",
+  "field.cost_price": "Себестоимость",
+  "field.sell_price": "Цена продажи",
+  "field.cost_account": "Статья себестоимости",
+  "field.sell_account": "Статья выручки",
+  "field.sell_description": "Описание для продажи",
+  "field.inventory_account": "Статья учёта запасов",
+  "field.purchase_description": "Описание для закупки",
+  "field.quantity_on_hand": "Остаток на складе",
+  "field.note": "Примечание",
+  "field.category": "Категория",
+  "field.category_hint": "Совпадает с названием категории",
+  "field.active": "Активный",
+  "field.created_at": "Создан"
+}

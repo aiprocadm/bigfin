@@ -1,0 +1,19 @@
+{
+  "view.draft": "Черновик",
+  "view.published": "Опубликован",
+  "view.open": "Открыт",
+  "view.closed": "Закрыт",
+
+  "field.vendor": "Поставщик",
+  "field.vendor_credit_number": "№ возврата поставщику",
+  "field.vendor_credit_date": "Дата возврата поставщику",
+  "field.reference_no": "Внешний №",
+  "field.exchange_rate": "Курс валюты",
+  "field.note": "Примечание",
+  "field.open": "Открыт",
+  "field.entries": "Позиции",
+  "field.item": "Товар",
+  "field.rate": "Цена",
+  "field.quantity": "Количество",
+  "field.description": "Описание"
+}

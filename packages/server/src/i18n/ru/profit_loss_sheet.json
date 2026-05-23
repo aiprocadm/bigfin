@@ -1,0 +1,16 @@
+{
+  "income": "Выручка",
+  "cost_of_sales": "Себестоимость продаж",
+  "gross_profit": "ВАЛОВАЯ ПРИБЫЛЬ",
+  "expenses": "Расходы",
+  "net_operating_income": "ОПЕРАЦИОННАЯ ПРИБЫЛЬ",
+  "other_income": "Прочие доходы",
+  "other_expenses": "Прочие расходы",
+  "net_income": "ЧИСТАЯ ПРИБЫЛЬ",
+  "account_name": "Название статьи",
+  "total": "Итого",
+  "percentage_of_income": "% от выручки",
+  "percentage_of_expenses": "% от расходов",
+  "percentage_of_column": "% от столбца",
+  "percentage_of_row": "% от строки"
+}

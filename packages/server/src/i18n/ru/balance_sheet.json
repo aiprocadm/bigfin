@@ -1,0 +1,21 @@
+{
+  "assets": "Активы",
+  "current_asset": "Оборотный актив",
+  "cash_and_cash_equivalents": "Денежные средства и эквиваленты",
+  "accounts_receivable": "Дебиторская задолженность",
+  "inventory": "Запасы",
+  "other_current_assets": "Прочие оборотные активы",
+  "fixed_asset": "Основные средства",
+  "non_current_assets": "Внеоборотные активы",
+  "liabilities_and_equity": "Обязательства и капитал",
+  "liabilities": "Обязательства",
+  "current_liabilities": "Краткосрочные обязательства",
+  "long_term_liabilities": "Долгосрочные обязательства",
+  "non_current_liabilities": "Долгосрочные обязательства",
+  "equity": "Капитал",
+  "net_income": "Чистая прибыль",
+  "account_name": "Название статьи",
+  "total": "Итого",
+  "percentage_of_column": "% от столбца",
+  "percentage_of_row": "% от строки"
+}

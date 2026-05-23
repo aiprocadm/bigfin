@@ -1,0 +1,18 @@
+{
+  "field.payment_date": "Дата оплаты",
+  "field.payment_account": "Счёт списания",
+  "field.amount": "Сумма",
+  "field.currency_code": "Валюта",
+  "field.exchange_rate": "Курс валюты",
+  "field.reference_no": "Внешний №",
+  "field.description": "Описание",
+  "field.line_description": "Описание строки",
+  "field.published": "Опубликован",
+  "field.categories": "Категории",
+  "field.expense_account": "Статья расхода",
+  "field.publish": "Опубликовать",
+  "field.status": "Статус",
+  "field.status.draft": "Черновик",
+  "field.status.published": "Опубликован",
+  "field.created_at": "Создан"
+}

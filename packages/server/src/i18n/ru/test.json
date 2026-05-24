@@ -1,0 +1,30 @@
+{
+  "HELLO": "Привет",
+  "PRODUCT": {
+    "NEW": "Новый товар: {name}"
+  },
+  "ENGLISH": "Английский",
+  "ARRAY": ["ОДИН", "ДВА", "ТРИ"],
+  "cat": "Кот",
+  "cat_name": "Кот: {name}",
+  "set-up-password": {
+    "heading": "Здравствуйте, {username}",
+    "title": "Забыли пароль",
+    "followLink": "Перейдите по ссылке, чтобы установить пароль"
+  },
+  "day_interval": {
+    "one": "Каждый день",
+    "other": "Каждые {count} дн.",
+    "zero": "Никогда"
+  },
+  "nested": "Идём за покупками: $t(test.day_interval, {{\"count\": {count} }})",
+
+  "financial_sheet.previoud_period_date": "{{date}} (ПП)",
+  "fianncial_sheet.previous_period_change": "Изменение (ПП)",
+  "financial_sheet.previous_period_percentage": "% изменения (ПП)",
+
+  "financial_sheet.previous_year_date": "{{date}} (ПГ)",
+  "financial_sheet.previous_year_change": "Изменение (ПГ)",
+  "financial_sheet.previous_year_percentage": "% изменения (ПГ)",
+  "financial_sheet.total_row": "Итого {{value}}"
+}

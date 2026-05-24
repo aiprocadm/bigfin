@@ -1,0 +1,14 @@
+{
+  "opening_balance": "Начальный баланс",
+  "closing_balance": "Конечный баланс",
+  "date": "Дата",
+  "transaction_type": "Тип операции",
+  "transaction_number": "№ операции",
+  "quantity": "Количество",
+  "rate": "Цена",
+  "total": "Итого",
+  "value": "Стоимость",
+  "profit_margin": "Прибыль",
+  "running_quantity": "Текущее количество",
+  "running_value": "Текущая стоимость"
+}

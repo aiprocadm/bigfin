@@ -1,0 +1,12 @@
+{
+  "field.date": "Дата",
+  "field.journal_number": "№ проводки",
+  "field.reference": "№ документа",
+  "field.journal_type": "Тип проводки",
+  "field.amount": "Сумма",
+  "field.description": "Описание",
+  "field.currency": "Валюта",
+  "field.exchange_rate": "Курс валюты",
+  "field.status": "Статус",
+  "field.created_at": "Создано"
+}

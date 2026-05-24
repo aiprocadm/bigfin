@@ -1,0 +1,20 @@
+{
+  "view.draft": "Черновик",
+  "view.published": "Опубликована",
+  "view.open": "Открыта",
+  "view.closed": "Закрыта",
+
+  "field.customer": "Клиент",
+  "field.exchange_rate": "Курс валюты",
+  "field.credit_note_date": "Дата кредит-ноты",
+  "field.reference_no": "№ документа",
+  "field.note": "Примечание",
+  "field.terms_conditions": "Условия и положения",
+  "field.credit_note_number": "Номер кредит-ноты",
+  "field.open": "Открыта",
+  "field.entries": "Строки",
+  "field.item": "Позиция",
+  "field.rate": "Цена",
+  "field.quantity": "Количество",
+  "field.description": "Описание"
+}

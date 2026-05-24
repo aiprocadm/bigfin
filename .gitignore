@@ -3,8 +3,11 @@ node_modules/
 # Docker volumes data directory
 /data
 
-# Production env file 
+# Production env file
 .env
+
+# Local docker-compose overrides (machine-specific port mappings, volumes, etc.)
+docker-compose.override.yml
 
 test-results/
 .qodo

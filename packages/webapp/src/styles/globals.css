@@ -1,3 +1,4 @@
+@import '@fontsource-variable/inter';
 @import './tokens.css';
 
 /* Tailwind 4: import theme + utilities ONLY, skip preflight.

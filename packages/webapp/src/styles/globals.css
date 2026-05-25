@@ -1,0 +1,86 @@
+@import './tokens.css';
+
+/* Tailwind 4: import theme + utilities ONLY, skip preflight.
+   Preflight is a global CSS reset that would override BlueprintJS
+   defaults (buttons, inputs, headings). We don't want that during
+   Strangler Fig migration. Instead, we apply a minimal reset
+   scoped to .bigfin-ui below. */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+  --color-background: rgb(var(--color-background));
+  --color-surface: rgb(var(--color-surface));
+  --color-surface-elevated: rgb(var(--color-surface-elevated));
+  --color-border: rgb(var(--color-border));
+
+  --color-text-primary: rgb(var(--color-text-primary));
+  --color-text-secondary: rgb(var(--color-text-secondary));
+  --color-text-muted: rgb(var(--color-text-muted));
+
+  --color-accent: rgb(var(--color-accent));
+  --color-accent-hover: rgb(var(--color-accent-hover));
+  --color-accent-fg: rgb(var(--color-accent-fg));
+
+  --color-success: rgb(var(--color-success));
+  --color-danger: rgb(var(--color-danger));
+  --color-warning: rgb(var(--color-warning));
+  --color-info: rgb(var(--color-info));
+
+  --radius-default: var(--radius);
+
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+}
+
+/* Scope наших стилей — только для элементов внутри .bigfin-ui.
+   Это страхует от «протечки» Tailwind-стилей в BlueprintJS-области
+   старого UI во время Strangler Fig миграции. */
+.bigfin-ui {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scoped manual reset — заменяет Tailwind preflight, но действует
+   ТОЛЬКО внутри .bigfin-ui. BlueprintJS-области не затронуты. */
+@layer base {
+  .bigfin-ui *,
+  .bigfin-ui *::before,
+  .bigfin-ui *::after {
+    box-sizing: border-box;
+    border-color: var(--color-border);
+  }
+
+  .bigfin-ui button,
+  .bigfin-ui [role='button'] {
+    background-color: transparent;
+    background-image: none;
+    cursor: pointer;
+  }
+
+  .bigfin-ui input,
+  .bigfin-ui select,
+  .bigfin-ui textarea {
+    color: inherit;
+    font: inherit;
+  }
+
+  .bigfin-ui h1,
+  .bigfin-ui h2,
+  .bigfin-ui h3,
+  .bigfin-ui h4,
+  .bigfin-ui h5,
+  .bigfin-ui h6,
+  .bigfin-ui p,
+  .bigfin-ui ul,
+  .bigfin-ui ol {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bigfin-ui ul,
+  .bigfin-ui ol {
+    list-style: none;
+  }
+}

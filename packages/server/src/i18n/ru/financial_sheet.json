@@ -1,0 +1,9 @@
+{
+  "previoud_period_date": "{date} (ПП)",
+  "fianncial_sheet.previous_period_change": "Изменение (ПП)",
+  "previous_period_percentage": "% изменения (ПП)",
+  "previous_year_date": "{date} (ПГ)",
+  "previous_year_change": "Изменение (ПГ)",
+  "previous_year_percentage": "% изменения (ПГ)",
+  "total_row": "Итого {value}"
+}

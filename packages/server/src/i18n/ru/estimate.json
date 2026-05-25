@@ -1,0 +1,20 @@
+{
+  "field.customer": "Клиент",
+  "field.estimate_date": "Дата сметы",
+  "field.expiration_date": "Действительна до",
+  "field.estimate_number": "№ сметы",
+  "field.reference_no": "№ документа",
+  "field.exchange_rate": "Курс валюты",
+  "field.currency": "Валюта",
+  "field.note": "Примечание",
+  "field.terms_conditions": "Условия и положения",
+  "field.delivered": "Отправлена",
+  "field.entries": "Строки",
+  "field.amount": "Сумма",
+  "field.status": "Статус",
+  "field.status.draft": "Черновик",
+  "field.status.delivered": "Отправлена",
+  "field.status.rejected": "Отклонена",
+  "field.status.approved": "Одобрена",
+  "field.created_at": "Создано"
+}

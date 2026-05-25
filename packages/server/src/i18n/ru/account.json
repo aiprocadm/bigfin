@@ -1,0 +1,19 @@
+{
+  "field.name": "Название счёта",
+  "field.description": "Описание",
+  "field.slug": "Слаг счёта",
+  "field.code": "Код счёта",
+  "field.code_hint": "Уникальный номер для идентификации счёта.",
+  "field.root_type": "Корневой тип",
+  "field.normal": "Тип счёта (актив/пассив)",
+  "field.normal.credit": "Кредит",
+  "field.normal.debit": "Дебет",
+  "field.type": "Тип",
+  "field.active": "Активный",
+  "field.currency": "Валюта",
+  "field.balance": "Баланс",
+  "field.bank_balance": "Банковский баланс",
+  "field.parent_account": "Родительский счёт",
+  "field.created_at": "Создано",
+  "field.account_hint": "Соответствует названию или коду счёта."
+}

@@ -1,0 +1,14 @@
+{
+  "field.vendor": "Поставщик",
+  "field.payment_date": "Дата платежа",
+  "field.payment_number": "№ платежа",
+  "field.payment_account": "Счёт оплаты",
+  "field.exchange_rate": "Курс валюты",
+  "field.note": "Примечание",
+  "field.reference": "№ документа",
+  "field.entries": "Строки",
+  "field.entries.bill": "Счёт поставщика",
+  "field.entries.payment_amount": "Сумма оплаты",
+  "field.payment_number_hint": "Номер платежа должен быть уникальным.",
+  "field.bill_hint": "Соответствует номеру счёта поставщика."
+}

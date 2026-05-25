@@ -1,0 +1,16 @@
+{
+  "field.customer": "Клиент",
+  "field.payment_date": "Дата платежа",
+  "field.amount": "Сумма",
+  "field.reference_no": "№ документа",
+  "field.deposit_account": "Счёт зачисления",
+  "field.payment_receive_no": "№ платежа",
+  "field.statement": "Назначение",
+  "field.entries": "Строки",
+  "field.exchange_rate": "Курс валюты",
+  "field.invoice": "Счёт",
+  "field.entries.payment_amount": "Сумма оплаты",
+  "field.created_at": "Создано",
+  "field.payment_no_hint": "Номер платежа должен быть уникальным.",
+  "field.invoice_hint": "Соответствует номеру счёта."
+}

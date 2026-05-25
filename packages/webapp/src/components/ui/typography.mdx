@@ -1,0 +1,38 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Brand/Typography" />
+
+# Типографика Bigfin v1
+
+**Один шрифт:** Inter Variable (open source, отличная кириллица).
+**Numeric:** все денежные значения используют `font-variant-numeric: tabular-nums` (встроено в `.bigfin-ui`).
+
+## Шкала размеров
+
+<Sample className="text-4xl">Заголовок text-4xl (36px)</Sample>
+<Sample className="text-3xl">Заголовок text-3xl (30px) — h1 формы</Sample>
+<Sample className="text-2xl">Заголовок text-2xl (24px) — h2 секции</Sample>
+<Sample className="text-xl">Заголовок text-xl (20px) — h3 карточки</Sample>
+<Sample className="text-lg">Текст text-lg (18px)</Sample>
+<Sample className="text-base">Текст text-base (16px) — дефолт</Sample>
+<Sample className="text-sm">Текст text-sm (14px) — мелкий</Sample>
+<Sample className="text-xs">Текст text-xs (12px) — подписи</Sample>
+
+## Веса
+
+<Sample className="text-base font-normal">Inter Variable — Regular 400</Sample>
+<Sample className="text-base font-medium">Inter Variable — Medium 500</Sample>
+<Sample className="text-base font-semibold">Inter Variable — Semibold 600</Sample>
+<Sample className="text-base font-bold">Inter Variable — Bold 700</Sample>
+
+## Числа (tabular)
+
+<div style={{ fontVariantNumeric: 'tabular-nums', color: '#fff', fontSize: 24, padding: 16, background: '#13182B', borderRadius: 8 }}>
+  1 234 567,89 ₽<br/>
+  0 123 456,78 ₽<br/>
+  9 999 999,99 ₽
+</div>
+
+export const Sample = ({ className, children }) => (
+  <div className={className} style={{ color: '#fff', marginBottom: 12, fontFamily: 'Inter Variable, sans-serif' }}>{children}</div>
+);

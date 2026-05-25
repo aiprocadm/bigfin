@@ -1,0 +1,39 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Brand/Colors" />
+
+# Цветовая палитра Bigfin v1
+
+**Направление:** Bold Fintech (Тинькофф / Revolut). Тёмная тема — primary, светлая — best effort.
+
+## Тёмная тема
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginTop: 16 }}>
+
+  <Swatch hex="#0A0E1A" name="background" usage="Фон страницы" />
+  <Swatch hex="#13182B" name="surface" usage="Карточки, модалки" />
+  <Swatch hex="#1F2541" name="surface-elevated" usage="Поля ввода, hover" />
+  <Swatch hex="#2A3258" name="border" usage="Границы полей" />
+
+  <Swatch hex="#FFFFFF" name="text-primary" usage="Основной текст" />
+  <Swatch hex="#7C89AB" name="text-secondary" usage="Подписи, плейсхолдеры" />
+  <Swatch hex="#5A6480" name="text-muted" usage="Disabled, мета" />
+
+  <Swatch hex="#FFD300" name="accent" usage="Primary-кнопки, лого" />
+  <Swatch hex="#FFB800" name="accent-hover" usage="Hover на акценте" />
+
+  <Swatch hex="#5BBA6F" name="success" usage="Поступления, успех" />
+  <Swatch hex="#F87171" name="danger" usage="Ошибки, расходы" />
+  <Swatch hex="#F9A825" name="warning" usage="Предупреждения" />
+  <Swatch hex="#3B82F6" name="info" usage="Инфо-сообщения" />
+
+</div>
+
+export const Swatch = ({ hex, name, usage }) => (
+  <div style={{ background: '#13182B', padding: 16, borderRadius: 8, border: '1px solid #2A3258' }}>
+    <div style={{ width: '100%', height: 60, background: hex, borderRadius: 4, marginBottom: 8 }} />
+    <div style={{ color: '#fff', fontFamily: 'monospace', fontSize: 13 }}>{name}</div>
+    <div style={{ color: '#7C89AB', fontSize: 11, fontFamily: 'monospace' }}>{hex}</div>
+    <div style={{ color: '#7C89AB', fontSize: 12, marginTop: 4 }}>{usage}</div>
+  </div>
+);

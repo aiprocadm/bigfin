@@ -1,0 +1,40 @@
+/* Bigfin brand tokens v1 — Bold Fintech */
+
+:root {
+  /* Dark theme (primary) */
+  --color-background: 10 14 26;        /* #0A0E1A */
+  --color-surface: 19 24 43;           /* #13182B */
+  --color-surface-elevated: 31 37 65;  /* #1F2541 */
+  --color-border: 42 50 88;            /* #2A3258 */
+
+  --color-text-primary: 255 255 255;
+  --color-text-secondary: 124 137 171; /* #7C89AB */
+  --color-text-muted: 90 100 128;      /* #5A6480 */
+
+  --color-accent: 255 211 0;           /* #FFD300 */
+  --color-accent-hover: 255 184 0;     /* #FFB800 */
+  --color-accent-fg: 10 14 26;         /* text on yellow */
+
+  --color-success: 91 186 111;         /* #5BBA6F */
+  --color-danger: 248 113 113;         /* #F87171 */
+  --color-warning: 249 168 37;         /* #F9A825 */
+  --color-info: 59 130 246;            /* #3B82F6 */
+
+  --radius: 0.5rem; /* 8px — default for shadcn */
+}
+
+/* Light theme — best effort, не primary */
+.light {
+  --color-background: 250 250 247;     /* #FAFAF7 */
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 245 244 241;
+  --color-border: 230 228 220;
+
+  --color-text-primary: 10 14 26;
+  --color-text-secondary: 90 100 128;
+  --color-text-muted: 170 170 170;
+
+  --color-accent: 229 168 0;           /* #E5A800 — затемнённый для светлой */
+  --color-accent-hover: 200 145 0;
+  --color-accent-fg: 255 255 255;
+}

@@ -1,0 +1,36 @@
+@import './tokens.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-background: rgb(var(--color-background));
+  --color-surface: rgb(var(--color-surface));
+  --color-surface-elevated: rgb(var(--color-surface-elevated));
+  --color-border: rgb(var(--color-border));
+
+  --color-text-primary: rgb(var(--color-text-primary));
+  --color-text-secondary: rgb(var(--color-text-secondary));
+  --color-text-muted: rgb(var(--color-text-muted));
+
+  --color-accent: rgb(var(--color-accent));
+  --color-accent-hover: rgb(var(--color-accent-hover));
+  --color-accent-fg: rgb(var(--color-accent-fg));
+
+  --color-success: rgb(var(--color-success));
+  --color-danger: rgb(var(--color-danger));
+  --color-warning: rgb(var(--color-warning));
+  --color-info: rgb(var(--color-info));
+
+  --radius-default: var(--radius);
+
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+}
+
+/* Scope наших стилей — только для элементов внутри .bigfin-ui.
+   Это страхует от «протечки» Tailwind-стилей в BlueprintJS-области
+   старого UI во время Strangler Fig миграции. */
+.bigfin-ui {
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  font-variant-numeric: tabular-nums;
+}

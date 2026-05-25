@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
@@ -22,6 +23,7 @@ export default defineConfig(({ mode }) => {
   const clientEnv = pickClientEnv(env);
   const port = Number(env.PORT) || 4000;
   const plugins: PluginOption[] = [
+    tailwindcss(),
     react(),
     legacy({
       targets: ['defaults', 'not IE 11'],

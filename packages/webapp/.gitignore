@@ -22,3 +22,7 @@
 npm-debug.log*
 
 dist
+
+# storybook
+storybook-static/
+.storybook-cache/

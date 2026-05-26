@@ -1,47 +1,43 @@
 // @ts-nocheck
 import { Route, Switch, useLocation } from 'react-router-dom';
 import BodyClassName from 'react-body-classname';
-import styled from 'styled-components';
 import { Suspense } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { Spinner } from '@blueprintjs/core';
 
 import authenticationRoutes from '@/routes/authentication';
-import { Box, Icon, FormattedMessage as T } from '@/components';
+import { Box } from '@/components';
 import { AuthMetaBootProvider } from './AuthMetaBoot';
 
 import '@/style/pages/Authentication/Auth.scss';
-import { useIsDarkMode } from '@/hooks/useDarkMode';
-import { BigFinAlt } from '@/components/Icons/BigFinAlt';
 
+/**
+ * Auth shell. The new Bold Fintech pages (LoginPage, RegisterPage,
+ * ForgotPasswordPage) render their own full-bleed AuthLayout with logo
+ * and footer, so this shell no longer paints a centred logo wrapper.
+ *
+ * The remaining responsibilities are intentional:
+ * - BodyClassName='authentication' keeps the legacy Auth.scss applied
+ *   so the still-legacy ResetPassword / InviteAccept / EmailConfirmation
+ *   screens render unchanged.
+ * - AuthMetaBootProvider boots auth/meta (signupDisabled etc.) and is
+ *   read by the still-legacy ResetPassword.tsx.
+ * - Suspense covers the lazy chunks declared in routes/authentication.
+ */
 export function Authentication() {
-  const isDarkMode = useIsDarkMode();
-
   return (
     <BodyClassName className={'authentication'}>
-      <AuthPage>
-        <AuthInsider>
-          <AuthLogo>
-            {isDarkMode ? (
-              <BigFinAlt color={"rgba(255, 255, 255, 0.6)"} height={37} width={214} />
-            ) : (
-              <Icon icon="bigfin" height={37} width={214} />
-            )}
-          </AuthLogo>
-
-          <AuthMetaBootProvider>
-            <Suspense
-              fallback={
-                <Box style={{ marginTop: '5rem' }}>
-                  <Spinner size={30} />
-                </Box>
-              }
-            >
-              <AuthenticationRoutes />
-            </Suspense>
-          </AuthMetaBootProvider>
-        </AuthInsider>
-      </AuthPage>
+      <AuthMetaBootProvider>
+        <Suspense
+          fallback={
+            <Box style={{ marginTop: '5rem' }}>
+              <Spinner size={30} />
+            </Box>
+          }
+        >
+          <AuthenticationRoutes />
+        </Suspense>
+      </AuthMetaBootProvider>
     </BodyClassName>
   );
 }
@@ -71,16 +67,3 @@ function AuthenticationRoutes() {
     </TransitionGroup>
   );
 }
-
-const AuthPage = styled.div``;
-const AuthInsider = styled.div`
-  width: 384px;
-  margin: 0 auto;
-  margin-bottom: 40px;
-  padding-top: 80px;
-`;
-
-const AuthLogo = styled.div`
-  text-align: center;
-  margin-bottom: 40px;
-`;

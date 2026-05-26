@@ -6,12 +6,29 @@ const BASE_URL = '/auth';
 export default [
   {
     path: `${BASE_URL}/login`,
-    component: lazy(() => import('@/containers/Authentication/Login')),
+    component: lazy(() =>
+      import('@/components/auth/LoginPage').then((m) => ({
+        default: m.LoginPage,
+      })),
+    ),
   },
   {
+    // Legacy underscore URL — kept so password-reset emails already in
+    // the wild still land on the right screen.
     path: `${BASE_URL}/send_reset_password`,
-    component: lazy(
-      () => import('@/containers/Authentication/SendResetPassword'),
+    component: lazy(() =>
+      import('@/components/auth/ForgotPasswordPage').then((m) => ({
+        default: m.ForgotPasswordPage,
+      })),
+    ),
+  },
+  {
+    // New kebab URL — what the Bold Fintech UI links to.
+    path: `${BASE_URL}/forgot-password`,
+    component: lazy(() =>
+      import('@/components/auth/ForgotPasswordPage').then((m) => ({
+        default: m.ForgotPasswordPage,
+      })),
     ),
   },
   {
@@ -30,6 +47,10 @@ export default [
   },
   {
     path: `${BASE_URL}/register`,
-    component: lazy(() => import('@/containers/Authentication/Register')),
+    component: lazy(() =>
+      import('@/components/auth/RegisterPage').then((m) => ({
+        default: m.RegisterPage,
+      })),
+    ),
   },
 ];

@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
 import tailwindcss from '@tailwindcss/vite';
@@ -65,6 +66,13 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'dist',
+    },
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: ['./src/test-setup.ts'],
+      include: ['src/**/*.{test,spec}.{ts,tsx}'],
+      css: false,
     },
     optimizeDeps: {
       esbuildOptions: {

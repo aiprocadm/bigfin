@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { MemoryRouter } from 'react-router-dom';
 
 import { AuthLayout } from './AuthLayout';
 import { Button } from './button';
@@ -9,6 +10,7 @@ const meta: Meta = {
   title: 'Layouts/AuthLayout',
   tags: ['autodocs'],
   parameters: { layout: 'fullscreen' },
+  decorators: [(Story) => <MemoryRouter>{Story()}</MemoryRouter>],
 };
 export default meta;
 
@@ -17,8 +19,12 @@ export const Default: StoryObj = {
     <AuthLayout>
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-semibold text-text-primary">Войдите в Bigfin</h1>
-          <p className="mt-1 text-text-secondary">Управляйте финансами бизнеса</p>
+          <h1 className="text-3xl font-semibold text-text-primary">
+            Войдите в Bigfin
+          </h1>
+          <p className="mt-1 text-text-secondary">
+            Управляйте финансами бизнеса
+          </p>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">

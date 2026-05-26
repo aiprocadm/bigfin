@@ -21,14 +21,40 @@ import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/Link';
 import { Spinner } from '@/components/ui/Spinner';
 import { Toaster } from '@/components/ui/sonner';
+// The hooks module is @ts-nocheck legacy JS — useMutation params are
+// inferred as `void`, so we narrow them here at the call site.
+import { useAuthLogin, useAuthRegister } from '@/hooks/query/authentication';
 
 import { registerSchema, type RegisterInput } from './schemas';
 
-// TODO Task 2.6: подключить useAuthRegister + auto-login через useAuthLogin
-// (старый Register.tsx так делает после успешного signup).
+type LoginVars = { email: string; password: string };
+type RegisterVars = LoginVars & { first_name: string; last_name: string };
+type AuthMutation<V> = { mutateAsync: (vars: V) => Promise<unknown> };
+
+/**
+ * Splits a single "Имя Фамилия" string into first_name / last_name that
+ * the legacy `auth/signup` endpoint expects. If the user only typed one
+ * word we duplicate it into both fields — the backend may enforce a
+ * non-empty last_name, and a duplicated value is the least-surprising
+ * fallback. A proper two-field UI is tracked for D-Phase-3.
+ */
+const splitName = (raw: string): { first_name: string; last_name: string } => {
+  const trimmed = raw.trim();
+  const spaceIdx = trimmed.indexOf(' ');
+  if (spaceIdx === -1) {
+    return { first_name: trimmed, last_name: trimmed };
+  }
+  return {
+    first_name: trimmed.slice(0, spaceIdx),
+    last_name: trimmed.slice(spaceIdx + 1).trim() || trimmed,
+  };
+};
+
 export const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const { mutateAsync: register } = useAuthRegister({}) as unknown as AuthMutation<RegisterVars>;
+  const { mutateAsync: login } = useAuthLogin({}) as unknown as AuthMutation<LoginVars>;
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -43,12 +69,28 @@ export const RegisterPage = () => {
 
   const onSubmit = async (data: RegisterInput) => {
     setServerError(null);
+    const { first_name, last_name } = splitName(data.name);
     try {
-      console.info('Register submit (demo):', data);
-      toast.success('Форма отправлена (демо-режим, hook будет в Task 2.6)');
+      await register({
+        first_name,
+        last_name,
+        email: data.email,
+        password: data.password,
+      });
+      // Legacy Register.tsx auto-logs in after signup. Same behaviour here —
+      // EnsureUserEmailNotVerified will then redirect to /auth/register/verify.
+      await login({ email: data.email, password: data.password });
     } catch (err) {
+      const status =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined;
+      if (status === 400 || status === 409) {
+        setServerError('Этот email уже зарегистрирован');
+        return;
+      }
       const message = err instanceof Error ? err.message : 'Сетевая ошибка';
-      setServerError(message);
+      toast.error(`Сетевая ошибка: ${message}`);
     }
   };
 

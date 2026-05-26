@@ -22,15 +22,19 @@ import { Link } from '@/components/ui/Link';
 import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/Spinner';
 import { Toaster } from '@/components/ui/sonner';
+// The hooks module is @ts-nocheck legacy JS — useMutation params are
+// inferred as `void`, so we narrow them here at the call site.
+import { useAuthLogin } from '@/hooks/query/authentication';
 
 import { loginSchema, type LoginInput } from './schemas';
 
-// TODO Task 2.6: подключить useAuthLogin из @/hooks/query/authentication.
-// Сейчас onSubmit работает в демо-режиме (console.info + toast),
-// чтобы можно было принимать UI в Storybook без бэкенда.
+type LoginVars = { email: string; password: string };
+type AuthMutation<V> = { mutateAsync: (vars: V) => Promise<unknown> };
+
 export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const { mutateAsync: login } = useAuthLogin({}) as unknown as AuthMutation<LoginVars>;
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -40,15 +44,20 @@ export const LoginPage = () => {
   const onSubmit = async (data: LoginInput) => {
     setServerError(null);
     try {
-      console.info('Login submit (demo):', data);
-      toast.success('Форма отправлена (демо-режим, hook будет подключён в Task 2.6)');
+      // rememberMe is intentionally not forwarded — backend ignores it.
+      // EnsureAuthNotAuthenticated guard around /auth/* redirects to / on success.
+      await login({ email: data.email, password: data.password });
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
-      if (message.includes('credentials') || message.includes('401')) {
+      const status =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { status?: number } }).response?.status
+          : undefined;
+      if (status === 401 || status === 403) {
         setServerError('Неверный email или пароль');
-      } else {
-        toast.error(`Сетевая ошибка: ${message}`);
+        return;
       }
+      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
+      toast.error(`Сетевая ошибка: ${message}`);
     }
   };
 

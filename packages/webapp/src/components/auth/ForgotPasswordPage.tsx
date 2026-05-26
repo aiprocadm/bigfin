@@ -19,17 +19,21 @@ import { Input } from '@/components/ui/input';
 import { Link } from '@/components/ui/Link';
 import { Spinner } from '@/components/ui/Spinner';
 import { Toaster } from '@/components/ui/sonner';
+// The hooks module is @ts-nocheck legacy JS — useMutation params are
+// inferred as `void`, so we narrow them here at the call site.
+import { useAuthSendResetPassword } from '@/hooks/query/authentication';
 
 import {
   forgotPasswordSchema,
   type ForgotPasswordInput,
 } from './schemas';
 
-// TODO Task 2.6: подключить useAuthSendResetPassword из
-// @/hooks/query/authentication. Сейчас onSubmit просто переключает
-// экран в success-state и делает console.info для приёмки UI в Storybook.
+type SendResetVars = { email: string };
+type AuthMutation<V> = { mutateAsync: (vars: V) => Promise<unknown> };
+
 export const ForgotPasswordPage = () => {
   const [sent, setSent] = useState(false);
+  const { mutateAsync: sendReset } = useAuthSendResetPassword({}) as unknown as AuthMutation<SendResetVars>;
 
   const form = useForm<ForgotPasswordInput>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -38,10 +42,14 @@ export const ForgotPasswordPage = () => {
 
   const onSubmit = async (data: ForgotPasswordInput) => {
     try {
-      console.info('ForgotPassword submit (demo):', data);
+      await sendReset({ email: data.email });
+      // Differs from legacy SendResetPassword.tsx, which pushed back to
+      // /auth/login + transient toast. The persistent success alert is
+      // friendlier UX — users typically tab out to check email.
       setSent(true);
-    } catch {
-      toast.error('Сетевая ошибка');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
+      toast.error(`Сетевая ошибка: ${message}`);
     }
   };
 

@@ -20,6 +20,18 @@ export class TenantMetadata extends BaseModel {
   public logoUri!: string;
   public address!: Record<string, any>;
 
+  // Российские юридические реквизиты (опционально, наполняются
+  // через UpdateOrganizationDto → saveMetadata spread).
+  public legalForm!: string;
+  public taxRegime!: string;
+  public inn!: string;
+  public kpp!: string;
+  public ogrn!: string;
+  public bankName!: string;
+  public bankBik!: string;
+  public bankAccount!: string;
+  public bankCorrespondentAccount!: string;
+
   /**
    * Json schema.
    */
@@ -40,6 +52,15 @@ export class TenantMetadata extends BaseModel {
         primaryColor: { type: 'string', maxLength: 7 }, // Assuming hex color code
         logoKey: { type: 'string', maxLength: 255 },
         address: { type: 'object' },
+        legalForm: { type: 'string', maxLength: 20 },
+        taxRegime: { type: 'string', maxLength: 20 },
+        inn: { type: 'string', maxLength: 12 },
+        kpp: { type: 'string', maxLength: 9 },
+        ogrn: { type: 'string', maxLength: 15 },
+        bankName: { type: 'string', maxLength: 255 },
+        bankBik: { type: 'string', maxLength: 9 },
+        bankAccount: { type: 'string', maxLength: 20 },
+        bankCorrespondentAccount: { type: 'string', maxLength: 20 },
       },
     };
   }

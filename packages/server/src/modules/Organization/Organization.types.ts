@@ -1,6 +1,7 @@
 import { TenantJobPayload } from '@/interfaces/Tenant';
 import { SystemUser } from '../System/models/SystemUser';
 import { BuildOrganizationDto } from './dtos/Organization.dto';
+import { LegalForm, TaxRegime } from '../RussianLegalAttributes/constants';
 
 export interface IOrganizationSetupDTO {
   organizationName: string;
@@ -40,6 +41,19 @@ export interface IOrganizationUpdateDTO {
   primaryColor?: string;
   logoKey?: string;
   address?: OrganizationAddressDTO;
+
+  // Russian legal attributes (optional). Flow end-to-end via
+  // UpdateOrganizationService → tenantRepository.saveMetadata spread →
+  // TenantMetadata.patch (columns added in PR #20).
+  legalForm?: LegalForm;
+  taxRegime?: TaxRegime;
+  inn?: string;
+  kpp?: string;
+  ogrn?: string; // 13 digits (OGRN) or 15 digits (OGRNIP); same column for both
+  bankName?: string;
+  bankBik?: string;
+  bankAccount?: string;
+  bankCorrespondentAccount?: string;
 }
 
 export interface IOrganizationBuildEventPayload {

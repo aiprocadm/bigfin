@@ -1,0 +1,9 @@
+{
+  "inn.invalid": "ИНН недействителен",
+  "kpp.invalid": "КПП недействителен",
+  "ogrn.invalid": "ОГРН недействителен",
+  "ogrnip.invalid": "ОГРНИП недействителен",
+  "bik.invalid": "БИК недействителен",
+  "bank_account.invalid": "Расчётный счёт недействителен",
+  "correspondent_account.invalid": "Корреспондентский счёт недействителен"
+}

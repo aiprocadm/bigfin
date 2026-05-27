@@ -1,0 +1,9 @@
+{
+  "inn.invalid": "INN is invalid",
+  "kpp.invalid": "KPP is invalid",
+  "ogrn.invalid": "OGRN is invalid",
+  "ogrnip.invalid": "OGRNIP is invalid",
+  "bik.invalid": "BIK is invalid",
+  "bank_account.invalid": "Bank account is invalid",
+  "correspondent_account.invalid": "Correspondent account is invalid"
+}

@@ -92,6 +92,71 @@ export class OrganizationMetadataResponseDto {
     nullable: true,
   })
   address: string;
+
+  // --- Russian legal attributes (optional) ---
+
+  @ApiPropertyOptional({
+    description: 'Russian legal form (OOO/IP/NPD/AO)',
+    example: 'OOO',
+    nullable: true,
+  })
+  legalForm: string;
+
+  @ApiPropertyOptional({
+    description: 'Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)',
+    example: 'OSNO',
+    nullable: true,
+  })
+  taxRegime: string;
+
+  @ApiPropertyOptional({
+    description: 'Russian INN (10 or 12 digits)',
+    example: '7707083893',
+    nullable: true,
+  })
+  inn: string;
+
+  @ApiPropertyOptional({
+    description: 'Russian KPP (9 characters)',
+    example: '770701001',
+    nullable: true,
+  })
+  kpp: string;
+
+  @ApiPropertyOptional({
+    description: 'OGRN (13 digits) or OGRNIP (15 digits)',
+    example: '1027700132195',
+    nullable: true,
+  })
+  ogrn: string;
+
+  @ApiPropertyOptional({
+    description: 'Bank name',
+    example: 'ПАО Сбербанк',
+    nullable: true,
+  })
+  bankName: string;
+
+  @ApiPropertyOptional({
+    description: 'BIK (9 digits starting with 04)',
+    example: '044525225',
+    nullable: true,
+  })
+  bankBik: string;
+
+  @ApiPropertyOptional({
+    description: 'Bank account (20 digits)',
+    example: '40702810000000001234',
+    nullable: true,
+  })
+  bankAccount: string;
+
+  @ApiPropertyOptional({
+    description: 'Correspondent account (20 digits starting with 30101)',
+    example: '30101810400000000225',
+    nullable: true,
+  })
+  bankCorrespondentAccount: string;
 }
 
 export class GetCurrentOrganizationResponseDto {

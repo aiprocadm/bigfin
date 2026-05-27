@@ -27,6 +27,17 @@ export const forgotPasswordSchema = z.object({
   email: z.string().email('Введите корректный email'),
 });
 
+export const resetPasswordSchema = z
+  .object({
+    password: z.string().min(10, 'Пароль должен быть не короче 10 символов'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Пароли не совпадают',
+    path: ['confirmPassword'],
+  });
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

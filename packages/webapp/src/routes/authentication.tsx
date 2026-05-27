@@ -32,8 +32,14 @@ export default [
     ),
   },
   {
+    // Legacy underscore URL — kept so password-reset emails already in
+    // the wild still land on the right screen.
     path: `${BASE_URL}/reset_password/:token`,
-    component: lazy(() => import('@/containers/Authentication/ResetPassword')),
+    component: lazy(() =>
+      import('@/components/auth/ResetPasswordPage').then((m) => ({
+        default: m.ResetPasswordPage,
+      })),
+    ),
   },
   {
     path: `${BASE_URL}/invite/:token/accept`,

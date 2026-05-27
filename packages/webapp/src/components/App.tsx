@@ -35,6 +35,8 @@ const OneClickDemoPage = lazy(
 const PaymentPortalPage = lazy(
   () => import('@/containers/PaymentPortal/PaymentPortalPage'),
 );
+const PrivacyPage = lazy(() => import('@/components/legal/PrivacyPage'));
+const TermsPage = lazy(() => import('@/components/legal/TermsPage'));
 
 /**
  * App inner.
@@ -64,6 +66,8 @@ function AppInsider({ history }) {
                 path={'/payment/:linkId'}
                 children={<PaymentPortalPage />}
               />
+              <Route path={'/privacy'} children={<PrivacyPage />} />
+              <Route path={'/terms'} children={<TermsPage />} />
               <Route path={'/'} children={<DashboardPrivatePages />} />
             </Switch>
           </Router>

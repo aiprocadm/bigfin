@@ -1,15 +1,26 @@
 import * as momentTz from 'moment-timezone';
 import {
+  IsEnum,
   IsHexColor,
   IsIn,
   IsISO31661Alpha2,
   IsISO4217CurrencyCode,
   IsOptional,
   IsString,
+  Matches,
+  Validate,
 } from 'class-validator';
 import { MONTHS } from '../Organization/constants';
 import { ACCEPTED_LOCALES, DATE_FORMATS } from '../Organization.constants';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { LegalForm, TaxRegime } from '../../RussianLegalAttributes/constants';
+import { InnConstraint } from '../../RussianLegalAttributes/validators/inn.validator';
+import { KppConstraint } from '../../RussianLegalAttributes/validators/kpp.validator';
+import { BikConstraint } from '../../RussianLegalAttributes/validators/bik.validator';
+import {
+  BankAccountConstraint,
+  CorrespondentAccountConstraint,
+} from '../../RussianLegalAttributes/validators/account.validator';
 
 export class BuildOrganizationDto {
   @IsString()
@@ -180,4 +191,92 @@ export class UpdateOrganizationDto {
     example: '12-3456789',
   })
   taxNumber?: string;
+
+  // --- Russian legal attributes (optional) ---
+  // Flow: this DTO → UpdateOrganizationService.execute → tenantRepository.saveMetadata
+  // → TenantMetadata.patch({ tenantId, ...metadata }). Columns added in PR #20.
+
+  @IsOptional()
+  @IsEnum(LegalForm)
+  @ApiPropertyOptional({
+    description: 'Russian legal form (OOO/IP/NPD/AO; INDIVIDUAL is for contacts only)',
+    enum: LegalForm,
+    example: LegalForm.OOO,
+  })
+  legalForm?: LegalForm;
+
+  @IsOptional()
+  @IsEnum(TaxRegime)
+  @ApiPropertyOptional({
+    description: 'Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)',
+    enum: TaxRegime,
+    example: TaxRegime.OSNO,
+  })
+  taxRegime?: TaxRegime;
+
+  @IsOptional()
+  @IsString()
+  @Validate(InnConstraint)
+  @ApiPropertyOptional({
+    description: 'Russian INN: 10 digits (legal entity) or 12 digits (individual/IP/NPD), with checksum',
+    example: '7707083893',
+  })
+  inn?: string;
+
+  @IsOptional()
+  @IsString()
+  @Validate(KppConstraint)
+  @ApiPropertyOptional({
+    description: 'Russian KPP: 9 chars (4 digits + 2 digits-or-letters + 3 digits)',
+    example: '770701001',
+  })
+  kpp?: string;
+
+  // OGRN (13 digits) or OGRNIP (15 digits) share this column. Length check only —
+  // full checksum (OgrnConstraint / OgrnipConstraint by length) is backlog.
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{13}$|^\d{15}$/, {
+    message: 'ogrn must be 13 digits (OGRN) or 15 digits (OGRNIP)',
+  })
+  @ApiPropertyOptional({
+    description: 'OGRN (13 digits) or OGRNIP (15 digits)',
+    example: '1027700132195',
+  })
+  ogrn?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({
+    description: 'Bank name (free text)',
+    example: 'ПАО Сбербанк',
+  })
+  bankName?: string;
+
+  @IsOptional()
+  @IsString()
+  @Validate(BikConstraint)
+  @ApiPropertyOptional({
+    description: 'BIK: 9 digits starting with 04',
+    example: '044525225',
+  })
+  bankBik?: string;
+
+  @IsOptional()
+  @IsString()
+  @Validate(BankAccountConstraint)
+  @ApiPropertyOptional({
+    description: 'Bank account: 20 digits',
+    example: '40702810000000001234',
+  })
+  bankAccount?: string;
+
+  @IsOptional()
+  @IsString()
+  @Validate(CorrespondentAccountConstraint)
+  @ApiPropertyOptional({
+    description: 'Correspondent account: 20 digits starting with 30101',
+    example: '30101810400000000225',
+  })
+  bankCorrespondentAccount?: string;
 }

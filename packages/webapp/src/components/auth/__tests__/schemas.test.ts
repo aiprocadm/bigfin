@@ -3,6 +3,7 @@ import {
   loginSchema,
   registerSchema,
   forgotPasswordSchema,
+  resetPasswordSchema,
 } from '../schemas';
 
 describe('loginSchema', () => {
@@ -115,5 +116,31 @@ describe('forgotPasswordSchema', () => {
     expect(
       forgotPasswordSchema.safeParse({ email: 'not-an-email' }).success,
     ).toBe(false);
+  });
+});
+
+describe('resetPasswordSchema', () => {
+  it('accepts 10-char password with matching confirm', () => {
+    const r = resetPasswordSchema.safeParse({
+      password: 'password12',
+      confirmPassword: 'password12',
+    });
+    expect(r.success).toBe(true);
+  });
+
+  it('rejects mismatching confirm password', () => {
+    const r = resetPasswordSchema.safeParse({
+      password: 'password12',
+      confirmPassword: 'different12',
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it('rejects password shorter than 10 chars', () => {
+    const r = resetPasswordSchema.safeParse({
+      password: 'pass1',
+      confirmPassword: 'pass1',
+    });
+    expect(r.success).toBe(false);
   });
 });

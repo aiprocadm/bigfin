@@ -2419,5 +2419,15 @@
   "bills_payments_import": "Bills Payments Import",
   "bank_transactions_import": "Bank Transactions Import",
   "tax_rates": "Tax Rates",
-  "bank_rules": "Bank Rules"
+  "bank_rules": "Bank Rules",
+  "validation.inn.length": "INN must be 10 digits (legal entity) or 12 digits (individual)",
+  "validation.inn.checksum": "INN checksum is invalid — please check the number",
+  "validation.kpp.format": "KPP must be 9 characters: 4 digits + 2 (digits or A-Z) + 3 digits",
+  "validation.ogrn.length": "OGRN must be exactly 13 digits",
+  "validation.ogrn.checksum": "OGRN checksum is invalid — please check the number",
+  "validation.ogrnip.length": "OGRNIP must be exactly 15 digits",
+  "validation.ogrnip.checksum": "OGRNIP checksum is invalid — please check the number",
+  "validation.bik.format": "BIK must be 9 digits starting with 04",
+  "validation.bank_account.length": "Bank account must be exactly 20 digits",
+  "validation.correspondent_account.format": "Correspondent account must be 20 digits starting with 30101"
 }

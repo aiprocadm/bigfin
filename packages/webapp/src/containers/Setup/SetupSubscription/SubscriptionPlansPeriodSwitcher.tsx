@@ -1,4 +1,5 @@
 import { ChangeEvent } from 'react';
+import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { Intent, Switch, Tag, Text } from '@blueprintjs/core';
 import { Group } from '@/components';
@@ -26,16 +27,16 @@ function SubscriptionPlansPeriodSwitcherRoot({
   };
   return (
     <Group position={'center'} spacing={10} style={{ marginBottom: '1.6rem' }}>
-      <Text>Pay Monthly</Text>
+      <Text>{intl.get('setup.subscription.period.monthly')}</Text>
       <Switch
         large
         onChange={handleSwitchChange}
         className={styles.periodSwitch}
       />
       <Text>
-        Pay Yearly{' '}
+        {intl.get('setup.subscription.period.yearly')}{' '}
         <Tag minimal intent={Intent.NONE}>
-          25% Off All Year
+          {intl.get('setup.subscription.period.discount')}
         </Tag>
       </Text>
     </Group>

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useState } from 'react';
 import { isEmpty } from 'lodash';
 import { Button, Intent, Text, Spinner } from '@blueprintjs/core';
@@ -114,7 +115,7 @@ export function UploadAttachmentsPopoverContent({
   return (
     <div className={styles.content}>
       <div>
-        <Text className={styles.label}>Attach documents</Text>
+        <Text className={styles.label}>{intl.get('attachments.label.attach_documents')}</Text>
         <Stack spacing={0}>
           <ImportDropzoneField
             uploadIcon={null}

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import { Classes } from '@blueprintjs/core';
 import {
@@ -14,11 +15,8 @@ export function ReceiptCustomizeFieldsContent() {
       style={{ padding: 20, paddingBottom: 40, flex: '1 1 auto' }}
     >
       <Stack spacing={10}>
-        <h3 style={{ fontWeight: 600 }}>Receipt Content</h3>
-        <p className={Classes.TEXT_MUTED}>
-          Customize your receipt by editing the items label or hiding some items
-          to match your needs.
-        </p>
+        <h3 style={{ fontWeight: 600 }}>{intl.get('customize.receipt.title')}</h3>
+        <p className={Classes.TEXT_MUTED}>{intl.get('customize.receipt.description')}</p>
       </Stack>
 
       <Stack>

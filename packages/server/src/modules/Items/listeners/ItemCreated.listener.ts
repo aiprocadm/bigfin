@@ -8,6 +8,5 @@ export class ItemCreatedListener {
   @OnEvent('order.created')
   handleItemCreatedEvent(event: ItemCreatedEvent) {
     // handle and process "OrderCreatedEvent" event
-    console.log(event);
   }
 }

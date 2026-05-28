@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Classes, Text } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
 import {
@@ -111,7 +112,7 @@ function InvoiceCustomizePaymentManage() {
     <Group className={styles.customizePayment} position={'apart'}>
       <Group spacing={10}>
         <CreditCardIcon fill={'#7D8897'} height={16} width={16} />
-        <Text>Accept payment methods</Text>
+        <Text>{intl.get('invoices.customize.accept_payment_methods')}</Text>
       </Group>
 
       <Link

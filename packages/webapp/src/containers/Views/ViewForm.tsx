@@ -293,7 +293,7 @@ function ViewForm({
           </Row>
         </div>
 
-        <H5 className="mb2">Define the conditionals</H5>
+        <H5 className="mb2"><T id={'views.form.section.define_conditionals'} /></H5>
 
         {values.roles.map((role, index) => (
           <Row class="view-form__role-conditional">
@@ -404,12 +404,12 @@ function ViewForm({
           </Row>
         </div>
 
-        <H5 className={'mb2'}>Columns Preferences</H5>
+        <H5 className={'mb2'}><T id={'views.form.columns.preferences'} /></H5>
 
         <div class="dragable-columns">
           <Row gutterWidth={14}>
             <Col sm={4} className="dragable-columns__column">
-              <H6 className="dragable-columns__title">Available Columns</H6>
+              <H6 className="dragable-columns__title"><T id={'views.form.columns.available'} /></H6>
 
               <InputGroup placeholder={intl.get('search')} leftIcon="search" />
 
@@ -448,7 +448,7 @@ function ViewForm({
             </Col>
 
             <Col sm={4} className="dragable-columns__column">
-              <H6 className="dragable-columns__title">Selected Columns</H6>
+              <H6 className="dragable-columns__title"><T id={'views.form.columns.selected'} /></H6>
               <InputGroup placeholder={intl.get('search')} leftIcon="search" />
 
               <div class="dragable-columns__items">

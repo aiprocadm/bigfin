@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import {
   ElementCustomizeContentItemFieldGroup,
@@ -14,11 +15,8 @@ export function CreditNoteCustomizeContentFields() {
       style={{ padding: 20, paddingBottom: 40, flex: '1 1 auto' }}
     >
       <Stack spacing={10}>
-        <h3 style={{ fontWeight: 600 }}>General Branding</h3>
-        <p className={Classes.TEXT_MUTED}>
-          Customize your credit note by editing the items label or hiding some
-          items to match your needs.
-        </p>
+        <h3 style={{ fontWeight: 600 }}>{intl.get('customize.credit_note.title')}</h3>
+        <p className={Classes.TEXT_MUTED}>{intl.get('customize.credit_note.description')}</p>
       </Stack>
 
       <Stack>

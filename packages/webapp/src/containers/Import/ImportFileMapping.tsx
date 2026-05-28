@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Button, Intent, Position } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -60,8 +61,8 @@ function ImportFileMappingGroup({
       <table className={clsx('bp4-html-table', styles.table)}>
         <thead>
           <tr>
-            <th className={styles.label}>BigFin Fields</th>
-            <th className={styles.field}>Sheet Column Headers</th>
+            <th className={styles.label}>{intl.get('import.mapping.column.bigfin_fields')}</th>
+            <th className={styles.field}>{intl.get('import.mapping.column.sheet_headers')}</th>
           </tr>
         </thead>
         <tbody>

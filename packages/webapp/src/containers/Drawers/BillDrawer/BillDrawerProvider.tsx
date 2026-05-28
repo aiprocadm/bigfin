@@ -27,8 +27,6 @@ function BillDrawerProvider({ billId, ...props }) {
       enabled: !!billId,
     });
 
-    console.log(transactions, 'ahmed');
-
   //provider.
   const provider = {
     billId,

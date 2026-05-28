@@ -23,7 +23,7 @@ export function CustomerFormBasicSection({}) {
 
   return (
     <Box data-section-id="primary">
-      <CustomerFormSectionTitle>Customer details</CustomerFormSectionTitle>
+      <CustomerFormSectionTitle>{intl.get('customers.form.section.customer_details')}</CustomerFormSectionTitle>
 
       {/**-----------Customer type. -----------*/}
       <CustomerTypeRadioField />

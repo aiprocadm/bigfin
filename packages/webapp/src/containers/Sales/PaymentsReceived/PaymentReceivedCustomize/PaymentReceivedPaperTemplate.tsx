@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Box, Group, Stack } from '@/components';
 import {
   PaperTemplate,
@@ -144,13 +145,13 @@ export function PaymentReceivedPaperTemplate({
         <Stack spacing={0}>
           <PaperTemplate.Table
             columns={[
-              { label: 'Invoice #', accessor: 'invoiceNumber' },
+              { label: intl.get('payment_received.paper.columns.invoice_number'), accessor: 'invoiceNumber' },
               {
-                label: 'Invoice Amount',
+                label: intl.get('payment_received.paper.columns.invoice_amount'),
                 accessor: 'invoiceAmount',
                 align: 'right',
               },
-              { label: 'Paid Amount', accessor: 'paidAmount', align: 'right' },
+              { label: intl.get('payment_received.paper.columns.paid_amount'), accessor: 'paidAmount', align: 'right' },
             ]}
             data={lines}
           />

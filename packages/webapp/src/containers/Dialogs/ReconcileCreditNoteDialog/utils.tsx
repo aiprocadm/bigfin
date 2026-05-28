@@ -12,7 +12,7 @@ export const transformErrors = (errors, { setErrors }) => {
   if (errors.some((e) => e.type === 'INVOICES_HAS_NO_REMAINING_AMOUNT')) {
     AppToaster.show({
       message:
-        'The amount credit from the given invoice has no remaining amount.',
+        intl.get('dialogs.reconcile_credit_note.errors.no_remaining'),
       intent: Intent.DANGER,
     });
   }
@@ -20,7 +20,7 @@ export const transformErrors = (errors, { setErrors }) => {
     errors.find((error) => error.type === 'CREDIT_NOTE_HAS_NO_REMAINING_AMOUNT')
   ) {
     AppToaster.show({
-      message: 'The total amount bigger than from remaining credit note amount',
+      message: intl.get('dialogs.reconcile_credit_note.errors.amount_exceeded'),
       intent: Intent.DANGER,
     });
   }

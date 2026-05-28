@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { isEmpty } from 'lodash';
 import * as R from 'ramda';
 import { useEffect, useState } from 'react';
@@ -204,7 +205,7 @@ function PerfectMatchingTransactions() {
     <>
       <Box className={styles.matchBar}>
         <Group spacing={6}>
-          <h2 className={styles.matchBarTitle}>Perfect Matchines</h2>
+          <h2 className={styles.matchBarTitle}>{intl.get('cash_flow.matching.perfect_matches')}</h2>
           <Tag minimal round intent={Intent.SUCCESS}>
             {perfectMatchesCount}
           </Tag>
@@ -241,7 +242,7 @@ function PossibleMatchingTransactions() {
     <>
       <Box className={styles.matchBar}>
         <Stack spacing={2}>
-          <h2 className={styles.matchBarTitle}>Possible Matches</h2>
+          <h2 className={styles.matchBarTitle}>{intl.get('cash_flow.matching.possible_matches')}</h2>
         </Stack>
       </Box>
 

@@ -21,7 +21,7 @@ export function VendorFormBasicSection({}) {
 
   return (
     <Box data-section-id="primary">
-      <VendorFormSectionTitle>Vendor details</VendorFormSectionTitle>
+      <VendorFormSectionTitle>{intl.get('vendors.form.section.vendor_details')}</VendorFormSectionTitle>
 
       {/**----------- Contact name -----------*/}
       <FFormGroup

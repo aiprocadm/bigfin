@@ -51,6 +51,11 @@
   "pnpm": {
     "overrides": {
       "bcrypt": "npm:bcryptjs@^2.4.3"
+    },
+    "supportedArchitectures": {
+      "os": ["win32", "linux", "darwin"],
+      "cpu": ["x64", "arm64"],
+      "libc": ["glibc", "musl"]
     }
   }
 }

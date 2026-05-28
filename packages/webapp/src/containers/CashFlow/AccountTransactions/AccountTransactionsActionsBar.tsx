@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React, { useMemo } from 'react';
 import {
   Button,
@@ -136,7 +137,7 @@ function AccountTransactionsActionsBar({
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('errors.something_went_wrong'),
           intent: Intent.DANGER,
         });
       });
@@ -169,7 +170,7 @@ function AccountTransactionsActionsBar({
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong',
+          message: intl.get('errors.something_went_wrong'),
           intent: Intent.DANGER,
         });
       });
@@ -188,7 +189,7 @@ function AccountTransactionsActionsBar({
       })
       .catch((error) => {
         AppToaster.show({
-          message: 'Something went wrong',
+          message: intl.get('errors.something_went_wrong'),
           intent: Intent.DANGER,
         });
       });

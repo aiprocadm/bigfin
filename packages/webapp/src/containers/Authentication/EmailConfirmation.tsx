@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useEffect, useMemo } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useAuthSignUpVerify } from '@/hooks/query';
@@ -35,7 +36,7 @@ export default function EmailConfirmation() {
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong',
+          message: intl.get('errors.something_went_wrong'),
           intent: Intent.DANGER,
         });
         history.push('/');

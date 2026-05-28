@@ -9,7 +9,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiExtraModels, ApiOperation, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiOperation, ApiQuery, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { ClsService } from 'nestjs-cls';
 import { TenantAgnosticRoute } from '@/modules/Tenancy/TenancyGlobal.guard';
 import { IgnoreUserVerifiedRoute } from '@/modules/Auth/guards/EnsureUserVerified.guard';
@@ -56,6 +56,8 @@ export class WorkspacesController {
   @TenantAgnosticRoute()
   @IgnoreUserVerifiedRoute()
   @ApiOperation({ summary: 'List workspaces the authenticated user belongs to' })
+  @ApiQuery({ name: 'includeInactive', required: false, type: String })
+  @ApiQuery({ name: 'currentOrganizationId', required: false, type: String })
   @ApiResponse({
     status: 200,
     description: 'Returns the list of workspaces',

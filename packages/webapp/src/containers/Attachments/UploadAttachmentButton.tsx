@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Field, useFormikContext } from 'formik';
 import {
@@ -46,9 +47,9 @@ export function UploadAttachmentButton() {
       >
         <Button className={styles.attachmentButton}>
           {uploadedFiles > 0 ? (
-            <>Upload attachments ({uploadedFiles})</>
+            <>{intl.get('attachments.label.upload')} ({uploadedFiles})</>
           ) : (
-            <>Upload attachments</>
+            <>{intl.get('attachments.label.upload')}</>
           )}
         </Button>
       </Popover>

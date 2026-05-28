@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import { Classes } from '@blueprintjs/core';
 import { fieldsGroups } from './constants';
@@ -14,11 +15,8 @@ export function InvoiceCustomizeContentFields() {
       style={{ padding: 20, paddingBottom: 40, flex: '1 1 auto' }}
     >
       <Stack spacing={10}>
-        <h3 style={{ fontWeight: 600 }}>Invoice Content</h3>
-        <p className={Classes.TEXT_MUTED}>
-          Customize your invoice by editing the items label or hiding some items
-          to match your needs.
-        </p>
+        <h3 style={{ fontWeight: 600 }}>{intl.get('customize.invoice.title')}</h3>
+        <p className={Classes.TEXT_MUTED}>{intl.get('customize.invoice.description')}</p>
       </Stack>
 
       <Stack>

@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Text, Classes, Button, Intent } from '@blueprintjs/core';
 import clsx from 'classnames';
 import { css } from '@emotion/css';
@@ -113,12 +114,12 @@ export function PaymentPortal() {
               position={'apart'}
               className={clsx(styles.totalItem, styles.borderBottomGray)}
             >
-              <Text>Sub Total</Text>
+              <Text>{intl.get('payment_portal.totals.subtotal')}</Text>
               <Text>{sharableLinkMeta?.subtotalFormatted}</Text>
             </Group>
 
             <Group position={'apart'} className={styles.totalItem}>
-              <Text>Total</Text>
+              <Text>{intl.get('payment_portal.totals.total')}</Text>
               <Text style={{ fontWeight: 500 }}>
                 {sharableLinkMeta?.totalFormatted}
               </Text>
@@ -134,7 +135,7 @@ export function PaymentPortal() {
               position={'apart'}
               className={clsx(styles.totalItem, styles.borderBottomGray)}
             >
-              <Text>Paid Amount (-)</Text>
+              <Text>{intl.get('payment_portal.totals.paid_amount')}</Text>
               <Text>{sharableLinkMeta?.paymentAmountFormatted}</Text>
             </Group>
 
@@ -142,7 +143,7 @@ export function PaymentPortal() {
               position={'apart'}
               className={clsx(styles.totalItem, styles.borderBottomDark)}
             >
-              <Text>Due Amount</Text>
+              <Text>{intl.get('payment_portal.totals.due_amount')}</Text>
               <Text style={{ fontWeight: 500 }}>
                 {sharableLinkMeta?.dueAmountFormatted}
               </Text>

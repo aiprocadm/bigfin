@@ -34,8 +34,6 @@ function LocatedLandedCostTable({
   // Bill drawer context.
   const { transactions, billId } = useBillDrawerContext();
 
-  console.log(transactions, 'ahmed');
-
   // Handle the transaction delete action.
   const handleDeleteTransaction = ({ id }) => {
     openAlert('bill-located-cost-delete', { BillId: id });

@@ -147,8 +147,6 @@ export class InventoryItemDetailsTable {
    * @return {ITableRow}
    */
   private itemMapper = (node: IInventoryDetailsNode): ITableRow => {
-    console.log(node, 'node');
-
     // @ts-ignore
     return R.compose(
       R.when(

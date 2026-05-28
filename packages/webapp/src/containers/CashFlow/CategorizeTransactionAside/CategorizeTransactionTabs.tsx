@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Tab, Tabs } from '@blueprintjs/core';
 import { MatchingBankTransaction } from './MatchingTransaction';
 import { CategorizeTransactionContent } from '../CategorizeTransaction/drawers/CategorizeTransactionDrawer/CategorizeTransactionContent';
@@ -16,12 +17,12 @@ export function CategorizeTransactionTabs() {
     >
       <Tab
         id="categorize"
-        title="Categorize Transaction"
+        title={intl.get('cash_flow.categorize_transaction.tab.categorize')}
         panel={<CategorizeTransactionContent />}
       />
       <Tab
         id="matching"
-        title="Matching Transaction"
+        title={intl.get('cash_flow.categorize_transaction.tab.matching')}
         panel={<MatchingBankTransaction />}
       />
     </Tabs>

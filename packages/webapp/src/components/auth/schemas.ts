@@ -37,7 +37,20 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
+export const inviteAcceptSchema = z
+  .object({
+    firstName: z.string().min(1, 'Введите имя'),
+    lastName: z.string().min(1, 'Введите фамилию'),
+    password: z.string().min(10, 'Пароль должен быть не короче 10 символов'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Пароли не совпадают',
+    path: ['confirmPassword'],
+  });
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type InviteAcceptInput = z.infer<typeof inviteAcceptSchema>;

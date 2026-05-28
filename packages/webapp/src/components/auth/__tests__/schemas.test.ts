@@ -4,6 +4,7 @@ import {
   registerSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  inviteAcceptSchema,
 } from '../schemas';
 
 describe('loginSchema', () => {
@@ -142,5 +143,51 @@ describe('resetPasswordSchema', () => {
       confirmPassword: 'pass1',
     });
     expect(r.success).toBe(false);
+  });
+});
+
+describe('inviteAcceptSchema', () => {
+  const validInput = {
+    firstName: 'Иван',
+    lastName: 'Петров',
+    password: 'longenough10',
+    confirmPassword: 'longenough10',
+  };
+
+  it('accepts valid input', () => {
+    expect(inviteAcceptSchema.safeParse(validInput).success).toBe(true);
+  });
+
+  it('rejects when password < 10 chars', () => {
+    const r = inviteAcceptSchema.safeParse({
+      ...validInput,
+      password: 'short',
+      confirmPassword: 'short',
+    });
+    expect(r.success).toBe(false);
+  });
+
+  it('rejects when passwords mismatch', () => {
+    const r = inviteAcceptSchema.safeParse({
+      ...validInput,
+      confirmPassword: 'differentpass',
+    });
+    expect(r.success).toBe(false);
+    if (!r.success) {
+      const issue = r.error.issues.find((i) => i.path[0] === 'confirmPassword');
+      expect(issue?.message).toBe('Пароли не совпадают');
+    }
+  });
+
+  it('rejects when firstName is empty', () => {
+    expect(
+      inviteAcceptSchema.safeParse({ ...validInput, firstName: '' }).success,
+    ).toBe(false);
+  });
+
+  it('rejects when lastName is empty', () => {
+    expect(
+      inviteAcceptSchema.safeParse({ ...validInput, lastName: '' }).success,
+    ).toBe(false);
   });
 });

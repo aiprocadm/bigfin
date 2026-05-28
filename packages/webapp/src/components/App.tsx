@@ -23,11 +23,15 @@ const DashboardPrivatePages = lazy(
 const AuthenticationPage = lazy(
   () => import('@/containers/Authentication/AuthenticationPage'),
 );
-const EmailConfirmation = lazy(
-  () => import('@/containers/Authentication/EmailConfirmation'),
+const EmailConfirmationPage = lazy(() =>
+  import('@/components/auth/EmailConfirmationPage').then((m) => ({
+    default: m.EmailConfirmationPage,
+  })),
 );
-const RegisterVerify = lazy(
-  () => import('@/containers/Authentication/RegisterVerify'),
+const RegisterVerifyPage = lazy(() =>
+  import('@/components/auth/RegisterVerifyPage').then((m) => ({
+    default: m.RegisterVerifyPage,
+  })),
 );
 const OneClickDemoPage = lazy(
   () => import('@/containers/OneClickDemo/OneClickDemoPage'),
@@ -52,14 +56,14 @@ function AppInsider({ history }) {
               <Route path={'/auth/register/verify'}>
                 <EnsureAuthenticated>
                   <EnsureUserEmailNotVerified>
-                    <RegisterVerify />
+                    <RegisterVerifyPage />
                   </EnsureUserEmailNotVerified>
                 </EnsureAuthenticated>
               </Route>
 
               <Route
                 path={'/auth/email_confirmation'}
-                children={<EmailConfirmation />}
+                children={<EmailConfirmationPage />}
               />
               <Route path={'/auth'} children={<AuthenticationPage />} />
               <Route

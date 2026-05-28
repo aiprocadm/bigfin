@@ -43,12 +43,18 @@ export default [
   },
   {
     path: `${BASE_URL}/invite/:token/accept`,
-    component: lazy(() => import('@/containers/Authentication/InviteAccept')),
+    component: lazy(() =>
+      import('@/components/auth/InviteAcceptPage').then((m) => ({
+        default: m.InviteAcceptPage,
+      })),
+    ),
   },
   {
     path: `${BASE_URL}/register/email_confirmation`,
-    component: lazy(
-      () => import('@/containers/Authentication/EmailConfirmation'),
+    component: lazy(() =>
+      import('@/components/auth/EmailConfirmationPage').then((m) => ({
+        default: m.EmailConfirmationPage,
+      })),
     ),
   },
   {

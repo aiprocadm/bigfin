@@ -34,6 +34,7 @@ import { TransformerModule } from '../Transformer/Transformer.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
 import { ExpensesModule } from '../Expenses/Expenses.module';
 import { ItemCategoryModule } from '../ItemCategories/ItemCategory.module';
+import { ManagementArticlesModule } from '../ManagementArticles/ManagementArticles.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
 import { BranchesModule } from '../Branches/Branches.module';
@@ -199,6 +200,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     MailModule,
     ItemsModule,
     ItemCategoryModule,
+    ManagementArticlesModule,
     AccountsModule,
     ExpensesModule,
     TaxRatesModule,

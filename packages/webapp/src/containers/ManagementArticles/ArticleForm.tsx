@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ACCOUNT_ROOT_TYPE } from '@/constants/accountTypes';
 import { useAccounts } from '@/hooks/query/accounts';
 import {
   getArticleFormSchema,
@@ -43,13 +42,6 @@ interface AccountRow {
 
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
-
-// Only profit & loss accounts make sense on a management P&L article — this
-// keeps balance-sheet accounts (banks, assets, liabilities) out of the picker.
-const PL_ROOT_TYPES: string[] = [
-  ACCOUNT_ROOT_TYPE.INCOME,
-  ACCOUNT_ROOT_TYPE.EXPENSE,
-];
 
 /**
  * Collects the ids of every descendant of `rootId` from a flat article list,
@@ -86,7 +78,7 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
 
   // Flat list of all articles — used to populate the parent picker.
   const { data: allArticles } = useManagementArticles({}, {});
-  // All accounts — filtered to P&L for the accounts picker.
+  // All accounts — filtered to the article kind for the accounts picker.
   const { data: accounts } = useAccounts({}, {});
   // In edit mode, fetch the full article to pre-fill its mapped accounts.
   const articleQuery = useManagementArticle(article?.id ?? 0, {
@@ -104,13 +96,6 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
     return list.filter((a) => !excluded.has(a.id));
   }, [allArticles, isEdit, article]);
 
-  const plAccounts = React.useMemo<AccountRow[]>(() => {
-    const list: AccountRow[] = accounts ?? [];
-    return list.filter(
-      (a) => !!a.account_root_type && PL_ROOT_TYPES.includes(a.account_root_type),
-    );
-  }, [accounts]);
-
   const form = useForm<ArticleFormValues>({
     resolver: zodResolver(getArticleFormSchema()),
     defaultValues: {
@@ -121,6 +106,14 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
       accountIds: article?.accounts?.map((a) => a.id) ?? [],
     },
   });
+
+  // Only accounts on the same side as the article kind can be mapped:
+  // an income article shows income accounts, an expense article expense ones.
+  const kind = form.watch('kind');
+  const kindAccounts = React.useMemo<AccountRow[]>(() => {
+    const list: AccountRow[] = accounts ?? [];
+    return list.filter((a) => a.account_root_type === kind);
+  }, [accounts, kind]);
 
   // Pre-fill mapped accounts once the full article arrives (edit mode).
   React.useEffect(() => {
@@ -140,12 +133,17 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
   const accountsReady = !isEdit || Boolean(fullArticle?.id);
 
   const onSubmit = async (values: ArticleFormValues) => {
+    // Drop any selection that doesn't match the current kind (e.g. left over
+    // from switching kind) so the payload always agrees with the article side.
+    const allowedAccountIds = new Set(kindAccounts.map((a) => a.id));
     const payload = {
       name: values.name,
       kind: values.kind,
       cashflowSection: values.cashflowSection || undefined,
       parentId: values.parentId ?? undefined,
-      accountIds: values.accountIds ?? [],
+      accountIds: (values.accountIds ?? []).filter((id) =>
+        allowedAccountIds.has(id),
+      ),
     };
     try {
       if (isEdit && article) {
@@ -305,12 +303,12 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
                     </FormLabel>
                     <FormControl>
                       <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-md border p-2">
-                        {plAccounts.length === 0 ? (
+                        {kindAccounts.length === 0 ? (
                           <span className="text-muted-foreground text-sm">
                             —
                           </span>
                         ) : (
-                          plAccounts.map((acc) => (
+                          kindAccounts.map((acc) => (
                             <label
                               key={acc.id}
                               className="flex items-center gap-2 text-sm"

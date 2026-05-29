@@ -17,6 +17,7 @@ export const getArticleFormSchema = () =>
       .optional()
       .or(z.literal('')),
     parentId: z.union([z.number(), z.null()]).optional(),
+    accountIds: z.array(z.number()).optional(),
   });
 
 export type ArticleFormValues = z.infer<ReturnType<typeof getArticleFormSchema>>;
@@ -34,5 +35,6 @@ export interface ManagementArticle {
   sortOrder?: number;
   active?: boolean;
   amount?: number;
+  accounts?: { id: number }[];
   children?: ManagementArticle[];
 }

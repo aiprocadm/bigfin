@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { ACCOUNT_ROOT_TYPE } from '@/constants/accountTypes';
+import { useAccounts } from '@/hooks/query/accounts';
 import {
   getArticleFormSchema,
   ArticleFormValues,
@@ -21,6 +23,7 @@ import {
 } from './schemas';
 import {
   useManagementArticles,
+  useManagementArticle,
   useCreateManagementArticle,
   useEditManagementArticle,
 } from '@/hooks/query/managementArticles';
@@ -31,8 +34,22 @@ interface ArticleFormProps {
   onCancel: () => void;
 }
 
+interface AccountRow {
+  id: number;
+  name: string;
+  code?: string;
+  account_root_type?: string;
+}
+
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+
+// Only profit & loss accounts make sense on a management P&L article — this
+// keeps balance-sheet accounts (banks, assets, liabilities) out of the picker.
+const PL_ROOT_TYPES: string[] = [
+  ACCOUNT_ROOT_TYPE.INCOME,
+  ACCOUNT_ROOT_TYPE.EXPENSE,
+];
 
 /**
  * Collects the ids of every descendant of `rootId` from a flat article list,
@@ -69,6 +86,13 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
 
   // Flat list of all articles — used to populate the parent picker.
   const { data: allArticles } = useManagementArticles({}, {});
+  // All accounts — filtered to P&L for the accounts picker.
+  const { data: accounts } = useAccounts({}, {});
+  // In edit mode, fetch the full article to pre-fill its mapped accounts.
+  const articleQuery = useManagementArticle(article?.id ?? 0, {
+    enabled: isEdit,
+  });
+  const fullArticle = articleQuery.data;
 
   const parentOptions = React.useMemo<ManagementArticle[]>(() => {
     const list: ManagementArticle[] = allArticles ?? [];
@@ -80,6 +104,13 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
     return list.filter((a) => !excluded.has(a.id));
   }, [allArticles, isEdit, article]);
 
+  const plAccounts = React.useMemo<AccountRow[]>(() => {
+    const list: AccountRow[] = accounts ?? [];
+    return list.filter(
+      (a) => !!a.account_root_type && PL_ROOT_TYPES.includes(a.account_root_type),
+    );
+  }, [accounts]);
+
   const form = useForm<ArticleFormValues>({
     resolver: zodResolver(getArticleFormSchema()),
     defaultValues: {
@@ -87,10 +118,26 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
       kind: article?.kind ?? 'expense',
       cashflowSection: article?.cashflowSection ?? '',
       parentId: article?.parentId ?? null,
+      accountIds: article?.accounts?.map((a) => a.id) ?? [],
     },
   });
 
+  // Pre-fill mapped accounts once the full article arrives (edit mode).
+  React.useEffect(() => {
+    if (isEdit && fullArticle?.accounts) {
+      form.setValue(
+        'accountIds',
+        fullArticle.accounts.map((a: { id: number }) => a.id),
+        { shouldDirty: false },
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fullArticle]);
+
   const isSubmitting = form.formState.isSubmitting;
+  // Avoid wiping mappings: in edit mode, wait until the article (with its
+  // accounts) has loaded before allowing a save.
+  const accountsReady = !isEdit || Boolean(fullArticle?.id);
 
   const onSubmit = async (values: ArticleFormValues) => {
     const payload = {
@@ -98,6 +145,7 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
       kind: values.kind,
       cashflowSection: values.cashflowSection || undefined,
       parentId: values.parentId ?? undefined,
+      accountIds: values.accountIds ?? [],
     };
     try {
       if (isEdit && article) {
@@ -245,6 +293,51 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="accountIds"
+              render={({ field }) => {
+                const selected = field.value ?? [];
+                return (
+                  <FormItem>
+                    <FormLabel>
+                      {intl.get('management_articles.field.accounts')}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-md border p-2">
+                        {plAccounts.length === 0 ? (
+                          <span className="text-muted-foreground text-sm">
+                            —
+                          </span>
+                        ) : (
+                          plAccounts.map((acc) => (
+                            <label
+                              key={acc.id}
+                              className="flex items-center gap-2 text-sm"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selected.includes(acc.id)}
+                                onChange={(e) => {
+                                  const next = new Set<number>(selected);
+                                  if (e.target.checked) next.add(acc.id);
+                                  else next.delete(acc.id);
+                                  field.onChange(Array.from(next));
+                                }}
+                              />
+                              <span>
+                                {acc.code ? `${acc.code} — ${acc.name}` : acc.name}
+                              </span>
+                            </label>
+                          ))
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
@@ -254,7 +347,7 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
               >
                 {intl.get('management_articles.cancel')}
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting || !accountsReady}>
                 {intl.get('management_articles.save')}
               </Button>
             </div>

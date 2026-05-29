@@ -2,15 +2,21 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2 } from 'lucide-react';
+import { ManagementArticle } from './schemas';
 
 interface ArticleTreeProps {
-  nodes: any[];
+  nodes: ManagementArticle[];
   level?: number;
-  onEdit: (article: any) => void;
-  onDelete: (article: any) => void;
+  onEdit: (article: ManagementArticle) => void;
+  onDelete: (article: ManagementArticle) => void;
 }
 
-export function ArticleTree({ nodes, level = 0, onEdit, onDelete }: ArticleTreeProps) {
+export function ArticleTree({
+  nodes,
+  level = 0,
+  onEdit,
+  onDelete,
+}: ArticleTreeProps) {
   if (!nodes || nodes.length === 0) return null;
   return (
     <ul className="flex flex-col gap-1">
@@ -23,7 +29,7 @@ export function ArticleTree({ nodes, level = 0, onEdit, onDelete }: ArticleTreeP
             <span className="flex items-center gap-2">
               <span className="font-medium">{node.name}</span>
               <span className="text-xs text-muted-foreground">
-                {intl.get(`management_articles.kind.${node.kind}`)}
+                {intl.get(`management_articles.kind.${node.kind}`) || node.kind}
               </span>
             </span>
             <span className="flex items-center gap-1">

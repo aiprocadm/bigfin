@@ -20,6 +20,7 @@
   "management_articles.error.name_required": "Enter the article name",
   "management_articles.error.kind_required": "Choose income or expense",
   "management_articles.saved": "Article saved",
+  "management_articles.save_error": "Couldn't save the article",
   "management_articles.deleted": "Article deleted",
   "email_or_phone_number": "Email or phone number",
   "password": "Password",

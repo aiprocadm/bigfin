@@ -1,0 +1,17 @@
+// eslint-disable-next-line import/prefer-default-export
+export const ERRORS = {
+  ARTICLE_NAME_EXISTS: 'ARTICLE_NAME_EXISTS',
+  ARTICLE_NOT_FOUND: 'ARTICLE_NOT_FOUND',
+  PARENT_ARTICLE_NOT_FOUND: 'PARENT_ARTICLE_NOT_FOUND',
+  ARTICLE_HAS_CHILDREN: 'ARTICLE_HAS_CHILDREN',
+  ACCOUNT_NOT_FOUND: 'ACCOUNT_NOT_FOUND',
+  ACCOUNT_ALREADY_MAPPED: 'ACCOUNT_ALREADY_MAPPED',
+  INVALID_ARTICLE_KIND: 'INVALID_ARTICLE_KIND',
+};
+
+export const ARTICLE_KINDS = ['income', 'expense'] as const;
+export const CASHFLOW_SECTIONS = [
+  'operating',
+  'investing',
+  'financing',
+] as const;

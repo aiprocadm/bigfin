@@ -41,6 +41,7 @@ export class EditManagementArticleService {
 
     await this.validator.validateNameUniqueness(dto.name, articleId);
     await this.validator.validateParentExists(dto.parentId);
+    await this.validator.validateNoParentCycle(articleId, dto.parentId);
     await this.validator.validateAccountsExist(dto.accountIds);
     await this.validator.validateAccountsNotMapped(dto.accountIds, articleId);
 

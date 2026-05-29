@@ -52,6 +52,32 @@ export class CommandManagementArticleValidatorService {
   }
 
   /**
+   * Validates that setting `parentId` on `articleId` does not create a cycle
+   * (including the self-parent case). Walks the ancestor chain upward.
+   */
+  public async validateNoParentCycle(articleId: number, parentId?: number) {
+    if (!parentId) return;
+
+    if (parentId === articleId) {
+      throw new ServiceError(ERRORS.ARTICLE_PARENT_CYCLE);
+    }
+
+    const visited = new Set<number>();
+    let currentId: number | null = parentId;
+
+    while (currentId != null) {
+      if (currentId === articleId) {
+        throw new ServiceError(ERRORS.ARTICLE_PARENT_CYCLE);
+      }
+      if (visited.has(currentId)) break; // guard against pre-existing cycles
+      visited.add(currentId);
+
+      const node = await this.articleModel().query().findById(currentId);
+      currentId = node ? node.parentId : null;
+    }
+  }
+
+  /**
    * Validates all given account ids exist.
    */
   public async validateAccountsExist(accountIds?: number[]) {

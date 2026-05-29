@@ -12,8 +12,11 @@ import {
 
 export default function ManagementArticlesPage() {
   const { featureCan } = useFeatureCan();
-  const { data: tree } = useManagementArticles({ tree: 'true' });
-  const deleteMutation = useDeleteManagementArticle();
+  // Hooks from legacy JS module — pass empty props object; cast mutate to accept id arg
+  const { data: tree } = useManagementArticles({ tree: 'true' }, {});
+  const deleteMutation = useDeleteManagementArticle({}) as unknown as {
+    mutate: (id: number | string) => void;
+  };
   const [editing, setEditing] = React.useState<any>(undefined);
   const [showForm, setShowForm] = React.useState(false);
 

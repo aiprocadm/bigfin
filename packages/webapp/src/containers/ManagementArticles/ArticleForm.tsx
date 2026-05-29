@@ -28,8 +28,13 @@ interface ArticleFormProps {
 
 export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
   const isEdit = !!article?.id;
-  const createMutation = useCreateManagementArticle();
-  const editMutation = useEditManagementArticle();
+  // Hooks from legacy JS module — cast mutateAsync to accept correct args
+  const createMutation = useCreateManagementArticle({}) as unknown as {
+    mutateAsync: (values: Record<string, unknown>) => Promise<unknown>;
+  };
+  const editMutation = useEditManagementArticle({}) as unknown as {
+    mutateAsync: (args: [string | number, Record<string, unknown>]) => Promise<unknown>;
+  };
 
   const form = useForm({
     resolver: zodResolver(getArticleFormSchema()),

@@ -12,6 +12,7 @@ describe('CreateManagementArticleService', () => {
       validateNameUniqueness: jest.fn().mockResolvedValue(undefined),
       validateParentExists: jest.fn().mockResolvedValue(undefined),
       validateAccountsExist: jest.fn().mockResolvedValue(undefined),
+      validateAccountsMatchKind: jest.fn().mockResolvedValue(undefined),
       validateAccountsNotMapped: jest.fn().mockResolvedValue(undefined),
     };
     const uow = { withTransaction: (cb: any) => cb({}) };

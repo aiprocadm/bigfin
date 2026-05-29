@@ -1250,6 +1250,16 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('bank_rules'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Management Articles
+  {
+    path: `/management-articles`,
+    component: lazy(
+      () => import('@/containers/ManagementArticles/ManagementArticlesPage'),
+    ),
+    breadcrumb: intl.get('management_articles.page_title'),
+    pageTitle: intl.get('management_articles.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

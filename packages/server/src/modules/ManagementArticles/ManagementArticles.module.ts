@@ -8,6 +8,7 @@ import { EditManagementArticleService } from './commands/EditManagementArticle.s
 import { DeleteManagementArticleService } from './commands/DeleteManagementArticle.service';
 import { GetManagementArticleService } from './queries/GetManagementArticle.service';
 import { GetManagementArticlesService } from './queries/GetManagementArticles.service';
+import { ArticlesPlRollupService } from './queries/ArticlesPlRollup.service';
 
 @Module({
   imports: [TenancyDatabaseModule],
@@ -20,6 +21,7 @@ import { GetManagementArticlesService } from './queries/GetManagementArticles.se
     DeleteManagementArticleService,
     GetManagementArticleService,
     GetManagementArticlesService,
+    ArticlesPlRollupService,
   ],
 })
 export class ManagementArticlesModule {}

@@ -9,6 +9,8 @@ import {
   EditManagementArticleDto,
 } from './dtos/ManagementArticle.dto';
 import { GetManagementArticlesQueryDto } from './dtos/GetManagementArticlesQuery.dto';
+import { ArticlesPlRollupService } from './queries/ArticlesPlRollup.service';
+import { ArticlesRollupQueryDto } from './dtos/ArticlesRollupQuery.dto';
 
 @Injectable()
 export class ManagementArticlesApplication {
@@ -18,6 +20,7 @@ export class ManagementArticlesApplication {
     private readonly deleteService: DeleteManagementArticleService,
     private readonly getService: GetManagementArticleService,
     private readonly getListService: GetManagementArticlesService,
+    private readonly rollupService: ArticlesPlRollupService,
   ) {}
 
   public createManagementArticle(dto: CreateManagementArticleDto) {
@@ -38,5 +41,9 @@ export class ManagementArticlesApplication {
 
   public getManagementArticles(filterDto: GetManagementArticlesQueryDto) {
     return this.getListService.getManagementArticles(filterDto);
+  }
+
+  public getArticlesPlRollup(query: ArticlesRollupQueryDto) {
+    return this.rollupService.getRollup(query);
   }
 }

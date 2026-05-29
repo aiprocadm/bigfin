@@ -23,6 +23,7 @@ import {
 } from './dtos/ManagementArticle.dto';
 import { GetManagementArticlesQueryDto } from './dtos/GetManagementArticlesQuery.dto';
 import { ManagementArticleResponseDto } from './dtos/ManagementArticleResponse.dto';
+import { ArticlesRollupQueryDto } from './dtos/ArticlesRollupQuery.dto';
 
 @Controller('management-articles')
 @ApiTags('Management Articles')
@@ -51,6 +52,12 @@ export class ManagementArticlesController {
   })
   getManagementArticles(@Query() filterDto: GetManagementArticlesQueryDto) {
     return this.application.getManagementArticles(filterDto);
+  }
+
+  @Get('pl-rollup')
+  @ApiOperation({ summary: 'Management P&L rolled up by articles.' })
+  getArticlesPlRollup(@Query() query: ArticlesRollupQueryDto) {
+    return this.application.getArticlesPlRollup(query);
   }
 
   @Put(':id')

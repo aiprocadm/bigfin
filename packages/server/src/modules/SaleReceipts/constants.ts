@@ -72,7 +72,7 @@ export const SaleReceiptsSampleData = [
 export const defaultSaleReceiptBrandingAttributes = {
   primaryColor: '',
   secondaryColor: '',
-  companyName: 'BigFin Technology, Inc.',
+  companyName: 'Bigfin Technology, Inc.',
 
   // # Company logo
   showCompanyLogo: true,

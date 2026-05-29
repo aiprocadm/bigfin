@@ -31,7 +31,7 @@ export class SendInviteUsersMailMessage {
     const baseURL = this.configService.get('app.baseUrl');
 
     const mail = new Mail()
-      .setSubject(`${fromUser.firstName} has invited you to join a BigFin`)
+      .setSubject(`${fromUser.firstName} has invited you to join Bigfin`)
       .setView('mail/UserInvite.html')
       .setTo(invite.email)
       .setAttachments([

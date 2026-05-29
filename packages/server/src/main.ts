@@ -22,7 +22,7 @@ async function bootstrap() {
   app.use(new ClsMiddleware({}).use);
 
   const config = new DocumentBuilder()
-    .setTitle('BigFin')
+    .setTitle('Bigfin')
     .setDescription('Financial accounting software')
     .setVersion('1.0')
     .build();

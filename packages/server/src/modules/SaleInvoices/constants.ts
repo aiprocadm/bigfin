@@ -167,7 +167,7 @@ export const defaultInvoicePdfTemplateAttributes = {
   primaryColor: 'red',
   secondaryColor: 'red',
 
-  companyName: 'BigFin Technology, Inc.',
+  companyName: 'Bigfin Technology, Inc.',
 
   showCompanyLogo: true,
   companyLogoKey: '',

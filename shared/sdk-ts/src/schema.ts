@@ -13721,10 +13721,10 @@ export interface components {
              */
             features: components["schemas"]["DashboardFeatureResponseDto"][];
             /**
-             * @description Whether the app is running on Bigcapital Cloud
+             * @description Whether the app is running on Bigfin Cloud
              * @example true
              */
-            isBigcapitalCloud: boolean;
+            isBigfinCloud: boolean;
         };
         RolePermissionResponseDto: {
             /**
@@ -23396,7 +23396,7 @@ export interface operations {
                      *         }
                      *       ],
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -24226,7 +24226,7 @@ export interface operations {
                      *         "previous_year_percentage_change": false
                      *       },
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -25627,7 +25627,7 @@ export interface operations {
                      *         }
                      *       ],
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -26268,7 +26268,7 @@ export interface operations {
                      *         ]
                      *       },
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -26690,7 +26690,7 @@ export interface operations {
                      *         }
                      *       },
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -26916,7 +26916,7 @@ export interface operations {
                      *         "none_zero": false
                      *       },
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -27369,7 +27369,7 @@ export interface operations {
                      *         }
                      *       ],
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -27681,7 +27681,7 @@ export interface operations {
                      *         }
                      *       ],
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,
@@ -28132,7 +28132,7 @@ export interface operations {
                      *         "basis": "cash"
                      *       },
                      *       "meta": {
-                     *         "organization_name": "BIGCAPITAL, INC",
+                     *         "organization_name": "BIGFIN, INC",
                      *         "base_currency": "USD",
                      *         "date_format": "DD MMM yyyy",
                      *         "is_cost_compute_running": false,

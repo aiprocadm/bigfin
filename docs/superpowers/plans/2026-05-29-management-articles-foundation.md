@@ -2550,12 +2550,12 @@ git commit -m "feat(webapp): add management articles route gated by mgmt_article
 
 ## Финальная проверка этапа
 
-- [ ] **Backend:** `pnpm --filter @bigfin/server test -- src/modules/ManagementArticles` — все спеки зелёные.
-- [ ] **Типы:** `pnpm typecheck` (после сборки `shared/`) — без ошибок.
-- [ ] **Миграции:** `latest → rollback → latest` для обеих новых таблиц — без ошибок.
-- [ ] **i18n:** `node packages/webapp/scripts/lang-check.js` — 0 расхождений.
-- [ ] **Инвариант свёртки:** тест `ArticlesPlRollup.service.spec.ts` (статьи == сумма счетов) зелёный.
-- [ ] **Флаг:** `mgmt_articles` по умолчанию `false`; включается через `FeaturesManager.turnOn('mgmt_articles')` на нужной организации.
+- [x] **Backend:** `pnpm --filter @bigfin/server test -- src/modules/ManagementArticles` — все спеки зелёные. ✅ (повторно 2026-05-30: 6 спек / 32 теста)
+- [x] **Типы:** `pnpm typecheck` (после сборки `shared/`) — без ошибок. ✅ (повторно 2026-05-30: 3 проекта, 0 ошибок)
+- [ ] **Миграции:** `latest → rollback → latest` для обеих новых таблиц — без ошибок. ⏳ **Отложено** — нет локальной БД; прогнать в CI / при поднятом окружении (миграции additive, `down()` рабочие).
+- [x] **i18n:** `node packages/webapp/scripts/lang-check.js` — 0 расхождений. ✅ (повторно 2026-05-30: 2489 = 2489)
+- [x] **Инвариант свёртки:** тест `ArticlesPlRollup.service.spec.ts` (статьи == сумма счетов) зелёный. ✅
+- [x] **Флаг:** `mgmt_articles` по умолчанию `false`; включается через `FeaturesManager.turnOn('mgmt_articles')` на нужной организации. ✅ (`FeaturesConfigure.spec.ts` зелёный)
 
 ---
 
@@ -2667,3 +2667,17 @@ Frontend (C1–C5) реализован на той же ветке, 6 комм�
 - ⏳ Прогон миграций на реальной БД — по-прежнему отложен (нет локальной БД); follow-up'ы схему БД не трогали.
 
 **Остаётся открытым (минор, не блокирует):** конкретные коды ошибок #2 на фронте пока показываются общим тостом `management_articles.save_error` (маппинг код→сообщение — отдельная задача, если понадобится более точная обратная связь в форме).
+
+## Журнал исполнения (2026-05-30) — повторная финальная верификация
+
+Перед закрытием этапа прогнал «Финальную проверку этапа» заново на чистом дереве (Node 18.16.1, pnpm 10.33.0), чтобы подтвердить свежими доказательствами, а не доверять прошлым записям журнала.
+
+**Результаты (5/6 ✅, 1 отложен):**
+- ✅ **Backend:** `pnpm --filter @bigfin/server test -- src/modules/ManagementArticles` → **6 спек / 32 теста** зелёные.
+- ✅ **Типы:** `pnpm typecheck` → 3 проекта (`server`/`webapp`/`sdk-ts`), **0 ошибок** (предупреждения «Unsupported engine» — Nx-сабпроцессы на системном Node 24, на `tsc --noEmit` не влияют).
+- ✅ **i18n:** `node packages/webapp/scripts/lang-check.js` → **2489 = 2489**, 0 расхождений.
+- ✅ **Инвариант свёртки:** `ArticlesPlRollup.service.spec.ts` зелёный (входит в 32 теста).
+- ✅ **Флаг:** `FeaturesConfigure.spec.ts` → «registers the management articles feature, default off» зелёный (этот тест вне `src/modules/ManagementArticles`, прогнан отдельно).
+- ⏳ **Миграции `latest → rollback → latest`** — по-прежнему отложено: локальной БД нет. Прогнать в CI / при поднятом окружении. Риск низкий (additive, рабочие `down()`).
+
+Имплементация этапа (A1–C5 + код-ревью #1 + follow-up #2/#3/#4) полностью закоммичена ранее; новых правок кода в этой верификации не делалось — только прогон проверок и отметки в чек-листе.

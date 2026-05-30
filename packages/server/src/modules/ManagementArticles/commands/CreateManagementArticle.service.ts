@@ -34,6 +34,7 @@ export class CreateManagementArticleService {
   ): Promise<ManagementArticle> {
     await this.validator.validateNameUniqueness(dto.name);
     await this.validator.validateParentExists(dto.parentId);
+    await this.validator.validateKindMatchesParent(dto.kind, dto.parentId);
     await this.validator.validateAccountsExist(dto.accountIds);
     await this.validator.validateAccountsMatchKind(dto.kind, dto.accountIds);
     await this.validator.validateAccountsNotMapped(dto.accountIds);

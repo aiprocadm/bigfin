@@ -139,7 +139,10 @@ export class ArticlesPlRollupService {
         qb.groupBy('accountId');
         qb.select(['accountId']);
 
-        if (query.fromDate && query.toDate) {
+        // Apply the date filter when EITHER bound is present — the
+        // `filterDateRange` modifier guards each bound independently, so an
+        // open-ended range (only-from or only-to) is valid.
+        if (query.fromDate || query.toDate) {
           qb.modify('filterDateRange', query.fromDate, query.toDate);
         }
         if (!isEmpty(query.branchesIds)) {

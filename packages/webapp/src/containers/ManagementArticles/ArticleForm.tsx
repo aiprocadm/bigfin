@@ -86,16 +86,6 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
   });
   const fullArticle = articleQuery.data;
 
-  const parentOptions = React.useMemo<ManagementArticle[]>(() => {
-    const list: ManagementArticle[] = allArticles ?? [];
-    if (!isEdit || !article) return list;
-    const excluded = new Set<number>([
-      article.id,
-      ...collectDescendantIds(list, article.id),
-    ]);
-    return list.filter((a) => !excluded.has(a.id));
-  }, [allArticles, isEdit, article]);
-
   const form = useForm<ArticleFormValues>({
     resolver: zodResolver(getArticleFormSchema()),
     defaultValues: {
@@ -114,6 +104,29 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
     const list: AccountRow[] = accounts ?? [];
     return list.filter((a) => a.account_root_type === kind);
   }, [accounts, kind]);
+
+  // Parent picker: only same-kind articles (a subtree must stay single-kind),
+  // and never the article's own subtree (would create a cycle).
+  const parentOptions = React.useMemo<ManagementArticle[]>(() => {
+    const all: ManagementArticle[] = allArticles ?? [];
+    const sameKind = all.filter((a) => a.kind === kind);
+    if (!isEdit || !article) return sameKind;
+    const excluded = new Set<number>([
+      article.id,
+      ...collectDescendantIds(all, article.id),
+    ]);
+    return sameKind.filter((a) => !excluded.has(a.id));
+  }, [allArticles, isEdit, article, kind]);
+
+  // When the kind changes, drop a selected parent that no longer qualifies,
+  // so we never submit a parent of the wrong kind (the server would reject it).
+  React.useEffect(() => {
+    const currentParentId = form.getValues('parentId');
+    if (currentParentId != null && !parentOptions.some((a) => a.id === currentParentId)) {
+      form.setValue('parentId', null, { shouldDirty: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentOptions]);
 
   // Pre-fill mapped accounts once the full article arrives (edit mode).
   React.useEffect(() => {

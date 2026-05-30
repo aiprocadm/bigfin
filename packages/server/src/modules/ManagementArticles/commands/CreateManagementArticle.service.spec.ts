@@ -11,6 +11,7 @@ describe('CreateManagementArticleService', () => {
     const validator = {
       validateNameUniqueness: jest.fn().mockResolvedValue(undefined),
       validateParentExists: jest.fn().mockResolvedValue(undefined),
+      validateKindMatchesParent: jest.fn().mockResolvedValue(undefined),
       validateAccountsExist: jest.fn().mockResolvedValue(undefined),
       validateAccountsMatchKind: jest.fn().mockResolvedValue(undefined),
       validateAccountsNotMapped: jest.fn().mockResolvedValue(undefined),

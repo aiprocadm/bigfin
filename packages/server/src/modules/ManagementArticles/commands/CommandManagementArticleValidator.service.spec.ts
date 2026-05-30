@@ -121,3 +121,71 @@ describe('CommandManagementArticleValidatorService.validateAccountsMatchKind', (
     ).resolves.toBeUndefined();
   });
 });
+
+describe('CommandManagementArticleValidatorService.validateKindMatchesParent', () => {
+  const buildWithParent = (parent: any) => {
+    const articleModel = () => ({
+      query: () => ({ findById: (_id: number) => Promise.resolve(parent) }),
+    });
+    const noop = () => ({ query: () => ({}) });
+    return new CommandManagementArticleValidatorService(
+      articleModel as any,
+      noop as any,
+      noop as any,
+    );
+  };
+
+  it('throws when the child kind differs from the parent kind', async () => {
+    const service = buildWithParent({ id: 1, kind: 'income' });
+    await expect(
+      service.validateKindMatchesParent('expense', 1),
+    ).rejects.toMatchObject({ errorType: ERRORS.ARTICLE_KIND_PARENT_MISMATCH });
+  });
+
+  it('passes when the child kind matches the parent kind', async () => {
+    const service = buildWithParent({ id: 1, kind: 'expense' });
+    await expect(
+      service.validateKindMatchesParent('expense', 1),
+    ).resolves.toBeUndefined();
+  });
+
+  it('is a no-op for a root article (no parentId)', async () => {
+    const service = buildWithParent(null);
+    await expect(
+      service.validateKindMatchesParent('income'),
+    ).resolves.toBeUndefined();
+  });
+});
+
+describe('CommandManagementArticleValidatorService.validateChildrenMatchKind', () => {
+  const buildWithMismatchCount = (count: number) => {
+    const builder: any = {
+      where: () => builder,
+      whereNot: () => builder,
+      resultSize: () => Promise.resolve(count),
+    };
+    const articleModel = () => ({ query: () => builder });
+    const noop = () => ({ query: () => ({}) });
+    return new CommandManagementArticleValidatorService(
+      articleModel as any,
+      noop as any,
+      noop as any,
+    );
+  };
+
+  it('throws when any direct child has a different kind', async () => {
+    const service = buildWithMismatchCount(2);
+    await expect(
+      service.validateChildrenMatchKind(1, 'income'),
+    ).rejects.toMatchObject({
+      errorType: ERRORS.ARTICLE_KIND_CHILDREN_MISMATCH,
+    });
+  });
+
+  it('passes when no child mismatches the kind', async () => {
+    const service = buildWithMismatchCount(0);
+    await expect(
+      service.validateChildrenMatchKind(1, 'income'),
+    ).resolves.toBeUndefined();
+  });
+});

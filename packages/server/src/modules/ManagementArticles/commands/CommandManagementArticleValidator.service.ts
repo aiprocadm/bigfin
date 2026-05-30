@@ -78,6 +78,37 @@ export class CommandManagementArticleValidatorService {
   }
 
   /**
+   * Validates that a child article shares its parent's kind. Root articles
+   * (no parent) may be of any kind. Keeps every subtree single-kind, so the
+   * P&L rollup never folds income into an expense subtotal (or vice versa).
+   */
+  public async validateKindMatchesParent(kind: string, parentId?: number) {
+    if (!parentId) return;
+
+    const parent = await this.articleModel().query().findById(parentId);
+    if (parent && parent.kind !== kind) {
+      throw new ServiceError(ERRORS.ARTICLE_KIND_PARENT_MISMATCH);
+    }
+  }
+
+  /**
+   * Validates that every direct child of `articleId` shares `kind`. Used on
+   * edit to block changing an article's kind while it still has children of
+   * the previous kind, which would break the single-kind subtree invariant.
+   */
+  public async validateChildrenMatchKind(articleId: number, kind: string) {
+    const mismatched = await this.articleModel()
+      .query()
+      .where('parentId', articleId)
+      .whereNot('kind', kind)
+      .resultSize();
+
+    if (mismatched > 0) {
+      throw new ServiceError(ERRORS.ARTICLE_KIND_CHILDREN_MISMATCH);
+    }
+  }
+
+  /**
    * Validates all given account ids exist.
    */
   public async validateAccountsExist(accountIds?: number[]) {

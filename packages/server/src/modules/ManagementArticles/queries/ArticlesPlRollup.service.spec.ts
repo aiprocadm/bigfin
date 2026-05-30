@@ -1,4 +1,5 @@
 import {
+  ArticlesPlRollupService,
   accountNet,
   foldAccountsIntoArticles,
   rollupAmountsToAncestors,
@@ -93,5 +94,78 @@ describe('rollupAmountsToAncestors (parent subtree totals)', () => {
       { id: 2, name: 'B', kind: 'income', parentId: 1, amount: 20 },
     ];
     expect(() => rollupAmountsToAncestors(folded)).not.toThrow();
+  });
+});
+
+describe('ArticlesPlRollupService.getRollup (date filter)', () => {
+  // Builds a service whose transaction query records every `modify` call, so we
+  // can assert which query modifiers the rollup applied for a given date range.
+  const makeService = () => {
+    const modify = jest.fn().mockReturnThis();
+    const txnQb: any = {
+      sum: jest.fn().mockReturnThis(),
+      groupBy: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      modify,
+    };
+    const txnBuilder = {
+      onBuild: (cb: (qb: any) => void) => {
+        cb(txnQb);
+        return Promise.resolve([]);
+      },
+    };
+
+    const articleModel = () => ({
+      query: () => ({ orderBy: () => Promise.resolve([]) }),
+    });
+    const articleAccountModel = () => ({ query: () => Promise.resolve([]) });
+    const accountTransactionModel = () => ({ query: () => txnBuilder });
+    const accountModel = () => ({
+      query: () => ({ whereIn: () => Promise.resolve([]) }),
+    });
+
+    const service = new ArticlesPlRollupService(
+      articleModel as any,
+      articleAccountModel as any,
+      accountTransactionModel as any,
+      accountModel as any,
+    );
+    return { service, modify };
+  };
+
+  it('applies the date filter when only fromDate is provided', async () => {
+    const { service, modify } = makeService();
+
+    await service.getRollup({ fromDate: '2026-01-01' } as any);
+
+    expect(modify).toHaveBeenCalledWith(
+      'filterDateRange',
+      '2026-01-01',
+      undefined,
+    );
+  });
+
+  it('applies the date filter when only toDate is provided', async () => {
+    const { service, modify } = makeService();
+
+    await service.getRollup({ toDate: '2026-12-31' } as any);
+
+    expect(modify).toHaveBeenCalledWith(
+      'filterDateRange',
+      undefined,
+      '2026-12-31',
+    );
+  });
+
+  it('does not apply the date filter when neither bound is provided', async () => {
+    const { service, modify } = makeService();
+
+    await service.getRollup({} as any);
+
+    expect(modify).not.toHaveBeenCalledWith(
+      'filterDateRange',
+      expect.anything(),
+      expect.anything(),
+    );
   });
 });

@@ -20,20 +20,29 @@ export class GetManagementArticlesService {
   public async getManagementArticles(
     filterDto: GetManagementArticlesQueryDto,
   ): Promise<GetManagementArticlesResponse> {
+    const asTree = filterDto.tree === 'true';
+
     const articles = await this.articleModel()
       .query()
       .onBuild((query) => {
-        if (filterDto.kind) {
+        // In tree mode we must NOT filter by kind in the query: dropping a
+        // parent whose child matches would orphan that child into a fake root.
+        // Instead we fetch the whole forest and prune by root kind below.
+        if (filterDto.kind && !asTree) {
           query.where('kind', filterDto.kind);
         }
         query.orderBy('sortOrder', 'asc');
       });
 
-    const data =
-      filterDto.tree === 'true'
-        ? (buildArticleTree(articles) as unknown as ManagementArticle[])
-        : articles;
+    if (!asTree) {
+      return { data: articles };
+    }
 
-    return { data };
+    let tree = buildArticleTree(articles) as unknown as ManagementArticle[];
+    if (filterDto.kind) {
+      tree = tree.filter((root) => (root as any).kind === filterDto.kind);
+    }
+
+    return { data: tree };
   }
 }

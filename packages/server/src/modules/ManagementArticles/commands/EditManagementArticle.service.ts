@@ -43,6 +43,7 @@ export class EditManagementArticleService {
     await this.validator.validateParentExists(dto.parentId);
     await this.validator.validateNoParentCycle(articleId, dto.parentId);
     await this.validator.validateAccountsExist(dto.accountIds);
+    await this.validator.validateAccountsMatchKind(dto.kind, dto.accountIds);
     await this.validator.validateAccountsNotMapped(dto.accountIds, articleId);
 
     const { accountIds, ...articleData } = dto;

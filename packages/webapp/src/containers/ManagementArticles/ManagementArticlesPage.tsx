@@ -5,6 +5,7 @@ import { Plus } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { ArticleTree } from './ArticleTree';
 import { ArticleForm } from './ArticleForm';
+import { ManagementArticle } from './schemas';
 import {
   useManagementArticles,
   useDeleteManagementArticle,
@@ -12,12 +13,11 @@ import {
 
 export default function ManagementArticlesPage() {
   const { featureCan } = useFeatureCan();
-  // Hooks from legacy JS module — pass empty props object; cast mutate to accept id arg
   const { data: tree } = useManagementArticles({ tree: 'true' }, {});
-  const deleteMutation = useDeleteManagementArticle({}) as unknown as {
-    mutate: (id: number | string) => void;
-  };
-  const [editing, setEditing] = React.useState<any>(undefined);
+  const deleteMutation = useDeleteManagementArticle({});
+  const [editing, setEditing] = React.useState<ManagementArticle | undefined>(
+    undefined,
+  );
   const [showForm, setShowForm] = React.useState(false);
 
   if (!featureCan('mgmt_articles')) return null;
@@ -26,20 +26,22 @@ export default function ManagementArticlesPage() {
     setEditing(undefined);
     setShowForm(true);
   };
-  const openEdit = (a: any) => {
-    setEditing(a);
+  const openEdit = (article: ManagementArticle) => {
+    setEditing(article);
     setShowForm(true);
   };
-  const onDelete = (a: any) => {
+  const onDelete = (article: ManagementArticle) => {
     if (window.confirm(intl.get('management_articles.delete_confirm'))) {
-      deleteMutation.mutate(a.id);
+      deleteMutation.mutate(article.id);
     }
   };
 
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{intl.get('management_articles.page_title')}</h1>
+        <h1 className="text-xl font-semibold">
+          {intl.get('management_articles.page_title')}
+        </h1>
         <Button onClick={openCreate}>
           <Plus className="mr-2 h-4 w-4" />
           {intl.get('management_articles.add')}
@@ -47,6 +49,7 @@ export default function ManagementArticlesPage() {
       </div>
       {showForm && (
         <ArticleForm
+          key={editing?.id ?? 'new'}
           article={editing}
           onDone={() => setShowForm(false)}
           onCancel={() => setShowForm(false)}

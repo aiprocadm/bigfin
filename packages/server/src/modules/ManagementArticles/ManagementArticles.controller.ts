@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -63,7 +64,7 @@ export class ManagementArticlesController {
   @Put(':id')
   @ApiOperation({ summary: 'Edit the given management article.' })
   editManagementArticle(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: EditManagementArticleDto,
   ) {
     return this.application.editManagementArticle(id, dto);
@@ -76,13 +77,13 @@ export class ManagementArticlesController {
     description: 'The management article details have been retrieved.',
     schema: { $ref: getSchemaPath(ManagementArticleResponseDto) },
   })
-  getManagementArticle(@Param('id') id: number) {
+  getManagementArticle(@Param('id', ParseIntPipe) id: number) {
     return this.application.getManagementArticle(id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete the given management article.' })
-  deleteManagementArticle(@Param('id') id: number) {
+  deleteManagementArticle(@Param('id', ParseIntPipe) id: number) {
     return this.application.deleteManagementArticle(id);
   }
 }

@@ -20,6 +20,7 @@
   "management_articles.error.name_required": "Введите название статьи",
   "management_articles.error.kind_required": "Выберите доход или расход",
   "management_articles.saved": "Статья сохранена",
+  "management_articles.save_error": "Не удалось сохранить статью",
   "management_articles.deleted": "Статья удалена",
   "email_or_phone_number": "Email или телефон",
   "password": "Пароль",

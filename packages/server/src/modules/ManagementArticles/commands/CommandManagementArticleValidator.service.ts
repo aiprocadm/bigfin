@@ -94,6 +94,26 @@ export class CommandManagementArticleValidatorService {
   }
 
   /**
+   * Validates that every mapped account is on the same side as the article kind:
+   * an income article may only map income accounts, an expense article only
+   * expense accounts (the account root type must equal the article kind).
+   */
+  public async validateAccountsMatchKind(kind: string, accountIds?: number[]) {
+    if (!accountIds || accountIds.length === 0) return;
+
+    const accounts = await this.accountModel()
+      .query()
+      .whereIn('id', accountIds);
+
+    const hasMismatch = accounts.some(
+      (account) => account.accountRootType !== kind,
+    );
+    if (hasMismatch) {
+      throw new ServiceError(ERRORS.ACCOUNT_KIND_MISMATCH);
+    }
+  }
+
+  /**
    * Validates none of the given accounts is already mapped to another article.
    * Enforces the v1 rule: one account belongs to exactly one article.
    */

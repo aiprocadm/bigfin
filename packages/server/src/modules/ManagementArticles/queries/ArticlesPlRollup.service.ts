@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
+import { Account } from '@/modules/Accounts/models/Account.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ManagementArticle } from '../models/ManagementArticle.model';
 import { ManagementArticleAccount } from '../models/ManagementArticleAccount.model';
@@ -10,12 +11,34 @@ interface ArticleRollupRow {
   id: number;
   name: string;
   kind: string;
+  parentId?: number | null;
   amount: number;
   [key: string]: any;
 }
 
 /**
- * Pure fold: distribute per-account nets into their mapped articles.
+ * Normal-aware net for a single account, mirroring Ledger.getAmount:
+ * credit-normal accounts (income) → credit − debit; debit-normal accounts
+ * (expense) → debit − credit. So income AND expense both come out POSITIVE
+ * (the management P&L shows expenses as positive magnitudes; profit is
+ * computed as income − expense by the consumer).
+ * @param {number} credit
+ * @param {number} debit
+ * @param {string} [normal] - 'credit' | 'debit'
+ * @returns {number}
+ */
+export function accountNet(
+  credit: number,
+  debit: number,
+  normal?: string,
+): number {
+  const c = Number(credit ?? 0);
+  const d = Number(debit ?? 0);
+  return normal === 'credit' ? c - d : d - c;
+}
+
+/**
+ * Pure fold: distribute per-account nets into their directly-mapped articles.
  * Accounts without a mapping are ignored (kept off the management report).
  * @param {Array} articles
  * @param {Array<{ accountId: number; articleId: number }>} map
@@ -42,6 +65,40 @@ export function foldAccountsIntoArticles(
   return articles.map((a) => ({ ...a, amount: totals.get(a.id) ?? 0 }));
 }
 
+/**
+ * Rolls each article's own amount up into all of its ancestors, so a parent
+ * article reports the total of its whole subtree (its own mapped accounts plus
+ * every descendant). Guards against malformed parent cycles via a visited set.
+ * @param {ArticleRollupRow[]} articles - rows carrying their own folded amount
+ * @returns {ArticleRollupRow[]}
+ */
+export function rollupAmountsToAncestors(
+  articles: ArticleRollupRow[],
+): ArticleRollupRow[] {
+  const byId = new Map<number, ArticleRollupRow>();
+  articles.forEach((a) => byId.set(a.id, a));
+
+  // Each node's own (directly-mapped) amount, captured before aggregation.
+  const own = new Map<number, number>();
+  articles.forEach((a) => own.set(a.id, a.amount));
+
+  // Running total per node, seeded with its own amount.
+  const total = new Map<number, number>();
+  articles.forEach((a) => total.set(a.id, a.amount));
+
+  articles.forEach((a) => {
+    let parentId = a.parentId ?? null;
+    const visited = new Set<number>();
+    while (parentId != null && byId.has(parentId) && !visited.has(parentId)) {
+      visited.add(parentId);
+      total.set(parentId, (total.get(parentId) ?? 0) + (own.get(a.id) ?? 0));
+      parentId = byId.get(parentId)!.parentId ?? null;
+    }
+  });
+
+  return articles.map((a) => ({ ...a, amount: total.get(a.id) ?? 0 }));
+}
+
 @Injectable()
 export class ArticlesPlRollupService {
   constructor(
@@ -57,12 +114,16 @@ export class ArticlesPlRollupService {
     private readonly accountTransactionModel: TenantModelProxy<
       typeof AccountTransaction
     >,
+
+    @Inject(Account.name)
+    private readonly accountModel: TenantModelProxy<typeof Account>,
   ) {}
 
   /**
    * Builds the management "P&L by articles" rollup for a date range / branches.
-   * Fact is computed per account (credit - debit), then folded into articles
-   * by the management_article_accounts map.
+   * Per account the net is computed normal-aware (income and expense both
+   * positive), folded into its directly-mapped article, then summed up the
+   * article tree so each parent reports its whole subtree.
    * @param {ArticlesRollupQueryDto} query
    * @returns {Promise<ArticleRollupRow[]>}
    */
@@ -86,11 +147,26 @@ export class ArticlesPlRollupService {
         }
       });
 
+    // Look up each mapped account's normal (credit/debit) to sign its net.
+    const mappedAccountIds = map.map((m) => m.accountId);
+    const accounts = mappedAccountIds.length
+      ? await this.accountModel().query().whereIn('id', mappedAccountIds)
+      : [];
+    const normalByAccountId = new Map<number, string>();
+    accounts.forEach((a: any) =>
+      normalByAccountId.set(a.id, a.accountNormal),
+    );
+
     const accountNets = accountTotals.map((row: any) => ({
       accountId: row.accountId,
-      net: Number(row.credit ?? 0) - Number(row.debit ?? 0),
+      net: accountNet(
+        row.credit,
+        row.debit,
+        normalByAccountId.get(row.accountId),
+      ),
     }));
 
-    return foldAccountsIntoArticles(articles, map, accountNets);
+    const folded = foldAccountsIntoArticles(articles, map, accountNets);
+    return rollupAmountsToAncestors(folded);
   }
 }

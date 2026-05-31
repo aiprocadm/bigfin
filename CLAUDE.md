@@ -92,7 +92,7 @@ pnpm system:migrate:rollback        # / tenants:migrate:rollback
 ## i18n конвенции
 
 - **Lang-файлы**: `packages/webapp/src/lang/{en,ru,ar,es,sv}/index.json`
-- **Активные локали** (`SUPPORTED_LOCALES`): только `en` + `ar`. RU развивается активно для founder'а и будет добавлен в active list ближе к релизу.
+- **Активные локали** (`SUPPORTED_LOCALES` в `AppIntlLoader.tsx`): `en` + `ru` + `ar`. RU активен (развивается для founder'а); `es`/`sv` — папки есть, но не активны (мёртвый код).
 - **Парность ключей en↔ru поддерживается строго**. После каждого изменения — `node packages/webapp/scripts/lang-check.js`.
 
 ### Паттерны в коде

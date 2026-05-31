@@ -42,6 +42,9 @@ import { ClsModule } from 'nestjs-cls';
 import { TenantUser } from './models/TenantUser.model';
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
+import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
+import { Budget } from '@/modules/Budgets/models/Budget.model';
+import { BudgetLine } from '@/modules/Budgets/models/BudgetLine.model';
 
 const models = [
   Item,
@@ -83,6 +86,9 @@ const models = [
   PaymentReceivedEntry,
   ManagementArticle,
   ManagementArticleAccount,
+  PlannedOperation,
+  Budget,
+  BudgetLine,
   TenantUser,
 ];
 

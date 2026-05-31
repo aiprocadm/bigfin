@@ -3,6 +3,8 @@ export enum Features {
   BRANCHES = 'branches',
   BankSyncing = 'BankSyncing',
   MGMT_ARTICLES = 'mgmt_articles',
+  PAYMENT_CALENDAR = 'payment_calendar',
+  BUDGETS = 'budgets',
 }
 
 export interface IFeatureAllItem {

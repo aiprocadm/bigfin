@@ -23,5 +23,6 @@ import { ArticlesPlRollupService } from './queries/ArticlesPlRollup.service';
     GetManagementArticlesService,
     ArticlesPlRollupService,
   ],
+  exports: [ArticlesPlRollupService],
 })
 export class ManagementArticlesModule {}

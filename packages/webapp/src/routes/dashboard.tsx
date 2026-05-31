@@ -1260,6 +1260,24 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('management_articles.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Payment Calendar
+  {
+    path: `/payment-calendar`,
+    component: lazy(
+      () => import('@/containers/PaymentCalendar/PaymentCalendarPage'),
+    ),
+    breadcrumb: intl.get('payment_calendar.page_title'),
+    pageTitle: intl.get('payment_calendar.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  // Budgets
+  {
+    path: `/budgets`,
+    component: lazy(() => import('@/containers/Budgets/BudgetsPage')),
+    breadcrumb: intl.get('budgets.page_title'),
+    pageTitle: intl.get('budgets.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

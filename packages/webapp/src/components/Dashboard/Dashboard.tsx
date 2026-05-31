@@ -4,31 +4,27 @@ import { Switch, Route } from 'react-router';
 
 import '@/style/pages/Dashboard/Dashboard.scss';
 
-import { Sidebar } from '@/containers/Dashboard/Sidebar/Sidebar';
 import DashboardContent from '@/components/Dashboard/DashboardContent';
 import DialogsContainer from '@/components/DialogsContainer';
 import PreferencesPage from '@/components/Preferences/PreferencesPage';
 import DashboardUniversalSearch from '@/containers/UniversalSearch/DashboardUniversalSearch';
-import DashboardSplitPane from '@/components/Dashboard/DashboardSplitePane';
 import GlobalHotkeys from './GlobalHotkeys';
 import DashboardProvider from './DashboardProvider';
 import DrawersContainer from '@/components/DrawersContainer';
 import AlertsContainer from '@/containers/AlertsContainer';
 import { DashboardSockets } from './DashboardSockets';
+import { DashboardShell } from '@/components/Dashboard/DashboardShell';
+import { ConnectedSidebar } from '@/components/Dashboard/ConnectedSidebar';
+import { ConnectedTopbar } from '@/components/Dashboard/ConnectedTopbar';
 
 /**
  * Dashboard preferences.
  */
 function DashboardPreferences() {
   return (
-    <div className="dashboard-layout">
-      <div className="dashboard-layout__main">
-        <DashboardSplitPane>
-          <Sidebar />
-          <PreferencesPage />
-        </DashboardSplitPane>
-      </div>
-    </div>
+    <DashboardShell sidebar={<ConnectedSidebar />} topbar={<ConnectedTopbar />}>
+      <PreferencesPage />
+    </DashboardShell>
   );
 }
 
@@ -37,14 +33,9 @@ function DashboardPreferences() {
  */
 function DashboardAnyPage() {
   return (
-    <div className="dashboard-layout">
-      <div className="dashboard-layout__main">
-        <DashboardSplitPane>
-          <Sidebar />
-          <DashboardContent />
-        </DashboardSplitPane>
-      </div>
-    </div>
+    <DashboardShell sidebar={<ConnectedSidebar />} topbar={<ConnectedTopbar />}>
+      <DashboardContent />
+    </DashboardShell>
   );
 }
 

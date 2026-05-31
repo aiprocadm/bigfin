@@ -30,6 +30,14 @@ export class FeaturesConfigure {
         name: Features.MGMT_ARTICLES,
         defaultValue: false,
       },
+      {
+        name: Features.PAYMENT_CALENDAR,
+        defaultValue: false,
+      },
+      {
+        name: Features.BUDGETS,
+        defaultValue: false,
+      },
     ];
   }
 }

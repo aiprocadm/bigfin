@@ -16,7 +16,7 @@
 ## Технологии
 
 - **Монорепо**: `lerna` + `pnpm` workspaces (см. `pnpm-workspace.yaml`)
-- **Backend** (`packages/server`): NestJS 10, TypeScript, PostgreSQL через Knex, Redis, BullMQ, S3
+- **Backend** (`packages/server`): NestJS 10, TypeScript, MySQL/MariaDB через Knex, Redis, BullMQ, S3
 - **Frontend** (`packages/webapp`): React 18, **Blueprint.js** (легаси) + **Radix UI / shadcn** (новый D-redesign), Webpack, Redux Toolkit, Formik (легаси) + React Hook Form (новый)
 - **i18n**: `react-intl-universal` (web), `nestjs-i18n` (server)
 - **Тесты**: Jest (backend), Playwright (e2e)

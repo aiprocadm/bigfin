@@ -25,7 +25,7 @@
 
 | План | Под-проект | Goal | Статус |
 |---|---|---|---|
-| [2026-05-21-russian-localization-plan.md](2026-05-21-russian-localization-plan.md) | ① Русификация v1 | Полная RU-локаль (frontend+server), терминология упр.учёта, RUB, форматы | 📦 **Историческая** версия (старые `bigcapital/` пути). Заменена v2/v3 |
+| [2026-05-21-russian-localization-plan.md](2026-05-21-russian-localization-plan.md) | ① Русификация v1 | Полная RU-локаль (frontend+server), терминология упр.учёта, RUB, форматы | 📦 **Историческая** версия (старые пути из исходной кодовой базы). Заменена v2/v3 |
 | [2026-05-22-russian-localization-plan.md](2026-05-22-russian-localization-plan.md) | ① Русификация v2 | То же, с учётом, что фундамент (PR #1/#2) уже готов | 📦 **Заменена** v3 |
 | [2026-05-27-russian-localization-plan.md](2026-05-27-russian-localization-plan.md) | ① Русификация v3 | Доперевод модулей; workflow через `translations/ru.json` + `apply-ru-translations.js` | ✅ **Почти завершён** (PR #1,#4,#5,#6,#7). Осталась визуальная приёмка `?lang=ru` |
 | [2026-05-25-redesign-plan.md](2026-05-25-redesign-plan.md) | D-редизайн Ф0/1/2 | Tailwind 4 + Storybook 8 + shadcn рядом с Blueprint; Login/Register/Forgot на Bold Fintech | ✅ **Смержен** (PR #11,#12,#13) |

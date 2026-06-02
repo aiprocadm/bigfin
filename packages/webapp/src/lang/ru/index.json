@@ -25,6 +25,7 @@
   "budgets.planfact.title": "План-факт",
   "budgets.planfact.col_plan": "План",
   "budgets.planfact.col_fact": "Факт",
+  "budgets.planfact.closest": "Ближайший к факту",
   "budgets.planfact.col_variance_abs": "Отклонение",
   "budgets.planfact.col_variance_pct": "Отклонение %",
   "budgets.planfact.period": "Период",

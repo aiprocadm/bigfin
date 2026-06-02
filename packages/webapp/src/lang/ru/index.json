@@ -40,6 +40,8 @@
   "payment_calendar.field.direction": "Тип",
   "payment_calendar.direction.inflow": "Поступление",
   "payment_calendar.direction.outflow": "Выплата",
+  "payment_calendar.filter.all": "Все",
+  "payment_calendar.filter.all_accounts": "Все счета",
   "payment_calendar.field.amount": "Сумма",
   "payment_calendar.field.date": "Дата",
   "payment_calendar.field.article": "Статья",

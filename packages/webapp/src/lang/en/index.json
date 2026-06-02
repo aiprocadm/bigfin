@@ -40,6 +40,8 @@
   "payment_calendar.field.direction": "Type",
   "payment_calendar.direction.inflow": "Inflow",
   "payment_calendar.direction.outflow": "Outflow",
+  "payment_calendar.filter.all": "All",
+  "payment_calendar.filter.all_accounts": "All accounts",
   "payment_calendar.field.amount": "Amount",
   "payment_calendar.field.date": "Date",
   "payment_calendar.field.article": "Article",

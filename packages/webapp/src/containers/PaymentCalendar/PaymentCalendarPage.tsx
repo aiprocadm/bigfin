@@ -5,15 +5,29 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { usePaymentCalendar } from '@/hooks/query/paymentCalendar';
+import { useAccounts } from '@/hooks/query/accounts';
 import { DayRow } from './DayRow';
 import { PlannedOperationDialog } from './PlannedOperationDialog';
 import { PlannedOperation } from './schemas';
+
+interface AccountRow {
+  id: number;
+  name: string;
+  code?: string;
+}
+
+const filterSelectClassName =
+  'border-input bg-background h-9 rounded-md border px-3 text-sm';
 
 export default function PaymentCalendarPage() {
   const { featureCan } = useFeatureCan();
   const [horizon, setHorizon] = React.useState<'week' | 'month' | 'quarter'>(
     'month',
   );
+  const [direction, setDirection] = React.useState<
+    'all' | 'inflow' | 'outflow'
+  >('all');
+  const [accountId, setAccountId] = React.useState<number | null>(null);
   const [showForm, setShowForm] = React.useState(false);
   const [editing, setEditing] = React.useState<PlannedOperation | undefined>();
 
@@ -22,7 +36,16 @@ export default function PaymentCalendarPage() {
     .add(1, horizon === 'week' ? 'week' : horizon === 'quarter' ? 'quarter' : 'month')
     .format('YYYY-MM-DD');
 
-  const { data } = usePaymentCalendar({ fromDate, toDate }, {});
+  const { data: accounts } = useAccounts({}, {});
+  const { data } = usePaymentCalendar(
+    {
+      fromDate,
+      toDate,
+      ...(direction !== 'all' ? { direction } : {}),
+      ...(accountId != null ? { accountId } : {}),
+    },
+    {},
+  );
 
   if (!featureCan('payment_calendar')) return null;
 
@@ -65,6 +88,41 @@ export default function PaymentCalendarPage() {
             {intl.get('payment_calendar.add')}
           </Button>
         </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-1">
+          {(['all', 'inflow', 'outflow'] as const).map((d) => (
+            <Button
+              key={d}
+              variant={direction === d ? 'primary' : 'ghost'}
+              size="sm"
+              onClick={() => setDirection(d)}
+            >
+              {d === 'all'
+                ? intl.get('payment_calendar.filter.all')
+                : intl.get(`payment_calendar.direction.${d}`)}
+            </Button>
+          ))}
+        </div>
+        <select
+          className={filterSelectClassName}
+          aria-label={intl.get('payment_calendar.field.account')}
+          value={accountId == null ? '' : String(accountId)}
+          onChange={(e) =>
+            setAccountId(
+              e.target.value === '' ? null : Number(e.target.value),
+            )
+          }
+        >
+          <option value="">
+            {intl.get('payment_calendar.filter.all_accounts')}
+          </option>
+          {((accounts ?? []) as AccountRow[]).map((acc) => (
+            <option key={acc.id} value={acc.id}>
+              {acc.code ? `${acc.code} — ${acc.name}` : acc.name}
+            </option>
+          ))}
+        </select>
       </div>
       {showForm && (
         <PlannedOperationDialog

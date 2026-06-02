@@ -23,6 +23,8 @@
   "budgets.error.name_required": "Введите название бюджета",
   "budgets.error.type_required": "Выберите тип бюджета",
   "budgets.planfact.title": "План-факт",
+  "budgets.planfact.compare": "Сравнить сценарии",
+  "budgets.planfact.closest": "Ближайший к факту",
   "budgets.planfact.col_plan": "План",
   "budgets.planfact.col_fact": "Факт",
   "budgets.planfact.col_variance_abs": "Отклонение",

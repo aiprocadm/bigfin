@@ -23,6 +23,8 @@
   "budgets.error.name_required": "Enter the budget name",
   "budgets.error.type_required": "Choose the budget type",
   "budgets.planfact.title": "Plan vs fact",
+  "budgets.planfact.compare": "Compare scenarios",
+  "budgets.planfact.closest": "Closest to actual",
   "budgets.planfact.col_plan": "Plan",
   "budgets.planfact.col_fact": "Fact",
   "budgets.planfact.col_variance_abs": "Variance",

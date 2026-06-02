@@ -25,6 +25,7 @@
   "budgets.planfact.title": "Plan vs fact",
   "budgets.planfact.col_plan": "Plan",
   "budgets.planfact.col_fact": "Fact",
+  "budgets.planfact.closest": "Closest to actual",
   "budgets.planfact.col_variance_abs": "Variance",
   "budgets.planfact.col_variance_pct": "Variance %",
   "budgets.planfact.period": "Period",

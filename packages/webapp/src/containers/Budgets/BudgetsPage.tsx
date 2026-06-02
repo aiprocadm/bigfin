@@ -19,10 +19,7 @@ export default function BudgetsPage() {
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Budget | undefined>();
   const [tab, setTab] = React.useState<'grid' | 'planfact'>('grid');
-  const [scenario, setScenario] = React.useState<string>('realistic');
-  const [month, setMonth] = React.useState<string>(''); // '' = весь год, иначе 'YYYY-MM'
-  const [branchId, setBranchId] = React.useState<number | ''>('');
-  const { data: branches } = useBranches({}, {});
+  const [scenario, setScenario] = React.useState('realistic');
 
   if (!featureCan('budgets')) return null;
 
@@ -70,94 +67,47 @@ export default function BudgetsPage() {
 
       {selected && (
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <Button
-              variant={tab === 'grid' ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setTab('grid')}
-            >
-              {intl.get('budgets.page_title')}
-            </Button>
-            <Button
-              variant={tab === 'planfact' ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setTab('planfact')}
-            >
-              {intl.get('budgets.planfact.title')}
-            </Button>
-            <label className="ml-auto flex items-center gap-2 text-sm">
-              {intl.get('budgets.field.scenario')}
-              <select
-                className="rounded-md border px-2 py-1"
-                value={scenario}
-                onChange={(e) => setScenario(e.target.value)}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex gap-2">
+              <Button
+                variant={tab === 'grid' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setTab('grid')}
               >
-                {SCENARIOS.map((s) => (
-                  <option key={s} value={s}>
+                {intl.get('budgets.page_title')}
+              </Button>
+              <Button
+                variant={tab === 'planfact' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setTab('planfact')}
+              >
+                {intl.get('budgets.planfact.title')}
+              </Button>
+            </div>
+            <div className="flex items-center gap-1">
+              {(['optimistic', 'realistic', 'pessimistic'] as const).map(
+                (s) => (
+                  <Button
+                    key={s}
+                    variant={scenario === s ? 'primary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setScenario(s)}
+                  >
                     {intl.get(`budgets.scenario.${s}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
+                  </Button>
+                ),
+              )}
+            </div>
           </div>
           {tab === 'grid' ? (
             <BudgetGrid budgetId={selected.id} scenario={scenario} />
           ) : (
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <label className="flex items-center gap-2">
-                  {intl.get('budgets.planfact.period')}
-                  <input
-                    type="month"
-                    className="rounded-md border px-2 py-1"
-                    min={`${year}-01`}
-                    max={`${year}-12`}
-                    value={month}
-                    onChange={(e) => setMonth(e.target.value)}
-                  />
-                  {month && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setMonth('')}
-                    >
-                      {intl.get('budgets.planfact.all_year')}
-                    </Button>
-                  )}
-                </label>
-                {Array.isArray(branches) && branches.length > 0 && (
-                  <label className="flex items-center gap-2">
-                    {intl.get('budgets.planfact.direction')}
-                    <select
-                      className="rounded-md border px-2 py-1"
-                      value={branchId}
-                      onChange={(e) =>
-                        setBranchId(
-                          e.target.value ? Number(e.target.value) : '',
-                        )
-                      }
-                    >
-                      <option value="">
-                        {intl.get('budgets.planfact.all_directions')}
-                      </option>
-                      {branches.map((b: any) => (
-                        <option key={b.id} value={b.id}>
-                          {b.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                )}
-              </div>
-              <BudgetPlanFact
-                budgetId={selected.id}
-                fromDate={pfFrom}
-                toDate={pfTo}
-                scenario={scenario}
-                type={selected.type}
-                branchesIds={branchId ? [branchId] : undefined}
-              />
-            </div>
+            <BudgetPlanFact
+              budgetId={selected.id}
+              fromDate={fromDate}
+              toDate={toDate}
+              scenario={scenario}
+            />
           )}
         </div>
       )}

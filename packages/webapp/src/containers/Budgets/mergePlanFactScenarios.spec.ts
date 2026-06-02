@@ -69,4 +69,17 @@ describe('mergePlanFactScenarios', () => {
       mergePlanFactScenarios({ optimistic: [], realistic: [], pessimistic: [] }),
     ).toEqual([]);
   });
+
+  it('handles a negative fact (expense article)', () => {
+    const rows = mergePlanFactScenarios({
+      optimistic: [{ articleId: 5, name: 'Расходы', plan: -90, fact: -100 }],
+      realistic: [{ articleId: 5, name: 'Расходы', plan: -110, fact: -100 }],
+      pessimistic: [{ articleId: 5, name: 'Расходы', plan: -200, fact: -100 }],
+    });
+
+    // |−90−(−100)|=10 and |−110−(−100)|=10 tie → optimistic wins by order.
+    expect(rows[0].closest).toBe('optimistic');
+    // (−90 − (−100)) / −100 * 100 = −10
+    expect(rows[0].deviations.optimistic).toBe(-10);
+  });
 });

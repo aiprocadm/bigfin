@@ -4,7 +4,6 @@ export type ScenarioKey = 'optimistic' | 'realistic' | 'pessimistic';
 export interface PlanFactRow {
   articleId: number;
   name: string;
-  kind?: string;
   plan: number;
   fact: number;
 }

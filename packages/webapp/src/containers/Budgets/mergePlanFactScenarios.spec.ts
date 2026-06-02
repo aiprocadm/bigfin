@@ -32,6 +32,11 @@ describe('mergePlanFactScenarios', () => {
       pessimistic: 0,
     });
     expect(rows[0].closest).toBe('realistic');
+    expect(rows[0].deviations).toEqual({
+      optimistic: -100,
+      realistic: 0,
+      pessimistic: -100,
+    });
   });
 
   it('returns null deviations and no highlight when fact is 0', () => {

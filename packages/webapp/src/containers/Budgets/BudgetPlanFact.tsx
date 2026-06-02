@@ -6,12 +6,18 @@ export function BudgetPlanFact({
   budgetId,
   fromDate,
   toDate,
+  scenario,
 }: {
   budgetId: number;
   fromDate: string;
   toDate: string;
+  scenario: string;
 }) {
-  const { data } = useBudgetPlanFact(budgetId, { fromDate, toDate }, {});
+  const { data } = useBudgetPlanFact(
+    budgetId,
+    { fromDate, toDate, scenario },
+    {},
+  );
   const rows = data?.rows ?? [];
 
   return (

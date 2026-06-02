@@ -10,34 +10,36 @@ const MONTHS = Array.from({ length: 12 }, (_, i) => i); // 0..11
 const periodOf = (year: number, monthIdx: number) =>
   `${year}-${String(monthIdx + 1).padStart(2, '0')}-01`;
 
-export function BudgetGrid({ budgetId }: { budgetId: number }) {
+export function BudgetGrid({
+  budgetId,
+  scenario,
+}: {
+  budgetId: number;
+  scenario: string;
+}) {
   const { data: budget } = useBudget(budgetId, {});
   const { data: tree } = useManagementArticles({ tree: 'true' }, {});
   const upsert = useUpsertBudgetLines({});
 
-  const scenario = budget?.activeScenario ?? 'realistic';
   const year = budget?.fiscalYear ?? new Date().getFullYear();
 
-  // Карта существующих сумм: `${articleId}:${period}` → amount.
+  // Карта сумм всех сценариев: `${scenario}:${articleId}:${period}` → amount.
   const initial = React.useMemo(() => {
     const m: Record<string, number> = {};
-    (budget?.lines ?? [])
-      .filter((l: any) => l.scenario === scenario)
-      .forEach((l: any) => {
-        m[`${l.articleId}:${String(l.period).slice(0, 10)}`] = Number(
-          l.plannedAmount,
-        );
-      });
+    (budget?.lines ?? []).forEach((l: any) => {
+      m[`${l.scenario}:${l.articleId}:${String(l.period).slice(0, 10)}`] =
+        Number(l.plannedAmount);
+    });
     return m;
-  }, [budget, scenario]);
+  }, [budget]);
 
   const [edits, setEdits] = React.useState<Record<string, number>>({});
   const valueAt = (articleId: number, period: string) => {
-    const key = `${articleId}:${period}`;
+    const key = `${scenario}:${articleId}:${period}`;
     return edits[key] ?? initial[key] ?? 0;
   };
   const setCell = (articleId: number, period: string, v: number) =>
-    setEdits((p) => ({ ...p, [`${articleId}:${period}`]: v }));
+    setEdits((p) => ({ ...p, [`${scenario}:${articleId}:${period}`]: v }));
 
   const flatten = (nodes: any[], acc: any[] = []): any[] => {
     (nodes ?? []).forEach((n) => {
@@ -50,8 +52,13 @@ export function BudgetGrid({ budgetId }: { budgetId: number }) {
 
   const onSave = () => {
     const lines = Object.entries(edits).map(([key, plannedAmount]) => {
-      const [articleId, period] = key.split(':');
-      return { articleId: Number(articleId), period, scenario, plannedAmount };
+      const [sc, articleId, period] = key.split(':');
+      return {
+        articleId: Number(articleId),
+        period,
+        scenario: sc,
+        plannedAmount,
+      };
     });
     if (lines.length) upsert.mutate([budgetId, { lines }]);
   };

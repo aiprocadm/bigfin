@@ -16,6 +16,7 @@ export default function BudgetsPage() {
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Budget | undefined>();
   const [tab, setTab] = React.useState<'grid' | 'planfact'>('grid');
+  const [scenario, setScenario] = React.useState('realistic');
 
   if (!featureCan('budgets')) return null;
 
@@ -57,29 +58,46 @@ export default function BudgetsPage() {
 
       {selected && (
         <div className="flex flex-col gap-3">
-          <div className="flex gap-2">
-            <Button
-              variant={tab === 'grid' ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setTab('grid')}
-            >
-              {intl.get('budgets.page_title')}
-            </Button>
-            <Button
-              variant={tab === 'planfact' ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setTab('planfact')}
-            >
-              {intl.get('budgets.planfact.title')}
-            </Button>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex gap-2">
+              <Button
+                variant={tab === 'grid' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setTab('grid')}
+              >
+                {intl.get('budgets.page_title')}
+              </Button>
+              <Button
+                variant={tab === 'planfact' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setTab('planfact')}
+              >
+                {intl.get('budgets.planfact.title')}
+              </Button>
+            </div>
+            <div className="flex items-center gap-1">
+              {(['optimistic', 'realistic', 'pessimistic'] as const).map(
+                (s) => (
+                  <Button
+                    key={s}
+                    variant={scenario === s ? 'primary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setScenario(s)}
+                  >
+                    {intl.get(`budgets.scenario.${s}`)}
+                  </Button>
+                ),
+              )}
+            </div>
           </div>
           {tab === 'grid' ? (
-            <BudgetGrid budgetId={selected.id} />
+            <BudgetGrid budgetId={selected.id} scenario={scenario} />
           ) : (
             <BudgetPlanFact
               budgetId={selected.id}
               fromDate={fromDate}
               toDate={toDate}
+              scenario={scenario}
             />
           )}
         </div>

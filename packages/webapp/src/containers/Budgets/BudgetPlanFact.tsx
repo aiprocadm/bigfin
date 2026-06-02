@@ -21,7 +21,13 @@ export function BudgetPlanFact({
   const rows = data?.rows ?? [];
 
   return (
-    <table className="min-w-full text-sm">
+    <div className="flex flex-col gap-2">
+      {type === 'bdds' && (
+        <p className="text-xs text-gray-500">
+          {intl.get('budgets.planfact.bdds_hint')}
+        </p>
+      )}
+      <table className="min-w-full text-sm">
       <thead>
         <tr>
           <th className="px-2 py-1 text-left">
@@ -64,6 +70,7 @@ export function BudgetPlanFact({
           </tr>
         ))}
       </tbody>
-    </table>
+      </table>
+    </div>
   );
 }

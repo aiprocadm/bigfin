@@ -5,10 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { useBudgets } from '@/hooks/query/budgets';
+import { useBranches } from '@/hooks/query/branches';
 import { BudgetFormDialog } from './BudgetFormDialog';
 import { BudgetGrid } from './BudgetGrid';
 import { BudgetPlanFact } from './BudgetPlanFact';
 import { Budget } from './schemas';
+
+const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
 
 export default function BudgetsPage() {
   const { featureCan } = useFeatureCan();
@@ -21,8 +24,11 @@ export default function BudgetsPage() {
   if (!featureCan('budgets')) return null;
 
   const year = selected?.fiscalYear ?? moment().year();
-  const fromDate = `${year}-01-01`;
-  const toDate = `${year}-12-31`;
+  // Период план-факта: конкретный месяц или весь финансовый год.
+  const pfFrom = month ? `${month}-01` : `${year}-01-01`;
+  const pfTo = month
+    ? moment(`${month}-01`).endOf('month').format('YYYY-MM-DD')
+    : `${year}-12-31`;
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -48,7 +54,10 @@ export default function BudgetsPage() {
           <li key={b.id}>
             <button
               className="text-left underline"
-              onClick={() => setSelected(b)}
+              onClick={() => {
+                setSelected(b);
+                setScenario(b.activeScenario ?? 'realistic');
+              }}
             >
               {b.name} ({intl.get(`budgets.type.${b.type}`)}, {b.fiscalYear})
             </button>

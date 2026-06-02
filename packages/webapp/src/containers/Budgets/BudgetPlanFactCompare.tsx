@@ -2,11 +2,9 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import { useBudgetPlanFact } from '@/hooks/query/budgets';
 import { mergePlanFactScenarios, ScenarioKey } from './mergePlanFactScenarios';
+import { fmt, fmtPct } from './budgetFormatters';
 
 const SCENARIOS: ScenarioKey[] = ['optimistic', 'realistic', 'pessimistic'];
-
-const fmt = (n: number) => n.toLocaleString('ru-RU');
-const pct = (v: number | null) => (v == null ? '—' : `${v > 0 ? '+' : ''}${v}%`);
 
 export function BudgetPlanFactCompare({
   budgetId,
@@ -79,7 +77,7 @@ export function BudgetPlanFactCompare({
               >
                 {fmt(r.plans[s])}
                 <span className="block text-xs text-gray-500">
-                  {pct(r.deviations[s])}
+                  {fmtPct(r.deviations[s])}
                 </span>
               </td>
             ))}

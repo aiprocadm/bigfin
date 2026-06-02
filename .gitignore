@@ -12,5 +12,8 @@ docker-compose.override.yml
 test-results/
 .qodo
 
+# Superpowers brainstorm temp files (visual companion mockups)
+.superpowers/
+
 
 .pnpm-store

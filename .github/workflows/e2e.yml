@@ -54,7 +54,7 @@ jobs:
         with:
           node-version: 18.16.1
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v6
         with:
           version: 9
 

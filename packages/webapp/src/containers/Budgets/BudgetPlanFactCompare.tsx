@@ -10,26 +10,24 @@ export function BudgetPlanFactCompare({
   budgetId,
   fromDate,
   toDate,
-  branchesIds,
 }: {
   budgetId: number;
   fromDate: string;
   toDate: string;
-  branchesIds?: number[];
 }) {
   const opt = useBudgetPlanFact(
     budgetId,
-    { fromDate, toDate, scenario: 'optimistic', branchesIds },
+    { fromDate, toDate, scenario: 'optimistic' },
     {},
   );
   const real = useBudgetPlanFact(
     budgetId,
-    { fromDate, toDate, scenario: 'realistic', branchesIds },
+    { fromDate, toDate, scenario: 'realistic' },
     {},
   );
   const pes = useBudgetPlanFact(
     budgetId,
-    { fromDate, toDate, scenario: 'pessimistic', branchesIds },
+    { fromDate, toDate, scenario: 'pessimistic' },
     {},
   );
 

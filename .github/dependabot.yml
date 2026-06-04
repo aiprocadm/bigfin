@@ -1,0 +1,35 @@
+# Dependabot — автоматические PR на обновление зависимостей.
+# Документация: https://docs.github.com/code-security/dependabot
+version: 2
+
+updates:
+  # JS/TS зависимости (pnpm workspaces): корень + все пакеты монорепо.
+  # Обновление pnpm-lock.yaml делает инфраструктура GitHub (не локальный pnpm install).
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/packages/server"
+      - "/packages/webapp"
+      - "/shared/email-components"
+      - "/shared/pdf-templates"
+      - "/shared/sdk-ts"
+      - "/shared/utils"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Низкорисковые обновления (minor + patch) — одним PR, чтобы не плодить шум.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Версии GitHub Actions в воркфлоу (.github/workflows/*).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(ci)"

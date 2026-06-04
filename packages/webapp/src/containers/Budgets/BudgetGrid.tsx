@@ -7,6 +7,8 @@ import { useBudget, useUpsertBudgetLines } from '@/hooks/query/budgets';
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i); // 0..11
 
+const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
+
 const periodOf = (year: number, monthIdx: number) =>
   `${year}-${String(monthIdx + 1).padStart(2, '0')}-01`;
 

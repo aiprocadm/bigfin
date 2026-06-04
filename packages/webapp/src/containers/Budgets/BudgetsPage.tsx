@@ -20,6 +20,7 @@ export default function BudgetsPage() {
   const [selected, setSelected] = React.useState<Budget | undefined>();
   const [tab, setTab] = React.useState<'grid' | 'planfact'>('grid');
   const [scenario, setScenario] = React.useState('realistic');
+  const [month, setMonth] = React.useState<string>(''); // '' = весь финансовый год, иначе 'YYYY-MM'
 
   if (!featureCan('budgets')) return null;
 
@@ -104,9 +105,10 @@ export default function BudgetsPage() {
           ) : (
             <BudgetPlanFact
               budgetId={selected.id}
-              fromDate={fromDate}
-              toDate={toDate}
+              fromDate={pfFrom}
+              toDate={pfTo}
               scenario={scenario}
+              type={selected.type}
             />
           )}
         </div>

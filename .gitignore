@@ -17,3 +17,24 @@ test-results/
 
 
 .pnpm-store
+
+# Backup files (local working copies, never for the repo)
+*.bak
+*.bak2
+*.bak3
+
+# Local Claude Code / superpowers artifacts (live in ~/.claude or are machine-local;
+# the tracked .claude/CLAUDE.md stays tracked — gitignore does not untrack it)
+.claude/agents/
+.claude/hooks/
+.claude/skills/
+.claude/worktrees/
+.claude/launch.json
+.claude/settings.local.json
+.superpowers/
+
+# Local one-off / installer scripts (machine-local tooling, not product code)
+/apply-claude-automation.js
+/apply-block-secrets-hook.js
+/inject-i18n-keys.js
+/move-repo-flat.js

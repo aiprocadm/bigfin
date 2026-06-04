@@ -10,11 +10,13 @@ export function BudgetPlanFact({
   fromDate,
   toDate,
   scenario,
+  type,
 }: {
   budgetId: number;
   fromDate: string;
   toDate: string;
   scenario: string;
+  type: 'bdir' | 'bdds';
 }) {
   const [compare, setCompare] = React.useState(false);
   const { data } = useBudgetPlanFact(

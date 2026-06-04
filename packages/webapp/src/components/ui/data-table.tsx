@@ -42,15 +42,22 @@ export function DataTable({
   };
 
   const allIds = React.useMemo(() => data.map(getRowId), [data, getRowId]);
-  const allChecked = allIds.length > 0 && selected.length === allIds.length;
-  const someChecked = selected.length > 0 && !allChecked;
+  // Content-based (not length-based) so the header can't show "all selected"
+  // when the selection actually holds ids from a different page.
+  const allChecked =
+    allIds.length > 0 && allIds.every((id) => selected.includes(id));
+  const someChecked =
+    allIds.some((id) => selected.includes(id)) && !allChecked;
 
-  const toggleAll = (checked: boolean) => setSelected(checked ? allIds : []);
-  const toggleRow = (id: string, checked: boolean) =>
-    setSelected(checked ? [...selected, id] : selected.filter((x) => x !== id));
-
-  const selectionColumn = React.useMemo(
-    () => ({
+  const selectionColumn = React.useMemo(() => {
+    // Defined inside the memo so they always close over the current
+    // `selected`/`allIds` snapshot (no stale-closure gap).
+    const toggleAll = (checked: boolean) => setSelected(checked ? allIds : []);
+    const toggleRow = (id: string, checked: boolean) =>
+      setSelected(
+        checked ? [...selected, id] : selected.filter((x) => x !== id),
+      );
+    return {
       id: '__select__',
       disableSortBy: true,
       width: 40,
@@ -72,9 +79,8 @@ export function DataTable({
           />
         );
       },
-    }),
-    [allChecked, someChecked, selected, allIds], // eslint-disable-line react-hooks/exhaustive-deps
-  );
+    };
+  }, [allChecked, someChecked, selected, allIds, getRowId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const tableColumns = React.useMemo(
     () => (enableSelection ? [selectionColumn, ...columns] : columns),
@@ -94,9 +100,11 @@ export function DataTable({
     ) as any;
 
   const sortBy = state.sortBy;
+  // Gate on content (react-table may hand back a fresh array ref each render).
+  const sortByKey = JSON.stringify(sortBy ?? []);
   React.useEffect(() => {
     onSortChange?.(sortBy);
-  }, [sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sortByKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!loading && data.length === 0 && emptyState) {
     return <>{emptyState}</>;

@@ -81,7 +81,10 @@ function CustomersListV2({
     );
   }, [customers, search]);
 
-  const goNew = () => history.push('/customers/new');
+  const goNew = React.useCallback(
+    () => history.push('/customers/new'),
+    [history],
+  );
 
   return (
     <div className="bigfin-ui light min-h-full bg-background p-6">
@@ -137,17 +140,23 @@ function CustomersListV2({
         }
       />
 
-      <DataTablePagination
-        pageIndex={pageIndex}
-        pageSize={pageSize}
-        pageCount={pagination.pagesCount}
-        total={pagination.total}
-        onPageChange={setPageIndex}
-        onPageSizeChange={(s) => {
-          setPageSize(s);
-          setPageIndex(0);
-        }}
-      />
+      {(!isFetching || rows.length > 0) && (
+        <DataTablePagination
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          pageCount={pagination.pagesCount}
+          total={pagination.total}
+          onPageChange={(idx) => {
+            setPageIndex(idx);
+            setSelected([]); // selection is per-page; drop it when navigating
+          }}
+          onPageSizeChange={(s) => {
+            setPageSize(s);
+            setPageIndex(0);
+            setSelected([]);
+          }}
+        />
+      )}
     </div>
   );
 }

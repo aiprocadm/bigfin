@@ -597,7 +597,10 @@ export const getDashboardRoutes = () => [
   {
     path: `/customers`,
     component: lazy(
-      () => import('@/containers/Customers/CustomersLanding/CustomersList'),
+      () =>
+        import(
+          '@/containers/Customers/CustomersLandingV2/CustomersListSwitch'
+        ),
     ),
     breadcrumb: intl.get('customers'),
     hotkey: 'shift+c',

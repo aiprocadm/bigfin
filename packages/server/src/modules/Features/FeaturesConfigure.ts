@@ -42,6 +42,10 @@ export class FeaturesConfigure {
         name: Features.CUSTOMERS_LIST_V2,
         defaultValue: false,
       },
+      {
+        name: Features.VENDORS_LIST_V2,
+        defaultValue: false,
+      },
     ];
   }
 }

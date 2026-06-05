@@ -6,6 +6,7 @@ export enum Features {
   PAYMENT_CALENDAR = 'payment_calendar',
   BUDGETS = 'budgets',
   CUSTOMERS_LIST_V2 = 'customers_list_v2',
+  VENDORS_LIST_V2 = 'vendors_list_v2',
 }
 
 export interface IFeatureAllItem {

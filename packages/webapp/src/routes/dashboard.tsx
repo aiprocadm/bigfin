@@ -658,7 +658,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/vendors`,
     component: lazy(
-      () => import('@/containers/Vendors/VendorsLanding/VendorsList'),
+      () => import('@/containers/Vendors/VendorsLandingV2/VendorsListSwitch'),
     ),
     breadcrumb: intl.get('vendors'),
     hotkey: 'shift+v',

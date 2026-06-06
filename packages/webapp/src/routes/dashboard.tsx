@@ -1281,6 +1281,16 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('budgets.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Payment Requests (Заявки на оплату)
+  {
+    path: `/payment-requests`,
+    component: lazy(
+      () => import('@/containers/PaymentRequests/PaymentRequestsPage'),
+    ),
+    breadcrumb: intl.get('payment_requests.page_title'),
+    pageTitle: intl.get('payment_requests.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

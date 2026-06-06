@@ -39,6 +39,7 @@ import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module
 import { BudgetsModule } from '../Budgets/Budgets.module';
 import { DebtsModule } from '../Debts/Debts.module';
 import { PaymentRequestsModule } from '../PaymentRequests/PaymentRequests.module';
+import { DealsModule } from '../Deals/Deals.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
 import { BranchesModule } from '../Branches/Branches.module';
@@ -209,6 +210,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     BudgetsModule,
     DebtsModule,
     PaymentRequestsModule,
+    DealsModule,
     AccountsModule,
     ExpensesModule,
     TaxRatesModule,

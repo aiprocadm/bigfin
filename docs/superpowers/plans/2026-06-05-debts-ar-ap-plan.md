@@ -10,6 +10,8 @@
 
 **Spec:** [2026-06-05-debts-ar-ap-design.md](../specs/2026-06-05-debts-ar-ap-design.md)
 
+**Статус исполнения (2026-06-06):** ✅ Part A (сводка/старение), ✅ Part B (drill-down + напоминание), ✅ Part C (план погашения) — **бэкенд готов**, 21 тест зелёный, typecheck чистый, 24 локальных коммита на `feat/debts-ar-ap` (не запушено). ✅ **Part D (фронт)** — готов: страница «Долги», drill-down, план погашения; lang-check + webapp typecheck чистые (визуально — staging). Изменение по ходу: «Напомнить» переиспользует `SendSaleInvoiceMail.triggerMail` — выделенный invoice-reminder оказался заглушкой (решение основателя 2026-06-06).
+
 ---
 
 ## Pre-flight (единая, для всех задач)

@@ -282,6 +282,13 @@ const PAYMENT_REQUESTS = {
   PAYMENT_REQUEST: 'PAYMENT_REQUEST',
 };
 
+const DEALS = {
+  DEALS: 'DEALS',
+  DEAL: 'DEAL',
+  DEAL_SUMMARY: 'DEAL_SUMMARY',
+  DEAL_PROFITABILITY: 'DEAL_PROFITABILITY',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -325,4 +332,5 @@ export default {
   ...BUDGETS,
   ...DEBTS,
   ...PAYMENT_REQUESTS,
+  ...DEALS,
 };

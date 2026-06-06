@@ -271,6 +271,12 @@ const BUDGETS = {
   BUDGET_PLAN_FACT: 'BUDGET_PLAN_FACT',
 };
 
+const DEBTS = {
+  DEBTS_OVERVIEW: 'DEBTS_OVERVIEW',
+  DEBTS_CONTACT: 'DEBTS_CONTACT',
+  DEBTS_PLANS: 'DEBTS_PLANS',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -312,4 +318,5 @@ export default {
   ...MANAGEMENT_ARTICLES,
   ...PAYMENT_CALENDAR,
   ...BUDGETS,
+  ...DEBTS,
 };

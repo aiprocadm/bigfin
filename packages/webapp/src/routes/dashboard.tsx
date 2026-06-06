@@ -1281,6 +1281,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('budgets.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Debts (Долги)
+  {
+    path: `/debts`,
+    component: lazy(() => import('@/containers/Debts/DebtsPage')),
+    breadcrumb: intl.get('debts.title'),
+    pageTitle: intl.get('debts.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Payment Requests (Заявки на оплату)
   {
     path: `/payment-requests`,

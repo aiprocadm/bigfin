@@ -45,6 +45,8 @@ import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/Ma
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { Budget } from '@/modules/Budgets/models/Budget.model';
 import { BudgetLine } from '@/modules/Budgets/models/BudgetLine.model';
+import { DebtRepaymentPlan } from '@/modules/Debts/models/DebtRepaymentPlan.model';
+import { DebtRepaymentInstallment } from '@/modules/Debts/models/DebtRepaymentInstallment.model';
 import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.model';
 
 const models = [
@@ -90,6 +92,8 @@ const models = [
   PlannedOperation,
   Budget,
   BudgetLine,
+  DebtRepaymentPlan,
+  DebtRepaymentInstallment,
   PaymentRequest,
   TenantUser,
 ];

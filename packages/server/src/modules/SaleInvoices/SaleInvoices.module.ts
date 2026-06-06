@@ -143,6 +143,7 @@ import { ValidateBulkDeleteSaleInvoicesService } from './ValidateBulkDeleteSaleI
     SaleInvoicePdf,
     SaleInvoicesExportable,
     SaleInvoicesImportable,
+    SendSaleInvoiceMail,
   ],
 })
 export class SaleInvoicesModule {}

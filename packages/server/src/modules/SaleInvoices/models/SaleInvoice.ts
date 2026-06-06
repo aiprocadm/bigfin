@@ -57,6 +57,7 @@ export class SaleInvoice extends TenantBaseModel {
   public userId: number;
 
   public branchId: number;
+  public projectId: number;
   public warehouseId: number;
 
   public taxes!: TaxRateTransaction[];

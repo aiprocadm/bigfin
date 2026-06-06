@@ -48,6 +48,7 @@ import { BudgetLine } from '@/modules/Budgets/models/BudgetLine.model';
 import { DebtRepaymentPlan } from '@/modules/Debts/models/DebtRepaymentPlan.model';
 import { DebtRepaymentInstallment } from '@/modules/Debts/models/DebtRepaymentInstallment.model';
 import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.model';
+import { Deal } from '@/modules/Deals/models/Deal.model';
 
 const models = [
   Item,
@@ -95,6 +96,7 @@ const models = [
   DebtRepaymentPlan,
   DebtRepaymentInstallment,
   PaymentRequest,
+  Deal,
   TenantUser,
 ];
 

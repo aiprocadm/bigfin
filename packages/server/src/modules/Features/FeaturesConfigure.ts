@@ -54,6 +54,10 @@ export class FeaturesConfigure {
         name: Features.PAYMENT_REQUESTS,
         defaultValue: false,
       },
+      {
+        name: Features.DEALS,
+        defaultValue: false,
+      },
     ];
   }
 }

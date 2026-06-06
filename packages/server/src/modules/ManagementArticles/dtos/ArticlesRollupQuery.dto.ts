@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
+import { ToNumber } from '@/common/decorators/Validators';
 import { FinancialSheetBranchesQueryDto } from '@/modules/FinancialStatements/dtos/FinancialSheetBranchesQuery.dto';
 
 export class ArticlesRollupQueryDto extends FinancialSheetBranchesQueryDto {
@@ -12,4 +13,10 @@ export class ArticlesRollupQueryDto extends FinancialSheetBranchesQueryDto {
   @IsOptional()
   @ApiPropertyOptional({ example: '2026-12-31', description: 'To date' })
   toDate?: string;
+
+  @ToNumber()
+  @IsInt()
+  @IsOptional()
+  @ApiPropertyOptional({ example: 5, description: 'Deal (project) id' })
+  projectId?: number;
 }

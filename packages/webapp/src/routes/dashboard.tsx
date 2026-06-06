@@ -1299,6 +1299,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('payment_requests.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Deals (Сделки)
+  {
+    path: `/deals`,
+    component: lazy(() => import('@/containers/Deals/DealsPage')),
+    breadcrumb: intl.get('deals.page_title'),
+    pageTitle: intl.get('deals.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

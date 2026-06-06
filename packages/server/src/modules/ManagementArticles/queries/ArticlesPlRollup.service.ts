@@ -148,6 +148,9 @@ export class ArticlesPlRollupService {
         if (!isEmpty(query.branchesIds)) {
           qb.modify('filterByBranches', query.branchesIds);
         }
+        if (query.projectId) {
+          qb.modify('filterByProjects', [query.projectId]);
+        }
       });
 
     // Look up each mapped account's normal (credit/debit) to sign its net.

@@ -10,6 +10,8 @@
 
 **Spec:** [2026-06-06-payment-requests-design.md](../specs/2026-06-06-payment-requests-design.md)
 
+**Статус (2026-06-06):** ✅ **РЕАЛИЗОВАН** (бэкенд+фронт), 15 коммитов на `feat/payment-requests`. 8 серверных тестов + server/webapp typecheck + lang-check — зелёные. Не запушено. Полный прогон тестов/миграции — CI; визуальная приёмка — staging.
+
 ---
 
 ## Pre-flight

@@ -38,7 +38,7 @@
 - **Неоплаченные счета покупателям** — `SaleInvoice` (таблица `sales_invoices`): готовые геттеры `dueAmount` (`Math.max(total − balanceAmount, 0)`), `overdueDays`, `isOverdue`, `isFullyPaid`; модификаторы `overdue`, `dueInvoices`, `delivered`, `overdueInvoicesFromDate`, `dueInvoicesFromDate`; группируется по `customerId`.
 - **Неоплаченные счета поставщикам** — `Bill` (таблица `bills`): зеркальные геттеры `dueAmount`, `overdueDays`, `isOverdue`; модификаторы `overdue`, `dueBills`, `opened`, `overdueBillsFromDate`, `dueBillsFromDate`; группируется по `vendorId`.
 - **Старение по корзинам** — `AgingSummaryReport` (`modules/FinancialStatements/modules/AgingSummary/AgingSummary.ts`): чистая логика «положить `dueAmount` в корзину по `overdueDays`» (`beforeDays <= overdueDays && (toDays > overdueDays || !toDays)`). Репозитории `ARAgingSummaryRepository` / `APAgingSummaryRepository` грузят открытые обязательства, сгруппированные по контрагенту, с фильтром по `branchesIds`.
-- **Напоминания дебитору** — `SendSaleInvoiceMailReminderJob` + `GetSaleInvoiceMailReminder` (`modules/SaleInvoices/`): механизм письма-напоминания по счёту через очередь.
+- **Отправка счёта клиенту на email** — `SendSaleInvoiceMail.triggerMail` (`modules/SaleInvoices/commands/`): рабочая отправка счёта (с PDF) через очередь BullMQ + `MailTransporter`. ⚠️ Выделенного «напоминания» (`SendSaleInvoiceMailReminderJob` / `GetSaleInvoiceMailReminder`) в коде **нет** — это файлы-заглушки (обнаружено при реализации 2026-06-06). Поэтому «Напомнить» переиспользует отправку счёта (решение основателя).
 - **Базовая валюта и конвертация** — `tenancyContext.getTenantMetadata().baseCurrency`, `ExchangeRatesService` (как в Платёжном календаре).
 - **Движок списков на фронте** — `components/ui/list-view/` (`ListView` + `useListController` + `filter-rows` + `list-format`, со своими `.spec.ts`); хуки данных через `useRequestQuery`; формы на React Hook Form + Zod. Уже обкатано на Customers V2 / Vendors V2.
 
@@ -47,7 +47,7 @@
 - Единого бизнес-экрана «Долги» (сейчас всё разрозненно и в бухгалтерском виде).
 - Дружелюбной JSON-**сводки** долгов (существующие AR/AP сервисы отдают **формат бухгалтерской таблицы** строки/колонки под PDF/Excel — не под список с действиями).
 - Сущности **«План погашения» (рассрочка)** и её прогресса.
-- Действия **«Напомнить»** прямо со страницы «Долги» (тонкая обёртка над существующим напоминанием).
+- Действия **«Напомнить»** прямо со страницы «Долги» (тонкая обёртка над существующей отправкой счёта `SendSaleInvoiceMail`).
 
 ---
 
@@ -59,7 +59,7 @@
 2. **Реестр контрагентов:** должники (контрагенты с дебиторкой) и кредиторы (с кредиторкой). По каждому: общий долг, в т.ч. просрочено, «худшая» корзина.
 3. **Drill-down:** контрагент → его неоплаченные документы (№, дата, срок, сумма, остаток к оплате, дней просрочки).
 4. **ТОП-должники / ТОП-кредиторы.**
-5. **Напоминание дебитору** по email — переиспользуем существующий механизм (`SendSaleInvoiceMailReminderJob`).
+5. **Напоминание дебитору** по email — переиспользуем рабочую отправку счёта `SendSaleInvoiceMail.triggerMail` (отправляет неоплаченный счёт клиенту с PDF). Своё письмо-напоминание не пишем. ⚠️ Почта не тестируется локально (нет SMTP/бэкенда) — проверка на staging.
 6. **План погашения (рассрочка):** для долга — график платежей (дата / сумма / заметка), статус каждого платежа (`planned`/`paid`), прогресс «оплачено / осталось / следующий платёж».
 
 ### НЕ входит (anti-scope)
@@ -198,7 +198,7 @@ packages/server/src/modules/Debts/
 │   ├── EditRepaymentPlan.service.ts
 │   ├── DeleteRepaymentPlan.service.ts
 │   ├── MarkInstallmentPaid.service.ts
-│   ├── SendDebtReminder.service.ts     # тонкая обёртка над SaleInvoices reminder
+│   ├── SendDebtReminder.service.ts     # тонкая обёртка над SendSaleInvoiceMail.triggerMail
 │   └── CommandRepaymentPlanValidator.service.ts
 ├── queries/
 │   ├── GetDebtsOverview.service.ts      # дебиторка+кредиторка, корзины, ТОП

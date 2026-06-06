@@ -92,7 +92,7 @@ export function useProject(projectId, props, requestProps) {
 }
 
 const transformProjects = (res) => ({
-  projects: res.data.projects,
+  projects: res.data.data,
 });
 
 /**
@@ -103,7 +103,7 @@ const transformProjects = (res) => ({
 export function useProjects(query, props) {
   return useRequestQuery(
     [t.PROJECTS, query],
-    { method: 'get', url: 'projects', params: query },
+    { method: 'get', url: 'deals', params: query },
     {
       select: transformProjects,
       defaultData: {

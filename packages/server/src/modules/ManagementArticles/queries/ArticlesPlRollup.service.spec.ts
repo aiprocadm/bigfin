@@ -168,4 +168,12 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
       expect.anything(),
     );
   });
+
+  it('applies the project filter when projectId is provided', async () => {
+    const { service, modify } = makeService();
+
+    await service.getRollup({ projectId: 5 } as any);
+
+    expect(modify).toHaveBeenCalledWith('filterByProjects', [5]);
+  });
 });

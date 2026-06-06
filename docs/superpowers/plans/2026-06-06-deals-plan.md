@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Статус выполнения (2026-06-06): ⑦a РЕАЛИЗОВАН** на ветке `feat/deals` (Parts A–D, 16 коммитов). Проверки: серверные тесты 44/44 (Deals, ManagementArticles, SaleInvoices/ledger, Features), typecheck server+webapp — чисто, lang-check — 0 (2671↔2671). Без миграций. Отложено отдельными заходами: кассовые продажи (`SaleReceipt` projectId) и ⑦b (автораспределение общих расходов).
+
 **Goal:** Дать предпринимателю «Сделки»: завести сделку, привязать к ней операции, увидеть рентабельность (доходы − прямые расходы) и дашборд по сделкам.
 
 **Architecture:** Переиспользуем спящее «измерение проектов» из базы BigCapital — таблица `projects` (как сущность «Сделка») и метку `projectId` на проводках. Прибыль считаем готовым движком `ArticlesPlRollupService`, добавив фильтр по сделке (зеркалит существующий `filterByBranches`). Новый модуль `Deals` (CQRS-паттерн, как `PaymentRequests`/`Debts`); новые shadcn-страницы; легаси-селектор «проект» в формах оживляем сменой значения флага. **Без новой миграции** (сущность ложится на готовую `projects`); кассовые продажи (`SaleReceipt`) — следующим заходом.

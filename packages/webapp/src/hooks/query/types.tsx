@@ -271,6 +271,11 @@ const BUDGETS = {
   BUDGET_PLAN_FACT: 'BUDGET_PLAN_FACT',
 };
 
+const PAYMENT_REQUESTS = {
+  PAYMENT_REQUESTS: 'PAYMENT_REQUESTS',
+  PAYMENT_REQUEST: 'PAYMENT_REQUEST',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -312,4 +317,5 @@ export default {
   ...MANAGEMENT_ARTICLES,
   ...PAYMENT_CALENDAR,
   ...BUDGETS,
+  ...PAYMENT_REQUESTS,
 };

@@ -8,6 +8,7 @@ export enum Features {
   CUSTOMERS_LIST_V2 = 'customers_list_v2',
   VENDORS_LIST_V2 = 'vendors_list_v2',
   DEBTS = 'debts',
+  PAYMENT_REQUESTS = 'payment_requests',
 }
 
 export interface IFeatureAllItem {

@@ -7,7 +7,13 @@ import { DebtsController } from './Debts.controller';
 import { DebtsApplication } from './Debts.application';
 import { GetDebtsOverviewService } from './queries/GetDebtsOverview.service';
 import { GetContactDebtsService } from './queries/GetContactDebts.service';
+import { GetRepaymentPlansService } from './queries/GetRepaymentPlans.service';
 import { SendDebtReminderService } from './commands/SendDebtReminder.service';
+import { CommandRepaymentPlanValidatorService } from './commands/CommandRepaymentPlanValidator.service';
+import { CreateRepaymentPlanService } from './commands/CreateRepaymentPlan.service';
+import { EditRepaymentPlanService } from './commands/EditRepaymentPlan.service';
+import { DeleteRepaymentPlanService } from './commands/DeleteRepaymentPlan.service';
+import { MarkInstallmentPaidService } from './commands/MarkInstallmentPaid.service';
 
 @Module({
   imports: [TenancyDatabaseModule, TenancyModule, SaleInvoicesModule],
@@ -16,7 +22,13 @@ import { SendDebtReminderService } from './commands/SendDebtReminder.service';
     DebtsApplication,
     GetDebtsOverviewService,
     GetContactDebtsService,
+    GetRepaymentPlansService,
     SendDebtReminderService,
+    CommandRepaymentPlanValidatorService,
+    CreateRepaymentPlanService,
+    EditRepaymentPlanService,
+    DeleteRepaymentPlanService,
+    MarkInstallmentPaidService,
   ],
 })
 export class DebtsModule {}

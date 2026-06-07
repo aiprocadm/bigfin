@@ -62,6 +62,10 @@ export class FeaturesConfigure {
         name: Features.COST_ALLOCATION,
         defaultValue: false,
       },
+      {
+        name: Features.DEAL_STAGES,
+        defaultValue: false,
+      },
     ];
   }
 }

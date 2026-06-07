@@ -14,6 +14,9 @@ interface RuleRow {
   id: number;
   name: string;
   allocationKey: 'revenue' | 'manual_share';
+  sourceArticleId: number;
+  manualShares?: Record<string, number> | null;
+  targetDealIds?: number[] | null;
   isActive: boolean;
   validFrom?: string | null;
   validTo?: string | null;
@@ -59,6 +62,9 @@ export default function CostAllocationPage() {
             id: editingRule.id,
             name: editingRule.name,
             allocationKey: editingRule.allocationKey,
+            sourceArticleId: editingRule.sourceArticleId,
+            manualShares: editingRule.manualShares ?? {},
+            targetDealIds: editingRule.targetDealIds ?? [],
             isActive: editingRule.isActive,
             validFrom: editingRule.validFrom ?? undefined,
             validTo: editingRule.validTo ?? undefined,

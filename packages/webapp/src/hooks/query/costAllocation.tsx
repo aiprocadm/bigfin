@@ -22,7 +22,6 @@ export interface CostAllocationRuleValues {
 
 const invalidate = (client: QueryClient) => {
   client.invalidateQueries(t.COST_ALLOCATION_RULES);
-  client.invalidateQueries(t.COST_ALLOCATION_RULE);
 };
 
 /** List cost allocation rules. */
@@ -31,15 +30,6 @@ export function useCostAllocationRules(query?: any, props?: any) {
     [t.COST_ALLOCATION_RULES, query],
     { method: 'get', url: 'cost-allocation-rules', params: query },
     { select: (res: any) => res.data.data, defaultData: [], ...props },
-  );
-}
-
-/** A single cost allocation rule. */
-export function useCostAllocationRule(id: number | string, props?: any) {
-  return useRequestQuery(
-    [t.COST_ALLOCATION_RULE, id],
-    { method: 'get', url: `cost-allocation-rules/${id}` },
-    { select: (res: any) => res.data, defaultData: {}, enabled: !!id, ...props },
   );
 }
 

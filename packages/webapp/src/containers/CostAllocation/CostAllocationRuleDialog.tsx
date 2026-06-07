@@ -48,7 +48,7 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
     resolver: zodResolver(getCostAllocationRuleSchema()),
     defaultValues: {
       name: initialValues?.name ?? '',
-      sourceArticleId: initialValues?.sourceArticleId ?? (undefined as any),
+      sourceArticleId: initialValues?.sourceArticleId ?? (undefined as unknown as number),
       allocationKey: initialValues?.allocationKey ?? 'revenue',
       manualShares: initialValues?.manualShares ?? {},
       targetDealIds: initialValues?.targetDealIds ?? [],

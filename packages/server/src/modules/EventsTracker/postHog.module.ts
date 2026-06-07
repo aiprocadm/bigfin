@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import { PostHog } from 'posthog-node';
 import { EventTrackerService } from './EventTracker.service';
 import { ConfigService } from '@nestjs/config';
@@ -24,4 +24,15 @@ import { TenancyContext } from '../Tenancy/TenancyContext.service';
   ],
   exports: [EventTrackerService, POSTHOG_PROVIDER],
 })
-export class PostHogModule {}
+export class PostHogModule implements OnApplicationShutdown {
+  constructor(
+    @Inject(POSTHOG_PROVIDER) private readonly posthog: PostHog | null,
+  ) {}
+
+  async onApplicationShutdown(): Promise<void> {
+    // Flush any queued events and stop PostHog's background flush timer.
+    if (this.posthog) {
+      await this.posthog.shutdown();
+    }
+  }
+}

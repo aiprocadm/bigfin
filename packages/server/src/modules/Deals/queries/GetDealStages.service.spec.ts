@@ -10,6 +10,10 @@ describe('GetDealStagesService', () => {
   const stageModel = () => ({
     query: () => ({ modify: () => ({ orderBy: () => Promise.resolve(stages) }) }),
   });
+  // dealModel().query().findById(id) resolves to the deal (or null when missing).
+  const dealModel = (deal: any = { id: 7 }) => () => ({
+    query: () => ({ findById: async () => deal }),
+  });
   const rollup = {
     getRollup: async () => [
       { id: 10, name: 'Выручка', kind: 'income', amount: 120, parentId: null },
@@ -18,12 +22,17 @@ describe('GetDealStagesService', () => {
   };
 
   it('returns ordered stages and a summary with plan/recognized/progress/fact', async () => {
-    const svc = new GetDealStagesService(rollup as any, stageModel as any);
+    const svc = new GetDealStagesService(rollup as any, dealModel() as any, stageModel as any);
     const res = await svc.getForDeal(7, {});
     expect(res.stages).toHaveLength(2);
     expect(res.summary.planned).toEqual({ revenue: 500, costs: 340, profit: 160 });
     expect(res.summary.recognized).toEqual({ revenue: 100, costs: 40, profit: 60 });
     expect(res.summary.progress).toBeCloseTo(100 / 500);
     expect(res.summary.fact).toEqual({ revenue: 120, costs: 30, profit: 90 });
+  });
+
+  it('throws DEAL_NOT_FOUND when the deal does not exist', async () => {
+    const svc = new GetDealStagesService(rollup as any, dealModel(null) as any, stageModel as any);
+    await expect(svc.getForDeal(999, {})).rejects.toMatchObject({ errorType: 'DEAL_NOT_FOUND' });
   });
 });

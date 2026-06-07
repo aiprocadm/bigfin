@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.module';
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
+import { CostAllocationModule } from '@/modules/CostAllocation/CostAllocation.module';
 import { DealsController } from './Deals.controller';
 import { DealsApplication } from './Deals.application';
 import { GetDealsService } from './queries/GetDeals.service';
@@ -15,7 +16,7 @@ import { EditDealService } from './commands/EditDeal.service';
 import { DeleteDealService } from './commands/DeleteDeal.service';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule],
+  imports: [TenancyDatabaseModule, TenancyModule, CostAllocationModule],
   controllers: [DealsController],
   providers: [
     DealsApplication,

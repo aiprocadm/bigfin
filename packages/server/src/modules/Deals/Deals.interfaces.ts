@@ -12,4 +12,14 @@ export interface DealProfitability {
     amount: number;
     parentId?: number | null;
   }>;
+  allocations?: Array<{
+    ruleId: number;
+    ruleName: string;
+    articleId: number;
+    amount: number;
+  }>;
+  allocatedTotal?: number;
+  costsAfterAllocation?: number;
+  profitAfterAllocation?: number;
+  marginAfterAllocation?: number;
 }

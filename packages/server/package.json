@@ -167,7 +167,7 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": ["ts-jest", { "isolatedModules": true }]
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

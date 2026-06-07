@@ -151,6 +151,9 @@ export class ArticlesPlRollupService {
         if (query.projectId) {
           qb.modify('filterByProjects', [query.projectId]);
         }
+        if (query.unassignedProject) {
+          qb.whereNull('projectId'); // overhead not tied to any deal
+        }
       });
 
     // Look up each mapped account's normal (credit/debit) to sign its net.

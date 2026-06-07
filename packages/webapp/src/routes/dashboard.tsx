@@ -1307,6 +1307,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('deals.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Cost Allocation (Распределение расходов)
+  {
+    path: `/cost-allocation`,
+    component: lazy(() => import('@/containers/CostAllocation/CostAllocationPage')),
+    breadcrumb: intl.get('cost_allocation.page.title'),
+    pageTitle: intl.get('cost_allocation.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

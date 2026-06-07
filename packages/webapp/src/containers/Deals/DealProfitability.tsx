@@ -39,6 +39,25 @@ export function DealProfitability({ deal }: { deal: any }) {
             </span>
           </div>
         )}
+        {Array.isArray(p.allocations) && p.allocations.length > 0 && (
+          <div className="mt-2 flex flex-col gap-1 border-t pt-2 text-muted-foreground">
+            <div className="text-xs uppercase">
+              {intl.get('deals.profitability.after_allocation')}
+            </div>
+            {p.allocations.map((a: any) => (
+              <div key={a.ruleId} className="flex justify-between">
+                <span>{a.ruleName}</span>
+                <span>−{fmt(a.amount)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between font-medium text-foreground">
+              <span>{intl.get('deals.profitability.profit_after')}</span>
+              <span>
+                {fmt(p.profitAfterAllocation)} · {pct(p.marginAfterAllocation)}
+              </span>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

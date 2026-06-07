@@ -7,7 +7,8 @@ exports.up = (knex) => {
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('projects')
+      .inTable('projects') // a deal is stored in the 'projects' table (see Deal.model)
+      .onDelete('CASCADE')
       .index();
     table.string('name').notNullable();
     table.integer('sort_order').notNullable().defaultTo(0);

@@ -53,6 +53,7 @@
   "deal_stages.saved": "Stage saved",
   "deal_stages.save_error": "Couldn't save the stage",
   "deal_stages.deleted_ok": "Stage deleted",
+  "deal_stages.delete_error": "Couldn't delete the stage",
   "deal_stages.error.name_required": "Enter a stage name",
   "deal_stages.error.close_needs_date": "Set a close date",
   "budgets.page_title": "Budgets",

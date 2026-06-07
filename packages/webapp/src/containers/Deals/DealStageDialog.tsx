@@ -36,7 +36,7 @@ export function DealStageDialog({ dealId, stage, defaultStatus, onDone, onCancel
       plannedRevenue: stage?.plannedRevenue ?? undefined,
       plannedCost: stage?.plannedCost ?? undefined,
       sortOrder: stage?.sortOrder ?? undefined,
-      status: stage?.status ?? defaultStatus ?? 'open',
+      status: defaultStatus ?? stage?.status ?? 'open',
       closedDate: stage?.closedDate ?? '',
     },
   });

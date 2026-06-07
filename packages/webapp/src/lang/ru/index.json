@@ -53,6 +53,7 @@
   "deal_stages.saved": "Этап сохранён",
   "deal_stages.save_error": "Не удалось сохранить этап",
   "deal_stages.deleted_ok": "Этап удалён",
+  "deal_stages.delete_error": "Не удалось удалить этап",
   "deal_stages.error.name_required": "Укажите название этапа",
   "deal_stages.error.close_needs_date": "Укажите дату закрытия",
   "budgets.page_title": "Бюджеты",

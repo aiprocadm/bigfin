@@ -35,7 +35,7 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
       await del.mutateAsync(stageId);
       toast.success(intl.get('deal_stages.deleted_ok'));
     } catch {
-      toast.error(intl.get('deal_stages.save_error'));
+      toast.error(intl.get('deal_stages.delete_error'));
     }
   };
 

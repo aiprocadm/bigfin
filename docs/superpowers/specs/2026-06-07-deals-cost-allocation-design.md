@@ -108,8 +108,8 @@ allocatePool(pool: number, weights: { dealId: number; weight: number }[]): { dea
 - Новый query-сервис `GetDealAllocationService.getForDeal(dealId, { fromDate, toDate })`:
   для каждого активного правила с пересечением окна — считает пул, веса, долю **этой** сделки;
   возвращает строки по правилам.
-- `GetDealProfitabilityService`: если флаг `COST_ALLOCATION` включён — добавляет распределение.
-  Ответ `DealProfitability` расширяется (обратносовместимо — поля только добавляются):
+- `GetDealProfitabilityService`: **всегда** накладывает распределение на стороне отчёта (без серверной
+  проверки флага). Ответ `DealProfitability` расширяется (обратносовместимо — поля только добавляются):
 
 ```ts
 allocations: Array<{ ruleId: number; ruleName: string; articleId: number; articleName: string; amount: number }>;
@@ -119,7 +119,9 @@ profitAfterAllocation: number;          // profit − allocatedTotal
 marginAfterAllocation: number;          // (revenue − costsAfterAllocation) / revenue, 0 если revenue<=0
 ```
 
-- Флаг **off** → ответ без новых полей (поведение ⑦a без изменений).
+- Нет правил → `allocations = []`, новые поля не добавляются (ответ ⑦a без изменений), поэтому
+  серверная проверка флага не нужна. Флаг `COST_ALLOCATION` гейтит **фронт** (страница правил + показ
+  блока «после распределения»), а не серверный API — так фичи гейтятся в этой кодовой базе.
 
 ## 8. Серверный модуль `CostAllocation`
 

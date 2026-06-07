@@ -764,7 +764,7 @@ export class GetDealAllocationService {
 }
 ```
 
-- [ ] **Step 4:** Create `queries/AllocationPool.service.ts` (`poolFor(articleId, period)` → calls `ArticlesPlRollupService.getRollup({ unassignedProject: true, fromDate, toDate })`, returns the matching article's `amount`) and `queries/DealsRevenue.service.ts` (`revenueByDeal(period)` → reuse the Deals summary per-deal revenue; in plan-time, call `GetDealsSummaryService`). Keep both tiny and injectable.
+- [ ] **Step 4:** Create `queries/AllocationPool.service.ts` (`poolFor(articleId, period)` → calls `ArticlesPlRollupService.getRollup({ unassignedProject: true, fromDate, toDate })`, returns the matching article's `amount`) and `queries/DealsRevenue.service.ts` (`revenueByDeal(period)`). **Avoid a DI cycle:** `DealsRevenue` must NOT inject the Deals module. Instead inject the `Deal` model token (`@Inject(Deal.name)`, global via Tenancy) + `ArticlesPlRollupService`, list active deals, and for each call `getRollup({ projectId: deal.id, ...period })` then `computeDealMargin(rows).revenue` (import the pure `computeDealMargin` from `modules/Deals/utils/computeDealMargin` — a function import, not a module dependency). Keep both services tiny and injectable.
 - [ ] **Step 5: Run spec, expect PASS. Commit** — `git commit -m "feat(server): per-deal cost allocation query"`
 
 > The test stubs the model `query()` as a thenable resolving to `rules`; match that shape in the real model proxy. Confirm `GetDealsSummaryService` exposes per-deal revenue; otherwise compute via `getRollup` grouped by project.
@@ -804,8 +804,10 @@ export interface DealProfitability {
 ```ts
     const result: DealProfitability = { dealId, ...margin, articles: rows as any };
 
-    if (await this.features.isEnabled(Features.COST_ALLOCATION)) {
-      const allocations = await this.allocation.getForDeal(dealId, query);
+    // Always overlay (report-side). Empty when no rules → response unchanged.
+    // No server flag check — the codebase gates features on the frontend, not the API.
+    const allocations = await this.allocation.getForDeal(dealId, query);
+    if (allocations.length) {
       const allocatedTotal = allocations.reduce((s, a) => s + a.amount, 0);
       const costsAfterAllocation = margin.costs + allocatedTotal;
       const profitAfterAllocation = margin.revenue - costsAfterAllocation;
@@ -818,11 +820,11 @@ export interface DealProfitability {
     return result;
 ```
 
-Inject `GetDealAllocationService` and the feature checker (mirror how other services read flags — find the existing `FeaturesService`/`isEnabled` used elsewhere; confirm exact API).
+Inject only `GetDealAllocationService` (no feature checker — see note).
 
 - [ ] **Step 4: Run specs, expect PASS. Commit** — `git commit -m "feat(server): overlay cost allocation on deal profitability"`
 
-> Find the canonical feature-flag read API on the server (e.g. a `FeaturesService.isEnabled(name)` / CLS-based check) by grepping for `Features.DEALS` usages; match it. Wire DI so `GetDealAllocationService` is available to the Deals module.
+> **No server flag check** (verified: Deals/PaymentRequests controllers don't flag-gate — features are gated on the frontend). Always overlay; empty when no rules → unchanged response. DI is one-way: `Deals.module` imports `CostAllocationModule` (exports `GetDealAllocationService`). To avoid a cycle, `CostAllocation` must NOT depend on the Deals module (see Task 10, Step 4).
 
 ---
 

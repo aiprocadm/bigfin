@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import { Global, Module } from '@nestjs/common';
+import { Global, Inject, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   SystemKnexConnection,
@@ -47,4 +47,15 @@ const providers = [
   providers: [...providers],
   exports: [...providers],
 })
-export class SystemDatabaseModule {}
+export class SystemDatabaseModule implements OnApplicationShutdown {
+  constructor(
+    @Inject(SystemKnexConnection) private readonly systemKnex: any,
+  ) {}
+
+  async onApplicationShutdown(): Promise<void> {
+    // Close the system database connection pool on shutdown.
+    if (this.systemKnex && typeof this.systemKnex.destroy === 'function') {
+      await this.systemKnex.destroy();
+    }
+  }
+}

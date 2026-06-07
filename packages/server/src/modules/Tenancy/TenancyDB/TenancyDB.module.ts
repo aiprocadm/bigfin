@@ -1,6 +1,6 @@
 import knex from 'knex';
 import * as LRUCache from 'lru-cache';
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, OnApplicationShutdown } from '@nestjs/common';
 import { knexSnakeCaseMappers } from 'objection';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
@@ -54,4 +54,17 @@ export const TenancyDatabaseProxyProvider = ClsModule.forFeatureAsync({
   providers: [UnitOfWork],
   exports: [UnitOfWork],
 })
-export class TenancyDatabaseModule {}
+export class TenancyDatabaseModule implements OnApplicationShutdown {
+  async onApplicationShutdown(): Promise<void> {
+    // Close every cached per-tenant database connection pool on shutdown.
+    const instances: any[] = [];
+    lruCache.forEach((instance: any) => instances.push(instance));
+    await Promise.all(
+      instances.map((knexInstance) =>
+        knexInstance && typeof knexInstance.destroy === 'function'
+          ? knexInstance.destroy()
+          : undefined,
+      ),
+    );
+  }
+}

@@ -18,6 +18,11 @@ async function bootstrap() {
   app.set('query parser', 'extended');
   app.setGlobalPrefix('/api');
 
+  // Gracefully close DB pools, Redis/BullMQ connections, scheduled jobs and the
+  // PostHog client on SIGTERM/SIGINT (deploys, restarts) instead of leaking them.
+  // This is what triggers every module's onModuleDestroy/onApplicationShutdown.
+  app.enableShutdownHooks();
+
   // create and mount the middleware manually here
   app.use(new ClsMiddleware({}).use);
 

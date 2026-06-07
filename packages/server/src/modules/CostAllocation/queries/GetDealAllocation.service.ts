@@ -31,11 +31,18 @@ export class GetDealAllocationService {
       (r) => r.isActive && this.inWindow(r, period),
     );
 
+    // Compute the period's revenue-by-deal map once and reuse it for every
+    // revenue-keyed rule, instead of recomputing the same map per rule.
+    const needsRevenue = active.some((r) => r.allocationKey === 'revenue');
+    const revenueByDeal = needsRevenue
+      ? await this.revenue.revenueByDeal(period)
+      : {};
+
     const lines: DealAllocationLine[] = [];
     for (const r of active) {
       const pool = await this.pool.poolFor(r.sourceArticleId, period);
-      if (!pool) continue;
-      const weights = await this.weightsFor(r, period);
+      if (pool <= 0) continue; // skip empty/negative overhead pools (v1)
+      const weights = this.weightsFor(r, revenueByDeal);
       const split = allocatePool(pool, weights);
       const mine = split.find((s) => s.dealId === dealId);
       if (mine && mine.amount !== 0) {
@@ -59,17 +66,16 @@ export class GetDealAllocationService {
     return true;
   }
 
-  private async weightsFor(
+  private weightsFor(
     r: any,
-    p: { fromDate?: string; toDate?: string },
-  ): Promise<AllocationWeight[]> {
+    revenueByDeal: Record<number, number>,
+  ): AllocationWeight[] {
     if (r.allocationKey === 'manual_share') {
       return Object.entries(r.manualShares ?? {}).map(([dealId, weight]) => ({
         dealId: Number(dealId),
         weight: Number(weight),
       }));
     }
-    const revenueByDeal = await this.revenue.revenueByDeal(p);
     const ids: number[] =
       r.targetDealIds ?? Object.keys(revenueByDeal).map(Number);
     return ids.map((id: number) => ({ dealId: id, weight: revenueByDeal[id] ?? 0 }));

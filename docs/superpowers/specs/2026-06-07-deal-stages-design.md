@@ -50,8 +50,8 @@
 | `deal_id` | int unsigned, FK → `projects.id`, index | Сделка (модель `Deal` живёт на таблице `projects`) |
 | `name` | string | Название этапа, напр. «Проект» |
 | `sort_order` | int, default 0 | Ручной порядок этапов |
-| `planned_revenue` | decimal(15,2), default 0 | Плановая выручка этапа |
-| `planned_cost` | decimal(15,2), default 0 | Плановые прямые расходы этапа |
+| `planned_revenue` | decimal(13,3), default 0 | Плановая выручка этапа (конвенция денег в репо) |
+| `planned_cost` | decimal(13,3), default 0 | Плановые прямые расходы этапа |
 | `status` | string, default `'open'` | `'open'` \| `'closed'` |
 | `closed_date` | date, nullable | Дата закрытия (период признания) |
 | `created_at`/`updated_at` | timestamps | — |

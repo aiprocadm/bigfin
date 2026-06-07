@@ -24,10 +24,13 @@ export class CommandCostAllocationValidatorService {
     if (article.kind !== 'expense') throw new ServiceError(ERRORS.ARTICLE_NOT_EXPENSE);
 
     if (dto.allocationKey === 'manual_share') {
-      const shares = dto.manualShares ?? {};
-      const entries = Object.entries(shares);
-      const ok = entries.length > 0 && entries.every(([, w]) => Number(w) >= 0);
-      if (!ok) throw new ServiceError(ERRORS.INVALID_MANUAL_SHARES);
+      const entries = Object.entries(dto.manualShares ?? {});
+      const noNegativeWeights = entries.every(([, w]) => Number(w) >= 0);
+      const hasPositiveWeight = entries.some(([, w]) => Number(w) > 0);
+      // Правило должно реально что-то распределять: пустые/все-нулевые/отрицательные доли — ошибка.
+      if (!noNegativeWeights || !hasPositiveWeight) {
+        throw new ServiceError(ERRORS.INVALID_MANUAL_SHARES);
+      }
     }
 
     if (dto.validFrom && dto.validTo && dto.validFrom > dto.validTo) {

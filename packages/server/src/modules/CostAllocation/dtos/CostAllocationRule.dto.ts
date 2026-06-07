@@ -1,7 +1,7 @@
 // © 2026 Bigfin
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsDateString, IsIn, IsInt, IsObject, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDateString, IsIn, IsInt, IsObject, IsString } from 'class-validator';
 import { ALLOCATION_KEYS } from '../constants';
 
 class CommandCostAllocationRuleDto {
@@ -23,6 +23,8 @@ class CommandCostAllocationRuleDto {
   @ApiPropertyOptional({ example: { '1': 3, '2': 1 }, description: 'dealId→weight (manual_share)' })
   manualShares?: Record<string, number>;
 
+  @IsArray()
+  @IsInt({ each: true })
   @IsOptional()
   @ApiPropertyOptional({ example: [1, 2], description: 'Restrict targets (revenue key)' })
   targetDealIds?: number[];

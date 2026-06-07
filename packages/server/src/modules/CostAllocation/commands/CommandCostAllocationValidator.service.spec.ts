@@ -37,6 +37,25 @@ describe('CommandCostAllocationValidatorService', () => {
     ).rejects.toMatchObject({ errorType: 'INVALID_MANUAL_SHARES' });
   });
 
+  it('throws INVALID_MANUAL_SHARES when every manual share is zero', async () => {
+    const v = await build({ id: 1, kind: 'expense' });
+    await expect(
+      v.validate({ sourceArticleId: 1, allocationKey: 'manual_share', manualShares: { '1': 0, '2': 0 } } as any),
+    ).rejects.toMatchObject({ errorType: 'INVALID_MANUAL_SHARES' });
+  });
+
+  it('throws INVALID_DATE_RANGE when validFrom is after validTo', async () => {
+    const v = await build({ id: 1, kind: 'expense' });
+    await expect(
+      v.validate({
+        sourceArticleId: 1,
+        allocationKey: 'revenue',
+        validFrom: '2026-12-31',
+        validTo: '2026-01-01',
+      } as any),
+    ).rejects.toMatchObject({ errorType: 'INVALID_DATE_RANGE' });
+  });
+
   it('passes a valid revenue rule', async () => {
     const v = await build({ id: 1, kind: 'expense' });
     await expect(

@@ -289,6 +289,11 @@ const DEALS = {
   DEAL_PROFITABILITY: 'DEAL_PROFITABILITY',
 };
 
+const COST_ALLOCATION = {
+  COST_ALLOCATION_RULES: 'COST_ALLOCATION_RULES',
+  COST_ALLOCATION_RULE: 'COST_ALLOCATION_RULE',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -333,4 +338,5 @@ export default {
   ...DEBTS,
   ...PAYMENT_REQUESTS,
   ...DEALS,
+  ...COST_ALLOCATION,
 };

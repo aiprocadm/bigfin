@@ -61,6 +61,15 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
   const isSubmitting = form.formState.isSubmitting;
   const allocationKey = form.watch('allocationKey');
 
+  // Local raw text for the manual-shares JSON editor, so invalid input is shown
+  // and flagged (instead of silently keeping the last valid value).
+  const [manualSharesText, setManualSharesText] = React.useState(
+    initialValues?.manualShares && Object.keys(initialValues.manualShares).length
+      ? JSON.stringify(initialValues.manualShares, null, 2)
+      : '',
+  );
+  const [manualSharesInvalid, setManualSharesInvalid] = React.useState(false);
+
   const expenseArticles = React.useMemo<ArticleRow[]>(
     () => ((articles ?? []) as ArticleRow[]).filter((a) => a.kind === 'expense'),
     [articles],
@@ -188,18 +197,23 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
                     <FormControl>
                       <textarea
                         className="border-input bg-background min-h-[80px] w-full rounded-md border px-3 py-2 text-sm font-mono"
-                        placeholder={'{"1": 3, "2": 1}'}
-                        value={
-                          field.value
-                            ? JSON.stringify(field.value, null, 2)
-                            : ''
-                        }
+                        placeholder={intl.get(
+                          'cost_allocation.field.manual_shares_placeholder',
+                        )}
+                        value={manualSharesText}
                         onChange={(e) => {
+                          const text = e.target.value;
+                          setManualSharesText(text);
+                          if (text.trim() === '') {
+                            field.onChange({});
+                            setManualSharesInvalid(false);
+                            return;
+                          }
                           try {
-                            const parsed = JSON.parse(e.target.value || '{}');
-                            field.onChange(parsed);
+                            field.onChange(JSON.parse(text));
+                            setManualSharesInvalid(false);
                           } catch {
-                            // keep the raw value while typing
+                            setManualSharesInvalid(true);
                           }
                         }}
                         onBlur={field.onBlur}
@@ -207,6 +221,11 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
                         ref={field.ref}
                       />
                     </FormControl>
+                    {manualSharesInvalid && (
+                      <p className="text-destructive text-sm">
+                        {intl.get('cost_allocation.error.manual_shares_invalid')}
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -277,7 +296,13 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
               >
                 {intl.get('cost_allocation.cancel')}
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                disabled={
+                  isSubmitting ||
+                  (allocationKey === 'manual_share' && manualSharesInvalid)
+                }
+              >
                 {intl.get('cost_allocation.save')}
               </Button>
             </div>

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDeals, useDealsSummary, useDeleteDeal } from '@/hooks/query/deals';
 import { DealDialog } from './DealDialog';
 import { DealProfitability } from './DealProfitability';
+import { DealStagesSection } from './DealStagesSection';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -153,6 +154,7 @@ export default function DealsPage() {
       {openDeal && (
         <div className="mt-2">
           <DealProfitability deal={openDeal} />
+          <DealStagesSection dealId={openDeal.id} />
           <div className="mt-2">
             <Button variant="ghost" size="sm" onClick={() => setOpenDeal(null)}>
               {intl.get('deals.close')}

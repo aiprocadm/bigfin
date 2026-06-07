@@ -10,6 +10,9 @@ export const getDealStageSchema = () =>
     sortOrder: z.coerce.number().optional(),
     status: z.enum(['open', 'closed']).optional(),
     closedDate: z.string().optional(),
+  }).refine((v) => v.status !== 'closed' || !!v.closedDate, {
+    message: intl.get('deal_stages.error.close_needs_date'),
+    path: ['closedDate'],
   });
 
 export type DealStageFormValues = z.infer<ReturnType<typeof getDealStageSchema>>;

@@ -17,7 +17,9 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
   const [showForm, setShowForm] = React.useState(false);
   const [defaultStatus, setDefaultStatus] = React.useState<'open' | 'closed'>('open');
 
-  const { data } = useDealStages(dealId, {}, {});
+  const { data } = useDealStages(dealId, {}, {
+    enabled: !!dealId && featureCan('deal_stages'),
+  });
   const del = useDeleteStage(dealId, {});
 
   if (!featureCan('deal_stages')) return null;

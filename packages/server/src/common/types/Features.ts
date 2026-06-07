@@ -10,6 +10,7 @@ export enum Features {
   DEBTS = 'debts',
   PAYMENT_REQUESTS = 'payment_requests',
   DEALS = 'deals',
+  COST_ALLOCATION = 'cost_allocation',
 }
 
 export interface IFeatureAllItem {

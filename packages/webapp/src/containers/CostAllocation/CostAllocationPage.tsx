@@ -13,7 +13,7 @@ import { CostAllocationRuleDialog } from './CostAllocationRuleDialog';
 interface RuleRow {
   id: number;
   name: string;
-  allocationKey: string;
+  allocationKey: 'revenue' | 'manual_share';
   isActive: boolean;
   validFrom?: string | null;
   validTo?: string | null;
@@ -55,7 +55,14 @@ export default function CostAllocationPage() {
     return (
       <div className="p-6">
         <CostAllocationRuleDialog
-          initialValues={editingRule}
+          initialValues={{
+            id: editingRule.id,
+            name: editingRule.name,
+            allocationKey: editingRule.allocationKey,
+            isActive: editingRule.isActive,
+            validFrom: editingRule.validFrom ?? undefined,
+            validTo: editingRule.validTo ?? undefined,
+          }}
           onDone={() => setEditingRule(null)}
           onCancel={() => setEditingRule(null)}
         />

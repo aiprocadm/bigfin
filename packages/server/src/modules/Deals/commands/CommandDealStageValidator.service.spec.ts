@@ -31,6 +31,11 @@ describe('CommandDealStageValidatorService', () => {
     await expect(v.validate(1, { name: 'X', plannedRevenue: -1 } as any)).rejects.toMatchObject({ errorType: 'STAGE_NEGATIVE_AMOUNT' });
   });
 
+  it('throws STAGE_NEGATIVE_AMOUNT for a negative planned cost', async () => {
+    const v = await build({ id: 1 });
+    await expect(v.validate(1, { name: 'X', plannedCost: -1 } as any)).rejects.toMatchObject({ errorType: 'STAGE_NEGATIVE_AMOUNT' });
+  });
+
   it('throws STAGE_CLOSE_NEEDS_DATE when closing without a date', async () => {
     const v = await build({ id: 1 });
     await expect(v.validate(1, { name: 'X', status: 'closed' } as any)).rejects.toMatchObject({ errorType: 'STAGE_CLOSE_NEEDS_DATE' });
@@ -39,5 +44,12 @@ describe('CommandDealStageValidatorService', () => {
   it('passes a valid open stage', async () => {
     const v = await build({ id: 1 });
     await expect(v.validate(1, { name: 'Проект', plannedRevenue: 100 } as any)).resolves.toBeUndefined();
+  });
+
+  it('passes a valid closed stage with a close date', async () => {
+    const v = await build({ id: 1 });
+    await expect(
+      v.validate(1, { name: 'Проект', status: 'closed', closedDate: '2026-03-10' } as any),
+    ).resolves.toBeUndefined();
   });
 });

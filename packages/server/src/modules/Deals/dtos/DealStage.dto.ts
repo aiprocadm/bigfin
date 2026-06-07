@@ -1,7 +1,7 @@
 // © 2026 Bigfin
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsIn, IsNumber, IsString, Min } from 'class-validator';
+import { IsDateString, IsIn, IsNumber, IsString, Min } from 'class-validator';
 
 class CommandDealStageDto {
   @IsString()
@@ -33,7 +33,7 @@ class CommandDealStageDto {
   @ApiPropertyOptional({ example: 'open', enum: ['open', 'closed'] })
   status?: string;
 
-  @IsString()
+  @IsDateString()
   @IsOptional()
   @ApiPropertyOptional({ example: '2026-03-10', description: 'Close date (required when status=closed)' })
   closedDate?: string;

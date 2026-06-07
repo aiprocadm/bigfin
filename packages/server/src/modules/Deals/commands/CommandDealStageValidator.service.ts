@@ -28,7 +28,8 @@ export class CommandDealStageValidatorService {
     if (!dto.name || !dto.name.trim()) {
       throw new ServiceError(ERRORS.STAGE_NAME_REQUIRED);
     }
-    if (Number(dto.plannedRevenue ?? 0) < 0 || Number(dto.plannedCost ?? 0) < 0) {
+    // reject negatives and NaN (NaN >= 0 is false); guards direct calls bypassing DTO validation
+    if (!(Number(dto.plannedRevenue ?? 0) >= 0) || !(Number(dto.plannedCost ?? 0) >= 0)) {
       throw new ServiceError(ERRORS.STAGE_NEGATIVE_AMOUNT);
     }
     if (dto.status === 'closed' && !dto.closedDate) {

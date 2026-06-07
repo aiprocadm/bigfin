@@ -49,6 +49,7 @@ import { DebtRepaymentPlan } from '@/modules/Debts/models/DebtRepaymentPlan.mode
 import { DebtRepaymentInstallment } from '@/modules/Debts/models/DebtRepaymentInstallment.model';
 import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.model';
 import { Deal } from '@/modules/Deals/models/Deal.model';
+import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocationRule.model';
 
 const models = [
   Item,
@@ -97,6 +98,7 @@ const models = [
   DebtRepaymentInstallment,
   PaymentRequest,
   Deal,
+  CostAllocationRule,
   TenantUser,
 ];
 

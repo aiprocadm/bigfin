@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { GetDealAllocationService } from '@/modules/CostAllocation/queries/GetDealAllocation.service';
 import { Deal } from '../models/Deal.model';
 import { computeDealMargin } from '../utils/computeDealMargin';
 import { ERRORS } from '../constants';
@@ -15,6 +16,8 @@ export class GetDealProfitabilityService {
 
     @Inject(Deal.name)
     private readonly dealModel: TenantModelProxy<typeof Deal>,
+
+    private readonly allocation: GetDealAllocationService,
   ) {}
 
   public async getProfitability(
@@ -31,6 +34,20 @@ export class GetDealProfitabilityService {
     } as any);
 
     const margin = computeDealMargin(rows as any);
-    return { dealId, ...margin, articles: rows as any };
+    const result: DealProfitability = { dealId, ...margin, articles: rows as any };
+
+    const allocations = await this.allocation.getForDeal(dealId, query);
+    if (allocations.length) {
+      const allocatedTotal = allocations.reduce((s, a) => s + a.amount, 0);
+      const costsAfterAllocation = margin.costs + allocatedTotal;
+      const profitAfterAllocation = margin.revenue - costsAfterAllocation;
+      result.allocations = allocations;
+      result.allocatedTotal = allocatedTotal;
+      result.costsAfterAllocation = costsAfterAllocation;
+      result.profitAfterAllocation = profitAfterAllocation;
+      result.marginAfterAllocation =
+        margin.revenue > 0 ? profitAfterAllocation / margin.revenue : 0;
+    }
+    return result;
   }
 }

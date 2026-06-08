@@ -176,4 +176,39 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
 
     expect(modify).toHaveBeenCalledWith('filterByProjects', [5]);
   });
+
+  it('calls whereNull("projectId") when unassignedProject is true', async () => {
+    const whereNull = jest.fn().mockReturnThis();
+    const txnQb: any = {
+      sum: jest.fn().mockReturnThis(),
+      groupBy: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      modify: jest.fn().mockReturnThis(),
+      whereNull,
+    };
+    const txnBuilder = {
+      onBuild: (cb: (qb: any) => void) => {
+        cb(txnQb);
+        return Promise.resolve([]);
+      },
+    };
+    const articleModel = () => ({
+      query: () => ({ orderBy: () => Promise.resolve([]) }),
+    });
+    const articleAccountModel = () => ({ query: () => Promise.resolve([]) });
+    const accountTransactionModel = () => ({ query: () => txnBuilder });
+    const accountModel = () => ({
+      query: () => ({ whereIn: () => Promise.resolve([]) }),
+    });
+    const service = new ArticlesPlRollupService(
+      articleModel as any,
+      articleAccountModel as any,
+      accountTransactionModel as any,
+      accountModel as any,
+    );
+
+    await service.getRollup({ unassignedProject: true } as any);
+
+    expect(whereNull).toHaveBeenCalledWith('projectId');
+  });
 });

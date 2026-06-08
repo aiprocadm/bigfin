@@ -1,0 +1,12 @@
+// © 2026 Bigfin
+// eslint-disable-next-line import/prefer-default-export
+export const ERRORS = {
+  RULE_NOT_FOUND: 'RULE_NOT_FOUND',
+  ARTICLE_NOT_FOUND: 'ARTICLE_NOT_FOUND',
+  ARTICLE_NOT_EXPENSE: 'ARTICLE_NOT_EXPENSE',
+  INVALID_ALLOCATION_KEY: 'INVALID_ALLOCATION_KEY',
+  INVALID_MANUAL_SHARES: 'INVALID_MANUAL_SHARES',
+  INVALID_DATE_RANGE: 'INVALID_DATE_RANGE',
+};
+
+export const ALLOCATION_KEYS = ['revenue', 'manual_share'] as const;

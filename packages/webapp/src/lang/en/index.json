@@ -2759,6 +2759,7 @@
   "payroll.employee.delete_confirm": "Delete this employee?",
   "payroll.employee.deleted": "Employee deleted",
   "payroll.employee.has_lines_error": "The employee has pay runs. Archive them instead of deleting.",
+  "payroll.employee.delete_error": "Failed to delete the employee",
   "payroll.employees.empty": "No employees yet. Add the first one.",
   "payroll.run.create": "New pay run",
   "payroll.run.month": "Pay run month",

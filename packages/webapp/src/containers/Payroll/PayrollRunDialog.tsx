@@ -47,15 +47,9 @@ export function PayrollRunDialog({ onDone, onCancel }: Props) {
       toast.success(intl.get('payroll.run.saved'));
       onDone();
     } catch (err: any) {
-      const body = err?.response?.data;
-      const code: string =
-        (typeof body === 'object' && body !== null
-          ? body.code ?? body.error ?? ''
-          : String(body ?? ''));
-      if (
-        code === 'PAYROLL_RUN_MONTH_EXISTS' ||
-        JSON.stringify(body ?? '').includes('PAYROLL_RUN_MONTH_EXISTS')
-      ) {
+      const hasType = (e: any, type: string) =>
+        Boolean(e?.response?.data?.errors?.some((x: any) => x?.type === type));
+      if (hasType(err, 'PAYROLL_RUN_MONTH_EXISTS')) {
         toast.error(intl.get('payroll.run.month_exists'));
       } else {
         toast.error(intl.get('payroll.run.create_error'));

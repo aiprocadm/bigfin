@@ -53,18 +53,12 @@ export default function PayrollPage() {
       await deleteEmployee.mutateAsync(emp.id);
       toast.success(intl.get('payroll.employee.deleted'));
     } catch (err: any) {
-      const body = err?.response?.data;
-      const code: string =
-        typeof body === 'object' && body !== null
-          ? body.code ?? body.error ?? ''
-          : String(body ?? '');
-      if (
-        code === 'EMPLOYEE_HAS_PAYROLL_LINES' ||
-        JSON.stringify(body ?? '').includes('EMPLOYEE_HAS_PAYROLL_LINES')
-      ) {
+      const hasType = (e: any, type: string) =>
+        Boolean(e?.response?.data?.errors?.some((x: any) => x?.type === type));
+      if (hasType(err, 'EMPLOYEE_HAS_PAYROLL_LINES')) {
         toast.error(intl.get('payroll.employee.has_lines_error'));
       } else {
-        toast.error(intl.get('payroll.employee.save_error'));
+        toast.error(intl.get('payroll.employee.delete_error'));
       }
     }
   };

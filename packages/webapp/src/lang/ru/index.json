@@ -2759,6 +2759,7 @@
   "payroll.employee.delete_confirm": "Удалить сотрудника?",
   "payroll.employee.deleted": "Сотрудник удалён",
   "payroll.employee.has_lines_error": "У сотрудника есть начисления. Вместо удаления переведите в архив.",
+  "payroll.employee.delete_error": "Не удалось удалить сотрудника",
   "payroll.employees.empty": "Сотрудников пока нет. Добавьте первого.",
   "payroll.run.create": "Начислить зарплату",
   "payroll.run.month": "Месяц начисления",

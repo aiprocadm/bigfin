@@ -2796,5 +2796,6 @@
   "payroll.taxes.empty": "Проведите начисление, чтобы увидеть налоги",
   "payroll.save": "Сохранить",
   "payroll.cancel": "Отмена",
-  "payroll.totals": "Итого"
+  "payroll.totals": "Итого",
+  "payroll.loading": "Загрузка…"
 }

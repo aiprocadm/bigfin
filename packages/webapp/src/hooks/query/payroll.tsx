@@ -30,6 +30,7 @@ const invalidate = (client: QueryClient) => {
   client.invalidateQueries(t.PAYROLL_RUNS);
   client.invalidateQueries(t.PAYROLL_RUN);
   client.invalidateQueries(t.PAYROLL_TAXES_SUMMARY);
+  client.invalidateQueries(t.PAYROLL_SETTINGS);
   client.invalidateQueries(t.PLANNED_OPERATIONS);
   client.invalidateQueries(t.PAYMENT_CALENDAR_FORECAST);
 };

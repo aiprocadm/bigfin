@@ -2796,5 +2796,6 @@
   "payroll.taxes.empty": "Approve a pay run to see taxes here",
   "payroll.save": "Save",
   "payroll.cancel": "Cancel",
-  "payroll.totals": "Totals"
+  "payroll.totals": "Totals",
+  "payroll.loading": "Loading…"
 }

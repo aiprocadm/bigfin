@@ -20,6 +20,11 @@ interface Props {
 const fmt = (n: number | undefined | null) =>
   `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
 
+const safeNum = (raw: string) => {
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 0;
+};
+
 function formatPeriod(periodMonth: string) {
   try {
     return new Intl.DateTimeFormat('ru-RU', {
@@ -55,7 +60,9 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
 
   if (!run) {
     return (
-      <div className="p-6 text-sm text-muted-foreground">...</div>
+      <div className="p-6 text-sm text-muted-foreground">
+        {intl.get('payroll.loading')}
+      </div>
     );
   }
 
@@ -167,7 +174,7 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
                       className="h-7 w-24"
                       value={line.baseAmount}
                       onChange={(e) =>
-                        updateLine(idx, 'baseAmount', Number(e.target.value))
+                        updateLine(idx, 'baseAmount', safeNum(e.target.value))
                       }
                     />
                   ) : (
@@ -181,7 +188,7 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
                       className="h-7 w-24"
                       value={line.bonusAmount}
                       onChange={(e) =>
-                        updateLine(idx, 'bonusAmount', Number(e.target.value))
+                        updateLine(idx, 'bonusAmount', safeNum(e.target.value))
                       }
                     />
                   ) : (
@@ -195,7 +202,7 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
                       className="h-7 w-24"
                       value={line.deductionAmount}
                       onChange={(e) =>
-                        updateLine(idx, 'deductionAmount', Number(e.target.value))
+                        updateLine(idx, 'deductionAmount', safeNum(e.target.value))
                       }
                     />
                   ) : (
@@ -234,19 +241,34 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
       <div className="flex items-center gap-2">
         {isDraft && (
           <>
-            <Button onClick={handleSaveLines}>
+            <Button
+              onClick={handleSaveLines}
+              disabled={editRun.isLoading}
+            >
               {intl.get('payroll.run.save_lines')}
             </Button>
-            <Button variant="ghost" onClick={handleApprove}>
+            <Button
+              variant="ghost"
+              onClick={handleApprove}
+              disabled={approveRun.isLoading}
+            >
               {intl.get('payroll.run.approve')}
             </Button>
-            <Button variant="ghost" onClick={handleDelete}>
+            <Button
+              variant="ghost"
+              onClick={handleDelete}
+              disabled={deleteRun.isLoading}
+            >
               {intl.get('payroll.run.delete')}
             </Button>
           </>
         )}
         {!isDraft && (
-          <Button variant="ghost" onClick={handleUnapprove}>
+          <Button
+            variant="ghost"
+            onClick={handleUnapprove}
+            disabled={unapproveRun.isLoading}
+          >
             {intl.get('payroll.run.unapprove')}
           </Button>
         )}

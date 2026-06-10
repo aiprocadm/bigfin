@@ -289,6 +289,7 @@ export default function PayrollPage() {
       )}
       {showEmployeeDialog && (
         <EmployeeDialog
+          key={editEmployee?.id ?? 'new'}
           employee={editEmployee ?? undefined}
           onDone={() => {
             setShowEmployeeDialog(false);

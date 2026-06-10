@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { employeeSchema, EmployeeFormValues } from './schemas';
 import {
   useCreateEmployee,
@@ -23,6 +24,11 @@ import {
 
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+
+const safeNum = (raw: string) => {
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 0;
+};
 
 interface Props {
   employee?: any;
@@ -150,7 +156,7 @@ export function EmployeeDialog({ employee, onDone, onCancel }: Props) {
                     <Input
                       type="number"
                       value={field.value}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      onChange={(e) => field.onChange(safeNum(e.target.value))}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -167,14 +173,12 @@ export function EmployeeDialog({ employee, onDone, onCancel }: Props) {
                 <FormItem>
                   <div className="flex items-center gap-2">
                     <FormControl>
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={field.value}
-                        onChange={(e) => field.onChange(e.target.checked)}
+                        onCheckedChange={field.onChange}
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}
-                        className="h-4 w-4"
                       />
                     </FormControl>
                     <FormLabel className="mb-0">

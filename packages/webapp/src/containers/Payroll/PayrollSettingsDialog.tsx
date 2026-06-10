@@ -24,6 +24,11 @@ import t from '@/hooks/query/types';
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
 
+const safeNum = (raw: string) => {
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 0;
+};
+
 interface Props {
   onDone: () => void;
   onCancel: () => void;
@@ -31,7 +36,7 @@ interface Props {
 
 export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
   const queryClient = useQueryClient();
-  const { data: settings } = usePayrollSettings();
+  const { data: settings, isLoading: settingsLoading } = usePayrollSettings();
   const saveSettings = useSaveSettings({});
 
   const form = useForm<PayrollSettingsFormValues>({
@@ -87,6 +92,11 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
         <CardTitle>{intl.get('payroll.settings.title')}</CardTitle>
       </CardHeader>
       <CardContent>
+        {settingsLoading ? (
+          <div className="p-4 text-sm text-muted-foreground">
+            {intl.get('payroll.loading')}
+          </div>
+        ) : (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -105,7 +115,7 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                       type="number"
                       step="0.01"
                       value={field.value}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      onChange={(e) => field.onChange(safeNum(e.target.value))}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -157,7 +167,7 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                       type="number"
                       step="0.01"
                       value={field.value}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      onChange={(e) => field.onChange(safeNum(e.target.value))}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -183,7 +193,7 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                           step="0.01"
                           value={field.value}
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(safeNum(e.target.value))
                           }
                           onBlur={field.onBlur}
                           name={field.name}
@@ -207,7 +217,7 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                           type="number"
                           value={field.value}
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(safeNum(e.target.value))
                           }
                           onBlur={field.onBlur}
                           name={field.name}
@@ -238,6 +248,7 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
             </div>
           </form>
         </Form>
+        )}
       </CardContent>
     </Card>
   );

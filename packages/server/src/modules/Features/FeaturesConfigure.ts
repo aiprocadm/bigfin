@@ -66,6 +66,10 @@ export class FeaturesConfigure {
         name: Features.DEAL_STAGES,
         defaultValue: false,
       },
+      {
+        name: Features.PAYROLL,
+        defaultValue: false,
+      },
     ];
   }
 }

@@ -42,11 +42,11 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
   const form = useForm<PayrollSettingsFormValues>({
     resolver: zodResolver(payrollSettingsSchema),
     defaultValues: {
-      ndflRate: Number(settings?.ndfl_rate ?? 13),
-      contribMode: (settings?.contrib_mode as 'standard' | 'msp') ?? 'standard',
-      contribRate: Number(settings?.contrib_rate ?? 30),
-      mspRate: Number(settings?.msp_rate ?? 15),
-      mspThreshold: Number(settings?.msp_threshold ?? 23280),
+      ndflRate: Number(settings?.ndflRate ?? 13),
+      contribMode: (settings?.contribMode as 'standard' | 'msp') ?? 'standard',
+      contribRate: Number(settings?.contribRate ?? 30),
+      mspRate: Number(settings?.mspRate ?? 15),
+      mspThreshold: Number(settings?.mspThreshold ?? 40639.5),
     },
   });
 
@@ -57,11 +57,11 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
   React.useEffect(() => {
     if (settings && Object.keys(settings).length > 0) {
       form.reset({
-        ndflRate: Number(settings.ndfl_rate ?? 13),
-        contribMode: (settings.contrib_mode as 'standard' | 'msp') ?? 'standard',
-        contribRate: Number(settings.contrib_rate ?? 30),
-        mspRate: Number(settings.msp_rate ?? 15),
-        mspThreshold: Number(settings.msp_threshold ?? 23280),
+        ndflRate: Number(settings.ndflRate ?? 13),
+        contribMode: (settings.contribMode as 'standard' | 'msp') ?? 'standard',
+        contribRate: Number(settings.contribRate ?? 30),
+        mspRate: Number(settings.mspRate ?? 15),
+        mspThreshold: Number(settings.mspThreshold ?? 40639.5),
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

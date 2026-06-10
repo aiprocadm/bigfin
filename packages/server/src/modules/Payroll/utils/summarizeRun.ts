@@ -1,11 +1,8 @@
 // © 2026 Bigfin
-const toNumber = (value: unknown): number => {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
-};
-const round2 = (n: number): number => Math.round(n * 100) / 100;
+import { toNumber, round2 } from './payrollMath';
 
 export interface RunTotals {
+  totalGross: number;
   totalNdfl: number;
   totalContributions: number;
   totalNet: number;
@@ -13,6 +10,9 @@ export interface RunTotals {
 }
 
 interface SummarizableLine {
+  grossAmount?: number;
+  baseAmount?: number;
+  bonusAmount?: number;
   ndflAmount: number;
   contributionsAmount: number;
   netAmount: number;
@@ -21,6 +21,14 @@ interface SummarizableLine {
 
 export function summarizeRun(lines: SummarizableLine[]): RunTotals {
   return {
+    totalGross: round2(
+      lines.reduce((s, l) => {
+        const gross = Number.isFinite(Number(l.grossAmount))
+          ? toNumber(l.grossAmount)
+          : toNumber(l.baseAmount) + toNumber(l.bonusAmount);
+        return s + gross;
+      }, 0),
+    ),
     totalNdfl: round2(lines.reduce((s, l) => s + toNumber(l.ndflAmount), 0)),
     totalContributions: round2(
       lines.reduce((s, l) => s + toNumber(l.contributionsAmount), 0),

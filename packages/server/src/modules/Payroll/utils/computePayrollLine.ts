@@ -1,5 +1,6 @@
 // © 2026 Bigfin
 import { PayrollSettingsValues } from '../constants';
+import { toNumber, round2 } from './payrollMath';
 
 export interface PayrollLineInput {
   employmentType: string;
@@ -17,13 +18,6 @@ export interface PayrollLineComputed {
 }
 
 const TAXABLE_TYPES = ['staff', 'gph'];
-
-const toNumber = (value: unknown): number => {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
-};
-
-const round2 = (n: number): number => Math.round(n * 100) / 100;
 
 /**
  * Расчёт строки начисления. Налоги — упрощённо по ставкам из настроек

@@ -70,6 +70,10 @@ export class FeaturesConfigure {
         name: Features.PAYROLL,
         defaultValue: false,
       },
+      {
+        name: Features.PAYROLL_KPI,
+        defaultValue: false,
+      },
     ];
   }
 }

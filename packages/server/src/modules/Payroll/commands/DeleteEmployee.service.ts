@@ -4,6 +4,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { Employee } from '../models/Employee.model';
 import { PayrollRunLine } from '../models/PayrollRunLine.model';
+import { EmployeeKpiTarget } from '../models/EmployeeKpiTarget.model';
 import { ERRORS } from '../constants';
 
 @Injectable()
@@ -14,9 +15,12 @@ export class DeleteEmployeeService {
 
     @Inject(PayrollRunLine.name)
     private readonly lineModel: TenantModelProxy<typeof PayrollRunLine>,
+
+    @Inject(EmployeeKpiTarget.name)
+    private readonly kpiTargetModel: TenantModelProxy<typeof EmployeeKpiTarget>,
   ) {}
 
-  /** Удаление запрещено при наличии строк начислений — фронт предложит архивировать. */
+  /** Удаление запрещено при наличии строк начислений или KPI-планов — фронт предложит архивировать. */
   public async delete(id: number) {
     const employee = await this.employeeModel().query().findById(id);
     if (!employee) throw new ServiceError(ERRORS.EMPLOYEE_NOT_FOUND);
@@ -27,6 +31,13 @@ export class DeleteEmployeeService {
       .resultSize();
     if (usedCount > 0) {
       throw new ServiceError(ERRORS.EMPLOYEE_HAS_PAYROLL_LINES);
+    }
+    const kpiCount = await this.kpiTargetModel()
+      .query()
+      .where('employeeId', id)
+      .resultSize();
+    if (kpiCount > 0) {
+      throw new ServiceError(ERRORS.EMPLOYEE_HAS_KPI_TARGETS);
     }
     await this.employeeModel().query().deleteById(id);
   }

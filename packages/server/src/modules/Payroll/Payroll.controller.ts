@@ -21,6 +21,12 @@ import { CreateEmployeeDto, EditEmployeeDto } from './dtos/Employee.dto';
 import { CreatePayrollRunDto, EditPayrollRunDto } from './dtos/PayrollRun.dto';
 import { GetPayrollRunsQueryDto } from './dtos/GetPayrollRunsQuery.dto';
 import { GetPayrollTaxesSummaryQueryDto } from './dtos/GetPayrollTaxesSummaryQuery.dto';
+import {
+  CreateKpiTargetDto,
+  EditKpiTargetDto,
+  GetKpiSummaryQueryDto,
+  GetKpiTargetsQueryDto,
+} from './dtos/KpiTarget.dto';
 
 @Controller('payroll')
 @ApiTags('Payroll')
@@ -65,6 +71,43 @@ export class PayrollController {
   @ApiOperation({ summary: 'Delete an employee without payroll lines (admin only).' })
   deleteEmployee(@Param('id', ParseIntPipe) id: number) {
     return this.application.deleteEmployee(id);
+  }
+
+  // ---- KPI targets ----
+  @Get('kpi/targets')
+  @ApiOperation({ summary: 'List manager KPI targets (optionally by year).' })
+  getKpiTargets(@Query() query: GetKpiTargetsQueryDto) {
+    return this.application.getKpiTargets(query.year);
+  }
+
+  @Post('kpi/targets')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Create a monthly KPI target for a manager (admin only).' })
+  createKpiTarget(@Body() dto: CreateKpiTargetDto) {
+    return this.application.createKpiTarget(dto);
+  }
+
+  @Put('kpi/targets/:id')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Edit a KPI target (admin only).' })
+  editKpiTarget(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: EditKpiTargetDto,
+  ) {
+    return this.application.editKpiTarget(id, dto);
+  }
+
+  @Delete('kpi/targets/:id')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Delete a KPI target (admin only).' })
+  deleteKpiTarget(@Param('id', ParseIntPipe) id: number) {
+    return this.application.deleteKpiTarget(id);
+  }
+
+  @Get('kpi/summary')
+  @ApiOperation({ summary: 'Monthly KPI plan/fact/bonus summary by manager.' })
+  getKpiSummary(@Query() query: GetKpiSummaryQueryDto) {
+    return this.application.getKpiSummary(query.month);
   }
 
   // ---- Taxes summary ----

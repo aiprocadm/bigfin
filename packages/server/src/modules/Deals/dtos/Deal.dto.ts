@@ -23,6 +23,16 @@ class CommandDealDto {
   @ApiPropertyOptional({ example: 3, description: 'Client contact id' })
   contactId?: number;
 
+  @ToNumber()
+  @IsInt()
+  @IsOptional()
+  @ApiPropertyOptional({
+    example: 5,
+    description: 'Responsible manager (employee id)',
+    nullable: true,
+  })
+  managerId?: number | null;
+
   @IsDateString()
   @IsOptional()
   @ApiPropertyOptional({ example: '2026-06-30', description: 'Deadline' })

@@ -4,6 +4,7 @@ import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
 export class Deal extends TenantBaseModel {
   name!: string;
   contactId!: number | null;
+  managerId!: number | null;
   deadline!: string | null;
   costEstimate!: number | null;
   status!: string;

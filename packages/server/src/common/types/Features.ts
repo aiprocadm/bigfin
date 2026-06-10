@@ -12,6 +12,7 @@ export enum Features {
   DEALS = 'deals',
   COST_ALLOCATION = 'cost_allocation',
   DEAL_STAGES = 'deal_stages',
+  PAYROLL = 'payroll',
 }
 
 export interface IFeatureAllItem {

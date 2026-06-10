@@ -1,0 +1,39 @@
+// © 2026 Bigfin
+import { Inject, Injectable } from '@nestjs/common';
+import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { ServiceError } from '@/modules/Items/ServiceError';
+import { Employee } from '../models/Employee.model';
+import { EditEmployeeDto } from '../dtos/Employee.dto';
+import { ERRORS } from '../constants';
+import { CommandEmployeeValidatorService } from './CommandEmployeeValidator.service';
+
+@Injectable()
+export class EditEmployeeService {
+  constructor(
+    private readonly validator: CommandEmployeeValidatorService,
+
+    @Inject(Employee.name)
+    private readonly employeeModel: TenantModelProxy<typeof Employee>,
+  ) {}
+
+  public async edit(id: number, dto: EditEmployeeDto) {
+    const employee = await this.employeeModel().query().findById(id);
+    if (!employee) throw new ServiceError(ERRORS.EMPLOYEE_NOT_FOUND);
+
+    this.validator.validate(dto);
+
+    await this.employeeModel()
+      .query()
+      .findById(id)
+      .patch({
+        fullName: dto.fullName.trim(),
+        position: dto.position || null,
+        employmentType: dto.employmentType,
+        defaultSalary: dto.defaultSalary ?? 0,
+        active: dto.active ?? true,
+        note: dto.note || null,
+      } as any);
+
+    return this.employeeModel().query().findById(id);
+  }
+}

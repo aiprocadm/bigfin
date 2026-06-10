@@ -13,6 +13,7 @@ export const getDealSchema = () =>
       .nullable()
       .optional(),
     status: z.string().optional(),
+    managerId: z.number().nullable().optional(),
   });
 
 export type DealFormValues = z.infer<ReturnType<typeof getDealSchema>>;

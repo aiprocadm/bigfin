@@ -178,3 +178,85 @@ export function usePayrollTaxesSummary(year: number, props?: any) {
     { select: (res: any) => res.data.data ?? res.data, defaultData: [], ...props },
   );
 }
+
+// ---- KPI ----
+export interface KpiTargetValues {
+  employeeId: number;
+  periodMonth: string;
+  metric: 'revenue' | 'profit';
+  targetAmount: number;
+  bonusRate: number;
+  onlyIfAchieved?: boolean;
+  note?: string;
+}
+
+const invalidateKpi = (client: QueryClient) => {
+  client.invalidateQueries(t.PAYROLL_KPI_TARGETS);
+  client.invalidateQueries(t.PAYROLL_KPI_SUMMARY);
+  // KPI bonus prefills future pay runs.
+  client.invalidateQueries(t.PAYROLL_RUNS);
+};
+
+export function useKpiTargets(query?: { year?: number }, props?: any) {
+  return useRequestQuery(
+    [t.PAYROLL_KPI_TARGETS, query],
+    { method: 'get', url: 'payroll/kpi/targets', params: query },
+    {
+      select: (res: any) => {
+        const payload = res.data?.data ?? res.data;
+        return payload?.targets ?? payload ?? [];
+      },
+      defaultData: [],
+      ...props,
+    },
+  );
+}
+
+export function useKpiSummary(month: string, props?: any) {
+  return useRequestQuery(
+    [t.PAYROLL_KPI_SUMMARY, month],
+    { method: 'get', url: 'payroll/kpi/summary', params: { month } },
+    {
+      select: (res: any) => {
+        const payload = res.data?.data ?? res.data;
+        return payload?.rows ?? payload ?? [];
+      },
+      defaultData: [],
+      enabled: !!month,
+      ...props,
+    },
+  );
+}
+
+export function useCreateKpiTarget(
+  props?: UseMutationOptions<any, any, KpiTargetValues>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, KpiTargetValues>(
+    (values) => api.post('payroll/kpi/targets', values),
+    { onSuccess: () => invalidateKpi(client), ...props },
+  );
+}
+
+export function useEditKpiTarget(
+  props?: UseMutationOptions<any, any, { id: number; values: KpiTargetValues }>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, { id: number; values: KpiTargetValues }>(
+    ({ id, values }) => api.put(`payroll/kpi/targets/${id}`, values),
+    { onSuccess: () => invalidateKpi(client), ...props },
+  );
+}
+
+export function useDeleteKpiTarget(
+  props?: UseMutationOptions<any, any, number>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, number>(
+    (id) => api.delete(`payroll/kpi/targets/${id}`),
+    { onSuccess: () => invalidateKpi(client), ...props },
+  );
+}

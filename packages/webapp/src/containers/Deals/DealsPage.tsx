@@ -6,6 +6,7 @@ import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDeals, useDealsSummary, useDeleteDeal } from '@/hooks/query/deals';
+import { useEmployees } from '@/hooks/query/payroll';
 import { DealDialog } from './DealDialog';
 import { DealProfitability } from './DealProfitability';
 import { DealStagesSection } from './DealStagesSection';
@@ -29,11 +30,18 @@ export default function DealsPage() {
   const [showForm, setShowForm] = React.useState(false);
   const [openDeal, setOpenDeal] = React.useState<any | null>(null);
 
+  const canKpi = featureCan('payroll_kpi');
+
   const { data: deals } = useDeals(status ? { status } : {}, {});
   const { data: summary } = useDealsSummary({}, {});
+  const { data: employees } = useEmployees({}, { enabled: canKpi });
   const del = useDeleteDeal({});
 
   if (!featureCan('deals')) return null;
+
+  const managerNameById = new Map<number, string>(
+    ((employees as any[]) ?? []).map((e: any) => [e.id, e.fullName]),
+  );
 
   const rows: any[] = deals ?? [];
   const marginById = new Map<number, any>(
@@ -153,6 +161,15 @@ export default function DealsPage() {
 
       {openDeal && (
         <div className="mt-2">
+          {canKpi && openDeal.managerId != null && (
+            <div className="text-muted-foreground mb-2 text-sm">
+              {intl.get('deal.manager')}:{' '}
+              <span className="text-foreground font-medium">
+                {managerNameById.get(openDeal.managerId) ??
+                  `#${openDeal.managerId}`}
+              </span>
+            </div>
+          )}
           <DealProfitability deal={openDeal} />
           <DealStagesSection dealId={openDeal.id} />
           <div className="mt-2">

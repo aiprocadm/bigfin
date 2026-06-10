@@ -15,8 +15,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useFeatureCan } from '@/hooks/state/feature';
 import { useCustomers } from '@/hooks/query/customers';
 import { useCreateDeal, useEditDeal } from '@/hooks/query/deals';
+import { useEmployees } from '@/hooks/query/payroll';
 import { getDealSchema, DealFormValues } from './schemas';
 
 interface Props {
@@ -38,11 +40,18 @@ const STATUS_OPTIONS = ['in_progress', 'completed', 'cancelled'];
 
 export function DealDialog({ deal, onDone, onCancel }: Props) {
   const isEdit = !!deal?.id;
+  const { featureCan } = useFeatureCan();
+  const canKpi = featureCan('payroll_kpi');
   const createMutation = useCreateDeal({});
   const editMutation = useEditDeal({});
   const { data: customersData } = useCustomers({}, {});
   const customers: CustomerRow[] =
     (customersData as any)?.customers ?? (customersData as any) ?? [];
+  const { data: employeesData } = useEmployees(
+    { activeOnly: true },
+    { enabled: canKpi },
+  );
+  const employees: any[] = employeesData ?? [];
 
   const form = useForm<DealFormValues>({
     resolver: zodResolver(getDealSchema()),
@@ -52,6 +61,7 @@ export function DealDialog({ deal, onDone, onCancel }: Props) {
       deadline: deal?.deadline ?? '',
       costEstimate: deal?.costEstimate ?? null,
       status: deal?.status ?? 'in_progress',
+      managerId: deal?.managerId ?? null,
     },
   });
 
@@ -64,6 +74,7 @@ export function DealDialog({ deal, onDone, onCancel }: Props) {
       deadline: values.deadline || undefined,
       costEstimate: values.costEstimate ?? undefined,
       status: values.status || undefined,
+      managerId: values.managerId ?? null,
     };
     try {
       if (isEdit) {
@@ -198,6 +209,49 @@ export function DealDialog({ deal, onDone, onCancel }: Props) {
                 </FormItem>
               )}
             />
+            {canKpi && (
+              <FormField
+                control={form.control}
+                name="managerId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('deal.manager.label')}</FormLabel>
+                    <FormControl>
+                      <select
+                        className={selectClassName}
+                        value={field.value == null ? '' : String(field.value)}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ''
+                              ? null
+                              : Number(e.target.value),
+                          )
+                        }
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                      >
+                        <option value="">
+                          {intl.get('deal.manager.none')}
+                        </option>
+                        {deal?.managerId != null &&
+                          !employees.some((e) => e.id === deal.managerId) && (
+                            <option value={deal.managerId}>
+                              {deal.managerFullName ?? `#${deal.managerId}`}
+                            </option>
+                          )}
+                        {employees.map((emp) => (
+                          <option key={emp.id} value={emp.id}>
+                            {emp.fullName}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"

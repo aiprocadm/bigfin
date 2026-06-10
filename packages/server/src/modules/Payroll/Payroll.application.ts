@@ -34,24 +34,55 @@ export class PayrollApplication {
     private readonly settingsService: PayrollSettingsService,
   ) {}
 
-  getEmployees = (activeOnly?: boolean) =>
-    this.getEmployeesService.getEmployees(activeOnly);
-  createEmployee = (dto: CreateEmployeeDto) =>
-    this.createEmployeeService.create(dto);
-  editEmployee = (id: number, dto: EditEmployeeDto) =>
-    this.editEmployeeService.edit(id, dto);
-  deleteEmployee = (id: number) => this.deleteEmployeeService.delete(id);
+  public getEmployees(activeOnly?: boolean) {
+    return this.getEmployeesService.getEmployees(activeOnly);
+  }
 
-  getRuns = (year?: number) => this.getRunsService.getRuns(year);
-  getRun = (id: number) => this.getRunService.getRun(id);
-  createRun = (dto: CreatePayrollRunDto) => this.createRunService.create(dto);
-  editRun = (id: number, dto: EditPayrollRunDto) =>
-    this.editRunService.edit(id, dto);
-  deleteRun = (id: number) => this.deleteRunService.delete(id);
-  approveRun = (id: number) => this.approveRunService.approve(id);
-  unapproveRun = (id: number) => this.unapproveRunService.unapprove(id);
+  public createEmployee(dto: CreateEmployeeDto) {
+    return this.createEmployeeService.create(dto);
+  }
 
-  getTaxesSummary = (year: number) =>
-    this.getTaxesSummaryService.getSummary(year);
-  getSettings = () => this.settingsService.getSettings();
+  public editEmployee(id: number, dto: EditEmployeeDto) {
+    return this.editEmployeeService.edit(id, dto);
+  }
+
+  public deleteEmployee(id: number) {
+    return this.deleteEmployeeService.delete(id);
+  }
+
+  public getRuns(year?: number) {
+    return this.getRunsService.getRuns(year);
+  }
+
+  public getRun(id: number) {
+    return this.getRunService.getRun(id);
+  }
+
+  public createRun(dto: CreatePayrollRunDto) {
+    return this.createRunService.create(dto);
+  }
+
+  public editRun(id: number, dto: EditPayrollRunDto) {
+    return this.editRunService.edit(id, dto);
+  }
+
+  public deleteRun(id: number) {
+    return this.deleteRunService.delete(id);
+  }
+
+  public approveRun(id: number) {
+    return this.approveRunService.approve(id);
+  }
+
+  public unapproveRun(id: number) {
+    return this.unapproveRunService.unapprove(id);
+  }
+
+  public getTaxesSummary(year: number) {
+    return this.getTaxesSummaryService.getSummary(year);
+  }
+
+  public getSettings() {
+    return this.settingsService.getSettings();
+  }
 }

@@ -20,6 +20,7 @@ import { PayrollApplication } from './Payroll.application';
 import { CreateEmployeeDto, EditEmployeeDto } from './dtos/Employee.dto';
 import { CreatePayrollRunDto, EditPayrollRunDto } from './dtos/PayrollRun.dto';
 import { GetPayrollRunsQueryDto } from './dtos/GetPayrollRunsQuery.dto';
+import { GetPayrollTaxesSummaryQueryDto } from './dtos/GetPayrollTaxesSummaryQuery.dto';
 
 @Controller('payroll')
 @ApiTags('Payroll')
@@ -69,8 +70,8 @@ export class PayrollController {
   // ---- Taxes summary ----
   @Get('taxes-summary')
   @ApiOperation({ summary: 'Monthly payroll taxes summary (approved runs).' })
-  getTaxesSummary(@Query('year', ParseIntPipe) year: number) {
-    return this.application.getTaxesSummary(year);
+  getTaxesSummary(@Query() query: GetPayrollTaxesSummaryQueryDto) {
+    return this.application.getTaxesSummary(query.year);
   }
 
   // ---- Runs ----

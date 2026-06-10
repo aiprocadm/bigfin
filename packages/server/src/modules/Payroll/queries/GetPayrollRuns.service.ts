@@ -16,7 +16,7 @@ export class GetPayrollRunsService {
       .query()
       .withGraphFetched('lines')
       .orderBy('periodMonth', 'desc');
-    if (year) query.modify('filterByYear', year);
+    if (year != null) query.modify('filterByYear', year);
 
     const runs: any[] = await query;
     return runs.map((run) => ({

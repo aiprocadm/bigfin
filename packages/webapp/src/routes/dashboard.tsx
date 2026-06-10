@@ -1315,6 +1315,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('cost_allocation.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Payroll (Зарплата)
+  {
+    path: `/payroll`,
+    component: lazy(() => import('@/containers/Payroll/PayrollPage')),
+    breadcrumb: intl.get('payroll.page_title'),
+    pageTitle: intl.get('payroll.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

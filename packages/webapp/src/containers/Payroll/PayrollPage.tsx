@@ -14,8 +14,9 @@ import { EmployeeDialog } from './EmployeeDialog';
 import { PayrollRunDialog } from './PayrollRunDialog';
 import { PayrollSettingsDialog } from './PayrollSettingsDialog';
 import { PayrollRunDetail } from './PayrollRunDetail';
+import { PayrollKpiTab } from './PayrollKpiTab';
 
-type TabKey = 'runs' | 'employees';
+type TabKey = 'runs' | 'employees' | 'kpi';
 
 const fmt = (n: number | undefined | null) =>
   `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
@@ -42,6 +43,10 @@ export default function PayrollPage() {
   const deleteEmployee = useDeleteEmployee({});
 
   if (!featureCan('payroll')) return null;
+
+  const tabs: { key: TabKey; label: string }[] = featureCan('payroll_kpi')
+    ? [...TABS, { key: 'kpi', label: 'payroll.tab.kpi' }]
+    : TABS;
 
   const runRows: any[] = runs ?? [];
   const employeeRows: any[] = employees ?? [];
@@ -106,7 +111,7 @@ export default function PayrollPage() {
 
       {/* Tabs */}
       <div className="flex flex-wrap items-center gap-1">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <Button
             key={t.key}
             variant={tab === t.key ? 'primary' : 'ghost'}
@@ -273,6 +278,9 @@ export default function PayrollPage() {
           ))}
         </div>
       )}
+
+      {/* KPI tab */}
+      {tab === 'kpi' && featureCan('payroll_kpi') && <PayrollKpiTab />}
 
       {/* Dialogs */}
       {showRunDialog && (

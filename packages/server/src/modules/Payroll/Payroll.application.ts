@@ -13,8 +13,14 @@ import { DeletePayrollRunService } from './commands/DeletePayrollRun.service';
 import { ApprovePayrollRunService } from './commands/ApprovePayrollRun.service';
 import { UnapprovePayrollRunService } from './commands/UnapprovePayrollRun.service';
 import { PayrollSettingsService } from './PayrollSettings.service';
+import { GetKpiTargetsService } from './queries/GetKpiTargets.service';
+import { GetPayrollKpiSummaryService } from './queries/GetPayrollKpiSummary.service';
+import { CreateKpiTargetService } from './commands/CreateKpiTarget.service';
+import { EditKpiTargetService } from './commands/EditKpiTarget.service';
+import { DeleteKpiTargetService } from './commands/DeleteKpiTarget.service';
 import { CreateEmployeeDto, EditEmployeeDto } from './dtos/Employee.dto';
 import { CreatePayrollRunDto, EditPayrollRunDto } from './dtos/PayrollRun.dto';
+import { CreateKpiTargetDto, EditKpiTargetDto } from './dtos/KpiTarget.dto';
 
 @Injectable()
 export class PayrollApplication {
@@ -32,6 +38,11 @@ export class PayrollApplication {
     private readonly approveRunService: ApprovePayrollRunService,
     private readonly unapproveRunService: UnapprovePayrollRunService,
     private readonly settingsService: PayrollSettingsService,
+    private readonly getKpiTargetsService: GetKpiTargetsService,
+    private readonly getKpiSummaryService: GetPayrollKpiSummaryService,
+    private readonly createKpiTargetService: CreateKpiTargetService,
+    private readonly editKpiTargetService: EditKpiTargetService,
+    private readonly deleteKpiTargetService: DeleteKpiTargetService,
   ) {}
 
   public getEmployees(activeOnly?: boolean) {
@@ -84,5 +95,25 @@ export class PayrollApplication {
 
   public getSettings() {
     return this.settingsService.getSettings();
+  }
+
+  public getKpiTargets(year?: number) {
+    return this.getKpiTargetsService.getTargets(year);
+  }
+
+  public createKpiTarget(dto: CreateKpiTargetDto) {
+    return this.createKpiTargetService.create(dto);
+  }
+
+  public editKpiTarget(id: number, dto: EditKpiTargetDto) {
+    return this.editKpiTargetService.edit(id, dto);
+  }
+
+  public deleteKpiTarget(id: number) {
+    return this.deleteKpiTargetService.delete(id);
+  }
+
+  public getKpiSummary(month: string) {
+    return this.getKpiSummaryService.getSummary(month);
   }
 }

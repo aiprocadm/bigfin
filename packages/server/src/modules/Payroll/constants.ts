@@ -10,12 +10,20 @@ export const ERRORS = {
   INVALID_AMOUNT: 'INVALID_AMOUNT',
   DUPLICATE_EMPLOYEE_LINES: 'DUPLICATE_EMPLOYEE_LINES',
   INVALID_FULL_NAME: 'INVALID_FULL_NAME',
+  EMPLOYEE_HAS_KPI_TARGETS: 'EMPLOYEE_HAS_KPI_TARGETS',
+  KPI_TARGET_NOT_FOUND: 'KPI_TARGET_NOT_FOUND',
+  KPI_TARGET_MONTH_EXISTS: 'KPI_TARGET_MONTH_EXISTS',
+  INVALID_KPI_METRIC: 'INVALID_KPI_METRIC',
+  INVALID_BONUS_RATE: 'INVALID_BONUS_RATE',
 };
 
 export const EMPLOYMENT_TYPES = ['staff', 'gph', 'npd', 'ip'] as const;
 export type EmploymentType = (typeof EMPLOYMENT_TYPES)[number];
 
 export const RUN_STATUSES = ['draft', 'approved'] as const;
+
+export const KPI_METRICS = ['revenue', 'profit'] as const;
+export type KpiMetric = (typeof KPI_METRICS)[number];
 
 export const PAYROLL_SOURCE = 'payroll_run';
 export const PAYROLL_CURRENCY = 'RUB';

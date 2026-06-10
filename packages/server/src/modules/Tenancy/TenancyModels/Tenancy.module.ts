@@ -54,6 +54,7 @@ import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocati
 import { Employee } from '@/modules/Payroll/models/Employee.model';
 import { PayrollRun } from '@/modules/Payroll/models/PayrollRun.model';
 import { PayrollRunLine } from '@/modules/Payroll/models/PayrollRunLine.model';
+import { EmployeeKpiTarget } from '@/modules/Payroll/models/EmployeeKpiTarget.model';
 
 const models = [
   Item,
@@ -107,6 +108,7 @@ const models = [
   Employee,
   PayrollRun,
   PayrollRunLine,
+  EmployeeKpiTarget,
   TenantUser,
 ];
 

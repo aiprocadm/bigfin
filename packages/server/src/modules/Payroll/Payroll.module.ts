@@ -2,6 +2,7 @@
 import { Module } from '@nestjs/common';
 import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.module';
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
+import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { PayrollController } from './Payroll.controller';
 import { PayrollApplication } from './Payroll.application';
 import { PayrollSettingsService } from './PayrollSettings.service';
@@ -19,6 +20,12 @@ import { EditPayrollRunService } from './commands/EditPayrollRun.service';
 import { DeletePayrollRunService } from './commands/DeletePayrollRun.service';
 import { ApprovePayrollRunService } from './commands/ApprovePayrollRun.service';
 import { UnapprovePayrollRunService } from './commands/UnapprovePayrollRun.service';
+import { GetKpiTargetsService } from './queries/GetKpiTargets.service';
+import { GetPayrollKpiSummaryService } from './queries/GetPayrollKpiSummary.service';
+import { CommandKpiTargetValidatorService } from './commands/CommandKpiTargetValidator.service';
+import { CreateKpiTargetService } from './commands/CreateKpiTarget.service';
+import { EditKpiTargetService } from './commands/EditKpiTarget.service';
+import { DeleteKpiTargetService } from './commands/DeleteKpiTarget.service';
 
 @Module({
   imports: [TenancyDatabaseModule, TenancyModule],
@@ -40,6 +47,14 @@ import { UnapprovePayrollRunService } from './commands/UnapprovePayrollRun.servi
     DeletePayrollRunService,
     ApprovePayrollRunService,
     UnapprovePayrollRunService,
+    GetKpiTargetsService,
+    GetPayrollKpiSummaryService,
+    CommandKpiTargetValidatorService,
+    CreateKpiTargetService,
+    EditKpiTargetService,
+    DeleteKpiTargetService,
+    // collaborator injected directly (no ManagementArticlesModule import needed)
+    ArticlesPlRollupService,
   ],
 })
 export class PayrollModule {}

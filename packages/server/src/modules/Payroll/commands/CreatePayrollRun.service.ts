@@ -12,12 +12,14 @@ import { CreatePayrollRunDto } from '../dtos/PayrollRun.dto';
 import { ERRORS } from '../constants';
 import { computePayrollLine } from '../utils/computePayrollLine';
 import { PayrollSettingsService } from '../PayrollSettings.service';
+import { GetPayrollKpiSummaryService } from '../queries/GetPayrollKpiSummary.service';
 
 @Injectable()
 export class CreatePayrollRunService {
   constructor(
     private readonly uow: UnitOfWork,
     private readonly payrollSettings: PayrollSettingsService,
+    private readonly kpiSummary: GetPayrollKpiSummaryService,
 
     @Inject(Employee.name)
     private readonly employeeModel: TenantModelProxy<typeof Employee>,
@@ -40,6 +42,8 @@ export class CreatePayrollRunService {
       .modify('activeOnly')
       .orderBy('fullName');
     const settings = await this.payrollSettings.getSettings();
+    // Бонусы из KPI-планов месяца (⑧b): без плана — 0, поведение ⑧a не меняется.
+    const kpiBonuses = await this.kpiSummary.bonusesForMonth(periodMonth);
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       const existing = await this.runModel()
@@ -57,11 +61,12 @@ export class CreatePayrollRunService {
         } as any);
 
       for (const employee of employees) {
+        const bonusAmount = kpiBonuses[employee.id] || 0;
         const computed = computePayrollLine(
           {
             employmentType: employee.employmentType,
             baseAmount: employee.defaultSalary,
-            bonusAmount: 0,
+            bonusAmount,
             deductionAmount: 0,
           },
           settings,
@@ -73,7 +78,7 @@ export class CreatePayrollRunService {
             employeeId: employee.id,
             employmentType: employee.employmentType,
             baseAmount: Number(employee.defaultSalary) || 0,
-            bonusAmount: 0,
+            bonusAmount,
             deductionAmount: 0,
             ndflAmount: computed.ndflAmount,
             contributionsAmount: computed.contributionsAmount,

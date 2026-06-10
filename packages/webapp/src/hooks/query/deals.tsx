@@ -15,6 +15,7 @@ export interface DealValues {
   deadline?: string | null;
   costEstimate?: number | null;
   status?: string;
+  managerId?: number | null;
 }
 
 const invalidate = (client: QueryClient) => {

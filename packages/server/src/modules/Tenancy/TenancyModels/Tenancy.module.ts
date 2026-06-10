@@ -51,6 +51,9 @@ import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.
 import { Deal } from '@/modules/Deals/models/Deal.model';
 import { DealStage } from '@/modules/Deals/models/DealStage.model';
 import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocationRule.model';
+import { Employee } from '@/modules/Payroll/models/Employee.model';
+import { PayrollRun } from '@/modules/Payroll/models/PayrollRun.model';
+import { PayrollRunLine } from '@/modules/Payroll/models/PayrollRunLine.model';
 
 const models = [
   Item,
@@ -101,6 +104,9 @@ const models = [
   Deal,
   DealStage,
   CostAllocationRule,
+  Employee,
+  PayrollRun,
+  PayrollRunLine,
   TenantUser,
 ];
 

@@ -53,10 +53,14 @@ export class EditPayrollRunService {
       if (dto.lines) {
         await this.lineModel().query(trx).where('runId', id).delete();
 
+        const employeeIds = dto.lines.map((l) => l.employeeId);
+        const employees: any[] = await this.employeeModel()
+          .query(trx)
+          .whereIn('id', employeeIds);
+        const employeesById = new Map(employees.map((e: any) => [e.id, e]));
+
         for (const line of dto.lines) {
-          const employee: any = await this.employeeModel()
-            .query(trx)
-            .findById(line.employeeId);
+          const employee = employeesById.get(line.employeeId);
           if (!employee) throw new ServiceError(ERRORS.EMPLOYEE_NOT_FOUND);
 
           const computed = computePayrollLine(

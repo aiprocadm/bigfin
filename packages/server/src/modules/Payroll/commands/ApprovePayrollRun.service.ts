@@ -34,42 +34,43 @@ export class ApprovePayrollRunService {
    * (выплата на дату выплаты; НДФЛ и взносы — на 28-е следующего месяца).
    */
   public async approve(id: number) {
-    const run: any = await this.runModel().query().findById(id);
-    if (!run) throw new ServiceError(ERRORS.PAYROLL_RUN_NOT_FOUND);
-    if (run.status !== 'draft') {
-      throw new ServiceError(ERRORS.PAYROLL_RUN_NOT_DRAFT);
-    }
-    const lines: any[] = await this.lineModel()
-      .query()
-      .where('runId', id);
-    const totals = summarizeRun(lines);
     const settings = await this.payrollSettings.getSettings();
 
-    const period = moment(run.periodMonth).format('MM.YYYY');
-    const taxDate = payrollTaxDate(run.periodMonth);
-
-    const operations = [
-      {
-        amount: totals.totalNet,
-        plannedDate: moment(run.payDate).format('YYYY-MM-DD'),
-        articleId: settings.payrollArticleId,
-        description: `Зарплата за ${period}`,
-      },
-      {
-        amount: totals.totalNdfl,
-        plannedDate: taxDate,
-        articleId: settings.taxesArticleId,
-        description: `НДФЛ за ${period}`,
-      },
-      {
-        amount: totals.totalContributions,
-        plannedDate: taxDate,
-        articleId: settings.taxesArticleId,
-        description: `Страховые взносы за ${period}`,
-      },
-    ].filter((op) => op.amount > 0);
-
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const run: any = await this.runModel().query(trx).findById(id);
+      if (!run) throw new ServiceError(ERRORS.PAYROLL_RUN_NOT_FOUND);
+      if (run.status !== 'draft') {
+        throw new ServiceError(ERRORS.PAYROLL_RUN_NOT_DRAFT);
+      }
+      const lines: any[] = await this.lineModel()
+        .query(trx)
+        .where('runId', id);
+      const totals = summarizeRun(lines);
+
+      const period = moment(run.periodMonth).format('MM.YYYY');
+      const taxDate = payrollTaxDate(run.periodMonth);
+
+      const operations = [
+        {
+          amount: totals.totalNet,
+          plannedDate: moment(run.payDate).format('YYYY-MM-DD'),
+          articleId: settings.payrollArticleId,
+          description: `Зарплата за ${period}`,
+        },
+        {
+          amount: totals.totalNdfl,
+          plannedDate: taxDate,
+          articleId: settings.taxesArticleId,
+          description: `НДФЛ за ${period}`,
+        },
+        {
+          amount: totals.totalContributions,
+          plannedDate: taxDate,
+          articleId: settings.taxesArticleId,
+          description: `Страховые взносы за ${period}`,
+        },
+      ].filter((op) => op.amount > 0);
+
       for (const op of operations) {
         await this.operationModel()
           .query(trx)

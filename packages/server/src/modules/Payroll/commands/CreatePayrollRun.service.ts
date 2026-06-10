@@ -35,11 +35,6 @@ export class CreatePayrollRunService {
       .startOf('month')
       .format('YYYY-MM-DD');
 
-    const existing = await this.runModel()
-      .query()
-      .findOne({ periodMonth });
-    if (existing) throw new ServiceError(ERRORS.PAYROLL_RUN_MONTH_EXISTS);
-
     const employees: any[] = await this.employeeModel()
       .query()
       .modify('activeOnly')
@@ -47,6 +42,11 @@ export class CreatePayrollRunService {
     const settings = await this.payrollSettings.getSettings();
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const existing = await this.runModel()
+        .query(trx)
+        .findOne({ periodMonth });
+      if (existing) throw new ServiceError(ERRORS.PAYROLL_RUN_MONTH_EXISTS);
+
       const run: any = await this.runModel()
         .query(trx)
         .insert({

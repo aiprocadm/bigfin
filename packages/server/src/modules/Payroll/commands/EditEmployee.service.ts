@@ -27,11 +27,11 @@ export class EditEmployeeService {
       .findById(id)
       .patch({
         fullName: dto.fullName.trim(),
-        position: dto.position || null,
         employmentType: dto.employmentType,
-        defaultSalary: dto.defaultSalary ?? 0,
-        active: dto.active ?? true,
-        note: dto.note || null,
+        ...(dto.position !== undefined ? { position: dto.position || null } : {}),
+        ...(dto.defaultSalary !== undefined ? { defaultSalary: dto.defaultSalary } : {}),
+        ...(dto.active !== undefined ? { active: dto.active } : {}),
+        ...(dto.note !== undefined ? { note: dto.note || null } : {}),
       } as any);
 
     return this.employeeModel().query().findById(id);

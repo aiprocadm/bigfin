@@ -16,6 +16,12 @@ import { FinancialDatePeriods } from '../../common/FinancialDatePeriods';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
+import {
+  filterCashSettledLegs,
+  totalCashLegsByAccount,
+  periodsCashLegsByAccount,
+} from './ProfitLossSheetCashBasis';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
@@ -135,15 +141,25 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
   public PPTotalAccountsLedger: Ledger;
 
   /**
+   * Whether the cash basis filtering is active (basis=cash and the
+   * `accrual_pnl` feature flag is enabled). Decided by the service —
+   * the repository itself knows nothing about feature flags.
+   * @param {boolean}
+   */
+  public isCashBasisActive: boolean = false;
+
+  /**
    * Set the filter of the report.
    * @param {IBalanceSheetQuery} query
+   * @param {{ cashBasisActive?: boolean }} options
    */
-  setFilter(query: IProfitLossSheetQuery) {
+  setFilter(query: IProfitLossSheetQuery, options = {}) {
     this.query = new ProfitLossSheetQuery(query);
 
     this.transactionsGroupType = this.getGroupByFromDisplayColumnsBy(
       this.query.displayColumnsBy,
     );
+    this.isCashBasisActive = Boolean(options.cashBasisActive);
   }
 
   /**
@@ -313,6 +329,11 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
     fromDate: moment.MomentInput,
     toDate: moment.MomentInput,
   ) => {
+    if (this.isCashBasisActive) {
+      const legs = await this.getCashSettledLegs(fromDate, toDate);
+
+      return this.assocRowsAccounts(totalCashLegsByAccount(legs));
+    }
     return this.accountTransactionModel()
       .query()
       .onBuild((query) => {
@@ -339,6 +360,13 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
     toDate: moment.MomentInput,
     datePeriodsType,
   ) => {
+    if (this.isCashBasisActive) {
+      const legs = await this.getCashSettledLegs(fromDate, toDate);
+
+      return this.assocRowsAccounts(
+        periodsCashLegsByAccount(legs, datePeriodsType),
+      );
+    }
     return this.accountTransactionModel()
       .query()
       .onBuild((query) => {
@@ -363,6 +391,48 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
     if (!isEmpty(this.query.query.branchesIds)) {
       query.modify('filterByBranches', this.query.query.branchesIds);
     }
+  };
+
+  /**
+   * Fetches the raw ledger legs of the given period and keeps only the
+   * cash-settled references (cash basis of the P&L report).
+   * @param {moment.MomentInput} fromDate
+   * @param {moment.MomentInput} toDate
+   */
+  private getCashSettledLegs = async (
+    fromDate: moment.MomentInput,
+    toDate: moment.MomentInput,
+  ) => {
+    const legs = await this.accountTransactionModel()
+      .query()
+      .onBuild((query) => {
+        query.modify('filterDateRange', fromDate, toDate);
+
+        this.commonFilterBranchesQuery(query);
+      });
+    const cashAccountsIds = new Set(
+      this.accounts
+        .filter((account) => CASH_ACCOUNT_TYPES.includes(account.accountType))
+        .map((account) => account.id),
+    );
+    return filterCashSettledLegs(legs, (accountId) =>
+      cashAccountsIds.has(accountId),
+    );
+  };
+
+  /**
+   * Associates the account model to the given aggregated rows — same shape
+   * as the SQL aggregation with `withGraphFetched('account')`.
+   * @param {{ accountId: number }[]} rows
+   */
+  private assocRowsAccounts = (rows) => {
+    const accountsById = new Map(
+      this.accounts.map((account) => [account.id, account]),
+    );
+    return rows.map((row) => ({
+      ...row,
+      account: accountsById.get(row.accountId),
+    }));
   };
 
   /**

@@ -74,6 +74,10 @@ export class FeaturesConfigure {
         name: Features.PAYROLL_KPI,
         defaultValue: false,
       },
+      {
+        name: Features.DATA_QUALITY,
+        defaultValue: false,
+      },
     ];
   }
 }

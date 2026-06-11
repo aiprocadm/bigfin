@@ -41,6 +41,7 @@ import { DebtsModule } from '../Debts/Debts.module';
 import { PaymentRequestsModule } from '../PaymentRequests/PaymentRequests.module';
 import { DealsModule } from '../Deals/Deals.module';
 import { PayrollModule } from '../Payroll/Payroll.module';
+import { DataQualityModule } from '../DataQuality/DataQuality.module';
 import { CostAllocationModule } from '../CostAllocation/CostAllocation.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
@@ -214,6 +215,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     PaymentRequestsModule,
     DealsModule,
     PayrollModule,
+    DataQualityModule,
     CostAllocationModule,
     AccountsModule,
     ExpensesModule,

@@ -14,6 +14,7 @@ export enum Features {
   DEAL_STAGES = 'deal_stages',
   PAYROLL = 'payroll',
   PAYROLL_KPI = 'payroll_kpi',
+  DATA_QUALITY = 'data_quality',
 }
 
 export interface IFeatureAllItem {

@@ -2,6 +2,8 @@
 import React from 'react';
 
 import { Row, Col } from '@/components';
+import { useFeatureCan } from '@/hooks/state/feature';
+import { Features } from '@/constants';
 import FinancialStatementDateRange from '../FinancialStatementDateRange';
 import SelectDisplayColumnsBy from '../SelectDisplayColumnsBy';
 import RadiosAccountingBasis from '../RadiosAccountingBasis';
@@ -11,6 +13,8 @@ import FinancialStatementsFilter from '../FinancialStatementsFilter';
  * Profit/Loss sheet - Drawer header - General panel.
  */
 export default function ProfitLossSheetHeaderGeneralPane({}) {
+  const { featureCan } = useFeatureCan();
+
   return (
     <div>
       <FinancialStatementDateRange />
@@ -23,7 +27,9 @@ export default function ProfitLossSheetHeaderGeneralPane({}) {
           />
         </Col>
       </Row>
-      <RadiosAccountingBasis key={'basis'} />
+      {featureCan(Features.AccrualPnl) && (
+        <RadiosAccountingBasis key={'basis'} />
+      )}
     </div>
   );
 }

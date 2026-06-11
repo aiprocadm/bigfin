@@ -1,7 +1,7 @@
 {
   "name": "@bigfin/sdk-ts",
   "version": "1.0.0",
-  "description": "TypeScript types generated from the BigFin API OpenAPI/Swagger spec",
+  "description": "TypeScript types generated from the Bigfin API OpenAPI/Swagger spec",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

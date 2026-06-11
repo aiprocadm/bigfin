@@ -128,7 +128,7 @@ export function InvoicePaperTemplate({
   secondaryColor,
 
   // # Company.
-  companyName = 'BigFin Technology, Inc.',
+  companyName = 'Bigfin Technology, Inc.',
 
   showCompanyLogo = true,
   companyLogoUri = '',

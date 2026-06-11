@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { Choose } from '@/components';
-import BigFinLoading from './BigFinLoading';
+import BigfinLoading from './BigfinLoading';
 
 /**
  * Dashboard loading indicator.
@@ -14,7 +14,7 @@ export default function DashboardLoadingIndicator({
   return (
     <Choose>
       <Choose.When condition={isLoading}>
-        <BigFinLoading />        
+        <BigfinLoading />        
       </Choose.When>
 
       <Choose.Otherwise>

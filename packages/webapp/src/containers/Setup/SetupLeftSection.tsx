@@ -13,7 +13,7 @@ import { useAuthMetadata } from '@/hooks/query';
  */
 function FooterLinkItem({ title, link }) {
   return (
-    <div class="content__links-item">
+    <div className="content__links-item">
       <a href={link} target="_blank">
         {title}
       </a>
@@ -75,7 +75,7 @@ function SetupLeftSectionHeader() {
       </p>
 
       <div className={'content__organization'}>
-        <span class="signout">
+        <span className="signout">
           <a onClick={onClickLogout} href="#">
             <T id={'sign_out'} />
           </a>
@@ -97,7 +97,7 @@ export default function SetupLeftSection() {
             icon="bigfin"
             className={'bigfin--alt'}
             height={37}
-            width={190}
+            width={84}
           />
         </div>
         <SetupLeftSectionHeader />

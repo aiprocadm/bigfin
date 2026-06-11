@@ -1,5 +1,5 @@
 export const defaultEstimateMailReceiptProps = {
-  companyName: 'BigFin Technology, Inc.',
+  companyName: 'Bigfin Technology, Inc.',
   companyLogoUri: ' ',
 
   total: '$1,000.00',
@@ -19,5 +19,5 @@ From your online payment page you can print a PDF or view your outstanding bills
 If you have any questions, please let us know.
 
 Thanks,
-BigFin`,
+Bigfin`,
 };

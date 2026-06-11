@@ -22,7 +22,7 @@ export function ImportFileMapping() {
         <ImportFileContainer>
           <p>
             Review and map the column headers in your csv/xlsx file with the
-            BigFin fields.
+            Bigfin fields.
           </p>
 
           {entityColumns.map((entityColumn, index) => (

@@ -3,28 +3,28 @@ import React from 'react';
 import classNames from 'classnames';
 import { Icon } from '@/components';
 
-import '@/style/components/BigFinLoading.scss';
+import '@/style/components/BigfinLoading.scss';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 
 /**
- * BigFin logo loading.
+ * Bigfin logo loading.
  */
-export default function BigFinLoading({ className }) {
+export default function BigfinLoading({ className }) {
   const isDarkmode = useIsDarkMode();
 
   return (
     <div className={classNames('bigfin-loading', className)}>
-      <div class="center">
+      <div className="center">
         {isDarkmode ? (
           <Icon
             icon="bigfin-alt"
             height={37}
-            width={228}
+            width={84}
             color="#fff"
             className="bigfin-logo"
           />
         ) : (
-          <Icon icon="bigfin" height={37} width={228} />
+          <Icon icon="bigfin" height={37} width={84} />
         )}
       </div>
     </div>

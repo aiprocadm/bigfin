@@ -6,13 +6,14 @@ import { ProfitLossSheetTableInjectable } from './ProfitLossSheetTableInjectable
 import { ProfitLossSheetMeta } from './ProfitLossSheetMeta';
 import { ProfitLossSheetRepository } from './ProfitLossSheetRepository';
 import { AccountsModule } from '@/modules/Accounts/Accounts.module';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 import { FinancialSheetCommonModule } from '../../common/FinancialSheetCommon.module';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ProfitLossSheetController } from './ProfitLossSheet.controller';
 import { ProfitLossSheetApplication } from './ProfitLossSheetApplication';
 
 @Module({
-  imports: [FinancialSheetCommonModule, AccountsModule],
+  imports: [FinancialSheetCommonModule, AccountsModule, FeaturesModule],
   controllers: [ProfitLossSheetController],
   providers: [
     ProfitLossSheetApplication,

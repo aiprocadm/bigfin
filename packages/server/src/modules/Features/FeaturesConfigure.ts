@@ -82,6 +82,10 @@ export class FeaturesConfigure {
         name: Features.DIVIDENDS,
         defaultValue: false,
       },
+      {
+        name: Features.ACCRUAL_PNL,
+        defaultValue: false,
+      },
     ];
   }
 }

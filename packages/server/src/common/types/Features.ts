@@ -16,6 +16,7 @@ export enum Features {
   PAYROLL_KPI = 'payroll_kpi',
   DATA_QUALITY = 'data_quality',
   DIVIDENDS = 'dividends',
+  ACCRUAL_PNL = 'accrual_pnl',
 }
 
 export interface IFeatureAllItem {

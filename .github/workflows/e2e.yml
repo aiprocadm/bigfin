@@ -122,7 +122,7 @@ jobs:
           # Mail (placeholder values for E2E tests)
           MAIL_HOST=localhost
           MAIL_PORT=1025
-          MAIL_FROM_NAME=BigFin
+          MAIL_FROM_NAME=Bigfin
           MAIL_FROM_ADDRESS=test@bigfin.local
           EOF
 

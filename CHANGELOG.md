@@ -1,3 +1,3 @@
 # Change Log
 
-All notable changes to BigFin will be in this file.
+All notable changes to Bigfin will be in this file.

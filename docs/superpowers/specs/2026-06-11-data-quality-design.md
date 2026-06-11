@@ -59,7 +59,7 @@ GET /data-quality/pl-cashflow          ?fromDate&toDate
 Ответы (camelCase):
 
 - `unmapped-operations` → `{ accounts: [{ accountId, accountName, accountCode, operationsCount, totalAmount, operations: [{ transactionId, date, amount, side: 'in'|'out', referenceType, referenceId, transactionNumber, referenceNumber }] }], totalCount }`
-- `duplicates` → `{ groups: [{ date, accountId, accountName, amount, side, entries: [{ transactionId, referenceType, referenceId, transactionNumber, referenceNumber }] }], totalGroups }`
+- `duplicates` → `{ groups: [{ date, accountId, accountName, amount, side: 'credit'|'debit', entries: [{ transactionId, referenceType, referenceId, transactionNumber, referenceNumber }] }], totalGroups }` (side — нога проводки: детерминированно без обращения к нормали счёта)
 - `pl-cashflow` → `{ months: [{ month: 'YYYY-MM', plIncome, plExpense, plNet, cashIn, cashOut, cashNet, diff }], totals: { plNet, cashNet, diff } }`
 
 Структура модуля — паттерн Payroll/Deals: `DataQuality.module.ts` → `DataQuality.controller.ts` → `DataQuality.application.ts` → `queries/*.service.ts`; модели через `TenantModelProxy`; детекция/арифметика — **чистые функции в `utils/`** (тестируемость). Чтение — авторизованный пользователь (без отдельного CASL-subject, как Deals/Debts). Регистрация: `App.module.ts`, флаг — `Features.ts` + `FeaturesConfigure`.
@@ -69,7 +69,7 @@ GET /data-quality/pl-cashflow          ?fromDate&toDate
 - Маршрут `/data-quality` (route-only, без пункта сайдбара — как Deals/Debts/Payroll), страница видна при `featureCan('data_quality')`.
 - Селектор периода: **год** (паттерн «Начислений» payroll), по умолчанию текущий.
 - Три вкладки: **«Без статьи»** (счета с раскрытием операций), **«Дубли»** (группы с операциями), **«ОПиУ ↔ ДДС»** (помесячная таблица, подсветка `diff ≠ 0`).
-- Клик по операции → существующие drawers по `referenceType` (`SaleInvoice`→invoice, `Bill`→bill, `Expense`→expense, `ManualJournal`→journal, payments → соответствующие); неизвестный тип — строка некликабельна.
+- Клик по операции → существующие drawers по `referenceType` (`SaleInvoice`→invoice, `Bill`→bill, `Expense`→expense, `Journal`/`ManualJournal`→journal — ручные проводки реально пишут в GL `referenceType: 'Journal'`, payments/чеки/кредит-ноты → соответствующие); неизвестный тип — строка некликабельна.
 - Хуки `hooks/query/dataQuality.tsx` (`useRequestQuery`, ключи `DATA_QUALITY_*` в `types.tsx`).
 - i18n `data_quality.*` парно en+ru. RU: «Качество данных», «Операции без статьи», «Возможные дубли», «Расхождение ОПиУ и ДДС», «Проверьте, не задвоена ли операция».
 

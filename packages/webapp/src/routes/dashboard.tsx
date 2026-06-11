@@ -1323,6 +1323,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('payroll.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Data quality (Качество данных)
+  {
+    path: `/data-quality`,
+    component: lazy(() => import('@/containers/DataQuality/DataQualityPage')),
+    breadcrumb: intl.get('data_quality.page_title'),
+    pageTitle: intl.get('data_quality.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

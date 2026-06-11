@@ -63,7 +63,7 @@ export const EstimatePaymentEmail: React.FC<
   preview,
 
   // # Company
-  companyName = 'BigFin, Inc.',
+  companyName = 'Bigfin, Inc.',
   companyLogoUri,
 
   // # Colors

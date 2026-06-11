@@ -9,7 +9,7 @@ import type { SettingAction } from './settings.type';
 const initialState = {
   data: {
     organization: {
-      name: 'BigFin, LLC',
+      name: 'Bigfin, LLC',
     },
     manualJournals: {
       tableSize: 'small',

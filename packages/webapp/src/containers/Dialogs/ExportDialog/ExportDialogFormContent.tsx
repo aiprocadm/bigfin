@@ -21,7 +21,7 @@ function ExportDialogFormContentRoot({
     <Form>
       <x.div p="20px">
         <x.p className="bp4-text-muted" mb="1.2rem">
-          You can export data from BigFin in CSV or XLSX format
+          You can export data from Bigfin in CSV or XLSX format
         </x.p>
 
         <FFormGroup

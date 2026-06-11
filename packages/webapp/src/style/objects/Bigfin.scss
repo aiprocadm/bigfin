@@ -1,0 +1,22 @@
+[data-icon='bigfin'] {
+  path {
+    fill: #0a0e1a;
+  }
+  // «fin» — фирменный жёлтый акцент (как в components/ui/Logo.tsx)
+  .path-4,
+  .path-5,
+  .path-6 {
+    fill: #e5a800;
+  }
+}
+
+.bigfin--alt {
+  svg {
+    path,
+    .path-4,
+    .path-5,
+    .path-6 {
+      fill: #fff;
+    }
+  }
+}

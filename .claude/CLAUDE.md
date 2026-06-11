@@ -1,4 +1,4 @@
-# Claude Code Settings for BigFin
+# Claude Code Settings for Bigfin
 
 ## Node.js Version
 

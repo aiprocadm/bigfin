@@ -49,10 +49,10 @@ function DashboardTopbarUser({
             className={'menu-item--profile'}
             text={
               <div>
-                <div class="person">
+                <div className="person">
                   {user.first_name} {user.last_name}
                 </div>
-                <div class="org">
+                <div className="org">
                   <T id="organization_id" />: {organizationId}
                 </div>
               </div>

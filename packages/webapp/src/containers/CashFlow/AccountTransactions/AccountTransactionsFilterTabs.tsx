@@ -49,7 +49,7 @@ export function AccountTransactionsFilterTabs() {
       <ContentTabs.Tab
         id="all"
         title={'All Transactions'}
-        description={'In BigFin'}
+        description={'In Bigfin'}
       />
     </AccountContentTabs>
   );

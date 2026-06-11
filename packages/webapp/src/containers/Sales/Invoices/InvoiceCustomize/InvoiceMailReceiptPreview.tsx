@@ -25,7 +25,7 @@ export function InvoiceMailReceiptPreview(
 ) {
   const propsWithDefaults = {
     message: receiptMessage,
-    companyName: 'BigFin Technology, Inc.',
+    companyName: 'Bigfin Technology, Inc.',
     total: '$1,000.00',
     invoiceNumber: 'INV-0001',
     dueDate: '2 Oct 2024',

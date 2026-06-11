@@ -245,7 +245,7 @@ function SidebarHeadJSX({
             {organization.name}
           </Button>
         </Popover>
-        <span class="subtitle">{user.full_name}</span>
+        <span className="subtitle">{user.full_name}</span>
       </div>
 
       <div className="sidebar__head-logo">

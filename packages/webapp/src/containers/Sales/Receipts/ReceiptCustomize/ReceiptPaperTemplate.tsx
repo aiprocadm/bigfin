@@ -86,7 +86,7 @@ export function ReceiptPaperTemplate({
   companyLogoUri,
 
   // # Company name
-  companyName = 'BigFin Technology, Inc.',
+  companyName = 'Bigfin Technology, Inc.',
 
   // # Address
   showCustomerAddress = true,

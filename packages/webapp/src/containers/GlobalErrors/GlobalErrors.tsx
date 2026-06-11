@@ -79,7 +79,7 @@ function GlobalErrors({
   }
   if (globalErrors.subscriptionInactive) {
     AppToaster.show({
-      message: `You can't add new data to BigFin because your subscription is inactive. Make sure your billing information is up-to-date from Preferences > Billing page.`,
+      message: `You can't add new data to Bigfin because your subscription is inactive. Make sure your billing information is up-to-date from Preferences > Billing page.`,
       intent: Intent.DANGER,
       onDismiss: () => {
         globalErrorsSet({ subscriptionInactive: false });

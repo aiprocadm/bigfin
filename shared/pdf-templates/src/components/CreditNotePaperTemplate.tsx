@@ -87,7 +87,7 @@ export function CreditNotePaperTemplate({
   secondaryColor,
 
   // # Company
-  companyName = 'BigFin Technology, Inc.',
+  companyName = 'Bigfin Technology, Inc.',
 
   showCompanyLogo = true,
   companyLogoUri = '',

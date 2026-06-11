@@ -59,7 +59,7 @@ export function OneClickDemoPageContent() {
     <Box className={style.root}>
       <Box className={style.inner}>
         <Stack align={'center'} spacing={40}>
-          <Icon icon="bigfin" height={37} width={228} />
+          <Icon icon="bigfin" height={37} width={84} />
 
           {isLoading && (
             <Stack align={'center'} spacing={15}>

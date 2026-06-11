@@ -1,4 +1,4 @@
-# This is a production version of the BigFin docker-compose.yml file.
+# This is a production version of the Bigfin docker-compose.yml file.
 
 version: '3.3'
 

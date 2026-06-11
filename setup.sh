@@ -19,7 +19,7 @@ else
     COMPOSE_CMD="docker compose"
 fi
 
-# Prints the BigFin logo once running the script.
+# Prints the Bigfin logo once running the script.
 function print_logo() {
 clear
 
@@ -37,7 +37,7 @@ Self-hosted modern core accounting software
 EOF
 }
 
-# Downloads /docker folder from BigFin repository
+# Downloads /docker folder from Bigfin repository
 clone_github_folder() {
     # Create a temporary directory to clone into
     temp_dir=$BIGFIN_CLONE_TEMP_DIR
@@ -139,7 +139,7 @@ function askForAction() {
 }
 
 function install() {
-    echo "Installing BigFin.........."
+    echo "Installing Bigfin.........."
     echo "installing is going to take few minutes..."
     download
     setup_env
@@ -179,7 +179,7 @@ function startServices() {
     if [ -n "$migrator_container_id" ]; then
         local migrator_exit_code=$(docker inspect --format='{{.State.ExitCode}}' $migrator_container_id)
         if [ $migrator_exit_code -ne 0 ]; then
-            echo "BigFin Server failed to start ❌"
+            echo "Bigfin Server failed to start ❌"
             stopServices
             echo
             echo "Please check the logs for the 'migrator' service and resolve the issue(s)."
@@ -192,7 +192,7 @@ function startServices() {
     local idx2=0
     while ! docker logs $api_container_id 2>&1 | grep -m 1 -i "Server listening on port" | grep -q ".";
     do
-        local message=">> Waiting for BigFin Server to Start"
+        local message=">> Waiting for Bigfin Server to Start"
         local dots=$(printf '%*s' $idx2 | tr ' ' '.')    
         echo -ne "\r$message$dots"
         ((idx2++))
@@ -202,7 +202,7 @@ function startServices() {
     echo "   API server started successfully ✅"
     ACCESS_URL=$(grep -E '^BASE_URL=' "$DOCKER_ENV_PATH" 2>/dev/null | cut -d= -f2-)
     [ -z "$ACCESS_URL" ] && ACCESS_URL="http://localhost"
-    echo "   BigFin server started successfully ✅"
+    echo "   Bigfin server started successfully ✅"
     echo ""
     echo "   You can access the application at $ACCESS_URL"
     echo ""

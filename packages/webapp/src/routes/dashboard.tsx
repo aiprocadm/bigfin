@@ -1331,6 +1331,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('data_quality.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Dividends (Вывод средств собственнику)
+  {
+    path: `/dividends`,
+    component: lazy(() => import('@/containers/Dividends/DividendsPage')),
+    breadcrumb: intl.get('dividends.page_title'),
+    pageTitle: intl.get('dividends.page_title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

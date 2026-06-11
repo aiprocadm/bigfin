@@ -78,6 +78,10 @@ export class FeaturesConfigure {
         name: Features.DATA_QUALITY,
         defaultValue: false,
       },
+      {
+        name: Features.DIVIDENDS,
+        defaultValue: false,
+      },
     ];
   }
 }

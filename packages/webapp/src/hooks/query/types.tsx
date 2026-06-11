@@ -310,6 +310,11 @@ const DATA_QUALITY = {
   DATA_QUALITY_PL_CASHFLOW: 'DATA_QUALITY_PL_CASHFLOW',
 };
 
+const DIVIDENDS = {
+  DIVIDENDS_SUMMARY: 'DIVIDENDS_SUMMARY',
+  DIVIDENDS_PAYOUTS: 'DIVIDENDS_PAYOUTS',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -357,4 +362,5 @@ export default {
   ...COST_ALLOCATION,
   ...PAYROLL,
   ...DATA_QUALITY,
+  ...DIVIDENDS,
 };

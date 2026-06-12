@@ -1,0 +1,30 @@
+{
+  "strings": [
+    "Email",
+    "E-mail",
+    "Paypal",
+    "PayPal",
+    "PRO",
+    "ID",
+    "IP",
+    "OK",
+    "English",
+    "Bigfin",
+    "Stripe",
+    "Excel",
+    "CSV",
+    "PDF",
+    "URL",
+    "SMS"
+  ],
+  "patterns": [
+    "^[DMY]{2,4}([/.-][DMY]{2,4}){1,2}$",
+    "^\\d+(\\.\\d+)?$",
+    "^[A-Z]{3}$"
+  ],
+  "files": [
+    "src/components/ui/",
+    "src/icons/",
+    "src/static/"
+  ]
+}

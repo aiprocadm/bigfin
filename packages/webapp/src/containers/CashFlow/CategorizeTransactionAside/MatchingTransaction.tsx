@@ -58,7 +58,7 @@ function MatchingBankTransactionRoot({
 
     if (_values.matchedTransactions?.length === 0) {
       AppToaster.show({
-        message: 'You should select at least one transaction for matching.',
+        message: intl.get('cashflow.matching.select_one_transaction'),
         intent: Intent.DANGER,
       });
       return;
@@ -68,7 +68,7 @@ function MatchingBankTransactionRoot({
       .then(() => {
         AppToaster.show({
           intent: Intent.SUCCESS,
-          message: 'The bank transaction has been matched successfully.',
+          message: intl.get('cashflow.notify.transaction_matched'),
         });
         setSubmitting(false);
         closeMatchingTransactionAside();
@@ -88,7 +88,7 @@ function MatchingBankTransactionRoot({
         }
         AppToaster.show({
           intent: Intent.DANGER,
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
         });
         setSubmitting(false);
       });
@@ -361,7 +361,7 @@ const MatchTransactionFooter = R.compose(withBankingActions)(({
             Match
           </Button>
 
-          <Button onClick={handleCancelBtnClick}>Cancel</Button>
+          <Button onClick={handleCancelBtnClick}>{intl.get('cancel')}</Button>
         </Group>
       </Box>
     </Box>

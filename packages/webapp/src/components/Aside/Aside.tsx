@@ -1,4 +1,5 @@
 import { Button, Classes } from '@blueprintjs/core';
+import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 import { Box, BoxProps, Group } from '../Layout';
@@ -32,7 +33,7 @@ export function Aside({
         {title}
         {hideCloseButton !== true && (
           <Button
-            aria-label="Close"
+            aria-label={intl.get('close')}
             className={Classes.DIALOG_CLOSE_BUTTON}
             icon={<Icon icon={'smallCross'} color={isDarkMode ? '#fff' : '#000'} />}
             minimal={true}

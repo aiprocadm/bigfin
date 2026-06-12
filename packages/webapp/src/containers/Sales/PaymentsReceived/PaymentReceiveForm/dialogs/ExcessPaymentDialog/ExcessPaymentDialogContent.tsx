@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import * as R from 'ramda';
 import { Button, Classes, Intent } from '@blueprintjs/core';
@@ -78,7 +79,7 @@ function ExcessPaymentDialogContentForm({ onClose, exceededAmount }) {
           >
             Save Payment as Credit
           </Button>
-          <Button onClick={handleCloseBtn}>Cancel</Button>
+          <Button onClick={handleCloseBtn}>{intl.get('cancel')}</Button>
         </div>
       </div>
     </>

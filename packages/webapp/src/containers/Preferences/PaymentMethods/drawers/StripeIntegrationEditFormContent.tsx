@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { AccountsSelect, FFormGroup, Group, Stack } from '@/components';
 import { useStripeIntegrationEditBoot } from './StripeIntegrationEditBoot';
 import { Button, Intent } from '@blueprintjs/core';
@@ -13,9 +14,11 @@ export function StripeIntegrationEditFormContent() {
     <Stack spacing={0} style={{ padding: 20 }}>
       <FFormGroup
         name={'bankAccountId'}
-        label={'Bank Account'}
+        label={intl.get('preferences.payment_methods.stripe.field.bank_account')}
         style={{ maxWidth: 300 }}
-        helperText={'The bank account where the Stripe payout is deposited.'}
+        helperText={intl.get(
+          'preferences.payment_methods.stripe.field.bank_account_hint',
+        )}
       >
         <AccountsSelect
           name={'bankAccountId'}
@@ -29,9 +32,13 @@ export function StripeIntegrationEditFormContent() {
 
       <FFormGroup
         name={'clearingAccountId'}
-        label={'Clearing Account'}
+        label={intl.get(
+          'preferences.payment_methods.stripe.field.clearing_account',
+        )}
         subLabel='Liability Account'
-        helperText={'Clearing account tracks all payments collected through Stripe.'}
+        helperText={intl.get(
+          'preferences.payment_methods.stripe.field.clearing_account_hint',
+        )}
         style={{ maxWidth: 300 }}
       >
         <AccountsSelect
@@ -69,7 +76,7 @@ export function StripeIntegrationEditFormFooter() {
         >
           Save
         </Button>
-        <Button onClick={handleCancelBtnClick}>Cancel</Button>
+        <Button onClick={handleCancelBtnClick}>{intl.get('cancel')}</Button>
       </Group>
     </>
   );

@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import { Classes } from '@blueprintjs/core';
 import { SendMailViewHeader } from '../../Estimates/SendMailViewDrawer/SendMailViewHeader';
@@ -13,7 +14,7 @@ export function ReceiptSendMailContent() {
       <ReceiptSendMailBoot>
         <ReceiptSendMailForm>
           <SendMailViewLayout
-            header={<SendMailViewHeader label={'Send Receipt Mail'} />}
+            header={<SendMailViewHeader label={intl.get('receipt.send_mail.drawer.title')} />}
             fields={<ReceiptSendMailFormFields />}
             preview={<ReceiptSendMailPreviewTabs />}
           />

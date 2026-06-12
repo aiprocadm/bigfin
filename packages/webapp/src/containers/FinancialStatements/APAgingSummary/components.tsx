@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useRef } from 'react';
+import intl from 'react-intl-universal';
 import classNames from 'classnames';
 
 import { AppToaster, If, Stack } from '@/components';
@@ -55,7 +56,7 @@ export function APAgingSummaryExportMenu() {
   const openProgressToast = (amount: number) => {
     return (
       <Stack spacing={8}>
-        <Text>The report has been exported successfully.</Text>
+        <Text>{intl.get('report_exported_successfully')}</Text>
         <ProgressBar
           className={classNames('toast-progress', {
             [Classes.PROGRESS_NO_STRIPES]: amount >= 100,

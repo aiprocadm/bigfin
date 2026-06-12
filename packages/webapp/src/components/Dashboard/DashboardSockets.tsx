@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import intl from 'react-intl-universal';
 import { useQueryClient } from 'react-query';
 import { io } from 'socket.io-client';
 import t from '@/hooks/query/types';
@@ -19,7 +20,7 @@ export function DashboardSockets() {
       client.invalidateQueries(t.CASH_FLOW_TRANSACTIONS);
 
       AppToaster.show({
-        message: 'The Plaid connected accounts have been updated.',
+        message: intl.get('plaid_connected_accounts_updated'),
         intent: Intent.SUCCESS,
       });
     });

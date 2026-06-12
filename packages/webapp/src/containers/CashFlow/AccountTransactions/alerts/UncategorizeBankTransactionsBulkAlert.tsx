@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
 
@@ -35,13 +36,13 @@ function UncategorizeBankTransactionsBulkAlert({
     uncategorizeTransactions({ ids: uncategorizeTransactionsIds })
       .then(() => {
         AppToaster.show({
-          message: 'The selected transactions have been uncategorized.',
+          message: intl.get('cashflow.notify.selected_transactions_uncategorized'),
           intent: Intent.SUCCESS,
         });
       })
       .catch((error) => {
         AppToaster.show({
-          message: 'Something went wrong while uncategorizing transactions.',
+          message: intl.get('cashflow.error.uncategorize_transactions'),
           intent: Intent.DANGER,
         });
       })
@@ -53,7 +54,7 @@ function UncategorizeBankTransactionsBulkAlert({
   return (
     <Alert
       cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={'Uncategorize Transactions'}
+      confirmButtonText={intl.get('cashflow.alert.uncategorize_transactions')}
       intent={Intent.DANGER}
       isOpen={isOpen}
       onCancel={handleCancelActivateItem}

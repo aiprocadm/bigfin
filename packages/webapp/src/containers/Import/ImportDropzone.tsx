@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { Field } from 'formik';
+import intl from 'react-intl-universal';
 import { Box, Group, Stack } from '@/components';
 import styles from './ImportDropzone.module.css';
 import { ImportDropzoneField } from './ImportDropzoneFile';
@@ -13,7 +14,7 @@ export function ImportDropzone() {
       <Field id={'file'} name={'file'} type="file">
         {({ form }) => (
           <ImportDropzoneField
-            title={'Drag and drop files here or click to select files'}
+            title={intl.get('import.dropzone.title')}
             subtitle={''}
             value={form.file}
             onChange={(file) => {
@@ -25,8 +26,8 @@ export function ImportDropzone() {
       </Field>
 
       <Group className={styles.dropzoneHint}>
-        <Box>Supperted Formats: CSV, XLSX</Box>
-        <Box>Maximum size: 25MB</Box>
+        <Box>{intl.get('import.dropzone.supported_formats')}</Box>
+        <Box>{intl.get('import.dropzone.maximum_size')}</Box>
       </Group>
     </Stack>
   );

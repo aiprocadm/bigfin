@@ -131,7 +131,7 @@ function ImportFileMappingFloatingActions() {
   return (
     <div className={clsx(CLASSES.PAGE_FORM_FLOATING_ACTIONS)}>
       <Group spacing={10}>
-        <Button onClick={handleCancelBtnClick}>Back</Button>
+        <Button onClick={handleCancelBtnClick}>{intl.get('back')}</Button>
         <Button type="submit" intent={Intent.PRIMARY} loading={isSubmitting}>
           Next
         </Button>

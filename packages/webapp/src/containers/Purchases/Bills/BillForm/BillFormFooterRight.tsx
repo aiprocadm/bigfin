@@ -1,5 +1,6 @@
 // @ts-nocheck
 import styled from 'styled-components';
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import {
   TotalLines,
@@ -65,12 +66,12 @@ export function BillFormFooterRight() {
         textStyle={TotalLineTextStyle.Bold}
       />
       <TotalLine
-        title={'Paid Amount'}
+        title={intl.get('paid_amount')}
         value={paidAmountFormatted}
         borderStyle={TotalLineBorderStyle.None}
       />
       <TotalLine
-        title={'Due Amount'}
+        title={intl.get('due_amount')}
         value={dueAmountFormatted}
         textStyle={TotalLineTextStyle.Bold}
       />

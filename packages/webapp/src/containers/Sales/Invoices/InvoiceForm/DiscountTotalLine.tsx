@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { css } from '@emotion/css';
 import { x } from '@xstyled/emotion';
 import {
@@ -65,7 +66,7 @@ export function DiscountTotalLine({
           alignItems={'center'}
           justifyContent={'space-between'}
         >
-          <x.span pr={2}>Discount</x.span>
+          <x.span pr={2}>{intl.get('invoice_form.label.discount')}</x.span>
           <FFormGroup
             name={'discount'}
             className={formGroupCss}

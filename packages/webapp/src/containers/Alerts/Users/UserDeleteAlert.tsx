@@ -48,7 +48,7 @@ function UserDeleteAlert({
         }) => {
           if (errors.find((e) => e.type === 'CANNOT_DELETE_LAST_USER')) {
             AppToaster.show({
-              message: 'Cannot delete the last user in the system.',
+              message: intl.get('cannot_delete_the_last_user_in_the_system'),
               intent: Intent.DANGER,
             });
           }

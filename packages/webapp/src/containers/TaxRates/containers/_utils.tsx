@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Intent, Tag, Classes } from '@blueprintjs/core';
 import { Align } from '@/constants';
 import clsx from 'classnames';
@@ -29,7 +30,9 @@ const nameAccessor = (taxRate) => {
     <>
       <span>{taxRate.name}</span>
       {!!taxRate.is_compound && (
-        <span className={clsx(Classes.TEXT_MUTED)}>(Compound tax)</span>
+        <span className={clsx(Classes.TEXT_MUTED)}>
+          {intl.get('tax_rates.label.compound_tax')}
+        </span>
       )}
     </>
   );

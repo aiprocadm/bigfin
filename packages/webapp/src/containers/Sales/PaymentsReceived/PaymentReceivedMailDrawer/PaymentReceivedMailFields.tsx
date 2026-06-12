@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { FCheckbox, FFormGroup, FInputGroup, Group, Stack } from '@/components';
@@ -22,14 +23,14 @@ export function PaymentReceivedSendMailFields() {
           ccMultiSelectProps={{ items }}
           bccMultiSelectProps={{ items }}
         />
-        <FFormGroup label={'Submit'} name={'subject'}>
+        <FFormGroup label={intl.get('mail.label.subject')} name={'subject'}>
           <FInputGroup name={'subject'} large fastField />
         </FFormGroup>
 
         <SendMailViewMessageField argsOptions={argsOptions} />
 
         <Group>
-          <FCheckbox name={'attachPdf'} label={'Attach PDF'} />
+          <FCheckbox name={'attachPdf'} label={intl.get('send_mail.label.attach_pdf')} />
         </Group>
       </Stack>
 

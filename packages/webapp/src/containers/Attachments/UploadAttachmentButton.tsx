@@ -35,7 +35,7 @@ export function UploadAttachmentButton() {
   return (
     <FFormGroup
       name={'attachments'}
-      label={'Attachments'}
+      label={intl.get('attachments.label.attachments')}
       className={styles.attachmentField}
       fastField={true}
     >

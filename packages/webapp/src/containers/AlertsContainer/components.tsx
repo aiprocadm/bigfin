@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { Suspense } from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import clsx from 'classnames';
 import * as R from 'ramda';
@@ -14,7 +15,7 @@ import { AppToaster } from '@/components';
 function AlertLazyFallbackMessage({ amount }) {
   return (
     <React.Fragment>
-      <ToastText>Alert content is loading, just a second.</ToastText>
+      <ToastText>{intl.get('alert_content_is_loading')}</ToastText>
       <ProgressBar
         className={clsx({
           [Classes.PROGRESS_NO_STRIPES]: amount >= 100,

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Dialog, DialogSuspense } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -19,7 +20,7 @@ function ReceiptFormMailDeliverDialog({
   return (
     <Dialog
       name={dialogName}
-      title={'Receipt Mail'}
+      title={intl.get('receipt_form.mail_deliver.dialog_title')}
       isOpen={isOpen}
       canEscapeJeyClose={false}
       isCloseButtonShown={false}

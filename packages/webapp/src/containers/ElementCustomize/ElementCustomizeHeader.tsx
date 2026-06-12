@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Button, Classes } from '@blueprintjs/core';
 import { Group, Icon } from '@/components';
 import styles from './ElementCustomizeHeader.module.scss';
@@ -26,7 +27,7 @@ export function ElementCustomizeHeader({
       {label && <h1 className={styles.title}>{label}</h1>}
       {closeButton && (
         <Button
-          aria-label="Close"
+          aria-label={intl.get('close')}
           className={Classes.DIALOG_CLOSE_BUTTON}
           icon={<Icon icon={'smallCross'} color={isDarkmode ? '#fff' : '#000'} />}
           minimal={true}

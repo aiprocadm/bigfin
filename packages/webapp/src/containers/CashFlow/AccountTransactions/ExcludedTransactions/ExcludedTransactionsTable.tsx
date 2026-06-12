@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent } from '@blueprintjs/core';
 import * as R from 'ramda';
@@ -58,13 +59,13 @@ function ExcludedTransactionsTableRoot({
     unexcludeBankTransaction(transaction.id)
       .then(() => {
         AppToaster.show({
-          message: 'The excluded bank transaction has been restored.',
+          message: intl.get('cashflow.notify.excluded_transaction_restored'),
           intent: Intent.SUCCESS,
         });
       })
       .catch((error) => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
       });

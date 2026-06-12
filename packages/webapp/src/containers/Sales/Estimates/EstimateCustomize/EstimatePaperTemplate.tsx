@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Classes, Text } from '@blueprintjs/core';
 import { Box, Group, Stack } from '@/components';
 import {
@@ -155,7 +156,7 @@ export function EstimatePaperTemplate({
       <Stack spacing={24}>
         <Group align={'start'} spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Estimate'} />
+            <PaperTemplate.BigTitle title={intl.get('resource_estimate_singular')} />
 
             <PaperTemplate.TermsList>
               {showEstimateNumber && (

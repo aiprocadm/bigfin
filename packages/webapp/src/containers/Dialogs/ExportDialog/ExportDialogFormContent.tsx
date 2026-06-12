@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { FFormGroup, FRadioGroup, FSelect, Group } from '@/components';
 import { Button, Intent, Radio } from '@blueprintjs/core';
 import { Form, useFormikContext } from 'formik';
@@ -26,7 +27,7 @@ function ExportDialogFormContentRoot({
 
         <FFormGroup
           name={'resource'}
-          label={'Select Resource'}
+          label={intl.get('export.dialog.label.select_resource')}
         >
           <x.div maxWidth="280px">
             <FSelect
@@ -37,9 +38,12 @@ function ExportDialogFormContentRoot({
           </x.div>
         </FFormGroup>
 
-        <FRadioGroup label={'Export As'} name={'format'}>
-          <Radio value={'xlsx'}>XLSX (Microsoft Excel)</Radio>
-          <Radio value={'csv'}>CSV (Comma Seperated Value)</Radio>
+        <FRadioGroup
+          label={intl.get('export.dialog.label.export_as')}
+          name={'format'}
+        >
+          <Radio value={'xlsx'}>{intl.get('export.dialog.format.xlsx')}</Radio>
+          <Radio value={'csv'}>{intl.get('export.dialog.format.csv')}</Radio>
         </FRadioGroup>
 
         <x.div mt="1.6rem">

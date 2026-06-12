@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
@@ -41,7 +42,7 @@ function UncategorizeTransactionAlert({
     uncategorizeTransaction(uncategorizedTransactionId)
       .then(() => {
         AppToaster.show({
-          message: 'The transaction has uncategorized successfully.',
+          message: intl.get('cashflow.notify.transaction_uncategorized'),
           intent: Intent.SUCCESS,
         });
         closeAlert(name);
@@ -54,7 +55,7 @@ function UncategorizeTransactionAlert({
           },
         }) => {
           AppToaster.show({
-            message: 'Something went wrong.',
+            message: intl.get('something_wentwrong'),
             intent: Intent.DANGER,
           });
         },
@@ -64,14 +65,14 @@ function UncategorizeTransactionAlert({
   return (
     <Alert
       cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={'Uncategorize'}
+      confirmButtonText={intl.get('cashflow.alert.uncategorize')}
       intent={Intent.WARNING}
       isOpen={isOpen}
       onCancel={handleCancelDeleteAlert}
       onConfirm={handleConfirmBtnClick}
       loading={isLoading}
     >
-      <p>Are you sure want to uncategorize the transaction?</p>
+      <p>{intl.get('cashflow.alert.uncategorize_transaction_confirm')}</p>
     </Alert>
   );
 }

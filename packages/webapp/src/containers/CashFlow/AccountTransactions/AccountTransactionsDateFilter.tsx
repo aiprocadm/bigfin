@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Button, FormGroup, Intent, Position } from '@blueprintjs/core';
 import * as Yup from 'yup';
 import moment from 'moment';
@@ -66,7 +67,7 @@ export function AccountTransactionsDateFilterForm({
 
             <FFormGroup
               name={'fromDate'}
-              label={'From Date'}
+              label={intl.get('from_date')}
               style={{ marginBottom: 0, flex: '1' }}
             >
               <FDateInput
@@ -83,7 +84,7 @@ export function AccountTransactionsDateFilterForm({
             </FFormGroup>
 
             <FormGroup
-              label={'To Date'}
+              label={intl.get('to_date')}
               name={'toDate'}
               style={{ marginBottom: 0, flex: '1' }}
             >
@@ -158,7 +159,7 @@ function AccountTransactionDatePeriodField() {
   return (
     <FFormGroup
       name={'period'}
-      label={'Date'}
+      label={intl.get('date')}
       style={{ marginBottom: 0, flex: '0 28%' }}
     >
       <FSelect

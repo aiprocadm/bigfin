@@ -1,5 +1,6 @@
 // @ts-nocheck
 import styled from 'styled-components';
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import { FFormGroup, FSelect } from '@/components';
 import { InclusiveTaxOptions } from '@/constants/InclusiveTaxOptions';
@@ -34,7 +35,7 @@ export function BillExclusiveInclusiveSelect(props) {
   return (
     <InclusiveFormGroup
       name={'inclusive_exclusive_tax'}
-      label={'Amounts are'}
+      label={intl.get('amounts_are')}
       inline={true}
     >
       <FSelect

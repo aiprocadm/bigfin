@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Classes } from '@blueprintjs/core';
 import {
   FFormGroup,
@@ -30,7 +31,7 @@ export function PaymentReceivedCustomizeGeneralField() {
 
       <FFormGroup
         name={'templateName'}
-        label={'Template Name'}
+        label={intl.get('customize.label.template_name')}
         labelInfo={<FieldRequiredHint />}
         style={{ marginBottom: 10 }}
         fastField
@@ -42,7 +43,7 @@ export function PaymentReceivedCustomizeGeneralField() {
         <Stack spacing={0}>
           <FFormGroup
             name={'primaryColor'}
-            label={'Primary Color'}
+            label={intl.get('customize.label.primary_color')}
             style={{ justifyContent: 'space-between' }}
             inline
             fastField
@@ -56,7 +57,7 @@ export function PaymentReceivedCustomizeGeneralField() {
 
           <FFormGroup
             name={'secondaryColor'}
-            label={'Secondary Color'}
+            label={intl.get('customize.label.secondary_color')}
             style={{ justifyContent: 'space-between' }}
             inline
             fastField
@@ -71,13 +72,13 @@ export function PaymentReceivedCustomizeGeneralField() {
           <Stack spacing={10}>
             <FFormGroup
               name={'showCompanyLogo'}
-              label={'Logo'}
+              label={intl.get('customize.label.logo')}
               fastField
               style={{ marginBottom: 0 }}
             >
               <FSwitch
                 name={'showCompanyLogo'}
-                label={'Display company logo in the paper'}
+                label={intl.get('customize.label.display_company_logo')}
                 style={{ fontSize: 14 }}
                 fastField
               />

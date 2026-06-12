@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Button, Classes } from '@blueprintjs/core';
 import { x } from '@xstyled/emotion';
 import { Group, Icon } from '@/components';
@@ -44,7 +45,7 @@ export function SendMailViewHeader({
       )}
       {closeButton && (
         <Button
-          aria-label="Close"
+          aria-label={intl.get('close')}
           className={Classes.DIALOG_CLOSE_BUTTON}
           icon={<Icon icon={'smallCross'} color={isDarkmode ? 'rgba(255, 255, 255, 0.85)' : '#000'} />}
           minimal={true}

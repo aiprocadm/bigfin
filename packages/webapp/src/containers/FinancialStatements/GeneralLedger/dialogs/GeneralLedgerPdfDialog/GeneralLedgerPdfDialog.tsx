@@ -2,7 +2,7 @@
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
-import { Dialog, DialogSuspense } from '@/components';
+import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 
 import withDialogRedux from '@/components/DialogReduxConnect';
 
@@ -22,7 +22,7 @@ function GeneralLedgerPdfDialogRoot({ dialogName, payload, isOpen }) {
   return (
     <Dialog
       name={dialogName}
-      title={'General Ledger PDF Preview'}
+      title={<T id={'general_ledger_preview.dialog.title'} />}
       className={classNames(CLASSES.DIALOG_PDF_PREVIEW)}
       autoFocus={true}
       canEscapeKeyClose={true}

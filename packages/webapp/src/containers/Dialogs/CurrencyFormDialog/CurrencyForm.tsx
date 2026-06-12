@@ -78,7 +78,7 @@ function CurrencyForm({
     }) => {
       if (errors.find((e) => e.type === 'CURRENCY_CODE_EXISTS')) {
         AppToaster.show({
-          message: 'The given currency code is already exists.',
+          message: intl.get('currency_form.error.code_already_exists'),
           intent: Intent.DANGER,
         });
       }

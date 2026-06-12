@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { AppToaster, Group } from '@/components';
 import { SubscriptionPlan } from '../../component/SubscriptionPlan';
@@ -50,13 +51,13 @@ export const SubscriptionPlanMapped = R.compose(
         .then(() => {
           closeDrawer(DRAWERS.CHANGE_SUBSCARIPTION_PLAN);
           AppToaster.show({
-            message: 'The subscription plan has been changed.',
+            message: intl.get('subscription.change_plan.success'),
             intent: Intent.SUCCESS,
           });
         })
         .catch((error) => {
           AppToaster.show({
-            message: 'Something went wrong.',
+            message: intl.get('something_wentwrong'),
             intent: Intent.DANGER,
           });
         });

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { Formik } from 'formik';
+import intl from 'react-intl-universal';
 
 import { compose, transformToForm } from '@/utils';
 
@@ -48,7 +49,7 @@ function ExportDialogFormRoot({
         setSubmitting(false);
         AppToaster.show({
           intent: Intent.DANGER,
-          message: 'Something went wrong!',
+          message: intl.get('something_went_wrong'),
         });
       });
   };

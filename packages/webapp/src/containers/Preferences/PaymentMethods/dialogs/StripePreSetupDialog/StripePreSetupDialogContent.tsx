@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import intl from 'react-intl-universal';
 import { Button, DialogBody, DialogFooter, Intent } from '@blueprintjs/core';
 import styled from 'styled-components';
 import { Stack } from '@/components';
@@ -67,7 +68,7 @@ export function StripePreSetupDialogContent() {
       <DialogFooter
         actions={
           <>
-            <Button onClick={handleCancelBtnClick}>Cancel</Button>
+            <Button onClick={handleCancelBtnClick}>{intl.get('cancel')}</Button>
             <Button
               intent={Intent.PRIMARY}
               onClick={handleSetUpBtnClick}

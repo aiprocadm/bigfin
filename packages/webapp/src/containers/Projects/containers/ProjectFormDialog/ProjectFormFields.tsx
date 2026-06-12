@@ -99,7 +99,7 @@ function ProjectFormCustomerSelect() {
       <CustomersSelect
         name={'contact_id'}
         items={customers}
-        placeholder={'Find or create a customer'}
+        placeholder={intl.get('projects.dialog.find_or_create_customer')}
         allowCreate={true}
         popoverFill={true}
       />

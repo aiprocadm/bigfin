@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
 import { AppToaster, FormattedMessage as T } from '@/components';
 
@@ -39,7 +40,7 @@ function TaxRateDeleteAlert({
     deleteTaxRate(taxRateId)
       .then(() => {
         AppToaster.show({
-          message: 'The tax rate has been deleted successfully.',
+          message: intl.get('tax_rates.alert.deleted_successfully'),
           intent: Intent.SUCCESS,
         });
         closeDrawer(DRAWERS.TAX_RATE_DETAILS);
@@ -51,7 +52,7 @@ function TaxRateDeleteAlert({
           },
         }) => {
           AppToaster.show({
-            message: 'Something went wrong.',
+            message: intl.get('something_wentwrong'),
             intent: Intent.DANGER,
           });
         },

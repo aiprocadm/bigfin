@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { Aside } from '@/components/Aside/Aside';
 import { CategorizeTransactionTabs } from './CategorizeTransactionTabs';
@@ -49,7 +50,7 @@ function CategorizeTransactionAsideRoot({
     return null;
   }
   return (
-    <Aside title={'Categorize Bank Transaction'} onClose={handleClose}>
+    <Aside title={intl.get('cashflow.aside.categorize_transaction')} onClose={handleClose}>
       <Aside.Body>
         <CategorizeTransactionTabsBoot
           uncategorizedTransactionId={selectedUncategorizedTransactionId}

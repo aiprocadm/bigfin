@@ -123,7 +123,7 @@ export function CustomersTransactionsExportMenu() {
   const openProgressToast = (amount: number) => {
     return (
       <Stack spacing={8}>
-        <Text>The report has been exported successfully.</Text>
+        <Text>{intl.get('report_exported_successfully')}</Text>
         <ProgressBar
           className={classNames('toast-progress', {
             [Classes.PROGRESS_NO_STRIPES]: amount >= 100,

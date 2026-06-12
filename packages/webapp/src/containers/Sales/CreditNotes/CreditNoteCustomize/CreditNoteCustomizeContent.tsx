@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import {
   ElementCustomize,
@@ -51,13 +52,13 @@ function CreditNoteCustomizeFormContent() {
         </Box>
       </ElementCustomize.PaperTemplate>
 
-      <ElementCustomize.FieldsTab id={'general'} label={'General'}>
+      <ElementCustomize.FieldsTab id={'general'} label={intl.get('general')}>
         <CreditNoteCustomizeGeneralField />
       </ElementCustomize.FieldsTab>
 
       <ElementCustomize.FieldsTab
         id={'content'}
-        label={'Content'}
+        label={intl.get('customize.tab.content')}
         tabProps={{ disabled: !isTemplateNameFilled }}
       >
         <CreditNoteCustomizeContentFields />

@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import { Classes } from '@blueprintjs/core';
 import { PaymentReceivedSendMailBoot } from './PaymentReceivedMailBoot';
@@ -13,7 +14,7 @@ export function PaymentReceivedSendMailContent() {
       <PaymentReceivedSendMailBoot>
         <PaymentReceivedSendMailForm>
           <SendMailViewLayout
-            header={<SendMailViewHeader label={'Send Payment Mail'} />}
+            header={<SendMailViewHeader label={intl.get('payment_received.send_mail.drawer.title')} />}
             fields={<PaymentReceivedSendMailFields />}
             preview={<PaymentReceivedSendMailPreview />}
           />

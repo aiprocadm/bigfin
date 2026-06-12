@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Card, DetailItem, DetailsMenu } from '@/components';
 import { useTaxRateDetailsContext } from './TaxRateDetailsContentBoot';
 import { Intent, Tag } from '@blueprintjs/core';
@@ -24,14 +25,17 @@ export default function TaxRateDetailsContentDetails() {
           )}
         </TaxRateHeader>
         <DetailsMenu direction={'horizantal'} minLabelSize={200}>
-          <DetailItem label={'Tax Rate Name'} children={taxRate.name} />
-          <DetailItem label={'Code'} children={taxRate.code} />
           <DetailItem
-            label={'Description'}
+            label={intl.get('tax_rates.drawer.label.name')}
+            children={taxRate.name}
+          />
+          <DetailItem label={intl.get('code')} children={taxRate.code} />
+          <DetailItem
+            label={intl.get('description')}
             children={taxRate.description || '-'}
           />
           <DetailItem
-            label={'Non Recoverable'}
+            label={intl.get('tax_rates.drawer.label.non_recoverable')}
             children={
               taxRate.is_non_recoverable ? (
                 <Tag round={false} intent={Intent.SUCCESS} minimal>
@@ -45,7 +49,7 @@ export default function TaxRateDetailsContentDetails() {
             }
           />
           <DetailItem
-            label={'Compound'}
+            label={intl.get('tax_rates.drawer.label.compound')}
             children={
               taxRate.is_compound ? (
                 <Tag round={false} intent={Intent.SUCCESS} minimal>

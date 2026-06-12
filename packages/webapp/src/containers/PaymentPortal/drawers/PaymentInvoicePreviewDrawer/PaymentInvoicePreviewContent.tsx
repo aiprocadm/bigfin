@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Box, DrawerBody, DrawerHeaderContent } from '@/components';
 import { InvoicePaperTemplate } from '@/containers/Sales/Invoices/InvoiceCustomize/InvoicePaperTemplate';
 import { usePaymentPortalBoot } from '../../PaymentPortalBoot';
@@ -8,7 +9,7 @@ export function PaymentInvoicePreviewContent() {
 
   return (
     <>
-      <DrawerHeaderContent title={'Invoice'} />
+      <DrawerHeaderContent title={intl.get('invoice')} />
 
       <DrawerBody>
         <Box style={{ paddingTop: 20, paddingBottom: 20 }}>

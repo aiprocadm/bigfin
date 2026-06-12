@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useFormikContext } from 'formik';
@@ -215,7 +216,7 @@ export default function CreditNoteFloatingActions() {
         {/* ----------- Branding Template Select ----------- */}
         <BrandingThemeFormGroup
           name={'pdf_template_id'}
-          label={'Branding'}
+          label={intl.get('customize.label.branding')}
           inline
           fastField
           style={{ marginLeft: 20 }}

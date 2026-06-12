@@ -1,4 +1,5 @@
 import React, { CSSProperties } from 'react';
+import intl from 'react-intl-universal';
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { omit } from 'lodash';
@@ -91,7 +92,7 @@ export const PreferencesBrandingForm = ({
     await updateOrganization({ ...__values });
 
     AppToaster.show({
-      message: 'Organization branding has been updated.',
+      message: intl.get('preferences.branding.updated_successfully'),
       intent: Intent.SUCCESS,
     });
   };

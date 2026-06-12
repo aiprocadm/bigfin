@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import {
   Intent,
@@ -129,7 +130,7 @@ export default function PaymentReceiveFormFloatingActions() {
         {/* ----------- Branding Template Select ----------- */}
         <BrandingThemeFormGroup
           name={'pdf_template_id'}
-          label={'Branding'}
+          label={intl.get('customize.label.branding')}
           inline
           fastField
           style={{ marginLeft: 20 }}

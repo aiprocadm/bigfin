@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import { Button, Intent, Classes } from '@blueprintjs/core';
 import * as R from 'ramda';
@@ -49,7 +50,7 @@ function DisconnectBankAccountDialogContent({
       .then(() => {
         setSubmitting(false);
         AppToaster.show({
-          message: 'The bank account has been disconnected.',
+          message: intl.get('cashflow.notify.bank_account_disconnected'),
           intent: Intent.SUCCESS,
         });
         closeDialog(DialogsName.DisconnectBankAccountConfirmation);
@@ -57,7 +58,7 @@ function DisconnectBankAccountDialogContent({
       .catch((error) => {
         setSubmitting(false);
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
       });

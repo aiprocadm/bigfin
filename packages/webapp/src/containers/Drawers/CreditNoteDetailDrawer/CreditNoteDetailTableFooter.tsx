@@ -35,7 +35,7 @@ export default function CreditNoteDetailTableFooter() {
         )}
         {creditNote.adjustment_formatted && (
           <TotalLine
-            title={'Adjustment'}
+            title={<T id={'adjustment'} />}
             value={creditNote.adjustment_formatted}
           />
         )}

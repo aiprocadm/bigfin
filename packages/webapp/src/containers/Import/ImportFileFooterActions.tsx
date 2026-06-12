@@ -1,5 +1,6 @@
 // @ts-nocheck
 import clsx from 'classnames';
+import intl from 'react-intl-universal';
 import { Group } from '@/components';
 import { CLASSES } from '@/constants';
 import { Button, Intent } from '@blueprintjs/core';
@@ -18,7 +19,7 @@ export function ImportFileUploadFooterActions() {
   return (
     <div className={clsx(CLASSES.PAGE_FORM_FLOATING_ACTIONS, styles.root)}>
       <Group spacing={10}>
-        <Button onClick={handleCancelBtnClick}>Cancel</Button>
+        <Button onClick={handleCancelBtnClick}>{intl.get('cancel')}</Button>
         <Button type="submit" intent={Intent.PRIMARY} loading={isSubmitting}>
           Next
         </Button>

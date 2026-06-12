@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import {
   Box,
   FFormGroup,
@@ -29,7 +30,7 @@ export function MailNotificationForm({
   return (
     <Box>
       <HeaderBox>
-        <FFormGroup label={'From'} name={'from'} inline={true} fastField={true}>
+        <FFormGroup label={intl.get('mail_notification.label.from')} name={'from'} inline={true} fastField={true}>
           <FMultiSelect
             items={fromAddresses}
             name={'from'}
@@ -42,7 +43,7 @@ export function MailNotificationForm({
           />
         </FFormGroup>
 
-        <FFormGroup label={'To'} name={'to'} inline={true} fastField={true}>
+        <FFormGroup label={intl.get('mail_notification.label.to')} name={'to'} inline={true} fastField={true}>
           <FMultiSelect
             items={toAddresses}
             name={'to'}
@@ -57,7 +58,7 @@ export function MailNotificationForm({
         </FFormGroup>
 
         <FFormGroup
-          label={'Subject'}
+          label={intl.get('mail_notification.label.subject')}
           name={'subject'}
           inline={true}
           fastField={true}

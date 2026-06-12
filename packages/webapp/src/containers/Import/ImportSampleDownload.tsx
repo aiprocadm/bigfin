@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { AppToaster, Box, Group } from '@/components';
 import {
   Button,
@@ -27,7 +28,7 @@ export function ImportSampleDownload() {
       .then(() => {
         AppToaster.show({
           intent: Intent.SUCCESS,
-          message: 'The sample sheet has been downloaded successfully.',
+          message: intl.get('import.sample.download_success'),
         });
       })
       .catch((error) => {});

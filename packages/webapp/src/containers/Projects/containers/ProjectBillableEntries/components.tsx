@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { FormattedMessage as T, ButtonLink, FormatDate } from '@/components';
 
@@ -15,15 +16,15 @@ function BillableEntry({ label, children }) {
 function BillableEntriesList({ billableEntries }) {
   return (
     <BillableEntriesContent>
-      <BillableEntry label={'Type'}>
+      <BillableEntry label={intl.get('type')}>
         <ButtonLink>{billableEntries.billable_type} </ButtonLink>
       </BillableEntry>
 
-      <BillableEntry label={'Transaction No.'}>
+      <BillableEntry label={intl.get('projects.billable_entries.transaction_no')}>
         {billableEntries.billable_transaction_no}
       </BillableEntry>
-      <BillableEntry label={'Date'}>2022-02-02</BillableEntry>
-      <BillableEntry label={'Amount'}>
+      <BillableEntry label={intl.get('date')}>2022-02-02</BillableEntry>
+      <BillableEntry label={intl.get('amount')}>
         {billableEntries.billable_amount_formatted}
       </BillableEntry>
     </BillableEntriesContent>

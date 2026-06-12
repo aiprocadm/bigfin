@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
 import { Intent, Text } from '@blueprintjs/core';
@@ -65,13 +66,13 @@ function RecognizedTransactionsTableRoot({
       .then(() => {
         AppToaster.show({
           intent: Intent.SUCCESS,
-          message: 'The bank transaction has been excluded.',
+          message: intl.get('cashflow.notify.transaction_excluded'),
         });
       })
       .catch(() => {
         AppToaster.show({
           intent: Intent.DANGER,
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
         });
       });
   };

@@ -8,6 +8,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import '@/style/App.scss';
 import 'moment/locale/ar-ly';
 import 'moment/locale/es-us';
+import 'moment/locale/ru';
 
 import AppIntlLoader from './AppIntlLoader';
 import { EnsureAuthenticated } from '@/components/Guards/EnsureAuthenticated';

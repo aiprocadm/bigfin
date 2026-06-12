@@ -41,7 +41,7 @@ const defaultValues: SetupOrganizationFormValues = {
   name: '',
   location: '',
   baseCurrency: '',
-  language: 'en',
+  language: 'ru',
   fiscalYear: '',
   timezone: '',
 };

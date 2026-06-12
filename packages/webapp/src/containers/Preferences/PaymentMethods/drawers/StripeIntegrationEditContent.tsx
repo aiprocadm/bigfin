@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Classes } from '@blueprintjs/core';
 import { DrawerBody, DrawerHeaderContent } from '@/components';
 import { StripeIntegrationEditForm } from './StripeIntegrationEditForm';
@@ -11,7 +12,9 @@ import {
 export function StripeIntegrationEditContent() {
   return (
     <>
-      <DrawerHeaderContent title={'Edit Stripe Integration'} />
+      <DrawerHeaderContent
+        title={intl.get('preferences.payment_methods.stripe.edit.title')}
+      />
 
       <StripeIntegrationEditBoot>
         <StripeIntegrationEditForm>

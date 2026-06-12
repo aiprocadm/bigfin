@@ -57,7 +57,8 @@ export const ActionsCell = (props) => {
 export const CurrencyNameAccessor = (value) => {
   return (
     <CurrencyNameRoot>
-      {value.currency_name} {value.is_base_currency && <Tag>Base Currency</Tag>}
+      {value.currency_name}{' '}
+      {value.is_base_currency && <Tag>{intl.get('base_currency')}</Tag>}
     </CurrencyNameRoot>
   );
 };

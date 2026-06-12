@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import intl from 'react-intl-universal';
 import { PricingPlan } from '@/components/PricingPlan/PricingPlan';
 import { SubscriptionPlansPeriod } from '@/store/plans/plans.reducer';
 import {
@@ -54,7 +55,11 @@ function SubscriptionPlanRoot({
 
   return (
     <PricingPlan featured={featured}>
-      {featured && <PricingPlan.Featured>Most Popular</PricingPlan.Featured>}
+      {featured && (
+        <PricingPlan.Featured>
+          {intl.get('subscription.plan.most_popular')}
+        </PricingPlan.Featured>
+      )}
       <PricingPlan.Header label={label} description={description} />
 
       {plansPeriod === SubscriptionPlansPeriod.Monthly ? (

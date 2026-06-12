@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import {
   Button,
@@ -45,7 +46,7 @@ export function SharePaymentLinkFormContent() {
         <Stack spacing={0}>
           <FFormGroup
             name={'publicity'}
-            label={'Visibility'}
+            label={intl.get('payment_link.dialog.label.visibility')}
             style={{ marginBottom: 10 }}
             inline
           >
@@ -75,7 +76,7 @@ export function SharePaymentLinkFormContent() {
 
           <FFormGroup
             name={'expiryDate'}
-            label={'Expiration Date'}
+            label={intl.get('expiration_date')}
             helperText={
               'By default, the link is set to expire 90 days from today.'
             }
@@ -96,7 +97,10 @@ export function SharePaymentLinkFormContent() {
           </FFormGroup>
 
           {url && (
-            <FormGroup name={'link'} label={'Payment Link'}>
+            <FormGroup
+              name={'link'}
+              label={intl.get('payment_link.dialog.label.payment_link')}
+            >
               <InputGroup
                 name={'link'}
                 value={url}
@@ -124,7 +128,9 @@ export function SharePaymentLinkFormContent() {
             </Button>
           ) : (
             <>
-              <Button onClick={handleCancelBtnClick}>Cancel</Button>
+              <Button onClick={handleCancelBtnClick}>
+                {intl.get('cancel')}
+              </Button>
               <Button
                 type={'submit'}
                 intent={Intent.PRIMARY}

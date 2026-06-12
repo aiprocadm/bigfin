@@ -31,7 +31,7 @@ export function PaymentReceiveFormFootetRight() {
         textStyle={TotalLineTextStyle.Bold}
       />
       <TotalLine
-        title={'Exceeded Amount'}
+        title={<T id={'payment_receive_form.label.exceeded_amount'} />}
         value={<FormatNumber value={exceededAmount} />}
         textStyle={TotalLineTextStyle.Regular}
       />

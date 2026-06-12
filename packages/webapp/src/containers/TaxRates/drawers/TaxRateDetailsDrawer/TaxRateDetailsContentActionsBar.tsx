@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import {
   Button,
   Classes,
@@ -54,13 +55,13 @@ function TaxRateDetailsContentActionsBar({
     activateTaxRateMutate(taxRateId)
       .then(() => {
         AppToaster.show({
-          message: 'The tax rate has been activated successfully.',
+          message: intl.get('tax_rates.alert.activated_successfully'),
           intent: Intent.SUCCESS,
         });
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
       });
@@ -70,13 +71,13 @@ function TaxRateDetailsContentActionsBar({
     inactivateTaxRateMutate(taxRateId)
       .then(() => {
         AppToaster.show({
-          message: 'The tax rate has been inactivated successfully.',
+          message: intl.get('tax_rates.alert.inactivated_successfully'),
           intent: Intent.SUCCESS,
         });
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
       });

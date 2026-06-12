@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useMemo, useState } from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { SelectOptionProps } from '@blueprintjs-formik/select';
@@ -134,12 +135,12 @@ export function SendMailViewToAddressField({
   );
 
   return (
-    <FFormGroup label={'To'} name={'to'} {...formGroupProps}>
+    <FFormGroup label={intl.get('mail.label.to')} name={'to'} {...formGroupProps}>
       <Stack spacing={0} className={fieldsWrapStyle}>
         <FMultiSelect
           items={[]}
           name={'to'}
-          placeholder={'To'}
+          placeholder={intl.get('mail.label.to')}
           popoverProps={{ minimal: true, fill: true }}
           tagInputProps={{
             tagProps: { round: true, minimal: true, large: true },
@@ -162,7 +163,7 @@ export function SendMailViewToAddressField({
           <FMultiSelect
             items={[]}
             name={'cc'}
-            placeholder={'Cc'}
+            placeholder={intl.get('mail.label.cc')}
             popoverProps={{ minimal: true, fill: true }}
             tagInputProps={{
               tagProps: { round: true, minimal: true, large: true },
@@ -185,7 +186,7 @@ export function SendMailViewToAddressField({
           <FMultiSelect
             items={[]}
             name={'bcc'}
-            placeholder={'Bcc'}
+            placeholder={intl.get('mail.label.bcc')}
             popoverProps={{ minimal: true, fill: true }}
             tagInputProps={{
               tagProps: { round: true, minimal: true, large: true },

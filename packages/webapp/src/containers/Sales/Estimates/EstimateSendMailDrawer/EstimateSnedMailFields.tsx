@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import { Button, Intent } from '@blueprintjs/core';
 import { FCheckbox, FFormGroup, FInputGroup, Group, Stack } from '@/components';
@@ -22,14 +23,14 @@ export function EstimateSendMailFields() {
           ccMultiSelectProps={{ items }}
           bccMultiSelectProps={{ items }}
         />
-        <FFormGroup label={'Submit'} name={'subject'}>
+        <FFormGroup label={intl.get('mail.label.subject')} name={'subject'}>
           <FInputGroup name={'subject'} large fastField />
         </FFormGroup>
 
         <SendMailViewMessageField argsOptions={argOptions} />
 
         <Group>
-          <FCheckbox name={'attachPdf'} label={'Attach PDF'} />
+          <FCheckbox name={'attachPdf'} label={intl.get('send_mail.label.attach_pdf')} />
         </Group>
       </Stack>
 

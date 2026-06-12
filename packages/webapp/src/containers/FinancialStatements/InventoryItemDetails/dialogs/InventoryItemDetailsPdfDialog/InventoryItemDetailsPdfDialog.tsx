@@ -2,7 +2,7 @@
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
-import { Dialog, DialogSuspense } from '@/components';
+import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
@@ -20,7 +20,7 @@ function InventoryItemDetailsPdfDialogRoot({ dialogName, payload, isOpen }) {
   return (
     <Dialog
       name={dialogName}
-      title={'Inventory Item Details Print Preview'}
+      title={<T id={'inventory_item_details_preview.dialog.title'} />}
       className={classNames(CLASSES.DIALOG_PDF_PREVIEW)}
       autoFocus={true}
       canEscapeKeyClose={true}

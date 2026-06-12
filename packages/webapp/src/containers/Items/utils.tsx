@@ -263,7 +263,7 @@ export function useWatchItemError(itemQuery) {
   useWatch(() => {
     if (isError && includes([400, 404], error.response.status)) {
       AppToaster.show({
-        message: 'The given item not found.',
+        message: intl.get('item.error.not_found'),
         intent: Intent.DANGER,
       });
       history.push('/items');

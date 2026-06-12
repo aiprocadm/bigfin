@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import intl from 'react-intl-universal';
 import { Button, Classes, Intent } from '@blueprintjs/core';
 import { BrandingTemplatesBoot } from './BrandingTemplatesBoot';
 import { Box, Card, DrawerHeaderContent, Group } from '@/components';
@@ -13,7 +14,7 @@ export default function BrandingTemplateContent() {
     <Box>
       <DrawerHeaderContent
         name={DRAWERS.BRANDING_TEMPLATES}
-        title={'Branding Templates'}
+        title={intl.get('branding_templates.title')}
       />
       <Box className={Classes.DRAWER_BODY}>
         <BrandingTemplatesBoot>

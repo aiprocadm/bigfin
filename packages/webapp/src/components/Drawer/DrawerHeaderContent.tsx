@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { FormattedMessage as T } from '@/components';
 import { Classes, Icon, H4, Button } from '@blueprintjs/core';
 
@@ -37,7 +38,7 @@ function DrawerHeaderContentRoot(props) {
       </H4>
 
       <Button
-        aria-label="Close"
+        aria-label={intl.get('close')}
         className={Classes.DIALOG_CLOSE_BUTTON}
         icon={<Icon icon="small-cross" iconSize={Icon.SIZE_LARGE} />}
         minimal={true}

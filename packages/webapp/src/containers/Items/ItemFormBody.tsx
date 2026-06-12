@@ -107,7 +107,7 @@ function ItemFormBody({ organization: { base_currency } }) {
           {/*------------- Sell Tax Rate ------------- */}
           <FFormGroup
             name={'sell_tax_rate_id'}
-            label={'Tax Rate'}
+            label={<T id={'tax_rate'} />}
             inline={true}
           >
             <TaxRatesSelect
@@ -205,7 +205,7 @@ function ItemFormBody({ organization: { base_currency } }) {
           {/*------------- Purchase Tax Rate ------------- */}
           <FFormGroup
             name={'purchase_tax_rate_id'}
-            label={'Tax Rate'}
+            label={<T id={'tax_rate'} />}
             inline={true}
             fastField={true}
             shouldUpdateDeps={{ taxRates }}

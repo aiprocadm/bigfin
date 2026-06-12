@@ -32,7 +32,7 @@ export function PaymentMadeFormFooterRight() {
         textStyle={TotalLineTextStyle.Bold}
       />
       <TotalLine
-        title={'Excess Amount'}
+        title={<T id={'excess_amount'} />}
         value={<FormatNumber value={excessAmount} currency={currencyCode} />}
         textStyle={TotalLineTextStyle.Regular}
       />

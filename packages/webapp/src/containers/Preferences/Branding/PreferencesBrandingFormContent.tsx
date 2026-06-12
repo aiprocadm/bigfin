@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Button, Classes, Intent, Text } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { FFormGroup, Group, Stack } from '@/components';
@@ -11,7 +12,10 @@ import { useIsDarkMode } from '@/hooks/useDarkMode';
 export function PreferencesBrandingFormContent() {
   return (
     <Stack style={{ flex: '1' }} spacing={10}>
-      <FFormGroup name={'companyLogo'} label={'Company Logo'}>
+      <FFormGroup
+        name={'companyLogo'}
+        label={intl.get('preferences.branding.company_logo')}
+      >
         <Group spacing={15} align={'left'}>
           <BrandingCompanyLogoUpload />
           <BrandingCompanyLogoDesc />
@@ -20,7 +24,7 @@ export function PreferencesBrandingFormContent() {
 
       <FFormGroup
         name={'primaryColor'}
-        label={'Primary Color'}
+        label={intl.get('preferences.branding.primary_color')}
         helperText={
           'Note: These preferences will be applied across PDF and mail templates, including the customer payment page.'
         }

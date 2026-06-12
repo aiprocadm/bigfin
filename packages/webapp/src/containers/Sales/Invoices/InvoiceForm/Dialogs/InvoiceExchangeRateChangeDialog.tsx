@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
@@ -21,7 +22,7 @@ function InvoiceExchangeRateChangeDialog({
   return (
     <Dialog
       name={dialogName}
-      title={'Kindly take care of new rates'}
+      title={intl.get('invoice_form.exchange_rate_change.dialog_title')}
       autoFocus={true}
       canEscapeKeyClose={true}
       isOpen={isOpen}

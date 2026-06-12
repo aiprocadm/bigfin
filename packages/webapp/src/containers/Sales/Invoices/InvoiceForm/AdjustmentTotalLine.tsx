@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { css } from '@emotion/css';
 import { x } from '@xstyled/emotion';
 import clsx from 'classnames';
@@ -45,7 +46,7 @@ export function AdjustmentTotalLine({
           alignItems={'center'}
           justifyContent={'space-between'}
         >
-          <x.span>Adjustment</x.span>
+          <x.span>{intl.get('invoice_form.label.adjustment')}</x.span>
           <FFormGroup
             name={'adjustment'}
             label={''}

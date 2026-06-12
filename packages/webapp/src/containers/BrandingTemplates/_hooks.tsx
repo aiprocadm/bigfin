@@ -1,4 +1,5 @@
 import clsx from 'classnames';
+import intl from 'react-intl-universal';
 import { Classes, Tag } from '@blueprintjs/core';
 import { Group } from '@/components';
 
@@ -8,7 +9,9 @@ export const useBrandingTemplatesColumns = () => {
       Header: 'Template Name',
       accessor: (row: any) => (
         <Group spacing={10}>
-          {row.template_name} {row.default && <Tag round>Default</Tag>}
+          {row.template_name} {row.default && (
+            <Tag round>{intl.get('branding_templates.label.default')}</Tag>
+          )}
         </Group>
       ),
       width: 65,

@@ -37,7 +37,7 @@ export function InvoiceCustomizeGeneralField() {
 
       <FFormGroup
         name={'templateName'}
-        label={'Template Name'}
+        label={intl.get('customize.label.template_name')}
         labelInfo={<FieldRequiredHint />}
         fastField
         style={{ marginBottom: 10 }}
@@ -49,7 +49,7 @@ export function InvoiceCustomizeGeneralField() {
         <Stack spacing={0}>
           <FFormGroup
             name={'primaryColor'}
-            label={'Primary Color'}
+            label={intl.get('customize.label.primary_color')}
             style={{ justifyContent: 'space-between' }}
             inline
             fastField
@@ -63,7 +63,7 @@ export function InvoiceCustomizeGeneralField() {
 
           <FFormGroup
             name={'secondaryColor'}
-            label={'Secondary Color'}
+            label={intl.get('customize.label.secondary_color')}
             style={{ justifyContent: 'space-between' }}
             inline
             fastField
@@ -78,13 +78,13 @@ export function InvoiceCustomizeGeneralField() {
           <Stack spacing={10}>
             <FFormGroup
               name={'showCompanyLogo'}
-              label={'Logo'}
+              label={intl.get('customize.label.logo')}
               fastField
               style={{ marginBottom: 0 }}
             >
               <FSwitch
                 name={'showCompanyLogo'}
-                label={'Display company logo in the paper'}
+                label={intl.get('customize.label.display_company_logo')}
                 style={{ fontSize: 14 }}
                 fastField
               />

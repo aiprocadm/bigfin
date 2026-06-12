@@ -121,7 +121,7 @@ export function UploadAttachmentsPopoverContent({
             uploadIcon={null}
             value={null}
             title={''}
-            subtitle={'Drag and drop file here or choose file'}
+            subtitle={intl.get('attachments.upload.drag_drop_hint')}
             classNames={{ root: styles.dropzoneRoot }}
             onChange={handleChangeDropzone}
             dropzoneProps={{
@@ -136,7 +136,7 @@ export function UploadAttachmentsPopoverContent({
             {...dropzoneFieldProps}
           />
           <Group className={styles.hintText}>
-            <Box>Maximum: 25MB</Box>
+            <Box>{intl.get('attachments.upload.max_size')}</Box>
           </Group>
         </Stack>
 

@@ -56,8 +56,8 @@ export function CustomerFormBasicSection({}) {
       
       <FFormGroup
         name={'code'}
-        label={'Customer Code'}
-        helperText="Add a unique account number to identify, reference and search for the contact."
+        label={intl.get('customers.form.label.customer_code')}
+        helperText={intl.get('contact.form.hint.code')}
         inline
         fill
       >
@@ -80,7 +80,7 @@ export function CustomerFormBasicSection({}) {
       <FFormGroup
         name={'display_name'}
         label={<T id={'display_name'} />}
-        helperText="This is the name that appears on invoices and emails."
+        helperText={intl.get('contact.form.hint.display_name')}
         inline
         fill
       >

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Formik, Form } from 'formik';
 import { Intent } from '@blueprintjs/core';
 import styled from 'styled-components';
@@ -38,7 +39,7 @@ function CategorizeTransactionFormRoot({
         setSubmitting(false);
 
         AppToaster.show({
-          message: 'The uncategorized transaction has been categorized.',
+          message: intl.get('cashflow.notify.transaction_categorized'),
           intent: Intent.SUCCESS,
         });
         closeMatchingTransactionAside();
@@ -55,7 +56,7 @@ function CategorizeTransactionFormRoot({
           });
         } else {
           AppToaster.show({
-            message: 'Something went wrong!',
+            message: intl.get('something_went_wrong'),
             intent: Intent.DANGER,
           });
         }

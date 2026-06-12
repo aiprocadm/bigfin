@@ -44,7 +44,7 @@ export function PaymentPortal() {
       .catch(() => {
         AppToaster.show({
           intent: Intent.DANGER,
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
         });
       });
   };
@@ -58,7 +58,7 @@ export function PaymentPortal() {
       .catch((error) => {
         AppToaster.show({
           intent: Intent.DANGER,
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
         });
       });
   };

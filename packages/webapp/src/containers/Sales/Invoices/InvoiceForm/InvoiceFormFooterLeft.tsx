@@ -58,7 +58,7 @@ export function InvoiceFormFooterLeft() {
 
       {/* --------- Payment Options --------- */}
       <PaymentOptionsFormGroup
-        label={'Payment Options'}
+        label={intl.get('invoice_form.label.payment_options')}
         name={'payment_method_id'}
       >
         <PaymentOptionsText>

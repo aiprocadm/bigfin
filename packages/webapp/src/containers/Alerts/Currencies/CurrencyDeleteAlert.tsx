@@ -52,7 +52,7 @@ function CurrencyDeleteAlert({
           if (errors.find((e) => e.type === 'CANNOT_DELETE_BASE_CURRENCY')) {
             AppToaster.show({
               intent: Intent.DANGER,
-              message: 'Cannot delete the base currency.',
+              message: intl.get('cannot_delete_the_base_currency'),
             });
           }
           closeAlert(name);

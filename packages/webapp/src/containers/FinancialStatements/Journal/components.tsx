@@ -85,7 +85,7 @@ export const JournalSheetExportMenu = () => {
   const openProgressToast = (amount: number) => {
     return (
       <Stack spacing={8}>
-        <Text>The report has been exported successfully.</Text>
+        <Text><T id={'report_exported_successfully'} /></Text>
         <ProgressBar
           className={classNames('toast-progress', {
             [Classes.PROGRESS_NO_STRIPES]: amount >= 100,

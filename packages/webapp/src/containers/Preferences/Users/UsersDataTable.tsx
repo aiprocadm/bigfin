@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useCallback } from 'react';
+import intl from 'react-intl-universal';
 
 import { compose } from '@/utils';
 import { DataTable, TableSkeletonRows, AppToaster } from '@/components';
@@ -62,7 +63,7 @@ function UsersDataTable({
     resendInviation(user.id)
       .then(() => {
         AppToaster.show({
-          message: 'User invitation has been re-sent to the user.',
+          message: intl.get('preferences.users.invite_resent'),
           intent: Intent.SUCCESS,
         });
       })

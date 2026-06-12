@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import { Tag, Text } from '@blueprintjs/core';
 import styled from 'styled-components';
@@ -16,8 +17,8 @@ export default function TaxRateFormDialogContent() {
     <div>
       <FFormGroup
         name={'name'}
-        label={'Name'}
-        labelInfo={<Tag minimal>Required</Tag>}
+        label={intl.get('tax_rates.label.name')}
+        labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
         subLabel={
           'The name as you would like it to appear in customers invoices.'
         }
@@ -29,8 +30,8 @@ export default function TaxRateFormDialogContent() {
       <TaxRateCodeField />
       <FFormGroup
         name={'rate'}
-        label={'Rate (%)'}
-        labelInfo={<Tag minimal>Required</Tag>}
+        label={intl.get('tax_rates.label.rate')}
+        labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
         fastField={true}
       >
         <RateFormGroup
@@ -43,7 +44,7 @@ export default function TaxRateFormDialogContent() {
 
       <FFormGroup
         name={'description'}
-        label={'Description'}
+        label={intl.get('description')}
         labelInfo={
           <Hint content="This description is for internal use only and will not be visiable to your customers." />
         }
@@ -54,7 +55,7 @@ export default function TaxRateFormDialogContent() {
 
       <CompoundFormGroup name={'is_compound'} fastField={true}>
         <FCheckbox
-          label={'Is compound'}
+          label={intl.get('tax_rates.label.is_compound')}
           name={'is_compound'}
           fastField={true}
         />
@@ -62,7 +63,7 @@ export default function TaxRateFormDialogContent() {
 
       <CompoundFormGroup name={'is_non_recoverable'} fastField={true}>
         <FCheckbox
-          label={'Is non recoverable'}
+          label={intl.get('tax_rates.label.is_non_recoverable')}
           name={'is_non_recoverable'}
           fastField={true}
         />
@@ -89,8 +90,8 @@ function TaxRateCodeField() {
   return (
     <FFormGroup
       name={'code'}
-      label={'Code'}
-      labelInfo={<Tag minimal>Required</Tag>}
+      label={intl.get('code')}
+      labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
       fastField={true}
     >
       <FInputGroup name={'code'} fastField={true} onChange={handleChange} />
@@ -107,7 +108,7 @@ function ConfirmEditingTaxRate() {
 
   return (
     <EditWarningWrap>
-      <Text color={'#766f58'}>Please Note:</Text>
+      <Text color={'#766f58'}>{intl.get('tax_rates.form.please_note')}</Text>
       <ConfirmEditFormGroup name={'confirm_edit'} helperText={''}>
         <FCheckbox
           name={'confirm_edit'}

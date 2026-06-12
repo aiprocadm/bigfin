@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import {
   DataTable,
@@ -72,13 +73,13 @@ function TaxRatesDataTable({
     activateTaxRateMutate(taxRate.id)
       .then(() => {
         AppToaster.show({
-          message: 'The tax rate has been activated successfully.',
+          message: intl.get('tax_rates.alert.activated_successfully'),
           intent: Intent.SUCCESS,
         });
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
       });
@@ -88,13 +89,13 @@ function TaxRatesDataTable({
     inactivateTaxRateMutate(taxRate.id)
       .then(() => {
         AppToaster.show({
-          message: 'The tax rate has been inactivated successfully.',
+          message: intl.get('tax_rates.alert.inactivated_successfully'),
           intent: Intent.SUCCESS,
         });
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
       });

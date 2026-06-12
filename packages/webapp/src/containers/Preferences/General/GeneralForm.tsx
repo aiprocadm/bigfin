@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import classNames from 'classnames';
 import { Form, useFormikContext } from 'formik';
@@ -105,38 +106,42 @@ export default function PreferencesGeneralForm({ isSubmitting }) {
       {/* ---------- Address ---------- */}
       <FFormGroup
         name={'address'}
-        label={'Organization Address'}
+        label={intl.get('preferences.general.organization_address')}
         inline
         fastField
       >
         <Stack>
           <FInputGroup
             name={'address.address1'}
-            placeholder={'Address 1'}
+            placeholder={intl.get('preferences.general.address_1')}
             fastField
           />
           <FInputGroup
             name={'address.address2'}
-            placeholder={'Address 2'}
+            placeholder={intl.get('preferences.general.address_2')}
             fastField
           />
           <Group spacing={15}>
-            <FInputGroup name={'address.city'} placeholder={'City'} fastField />
+            <FInputGroup
+              name={'address.city'}
+              placeholder={intl.get('preferences.general.city')}
+              fastField
+            />
             <FInputGroup
               name={'address.postal_code'}
-              placeholder={'ZIP Code'}
+              placeholder={intl.get('preferences.general.zip_code')}
               fastField
             />
           </Group>
           <Group spacing={15}>
             <FInputGroup
               name={'address.state_province'}
-              placeholder={'State or Province'}
+              placeholder={intl.get('preferences.general.state_province')}
               fastField
             />
             <FInputGroup
               name={'address.phone'}
-              placeholder={'Phone number'}
+              placeholder={intl.get('phone_number_')}
               fastField
             />
           </Group>

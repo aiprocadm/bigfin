@@ -1,4 +1,5 @@
 import { Tab } from "@blueprintjs/core";
+import intl from 'react-intl-universal';
 import { Card, Group } from "@/components";
 import { Tabs } from "@blueprintjs/core";
 import { useState } from "react";
@@ -30,11 +31,11 @@ export function CustomerFormContent() {
             className={css`position: sticky; top: 20px;`}
             vertical
           >
-            <Tab id={'primary'} title={'Basic'} />
-            <Tab id={'financial'} title={'Financial'} />
-            <Tab id={'billingAddress'} title={'Billing address'} />
-            <Tab id={'shippingAddress'} title={'Shipping address'} />
-            <Tab id={'notes'} title={'Notes'} />
+            <Tab id={'primary'} title={intl.get('contact.form.tab.basic')} />
+            <Tab id={'financial'} title={intl.get('financial')} />
+            <Tab id={'billingAddress'} title={intl.get('billing_address')} />
+            <Tab id={'shippingAddress'} title={intl.get('shipping_address')} />
+            <Tab id={'notes'} title={intl.get('notes')} />
           </Tabs>
 
         <CustomerFormSections />

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
 
@@ -34,7 +35,7 @@ function PauseFeedsBankAccountAlert({
     pauseBankAccountFeeds({ bankAccountId })
       .then(() => {
         AppToaster.show({
-          message: 'The bank feeds of the bank account has been paused.',
+          message: intl.get('cashflow.notify.bank_feeds_paused'),
           intent: Intent.SUCCESS,
         });
       })
@@ -47,7 +48,7 @@ function PauseFeedsBankAccountAlert({
   return (
     <Alert
       cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={'Pause bank feeds'}
+      confirmButtonText={intl.get('cashflow.alert.pause_bank_feeds')}
       intent={Intent.WARNING}
       isOpen={isOpen}
       onCancel={handleCancelActivateItem}

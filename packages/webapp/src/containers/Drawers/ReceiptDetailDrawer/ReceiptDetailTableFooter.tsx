@@ -37,7 +37,7 @@ export default function ReceiptDetailTableFooter() {
         )}
         {receipt.adjustment_formatted && (
           <TotalLine
-            title={'Adjustment'}
+            title={<T id={'adjustment'} />}
             value={receipt.adjustment_formatted}
             textStyle={TotalLineTextStyle.Regular}
           />

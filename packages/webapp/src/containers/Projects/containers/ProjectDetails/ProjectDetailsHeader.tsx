@@ -51,9 +51,9 @@ export function ProjectDetailHeader() {
         value={project.total_billable_formatted}
       />
       <DetailFinancialCard
-        label={'Deadline'}
+        label={intl.get('projects.dialog.deadline')}
         value={<FormatDate value={project.deadline_formatted} />}
-        description={'4 days to go'}
+        description={intl.get('project_details.label.days_to_go', { days: 4 })}
       />
     </DetailFinancialSection>
   );

@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { lazy, Suspense } from 'react';
 import { Spinner, Tab } from '@blueprintjs/core';
 import {
@@ -76,7 +77,7 @@ function InvoiceCustomizeFormContent() {
         >
           <Tab
             id="pdf-document"
-            title={'PDF document'}
+            title={intl.get('preview.pdf_document')}
             panel={
               <Suspense fallback={<Spinner />}>
                 <InvoiceCustomizePdfPreview />
@@ -85,7 +86,7 @@ function InvoiceCustomizeFormContent() {
           />
           <Tab
             id={'payment-page'}
-            title={'Payment page'}
+            title={intl.get('preview.payment_page')}
             panel={
               <Suspense fallback={<Spinner />}>
                 <InvoiceCustomizePaymentPreview />
@@ -94,7 +95,7 @@ function InvoiceCustomizeFormContent() {
           />
           <Tab
             id={'email-receipt'}
-            title={'Email receipt'}
+            title={intl.get('preview.email_receipt')}
             panel={
               <Suspense fallback={<Spinner />}>
                 <InvoiceCustomizeMailReceiptPreview mx={'auto'} />
@@ -104,13 +105,13 @@ function InvoiceCustomizeFormContent() {
         </InvoiceCustomizeTabs>
       </ElementCustomize.PaperTemplate>
 
-      <ElementCustomize.FieldsTab id={'general'} label={'General'}>
+      <ElementCustomize.FieldsTab id={'general'} label={intl.get('general')}>
         <InvoiceCustomizeGeneralField />
       </ElementCustomize.FieldsTab>
 
       <ElementCustomize.FieldsTab
         id={'content'}
-        label={'Content'}
+        label={intl.get('customize.tab.content')}
         tabProps={{ disabled: !isTemplateNameFilled }}
       >
         <InvoiceCustomizeContentFields />

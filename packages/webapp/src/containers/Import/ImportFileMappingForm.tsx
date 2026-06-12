@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { useImportFileMapping } from '@/hooks/query/import';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -33,7 +34,7 @@ export function ImportFileMappingForm({
       .catch(({ response: { data } }) => {
         if (data.errors.find((e) => e.type === 'DUPLICATED_FROM_MAP_ATTR')) {
           AppToaster.show({
-            message: 'Selected the same sheet columns to multiple fields.',
+            message: intl.get('import.mapping.error.duplicated_columns'),
             intent: Intent.DANGER,
           });
         }

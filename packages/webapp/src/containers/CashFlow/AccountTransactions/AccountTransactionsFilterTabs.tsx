@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { ContentTabs } from '@/components/ContentTabs/ContentTabs';
@@ -29,8 +30,8 @@ export function AccountTransactionsFilterTabs() {
     <AccountContentTabs value={filterTab} onChange={handleChange}>
       <ContentTabs.Tab
         id={'dashboard'}
-        title={'Dashboard'}
-        description={'Account Summary'}
+        title={intl.get('cashflow.tabs.dashboard')}
+        description={intl.get('cashflow.tabs.account_summary')}
       />
       {hasUncategorizedTransx && (
         <ContentTabs.Tab
@@ -43,13 +44,13 @@ export function AccountTransactionsFilterTabs() {
               Uncategorized Transactions
             </>
           }
-          description={'For Bank Statement'}
+          description={intl.get('cashflow.tabs.for_bank_statement')}
         />
       )}
       <ContentTabs.Tab
         id="all"
-        title={'All Transactions'}
-        description={'In Bigfin'}
+        title={intl.get('all_transactions')}
+        description={intl.get('cashflow.tabs.in_bigfin')}
       />
     </AccountContentTabs>
   );

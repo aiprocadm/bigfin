@@ -2,7 +2,7 @@
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
-import { Dialog, DialogSuspense } from '@/components';
+import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
@@ -20,7 +20,7 @@ function VendorBalancePdfDialogRoot({ dialogName, payload, isOpen }) {
   return (
     <Dialog
       name={dialogName}
-      title={'Vendor Balance Summary Print Preview'}
+      title={<T id={'vendor_balance_summary_preview.dialog.title'} />}
       className={classNames(CLASSES.DIALOG_PDF_PREVIEW)}
       autoFocus={true}
       canEscapeKeyClose={true}

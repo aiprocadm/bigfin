@@ -38,7 +38,7 @@ export default function VendorCreditDetailDrawerFooter() {
         )}
         {vendorCredit?.adjustment_formatted && (
           <TotalLine
-            title={'Adjustment'}
+            title={<T id={'adjustment'} />}
             value={vendorCredit.adjustment_formatted}
             textStyle={TotalLineTextStyle.Regular}
           />

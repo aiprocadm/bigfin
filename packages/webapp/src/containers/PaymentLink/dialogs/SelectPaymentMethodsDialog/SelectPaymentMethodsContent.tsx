@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { SelectPaymentMethodsBoot } from './SelectPaymentMethodsBoot';
 import { SelectPaymentMethodsForm } from './SelectPaymemtMethodsForm';
 import styled from 'styled-components';
@@ -26,22 +27,22 @@ export function SelectPaymentMethodsContent() {
         <DialogBody>
           <Stack spacing={12}>
             <PaymentMethodSelect
-              label={'Card (Including Apple Pay, Google Pay and Link)'}
+              label={intl.get('payment_link.methods.card')}
             />
             <PaymentMethodSelect
-              label={'Card (Including Apple Pay, Google Pay and Link)'}
+              label={intl.get('payment_link.methods.card')}
             />
             <PaymentMethodSelect
-              label={'Card (Including Apple Pay, Google Pay and Link)'}
+              label={intl.get('payment_link.methods.card')}
             />
             <PaymentMethodSelect
-              label={'Card (Including Apple Pay, Google Pay and Link)'}
+              label={intl.get('payment_link.methods.card')}
             />
             <PaymentMethodSelect
-              label={'Card (Including Apple Pay, Google Pay and Link)'}
+              label={intl.get('payment_link.methods.card')}
             />
             <PaymentMethodSelect
-              label={'Card (Including Apple Pay, Google Pay and Link)'}
+              label={intl.get('payment_link.methods.card')}
             />
           </Stack>
         </DialogBody>
@@ -49,8 +50,10 @@ export function SelectPaymentMethodsContent() {
         <DialogFooter
           actions={
             <>
-              <Button onClick={handleCancelBtnClick}>Cancel</Button>
-              <Button intent={Intent.PRIMARY}>Submit</Button>
+              <Button onClick={handleCancelBtnClick}>
+                {intl.get('cancel')}
+              </Button>
+              <Button intent={Intent.PRIMARY}>{intl.get('submit')}</Button>
             </>
           }
         ></DialogFooter>

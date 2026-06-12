@@ -15,7 +15,12 @@
     "CSV",
     "PDF",
     "URL",
-    "SMS"
+    "SMS",
+    "ENTER",
+    "XXXXX",
+    "XXXXXXXX",
+    "XXXX XXXX",
+    "XXXX XXXX XXXX XXXX"
   ],
   "patterns": [
     "^[DMY]{2,4}([/.-][DMY]{2,4}){1,2}$",

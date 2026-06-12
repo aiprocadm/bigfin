@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { lazy, Suspense } from 'react';
 import { Tab } from '@blueprintjs/core';
 import { SendMailViewPreviewTabs } from '../../Estimates/SendMailViewDrawer/SendMailViewPreviewTabs';
@@ -18,7 +19,7 @@ export function PaymentReceivedSendMailPreview() {
     <SendMailViewPreviewTabs>
       <Tab
         id={'payment-page'}
-        title={'Payment page'}
+        title={intl.get('preview.payment_page')}
         panel={
           <Suspense>
             <PaymentReceivedMailPreviewReceipt />
@@ -27,7 +28,7 @@ export function PaymentReceivedSendMailPreview() {
       />
       <Tab
         id="pdf-document"
-        title={'PDF document'}
+        title={intl.get('preview.pdf_document')}
         panel={
           <Suspense>
             <PaymentReceivedSendMailPreviewPdf />

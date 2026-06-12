@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Classes, Text } from '@blueprintjs/core';
 import { Box, Group, Stack } from '@/components';
 import {
@@ -146,7 +147,7 @@ export function CreditNotePaperTemplate({
       <Stack spacing={24}>
         <Group align={'start'} spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Credit Note'} />
+            <PaperTemplate.BigTitle title={intl.get('resource_credit_note_singular')} />
 
             <PaperTemplate.TermsList>
               {showCreditNoteNumber && (

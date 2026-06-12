@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useCallback, useRef } from 'react';
 import { useFormikContext } from 'formik';
 import { Button, Icon, Position } from '@blueprintjs/core';
@@ -57,7 +58,7 @@ export function SendMailViewMessageField({
   };
 
   return (
-    <FFormGroup label={'Message'} name={'message'} {...formGroupProps}>
+    <FFormGroup label={intl.get('mail.label.message')} name={'message'} {...formGroupProps}>
       <Stack spacing={0}>
         <Group
           border={`1px solid ${isDarkmode ? 'rgba(255, 255, 255, 0.2)' : '#ced4da'}`}

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useRef } from 'react';
+import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
 import clsx from 'classnames';
 import { Box, Icon, Stack } from '@/components';
@@ -25,8 +26,8 @@ export function ImportDropzoneField({
   onChange,
   dropzoneProps,
   uploadIcon = <Icon icon="download" iconSize={26} />,
-  title = 'Drag images here or click to select files',
-  subtitle = 'Drag and Drop file here or Choose file',
+  title = intl.get('upload.drag_images_hint'),
+  subtitle = intl.get('import.dropzone.subtitle'),
   classNames,
 }: ImportDropzoneFieldProps) {
   const [localValue, handleChange] = useUncontrolled({

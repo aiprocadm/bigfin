@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
 import { compose } from '@/utils';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -14,7 +15,7 @@ function StripePreSetupDialogRoot({ dialogName, payload, isOpen }) {
       name={dialogName}
       isOpen={isOpen}
       payload={payload}
-      title={'Connect a Stripe account to accept card payments'}
+      title={intl.get('preferences.payment_methods.stripe.pre_setup.title')}
       canEscapeJeyClose={true}
       autoFocus={true}
       style={{ width: 500 }}

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import PropTypes from 'prop-types';
 
 function ErrorBoundary({
@@ -11,7 +12,7 @@ function ErrorBoundary({
   if (errorInfo) {
     return (
       <div>
-        <h2>Something went wrong.</h2>
+        <h2>{intl.get('something_wentwrong')}</h2>
 
         <details style={{ whiteSpace: 'pre-wrap' }}>
           {error && error.toString()}

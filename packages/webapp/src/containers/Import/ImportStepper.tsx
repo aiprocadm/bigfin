@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+import intl from 'react-intl-universal';
 import { Stepper } from '@/components/Stepper';
 import { ImportFileUploadStep } from './ImportFileUploadStep';
 import { useImportFileContext } from './ImportFileProvider';
@@ -18,15 +19,15 @@ export function ImportStepper() {
         items: styles.items,
       }}
     >
-      <Stepper.Step label={'File Upload'}>
+      <Stepper.Step label={intl.get('import.stepper.file_upload')}>
         <ImportFileUploadStep />
       </Stepper.Step>
 
-      <Stepper.Step label={'Mapping'}>
+      <Stepper.Step label={intl.get('import.stepper.mapping')}>
         <ImportFileMapping />
       </Stepper.Step>
 
-      <Stepper.Step label={'Results'}>
+      <Stepper.Step label={intl.get('import.stepper.results')}>
         <ImportFilePreview />
       </Stepper.Step>
     </Stepper>

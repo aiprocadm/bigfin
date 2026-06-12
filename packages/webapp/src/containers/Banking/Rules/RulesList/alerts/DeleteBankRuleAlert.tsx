@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
 import { AppToaster } from '@/components';
@@ -39,7 +40,7 @@ function BankRuleDeleteAlert({
     deleteBankRule(id)
       .then(() => {
         AppToaster.show({
-          message: 'The bank rule has deleted successfully.',
+          message: intl.get('banking.rules.deleted_successfully'),
           intent: Intent.SUCCESS,
         });
         closeAlert(name);
@@ -51,7 +52,7 @@ function BankRuleDeleteAlert({
           },
         }) => {
           AppToaster.show({
-            message: 'Something went wrong.',
+            message: intl.get('something_wentwrong'),
             intent: Intent.DANGER,
           });
         },
@@ -61,14 +62,14 @@ function BankRuleDeleteAlert({
   return (
     <Alert
       cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={'Delete'}
+      confirmButtonText={<T id={'delete'} />}
       intent={Intent.DANGER}
       isOpen={isOpen}
       onCancel={handleCancelDeleteAlert}
       onConfirm={handleConfirmBtnClick}
       loading={isLoading}
     >
-      <p>Are you sure want to delete the bank rule?</p>
+      <p>{intl.get('banking.rules.delete_alert.message')}</p>
     </Alert>
   );
 }

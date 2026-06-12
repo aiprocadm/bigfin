@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useCallback } from 'react';
+import intl from 'react-intl-universal';
 import { Button, Intent, InputGroup, MenuItem } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import { x } from '@xstyled/emotion';
@@ -166,7 +167,7 @@ export default function InviteUsersStep({ organizationId, onComplete }: InviteUs
                   <InputGroup
                     value={invite.email}
                     onChange={(e) => updateInviteRow(invite.id, 'email', e.target.value)}
-                    placeholder="Email address"
+                    placeholder={intl.get('email_address')}
                     intent={errors[invite.id] ? Intent.DANGER : Intent.NONE}
                   />
                   {errors[invite.id] && (

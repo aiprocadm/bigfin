@@ -1,6 +1,7 @@
 // @ts-nocheck
 import * as R from 'ramda';
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Button, Classes, Intent } from '@blueprintjs/core';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { FormatNumber } from '@/components';
@@ -85,7 +86,7 @@ function ExcessPaymentDialogContentForm({
           >
             Save Payment as Credit
           </Button>
-          <Button onClick={handleCloseBtn}>Cancel</Button>
+          <Button onClick={handleCloseBtn}>{intl.get('cancel')}</Button>
         </div>
       </div>
     </>

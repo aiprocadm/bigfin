@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { AppToaster } from '@/components';
 import { useImportFileUpload } from '@/hooks/query/import';
 import { Intent } from '@blueprintjs/core';
@@ -72,7 +73,7 @@ export function ImportFileUploadForm({
         ) {
           AppToaster.show({
             intent: Intent.DANGER,
-            message: 'The extenstion of uploaded file is not supported.',
+            message: intl.get('import.upload.error.unsupported_extension'),
           });
         }
         if (data.errors.find((er) => er.type === 'IMPORTED_SHEET_EMPTY')) {

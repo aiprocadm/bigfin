@@ -1,4 +1,5 @@
 import React from 'react';
+import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
 import { useUpdatePaymentMethod } from '@/hooks/query/payment-services';
@@ -51,7 +52,7 @@ export function StripeIntegrationEditForm({
     updatePaymentMethod({ paymentMethodId, values: _values })
       .then(() => {
         AppToaster.show({
-          message: 'The Stripe settings have been updated.',
+          message: intl.get('preferences.payment_methods.stripe.updated_successfully'),
           intent: Intent.SUCCESS,
         });
         setSubmitting(false);
@@ -60,7 +61,7 @@ export function StripeIntegrationEditForm({
       .catch(() => {
         setSubmitting(false);
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.SUCCESS,
         });
       });

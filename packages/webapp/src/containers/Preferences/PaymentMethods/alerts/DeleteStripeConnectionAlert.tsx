@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
 
 import { AppToaster, FormattedMessage as T } from '@/components';
@@ -33,7 +34,7 @@ function DeleteStripeAccountAlert({
     deletePaymentMethod({ paymentMethodId })
       .then(() => {
         AppToaster.show({
-          message: 'The Stripe payment account has been deleted.',
+          message: intl.get('preferences.payment_methods.stripe.deleted_successfully'),
           intent: Intent.SUCCESS,
         });
         closeAlert(name);
@@ -41,7 +42,7 @@ function DeleteStripeAccountAlert({
       .catch((error) => {
         closeAlert(name);
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.SUCCESS,
         });
       });
@@ -50,14 +51,14 @@ function DeleteStripeAccountAlert({
   return (
     <Alert
       cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={'Delete Account'}
+      confirmButtonText={<T id={'delete_account'} />}
       intent={Intent.DANGER}
       isOpen={isOpen}
       onCancel={handleCancelOpenBill}
       onConfirm={handleConfirmBillOpen}
       loading={isLoading}
     >
-      <p>Are you sure want to delete your Stripe account connection?</p>
+      <p>{intl.get('preferences.payment_methods.stripe.delete_alert.message')}</p>
     </Alert>
   );
 }

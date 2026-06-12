@@ -39,7 +39,7 @@ function MarkDefaultBrandingTemplateAlert({
       })
       .catch((error) => {
         AppToaster.show({
-          message: 'Something went wrong.',
+          message: intl.get('something_wentwrong'),
           intent: Intent.DANGER,
         });
         closeAlert(name);
@@ -53,7 +53,7 @@ function MarkDefaultBrandingTemplateAlert({
   return (
     <Alert
       cancelButtonText={intl.get('cancel')}
-      confirmButtonText={'Mark as Default'}
+      confirmButtonText={intl.get('branding_templates.action.mark_as_default')}
       intent={Intent.WARNING}
       isOpen={isOpen}
       onCancel={handleCancel}

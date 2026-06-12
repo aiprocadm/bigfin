@@ -105,7 +105,7 @@ export function PaymentReceivedPaperTemplate({
       <Stack spacing={24}>
         <Group align={'start'} spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Payment'} />
+            <PaperTemplate.BigTitle title={intl.get('payment_received.paper.title')} />
 
             <PaperTemplate.TermsList>
               {showPaymentReceivedNumber && (

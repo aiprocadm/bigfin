@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { FSelect } from '@/components/Forms';
 
 export function AccountsTypesSelect({ ...props }) {
@@ -7,7 +8,7 @@ export function AccountsTypesSelect({ ...props }) {
       valueAccessor={'key'}
       labelAccessor={'label'}
       textAccessor={'label'}
-      placeholder={'Select an account...'}
+      placeholder={intl.get('select_an_account')}
       {...props}
     />
   );

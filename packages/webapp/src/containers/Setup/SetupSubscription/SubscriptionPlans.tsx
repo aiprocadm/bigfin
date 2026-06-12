@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { AppToaster, Group, GroupProps } from '@/components';
 import { SubscriptionPlansPeriod } from '@/store/plans/plans.reducer';
@@ -49,7 +50,7 @@ const SubscriptionPlanMapped = R.compose(
       })
       .catch(() => {
         AppToaster.show({
-          message: 'Something went wrong!',
+          message: intl.get('something_went_wrong'),
           intent: Intent.DANGER,
         });
       });

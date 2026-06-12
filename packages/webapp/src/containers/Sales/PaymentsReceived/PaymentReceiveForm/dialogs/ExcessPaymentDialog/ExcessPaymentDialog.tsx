@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Dialog, DialogSuspense } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -17,7 +18,7 @@ function ExcessPaymentDialogRoot({ dialogName, isOpen }) {
   return (
     <Dialog
       name={dialogName}
-      title={'Excess Payment'}
+      title={intl.get('payment_receive_form.excess_payment.dialog_title')}
       isOpen={isOpen}
       canEscapeJeyClose={true}
       autoFocus={true}

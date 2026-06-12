@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import TaxRateDetailsContentActionsBar from './TaxRateDetailsContentActionsBar';
 import { TaxRateDetailsContentBoot } from './TaxRateDetailsContentBoot';
 import { DrawerBody, DrawerHeaderContent } from '@/components';
@@ -17,7 +18,7 @@ export default function TaxRateDetailsContent({
     <TaxRateDetailsContentBoot taxRateId={taxRateId}>
       <DrawerHeaderContent
         name={DRAWERS.TAX_RATE_DETAILS}
-        title={'Tax Rate Details'}
+        title={intl.get('tax_rates.drawer.title')}
       />
       <TaxRateDetailsContentActionsBar />
 

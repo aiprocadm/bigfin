@@ -88,13 +88,12 @@ export const transformRegisterToastMessages = (errors) => {
 
   if (errors.some((e) => e.type === 'SIGNUP_RESTRICTED_NOT_ALLOWED')) {
     toastErrors.push({
-      message:
-        'The sign-up is restricted, the given email address is not allowed to sign-up.',
+      message: intl.get('signup_restricted_email_not_allowed'),
       intent: Intent.DANGER,
     });
   } else if (errors.find((e) => e.type === 'SIGNUP_RESTRICTED')) {
     toastErrors.push({
-      message: 'Sign-up is disabled, and no new accounts can be created.',
+      message: intl.get('signup_disabled_no_new_accounts'),
       intent: Intent.DANGER,
     });
   }

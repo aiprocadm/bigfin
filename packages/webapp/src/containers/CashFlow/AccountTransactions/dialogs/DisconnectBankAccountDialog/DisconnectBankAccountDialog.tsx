@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { Dialog, DialogSuspense } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -19,7 +20,7 @@ function DisconnectBankAccountDialogRoot({
   return (
     <Dialog
       name={dialogName}
-      title={'Disconnect Bank Account'}
+      title={intl.get('cashflow.dialog.disconnect_bank_account')}
       isOpen={isOpen}
       canEscapeJeyClose={true}
       autoFocus={true}

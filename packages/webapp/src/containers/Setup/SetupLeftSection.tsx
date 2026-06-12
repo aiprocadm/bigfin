@@ -39,7 +39,9 @@ function SetupLeftSectionFooter() {
     <div className={'content__footer'}>
       {demoUrl && (
         <Stack spacing={16}>
-          <Text className={style.demoButtonLabel}>Not Now?</Text>
+          <Text className={style.demoButtonLabel}>
+            <T id={'setup.left_side.not_now'} />
+          </Text>
           <button className={style.demoButton} onClick={handleDemoBtnClick}>
             Try Demo Account
           </button>

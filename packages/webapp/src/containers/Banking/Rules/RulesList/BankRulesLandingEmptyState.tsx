@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
 import { EmptyStatus, Can, FormattedMessage as T } from '@/components';
 import { AbilitySubject, BankRuleAction } from '@/constants/abilityOption';
@@ -17,7 +18,7 @@ function BankRulesLandingEmptyStateRoot({
 
   return (
     <EmptyStatus
-      title={'Create rules to categorize bank transactions automatically'}
+      title={intl.get('banking.rules.empty_state.title')}
       description={
         <p>
           Bank rules will run automatically to categorize the incoming bank

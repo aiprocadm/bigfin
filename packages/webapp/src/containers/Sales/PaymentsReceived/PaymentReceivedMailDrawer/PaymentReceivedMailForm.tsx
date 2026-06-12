@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { css } from '@emotion/css';
 import { Intent } from '@blueprintjs/core';
@@ -46,7 +47,7 @@ export function PaymentReceivedSendMailForm({
     sendPaymentMail([paymentReceivedId, values])
       .then(() => {
         AppToaster.show({
-          message: 'The invoice mail has been sent to the customer.',
+          message: intl.get('invoice.send_mail.success_message'),
           intent: Intent.SUCCESS,
         });
         setSubmitting(false);
@@ -55,7 +56,7 @@ export function PaymentReceivedSendMailForm({
       .catch(() => {
         setSubmitting(false);
         AppToaster.show({
-          message: 'Something went wrong!',
+          message: intl.get('something_went_wrong'),
           intent: Intent.SUCCESS,
         });
       });

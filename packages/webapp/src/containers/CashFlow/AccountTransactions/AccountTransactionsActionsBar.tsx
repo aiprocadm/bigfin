@@ -131,7 +131,7 @@ function AccountTransactionsActionsBar({
     updateBankAccount({ bankAccountId: accountId })
       .then(() => {
         AppToaster.show({
-          message: 'The transactions of the bank account has been updated.',
+          message: intl.get('cashflow.notify.bank_account_transactions_updated'),
           intent: Intent.SUCCESS,
         });
       })
@@ -164,7 +164,7 @@ function AccountTransactionsActionsBar({
     })
       .then(() => {
         AppToaster.show({
-          message: 'The selected transactions have been excluded.',
+          message: intl.get('cashflow.notify.selected_transactions_excluded'),
           intent: Intent.SUCCESS,
         });
       })
@@ -183,7 +183,7 @@ function AccountTransactionsActionsBar({
     })
       .then(() => {
         AppToaster.show({
-          message: 'The selected excluded transactions have been unexcluded.',
+          message: intl.get('cashflow.notify.selected_transactions_unexcluded'),
           intent: Intent.SUCCESS,
         });
       })
@@ -378,7 +378,7 @@ function AccountTransactionsActionsBar({
             minimal
           >
             <Switch
-              label={'Multi Select'}
+              label={intl.get('cashflow.label.multi_select')}
               inline
               onChange={handleMultipleCategorizingSwitch}
             />

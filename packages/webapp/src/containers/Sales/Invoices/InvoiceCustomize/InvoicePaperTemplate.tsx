@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Classes, Text } from '@blueprintjs/core';
 import {
   PaperTemplate,
@@ -192,7 +193,7 @@ export function InvoicePaperTemplate({
       <Stack spacing={24}>
         <Group align="start" spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Invoice'} />
+            <PaperTemplate.BigTitle title={intl.get('resource_invoice_singular')} />
 
             <PaperTemplate.TermsList>
               {showInvoiceNumber && (

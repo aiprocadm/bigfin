@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { FormattedMessage as T, FieldRequiredHint, Card, FFormGroup, FInputGroup, FTextArea } from '@/components';
 import { useAutofocus } from '@/hooks';
 
@@ -44,7 +45,7 @@ export function RoleFormHeader() {
           name={'role_description'}
           growVertically={true}
           height={280}
-          placeholder="Max. 500 characters"
+          placeholder={intl.get('preferences.roles.description_max_chars')}
           fill
           fastField
         />

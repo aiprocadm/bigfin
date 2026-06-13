@@ -1,4 +1,4 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
 import { TenancyContext } from '../Tenancy/TenancyContext.service';
 
@@ -14,8 +14,13 @@ import { TenancyContext } from '../Tenancy/TenancyContext.service';
  *
  * Если у организации язык не задан — откатываемся на `'en'` (совпадает с
  * `fallbackLanguage` в `I18nModule.forRootAsync`).
+ *
+ * Синглтон: обе зависимости (`TenancyContext`, `I18nService`) — синглтоны,
+ * а организация берётся из CLS (`nestjs-cls`), который изолирует контекст на
+ * каждый запрос/задачу. Поэтому request-scope не нужен, и инъекция этого
+ * сервиса не «всплывает» request-scope в сервисы-потребители.
  */
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class OrganizationI18nService {
   constructor(
     private readonly i18n: I18nService,
@@ -34,8 +39,7 @@ export class OrganizationI18nService {
     key: string,
     options?: { args?: Record<string, any> },
   ): Promise<string> {
-    const metadata = await this.tenancyContext.getTenantMetadata();
-    const lang = metadata?.language ?? 'en';
+    const lang = await this.getLanguage();
 
     const translated = await this.i18n.translate(key, {
       lang,
@@ -43,5 +47,20 @@ export class OrganizationI18nService {
     });
 
     return String(translated);
+  }
+
+  /**
+   * Возвращает язык текущей организации (`tenants_metadata.language`),
+   * либо `'en'`, если язык не задан.
+   *
+   * Нужно для случаев, когда перевод выполняется не здесь, а в трансформере
+   * email-шаблона (через `context.i18n.t(key, { lang })`), — туда прокидывается
+   * именно этот язык, чтобы лейблы письма были на языке организации.
+   *
+   * @returns {Promise<string>} Код языка организации (`'ru'` | `'en'` | …).
+   */
+  async getLanguage(): Promise<string> {
+    const metadata = await this.tenancyContext.getTenantMetadata();
+    return metadata?.language ?? 'en';
   }
 }

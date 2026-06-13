@@ -86,6 +86,10 @@ export class FeaturesConfigure {
         name: Features.ACCRUAL_PNL,
         defaultValue: false,
       },
+      {
+        name: Features.CREDITS,
+        defaultValue: false,
+      },
     ];
   }
 }

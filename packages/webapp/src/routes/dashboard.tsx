@@ -1339,6 +1339,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('dividends.page_title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Credits (Кредиты и займы)
+  {
+    path: `/credits`,
+    component: lazy(() => import('@/containers/Credits/CreditsPage')),
+    breadcrumb: intl.get('credits.page.title'),
+    pageTitle: intl.get('credits.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

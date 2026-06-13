@@ -797,6 +797,15 @@ export const SidebarMenu = [
       },
     ],
   },
+  // ---------------
+  // # Credits (Кредиты и займы)
+  // ---------------
+  {
+    text: <T id={'sidebar.credits'} />,
+    href: '/credits',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Credits,
+  },
   {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,

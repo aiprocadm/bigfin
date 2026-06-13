@@ -43,6 +43,7 @@ import { DealsModule } from '../Deals/Deals.module';
 import { PayrollModule } from '../Payroll/Payroll.module';
 import { DataQualityModule } from '../DataQuality/DataQuality.module';
 import { DividendsModule } from '../Dividends/Dividends.module';
+import { CreditsModule } from '../Credits/Credits.module';
 import { CostAllocationModule } from '../CostAllocation/CostAllocation.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
@@ -220,6 +221,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     PayrollModule,
     DataQualityModule,
     DividendsModule,
+    CreditsModule,
     CostAllocationModule,
     AccountsModule,
     ExpensesModule,

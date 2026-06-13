@@ -54,6 +54,11 @@ export interface PaymentReceivedPaperTemplateProps extends PaperTemplateProps {
   paymentReceivedNumebr?: string;
   paymentReceivedNumberLabel?: string;
   showPaymentReceivedNumber?: boolean;
+
+  bigTitleLabel?: string;
+  colInvoiceNumberLabel?: string;
+  colInvoiceAmountLabel?: string;
+  colPaidAmountLabel?: string;
 }
 
 export function PaymentReceivedPaperTemplate({
@@ -100,13 +105,18 @@ export function PaymentReceivedPaperTemplate({
   paymentReceivedDate = 'September 3, 2024',
   showPaymentReceivedDate = true,
   paymentReceivedDateLabel = 'Payment Date',
+
+  bigTitleLabel = 'Payment',
+  colInvoiceNumberLabel = 'Invoice #',
+  colInvoiceAmountLabel = 'Invoice Amount',
+  colPaidAmountLabel = 'Paid Amount',
 }: PaymentReceivedPaperTemplateProps) {
   return (
     <PaperTemplate primaryColor={primaryColor} secondaryColor={secondaryColor}>
       <Stack spacing={24}>
         <Group align={'start'} spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Payment'} />
+            <PaperTemplate.BigTitle title={bigTitleLabel} />
 
             <PaperTemplate.TermsList>
               {showPaymentReceivedNumber && (
@@ -146,13 +156,13 @@ export function PaymentReceivedPaperTemplate({
         <Stack spacing={0}>
           <PaperTemplate.Table
             columns={[
-              { label: 'Invoice #', accessor: 'invoiceNumber' },
+              { label: colInvoiceNumberLabel, accessor: 'invoiceNumber' },
               {
-                label: 'Invoice Amount',
+                label: colInvoiceAmountLabel,
                 accessor: 'invoiceAmount',
                 align: 'right',
               },
-              { label: 'Paid Amount', accessor: 'paidAmount', align: 'right' },
+              { label: colPaidAmountLabel, accessor: 'paidAmount', align: 'right' },
             ]}
             data={lines}
           />

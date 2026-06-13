@@ -32,6 +32,7 @@ export class SaleEstimatePdfTemplate {
     // Пользовательские правки (commonOrgBrandingAttrs) идут после и имеют приоритет.
     const lang = await this.orgI18n.getLanguage();
     const translatedLabels = {
+      bigTitleLabel: this.i18n.t('pdf.estimate.title', { lang }),
       billedToLabel: this.i18n.t('pdf.label.billed_to', { lang }),
       totalLabel: this.i18n.t('pdf.label.total', { lang }),
       subtotalLabel: this.i18n.t('pdf.label.subtotal', { lang }),

@@ -38,6 +38,8 @@ export interface EstimatePaperTemplateProps extends PaperTemplateProps {
   showEstimateDate?: boolean;
   estimateDate?: string;
 
+  bigTitleLabel?: string;
+
   // # Customer name
   companyName?: string;
 
@@ -105,6 +107,8 @@ export function EstimatePaperTemplate({
   // # Company logo
   showCompanyLogo = true,
   companyLogoUri = '',
+
+  bigTitleLabel = 'Estimate',
 
   companyName,
 
@@ -187,7 +191,7 @@ export function EstimatePaperTemplate({
       <Stack spacing={24}>
         <Group align={'start'} spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Estimate'} />
+            <PaperTemplate.BigTitle title={bigTitleLabel} />
 
             <PaperTemplate.TermsList>
               {showEstimateNumber && (

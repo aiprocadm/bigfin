@@ -57,6 +57,9 @@ export interface InvoicePaperTemplateProps extends PaperTemplateProps {
   companyName?: string;
   bigtitle?: string;
 
+  // Document title (big heading)
+  bigTitleLabel?: string;
+
   // Address
   showCustomerAddress?: boolean;
   customerAddress?: string;
@@ -129,6 +132,9 @@ export function InvoicePaperTemplate({
 
   // # Company.
   companyName = 'Bigfin Technology, Inc.',
+
+  // # Document title
+  bigTitleLabel = 'Invoice',
 
   showCompanyLogo = true,
   companyLogoUri = '',
@@ -225,7 +231,7 @@ export function InvoicePaperTemplate({
       <Stack spacing={24}>
         <Group align="start" spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Invoice'} />
+            <PaperTemplate.BigTitle title={bigTitleLabel} />
 
             <PaperTemplate.TermsList>
               {showInvoiceNumber && (

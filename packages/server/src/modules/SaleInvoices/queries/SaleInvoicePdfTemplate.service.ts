@@ -33,6 +33,7 @@ export class SaleInvoicePdfTemplate {
     // Пользовательские правки (commonOrgBrandingAttrs) идут после и имеют приоритет.
     const lang = await this.orgI18n.getLanguage();
     const translatedLabels = {
+      bigTitleLabel: this.i18n.t('pdf.invoice.title', { lang }),
       dueDateLabel: this.i18n.t('pdf.invoice.due_date', { lang }),
       dateIssueLabel: this.i18n.t('pdf.invoice.date_issue', { lang }),
       invoiceNumberLabel: this.i18n.t('pdf.invoice.number', { lang }),

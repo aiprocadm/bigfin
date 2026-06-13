@@ -28,4 +28,18 @@ describe('pdf translations (en/ru)', () => {
     expect(ru['invoice.number']).toBe('Номер счёта');
     expect(ru['invoice.balance_due']).toBe('Остаток к оплате');
   });
+
+  it('заголовки документов (BigTitle) переведены', () => {
+    expect(ru['invoice.title']).toBe('Счёт');
+    expect(ru['estimate.title']).toBe('Смета');
+    expect(ru['receipt.title']).toBe('Чек');
+    expect(ru['credit_note.title']).toBe('Кредит-нота');
+    expect(ru['payment.title']).toBe('Платёж');
+  });
+
+  it('колонки таблицы платежа переведены', () => {
+    expect(ru['payment.col_invoice_number']).toBe('№ счёта');
+    expect(ru['payment.col_invoice_amount']).toBe('Сумма счёта');
+    expect(ru['payment.col_paid_amount']).toBe('Оплачено');
+  });
 });

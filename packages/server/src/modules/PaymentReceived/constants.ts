@@ -60,6 +60,11 @@ export const defaultPaymentReceivedPdfTemplateAttributes = {
   // # Company name
   companyName: 'Bigfin Technology, Inc.',
 
+  bigTitleLabel: 'Payment',
+  colInvoiceNumberLabel: 'Invoice #',
+  colInvoiceAmountLabel: 'Invoice Amount',
+  colPaidAmountLabel: 'Paid Amount',
+
   // # Customer address
   showCustomerAddress: true,
   customerAddress: '',

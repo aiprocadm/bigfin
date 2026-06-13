@@ -86,7 +86,9 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * @returns {string}
    */
   public estimateNumberLabel(): string {
-    return 'Estimate No: {estimateNumber}';
+    return this.context.i18n.t('mail.estimate.number_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -102,7 +104,9 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * @returns {string}
    */
   public expirationDateLabel(): string {
-    return 'Expiration Date: {expirationDate}';
+    return this.context.i18n.t('mail.estimate.expiration_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -117,7 +121,9 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * @returns {string}
    */
   public totalLabel(): string {
-    return 'Total';
+    return this.context.i18n.t('mail.label.total', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -133,7 +139,9 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * @returns {string}
    */
   public discountLabel(): string {
-    return 'Discount';
+    return this.context.i18n.t('mail.label.discount', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -149,7 +157,9 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * @returns {string}
    */
   public adjustmentLabel(): string {
-    return 'Adjustment';
+    return this.context.i18n.t('mail.label.adjustment', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -164,7 +174,19 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * @returns {string}
    */
   public subtotalLabel(): string {
-    return 'Subtotal';
+    return this.context.i18n.t('mail.label.subtotal', {
+      lang: this.context.organization?.language ?? 'en',
+    });
+  }
+
+  /**
+   * Estimate view button label.
+   * @returns {string}
+   */
+  public viewEstimateButtonLabel(): string {
+    return this.context.i18n.t('mail.estimate.view_button', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**

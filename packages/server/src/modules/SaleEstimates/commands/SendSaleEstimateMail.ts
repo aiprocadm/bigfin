@@ -3,10 +3,6 @@ import { Queue } from 'bullmq';
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ContactMailNotification } from '@/modules/MailNotification/ContactMailNotification';
-import {
-  DEFAULT_ESTIMATE_REMINDER_MAIL_CONTENT,
-  DEFAULT_ESTIMATE_REMINDER_MAIL_SUBJECT,
-} from '../constants';
 import { GetSaleEstimate } from '../queries/GetSaleEstimate.service';
 import { transformEstimateToMailDataArgs } from '../utils';
 import { GetSaleEstimatePdf } from '../queries/GetSaleEstimatePdf';
@@ -25,6 +21,7 @@ import { MailTransporter } from '@/modules/Mail/MailTransporter.service';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { GetSaleEstimateMailTemplateService } from '../queries/GetSaleEstimateMailTemplate.service';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 
 @Injectable()
 export class SendSaleEstimateMail {
@@ -44,6 +41,7 @@ export class SendSaleEstimateMail {
     private readonly eventPublisher: EventEmitter2,
     private readonly mailTransporter: MailTransporter,
     private readonly tenancyContext: TenancyContext,
+    private readonly orgI18n: OrganizationI18nService,
 
     @Inject(SaleEstimate.name)
     private readonly saleEstimateModel: TenantModelProxy<typeof SaleEstimate>,
@@ -108,8 +106,8 @@ export class SendSaleEstimateMail {
    */
   public getMailOptions = async (
     saleEstimateId: number,
-    defaultSubject: string = DEFAULT_ESTIMATE_REMINDER_MAIL_SUBJECT,
-    defaultMessage: string = DEFAULT_ESTIMATE_REMINDER_MAIL_CONTENT,
+    defaultSubject?: string,
+    defaultMessage?: string,
   ): Promise<SaleEstimateMailOptions> => {
     const saleEstimate = await this.saleEstimateModel()
       .query()
@@ -122,10 +120,19 @@ export class SendSaleEstimateMail {
       await this.contactMailNotification.getDefaultMailOptions(
         saleEstimate.customerId,
       );
+
+    // Тема и тело по умолчанию — на языке организации (tenants_metadata.language).
+    // Перевод вызывается БЕЗ args, чтобы Mustache-плейсхолдеры ({Customer Name}
+    // и т.п.) сохранились и были подставлены позже в formatMailOptions.
+    const subject =
+      defaultSubject ?? (await this.orgI18n.translate('mail.estimate.subject'));
+    const message =
+      defaultMessage ?? (await this.orgI18n.translate('mail.estimate.body'));
+
     return {
       ...mailOptions,
-      message: defaultMessage,
-      subject: defaultSubject,
+      message,
+      subject,
       attachEstimate: true,
       formatArgs,
     };

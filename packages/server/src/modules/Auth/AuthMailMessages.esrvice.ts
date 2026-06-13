@@ -23,7 +23,7 @@ export class AuthenticationMailMesssages {
     const baseURL = this.configService.get('app.baseUrl');
 
     return new Mail()
-      .setSubject('Bigfin - Password Reset')
+      .setSubject('Bigfin — сброс пароля')
       .setView('mail/ResetPassword.html')
       .setTo(user.email)
       .setAttachments([
@@ -58,7 +58,7 @@ export class AuthenticationMailMesssages {
     const verifyUrl = `${baseURL}/auth/email_confirmation?token=${token}&email=${email}`;
 
     return new Mail()
-      .setSubject('Bigfin - Verify your email')
+      .setSubject('Bigfin — подтверждение e-mail')
       .setView('mail/SignupVerifyEmail.html')
       .setTo(email)
       .setAttachments([

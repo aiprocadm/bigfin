@@ -1,15 +1,12 @@
 // @ts-nocheck
 import { GetSaleInvoice } from '../queries/GetSaleInvoice.service';
-import {
-  DEFAULT_INVOICE_MAIL_CONTENT,
-  DEFAULT_INVOICE_MAIL_SUBJECT,
-} from '../constants';
 import { GetInvoicePaymentMail } from '../queries/GetInvoicePaymentMail.service';
 import { GenerateShareLink } from './GenerateInvoicePaymentLink.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { SaleInvoice } from '../models/SaleInvoice';
 import { ContactMailNotification } from '@/modules/MailNotification/ContactMailNotification';
 import { SaleInvoiceMailOptions } from '../SaleInvoice.types';
+import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 
 @Injectable()
 export class SendSaleInvoiceMailCommon {
@@ -18,6 +15,7 @@ export class SendSaleInvoiceMailCommon {
     private contactMailNotification: ContactMailNotification,
     private getInvoicePaymentMail: GetInvoicePaymentMail,
     private generatePaymentLinkService: GenerateShareLink,
+    private readonly orgI18n: OrganizationI18nService,
 
     @Inject(SaleInvoice.name)
     private readonly saleInvoiceModel: () => typeof SaleInvoice,
@@ -32,8 +30,8 @@ export class SendSaleInvoiceMailCommon {
    */
   public async getInvoiceMailOptions(
     invoiceId: number,
-    defaultSubject: string = DEFAULT_INVOICE_MAIL_SUBJECT,
-    defaultMessage: string = DEFAULT_INVOICE_MAIL_CONTENT,
+    defaultSubject?: string,
+    defaultMessage?: string,
   ): Promise<SaleInvoiceMailOptions> {
     const saleInvoice = await this.saleInvoiceModel()
       .query()
@@ -46,10 +44,18 @@ export class SendSaleInvoiceMailCommon {
       );
     const formatArgs = await this.getInvoiceFormatterArgs(invoiceId);
 
+    // Тема и тело по умолчанию — на языке организации (tenants_metadata.language).
+    // Перевод вызывается БЕЗ args, чтобы Mustache-плейсхолдеры ({Customer Name}
+    // и т.п.) сохранились и были подставлены позже в formatMailOptions.
+    const subject =
+      defaultSubject ?? (await this.orgI18n.translate('mail.invoice.subject'));
+    const message =
+      defaultMessage ?? (await this.orgI18n.translate('mail.invoice.body'));
+
     return {
       ...contactMailDefaultOptions,
-      subject: defaultSubject,
-      message: defaultMessage,
+      subject,
+      message,
       attachInvoice: true,
       formatArgs,
     };

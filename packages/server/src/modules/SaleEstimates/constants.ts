@@ -182,6 +182,8 @@ export const defaultEstimatePdfBrandingAttributes = {
   companyLogoUri: '',
   companyLogoKey: '',
 
+  bigTitleLabel: 'Estimate',
+
   companyName: '',
 
   customerAddress: '',

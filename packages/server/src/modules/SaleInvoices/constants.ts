@@ -169,6 +169,8 @@ export const defaultInvoicePdfTemplateAttributes = {
 
   companyName: 'Bigfin Technology, Inc.',
 
+  bigTitleLabel: 'Invoice',
+
   showCompanyLogo: true,
   companyLogoKey: '',
   companyLogoUri: '',

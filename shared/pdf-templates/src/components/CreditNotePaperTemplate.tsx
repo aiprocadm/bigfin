@@ -32,6 +32,7 @@ export interface CreditNotePaperTemplateProps extends PaperTemplateProps {
   companyLogoUri?: string;
 
   companyName?: string;
+  bigTitleLabel?: string;
 
   // Credit Note number
   showCreditNoteNumber?: boolean;
@@ -88,6 +89,7 @@ export function CreditNotePaperTemplate({
 
   // # Company
   companyName = 'Bigfin Technology, Inc.',
+  bigTitleLabel = 'Credit Note',
 
   showCompanyLogo = true,
   companyLogoUri = '',
@@ -157,7 +159,7 @@ export function CreditNotePaperTemplate({
       <Stack spacing={24}>
         <Group align="start" spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Credit Note'} />
+            <PaperTemplate.BigTitle title={bigTitleLabel} />
 
             <PaperTemplate.TermsList>
               {showCreditNoteNumber && (

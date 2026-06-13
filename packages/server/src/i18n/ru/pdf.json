@@ -1,0 +1,41 @@
+{
+  "label.total": "Итого",
+  "label.subtotal": "Подытог",
+  "label.discount": "Скидка",
+  "label.adjustment": "Корректировка",
+  "label.billed_to": "Получатель",
+  "label.line_item": "Наименование",
+  "label.line_qty": "Кол-во",
+  "label.line_rate": "Цена",
+  "label.line_total": "Сумма",
+  "label.terms": "Условия и положения",
+  "label.customer_note": "Примечание для клиента",
+
+  "invoice.title": "Счёт",
+  "invoice.due_date": "Срок оплаты",
+  "invoice.date_issue": "Дата выставления",
+  "invoice.number": "Номер счёта",
+  "invoice.payment_made": "Оплачено",
+  "invoice.balance_due": "Остаток к оплате",
+  "invoice.statement": "Примечание",
+
+  "estimate.title": "Смета",
+  "estimate.number": "Номер сметы",
+  "estimate.date": "Дата сметы",
+  "estimate.expiration": "Действует до",
+
+  "receipt.title": "Чек",
+  "receipt.number": "Номер чека",
+  "receipt.date": "Дата чека",
+
+  "credit_note.title": "Кредит-нота",
+  "credit_note.number": "Номер кредит-ноты",
+  "credit_note.date": "Дата кредит-ноты",
+
+  "payment.title": "Платёж",
+  "payment.number": "Номер платежа",
+  "payment.date": "Дата платежа",
+  "payment.col_invoice_number": "№ счёта",
+  "payment.col_invoice_amount": "Сумма счёта",
+  "payment.col_paid_amount": "Оплачено"
+}

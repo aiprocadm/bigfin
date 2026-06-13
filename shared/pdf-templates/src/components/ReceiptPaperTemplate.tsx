@@ -23,6 +23,9 @@ export interface ReceiptPaperTemplateProps extends PaperTemplateProps {
   showCompanyLogo?: boolean;
   companyLogoUri?: string;
 
+  // # Big title
+  bigTitleLabel?: string;
+
   // # Company name
   companyName?: string;
 
@@ -105,6 +108,9 @@ export function ReceiptPaperTemplate({
   showCompanyLogo = true,
   companyLogoUri,
 
+  // # Big title
+  bigTitleLabel = 'Receipt',
+
   // # Company name
   companyName = 'Bigfin Technology, Inc.',
 
@@ -180,7 +186,7 @@ export function ReceiptPaperTemplate({
       <Stack spacing={24}>
         <Group align={'start'} spacing={10}>
           <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Receipt'} />
+            <PaperTemplate.BigTitle title={bigTitleLabel} />
 
             <PaperTemplate.TermsList>
               {showReceiptNumber && (

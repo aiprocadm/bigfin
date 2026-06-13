@@ -79,6 +79,7 @@ export const defaultCreditNoteBrandingAttributes = {
 
   // # Company name
   companyName: 'Bigfin Technology, Inc.',
+  bigTitleLabel: 'Credit Note',
 
   // # Customer address
   showCustomerAddress: true,

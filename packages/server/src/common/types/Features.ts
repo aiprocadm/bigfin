@@ -17,6 +17,7 @@ export enum Features {
   DATA_QUALITY = 'data_quality',
   DIVIDENDS = 'dividends',
   ACCRUAL_PNL = 'accrual_pnl',
+  CREDITS = 'credits',
 }
 
 export interface IFeatureAllItem {

@@ -56,6 +56,8 @@ import { PayrollRun } from '@/modules/Payroll/models/PayrollRun.model';
 import { PayrollRunLine } from '@/modules/Payroll/models/PayrollRunLine.model';
 import { EmployeeKpiTarget } from '@/modules/Payroll/models/EmployeeKpiTarget.model';
 import { DividendPayout } from '@/modules/Dividends/models/DividendPayout.model';
+import { Credit } from '@/modules/Credits/models/Credit.model';
+import { CreditInstallment } from '@/modules/Credits/models/CreditInstallment.model';
 
 const models = [
   Item,
@@ -111,6 +113,8 @@ const models = [
   PayrollRunLine,
   EmployeeKpiTarget,
   DividendPayout,
+  Credit,
+  CreditInstallment,
   TenantUser,
 ];
 

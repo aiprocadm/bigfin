@@ -315,6 +315,12 @@ const DIVIDENDS = {
   DIVIDENDS_PAYOUTS: 'DIVIDENDS_PAYOUTS',
 };
 
+const CREDITS = {
+  CREDITS: 'CREDITS',
+  CREDIT: 'CREDIT',
+  CREDITS_SUMMARY: 'CREDITS_SUMMARY',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -363,4 +369,5 @@ export default {
   ...PAYROLL,
   ...DATA_QUALITY,
   ...DIVIDENDS,
+  ...CREDITS,
 };

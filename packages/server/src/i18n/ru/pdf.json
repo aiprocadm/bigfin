@@ -16,5 +16,18 @@
   "invoice.number": "Номер счёта",
   "invoice.payment_made": "Оплачено",
   "invoice.balance_due": "Остаток к оплате",
-  "invoice.statement": "Примечание"
+  "invoice.statement": "Примечание",
+
+  "estimate.number": "Номер сметы",
+  "estimate.date": "Дата сметы",
+  "estimate.expiration": "Действует до",
+
+  "receipt.number": "Номер чека",
+  "receipt.date": "Дата чека",
+
+  "credit_note.number": "Номер кредит-ноты",
+  "credit_note.date": "Дата кредит-ноты",
+
+  "payment.number": "Номер платежа",
+  "payment.date": "Дата платежа"
 }

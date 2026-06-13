@@ -16,5 +16,18 @@
   "invoice.number": "Invoice number",
   "invoice.payment_made": "Payment Made",
   "invoice.balance_due": "Balance Due",
-  "invoice.statement": "Statement"
+  "invoice.statement": "Statement",
+
+  "estimate.number": "Estimate Number",
+  "estimate.date": "Estimate Date",
+  "estimate.expiration": "Expiration Date",
+
+  "receipt.number": "Receipt Number",
+  "receipt.date": "Receipt Date",
+
+  "credit_note.number": "Credit Note Number",
+  "credit_note.date": "Credit Note Date",
+
+  "payment.number": "Payment Number",
+  "payment.date": "Payment Date"
 }

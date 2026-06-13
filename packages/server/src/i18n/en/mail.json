@@ -1,0 +1,15 @@
+{
+  "label.subtotal": "Subtotal",
+  "label.discount": "Discount",
+  "label.adjustment": "Adjustment",
+  "label.total": "Total",
+  "label.due_amount": "Due Amount",
+
+  "invoice.number_label": "Invoice # {invoiceNumber}",
+  "invoice.due_date_label": "Due {dueDate}",
+  "invoice.view_button": "View Invoice",
+  "invoice.subject": "Invoice {Invoice Number} from {Company Name} for {Customer Name}",
+  "invoice.body": "Hi {Customer Name},\n\nHere's invoice # {Invoice Number} for {Invoice Amount}\n\nThe amount outstanding of {Invoice Due Amount} is due on {Invoice Due Date}.\n\nFrom your online payment page you can print a PDF or view your outstanding bills.\n\nIf you have any questions, please let us know.\n\nThanks,\n{Company Name}\n",
+  "invoice.reminder_subject": "Invoice {InvoiceNumber} reminder from {CompanyName}",
+  "invoice.reminder_body": "\n  <p>Dear {CustomerName}</p>\n<p>You might have missed the payment date and the invoice is now overdue by {OverdueDays} days.</p>\n<p>Invoice <strong>#{InvoiceNumber}</strong><br />\nDue Date : <strong>{InvoiceDueDate}</strong><br />\nAmount   : <strong>{InvoiceAmount}</strong></p>\n\n<p>\n<i>Regards</i><br />\n<i>{CompanyName}</i>\n</p>\n"
+}

@@ -1,0 +1,15 @@
+{
+  "label.subtotal": "Подытог",
+  "label.discount": "Скидка",
+  "label.adjustment": "Корректировка",
+  "label.total": "Итого",
+  "label.due_amount": "К оплате",
+
+  "invoice.number_label": "Счёт № {invoiceNumber}",
+  "invoice.due_date_label": "Оплатить до {dueDate}",
+  "invoice.view_button": "Открыть счёт",
+  "invoice.subject": "Счёт {Invoice Number} от {Company Name} для {Customer Name}",
+  "invoice.body": "Здравствуйте, {Customer Name}!\n\nНаправляем счёт № {Invoice Number} на сумму {Invoice Amount}.\n\nСумму {Invoice Due Amount} необходимо оплатить до {Invoice Due Date}.\n\nНа странице онлайн-оплаты можно распечатать PDF или посмотреть неоплаченные счета.\n\nЕсли возникнут вопросы — напишите нам.\n\nС уважением,\n{Company Name}\n",
+  "invoice.reminder_subject": "Напоминание об оплате счёта {InvoiceNumber} от {CompanyName}",
+  "invoice.reminder_body": "\n  <p>Здравствуйте, {CustomerName}!</p>\n<p>Возможно, вы пропустили дату оплаты — счёт просрочен на {OverdueDays} дн.</p>\n<p>Счёт <strong>№ {InvoiceNumber}</strong><br />\nОплатить до: <strong>{InvoiceDueDate}</strong><br />\nСумма: <strong>{InvoiceAmount}</strong></p>\n\n<p>\n<i>С уважением,</i><br />\n<i>{CompanyName}</i>\n</p>\n"
+}

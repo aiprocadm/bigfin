@@ -57,7 +57,7 @@ function GlobalErrors({
   if (globalErrors.access_denied) {
     toastKeySomethingWrong = AppToaster.show(
       {
-        message: globalErrors.access_denied.message || intl.get('global_error.you_dont_have_permissions'),
+        message: intl.get('global_error.you_dont_have_permissions'),
         intent: Intent.DANGER,
         onDismiss: () => {
           globalErrorsSet({ access_denied: false });
@@ -79,7 +79,7 @@ function GlobalErrors({
   }
   if (globalErrors.subscriptionInactive) {
     AppToaster.show({
-      message: `You can't add new data to Bigfin because your subscription is inactive. Make sure your billing information is up-to-date from Preferences > Billing page.`,
+      message: intl.get('global_error.subscription_inactive'),
       intent: Intent.DANGER,
       onDismiss: () => {
         globalErrorsSet({ subscriptionInactive: false });

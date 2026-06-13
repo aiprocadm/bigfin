@@ -37,7 +37,7 @@ function ApiKeysDataTable({
         })
         .catch((error) => {
           AppToaster.show({
-            message: error?.response?.data?.message || intl.get('something_went_wrong'),
+            message: intl.get('something_went_wrong'),
             intent: Intent.DANGER,
           });
         });

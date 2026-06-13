@@ -2182,6 +2182,7 @@
   "global_error.you_dont_have_permissions": "У вас нет прав на доступ к этой странице.",
   "global_error.transactions_locked": "Операции до {lockedToDate} заблокированы — действие невозможно.",
   "global_error.authorized_user_inactive": "Авторизованный пользователь деактивирован.",
+  "global_error.subscription_inactive": "Нельзя добавить данные в Bigfin: подписка неактивна. Обновите платёжную информацию в разделе «Настройки → Оплата».",
   "balance_sheet.comparisons": "Сравнения",
   "balance_sheet.dimensions": "Аналитика",
   "balance_sheet.percentage_of_column": "% от колонок",

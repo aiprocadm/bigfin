@@ -1,0 +1,20 @@
+{
+  "label.total": "Итого",
+  "label.subtotal": "Подытог",
+  "label.discount": "Скидка",
+  "label.adjustment": "Корректировка",
+  "label.billed_to": "Получатель",
+  "label.line_item": "Наименование",
+  "label.line_qty": "Кол-во",
+  "label.line_rate": "Цена",
+  "label.line_total": "Сумма",
+  "label.terms": "Условия и положения",
+  "label.customer_note": "Примечание для клиента",
+
+  "invoice.due_date": "Срок оплаты",
+  "invoice.date_issue": "Дата выставления",
+  "invoice.number": "Номер счёта",
+  "invoice.payment_made": "Оплачено",
+  "invoice.balance_due": "Остаток к оплате",
+  "invoice.statement": "Примечание"
+}

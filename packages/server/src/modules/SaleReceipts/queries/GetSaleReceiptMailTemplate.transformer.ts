@@ -81,7 +81,9 @@ export class GetSaleReceiptMailTemplateAttributesTransformer extends Transformer
    * @returns {string}
    */
   public receiptNumberLabel(): string {
-    return 'Receipt # {receiptNumber}';
+    return this.context.i18n.t('mail.receipt.number_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -97,7 +99,9 @@ export class GetSaleReceiptMailTemplateAttributesTransformer extends Transformer
    * @returns {string}
    */
   public dateLabel(): string {
-    return 'Date';
+    return this.context.i18n.t('mail.receipt.date_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -112,7 +116,9 @@ export class GetSaleReceiptMailTemplateAttributesTransformer extends Transformer
    * @returns {string}
    */
   public totalLabel(): string {
-    return 'Total';
+    return this.context.i18n.t('mail.label.total', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -128,7 +134,9 @@ export class GetSaleReceiptMailTemplateAttributesTransformer extends Transformer
    * @returns {string}
    */
   public discountLabel(): string {
-    return 'Discount';
+    return this.context.i18n.t('mail.label.discount', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -144,7 +152,9 @@ export class GetSaleReceiptMailTemplateAttributesTransformer extends Transformer
    * @returns {string}
    */
   public adjustmentLabel(): string {
-    return 'Adjustment';
+    return this.context.i18n.t('mail.label.adjustment', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -160,7 +170,9 @@ export class GetSaleReceiptMailTemplateAttributesTransformer extends Transformer
    * @returns {string}
    */
   public subtotalLabel(): string {
-    return 'Subtotal';
+    return this.context.i18n.t('mail.label.subtotal', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**

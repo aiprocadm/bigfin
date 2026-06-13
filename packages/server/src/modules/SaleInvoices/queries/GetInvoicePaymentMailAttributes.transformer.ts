@@ -74,7 +74,9 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public dueDateLabel(): string {
-    return 'Due {dueDate}';
+    return this.context.i18n.t('mail.invoice.due_date_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public invoiceNumber(): string {
@@ -82,7 +84,9 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public invoiceNumberLabel(): string {
-    return 'Invoice # {invoiceNumber}';
+    return this.context.i18n.t('mail.invoice.number_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public subtotal(): string {
@@ -90,7 +94,9 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public subtotalLabel(): string {
-    return 'Subtotal';
+    return this.context.i18n.t('mail.label.subtotal', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public discount(): string {
@@ -98,7 +104,9 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public discountLabel(): string {
-    return 'Discount';
+    return this.context.i18n.t('mail.label.discount', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public adjustment(): string {
@@ -106,7 +114,9 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public adjustmentLabel(): string {
-    return 'Adjustment';
+    return this.context.i18n.t('mail.label.adjustment', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public total(): string {
@@ -114,7 +124,9 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public totalLabel(): string {
-    return 'Total';
+    return this.context.i18n.t('mail.label.total', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public dueAmount(): string {
@@ -122,11 +134,15 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
   }
 
   public dueAmountLabel(): string {
-    return 'Due Amount';
+    return this.context.i18n.t('mail.label.due_amount', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public viewInvoiceButtonLabel(): string {
-    return 'View Invoice';
+    return this.context.i18n.t('mail.invoice.view_button', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   public viewInvoiceButtonUrl(): string {

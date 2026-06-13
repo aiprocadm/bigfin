@@ -1,0 +1,30 @@
+{
+  "label.subtotal": "Подытог",
+  "label.discount": "Скидка",
+  "label.adjustment": "Корректировка",
+  "label.total": "Итого",
+  "label.due_amount": "К оплате",
+
+  "invoice.number_label": "Счёт № {invoiceNumber}",
+  "invoice.due_date_label": "Оплатить до {dueDate}",
+  "invoice.view_button": "Открыть счёт",
+  "invoice.subject": "Счёт {Invoice Number} от {Company Name} для {Customer Name}",
+  "invoice.body": "Здравствуйте, {Customer Name}!\n\nНаправляем счёт № {Invoice Number} на сумму {Invoice Amount}.\n\nСумму {Invoice Due Amount} необходимо оплатить до {Invoice Due Date}.\n\nНа странице онлайн-оплаты вы можете распечатать PDF или посмотреть неоплаченные счета.\n\nЕсли возникнут вопросы — напишите нам.\n\nС уважением,\n{Company Name}\n",
+  "invoice.reminder_subject": "Напоминание об оплате счёта {InvoiceNumber} от {CompanyName}",
+  "invoice.reminder_body": "\n  <p>Здравствуйте, {CustomerName}!</p>\n<p>Возможно, вы пропустили дату оплаты — счёт просрочен на {OverdueDays} дн.</p>\n<p>Счёт <strong>№ {InvoiceNumber}</strong><br />\nОплатить до: <strong>{InvoiceDueDate}</strong><br />\nСумма: <strong>{InvoiceAmount}</strong></p>\n\n<p>\n<i>С уважением,</i><br />\n<i>{CompanyName}</i>\n</p>\n",
+
+  "estimate.number_label": "Смета № {estimateNumber}",
+  "estimate.expiration_label": "Действует до: {expirationDate}",
+  "estimate.view_button": "Открыть смету",
+  "estimate.subject": "Смета {Estimate Number} ожидает вашего согласования",
+  "estimate.body": "Здравствуйте, {Customer Name}!\n\nНаправляем смету № {Estimate Number} на сумму {Estimate Amount}.\n\nСмета действует до {Estimate Expiration Date}. Будем рады обсудить любые правки и ответить на ваши вопросы.\n\nСмета во вложении к этому письму — для вашего удобства.\n\nЕсли возникнут вопросы, дайте знать.\n\nС уважением,\n{Company Name}",
+
+  "receipt.number_label": "Чек № {receiptNumber}",
+  "receipt.date_label": "Дата",
+  "receipt.subject": "Чек {Receipt Number} от {Company Name}",
+  "receipt.body": "Здравствуйте, {Customer Name}!\n\nНаправляем чек № {Receipt Number} на сумму {Receipt Amount}.\n\nЧек оплачен {Receipt Date}, итоговая оплаченная сумма — {Receipt Amount}.\n\nЧек о продаже приложен к этому письму для вашего сведения.\n\nЕсли у вас возникнут вопросы, дайте нам знать.\n\nС уважением,\n{Company Name}",
+
+  "payment.number_label": "Платёж № {paymentNumber}",
+  "payment.subject": "Оплата получена от {Customer Name} — {Company Name}",
+  "payment.body": "Здравствуйте, {Customer Name}!\n\nСпасибо за оплату. Было приятно работать с вами и рассчитываем на дальнейшее сотрудничество.\n\nПлатёж: {Payment Number}\nДата платежа: {Payment Date}\nСумма: {Payment Amount}\n\nС уважением,\n{Company Name}"
+}

@@ -2,6 +2,7 @@ import { CacheProvider, ThemeProvider } from '@emotion/react';
 import { EmotionCache } from '@emotion/cache';
 import { defaultTheme } from '@xstyled/system';
 import { createGlobalStyle, Preflight } from '@xstyled/emotion';
+import { pdfFontFaceStyles } from './_fonts';
 
 const theme = {
   ...defaultTheme,
@@ -25,8 +26,11 @@ export function PaperTemplateLayout({
   );
 }
 
-// Create global styles to set the body font
+// Create global styles to set the body font.
+// pdfFontFaceStyles embeds Open Sans (latin + cyrillic) as base64 woff2 so the
+// PDF renders cyrillic deterministically regardless of Gotenberg container fonts.
 const GlobalStyles = createGlobalStyle`
+${pdfFontFaceStyles}
 *,
 *::before,
 *::after {

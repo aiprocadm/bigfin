@@ -1,0 +1,33 @@
+{
+  "label.total": "Total",
+  "label.subtotal": "Subtotal",
+  "label.discount": "Discount",
+  "label.adjustment": "Adjustment",
+  "label.billed_to": "Billed To",
+  "label.line_item": "Item",
+  "label.line_qty": "Qty",
+  "label.line_rate": "Rate",
+  "label.line_total": "Total",
+  "label.terms": "Terms & Conditions",
+  "label.customer_note": "Customer Note",
+
+  "invoice.due_date": "Date due",
+  "invoice.date_issue": "Date of issue",
+  "invoice.number": "Invoice number",
+  "invoice.payment_made": "Payment Made",
+  "invoice.balance_due": "Balance Due",
+  "invoice.statement": "Statement",
+
+  "estimate.number": "Estimate Number",
+  "estimate.date": "Estimate Date",
+  "estimate.expiration": "Expiration Date",
+
+  "receipt.number": "Receipt Number",
+  "receipt.date": "Receipt Date",
+
+  "credit_note.number": "Credit Note Number",
+  "credit_note.date": "Credit Note Date",
+
+  "payment.number": "Payment Number",
+  "payment.date": "Payment Date"
+}

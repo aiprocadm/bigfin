@@ -32,7 +32,7 @@ export function CreditDetailCard({ creditId, onClose }: Props) {
     return (
       <Card>
         <CardContent className="p-6 text-sm text-muted-foreground">
-          {intl.get('credits.page.title')}
+          {intl.get('credits.loading')}
         </CardContent>
       </Card>
     );
@@ -51,19 +51,19 @@ export function CreditDetailCard({ creditId, onClose }: Props) {
     if (!window.confirm(intl.get('credits.action.delete'))) return;
     try {
       await deleteMutation.mutateAsync(creditId);
-      toast.success(intl.get('credits.action.delete'));
+      toast.success(intl.get('credits.toast.deleted'));
       onClose();
     } catch {
-      toast.error(intl.get('credits.page.title'));
+      toast.error(intl.get('credits.toast.error'));
     }
   };
 
   const handleMarkPaid = async (installmentId: number) => {
     try {
       await markPaidMutation.mutateAsync([creditId, installmentId]);
-      toast.success(intl.get('credits.action.mark_paid'));
+      toast.success(intl.get('credits.toast.paid'));
     } catch {
-      toast.error(intl.get('credits.page.title'));
+      toast.error(intl.get('credits.toast.error'));
     }
   };
 

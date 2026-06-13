@@ -60,6 +60,9 @@ export class DeleteCreditService {
       await this.installmentModel().query(trx).where('creditId', id).delete();
       await this.creditModel().query(trx).deleteById(id);
 
+      // MVP: счёт-обязательство (liability_account_id) намеренно НЕ удаляем —
+      // у него уже были (сторнированные) GL-проводки, удаление сломало бы
+      // аудит-след. Остаётся с нулевым сальдо. Очистка/архивация — отдельный заход.
       return { id };
     });
   }

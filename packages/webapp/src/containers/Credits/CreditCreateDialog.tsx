@@ -69,10 +69,10 @@ export function CreditCreateDialog({ onDone, onCancel }: Props) {
         paymentAccountId: values.paymentAccountId,
         note: values.note || undefined,
       });
-      toast.success(intl.get('credits.dialog.title'));
+      toast.success(intl.get('credits.toast.created'));
       onDone();
     } catch {
-      toast.error(intl.get('credits.page.title'));
+      toast.error(intl.get('credits.toast.error'));
     }
   };
 
@@ -300,7 +300,7 @@ export function CreditCreateDialog({ onDone, onCancel }: Props) {
                 onClick={onCancel}
                 disabled={isSubmitting}
               >
-                {intl.get('credits.action.delete')}
+                {intl.get('credits.action.cancel')}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {intl.get('credits.action.new')}

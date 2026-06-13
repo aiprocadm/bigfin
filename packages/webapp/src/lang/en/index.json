@@ -3145,6 +3145,12 @@
   "credits.action.mark_paid": "Mark paid",
   "credits.installment.paid": "Paid",
   "credits.action.delete": "Delete",
+  "credits.action.cancel": "Cancel",
+  "credits.toast.created": "Credit created",
+  "credits.toast.deleted": "Credit deleted",
+  "credits.toast.paid": "Payment recorded",
+  "credits.toast.error": "Operation failed",
+  "credits.loading": "Loading…",
   "credits.empty": "No credits yet",
   "sidebar.credits": "Credits & loans"
 }

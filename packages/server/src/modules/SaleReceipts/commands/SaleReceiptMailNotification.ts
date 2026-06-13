@@ -26,6 +26,7 @@ import { Mail } from '@/modules/Mail/Mail';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { GetSaleReceiptMailTemplateService } from '../queries/GetSaleReceiptMailTemplate.service';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 
 @Injectable()
 export class SaleReceiptMailNotification {
@@ -44,6 +45,7 @@ export class SaleReceiptMailNotification {
     private readonly mailTransporter: MailTransporter,
     private readonly tenancyContext: TenancyContext,
     private readonly getReceiptMailTemplateService: GetSaleReceiptMailTemplateService,
+    private readonly orgI18n: OrganizationI18nService,
 
     @Inject(SaleReceipt.name)
     private readonly saleReceiptModel: TenantModelProxy<typeof SaleReceipt>,
@@ -87,10 +89,14 @@ export class SaleReceiptMailNotification {
   /**
    * Retrieves the mail options of the given sale receipt.
    * @param {number} saleReceiptId - Sale receipt id.
+   * @param {string} [defaultSubject] - Default subject text.
+   * @param {string} [defaultMessage] - Default message body.
    * @returns {Promise<SaleReceiptMailOptsDTO>}
    */
   public async getMailOptions(
     saleReceiptId: number,
+    defaultSubject?: string,
+    defaultMessage?: string,
   ): Promise<SaleReceiptMailOpts> {
     const saleReceipt = await this.saleReceiptModel()
       .query()
@@ -102,10 +108,19 @@ export class SaleReceiptMailNotification {
       await this.contactMailNotification.getDefaultMailOptions(
         saleReceipt.customerId,
       );
+
+    // Тема и тело по умолчанию — на языке организации (tenants_metadata.language).
+    // Перевод вызывается БЕЗ args, чтобы Mustache-плейсхолдеры ({Customer Name}
+    // и т.п.) сохранились и были подставлены позже в formatMailOptions.
+    const subject =
+      defaultSubject ?? (await this.orgI18n.translate('mail.receipt.subject'));
+    const message =
+      defaultMessage ?? (await this.orgI18n.translate('mail.receipt.body'));
+
     return {
       ...mailOptions,
-      message: DEFAULT_RECEIPT_MAIL_CONTENT,
-      subject: DEFAULT_RECEIPT_MAIL_SUBJECT,
+      message,
+      subject,
       attachReceipt: true,
       formatArgs,
     };

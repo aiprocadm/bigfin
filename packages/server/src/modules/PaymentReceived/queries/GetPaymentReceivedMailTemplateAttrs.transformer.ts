@@ -65,7 +65,9 @@ export class GetPaymentReceivedMailTemplateAttrsTransformer extends Transformer 
    * @returns {string}
    */
   public totalLabel(): string {
-    return 'Total';
+    return this.context.i18n.t('mail.label.total', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -81,7 +83,9 @@ export class GetPaymentReceivedMailTemplateAttrsTransformer extends Transformer 
    * @returns {string}
    */
   public subtotalLabel(): string {
-    return 'Subtotal';
+    return this.context.i18n.t('mail.label.subtotal', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**
@@ -89,7 +93,9 @@ export class GetPaymentReceivedMailTemplateAttrsTransformer extends Transformer 
    * @returns {string}
    */
   public paymentNumberLabel(): string {
-    return 'Payment # {paymentNumber}';
+    return this.context.i18n.t('mail.payment.number_label', {
+      lang: this.context.organization?.language ?? 'en',
+    });
   }
 
   /**

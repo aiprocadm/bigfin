@@ -51,4 +51,22 @@ describe('mail translations (en/ru)', () => {
     expect(ru['invoice.body']).toContain('{Invoice Due Amount}');
     expect(ru['invoice.subject']).toContain('Счёт');
   });
+
+  it('смета/квитанция/оплата: русские значения и сохранённые токены', () => {
+    expect(ru['estimate.view_button']).toBe('Открыть смету');
+    expect(ru['estimate.number_label'].replace('{estimateNumber}', 'EST-7')).toBe(
+      'Смета № EST-7',
+    );
+    expect(ru['estimate.subject']).toContain('{Estimate Number}');
+
+    expect(ru['receipt.number_label'].replace('{receiptNumber}', 'RC-3')).toBe(
+      'Чек № RC-3',
+    );
+    expect(ru['receipt.subject']).toContain('{Company Name}');
+
+    expect(ru['payment.number_label'].replace('{paymentNumber}', 'PMT-9')).toBe(
+      'Платёж № PMT-9',
+    );
+    expect(ru['payment.body']).toContain('{Payment Amount}');
+  });
 });

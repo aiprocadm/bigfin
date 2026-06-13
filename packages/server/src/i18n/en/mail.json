@@ -11,5 +11,20 @@
   "invoice.subject": "Invoice {Invoice Number} from {Company Name} for {Customer Name}",
   "invoice.body": "Hi {Customer Name},\n\nHere's invoice # {Invoice Number} for {Invoice Amount}\n\nThe amount outstanding of {Invoice Due Amount} is due on {Invoice Due Date}.\n\nFrom your online payment page you can print a PDF or view your outstanding bills.\n\nIf you have any questions, please let us know.\n\nThanks,\n{Company Name}\n",
   "invoice.reminder_subject": "Invoice {InvoiceNumber} reminder from {CompanyName}",
-  "invoice.reminder_body": "\n  <p>Dear {CustomerName}</p>\n<p>You might have missed the payment date and the invoice is now overdue by {OverdueDays} days.</p>\n<p>Invoice <strong>#{InvoiceNumber}</strong><br />\nDue Date : <strong>{InvoiceDueDate}</strong><br />\nAmount   : <strong>{InvoiceAmount}</strong></p>\n\n<p>\n<i>Regards</i><br />\n<i>{CompanyName}</i>\n</p>\n"
+  "invoice.reminder_body": "\n  <p>Dear {CustomerName}</p>\n<p>You might have missed the payment date and the invoice is now overdue by {OverdueDays} days.</p>\n<p>Invoice <strong>#{InvoiceNumber}</strong><br />\nDue Date : <strong>{InvoiceDueDate}</strong><br />\nAmount   : <strong>{InvoiceAmount}</strong></p>\n\n<p>\n<i>Regards</i><br />\n<i>{CompanyName}</i>\n</p>\n",
+
+  "estimate.number_label": "Estimate No: {estimateNumber}",
+  "estimate.expiration_label": "Expiration Date: {expirationDate}",
+  "estimate.view_button": "View Estimate",
+  "estimate.subject": "Estimate {Estimate Number} is awaiting your approval",
+  "estimate.body": "Hi {Customer Name},\n\nHere's estimate # {Estimate Number} for {Estimate Amount}\n\nThis estimate is valid until {Estimate Expiration Date}, and we’re happy to discuss any adjustments you or questions may have.\n\nPlease find your estimate attached to this email for your reference.\n\nIf you have any questions, please let us know.\n\nThanks,\n{Company Name}",
+
+  "receipt.number_label": "Receipt # {receiptNumber}",
+  "receipt.date_label": "Date",
+  "receipt.subject": "Receipt {Receipt Number} from {Company Name}",
+  "receipt.body": "Hi {Customer Name},\n\nHere's receipt # {Receipt Number} for Receipt {Receipt Amount}\n\nThe receipt paid on {Receipt Date}, and the total amount paid is {Receipt Amount}.\n\nPlease find your sale receipt attached to this email for your reference\n\nIf you have any questions, please let us know.\n\nThanks,\n{Company Name}",
+
+  "payment.number_label": "Payment # {paymentNumber}",
+  "payment.subject": "Payment Received for {Customer Name} from {Company Name}",
+  "payment.body": "Dear {Customer Name}\n\nThank you for your payment. It was a pleasure doing business with you. We look forward to work together again!\n\nPayment Transaction: {Payment Number}\nPayment Date : {Payment Date}\nAmount : {Payment Amount}\n\nRegards,\n{Company Name}"
 }

@@ -26,6 +26,7 @@ import { MailTransporter } from '@/modules/Mail/MailTransporter.service';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { GetPaymentReceivedMailTemplate } from '../queries/GetPaymentReceivedMailTemplate.service';
+import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 
 @Injectable()
 export class SendPaymentReceiveMailNotification {
@@ -36,6 +37,7 @@ export class SendPaymentReceiveMailNotification {
     private readonly mailTransport: MailTransporter,
     private readonly tenancyContext: TenancyContext,
     private readonly paymentMailTemplate: GetPaymentReceivedMailTemplate,
+    private readonly orgI18n: OrganizationI18nService,
 
     @InjectQueue(SEND_PAYMENT_RECEIVED_MAIL_QUEUE)
     private readonly sendPaymentMailQueue: Queue,
@@ -88,8 +90,8 @@ export class SendPaymentReceiveMailNotification {
    */
   public getMailOptions = async (
     paymentId: number,
-    defaultSubject: string = DEFAULT_PAYMENT_MAIL_SUBJECT,
-    defaultContent: string = DEFAULT_PAYMENT_MAIL_CONTENT,
+    defaultSubject?: string,
+    defaultContent?: string,
   ): Promise<PaymentReceiveMailOpts> => {
     const paymentReceived = await this.paymentReceiveModel()
       .query()
@@ -103,10 +105,19 @@ export class SendPaymentReceiveMailNotification {
       await this.contactMailNotification.getDefaultMailOptions(
         paymentReceived.customerId,
       );
+
+    // Тема и тело по умолчанию — на языке организации (tenants_metadata.language).
+    // Перевод вызывается БЕЗ args, чтобы Mustache-плейсхолдеры ({Customer Name}
+    // и т.п.) сохранились и были подставлены позже в formatMailOptions.
+    const subject =
+      defaultSubject ?? (await this.orgI18n.translate('mail.payment.subject'));
+    const message =
+      defaultContent ?? (await this.orgI18n.translate('mail.payment.body'));
+
     return {
       ...mailOptions,
-      message: defaultContent,
-      subject: defaultSubject,
+      message,
+      subject,
       attachPdf: true,
       formatArgs,
     };

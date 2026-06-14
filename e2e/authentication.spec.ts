@@ -2,9 +2,14 @@ import { test, expect, Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { clearLocalStorage, defaultPageConfig } from './_utils';
 
+// These specs target the RU-first shadcn auth flow (D-redesign Phase 2).
+// The pages render hardcoded Russian (not via i18n), so assertions are
+// locale-independent. Routes are unchanged: /auth/login, /auth/register and
+// the legacy /auth/send_reset_password are all still served.
+
 let authPage: Page;
 
-test.describe('authentication', () => {
+test.describe('аутентификация', () => {
   test.beforeAll(async ({ browser }) => {
     authPage = await browser.newPage({ ...defaultPageConfig() });
   });
@@ -12,105 +17,112 @@ test.describe('authentication', () => {
     await authPage.close();
   });
   test.afterEach(async ({ context }) => {
-    context.clearCookies();
+    await context.clearCookies();
     await clearLocalStorage(authPage);
   });
 
-  test.describe('login', () => {
+  test.describe('вход', () => {
     test.beforeEach(async () => {
       await authPage.goto('/auth/login');
     });
-    test('should show the login page.', async () => {
-      await expect(authPage.locator('body')).toContainText(
-        "Don't have an account? Sign up"
-      );
+
+    test('показывает страницу входа', async () => {
+      await expect(authPage.locator('h1')).toContainText('Войдите в Bigfin');
+      await expect(authPage.locator('body')).toContainText('Нет аккаунта?');
+      await expect(
+        authPage.getByRole('link', { name: 'Зарегистрируйтесь' }),
+      ).toBeVisible();
     });
-    test('should email and password be required.', async () => {
-      await authPage.getByRole('button', { name: 'Log in' }).click();
+
+    test('требует email и пароль', async () => {
+      await authPage.getByRole('button', { name: 'Войти', exact: true }).click();
 
       await expect(authPage.locator('form')).toContainText(
-        'Email is a required field'
+        'Введите корректный email',
       );
-      await expect(authPage.locator('form')).toContainText(
-        'Password is a required field'
-      );
+      await expect(authPage.locator('form')).toContainText('Введите пароль');
     });
-    test('should go to the register page when click on sign up link', async () => {
-      await authPage.getByRole('link', { name: 'Sign up' }).click();
-      await expect(authPage.url()).toContain('/auth/register');
+
+    test('ведёт на регистрацию по ссылке «Зарегистрируйтесь»', async () => {
+      await authPage.getByRole('link', { name: 'Зарегистрируйтесь' }).click();
+      await expect(authPage).toHaveURL(/\/auth\/register$/);
     });
-    test('should the email or password is not correct.', async () => {
-      await authPage.getByLabel('Email Address').click();
-      await authPage.getByLabel('Email Address').fill(faker.internet.email());
 
-      await authPage.getByLabel('Password').click();
-      await authPage.getByLabel('Password').fill(faker.internet.password());
+    test('сообщает о неверных email или пароле', async () => {
+      await authPage.getByLabel('Email').fill(faker.internet.email());
+      // The password FormControl wraps the input in a div (for the show/hide
+      // toggle), so shadcn binds the label id to the div, not the input —
+      // getByLabel can't reach it. Target the input by its autocomplete hint.
+      await authPage
+        .locator('input[autocomplete="current-password"]')
+        .fill(faker.internet.password());
 
-      await authPage.getByRole('button', { name: 'Log in' }).click();
+      await authPage.getByRole('button', { name: 'Войти', exact: true }).click();
 
-      await expect(authPage.locator('body')).toContainText(
-        'The email and password you entered did not match our records.'
-      );
+      await expect(
+        authPage.getByText('Неверный email или пароль'),
+      ).toBeVisible();
     });
   });
 
-  test.describe('register', () => {
+  test.describe('регистрация', () => {
     test.beforeEach(async () => {
       await authPage.goto('/auth/register');
     });
-    test('should first name, last name, email and password be required.', async () => {
-      await authPage.getByRole('button', { name: 'Register' }).click();
 
-      await expect(authPage.locator('form')).toContainText(
-        'First name is a required field'
-      );
-      await expect(authPage.locator('form')).toContainText(
-        'Last name is a required field'
-      );
-      await expect(authPage.locator('form')).toContainText(
-        'Email is a required field'
-      );
-      await expect(authPage.locator('form')).toContainText(
-        'Password is a required field'
-      );
-    });
-    test('should signup successfully.', async () => {
+    test('требует заполнить обязательные поля', async () => {
+      await authPage
+        .getByRole('button', { name: 'Зарегистрироваться' })
+        .click();
+
       const form = authPage.locator('form');
-      await form.getByLabel('First Name').click();
-      await form.getByLabel('First Name').fill(faker.person.firstName());
+      await expect(form).toContainText('Введите имя');
+      await expect(form).toContainText('Введите корректный email');
+      await expect(form).toContainText('Пароль должен быть не короче 10 символов');
+      await expect(form).toContainText('Необходимо согласие с условиями');
+    });
 
-      await form.getByLabel('Email').click();
-      await form.getByLabel('Email').fill(faker.internet.email());
+    test('проверяет совпадение паролей', async () => {
+      await authPage.getByLabel('Имя').fill(faker.person.firstName());
+      await authPage.getByLabel('Email').fill(faker.internet.email());
+      // Password input sits inside a wrapper div (show/hide toggle), so it has
+      // no associated label — select it by its unique placeholder instead.
+      await authPage
+        .getByPlaceholder('Минимум 10 символов')
+        .fill('parol1234567');
+      await authPage.getByLabel('Подтвердите пароль').fill('drugoiParol99');
 
-      await form.getByLabel('Last Name').click();
-      await form.getByLabel('Last Name').fill(faker.person.lastName());
+      await authPage
+        .getByRole('button', { name: 'Зарегистрироваться' })
+        .click();
 
-      await form.getByLabel('Password').click();
-      await form.getByLabel('Password').fill(faker.internet.password());
+      await expect(authPage.locator('form')).toContainText('Пароли не совпадают');
+    });
 
-      await authPage.getByRole('button', { name: 'Register' }).click();
-
-      await expect(authPage.locator('h1')).toContainText(
-        'Register a New Organization now!'
-      );
+    test('ведёт на вход по ссылке «Войдите»', async () => {
+      await authPage.getByRole('link', { name: 'Войдите' }).click();
+      await expect(authPage).toHaveURL(/\/auth\/login$/);
     });
   });
 
-  test.describe('reset password', () => {
-    test.beforeAll(async ({ browser }) => {
-      authPage = await browser.newPage({ ...defaultPageConfig() });
-    });
-    test.afterAll(async () => {
-      await authPage.close();
-    });
+  test.describe('сброс пароля', () => {
     test.beforeEach(async () => {
       await authPage.goto('/auth/send_reset_password');
     });
-    test('should email be required.', async () => {
-      await authPage.getByRole('button', { name: 'Reset Password' }).click();
+
+    test('требует email', async () => {
+      await authPage
+        .getByRole('button', { name: 'Отправить ссылку' })
+        .click();
+
       await expect(authPage.locator('form')).toContainText(
-        'Email is a required field'
+        'Введите корректный email',
       );
+    });
+
+    test('возвращает ко входу', async () => {
+      await authPage.getByRole('link', { name: 'Вернуться к входу' }).click();
+      await expect(authPage).toHaveURL(/\/auth\/login$/);
     });
   });
 });

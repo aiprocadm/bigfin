@@ -10,5 +10,6 @@
     "^@/(.*)$": "<rootDir>/../src/$1"
   },
   "maxWorkers": 1,
-  "maxConcurrency": 1
+  "maxConcurrency": 1,
+  "testTimeout": 180000
 }

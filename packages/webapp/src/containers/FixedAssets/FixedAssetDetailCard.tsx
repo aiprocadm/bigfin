@@ -80,10 +80,10 @@ function DisposeForm({
       await disposeMutation.mutateAsync({
         id: assetId,
         values: {
-          type: values.disposalType,
+          disposalType: values.disposalType,
           proceeds: values.proceeds,
-          accountId: values.paymentAccountId,
-          date: values.disposedAt,
+          paymentAccountId: values.paymentAccountId,
+          disposedAt: values.disposedAt,
         },
       });
       toast.success(intl.get('fixed_assets.action.dispose'));
@@ -259,7 +259,7 @@ export function FixedAssetDetailCard({ assetId, onClose }: Props) {
     if (!window.confirm(intl.get('fixed_assets.action.delete'))) return;
     try {
       await deleteMutation.mutateAsync(assetId);
-      toast.success(intl.get('credits.toast.deleted'));
+      toast.success(intl.get('fixed_assets.toast.deleted'));
       onClose();
     } catch {
       toast.error(intl.get('credits.toast.error'));

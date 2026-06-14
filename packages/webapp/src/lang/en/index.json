@@ -3171,6 +3171,8 @@
   "fixed_assets.action.accrue": "Accrue depreciation",
   "fixed_assets.action.dispose": "Dispose",
   "fixed_assets.action.delete": "Delete",
+  "fixed_assets.toast.created": "Asset added",
+  "fixed_assets.toast.deleted": "Asset deleted",
   "fixed_assets.form.name": "Name",
   "fixed_assets.form.category": "Category",
   "fixed_assets.form.cost": "Original cost",

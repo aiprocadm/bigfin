@@ -3171,6 +3171,8 @@
   "fixed_assets.action.accrue": "Начислить амортизацию",
   "fixed_assets.action.dispose": "Списать",
   "fixed_assets.action.delete": "Удалить",
+  "fixed_assets.toast.created": "ОС добавлено",
+  "fixed_assets.toast.deleted": "ОС удалено",
   "fixed_assets.form.name": "Название",
   "fixed_assets.form.category": "Категория",
   "fixed_assets.form.cost": "Первоначальная стоимость",

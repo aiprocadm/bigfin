@@ -46,9 +46,10 @@ export interface CreateFixedAssetValues {
   category?: string;
   cost: number;
   salvageValue?: number;
-  lifeMonths: number;
+  serviceLifeMonths: number;
   commissionedAt: string;
   assetAccountId: number;
+  note?: string;
 }
 
 export interface AccrueMonthValues {
@@ -56,10 +57,10 @@ export interface AccrueMonthValues {
 }
 
 export interface DisposeFixedAssetValues {
-  type: 'sale' | 'liquidation';
+  disposalType: 'sale' | 'liquidation';
   proceeds?: number;
-  accountId?: number;
-  date: string;
+  paymentAccountId?: number;
+  disposedAt: string;
 }
 
 export type DisposeFixedAssetArgs = {

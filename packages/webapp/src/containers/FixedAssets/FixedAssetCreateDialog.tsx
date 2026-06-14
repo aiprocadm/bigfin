@@ -71,11 +71,12 @@ export function FixedAssetCreateDialog({ onDone, onCancel }: Props) {
         category: values.category || undefined,
         cost: values.cost,
         salvageValue: values.salvageValue,
-        lifeMonths: values.serviceLifeMonths,
+        serviceLifeMonths: values.serviceLifeMonths,
         commissionedAt: values.commissionedAt,
         assetAccountId: values.assetAccountId,
+        note: values.note || undefined,
       });
-      toast.success(intl.get('credits.toast.created'));
+      toast.success(intl.get('fixed_assets.toast.created'));
       onDone();
     } catch {
       toast.error(intl.get('credits.toast.error'));

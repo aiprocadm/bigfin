@@ -6,6 +6,7 @@ export const ACCOUNT_TYPE = {
   OTHER_CURRENT_ASSET: 'other-current-asset',
   FIXED_ASSET: 'fixed-asset',
   NON_CURRENT_ASSET: 'non-current-asset',
+  ACCUMULATED_DEPRECIATION: 'accumulated-depreciation',
 
   ACCOUNTS_PAYABLE: 'accounts-payable',
   CREDIT_CARD: 'credit-card',
@@ -109,6 +110,15 @@ export const ACCOUNT_TYPES = [
     label: 'Non-Current Asset',
     key: ACCOUNT_TYPE.NON_CURRENT_ASSET,
     normal: ACCOUNT_NORMAL.DEBIT,
+    rootType: ACCOUNT_ROOT_TYPE.ASSET,
+    parentType: ACCOUNT_PARENT_TYPE.FIXED_ASSET,
+    balanceSheet: true,
+    incomeSheet: false,
+  },
+  {
+    label: 'Accumulated Depreciation',
+    key: ACCOUNT_TYPE.ACCUMULATED_DEPRECIATION,
+    normal: ACCOUNT_NORMAL.CREDIT,
     rootType: ACCOUNT_ROOT_TYPE.ASSET,
     parentType: ACCOUNT_PARENT_TYPE.FIXED_ASSET,
     balanceSheet: true,

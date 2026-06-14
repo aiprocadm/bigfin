@@ -62,17 +62,15 @@ export interface DisposalGLInput {
 }
 
 /**
- * Выбытие ОС. Сумма дебетов = сумме кредитов = cost.
+ * Выбытие ОС. Дебеты всегда равны кредитам; при продаже с прибылью итог =
+ * accumulated + proceeds, при убытке/ликвидации = cost.
  *
- * Логика (cost-balanced double-entry):
- *   Dr Накопленная амортизация (accumulated)
- *   Dr Банк (убыток/без выгоды: proceeds; прибыль: residual = cost − accumulated)
- *   Dr Убыток от выбытия (если proceeds < residual): residual − proceeds
- *   Cr Актив (убыток/без выгоды: cost; прибыль: cost − gain)
- *   Cr Прибыль от выбытия (если proceeds > residual): proceeds − residual
- *
- * При продаже с прибылью банк дебетуется на остаточную стоимость (residual),
- * а актив кредитуется на cost − gain, чтобы суммарный баланс (= cost) сохранялся.
+ * Логика (правильная двойная запись):
+ *   Dr Накопленная амортизация (accumulated)        — если accumulated > 0
+ *   Dr Банк (полная сумма поступления: proceeds)    — если proceeds > 0
+ *   Dr Убыток от выбытия (если proceeds < residual)
+ *   Cr Прибыль от выбытия (если proceeds > residual)
+ *   Cr Актив по ПОЛНОЙ первоначальной стоимости (cost)
  */
 export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
   const common = {
@@ -87,11 +85,10 @@ export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
 
   const residual = round2(i.cost - i.accumulated);
   const gainLoss = round2(i.proceeds - residual); // >0 прибыль, <0 убыток
-  const isGain = gainLoss > 0;
   const entries: ILedgerEntry[] = [];
   let index = 1;
 
-  // Dr Накопленная амортизация (если есть)
+  // Закрываем накопленную амортизацию (Dr контр-актив).
   if (i.accumulated > 0) {
     entries.push({
       ...common,
@@ -102,19 +99,18 @@ export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
     });
   }
 
-  // Dr Банк: при прибыли = residual; при убытке/без прибыли = proceeds
-  const bankDebit = isGain ? residual : i.proceeds;
-  if (bankDebit > 0 && i.bankAccountId) {
+  // Деньги от продажи — полная сумма поступления (Dr банк).
+  if (i.proceeds > 0 && i.bankAccountId) {
     entries.push({
       ...common,
-      debit: bankDebit,
+      debit: i.proceeds,
       accountId: i.bankAccountId,
       accountNormal: AccountNormal.DEBIT,
       index: index++,
     });
   }
 
-  // Dr Убыток от выбытия (при убытке)
+  // Прибыль/убыток от выбытия.
   if (gainLoss < 0) {
     entries.push({
       ...common,
@@ -123,10 +119,7 @@ export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
       accountNormal: AccountNormal.DEBIT,
       index: index++,
     });
-  }
-
-  // Cr Прибыль от выбытия (при прибыли)
-  if (gainLoss > 0) {
+  } else if (gainLoss > 0) {
     entries.push({
       ...common,
       credit: gainLoss,
@@ -136,11 +129,10 @@ export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
     });
   }
 
-  // Cr Актив: при прибыли = cost − gain; иначе = cost
-  const assetCredit = isGain ? round2(i.cost - gainLoss) : i.cost;
+  // Убираем актив по полной первоначальной стоимости (Cr актив).
   entries.push({
     ...common,
-    credit: assetCredit,
+    credit: i.cost,
     accountId: i.assetAccountId,
     accountNormal: AccountNormal.DEBIT,
     index: index++,

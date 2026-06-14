@@ -62,10 +62,14 @@ describe('getDisposalGLEntries', () => {
       disposalAccountId: 50,
       bankAccountId: 1,
     });
-    expect(sum(entries, 'debit')).toBe(600000);
-    expect(sum(entries, 'credit')).toBe(600000);
+    expect(sum(entries, 'debit')).toBe(650000);
+    expect(sum(entries, 'credit')).toBe(650000);
+    const bank = entries.find((e) => e.accountId === 1);
+    expect(bank.debit).toBe(150000); // полная сумма поступления
+    const asset = entries.find((e) => e.accountId === 10);
+    expect(asset.credit).toBe(600000); // актив убран по полной стоимости
     const gain = entries.find((e) => e.accountId === 50);
-    expect(gain.credit).toBe(50000);
+    expect(gain.credit).toBe(50000); // прибыль = proceeds − остаточная
   });
 
   it('ликвидация (без денег): вся остаточная в убыток', () => {

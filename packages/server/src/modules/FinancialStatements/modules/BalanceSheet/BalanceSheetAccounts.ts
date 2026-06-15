@@ -26,6 +26,7 @@ import { INumberFormatQuery } from '../../types/Report.types';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { flatToNestedArray } from '@/utils/flat-to-nested-array';
 import { FinancialSheet } from '../../common/FinancialSheet';
+import { ACCOUNT_TYPE } from '@/constants/accounts';
 
 export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -95,9 +96,18 @@ export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
         account.id,
       );
       const accountIds = R.uniq(R.append(account.id, childrenAccountsIds));
-      const total = this.repository.totalAccountsLedger
+      const closingBalance = this.repository.totalAccountsLedger
         .whereAccountsIds(accountIds)
         .getClosingBalance();
+
+      // Контр-актив «накопленная амортизация» уменьшает раздел ОС: его
+      // натуральный (кредитовый) остаток вычитается из первоначальной
+      // стоимости (гросс − накопленная = остаточная), поэтому разворачиваем
+      // знак — иначе раздел ОС задвоит износ и Баланс не сойдётся.
+      const total =
+        account.accountType === ACCOUNT_TYPE.ACCUMULATED_DEPRECIATION
+          ? -closingBalance
+          : closingBalance;
 
       return {
         id: account.id,

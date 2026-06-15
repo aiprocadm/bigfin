@@ -1347,6 +1347,19 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('credits.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Notifications (Уведомления — настройки)
+  {
+    path: `/settings/notifications`,
+    component: lazy(
+      () =>
+        import(
+          '@/containers/Notifications/NotificationsSettingsPage'
+        ),
+    ),
+    breadcrumb: intl.get('notifications.settings.title'),
+    pageTitle: intl.get('notifications.settings.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

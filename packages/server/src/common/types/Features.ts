@@ -18,6 +18,7 @@ export enum Features {
   DIVIDENDS = 'dividends',
   ACCRUAL_PNL = 'accrual_pnl',
   CREDITS = 'credits',
+  NOTIFICATIONS = 'notifications',
 }
 
 export interface IFeatureAllItem {

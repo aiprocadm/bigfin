@@ -29,8 +29,8 @@ export class FixedAsset extends TenantBaseModel {
   static get relationMappings() {
     const {
       FixedAssetDepreciationEntry,
-    } = require('@/modules/FixedAssets/models/FixedAssetDepreciationEntry.model');
-    const { Account } = require('@/modules/Accounts/models/Account.model');
+    } = require('./FixedAssetDepreciationEntry.model');
+    const { Account } = require('../../Accounts/models/Account.model');
 
     return {
       entries: {

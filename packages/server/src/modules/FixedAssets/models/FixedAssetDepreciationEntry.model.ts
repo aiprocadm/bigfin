@@ -21,7 +21,7 @@ export class FixedAssetDepreciationEntry extends TenantBaseModel {
   static get relationMappings() {
     const {
       FixedAsset,
-    } = require('@/modules/FixedAssets/models/FixedAsset.model');
+    } = require('./FixedAsset.model');
     return {
       fixedAsset: {
         relation: Model.BelongsToOneRelation,

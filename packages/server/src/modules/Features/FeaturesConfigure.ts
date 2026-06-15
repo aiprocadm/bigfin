@@ -91,6 +91,10 @@ export class FeaturesConfigure {
         defaultValue: false,
       },
       {
+        name: Features.FIXED_ASSETS,
+        defaultValue: false,
+      },
+      {
         name: Features.NOTIFICATIONS,
         defaultValue: false,
       },

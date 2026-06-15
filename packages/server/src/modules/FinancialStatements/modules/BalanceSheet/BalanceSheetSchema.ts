@@ -66,7 +66,10 @@ export const getBalanceSheetSchema = () => [
         name: 'balance_sheet.fixed_asset',
         id: BALANCE_SHEET_SCHEMA_NODE_ID.FIXED_ASSET,
         type: BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS,
-        accountsTypes: [ACCOUNT_TYPE.FIXED_ASSET],
+        accountsTypes: [
+          ACCOUNT_TYPE.FIXED_ASSET,
+          ACCOUNT_TYPE.ACCUMULATED_DEPRECIATION,
+        ],
       },
       {
         name: 'balance_sheet.non_current_assets',

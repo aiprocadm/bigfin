@@ -58,6 +58,8 @@ import { EmployeeKpiTarget } from '@/modules/Payroll/models/EmployeeKpiTarget.mo
 import { DividendPayout } from '@/modules/Dividends/models/DividendPayout.model';
 import { Credit } from '@/modules/Credits/models/Credit.model';
 import { CreditInstallment } from '@/modules/Credits/models/CreditInstallment.model';
+import { FixedAsset } from '@/modules/FixedAssets/models/FixedAsset.model';
+import { FixedAssetDepreciationEntry } from '@/modules/FixedAssets/models/FixedAssetDepreciationEntry.model';
 import { NotificationPreference } from '@/modules/Notifications/models/NotificationPreference.model';
 import { Notification } from '@/modules/Notifications/models/Notification.model';
 
@@ -117,6 +119,8 @@ const models = [
   DividendPayout,
   Credit,
   CreditInstallment,
+  FixedAsset,
+  FixedAssetDepreciationEntry,
   NotificationPreference,
   Notification,
   TenantUser,

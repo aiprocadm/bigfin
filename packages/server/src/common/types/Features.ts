@@ -18,6 +18,7 @@ export enum Features {
   DIVIDENDS = 'dividends',
   ACCRUAL_PNL = 'accrual_pnl',
   CREDITS = 'credits',
+  FIXED_ASSETS = 'fixed_assets',
   NOTIFICATIONS = 'notifications',
 }
 

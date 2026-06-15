@@ -27,5 +27,6 @@ import { SettingsModule } from '../Settings/Settings.module';
     QueryTransactionsLocking,
   ],
   controllers: [TransactionsLockingController],
+  exports: [TransactionsLockingGuard],
 })
 export class TransactionsLockingModule {}

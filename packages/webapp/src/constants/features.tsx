@@ -7,4 +7,5 @@ export const Features = {
   BankSyncing: 'BankSyncing',
   AccrualPnl: 'accrual_pnl', // тумблер «кассовый/начисление» в ОПиУ (sub-project 29)
   Credits: 'credits', // кредиты и займы (ОС/погашение через installments)
+  Notifications: 'notifications', // уведомления о кассовом разрыве/остатке/просрочке (㉒)
 }

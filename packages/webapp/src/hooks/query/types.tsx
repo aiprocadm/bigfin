@@ -321,6 +321,10 @@ const CREDITS = {
   CREDITS_SUMMARY: 'CREDITS_SUMMARY',
 };
 
+const NOTIFICATIONS = {
+  NOTIFICATION_PREFERENCES: 'NOTIFICATION_PREFERENCES',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -370,4 +374,5 @@ export default {
   ...DATA_QUALITY,
   ...DIVIDENDS,
   ...CREDITS,
+  ...NOTIFICATIONS,
 };

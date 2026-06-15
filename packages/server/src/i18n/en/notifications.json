@@ -1,0 +1,9 @@
+{
+  "cash_gap.title": "Cash gap approaching",
+  "cash_gap.body": "A cash shortfall of {amount} is expected on {date} ({days} days away).",
+  "low_balance.title": "Low account balance",
+  "low_balance.body": "{count} account(s) are below your minimum threshold.",
+  "overdue.title": "Overdue customer invoices",
+  "overdue.body": "{count} invoice(s) are overdue, totaling {total}.",
+  "email_footer": "Open Bigfin to see details."
+}

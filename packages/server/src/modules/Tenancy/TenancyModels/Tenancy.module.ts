@@ -60,6 +60,8 @@ import { Credit } from '@/modules/Credits/models/Credit.model';
 import { CreditInstallment } from '@/modules/Credits/models/CreditInstallment.model';
 import { FixedAsset } from '@/modules/FixedAssets/models/FixedAsset.model';
 import { FixedAssetDepreciationEntry } from '@/modules/FixedAssets/models/FixedAssetDepreciationEntry.model';
+import { NotificationPreference } from '@/modules/Notifications/models/NotificationPreference.model';
+import { Notification } from '@/modules/Notifications/models/Notification.model';
 
 const models = [
   Item,
@@ -119,6 +121,8 @@ const models = [
   CreditInstallment,
   FixedAsset,
   FixedAssetDepreciationEntry,
+  NotificationPreference,
+  Notification,
   TenantUser,
 ];
 

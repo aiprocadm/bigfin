@@ -327,6 +327,10 @@ const FIXED_ASSETS = {
   FIXED_ASSETS_SUMMARY: 'FIXED_ASSETS_SUMMARY',
 };
 
+const NOTIFICATIONS = {
+  NOTIFICATION_PREFERENCES: 'NOTIFICATION_PREFERENCES',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -377,4 +381,5 @@ export default {
   ...DIVIDENDS,
   ...CREDITS,
   ...FIXED_ASSETS,
+  ...NOTIFICATIONS,
 };

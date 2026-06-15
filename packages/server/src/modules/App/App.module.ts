@@ -120,6 +120,7 @@ import { SocketModule } from '../Socket/Socket.module';
 import { EEModule } from '../EE/EE.module';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppThrottleModule } from './AppThrottle.module';
+import { NotificationsModule } from '../Notifications/Notifications.module';
 
 @Module({
   imports: [
@@ -288,6 +289,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     SocketModule,
     EEModule,
     ExchangeRatesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [

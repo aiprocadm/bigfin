@@ -29,7 +29,7 @@ export class ManagementArticle extends TenantBaseModel {
   static get relationMappings() {
     const {
       Account,
-    } = require('@/modules/Accounts/models/Account.model');
+    } = require('../../Accounts/models/Account.model');
 
     return {
       /**

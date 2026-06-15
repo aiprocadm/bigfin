@@ -89,7 +89,7 @@ export class PlannedOperation extends TenantBaseModel {
   static get relationMappings() {
     const {
       ManagementArticle,
-    } = require('@/modules/ManagementArticles/models/ManagementArticle.model');
+    } = require('../../ManagementArticles/models/ManagementArticle.model');
 
     return {
       /**

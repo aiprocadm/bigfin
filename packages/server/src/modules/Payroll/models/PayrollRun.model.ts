@@ -32,7 +32,7 @@ export class PayrollRun extends TenantBaseModel {
   static get relationMappings() {
     const {
       PayrollRunLine,
-    } = require('@/modules/Payroll/models/PayrollRunLine.model');
+    } = require('./PayrollRunLine.model');
 
     return {
       lines: {

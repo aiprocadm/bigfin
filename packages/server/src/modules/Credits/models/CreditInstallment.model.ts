@@ -22,7 +22,7 @@ export class CreditInstallment extends TenantBaseModel {
   }
 
   static get relationMappings() {
-    const { Credit } = require('@/modules/Credits/models/Credit.model');
+    const { Credit } = require('./Credit.model');
     return {
       credit: {
         relation: Model.BelongsToOneRelation,

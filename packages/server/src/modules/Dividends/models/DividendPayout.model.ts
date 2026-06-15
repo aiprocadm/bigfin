@@ -18,7 +18,7 @@ export class DividendPayout extends TenantBaseModel {
   }
 
   static get relationMappings() {
-    const { Account } = require('@/modules/Accounts/models/Account.model');
+    const { Account } = require('../../Accounts/models/Account.model');
 
     return {
       paymentAccount: {

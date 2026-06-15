@@ -27,8 +27,8 @@ export class Credit extends TenantBaseModel {
   static get relationMappings() {
     const {
       CreditInstallment,
-    } = require('@/modules/Credits/models/CreditInstallment.model');
-    const { Account } = require('@/modules/Accounts/models/Account.model');
+    } = require('./CreditInstallment.model');
+    const { Account } = require('../../Accounts/models/Account.model');
 
     return {
       installments: {

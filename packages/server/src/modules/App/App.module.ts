@@ -44,6 +44,7 @@ import { PayrollModule } from '../Payroll/Payroll.module';
 import { DataQualityModule } from '../DataQuality/DataQuality.module';
 import { DividendsModule } from '../Dividends/Dividends.module';
 import { CreditsModule } from '../Credits/Credits.module';
+import { FixedAssetsModule } from '../FixedAssets/FixedAssets.module';
 import { CostAllocationModule } from '../CostAllocation/CostAllocation.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
@@ -222,6 +223,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     DataQualityModule,
     DividendsModule,
     CreditsModule,
+    FixedAssetsModule,
     CostAllocationModule,
     AccountsModule,
     ExpensesModule,

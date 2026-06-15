@@ -90,6 +90,10 @@ export class FeaturesConfigure {
         name: Features.CREDITS,
         defaultValue: false,
       },
+      {
+        name: Features.FIXED_ASSETS,
+        defaultValue: false,
+      },
     ];
   }
 }

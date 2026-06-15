@@ -1347,6 +1347,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('credits.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Fixed Assets (Основные средства и амортизация)
+  {
+    path: `/fixed-assets`,
+    component: lazy(() => import('@/containers/FixedAssets/FixedAssetsPage')),
+    breadcrumb: intl.get('fixed_assets.page.title'),
+    pageTitle: intl.get('fixed_assets.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Homepage
   {
     path: `/`,

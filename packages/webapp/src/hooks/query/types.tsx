@@ -321,6 +321,12 @@ const CREDITS = {
   CREDITS_SUMMARY: 'CREDITS_SUMMARY',
 };
 
+const FIXED_ASSETS = {
+  FIXED_ASSETS: 'FIXED_ASSETS',
+  FIXED_ASSET: 'FIXED_ASSET',
+  FIXED_ASSETS_SUMMARY: 'FIXED_ASSETS_SUMMARY',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -370,4 +376,5 @@ export default {
   ...DATA_QUALITY,
   ...DIVIDENDS,
   ...CREDITS,
+  ...FIXED_ASSETS,
 };

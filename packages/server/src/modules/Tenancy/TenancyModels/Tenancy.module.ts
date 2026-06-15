@@ -58,6 +58,8 @@ import { EmployeeKpiTarget } from '@/modules/Payroll/models/EmployeeKpiTarget.mo
 import { DividendPayout } from '@/modules/Dividends/models/DividendPayout.model';
 import { Credit } from '@/modules/Credits/models/Credit.model';
 import { CreditInstallment } from '@/modules/Credits/models/CreditInstallment.model';
+import { FixedAsset } from '@/modules/FixedAssets/models/FixedAsset.model';
+import { FixedAssetDepreciationEntry } from '@/modules/FixedAssets/models/FixedAssetDepreciationEntry.model';
 
 const models = [
   Item,
@@ -115,6 +117,8 @@ const models = [
   DividendPayout,
   Credit,
   CreditInstallment,
+  FixedAsset,
+  FixedAssetDepreciationEntry,
   TenantUser,
 ];
 

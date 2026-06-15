@@ -30,7 +30,7 @@ export class EmployeeKpiTarget extends TenantBaseModel {
   }
 
   static get relationMappings() {
-    const { Employee } = require('@/modules/Payroll/models/Employee.model');
+    const { Employee } = require('./Employee.model');
 
     return {
       employee: {

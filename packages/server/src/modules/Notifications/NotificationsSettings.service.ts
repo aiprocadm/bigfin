@@ -2,7 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { SettingsStore } from '@/modules/Settings/SettingsStore';
 import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
-import { SETTINGS_GROUP, DEFAULT_COOLDOWN_HOURS } from './constants';
+import { SETTINGS_GROUP, DEFAULT_COOLDOWN_HOURS, SETTINGS_KEYS } from './constants';
 
 @Injectable()
 export class NotificationsSettingsService {
@@ -24,5 +24,22 @@ export class NotificationsSettingsService {
       null,
     ) as string | null;
     return { cooldownHours, recipientEmail };
+  }
+
+  public async getTelegram(): Promise<{ botToken: string | null; chatId: string | null }> {
+    const store = await this.settingsStore();
+    const botToken = store.get(
+      { group: SETTINGS_GROUP, key: SETTINGS_KEYS.TELEGRAM_BOT_TOKEN },
+      null,
+    ) as string | null;
+    const chatId = store.get(
+      { group: SETTINGS_GROUP, key: SETTINGS_KEYS.TELEGRAM_CHAT_ID },
+      null,
+    ) as string | null;
+    // Пустая строка (после disconnect) трактуется как «не задано».
+    return {
+      botToken: botToken || null,
+      chatId: chatId || null,
+    };
   }
 }

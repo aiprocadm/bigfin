@@ -23,6 +23,7 @@ export interface NotificationPreferencesResponse {
   preferences: NotificationPreferenceItem[];
   recipientEmail: string | null;
   cooldownHours: number;
+  telegram?: { connected: boolean };
 }
 
 export interface UpdateNotificationPreferencesValues {
@@ -60,6 +61,38 @@ export function useUpdateNotificationPreferences(
   const api: any = useApiRequest();
   return useMutation<any, any, UpdateNotificationPreferencesValues>(
     (values) => api.put('notifications/preferences', values),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.NOTIFICATION_PREFERENCES);
+      },
+      ...props,
+    },
+  );
+}
+
+/** Подключить telegram-бота (POST notifications/telegram/connect). */
+export function useConnectTelegram(
+  props?: UseMutationOptions<any, any, { botToken: string }>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, { botToken: string }>(
+    (values) => api.post('notifications/telegram/connect', values),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.NOTIFICATION_PREFERENCES);
+      },
+      ...props,
+    },
+  );
+}
+
+/** Отключить telegram-бота (POST notifications/telegram/disconnect). */
+export function useDisconnectTelegram(props?: UseMutationOptions<any, any, void>) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () => api.post('notifications/telegram/disconnect', {}),
     {
       onSuccess: () => {
         client.invalidateQueries(t.NOTIFICATION_PREFERENCES);

@@ -1,5 +1,5 @@
 // © 2026 Bigfin
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
@@ -7,6 +7,7 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { NotificationsApplication } from './Notifications.application';
 import { UpdateNotificationPreferencesDto } from './dtos/NotificationPreferences.dto';
+import { ConnectTelegramDto } from './dtos/ConnectTelegram.dto';
 
 @Controller('notifications')
 @ApiTags('Notifications')
@@ -26,5 +27,19 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Update notification preferences (admin only).' })
   updatePreferences(@Body() dto: UpdateNotificationPreferencesDto) {
     return this.app.updatePreferences(dto);
+  }
+
+  @Post('telegram/connect')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Connect the organization Telegram bot (admin only).' })
+  connectTelegram(@Body() dto: ConnectTelegramDto) {
+    return this.app.connectTelegram(dto.botToken);
+  }
+
+  @Post('telegram/disconnect')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Disconnect the organization Telegram bot (admin only).' })
+  disconnectTelegram() {
+    return this.app.disconnectTelegram();
   }
 }

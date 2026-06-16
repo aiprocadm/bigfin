@@ -1,35 +1,32 @@
 // © 2026 Bigfin
 import { Injectable } from '@nestjs/common';
 import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
-import { MailTransporter } from '@/modules/Mail/MailTransporter.service';
-import { Mail } from '@/modules/Mail/Mail';
 import { DeliveryChannel } from './DeliveryChannel';
+import { TelegramApiService } from './TelegramApi.service';
 import { Candidate } from '../utils/selectToFire';
 import { NotificationsSettingsService } from '../NotificationsSettings.service';
-import { resolveRecipient } from '../utils/resolveRecipient';
 
 @Injectable()
-export class EmailChannelService implements DeliveryChannel {
-  readonly key = 'email';
+export class TelegramChannelService implements DeliveryChannel {
+  readonly key = 'telegram';
 
   constructor(
     private readonly orgI18n: OrganizationI18nService,
-    private readonly mailTransporter: MailTransporter,
+    private readonly api: TelegramApiService,
     private readonly settings: NotificationsSettingsService,
   ) {}
 
   public async isConfigured(): Promise<boolean> {
-    const { recipientEmail } = await this.settings.get();
-    return resolveRecipient(recipientEmail) !== null;
+    const { botToken, chatId } = await this.settings.getTelegram();
+    return Boolean(botToken && chatId);
   }
 
   public async deliver(candidate: Candidate): Promise<void> {
-    const { recipientEmail } = await this.settings.get();
-    const recipient = resolveRecipient(recipientEmail);
-    if (!recipient) return;
+    const { botToken, chatId } = await this.settings.getTelegram();
+    if (!botToken || !chatId) return;
 
     const args = candidate.payload ?? {};
-    const subject = await this.orgI18n.translate(
+    const title = await this.orgI18n.translate(
       `notifications.${candidate.eventType}.title`,
     );
     const body = await this.orgI18n.translate(
@@ -38,12 +35,7 @@ export class EmailChannelService implements DeliveryChannel {
     );
     const footer = await this.orgI18n.translate('notifications.email_footer');
 
-    const mail = new Mail()
-      .setSubject(subject)
-      .setTo(recipient)
-      .setView('mail/Notification.html')
-      .setData({ title: subject, body, footer } as any);
-
-    await this.mailTransporter.send(mail);
+    const text = `${title}\n\n${body}\n\n${footer}`;
+    await this.api.sendMessage(botToken, chatId, text);
   }
 }

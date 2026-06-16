@@ -50,7 +50,13 @@ export class GetNotificationPreferencesService {
     });
 
     const { cooldownHours, recipientEmail } = await this.settings.get();
+    const { botToken, chatId } = await this.settings.getTelegram();
 
-    return { preferences, recipientEmail, cooldownHours };
+    return {
+      preferences,
+      recipientEmail,
+      cooldownHours,
+      telegram: { connected: Boolean(botToken && chatId) },
+    };
   }
 }

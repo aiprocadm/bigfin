@@ -20,6 +20,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   useNotificationPreferences,
   useUpdateNotificationPreferences,
+  useConnectTelegram,
+  useDisconnectTelegram,
 } from '@/hooks/query/notifications';
 import type { NotificationPreferenceItem } from '@/hooks/query/notifications';
 import {
@@ -73,6 +75,59 @@ const buildDefaults = (
 };
 
 // ---------------------------------------------------------------------------
+// ChannelToggles helper
+// ---------------------------------------------------------------------------
+
+function ChannelToggles({
+  control,
+  name,
+  telegramConnected,
+}: {
+  control: any;
+  name: 'cashGap.channels' | 'lowBalance.channels' | 'overdue.channels';
+  telegramConnected: boolean;
+}) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => {
+        const value: string[] = field.value ?? ['email'];
+        const toggle = (key: string, on: boolean) => {
+          const next = on
+            ? Array.from(new Set([...value, key]))
+            : value.filter((c) => c !== key);
+          field.onChange(next.length ? next : ['email']);
+        };
+        return (
+          <FormItem className="pl-6">
+            <FormLabel>{intl.get('notifications.settings.channels')}</FormLabel>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox
+                  checked={value.includes('email')}
+                  onCheckedChange={(c) => toggle('email', Boolean(c))}
+                />
+                {intl.get('notifications.channel.email')}
+              </label>
+              {telegramConnected && (
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={value.includes('telegram')}
+                    onCheckedChange={(c) => toggle('telegram', Boolean(c))}
+                  />
+                  {intl.get('notifications.channel.telegram')}
+                </label>
+              )}
+            </div>
+          </FormItem>
+        );
+      }}
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -81,6 +136,32 @@ export default function NotificationsSettingsPage() {
 
   const { data, isLoading } = useNotificationPreferences();
   const updatePreferences = useUpdateNotificationPreferences();
+  const connectTelegram = useConnectTelegram();
+  const disconnectTelegram = useDisconnectTelegram();
+  const [tokenInput, setTokenInput] = React.useState('');
+  const telegramConnected = Boolean((data as any)?.telegram?.connected);
+
+  const onConnectTelegram = async () => {
+    try {
+      await connectTelegram.mutateAsync({ botToken: tokenInput.trim() });
+      setTokenInput('');
+      toast.success(intl.get('notifications.telegram.toast.connected'));
+    } catch (e: any) {
+      const code = e?.response?.data?.errors?.[0]?.type;
+      const msg =
+        code === 'TELEGRAM_NO_CHAT'
+          ? intl.get('notifications.telegram.error.no_chat')
+          : code === 'TELEGRAM_INVALID_TOKEN'
+          ? intl.get('notifications.telegram.error.invalid_token')
+          : intl.get('notifications.telegram.error.generic');
+      toast.error(msg);
+    }
+  };
+
+  const onDisconnectTelegram = async () => {
+    await disconnectTelegram.mutateAsync();
+    toast.success(intl.get('notifications.telegram.toast.disconnected'));
+  };
 
   const form = useForm<NotificationsSettingsFormValues>({
     resolver: zodResolver(notificationsSettingsSchema),
@@ -186,6 +267,11 @@ export default function NotificationsSettingsPage() {
                   <p className="text-xs text-muted-foreground pl-6">
                     {intl.get('notifications.event.cash_gap.description')}
                   </p>
+                  <ChannelToggles
+                    control={form.control}
+                    name="cashGap.channels"
+                    telegramConnected={telegramConnected}
+                  />
                   <FormField
                     control={form.control}
                     name="cashGap.horizonDays"
@@ -238,6 +324,11 @@ export default function NotificationsSettingsPage() {
                   <p className="text-xs text-muted-foreground pl-6">
                     {intl.get('notifications.event.low_balance.description')}
                   </p>
+                  <ChannelToggles
+                    control={form.control}
+                    name="lowBalance.channels"
+                    telegramConnected={telegramConnected}
+                  />
                   <FormField
                     control={form.control}
                     name="lowBalance.minBalance"
@@ -290,6 +381,11 @@ export default function NotificationsSettingsPage() {
                   <p className="text-xs text-muted-foreground pl-6">
                     {intl.get('notifications.event.overdue.description')}
                   </p>
+                  <ChannelToggles
+                    control={form.control}
+                    name="overdue.channels"
+                    telegramConnected={telegramConnected}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -347,6 +443,56 @@ export default function NotificationsSettingsPage() {
                     </FormItem>
                   )}
                 />
+              </CardContent>
+            </Card>
+
+            {/* ---- Telegram section ---- */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">
+                  {intl.get('notifications.telegram.section')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                {telegramConnected ? (
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-green-600">
+                      {intl.get('notifications.telegram.connected')} ✅
+                    </span>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={onDisconnectTelegram}
+                      disabled={disconnectTelegram.isLoading}
+                    >
+                      {intl.get('notifications.telegram.disconnect')}
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-xs text-muted-foreground">
+                      {intl.get('notifications.telegram.help')}
+                    </p>
+                    <div className="flex items-end gap-3 max-w-lg">
+                      <div className="flex flex-col gap-1 flex-1">
+                        <label className="text-sm">
+                          {intl.get('notifications.telegram.token_label')}
+                        </label>
+                        <Input
+                          value={tokenInput}
+                          onChange={(e) => setTokenInput(e.target.value)}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={onConnectTelegram}
+                        disabled={!tokenInput.trim() || connectTelegram.isLoading}
+                      >
+                        {intl.get('notifications.telegram.connect')}
+                      </Button>
+                    </div>
+                  </>
+                )}
               </CardContent>
             </Card>
 

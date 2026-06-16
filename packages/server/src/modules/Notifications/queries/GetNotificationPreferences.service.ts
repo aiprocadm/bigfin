@@ -27,7 +27,7 @@ export class GetNotificationPreferencesService {
       const row = byType.get(eventType);
       return {
         eventType,
-        enabled: row ? row.enabled : false,
+        enabled: row ? Boolean(row.enabled) : false,
         channels: row
           ? (() => {
               try {

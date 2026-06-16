@@ -36,9 +36,13 @@ export class ConnectTelegramService {
     store.set({ group: SETTINGS_GROUP, key: SETTINGS_KEYS.TELEGRAM_CHAT_ID, value: String(chatId) });
     await store.save();
 
-    // 4. Подтверждение в чат (на языке организации).
-    const text = await this.orgI18n.translate('notifications.telegram.connected_message');
-    await this.api.sendMessage(botToken, String(chatId), text);
+    // 4. Подтверждение в чат (на языке организации) — best-effort, не роллбэчим connect.
+    try {
+      const text = await this.orgI18n.translate('notifications.telegram.connected_message');
+      await this.api.sendMessage(botToken, String(chatId), text);
+    } catch {
+      console.warn('[ConnectTelegram] confirmation sendMessage failed (token hidden)');
+    }
 
     return { connected: true };
   }

@@ -38,6 +38,20 @@ describe('TelegramApiService', () => {
     });
   });
 
+  it('getUpdates маппит сетевую ошибку (нет response) → TELEGRAM_API_ERROR', async () => {
+    mockedAxios.get.mockRejectedValueOnce(new Error('network'));
+    await expect(service.getUpdates('TOKEN')).rejects.toMatchObject({
+      errorType: ERRORS.TELEGRAM_API_ERROR,
+    });
+  });
+
+  it('getUpdates маппит 404 → TELEGRAM_INVALID_TOKEN', async () => {
+    mockedAxios.get.mockRejectedValueOnce({ response: { status: 404 } });
+    await expect(service.getUpdates('TOKEN')).rejects.toMatchObject({
+      errorType: ERRORS.TELEGRAM_INVALID_TOKEN,
+    });
+  });
+
   it('sendMessage POST-ит chat_id и text', async () => {
     mockedAxios.post.mockResolvedValueOnce({ data: { ok: true } } as any);
     await service.sendMessage('TOKEN', '222', 'привет');

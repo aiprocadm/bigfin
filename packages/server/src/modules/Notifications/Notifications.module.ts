@@ -16,6 +16,9 @@ import { CashGapEvaluatorService } from './evaluators/CashGapEvaluator.service';
 import { LowBalanceEvaluatorService } from './evaluators/LowBalanceEvaluator.service';
 import { OverdueEvaluatorService } from './evaluators/OverdueEvaluator.service';
 import { EmailChannelService } from './delivery/EmailChannel.service';
+import { TelegramApiService } from './delivery/TelegramApi.service';
+import { TelegramChannelService } from './delivery/TelegramChannel.service';
+import { ConnectTelegramService } from './commands/ConnectTelegram.service';
 import { NotificationEvaluationProcessor } from './jobs/NotificationEvaluation.processor';
 import { NotificationsCron } from './jobs/NotificationsCron';
 import { GetNotificationPreferencesService } from './queries/GetNotificationPreferences.service';
@@ -43,6 +46,9 @@ import { NOTIFICATIONS_QUEUE } from './constants';
     LowBalanceEvaluatorService,
     OverdueEvaluatorService,
     EmailChannelService,
+    TelegramApiService,
+    TelegramChannelService,
+    ConnectTelegramService,
     NotificationEvaluationProcessor,
     NotificationsCron,
     GetNotificationPreferencesService,

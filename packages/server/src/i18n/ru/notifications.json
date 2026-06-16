@@ -5,5 +5,6 @@
   "low_balance.body": "{count} счёт(ов) ниже установленного порога.",
   "overdue.title": "Просроченные счета клиентов",
   "overdue.body": "Просрочено счетов: {count} на сумму {total}.",
-  "email_footer": "Откройте Bigfin, чтобы посмотреть детали."
+  "email_footer": "Откройте Bigfin, чтобы посмотреть детали.",
+  "telegram": { "connected_message": "✅ Bigfin подключён. Уведомления будут приходить сюда." }
 }

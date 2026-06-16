@@ -20,6 +20,7 @@ describe('TelegramApiService', () => {
     expect(res).toEqual({ ok: true, result: [] });
     expect(mockedAxios.get).toHaveBeenCalledWith(
       'https://api.telegram.org/botTOKEN/getUpdates',
+      { timeout: 10000 },
     );
   });
 
@@ -58,6 +59,7 @@ describe('TelegramApiService', () => {
     expect(mockedAxios.post).toHaveBeenCalledWith(
       'https://api.telegram.org/botTOKEN/sendMessage',
       { chat_id: '222', text: 'привет' },
+      { timeout: 10000 },
     );
   });
 });

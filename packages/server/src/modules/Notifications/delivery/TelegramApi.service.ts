@@ -6,6 +6,9 @@ import { ERRORS } from '../constants';
 
 const API_BASE = 'https://api.telegram.org';
 
+// Защита от зависшего запроса: воркер/HTTP-запрос не должен блокироваться навечно.
+const REQUEST_TIMEOUT_MS = 10000;
+
 @Injectable()
 export class TelegramApiService {
   private baseFor(token: string) {
@@ -15,7 +18,9 @@ export class TelegramApiService {
   /** Опрашивает входящие апдейты бота (для авто-привязки chat_id). */
   public async getUpdates(token: string): Promise<any> {
     try {
-      const res = await axios.get(`${this.baseFor(token)}/getUpdates`);
+      const res = await axios.get(`${this.baseFor(token)}/getUpdates`, {
+        timeout: REQUEST_TIMEOUT_MS,
+      });
       return res.data;
     } catch (err: any) {
       throw this.mapError(err);
@@ -29,10 +34,11 @@ export class TelegramApiService {
     text: string,
   ): Promise<void> {
     try {
-      await axios.post(`${this.baseFor(token)}/sendMessage`, {
-        chat_id: chatId,
-        text,
-      });
+      await axios.post(
+        `${this.baseFor(token)}/sendMessage`,
+        { chat_id: chatId, text },
+        { timeout: REQUEST_TIMEOUT_MS },
+      );
     } catch (err: any) {
       throw this.mapError(err);
     }

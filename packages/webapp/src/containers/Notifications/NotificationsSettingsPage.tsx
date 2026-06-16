@@ -159,8 +159,12 @@ export default function NotificationsSettingsPage() {
   };
 
   const onDisconnectTelegram = async () => {
-    await disconnectTelegram.mutateAsync();
-    toast.success(intl.get('notifications.telegram.toast.disconnected'));
+    try {
+      await disconnectTelegram.mutateAsync();
+      toast.success(intl.get('notifications.telegram.toast.disconnected'));
+    } catch {
+      toast.error(intl.get('notifications.telegram.error.generic'));
+    }
   };
 
   const form = useForm<NotificationsSettingsFormValues>({

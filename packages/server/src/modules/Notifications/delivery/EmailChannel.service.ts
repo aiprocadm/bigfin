@@ -5,6 +5,8 @@ import { MailTransporter } from '@/modules/Mail/MailTransporter.service';
 import { Mail } from '@/modules/Mail/Mail';
 import { DeliveryChannel } from './DeliveryChannel';
 import { Candidate } from '../utils/selectToFire';
+import { NotificationsSettingsService } from '../NotificationsSettings.service';
+import { resolveRecipient } from '../utils/resolveRecipient';
 
 @Injectable()
 export class EmailChannelService implements DeliveryChannel {
@@ -13,12 +15,19 @@ export class EmailChannelService implements DeliveryChannel {
   constructor(
     private readonly orgI18n: OrganizationI18nService,
     private readonly mailTransporter: MailTransporter,
+    private readonly settings: NotificationsSettingsService,
   ) {}
 
-  public async deliver(
-    candidate: Candidate,
-    recipient: string,
-  ): Promise<void> {
+  public async isConfigured(): Promise<boolean> {
+    const { recipientEmail } = await this.settings.get();
+    return resolveRecipient(recipientEmail) !== null;
+  }
+
+  public async deliver(candidate: Candidate): Promise<void> {
+    const { recipientEmail } = await this.settings.get();
+    const recipient = resolveRecipient(recipientEmail);
+    if (!recipient) return;
+
     const args = candidate.payload ?? {};
     const subject = await this.orgI18n.translate(
       `notifications.${candidate.eventType}.title`,

@@ -2,6 +2,10 @@
 import { Candidate } from '../utils/selectToFire';
 
 export interface DeliveryChannel {
-  readonly key: string; // 'email' | 'in_app' | 'telegram'
-  deliver(candidate: Candidate, recipient: string, lang: string): Promise<void>;
+  /** Идентификатор канала: 'email' | 'telegram' | (позже) 'in_app'. */
+  readonly key: string;
+  /** Настроен ли канал для текущей организации (адрес/токен есть). */
+  isConfigured(): Promise<boolean>;
+  /** Доставляет уведомление; адрес канал резолвит сам (из настроек/CLS). */
+  deliver(candidate: Candidate): Promise<void>;
 }

@@ -7,6 +7,7 @@ export interface Candidate {
   title: string;
   body: string;
   payload: any;
+  channels?: string[]; // каналы из preference; проставляет процессор
 }
 export interface RecentFire {
   dedupKey: string;

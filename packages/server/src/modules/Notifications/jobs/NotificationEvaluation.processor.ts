@@ -16,8 +16,9 @@ import { CashGapEvaluatorService } from '../evaluators/CashGapEvaluator.service'
 import { LowBalanceEvaluatorService } from '../evaluators/LowBalanceEvaluator.service';
 import { OverdueEvaluatorService } from '../evaluators/OverdueEvaluator.service';
 import { EmailChannelService } from '../delivery/EmailChannel.service';
+import { TelegramChannelService } from '../delivery/TelegramChannel.service';
+import { DeliveryChannel } from '../delivery/DeliveryChannel';
 import { selectToFire, Candidate, RecentFire } from '../utils/selectToFire';
-import { resolveRecipient } from '../utils/resolveRecipient';
 
 @Processor({ name: NOTIFICATIONS_QUEUE, scope: Scope.REQUEST })
 export class NotificationEvaluationProcessor extends WorkerHost {
@@ -29,6 +30,7 @@ export class NotificationEvaluationProcessor extends WorkerHost {
     private readonly lowBalance: LowBalanceEvaluatorService,
     private readonly overdue: OverdueEvaluatorService,
     private readonly email: EmailChannelService,
+    private readonly telegram: TelegramChannelService,
     @Inject(NotificationPreference.name)
     private readonly prefModel: TenantModelProxy<typeof NotificationPreference>,
     @Inject(Notification.name)
@@ -56,21 +58,32 @@ export class NotificationEvaluationProcessor extends WorkerHost {
 
     if (!prefs.length) return { posted: 0 };
 
-    // Get per-tenant settings: cooldown window and optional explicit recipient.
-    const { cooldownHours, recipientEmail } = await this.settings.get();
-    const recipient = resolveRecipient(recipientEmail);
+    // Get per-tenant settings: cooldown window.
+    const { cooldownHours } = await this.settings.get();
 
     // Run each enabled evaluator to collect firing candidates.
     const candidates: Candidate[] = [];
     for (const pref of prefs) {
       const threshold = pref.threshold ? JSON.parse(pref.threshold) : {};
-      if (pref.eventType === 'cash_gap') {
-        candidates.push(...await this.cashGap.evaluate(threshold));
-      } else if (pref.eventType === 'low_balance') {
-        candidates.push(...await this.lowBalance.evaluate(threshold));
-      } else if (pref.eventType === 'overdue') {
-        candidates.push(...await this.overdue.evaluate(threshold));
+      let prefChannels: string[] = ['email'];
+      try {
+        prefChannels = pref.channels ? JSON.parse(pref.channels) : ['email'];
+      } catch {
+        prefChannels = ['email'];
       }
+
+      let produced: Candidate[] = [];
+      if (pref.eventType === 'cash_gap') {
+        produced = await this.cashGap.evaluate(threshold);
+      } else if (pref.eventType === 'low_balance') {
+        produced = await this.lowBalance.evaluate(threshold);
+      } else if (pref.eventType === 'overdue') {
+        produced = await this.overdue.evaluate(threshold);
+      }
+      produced.forEach((c) => {
+        c.channels = prefChannels;
+      });
+      candidates.push(...produced);
     }
 
     if (!candidates.length) return { posted: 0 };
@@ -87,11 +100,15 @@ export class NotificationEvaluationProcessor extends WorkerHost {
 
     if (!toFire.length) return { posted: 0 };
 
+    const registry: Record<string, DeliveryChannel> = {
+      [this.email.key]: this.email,
+      [this.telegram.key]: this.telegram,
+    };
+
     let posted = 0;
     for (const candidate of toFire) {
       const firedAt = moment().toMySqlDateTime();
 
-      // Persist the notification row before attempting delivery.
       const inserted: any = await this.notifModel().query().insertAndFetch({
         eventType: candidate.eventType,
         title: candidate.title,
@@ -103,24 +120,22 @@ export class NotificationEvaluationProcessor extends WorkerHost {
       } as any);
 
       const channelsSent: string[] = [];
-
-      if (recipient) {
+      const wanted = candidate.channels?.length ? candidate.channels : ['email'];
+      for (const key of wanted) {
+        const channel = registry[key];
+        if (!channel) continue;
+        if (!(await channel.isConfigured())) continue;
         try {
-          await this.email.deliver(candidate, recipient);
-          channelsSent.push('email');
+          await channel.deliver(candidate);
+          channelsSent.push(key);
         } catch (err) {
           console.error(
-            `[notifications] Email delivery failed for ${candidate.eventType}:`,
+            `[notifications] ${key} delivery failed for ${candidate.eventType}:`,
             err,
           );
         }
-      } else {
-        console.warn(
-          `[notifications] No recipient resolved for ${candidate.eventType} — skipping email delivery. Set recipientEmail in notification settings.`,
-        );
       }
 
-      // Patch the notification row with the actual channels that were attempted.
       await this.notifModel()
         .query()
         .findById(inserted.id)

@@ -98,6 +98,10 @@ export class FeaturesConfigure {
         name: Features.NOTIFICATIONS,
         defaultValue: false,
       },
+      {
+        name: Features.INTERFACE_MODES,
+        defaultValue: false,
+      },
     ];
   }
 }

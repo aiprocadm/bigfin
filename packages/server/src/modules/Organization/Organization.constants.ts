@@ -38,3 +38,5 @@ export const ERRORS = {
   BASE_CURRENCY_MUTATE_LOCKED: 'BASE_CURRENCY_MUTATE_LOCKED',
   TENANT_UPGRADE_IS_RUNNING: 'TENANT_UPGRADE_IS_RUNNING'
 };
+
+export const INTERFACE_MODES = ['business', 'accountant'] as const;

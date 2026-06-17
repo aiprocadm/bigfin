@@ -32,6 +32,9 @@ export class TenantMetadata extends BaseModel {
   public bankAccount!: string;
   public bankCorrespondentAccount!: string;
 
+  // Режим интерфейса: 'business' | 'accountant' (пусто → business при чтении).
+  public interfaceMode!: string;
+
   /**
    * Json schema.
    */
@@ -61,6 +64,7 @@ export class TenantMetadata extends BaseModel {
         bankBik: { type: 'string', maxLength: 9 },
         bankAccount: { type: 'string', maxLength: 20 },
         bankCorrespondentAccount: { type: 'string', maxLength: 20 },
+        interfaceMode: { type: 'string', maxLength: 20 },
       },
     };
   }

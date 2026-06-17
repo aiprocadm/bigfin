@@ -6,7 +6,7 @@ export class GetCurrentOrganizationMetadataTransformer extends Transformer {
    * @returns {string[]}
    */
   public includeAttributes = (): string[] => {
-    return ['logoUri'];
+    return ['logoUri', 'interfaceMode'];
   };
 
   /**
@@ -17,5 +17,15 @@ export class GetCurrentOrganizationMetadataTransformer extends Transformer {
    */
   public logoUri = (metadata: Record<string, any>): string | null => {
     return this.options?.logoUri ?? null;
+  };
+
+  /**
+   * Interface mode — normalizes empty/unknown value to 'business'.
+   * Only 'accountant' stays accountant.
+   * @param metadata
+   * @returns {string}
+   */
+  public interfaceMode = (metadata: Record<string, any>): string => {
+    return metadata?.interfaceMode === 'accountant' ? 'accountant' : 'business';
   };
 }

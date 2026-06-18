@@ -11,7 +11,7 @@ import {
   Validate,
 } from 'class-validator';
 import { MONTHS } from '../Organization/constants';
-import { ACCEPTED_LOCALES, DATE_FORMATS } from '../Organization.constants';
+import { ACCEPTED_LOCALES, DATE_FORMATS, INTERFACE_MODES } from '../Organization.constants';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LegalForm, TaxRegime } from '../../RussianLegalAttributes/constants';
 import { InnConstraint } from '../../RussianLegalAttributes/validators/inn.validator';
@@ -279,4 +279,13 @@ export class UpdateOrganizationDto {
     example: '30101810400000000225',
   })
   bankCorrespondentAccount?: string;
+
+  @IsOptional()
+  @IsIn(INTERFACE_MODES)
+  @ApiPropertyOptional({
+    description: 'Interface mode: business (hides bookkeeping screens) or accountant',
+    enum: INTERFACE_MODES,
+    example: 'business',
+  })
+  interfaceMode?: string;
 }

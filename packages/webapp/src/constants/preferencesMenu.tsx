@@ -9,6 +9,10 @@ export const PreferencesMenu = [
     href: '/preferences/general',
   },
   {
+    text: <T id={'interface_mode.menu'} />,
+    href: '/preferences/interface-mode',
+  },
+  {
     text: 'Branding',
     disabled: false,
     href: '/preferences/branding',

@@ -3230,5 +3230,13 @@
   "fixed_assets.schedule.amount": "Сумма",
   "fixed_assets.schedule.status": "Статус",
   "fixed_assets.schedule.planned": "Запланировано",
-  "fixed_assets.schedule.posted": "Начислено"
+  "fixed_assets.schedule.posted": "Начислено",
+  "interface_mode.menu": "Режим интерфейса",
+  "interface_mode.title": "Режим интерфейса",
+  "interface_mode.description": "Режим «Бизнес» прячет бухгалтерские экраны (ручные проводки, книги, оборотно-сальдовую, закрытие периодов). Режим «Бухгалтер» показывает всё.",
+  "interface_mode.business": "Бизнес",
+  "interface_mode.accountant": "Бухгалтер",
+  "interface_mode.save": "Сохранить",
+  "interface_mode.saved": "Режим интерфейса сохранён.",
+  "interface_mode.save_failed": "Не удалось сохранить режим интерфейса."
 }

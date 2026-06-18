@@ -3230,5 +3230,13 @@
   "fixed_assets.schedule.amount": "Amount",
   "fixed_assets.schedule.status": "Status",
   "fixed_assets.schedule.planned": "Planned",
-  "fixed_assets.schedule.posted": "Accrued"
+  "fixed_assets.schedule.posted": "Accrued",
+  "interface_mode.menu": "Interface mode",
+  "interface_mode.title": "Interface mode",
+  "interface_mode.description": "Business mode hides bookkeeping screens (manual journals, ledgers, trial balance, period locking). Accountant mode shows everything.",
+  "interface_mode.business": "Business",
+  "interface_mode.accountant": "Accountant",
+  "interface_mode.save": "Save",
+  "interface_mode.saved": "Interface mode saved.",
+  "interface_mode.save_failed": "Failed to save interface mode."
 }

@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import { getDashboardRoutes } from '@/routes/dashboard';
 import DashboardPage from './DashboardPage';
+import { useAccountantOnlyRouteGuard } from '@/hooks/state/interfaceMode';
 
 /**
  * Dashboard inner route content.
@@ -27,6 +28,7 @@ function DashboardContentRouteContent({ route }) {
  * Dashboard content route.
  */
 export default function DashboardContentRoute() {
+  useAccountantOnlyRouteGuard();
   const routes = getDashboardRoutes();
 
   return (

@@ -20,6 +20,7 @@ export enum Features {
   CREDITS = 'credits',
   FIXED_ASSETS = 'fixed_assets',
   NOTIFICATIONS = 'notifications',
+  INTERFACE_MODES = 'interface_modes',
 }
 
 export interface IFeatureAllItem {

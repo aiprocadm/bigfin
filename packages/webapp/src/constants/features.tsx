@@ -9,4 +9,5 @@ export const Features = {
   Credits: 'credits', // кредиты и займы (ОС/погашение через installments)
   FixedAssets: 'fixed_assets',
   Notifications: 'notifications', // уведомления о кассовом разрыве/остатке/просрочке (㉒)
+  InterfaceModes: 'interface_modes',
 }

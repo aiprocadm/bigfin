@@ -127,6 +127,14 @@ export const getPreferenceRoutes = () => [
     exact: true,
   },
   {
+    path: `${BASE_URL}/interface-mode`,
+    component: lazy(
+      () =>
+        import('@/containers/Preferences/InterfaceMode/InterfaceModePage'),
+    ),
+    exact: true,
+  },
+  {
     path: `${BASE_URL}/`,
     component: lazy(() => import('../containers/Preferences/DefaultRoute')),
     exact: true,

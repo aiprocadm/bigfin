@@ -18,6 +18,9 @@ import {
   ISidebarSubscriptionAbility,
 } from './interfaces';
 import { filterValuesDeep, deepdash } from '@/utils';
+import { Features } from '@/constants/features';
+import { isAccountantOnlyHidden } from '@/constants/interfaceMode';
+import { useInterfaceMode } from '@/hooks/state/interfaceMode';
 
 const deepDashConfig = {
   childrenPath: 'children',
@@ -93,6 +96,24 @@ function useFilterSidebarItemAbilityPredicater() {
 }
 
 /**
+ * Предикат: прячет accountant-only пункты в режиме «Бизнес» (под флагом).
+ */
+function useFilterSidebarItemModePredicater() {
+  const mode = useInterfaceMode();
+  const { featureCan } = useFeatureCan();
+  const hidden = isAccountantOnlyHidden(mode, featureCan(Features.InterfaceModes));
+
+  return {
+    predicate: (item) => {
+      if (item.accountantOnly && hidden) {
+        return false;
+      }
+      return true;
+    },
+  };
+}
+
+/**
  * Filters the sidebar item based on the subscription state.
  */
 function useFilterSidebarItemSubscriptionPredicater() {
@@ -130,12 +151,13 @@ function useFilterSidebarItemSubscriptionPredicater() {
 function useFilterSidebarMenuAbility(menu) {
   const { predicate: predFeature } = useFilterSidebarItemFeaturePredicater();
   const { predicate: predAbility } = useFilterSidebarItemAbilityPredicater();
+  const { predicate: predMode } = useFilterSidebarItemModePredicater();
   const { predicate: predSubscription } =
     useFilterSidebarItemSubscriptionPredicater();
 
   return deepdash.filterDeep(
     menu,
-    (item) => predFeature(item) && predAbility(item),
+    (item) => predFeature(item) && predAbility(item) && predMode(item),
     deepDashConfig,
   );
 }

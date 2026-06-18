@@ -397,6 +397,7 @@ export const SidebarMenu = [
                 text: <T id={'sidebar.manual_journals'} />,
                 href: '/manual-journals',
                 type: ISidebarMenuItemType.Link,
+                accountantOnly: true,
                 permission: {
                   subject: AbilitySubject.ManualJournal,
                   ability: ManualJournalAction.View,
@@ -406,6 +407,7 @@ export const SidebarMenu = [
                 text: <T id={'sidebar.transactions_locaking'} />,
                 href: '/transactions-locking',
                 type: ISidebarMenuItemType.Link,
+                accountantOnly: true,
               },
               {
                 text: <T id={'sidebar.tax_rates'} />,
@@ -426,6 +428,7 @@ export const SidebarMenu = [
                 text: <T id={'sidebar.make_journal_entry'} />,
                 href: '/make-journal-entry',
                 type: ISidebarMenuItemType.Link,
+                accountantOnly: true,
                 permission: {
                   subject: AbilitySubject.ManualJournal,
                   ability: ManualJournalAction.Create,
@@ -635,6 +638,7 @@ export const SidebarMenu = [
             text: <T id={'sidebar.trial_balance_sheet'} />,
             href: '/financial-reports/trial-balance-sheet',
             type: ISidebarMenuItemType.Link,
+            accountantOnly: true,
             permission: {
               subject: AbilitySubject.Report,
               ability: ReportsAction.READ_TRIAL_BALANCE_SHEET,
@@ -644,6 +648,7 @@ export const SidebarMenu = [
             text: <T id={'sidebar.journal'} />,
             href: '/financial-reports/journal-sheet',
             type: ISidebarMenuItemType.Link,
+            accountantOnly: true,
             permission: {
               subject: AbilitySubject.Report,
               ability: ReportsAction.READ_JOURNAL,
@@ -653,6 +658,7 @@ export const SidebarMenu = [
             text: <T id={'sidebar.general_ledger'} />,
             href: '/financial-reports/general-ledger',
             type: ISidebarMenuItemType.Link,
+            accountantOnly: true,
             permission: {
               subject: AbilitySubject.Report,
               ability: ReportsAction.READ_GENERAL_LEDGET,

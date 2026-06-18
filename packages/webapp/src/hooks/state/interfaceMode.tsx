@@ -27,14 +27,16 @@ export const useAccountantOnlyRouteGuard = () => {
   const location = useLocation();
   const mode = useInterfaceMode();
   const { featureCan } = useFeatureCan();
+  // Стабильный boolean в deps: если флаг догружается асинхронно (off→on),
+  // эффект перезапустится, а не будет ждать смены маршрута.
+  const isFeatureOn = featureCan(Features.InterfaceModes);
 
   React.useEffect(() => {
-    const hidden = isAccountantOnlyHidden(
-      mode,
-      featureCan(Features.InterfaceModes),
-    );
-    if (hidden && isAccountantOnlyPath(location.pathname)) {
+    if (
+      isAccountantOnlyHidden(mode, isFeatureOn) &&
+      isAccountantOnlyPath(location.pathname)
+    ) {
       history.replace('/');
     }
-  }, [location.pathname, mode]);
+  }, [location.pathname, mode, isFeatureOn]);
 };

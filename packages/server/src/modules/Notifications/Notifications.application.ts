@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { GetNotificationPreferencesService } from './queries/GetNotificationPreferences.service';
 import { UpdateNotificationPreferencesService } from './commands/UpdateNotificationPreferences.service';
 import { ConnectTelegramService } from './commands/ConnectTelegram.service';
+import { InAppNotificationsService } from './queries/InAppNotifications.service';
 import { UpdateNotificationPreferencesDto } from './dtos/NotificationPreferences.dto';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class NotificationsApplication {
     private readonly getPreferencesService: GetNotificationPreferencesService,
     private readonly updatePreferencesService: UpdateNotificationPreferencesService,
     private readonly connectTelegramService: ConnectTelegramService,
+    private readonly inAppService: InAppNotificationsService,
   ) {}
 
   getPreferences() {
@@ -27,5 +29,21 @@ export class NotificationsApplication {
 
   disconnectTelegram() {
     return this.connectTelegramService.disconnect();
+  }
+
+  listNotifications() {
+    return this.inAppService.list();
+  }
+
+  unreadCount() {
+    return this.inAppService.unreadCount();
+  }
+
+  markNotificationRead(id: number) {
+    return this.inAppService.markRead(id);
+  }
+
+  markAllNotificationsRead() {
+    return this.inAppService.markAllRead();
   }
 }

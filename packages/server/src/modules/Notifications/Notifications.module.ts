@@ -23,6 +23,7 @@ import { NotificationEvaluationProcessor } from './jobs/NotificationEvaluation.p
 import { NotificationsCron } from './jobs/NotificationsCron';
 import { GetNotificationPreferencesService } from './queries/GetNotificationPreferences.service';
 import { UpdateNotificationPreferencesService } from './commands/UpdateNotificationPreferences.service';
+import { InAppNotificationsService } from './queries/InAppNotifications.service';
 import { NOTIFICATIONS_QUEUE } from './constants';
 
 @Module({
@@ -53,6 +54,7 @@ import { NOTIFICATIONS_QUEUE } from './constants';
     NotificationsCron,
     GetNotificationPreferencesService,
     UpdateNotificationPreferencesService,
+    InAppNotificationsService,
     // Registered directly (PaymentCalendarModule does not export this service).
     GetPaymentCalendarForecastService,
   ],

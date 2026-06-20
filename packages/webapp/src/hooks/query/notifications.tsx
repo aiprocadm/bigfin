@@ -101,3 +101,71 @@ export function useDisconnectTelegram(props?: UseMutationOptions<any, any, void>
     },
   );
 }
+
+// ---------------------------------------------------------------------------
+// In-app лента
+// ---------------------------------------------------------------------------
+
+/** Список последних in-app уведомлений (GET notifications). */
+export function useNotifications(props?: any) {
+  return useRequestQuery(
+    [t.NOTIFICATIONS_LIST],
+    { method: 'get', url: 'notifications' },
+    {
+      select: (res: any) =>
+        res.data?.data?.notifications ?? res.data?.notifications ?? [],
+      defaultData: [],
+      ...props,
+    },
+  );
+}
+
+/** Число непрочитанных (GET notifications/unread-count), поллинг 60с. */
+export function useUnreadCount(props?: any) {
+  return useRequestQuery(
+    [t.NOTIFICATIONS_UNREAD],
+    { method: 'get', url: 'notifications/unread-count' },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: { count: 0 },
+      refetchInterval: 60_000,
+      ...props,
+    },
+  );
+}
+
+/** Отметить одно уведомление прочитанным (PUT notifications/:id/read). */
+export function useMarkNotificationRead(
+  props?: UseMutationOptions<any, any, number>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, number>(
+    (id) => api.put(`notifications/${id}/read`, {}),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.NOTIFICATIONS_LIST);
+        client.invalidateQueries(t.NOTIFICATIONS_UNREAD);
+      },
+      ...props,
+    },
+  );
+}
+
+/** Отметить все прочитанными (PUT notifications/read-all). */
+export function useMarkAllNotificationsRead(
+  props?: UseMutationOptions<any, any, void>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () => api.put('notifications/read-all', {}),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.NOTIFICATIONS_LIST);
+        client.invalidateQueries(t.NOTIFICATIONS_UNREAD);
+      },
+      ...props,
+    },
+  );
+}

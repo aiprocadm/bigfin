@@ -1,5 +1,5 @@
 // © 2026 Bigfin
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
@@ -41,5 +41,29 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Disconnect the organization Telegram bot (admin only).' })
   disconnectTelegram() {
     return this.app.disconnectTelegram();
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'List recent in-app notifications for the current user.' })
+  listNotifications() {
+    return this.app.listNotifications();
+  }
+
+  @Get('unread-count')
+  @ApiOperation({ summary: 'Count unread notifications for the current user.' })
+  unreadCount() {
+    return this.app.unreadCount();
+  }
+
+  @Put('read-all')
+  @ApiOperation({ summary: 'Mark all notifications as read for the current user.' })
+  markAllRead() {
+    return this.app.markAllNotificationsRead();
+  }
+
+  @Put(':id/read')
+  @ApiOperation({ summary: 'Mark a notification as read for the current user.' })
+  markRead(@Param('id') id: string) {
+    return this.app.markNotificationRead(Number(id));
   }
 }

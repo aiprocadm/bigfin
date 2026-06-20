@@ -102,6 +102,10 @@ export class FeaturesConfigure {
         name: Features.INTERFACE_MODES,
         defaultValue: false,
       },
+      {
+        name: Features.FINANCIAL_MODEL,
+        defaultValue: false,
+      },
     ];
   }
 }

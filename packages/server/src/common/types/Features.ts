@@ -21,6 +21,7 @@ export enum Features {
   FIXED_ASSETS = 'fixed_assets',
   NOTIFICATIONS = 'notifications',
   INTERFACE_MODES = 'interface_modes',
+  FINANCIAL_MODEL = 'financial_model',
 }
 
 export interface IFeatureAllItem {

@@ -21,21 +21,3 @@ export const markReadFlags = (
   const read = new Set(readIds);
   return notifications.map((n) => ({ ...n, read: read.has(n.id) }));
 };
-
-/** Считает непрочитанные: уведомления, чьего id нет в прочитанных. */
-export const countUnread = (
-  notificationIds: number[],
-  readIds: number[],
-): number => {
-  const read = new Set(readIds);
-  return notificationIds.filter((id) => !read.has(id)).length;
-};
-
-/** id уведомлений, ещё не прочитанных пользователем (для mark-all). */
-export const selectUnreadIds = (
-  notificationIds: number[],
-  readIds: number[],
-): number[] => {
-  const read = new Set(readIds);
-  return notificationIds.filter((id) => !read.has(id));
-};

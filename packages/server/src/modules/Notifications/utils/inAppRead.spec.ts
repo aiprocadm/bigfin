@@ -1,10 +1,5 @@
 // © 2026 Bigfin
-import {
-  markReadFlags,
-  countUnread,
-  selectUnreadIds,
-  NotificationRow,
-} from './inAppRead';
+import { markReadFlags, NotificationRow } from './inAppRead';
 
 const rows: NotificationRow[] = [
   { id: 1, eventType: 'cash_gap', title: 'A', body: 'a', payload: null, firedAt: '2026-06-20 10:00:00' },
@@ -20,23 +15,5 @@ describe('inAppRead — markReadFlags', () => {
       [2, true],
       [3, false],
     ]);
-  });
-});
-
-describe('inAppRead — countUnread', () => {
-  it('считает уведомления, чьего id нет в прочитанных', () => {
-    expect(countUnread([1, 2, 3], [2])).toBe(2);
-  });
-  it('ноль, когда всё прочитано', () => {
-    expect(countUnread([1, 2, 3], [1, 2, 3])).toBe(0);
-  });
-});
-
-describe('inAppRead — selectUnreadIds', () => {
-  it('возвращает только ещё не прочитанные id', () => {
-    expect(selectUnreadIds([1, 2, 3], [2])).toEqual([1, 3]);
-  });
-  it('пусто, когда всё прочитано (идемпотентность mark-all)', () => {
-    expect(selectUnreadIds([1, 2, 3], [1, 2, 3])).toEqual([]);
   });
 });

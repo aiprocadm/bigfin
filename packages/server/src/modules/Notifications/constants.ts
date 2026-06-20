@@ -8,6 +8,11 @@ export const NOTIFICATIONS_EVAL_JOB = 'evaluate-tenant';
 export const DEFAULT_COOLDOWN_HOURS = 24;
 export const DEFAULT_CASH_GAP_HORIZON_DAYS = 7;
 
+// In-app лента и бейдж непрочитанных показывают только окно последних N дней.
+// Единое окно для list() и unreadCount() гарантирует, что счётчик и выпадашка
+// согласованы, а COUNT не растёт безгранично вместе с историей уведомлений.
+export const FEED_WINDOW_DAYS = 90;
+
 export const SETTINGS_GROUP = 'notifications';
 
 // Settings keys (group `notifications`).

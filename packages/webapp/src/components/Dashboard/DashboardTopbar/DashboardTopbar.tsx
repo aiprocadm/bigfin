@@ -27,6 +27,7 @@ import { withDashboard } from '@/containers/Dashboard/withDashboard';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 
 import QuickNewDropdown from '@/containers/QuickNewDropdown/QuickNewDropdown';
+import { NotificationBell } from '@/containers/Notifications/InApp/NotificationBell';
 import {
   DashboardHamburgerButton,
   DashboardQuickSearchButton,
@@ -121,15 +122,7 @@ function DashboardTopbar({
             />
             <QuickNewDropdown />
 
-            <Tooltip
-              content={<T id={'notifications'} />}
-              position={Position.BOTTOM}
-            >
-              <Button
-                className={Classes.MINIMAL}
-                icon={<Icon icon={'notification-24'} iconSize={20} />}
-              />
-            </Tooltip>
+            <NotificationBell />
 
             <Popover2
               content={

@@ -6,12 +6,8 @@ import '@/utils/moment-mysql';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { Notification } from '../models/Notification.model';
 import { NotificationRead } from '../models/NotificationRead.model';
-import {
-  markReadFlags,
-  countUnread,
-  selectUnreadIds,
-  NotificationRow,
-} from '../utils/inAppRead';
+import { FEED_WINDOW_DAYS } from '../constants';
+import { markReadFlags, NotificationRow } from '../utils/inAppRead';
 
 @Injectable()
 export class InAppNotificationsService {
@@ -27,11 +23,21 @@ export class InAppNotificationsService {
     return Number(this.cls.get('userId'));
   }
 
-  /** Последние N уведомлений с персональным флагом read. */
+  /**
+   * Граница ленты: показываем и считаем только уведомления за последние
+   * FEED_WINDOW_DAYS дней. Одно и то же окно в list() и unreadCount() держит
+   * бейдж и выпадашку согласованными и не даёт COUNT расти вместе с историей.
+   */
+  private feedCutoff(): string {
+    return moment().subtract(FEED_WINDOW_DAYS, 'days').toMySqlDateTime();
+  }
+
+  /** Последние N уведомлений (в пределах окна) с персональным флагом read. */
   async list(limit = 20) {
     const userId = this.userId();
     const notifs: any[] = await this.notifModel()
       .query()
+      .where('firedAt', '>=', this.feedCutoff())
       .orderBy('firedAt', 'desc')
       .limit(limit);
 
@@ -61,23 +67,29 @@ export class InAppNotificationsService {
   }
 
   /**
-   * Число непрочитанных текущим пользователем — по ВСЕЙ истории (в отличие от
-   * list(), который отдаёт последние 20). Поэтому бейдж может быть больше, чем
-   * видно в выпадашке; такие «хвостовые» уведомления гасятся «Прочитать всё».
+   * Число непрочитанных текущим пользователем в пределах окна ленты.
+   *
+   * Считается целиком в БД анти-джойном: notifications LEFT JOIN
+   * notification_reads (по этому пользователю) WHERE reads.id IS NULL. Раньше
+   * метод тянул в память ВСЕ id уведомлений и ВСЕ прочитанные id и вычитал их
+   * в JS — на каждый поллинг (раз в 60с на пользователя) и при безгранично
+   * растущей таблице это тысячи строк в минуту. Теперь из БД возвращается
+   * только итоговое число.
    */
   async unreadCount() {
     const userId = this.userId();
-    const notifs: any[] = await this.notifModel().query().select('id');
-    const reads: any[] = await this.readModel()
+    const row: any = await this.notifModel()
       .query()
-      .where('userId', userId)
-      .select('notificationId');
-    return {
-      count: countUnread(
-        notifs.map((n) => n.id),
-        reads.map((r) => r.notificationId),
-      ),
-    };
+      .leftJoin('notification_reads', (join) =>
+        join
+          .on('notification_reads.notificationId', '=', 'notifications.id')
+          .andOnVal('notification_reads.userId', '=', userId),
+      )
+      .where('notifications.firedAt', '>=', this.feedCutoff())
+      .whereNull('notification_reads.id')
+      .count('notifications.id as count')
+      .first();
+    return { count: Number(row?.count ?? 0) };
   }
 
   /** Отметить одно уведомление прочитанным (идемпотентно). */
@@ -101,29 +113,41 @@ export class InAppNotificationsService {
     return { success: true };
   }
 
-  /** Отметить все ещё непрочитанные текущим пользователем. */
+  /** Отметить все ещё непрочитанные текущим пользователем (в пределах окна). */
   async markAllRead() {
     const userId = this.userId();
-    const notifs: any[] = await this.notifModel().query().select('id');
-    const reads: any[] = await this.readModel()
+
+    // Тем же анти-джойном забираем из БД только id ещё не прочитанных
+    // уведомлений в пределах окна — вместо загрузки всей истории и вычитания
+    // множеств в JS. Окно совпадает с unreadCount(), поэтому «Прочитать всё»
+    // гасит ровно то, что считает бейдж.
+    const unread: any[] = await this.notifModel()
       .query()
-      .where('userId', userId)
-      .select('notificationId');
+      .leftJoin('notification_reads', (join) =>
+        join
+          .on('notification_reads.notificationId', '=', 'notifications.id')
+          .andOnVal('notification_reads.userId', '=', userId),
+      )
+      .where('notifications.firedAt', '>=', this.feedCutoff())
+      .whereNull('notification_reads.id')
+      .select('notifications.id as id');
+
+    if (!unread.length) return { success: true };
 
     const now = moment().toMySqlDateTime();
-    const toInsert = selectUnreadIds(
-      notifs.map((n) => n.id),
-      reads.map((r) => r.notificationId),
-    ).map((notificationId) => ({ notificationId, userId, readAt: now }));
+    const toInsert = unread.map((n) => ({
+      notificationId: n.id,
+      userId,
+      readAt: now,
+    }));
 
-    if (toInsert.length) {
-      // INSERT IGNORE: гонка с конкурентной отметкой не падает в 500.
-      await this.readModel()
-        .query()
-        .insert(toInsert as any)
-        .onConflict(['notificationId', 'userId'])
-        .ignore();
-    }
+    // INSERT IGNORE: гонка с конкурентной отметкой не падает в 500.
+    await this.readModel()
+      .query()
+      .insert(toInsert as any)
+      .onConflict(['notificationId', 'userId'])
+      .ignore();
+
     return { success: true };
   }
 }

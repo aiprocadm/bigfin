@@ -3240,5 +3240,16 @@
   "interface_mode.accountant": "Accountant",
   "interface_mode.save": "Save",
   "interface_mode.saved": "Interface mode saved.",
-  "interface_mode.save_failed": "Failed to save interface mode."
+  "interface_mode.save_failed": "Failed to save interface mode.",
+  "financial_model.page.title": "Financial model",
+  "financial_model.filter.period": "Period",
+  "financial_model.metric.margin": "Margin",
+  "financial_model.metric.revenue_per_employee": "Revenue per employee",
+  "financial_model.metric.ltv": "LTV",
+  "financial_model.metric.cac": "CAC",
+  "financial_model.metric.romi": "Revenue per ₽ of marketing",
+  "financial_model.metric.break_even": "Break-even",
+  "financial_model.metric.coming_soon": "Coming soon",
+  "financial_model.chart.margin_over_time": "Margin over time",
+  "financial_model.na": "—"
 }

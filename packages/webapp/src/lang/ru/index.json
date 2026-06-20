@@ -3240,5 +3240,16 @@
   "interface_mode.accountant": "Бухгалтер",
   "interface_mode.save": "Сохранить",
   "interface_mode.saved": "Режим интерфейса сохранён.",
-  "interface_mode.save_failed": "Не удалось сохранить режим интерфейса."
+  "interface_mode.save_failed": "Не удалось сохранить режим интерфейса.",
+  "financial_model.page.title": "Финмодель",
+  "financial_model.filter.period": "Период",
+  "financial_model.metric.margin": "Маржинальность",
+  "financial_model.metric.revenue_per_employee": "Выручка на сотрудника",
+  "financial_model.metric.ltv": "LTV",
+  "financial_model.metric.cac": "CAC",
+  "financial_model.metric.romi": "Выручка на ₽ маркетинга",
+  "financial_model.metric.break_even": "Точка безубыточности",
+  "financial_model.metric.coming_soon": "Скоро",
+  "financial_model.chart.margin_over_time": "Маржа во времени",
+  "financial_model.na": "—"
 }

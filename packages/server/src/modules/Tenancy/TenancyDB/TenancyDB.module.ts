@@ -1,9 +1,11 @@
+import * as path from 'path';
 import knex from 'knex';
 import * as LRUCache from 'lru-cache';
 import { Global, Module, OnApplicationShutdown } from '@nestjs/common';
 import { knexSnakeCaseMappers } from 'objection';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
+import { ExtensionAgnosticMigrationSource } from '@/libs/migration-seed/ExtensionAgnosticMigrationSource';
 import { TENANCY_DB_CONNECTION } from './TenancyDB.constants';
 import { UnitOfWork } from './UnitOfWork.service';
 
@@ -32,8 +34,12 @@ export const TenancyDatabaseProxyProvider = ClsModule.forFeatureAsync({
         charset: 'utf8',
       },
       migrations: {
-        directory: configService.get('tenantDatabase.migrationsDir'),
-        loadExtensions: ['.js'],
+        // .ts-исходники (dev) vs .js-записи в журнале (наследие сборки) —
+        // нормализуем расширение через ExtensionAgnosticMigrationSource, иначе
+        // migrate.latest() локально не видит миграции либо пытается прогнать всё.
+        migrationSource: new ExtensionAgnosticMigrationSource(
+          path.resolve(configService.get('tenantDatabase.migrationsDir')),
+        ),
       },
       seeds: {
         directory: configService.get('tenantDatabase.seedsDir'),

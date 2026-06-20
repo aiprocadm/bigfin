@@ -1,8 +1,10 @@
+import * as path from 'path';
 import { CommandRunner } from 'nest-commander';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Knex from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
+import { ExtensionAgnosticMigrationSource } from '@/libs/migration-seed/ExtensionAgnosticMigrationSource';
 
 @Injectable()
 export abstract class BaseCommand extends CommandRunner {
@@ -43,8 +45,15 @@ export abstract class BaseCommand extends CommandRunner {
         charset: 'utf8',
       },
       migrations: {
-        directory: this.configService.get('tenantDatabase.migrationsDir') || './src/database/migrations',
-        loadExtensions: ['.js'],
+        // .ts-исходники (dev) vs .js-записи в журнале (наследие сборки) —
+        // см. ExtensionAgnosticMigrationSource. Системный путь не трогаем:
+        // там миграции реально .js и дефолтный загрузчик корректен.
+        migrationSource: new ExtensionAgnosticMigrationSource(
+          path.resolve(
+            this.configService.get('tenantDatabase.migrationsDir') ||
+              './src/database/migrations',
+          ),
+        ),
       },
       seeds: {
         directory: this.configService.get('tenantDatabase.seedsDir') || './src/database/seeds/core',

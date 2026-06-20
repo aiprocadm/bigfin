@@ -6,9 +6,12 @@ interface MigrationSpec {
   directory: string;
 }
 
+// knex в рантайме требует ОБЕ функции (up и down): _validateMigrationStructure
+// бросает «must have both an up and down function» при migrate.latest(). Поэтому
+// down обязателен, а не optional — иначе тип врал бы про контракт.
 interface LoadedMigration {
   up: (knex: any) => PromiseLike<any>;
-  down?: (knex: any) => PromiseLike<any>;
+  down: (knex: any) => PromiseLike<any>;
 }
 
 /**
@@ -69,6 +72,14 @@ export function selectMigrationFiles(
  * полному имени с расширением. В этом репозитории все исходники тенантных
  * миграций — `.ts`, а записи в журнале — `.js`, поэтому дефолтный загрузчик
  * локально либо ничего не находит, либо считает все миграции непримененными.
+ *
+ * Почему НЕ переиспользуем соседний FsMigrations/importWebpackSeedModule: тот
+ * загрузчик webpack-aware (динамический import через require.context). Сервер
+ * собирается обычным `tsc` (nest build, без webpack) → миграции это обычные
+ * CJS-модули, и простой `require(абсолютный путь)` корректен и в dev (ts-node),
+ * и в проде (скомпилированный `.js`). Если сервер когда-либо снова начнут
+ * бандлить webpack'ом — этот `require` сломается, и сюда нужно будет вернуть
+ * webpack-aware загрузку.
  */
 export class ExtensionAgnosticMigrationSource {
   constructor(
@@ -76,6 +87,9 @@ export class ExtensionAgnosticMigrationSource {
     private readonly loadExtensions: string[] = ['.js', '.ts'],
   ) {}
 
+  // knex передаёт сюда config.migrations.loadExtensions; мы намеренно его
+  // игнорируем — допустимые расширения фиксируются в конструкторе, чтобы
+  // поведение source не зависело от внешнего конфига.
   async getMigrations(
     _loadExtensions?: readonly string[],
   ): Promise<MigrationSpec[]> {
@@ -90,6 +104,8 @@ export class ExtensionAgnosticMigrationSource {
     return normalizeMigrationName(migration.file);
   }
 
+  // Миграции — CJS-модули (`exports.up`/`exports.down`), поэтому require даёт
+  // объект напрямую. ESM-миграции с `default`-экспортом сюда не подойдут.
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   async getMigration(migration: MigrationSpec): Promise<LoadedMigration> {
     return require(path.join(migration.directory, migration.file));

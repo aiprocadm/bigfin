@@ -51,3 +51,28 @@ describe('ExtensionAgnosticMigrationSource', () => {
     expect((mod.up as any)()).toBe('UP-B');
   });
 });
+
+describe('ExtensionAgnosticMigrationSource — коллизия .ts и .js одной миграции', () => {
+  let dir: string;
+
+  beforeAll(async () => {
+    dir = path.join(os.tmpdir(), `bigfin-migsrc-dup-${process.pid}`);
+    await fs.mkdir(dir, { recursive: true });
+    // одна и та же миграция и как исходник .ts, и как скомпилированный .js
+    await fs.writeFile(path.join(dir, '001_same.ts'), '// dummy ts\n');
+    await fs.writeFile(path.join(dir, '001_same.js'), 'exports.up = () => {};\n');
+  });
+
+  afterAll(async () => {
+    await fs.rm(dir, { recursive: true, force: true });
+  });
+
+  it('end-to-end getMigrations отдаёт ровно один файл, предпочитая .js', async () => {
+    const source = new ExtensionAgnosticMigrationSource(dir);
+    const migrations = await source.getMigrations(['.js', '.ts']);
+    expect(migrations.map((m) => m.file)).toEqual(['001_same.js']);
+    expect(migrations.map((m) => source.getMigrationName(m))).toEqual([
+      '001_same.js',
+    ]);
+  });
+});

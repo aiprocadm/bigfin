@@ -54,22 +54,25 @@ export class GetFinancialOverviewService {
     const rpe = computeRevenuePerEmployee(margin.revenue, employeeCount);
 
     const months = enumerateMonths(fromDate, toDate);
-    const marginOverTime: MarginPoint[] = [];
-    for (const month of months) {
-      const mFrom = moment(`${month}-01`).startOf('month').format('YYYY-MM-DD');
-      const mTo = moment(mFrom).endOf('month').format('YYYY-MM-DD');
-      const mRows = await this.rollup.getRollup({
-        fromDate: mFrom,
-        toDate: mTo,
-      } as any);
-      const m = computeDealMargin(mRows as any);
-      marginOverTime.push({
-        month,
-        revenue: m.revenue,
-        profit: m.profit,
-        margin: m.margin,
-      });
-    }
+    // Помесячные свёртки — параллельно (Promise.all сохраняет порядок месяцев),
+    // как в GetPayrollKpiSummary.
+    const marginOverTime: MarginPoint[] = await Promise.all(
+      months.map(async (month) => {
+        const mFrom = moment(`${month}-01`).format('YYYY-MM-DD');
+        const mTo = moment(mFrom).endOf('month').format('YYYY-MM-DD');
+        const mRows = await this.rollup.getRollup({
+          fromDate: mFrom,
+          toDate: mTo,
+        } as any);
+        const m = computeDealMargin(mRows as any);
+        return {
+          month,
+          revenue: m.revenue,
+          profit: m.profit,
+          margin: m.margin,
+        };
+      }),
+    );
 
     return {
       revenue: margin.revenue,

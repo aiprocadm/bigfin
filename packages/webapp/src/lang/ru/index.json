@@ -3185,6 +3185,8 @@
   "notifications.channel.email": "Email",
   "notifications.channel.telegram": "Telegram",
   "notifications.settings.channels": "Каналы",
+  "notifications.inapp.empty": "Нет уведомлений",
+  "notifications.inapp.mark_all_read": "Прочитать всё",
   "fixed_assets.page.title": "Основные средства",
   "fixed_assets.summary.count": "Объектов",
   "fixed_assets.summary.gross": "Первоначальная стоимость",

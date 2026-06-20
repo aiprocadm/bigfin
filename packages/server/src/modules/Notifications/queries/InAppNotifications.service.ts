@@ -60,7 +60,11 @@ export class InAppNotificationsService {
     };
   }
 
-  /** Число непрочитанных текущим пользователем. */
+  /**
+   * Число непрочитанных текущим пользователем — по ВСЕЙ истории (в отличие от
+   * list(), который отдаёт последние 20). Поэтому бейдж может быть больше, чем
+   * видно в выпадашке; такие «хвостовые» уведомления гасятся «Прочитать всё».
+   */
   async unreadCount() {
     const userId = this.userId();
     const notifs: any[] = await this.notifModel().query().select('id');
@@ -82,19 +86,18 @@ export class InAppNotificationsService {
     const notif = await this.notifModel().query().findById(id);
     if (!notif) throw new NotFoundException('notification_not_found');
 
-    const existing = await this.readModel()
+    // Идемпотентность на уровне БД: INSERT IGNORE по UNIQUE(notificationId,
+    // userId). Повторный клик/гонка с поллингом — тихий no-op, не 500.
+    await this.readModel()
       .query()
-      .where('userId', userId)
-      .andWhere('notificationId', id)
-      .first();
-
-    if (!existing) {
-      await this.readModel().query().insert({
+      .insert({
         notificationId: id,
         userId,
         readAt: moment().toMySqlDateTime(),
-      } as any);
-    }
+      } as any)
+      .onConflict(['notificationId', 'userId'])
+      .ignore();
+
     return { success: true };
   }
 
@@ -114,7 +117,12 @@ export class InAppNotificationsService {
     ).map((notificationId) => ({ notificationId, userId, readAt: now }));
 
     if (toInsert.length) {
-      await this.readModel().query().insert(toInsert as any);
+      // INSERT IGNORE: гонка с конкурентной отметкой не падает в 500.
+      await this.readModel()
+        .query()
+        .insert(toInsert as any)
+        .onConflict(['notificationId', 'userId'])
+        .ignore();
     }
     return { success: true };
   }

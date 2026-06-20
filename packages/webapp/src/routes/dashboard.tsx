@@ -1347,6 +1347,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('credits.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Financial model (Финмодель)
+  {
+    path: `/financial-model`,
+    component: lazy(() => import('@/containers/FinancialModel/FinancialModelPage')),
+    breadcrumb: intl.get('financial_model.page.title'),
+    pageTitle: intl.get('financial_model.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,

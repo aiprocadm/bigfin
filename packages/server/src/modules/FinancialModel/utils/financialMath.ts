@@ -10,13 +10,14 @@ const round2 = (n: number): number => Math.round(n * 100) / 100;
 
 /**
  * Выручка на сотрудника = выручка ÷ число активных сотрудников.
- * При нуле сотрудников метрика неприменима (applicable=false), не делим на ноль.
+ * Неприменима (applicable=false), если число сотрудников ≤ 0 или не число —
+ * не делим на ноль/мусор.
  */
 export function computeRevenuePerEmployee(
   revenue: number,
   employeeCount: number,
 ): MetricValue {
-  if (!employeeCount || employeeCount <= 0) {
+  if (!Number.isFinite(employeeCount) || employeeCount <= 0) {
     return { value: 0, applicable: false };
   }
   return { value: round2(revenue / employeeCount), applicable: true };

@@ -22,6 +22,13 @@ describe('computeRevenuePerEmployee', () => {
   it('округляет до 2 знаков', () => {
     expect(computeRevenuePerEmployee(100, 3).value).toBe(33.33);
   });
+
+  it('возвращает applicable=false при отрицательном числе сотрудников', () => {
+    expect(computeRevenuePerEmployee(900000, -5)).toEqual({
+      value: 0,
+      applicable: false,
+    });
+  });
 });
 
 describe('enumerateMonths', () => {

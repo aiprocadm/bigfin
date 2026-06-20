@@ -333,6 +333,10 @@ const NOTIFICATIONS = {
   NOTIFICATIONS_UNREAD: 'NOTIFICATIONS_UNREAD',
 };
 
+const FINANCIAL_MODEL = {
+  FINANCIAL_OVERVIEW: 'FINANCIAL_OVERVIEW',
+};
+
 export default {
   ...Authentication,
   ...ACCOUNTS,
@@ -384,4 +388,5 @@ export default {
   ...CREDITS,
   ...FIXED_ASSETS,
   ...NOTIFICATIONS,
+  ...FINANCIAL_MODEL,
 };

@@ -812,6 +812,15 @@ export const SidebarMenu = [
     type: ISidebarMenuItemType.Link,
     feature: Features.Credits,
   },
+  // ---------------
+  // # Financial model (Финмодель)
+  // ---------------
+  {
+    text: <T id={'sidebar.financial_model'} />,
+    href: '/financial-model',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.FinancialModel,
+  },
   {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,

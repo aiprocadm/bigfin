@@ -123,6 +123,7 @@
     "react-use": "^13.26.1",
     "react-use-context-menu": "^0.1.4",
     "react-virtualized": "^9.22.3",
+    "recharts": "^3.8.1",
     "redux": "^4.2.1",
     "redux-devtools": "^3.5.0",
     "redux-persist": "^6.0.0",

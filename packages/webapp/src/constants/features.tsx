@@ -10,4 +10,5 @@ export const Features = {
   FixedAssets: 'fixed_assets',
   Notifications: 'notifications', // уведомления о кассовом разрыве/остатке/просрочке (㉒)
   InterfaceModes: 'interface_modes',
+  FinancialModel: 'financial_model',
 }

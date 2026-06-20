@@ -27,13 +27,17 @@ function MetricCard({
 
 export default function FinancialModelPage() {
   const { featureCan } = useFeatureCan();
+  const flagEnabled = featureCan('financial_model');
   const today = new Date();
   const [fromDate] = React.useState(`${today.getFullYear()}-01-01`);
   const [toDate] = React.useState(today.toISOString().slice(0, 10));
 
-  const { data } = useFinancialOverview({ fromDate, toDate });
+  const { data } = useFinancialOverview(
+    { fromDate, toDate },
+    { enabled: flagEnabled },
+  );
 
-  if (!featureCan('financial_model')) return null;
+  if (!flagEnabled) return null;
 
   const soon = intl.get('financial_model.metric.coming_soon');
 

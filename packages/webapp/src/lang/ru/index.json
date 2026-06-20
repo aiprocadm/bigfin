@@ -3251,6 +3251,6 @@
   "financial_model.metric.romi": "Выручка на ₽ маркетинга",
   "financial_model.metric.break_even": "Точка безубыточности",
   "financial_model.metric.coming_soon": "Скоро",
-  "financial_model.chart.margin_over_time": "Маржа во времени",
+  "financial_model.chart.margin_over_time": "Маржинальность в динамике",
   "financial_model.na": "—"
 }

@@ -118,6 +118,23 @@ export function computeLtv(
 }
 
 /**
+ * Точка безубыточности = постоянные затраты ÷ маржинальность (доля 0..1).
+ * Выручка, при которой прибыль = 0. Неприменима (applicable=false), если маржа
+ * ≤ 0 или не число: при неположительной марже постоянные затраты не покрыть ни
+ * при какой выручке («недостижима при текущей марже»). При нулевых постоянных
+ * затратах и положительной марже — 0 (безубыточность достигается сразу).
+ */
+export function computeBreakEven(
+  fixedCosts: number,
+  marginFraction: number,
+): MetricValue {
+  if (!Number.isFinite(marginFraction) || marginFraction <= 0) {
+    return { value: 0, applicable: false };
+  }
+  return { value: round2(fixedCosts / marginFraction), applicable: true };
+}
+
+/**
  * Список месяцев 'YYYY-MM' от fromDate до toDate включительно (по месяцам).
  * Если from позже to — пустой массив.
  */

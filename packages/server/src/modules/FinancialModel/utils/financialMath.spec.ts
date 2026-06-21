@@ -7,6 +7,7 @@ import {
   computeRomi,
   computeAverageCheck,
   computeLtv,
+  computeBreakEven,
 } from './financialMath';
 
 describe('computeRevenuePerEmployee', () => {
@@ -129,6 +130,34 @@ describe('computeLtv', () => {
 
   it('неприменим при нулевом среднем чеке', () => {
     expect(computeLtv(0, 0.4, 12)).toEqual({ value: 0, applicable: false });
+  });
+});
+
+describe('computeBreakEven', () => {
+  it('постоянные затраты ÷ маржа', () => {
+    expect(computeBreakEven(300000, 0.3)).toEqual({
+      value: 1000000,
+      applicable: true,
+    });
+  });
+
+  it('неприменима при нулевой марже (недостижима)', () => {
+    expect(computeBreakEven(300000, 0)).toEqual({ value: 0, applicable: false });
+  });
+
+  it('неприменима при отрицательной марже (недостижима)', () => {
+    expect(computeBreakEven(300000, -0.2)).toEqual({
+      value: 0,
+      applicable: false,
+    });
+  });
+
+  it('ноль постоянных затрат при положительной марже = 0 (безубыточность сразу)', () => {
+    expect(computeBreakEven(0, 0.4)).toEqual({ value: 0, applicable: true });
+  });
+
+  it('округляет до 2 знаков', () => {
+    expect(computeBreakEven(100, 0.3).value).toBe(333.33);
   });
 });
 

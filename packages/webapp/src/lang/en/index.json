@@ -3278,5 +3278,20 @@
   "financial_model.marketing.delete": "Delete",
   "financial_model.marketing.cac_by_channel": "CAC by channel",
   "financial_model.marketing.empty_channels": "No channels yet",
-  "financial_model.marketing.no_data": "Fill in marketing data"
+  "financial_model.marketing.no_data": "Fill in marketing data",
+  "financial_model.breakeven.title": "Break-even",
+  "financial_model.breakeven.fixed_costs": "Fixed costs",
+  "financial_model.breakeven.revenue_label": "Break-even revenue",
+  "financial_model.breakeven.current_revenue": "Current revenue",
+  "financial_model.breakeven.hint_mark": "Mark fixed-cost articles to calculate the break-even point",
+  "financial_model.breakeven.unreachable": "Unreachable at the current margin",
+  "financial_model.breakeven.mark_title": "Mark fixed and variable costs",
+  "financial_model.breakeven.article": "Article",
+  "financial_model.breakeven.behavior": "Cost type",
+  "financial_model.breakeven.fixed": "Fixed",
+  "financial_model.breakeven.variable": "Variable",
+  "financial_model.breakeven.clear": "Clear",
+  "financial_model.breakeven.empty_articles": "No expense articles",
+  "financial_model.breakeven.progress": "Progress to break-even",
+  "financial_model.breakeven.reached": "Break-even reached"
 }

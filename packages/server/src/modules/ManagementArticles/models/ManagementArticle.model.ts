@@ -8,6 +8,7 @@ export class ManagementArticle extends TenantBaseModel {
   cashflowSection!: string | null;
   sortOrder!: number;
   active!: boolean;
+  costBehavior!: string | null; // 'fixed' | 'variable' | null — для точки безубыточности
 
   /**
    * Table name.

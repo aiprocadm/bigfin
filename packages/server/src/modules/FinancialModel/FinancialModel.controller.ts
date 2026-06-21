@@ -23,6 +23,7 @@ import {
   UpdateMarketingChannelDto,
   UpsertMarketingMonthlyDto,
   SetCustomerLifetimeDto,
+  SetCostBehaviorDto,
 } from './dtos/FinancialModel.dto';
 
 @Controller('financial-model')
@@ -51,6 +52,30 @@ export class FinancialModelController {
   @ApiOperation({ summary: 'Маркетинговые метрики: CAC, ROMI, LTV (по каналам и итого).' })
   getMarketing(@Query() query: FinancialOverviewQueryDto) {
     return this.application.getMarketingMetrics(query);
+  }
+
+  @Get('break-even')
+  @ApiOperation({
+    summary: 'Точка безубыточности: постоянные затраты, маржа, выручка безубыточности.',
+  })
+  getBreakEven(@Query() query: FinancialOverviewQueryDto) {
+    return this.application.getBreakEven(query);
+  }
+
+  @Get('articles')
+  @ApiOperation({ summary: 'Расходные статьи с пометкой постоянная/переменная.' })
+  listExpenseArticles() {
+    return this.application.listExpenseArticles();
+  }
+
+  @Put('articles/:id/cost-behavior')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: "Пометить статью: 'fixed' | 'variable' | null (снять)." })
+  setCostBehavior(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: SetCostBehaviorDto,
+  ) {
+    return this.application.setCostBehavior(id, dto.behavior ?? null);
   }
 
   @Get('marketing/channels')

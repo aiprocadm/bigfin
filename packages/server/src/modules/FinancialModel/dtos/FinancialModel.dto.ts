@@ -9,6 +9,7 @@ import {
   IsNumber,
   Min,
   Matches,
+  IsIn,
 } from 'class-validator';
 
 export class FinancialOverviewQueryDto {
@@ -66,4 +67,14 @@ export class SetCustomerLifetimeDto {
   @IsNumber()
   @Min(0)
   months!: number;
+}
+
+export class SetCostBehaviorDto {
+  @ApiPropertyOptional({
+    description: "Тип затрат: 'fixed' | 'variable' | null (снять пометку)",
+    enum: ['fixed', 'variable'],
+  })
+  @IsOptional()
+  @IsIn(['fixed', 'variable'])
+  behavior?: 'fixed' | 'variable' | null;
 }

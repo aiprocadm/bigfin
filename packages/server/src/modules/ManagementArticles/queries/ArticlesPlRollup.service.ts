@@ -128,6 +128,25 @@ export class ArticlesPlRollupService {
    * @returns {Promise<ArticleRollupRow[]>}
    */
   public async getRollup(query: ArticlesRollupQueryDto) {
+    const folded = await this.buildFolded(query);
+    return rollupAmountsToAncestors(folded);
+  }
+
+  /**
+   * Same fold as getRollup but WITHOUT rolling amounts up to ancestors: every
+   * row's `amount` is its OWN directly-mapped net only (disjoint across
+   * articles). Summing any subset of these rows never double-counts a
+   * parent+child — used by break-even to total only the fixed-flagged articles.
+   * @param {ArticlesRollupQueryDto} query
+   * @returns {Promise<ArticleRollupRow[]>}
+   */
+  public async getOwnAmounts(query: ArticlesRollupQueryDto) {
+    return this.buildFolded(query);
+  }
+
+  private async buildFolded(
+    query: ArticlesRollupQueryDto,
+  ): Promise<ArticleRollupRow[]> {
     const articles = await this.articleModel().query().orderBy('sortOrder');
     const map = await this.articleAccountModel().query();
 
@@ -175,7 +194,6 @@ export class ArticlesPlRollupService {
       ),
     }));
 
-    const folded = foldAccountsIntoArticles(articles, map, accountNets);
-    return rollupAmountsToAncestors(folded);
+    return foldAccountsIntoArticles(articles, map, accountNets);
   }
 }

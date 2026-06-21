@@ -3278,5 +3278,20 @@
   "financial_model.marketing.delete": "Удалить",
   "financial_model.marketing.cac_by_channel": "CAC по каналам",
   "financial_model.marketing.empty_channels": "Каналов пока нет",
-  "financial_model.marketing.no_data": "Заполните данные по маркетингу"
+  "financial_model.marketing.no_data": "Заполните данные по маркетингу",
+  "financial_model.breakeven.title": "Точка безубыточности",
+  "financial_model.breakeven.fixed_costs": "Постоянные затраты",
+  "financial_model.breakeven.revenue_label": "Выручка в точке безубыточности",
+  "financial_model.breakeven.current_revenue": "Текущая выручка",
+  "financial_model.breakeven.hint_mark": "Отметьте постоянные статьи, чтобы рассчитать точку безубыточности",
+  "financial_model.breakeven.unreachable": "Недостижима при текущей марже",
+  "financial_model.breakeven.mark_title": "Пометка постоянных и переменных затрат",
+  "financial_model.breakeven.article": "Статья",
+  "financial_model.breakeven.behavior": "Тип затрат",
+  "financial_model.breakeven.fixed": "Постоянная",
+  "financial_model.breakeven.variable": "Переменная",
+  "financial_model.breakeven.clear": "Снять отметки",
+  "financial_model.breakeven.empty_articles": "Нет расходных статей",
+  "financial_model.breakeven.progress": "Прогресс к безубыточности",
+  "financial_model.breakeven.reached": "Точка безубыточности достигнута"
 }

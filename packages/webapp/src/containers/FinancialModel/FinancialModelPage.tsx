@@ -6,11 +6,13 @@ import {
   useFinancialOverview,
   useFinancialSegments,
   useMarketingMetrics,
+  useBreakEven,
   MetricValue,
 } from '@/hooks/query/financialModel';
 import { MarginOverTimeChart } from './MarginOverTimeChart';
 import { SegmentTable, ProductTable } from './SegmentTables';
 import { MarketingPanel } from './MarketingPanel';
+import { BreakEvenPanel } from './BreakEvenPanel';
 
 const fmtMoney = (n: number | null | undefined) =>
   `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
@@ -51,10 +53,13 @@ export default function FinancialModelPage() {
     { fromDate, toDate },
     { enabled: flagEnabled },
   );
+  const { data: breakEven } = useBreakEven(
+    { fromDate, toDate },
+    { enabled: flagEnabled },
+  );
 
   if (!flagEnabled) return null;
 
-  const soon = intl.get('financial_model.metric.coming_soon');
   const na = intl.get('financial_model.na');
   const metricMoney = (m?: MetricValue) =>
     m?.applicable ? fmtMoney(m.value) : na;
@@ -72,7 +77,7 @@ export default function FinancialModelPage() {
         </span>
       </div>
 
-      {/* 6 карточек: маржа/выручка-на-сотрудника/LTV/CAC/ROMI живые, break-even «Скоро» (Фаза 4) */}
+      {/* 6 живых карточек: маржа, выручка/сотр., LTV, CAC, ROMI, точка безубыточности */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <MetricCard
           label={intl.get('financial_model.metric.margin')}
@@ -100,7 +105,11 @@ export default function FinancialModelPage() {
         />
         <MetricCard
           label={intl.get('financial_model.metric.break_even')}
-          value={soon}
+          value={
+            breakEven?.hasFixedArticles && breakEven?.breakEven?.applicable
+              ? fmtMoney(breakEven.breakEven.value)
+              : na
+          }
         />
       </div>
 
@@ -137,6 +146,9 @@ export default function FinancialModelPage() {
 
       {/* Маркетинг: каналы, помесячный ввод, срок жизни клиента (Фаза 3) */}
       <MarketingPanel marketing={marketing} fromDate={fromDate} toDate={toDate} />
+
+      {/* Точка безубыточности: пометка постоянных статей + расчёт (Фаза 4) */}
+      <BreakEvenPanel breakEven={breakEven} />
     </div>
   );
 }

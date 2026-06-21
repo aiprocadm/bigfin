@@ -252,3 +252,78 @@ export function useSetCustomerLifetime(
     { onSuccess: () => invalidateMarketing(client), ...props },
   );
 }
+
+// ---------------------------------------------------------------------------
+// Точка безубыточности — Фаза 4
+// ---------------------------------------------------------------------------
+
+export interface BreakEvenResult {
+  revenue: number;
+  margin: number;
+  fixedCosts: number;
+  breakEven: MetricValue;
+  hasFixedArticles: boolean;
+}
+
+/** Точка безубыточности за период (постоянные затраты, маржа, выручка безубыточности). */
+export function useBreakEven(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.FINANCIAL_BREAK_EVEN, query],
+    { method: 'get', url: 'financial-model/break-even', params: query },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: {
+        revenue: 0,
+        margin: 0,
+        fixedCosts: 0,
+        breakEven: naMetric,
+        hasFixedArticles: false,
+      } as BreakEvenResult,
+      ...props,
+    },
+  );
+}
+
+export interface ExpenseArticle {
+  id: number;
+  name: string;
+  parentId: number | null;
+  costBehavior: 'fixed' | 'variable' | null;
+}
+
+/** Расходные статьи с пометкой постоянная/переменная (для безубыточности). */
+export function useExpenseArticles(props?: any) {
+  return useRequestQuery(
+    [t.EXPENSE_ARTICLES],
+    { method: 'get', url: 'financial-model/articles' },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: [] as ExpenseArticle[],
+      ...props,
+    },
+  );
+}
+
+export type SetCostBehaviorArgs = [
+  number,
+  'fixed' | 'variable' | null,
+];
+
+/** Пометить статью постоянной/переменной (или снять пометку — null). */
+export function useSetCostBehavior(
+  props?: UseMutationOptions<any, any, SetCostBehaviorArgs>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, SetCostBehaviorArgs>(
+    ([id, behavior]) =>
+      api.put(`financial-model/articles/${id}/cost-behavior`, { behavior }),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.EXPENSE_ARTICLES);
+        client.invalidateQueries(t.FINANCIAL_BREAK_EVEN);
+      },
+      ...props,
+    },
+  );
+}

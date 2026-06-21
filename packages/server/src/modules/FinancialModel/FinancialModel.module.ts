@@ -9,7 +9,9 @@ import { GetFinancialOverviewService } from './queries/GetFinancialOverview.serv
 import { GetSegmentProfitabilityService } from './queries/GetSegmentProfitability.service';
 import { GetProductMarginService } from './queries/GetProductMargin.service';
 import { GetMarketingMetricsService } from './queries/GetMarketingMetrics.service';
+import { GetBreakEvenService } from './queries/GetBreakEven.service';
 import { MarketingDataService } from './commands/MarketingData.service';
+import { CostBehaviorService } from './commands/CostBehavior.service';
 
 @Module({
   imports: [TenancyDatabaseModule, TenancyModule],
@@ -20,7 +22,9 @@ import { MarketingDataService } from './commands/MarketingData.service';
     GetSegmentProfitabilityService,
     GetProductMarginService,
     GetMarketingMetricsService,
+    GetBreakEvenService,
     MarketingDataService,
+    CostBehaviorService,
     // collaborator injected directly (no ManagementArticlesModule import needed)
     ArticlesPlRollupService,
   ],

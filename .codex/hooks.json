@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node 'D:\\Кодинг\\Bigfin\\.codex\\hooks\\block-secrets-hook.js'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node 'D:\\Кодинг\\Bigfin\\.codex\\hooks\\lang-check-hook.js'"
+          }
+        ]
+      }
+    ]
+  }
+}

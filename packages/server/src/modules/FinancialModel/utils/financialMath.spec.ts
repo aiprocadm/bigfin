@@ -3,6 +3,10 @@ import {
   computeRevenuePerEmployee,
   enumerateMonths,
   computeProductMargins,
+  computeCac,
+  computeRomi,
+  computeAverageCheck,
+  computeLtv,
 } from './financialMath';
 
 describe('computeRevenuePerEmployee', () => {
@@ -68,6 +72,63 @@ describe('computeProductMargins', () => {
 
   it('пустые карты дают пустой массив', () => {
     expect(computeProductMargins({}, {})).toEqual([]);
+  });
+});
+
+describe('computeCac', () => {
+  it('расход ÷ новые клиенты', () => {
+    expect(computeCac(10000, 50)).toEqual({ value: 200, applicable: true });
+  });
+
+  it('неприменим при нуле новых клиентов', () => {
+    expect(computeCac(10000, 0)).toEqual({ value: 0, applicable: false });
+  });
+
+  it('округляет до 2 знаков', () => {
+    expect(computeCac(100, 3).value).toBe(33.33);
+  });
+});
+
+describe('computeRomi', () => {
+  it('выручка ÷ расход на маркетинг', () => {
+    expect(computeRomi(500000, 100000)).toEqual({ value: 5, applicable: true });
+  });
+
+  it('неприменим при нулевом расходе', () => {
+    expect(computeRomi(500000, 0)).toEqual({ value: 0, applicable: false });
+  });
+});
+
+describe('computeAverageCheck', () => {
+  it('выручка ÷ число клиентов с продажами', () => {
+    expect(computeAverageCheck(600000, 30)).toEqual({
+      value: 20000,
+      applicable: true,
+    });
+  });
+
+  it('неприменим при нуле клиентов', () => {
+    expect(computeAverageCheck(600000, 0)).toEqual({
+      value: 0,
+      applicable: false,
+    });
+  });
+});
+
+describe('computeLtv', () => {
+  it('средний чек × маржа × срок жизни', () => {
+    expect(computeLtv(20000, 0.4, 12)).toEqual({
+      value: 96000,
+      applicable: true,
+    });
+  });
+
+  it('неприменим при нулевом сроке жизни', () => {
+    expect(computeLtv(20000, 0.4, 0)).toEqual({ value: 0, applicable: false });
+  });
+
+  it('неприменим при нулевом среднем чеке', () => {
+    expect(computeLtv(0, 0.4, 12)).toEqual({ value: 0, applicable: false });
   });
 });
 

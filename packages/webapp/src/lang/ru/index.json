@@ -3252,5 +3252,18 @@
   "financial_model.metric.break_even": "Точка безубыточности",
   "financial_model.metric.coming_soon": "Скоро",
   "financial_model.chart.margin_over_time": "Маржинальность в динамике",
-  "financial_model.na": "—"
+  "financial_model.na": "—",
+  "financial_model.segments.title": "Рентабельность по сегментам",
+  "financial_model.segment.by_deal": "По сделке",
+  "financial_model.segment.by_manager": "По менеджеру",
+  "financial_model.segment.by_branch": "По направлению",
+  "financial_model.segment.by_product": "По продукту",
+  "financial_model.segment.empty": "Нет данных за период",
+  "financial_model.col.name": "Наименование",
+  "financial_model.col.revenue": "Выручка",
+  "financial_model.col.costs": "Затраты",
+  "financial_model.col.profit": "Прибыль",
+  "financial_model.col.margin": "Маржа",
+  "financial_model.col.cost_of_goods": "Себестоимость",
+  "financial_model.col.gross_margin": "Валовая маржа"
 }

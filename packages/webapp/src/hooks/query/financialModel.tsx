@@ -41,3 +41,46 @@ export function useFinancialOverview(query?: any, props?: any) {
     },
   );
 }
+
+export interface SegmentRow {
+  id: number;
+  name: string;
+  revenue: number;
+  costs: number;
+  profit: number;
+  margin: number;
+}
+
+export interface ProductMarginItem {
+  itemId: number;
+  name: string;
+  revenue: number;
+  cost: number;
+  grossMargin: number;
+  margin: number;
+}
+
+export interface SegmentProfitability {
+  byDeal: SegmentRow[];
+  byManager: SegmentRow[];
+  byBranch: SegmentRow[];
+  byProduct: ProductMarginItem[];
+}
+
+/** Рентабельность по сегментам за период (fromDate/toDate в query). */
+export function useFinancialSegments(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.FINANCIAL_SEGMENTS, query],
+    { method: 'get', url: 'financial-model/segments', params: query },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: {
+        byDeal: [],
+        byManager: [],
+        byBranch: [],
+        byProduct: [],
+      } as SegmentProfitability,
+      ...props,
+    },
+  );
+}

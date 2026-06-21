@@ -2,8 +2,12 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useFeatureCan } from '@/hooks/state/feature';
-import { useFinancialOverview } from '@/hooks/query/financialModel';
+import {
+  useFinancialOverview,
+  useFinancialSegments,
+} from '@/hooks/query/financialModel';
 import { MarginOverTimeChart } from './MarginOverTimeChart';
+import { SegmentTable, ProductTable } from './SegmentTables';
 
 const fmtMoney = (n: number | null | undefined) =>
   `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
@@ -33,6 +37,10 @@ export default function FinancialModelPage() {
   const [toDate] = React.useState(today.toISOString().slice(0, 10));
 
   const { data } = useFinancialOverview(
+    { fromDate, toDate },
+    { enabled: flagEnabled },
+  );
+  const { data: segments } = useFinancialSegments(
     { fromDate, toDate },
     { enabled: flagEnabled },
   );
@@ -81,6 +89,29 @@ export default function FinancialModelPage() {
           {intl.get('financial_model.chart.margin_over_time')}
         </div>
         <MarginOverTimeChart data={data?.marginOverTime ?? []} />
+      </div>
+
+      {/* Рентабельность по сегментам (Фаза 2) */}
+      <h2 className="mt-2 text-lg font-semibold">
+        {intl.get('financial_model.segments.title')}
+      </h2>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        <SegmentTable
+          title={intl.get('financial_model.segment.by_deal')}
+          rows={segments?.byDeal ?? []}
+        />
+        <SegmentTable
+          title={intl.get('financial_model.segment.by_manager')}
+          rows={segments?.byManager ?? []}
+        />
+        <SegmentTable
+          title={intl.get('financial_model.segment.by_branch')}
+          rows={segments?.byBranch ?? []}
+        />
+        <ProductTable
+          title={intl.get('financial_model.segment.by_product')}
+          rows={segments?.byProduct ?? []}
+        />
       </div>
     </div>
   );

@@ -23,6 +23,41 @@ export function computeRevenuePerEmployee(
   return { value: round2(revenue / employeeCount), applicable: true };
 }
 
+export interface ProductMarginRow {
+  itemId: number;
+  revenue: number;
+  cost: number; // себестоимость проданного (COGS)
+  grossMargin: number; // выручка − себестоимость
+  margin: number; // доля 0..1; 0, если выручки нет (не делим на ноль)
+}
+
+/**
+ * Сшивает карты «выручка по товару» и «себестоимость по товару» в строки
+ * валовой маржи. Строка создаётся для каждого товара, встретившегося хотя бы
+ * в одной карте (товар может иметь выручку без себестоимости или наоборот).
+ * Маржа% = валовая_маржа ÷ выручка, 0 при нулевой выручке. Сортировка — по
+ * валовой марже по убыванию (как сделки по прибыли в GetDealsSummary).
+ * Имена товаров здесь не нужны — их добавляет слой запроса (join к items).
+ */
+export function computeProductMargins(
+  revenueByItem: Record<number, number>,
+  costByItem: Record<number, number>,
+): ProductMarginRow[] {
+  const itemIds = new Set<number>([
+    ...Object.keys(revenueByItem).map(Number),
+    ...Object.keys(costByItem).map(Number),
+  ]);
+  const rows: ProductMarginRow[] = [];
+  for (const itemId of itemIds) {
+    const revenue = round2(revenueByItem[itemId] ?? 0);
+    const cost = round2(costByItem[itemId] ?? 0);
+    const grossMargin = round2(revenue - cost);
+    const margin = revenue > 0 ? round2(grossMargin / revenue) : 0;
+    rows.push({ itemId, revenue, cost, grossMargin, margin });
+  }
+  return rows.sort((a, b) => b.grossMargin - a.grossMargin);
+}
+
 /**
  * Список месяцев 'YYYY-MM' от fromDate до toDate включительно (по месяцам).
  * Если from позже to — пустой массив.

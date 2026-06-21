@@ -3252,5 +3252,18 @@
   "financial_model.metric.break_even": "Break-even",
   "financial_model.metric.coming_soon": "Coming soon",
   "financial_model.chart.margin_over_time": "Margin over time",
-  "financial_model.na": "—"
+  "financial_model.na": "—",
+  "financial_model.segments.title": "Profitability by segment",
+  "financial_model.segment.by_deal": "By deal",
+  "financial_model.segment.by_manager": "By manager",
+  "financial_model.segment.by_branch": "By area",
+  "financial_model.segment.by_product": "By product",
+  "financial_model.segment.empty": "No data for the period",
+  "financial_model.col.name": "Name",
+  "financial_model.col.revenue": "Revenue",
+  "financial_model.col.costs": "Costs",
+  "financial_model.col.profit": "Profit",
+  "financial_model.col.margin": "Margin",
+  "financial_model.col.cost_of_goods": "Cost of goods",
+  "financial_model.col.gross_margin": "Gross margin"
 }

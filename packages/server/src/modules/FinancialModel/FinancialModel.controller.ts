@@ -19,4 +19,13 @@ export class FinancialModelController {
   getOverview(@Query() query: FinancialOverviewQueryDto) {
     return this.application.getOverview(query);
   }
+
+  @Get('segments')
+  @ApiOperation({
+    summary:
+      'Рентабельность по сегментам: сделки, менеджеры, направления, продукты.',
+  })
+  getSegments(@Query() query: FinancialOverviewQueryDto) {
+    return this.application.getSegments(query);
+  }
 }

@@ -3265,5 +3265,18 @@
   "financial_model.col.profit": "Profit",
   "financial_model.col.margin": "Margin",
   "financial_model.col.cost_of_goods": "Cost of goods",
-  "financial_model.col.gross_margin": "Gross margin"
+  "financial_model.col.gross_margin": "Gross margin",
+  "financial_model.marketing.title": "Marketing",
+  "financial_model.marketing.lifetime_label": "Average customer lifetime (months)",
+  "financial_model.marketing.month_label": "Month",
+  "financial_model.marketing.channel_name": "Channel",
+  "financial_model.marketing.spend": "Spend",
+  "financial_model.marketing.new_customers": "New customers",
+  "financial_model.marketing.add_channel": "Add channel",
+  "financial_model.marketing.new_channel_placeholder": "Channel name",
+  "financial_model.marketing.save": "Save",
+  "financial_model.marketing.delete": "Delete",
+  "financial_model.marketing.cac_by_channel": "CAC by channel",
+  "financial_model.marketing.empty_channels": "No channels yet",
+  "financial_model.marketing.no_data": "Fill in marketing data"
 }

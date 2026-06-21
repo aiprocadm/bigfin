@@ -6,8 +6,10 @@ import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/Ar
 import { FinancialModelController } from './FinancialModel.controller';
 import { FinancialModelApplication } from './FinancialModel.application';
 import { GetFinancialOverviewService } from './queries/GetFinancialOverview.service';
-import { GetProductMarginService } from './queries/GetProductMargin.service';
 import { GetSegmentProfitabilityService } from './queries/GetSegmentProfitability.service';
+import { GetProductMarginService } from './queries/GetProductMargin.service';
+import { GetMarketingMetricsService } from './queries/GetMarketingMetrics.service';
+import { MarketingDataService } from './commands/MarketingData.service';
 
 @Module({
   imports: [TenancyDatabaseModule, TenancyModule],
@@ -17,6 +19,8 @@ import { GetSegmentProfitabilityService } from './queries/GetSegmentProfitabilit
     GetFinancialOverviewService,
     GetSegmentProfitabilityService,
     GetProductMarginService,
+    GetMarketingMetricsService,
+    MarketingDataService,
     // collaborator injected directly (no ManagementArticlesModule import needed)
     ArticlesPlRollupService,
   ],

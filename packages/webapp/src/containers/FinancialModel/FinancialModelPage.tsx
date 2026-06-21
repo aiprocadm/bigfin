@@ -5,9 +5,12 @@ import { useFeatureCan } from '@/hooks/state/feature';
 import {
   useFinancialOverview,
   useFinancialSegments,
+  useMarketingMetrics,
+  MetricValue,
 } from '@/hooks/query/financialModel';
 import { MarginOverTimeChart } from './MarginOverTimeChart';
 import { SegmentTable, ProductTable } from './SegmentTables';
+import { MarketingPanel } from './MarketingPanel';
 
 const fmtMoney = (n: number | null | undefined) =>
   `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
@@ -44,10 +47,19 @@ export default function FinancialModelPage() {
     { fromDate, toDate },
     { enabled: flagEnabled },
   );
+  const { data: marketing } = useMarketingMetrics(
+    { fromDate, toDate },
+    { enabled: flagEnabled },
+  );
 
   if (!flagEnabled) return null;
 
   const soon = intl.get('financial_model.metric.coming_soon');
+  const na = intl.get('financial_model.na');
+  const metricMoney = (m?: MetricValue) =>
+    m?.applicable ? fmtMoney(m.value) : na;
+  const metricRatio = (m?: MetricValue) =>
+    m?.applicable ? `${Math.round(m.value * 10) / 10}×` : na;
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -60,7 +72,7 @@ export default function FinancialModelPage() {
         </span>
       </div>
 
-      {/* 6 карточек: 2 заполнены (Фаза 1), 4 — «Скоро» (Фазы 2–4) */}
+      {/* 6 карточек: маржа/выручка-на-сотрудника/LTV/CAC/ROMI живые, break-even «Скоро» (Фаза 4) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <MetricCard
           label={intl.get('financial_model.metric.margin')}
@@ -71,12 +83,21 @@ export default function FinancialModelPage() {
           value={
             data?.revenuePerEmployeeApplicable
               ? fmtMoney(data?.revenuePerEmployee)
-              : intl.get('financial_model.na')
+              : na
           }
         />
-        <MetricCard label={intl.get('financial_model.metric.ltv')} value={soon} />
-        <MetricCard label={intl.get('financial_model.metric.cac')} value={soon} />
-        <MetricCard label={intl.get('financial_model.metric.romi')} value={soon} />
+        <MetricCard
+          label={intl.get('financial_model.metric.ltv')}
+          value={metricMoney(marketing?.ltv)}
+        />
+        <MetricCard
+          label={intl.get('financial_model.metric.cac')}
+          value={metricMoney(marketing?.cacTotal)}
+        />
+        <MetricCard
+          label={intl.get('financial_model.metric.romi')}
+          value={metricRatio(marketing?.romi)}
+        />
         <MetricCard
           label={intl.get('financial_model.metric.break_even')}
           value={soon}
@@ -113,6 +134,9 @@ export default function FinancialModelPage() {
           rows={segments?.byProduct ?? []}
         />
       </div>
+
+      {/* Маркетинг: каналы, помесячный ввод, срок жизни клиента (Фаза 3) */}
+      <MarketingPanel marketing={marketing} fromDate={fromDate} toDate={toDate} />
     </div>
   );
 }

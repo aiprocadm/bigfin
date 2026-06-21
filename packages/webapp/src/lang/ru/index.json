@@ -3265,5 +3265,18 @@
   "financial_model.col.profit": "Прибыль",
   "financial_model.col.margin": "Маржа",
   "financial_model.col.cost_of_goods": "Себестоимость",
-  "financial_model.col.gross_margin": "Валовая маржа"
+  "financial_model.col.gross_margin": "Валовая маржа",
+  "financial_model.marketing.title": "Маркетинг",
+  "financial_model.marketing.lifetime_label": "Средний срок жизни клиента (мес.)",
+  "financial_model.marketing.month_label": "Месяц",
+  "financial_model.marketing.channel_name": "Канал",
+  "financial_model.marketing.spend": "Расход",
+  "financial_model.marketing.new_customers": "Новые клиенты",
+  "financial_model.marketing.add_channel": "Добавить канал",
+  "financial_model.marketing.new_channel_placeholder": "Название канала",
+  "financial_model.marketing.save": "Сохранить",
+  "financial_model.marketing.delete": "Удалить",
+  "financial_model.marketing.cac_by_channel": "CAC по каналам",
+  "financial_model.marketing.empty_channels": "Каналов пока нет",
+  "financial_model.marketing.no_data": "Заполните данные по маркетингу"
 }

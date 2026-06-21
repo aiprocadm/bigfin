@@ -63,6 +63,8 @@ import { FixedAssetDepreciationEntry } from '@/modules/FixedAssets/models/FixedA
 import { NotificationPreference } from '@/modules/Notifications/models/NotificationPreference.model';
 import { Notification } from '@/modules/Notifications/models/Notification.model';
 import { NotificationRead } from '@/modules/Notifications/models/NotificationRead.model';
+import { MarketingChannel } from '@/modules/FinancialModel/models/MarketingChannel.model';
+import { MarketingMonthly } from '@/modules/FinancialModel/models/MarketingMonthly.model';
 
 const models = [
   Item,
@@ -125,6 +127,8 @@ const models = [
   NotificationPreference,
   Notification,
   NotificationRead,
+  MarketingChannel,
+  MarketingMonthly,
   TenantUser,
 ];
 

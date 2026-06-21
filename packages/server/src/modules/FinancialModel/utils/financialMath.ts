@@ -59,6 +59,65 @@ export function computeProductMargins(
 }
 
 /**
+ * CAC = расход на маркетинг ÷ число новых клиентов.
+ * Неприменим при нуле/некорректном числе новых клиентов.
+ */
+export function computeCac(spend: number, newCustomers: number): MetricValue {
+  if (!Number.isFinite(newCustomers) || newCustomers <= 0) {
+    return { value: 0, applicable: false };
+  }
+  return { value: round2(spend / newCustomers), applicable: true };
+}
+
+/**
+ * ROMI (по решению основателя — фактически ROAS) = выручка ÷ расход на
+ * маркетинг, «рублей выручки на рубль маркетинга». Неприменим при нулевом расходе.
+ */
+export function computeRomi(revenue: number, spend: number): MetricValue {
+  if (!Number.isFinite(spend) || spend <= 0) {
+    return { value: 0, applicable: false };
+  }
+  return { value: round2(revenue / spend), applicable: true };
+}
+
+/**
+ * Средний чек = выручка ÷ число клиентов с продажами за период.
+ * Неприменим при нуле клиентов.
+ */
+export function computeAverageCheck(
+  revenue: number,
+  customerCount: number,
+): MetricValue {
+  if (!Number.isFinite(customerCount) || customerCount <= 0) {
+    return { value: 0, applicable: false };
+  }
+  return { value: round2(revenue / customerCount), applicable: true };
+}
+
+/**
+ * LTV (упрощённый) = средний чек × маржинальность(доля) × срок жизни (мес.).
+ * Неприменим, если срок жизни ≤ 0 (не задан) или средний чек ≤ 0 (нет выручки).
+ */
+export function computeLtv(
+  averageCheck: number,
+  marginFraction: number,
+  lifetimeMonths: number,
+): MetricValue {
+  if (
+    !Number.isFinite(lifetimeMonths) ||
+    lifetimeMonths <= 0 ||
+    !Number.isFinite(averageCheck) ||
+    averageCheck <= 0
+  ) {
+    return { value: 0, applicable: false };
+  }
+  return {
+    value: round2(averageCheck * marginFraction * lifetimeMonths),
+    applicable: true,
+  };
+}
+
+/**
  * Список месяцев 'YYYY-MM' от fromDate до toDate включительно (по месяцам).
  * Если from позже to — пустой массив.
  */

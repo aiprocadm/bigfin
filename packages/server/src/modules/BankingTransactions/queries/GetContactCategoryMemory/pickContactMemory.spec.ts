@@ -6,31 +6,32 @@ describe('pickContactMemory', () => {
   });
 
   it('берёт первую строку (последнее подтверждение) с непустой статьёй', () => {
+    // Тип хранится в БД в PascalCase, как пишет CreateBankTransactionService.
     const rows = [
-      { creditAccountId: 1001, transactionType: 'other_expense' },
-      { creditAccountId: 2002, transactionType: 'other_income' },
+      { creditAccountId: 1001, transactionType: 'OtherExpense' },
+      { creditAccountId: 2002, transactionType: 'OtherIncome' },
     ];
     expect(pickContactMemory(rows)).toEqual({
       creditAccountId: 1001,
-      transactionType: 'other_expense',
+      transactionType: 'OtherExpense',
     });
   });
 
   it('пропускает строки без статьи (null creditAccountId)', () => {
     const rows = [
-      { creditAccountId: null, transactionType: 'other_expense' },
-      { creditAccountId: 3003, transactionType: 'other_income' },
+      { creditAccountId: null, transactionType: 'OtherExpense' },
+      { creditAccountId: 3003, transactionType: 'OtherIncome' },
     ];
     expect(pickContactMemory(rows)).toEqual({
       creditAccountId: 3003,
-      transactionType: 'other_income',
+      transactionType: 'OtherIncome',
     });
   });
 
   it('возвращает null, если ни в одной строке нет статьи', () => {
     const rows = [
-      { creditAccountId: null, transactionType: 'other_expense' },
-      { creditAccountId: undefined, transactionType: 'other_income' },
+      { creditAccountId: null, transactionType: 'OtherExpense' },
+      { creditAccountId: undefined, transactionType: 'OtherIncome' },
     ];
     expect(pickContactMemory(rows)).toBeNull();
   });

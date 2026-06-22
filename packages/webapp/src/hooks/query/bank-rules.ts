@@ -594,6 +594,8 @@ export interface GetAutofillCategorizeTransaction {
   isWithdrawalTransaction: boolean;
   payeeInn: string | null;
   payee: string | null;
+  suggestedContactId: number | null;
+  suggestedByContact: boolean;
 }
 
 export function useGetAutofillCategorizeTransaction(

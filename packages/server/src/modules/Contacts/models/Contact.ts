@@ -18,6 +18,8 @@ export class Contact extends BaseModel {
 
   displayName: string;
 
+  inn?: string;
+
   email?: string;
   workPhone?: string;
   personalPhone?: string;

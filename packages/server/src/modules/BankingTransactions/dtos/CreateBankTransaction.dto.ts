@@ -150,4 +150,14 @@ export class CreateBankTransactionDto {
   @IsOptional()
   @IsInt()
   uncategorizedTransactionId?: number;
+
+  @ApiPropertyOptional({
+    description: 'ID of the linked contact (counterparty)',
+    type: Number,
+    example: 55,
+  })
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  contactId?: number;
 }

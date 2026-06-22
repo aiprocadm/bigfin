@@ -21,6 +21,8 @@ export class UncategorizedBankTransaction extends TenantBaseModel {
   readonly categorizeRefId!: number;
   readonly categorizeRefType!: string;
   readonly currencyCode!: string;
+  payeeInn?: string;
+  externalId?: string;
 
   /**
    * Table name.

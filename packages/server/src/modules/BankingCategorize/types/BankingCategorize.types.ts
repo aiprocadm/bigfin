@@ -34,6 +34,7 @@ export interface ICategorizeCashflowTransactioDTO {
   currencyCode: string;
   description: string;
   branchId: number;
+  contactId?: number;
 }
 
 

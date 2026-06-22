@@ -22,6 +22,7 @@ export enum Features {
   NOTIFICATIONS = 'notifications',
   INTERFACE_MODES = 'interface_modes',
   FINANCIAL_MODEL = 'financial_model',
+  BANK_STATEMENT_IMPORT = 'bank_statement_import',
 }
 
 export interface IFeatureAllItem {

@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import { first } from 'lodash';
 import { DrawerLoading } from '@/components';
-import { useAccounts, useBranches } from '@/hooks/query';
+import { useAccounts, useBranches, useAutoCompleteContacts } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 import { Spinner } from '@blueprintjs/core';
@@ -19,6 +19,7 @@ interface CategorizeTransactionBootProps {
 interface CategorizeTransactionBootValue {
   branches: any;
   accounts: any;
+  contacts: any[];
   isBranchesLoading: boolean;
   isAccountsLoading: boolean;
   primaryBranch: any;
@@ -56,6 +57,9 @@ function CategorizeTransactionBoot({
     isLoading: isAutofillCategorizeValuesLoading,
   } = useGetAutofillCategorizeTransaction(uncategorizedTransactionsIds, {});
 
+  // Fetches the auto-complete contacts list.
+  const { data: contacts = [] } = useAutoCompleteContacts();
+
   // Retrieves the primary branch.
   const primaryBranch = useMemo(
     () => branches?.find((b) => b.primary) || first(branches),
@@ -65,6 +69,7 @@ function CategorizeTransactionBoot({
   const provider = {
     branches,
     accounts,
+    contacts,
     isBranchesLoading,
     isAccountsLoading,
     primaryBranch,

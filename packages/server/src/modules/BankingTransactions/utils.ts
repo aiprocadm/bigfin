@@ -69,6 +69,7 @@ export const transformCategorizeTransToCashflow = (
     transactionNumber: categorizeDTO.transactionNumber,
     transactionType: categorizeDTO.transactionType,
     branchId: categorizeDTO?.branchId,
+    contactId: categorizeDTO?.contactId,
     publish: true,
   };
 };

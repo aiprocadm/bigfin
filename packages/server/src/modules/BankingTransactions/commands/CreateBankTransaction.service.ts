@@ -78,6 +78,7 @@ export class CreateBankTransactionService {
       'cashflowAccountId',
       'creditAccountId',
       'branchId',
+      'contactId',
       'plaidTransactionId',
       'uncategorizedTransactionId',
     ]);

@@ -28,6 +28,7 @@ export class BankTransaction extends BaseModel {
   uncategorized: boolean;
 
   branchId: number;
+  contactId?: number;
   userId: number;
 
   publishedAt: Date;

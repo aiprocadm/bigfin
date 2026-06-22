@@ -97,6 +97,15 @@ export class CategorizeBankTransactionDto {
   @IsNumber()
   @IsOptional()
   branchId: number;
+
+  @ApiPropertyOptional({
+    description: 'ID of the linked contact (counterparty)',
+    type: Number,
+    example: 55,
+  })
+  @IsNumber()
+  @IsOptional()
+  contactId?: number;
 }
 
 /**

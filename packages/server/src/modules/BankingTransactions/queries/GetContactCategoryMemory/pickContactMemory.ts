@@ -1,3 +1,5 @@
+import { snakeCase } from 'lodash';
+
 /**
  * Кандидат памяти по контрагенту: пара «статья + тип операции»,
  * взятая из прошлой подтверждённой денежной операции этого контрагента.
@@ -36,4 +38,17 @@ export const pickContactMemory = (
     creditAccountId: match.creditAccountId as number,
     transactionType: match.transactionType ?? null,
   };
+};
+
+/**
+ * Приводит сохранённый тип операции (`OtherIncome`, PascalCase из БД) к виду,
+ * который ожидает форма «Разбор» (`other_income`, snake_case). Пустой → null.
+ *
+ * @param {string | null | undefined} stored — тип из `cashflow_transactions`.
+ * @returns {string | null}
+ */
+export const toFormTransactionType = (
+  stored: string | null | undefined,
+): string | null => {
+  return stored ? snakeCase(stored) : null;
 };

@@ -6,6 +6,7 @@ import { UncategorizedBankTransaction } from '@/modules/BankingTransactions/mode
 import { TransformerInjectable } from '@/modules/Transformer/TransformerInjectable.service';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { GetContactByInnService } from '@/modules/Contacts/queries/GetContactByInn.service';
+import { CASHFLOW_DIRECTION } from '@/modules/BankingTransactions/constants';
 
 @Injectable()
 export class GetAutofillCategorizeTransactionService {
@@ -69,8 +70,13 @@ export class GetAutofillCategorizeTransactionService {
     const contact = await this.getContactByInn.getByInn(transaction.payeeInn);
     if (!contact) return empty;
 
+    // Направление по знаку суммы непривязанной строки (приход > 0 / расход < 0).
+    const direction =
+      transaction.amount >= 0 ? CASHFLOW_DIRECTION.IN : CASHFLOW_DIRECTION.OUT;
+
     const contactMemory = await this.contactCategoryMemory.getForContact(
       contact.id,
+      direction,
     );
 
     return { suggestedContactId: contact.id, contactMemory };

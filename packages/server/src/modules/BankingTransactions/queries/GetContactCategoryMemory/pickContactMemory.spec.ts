@@ -1,4 +1,4 @@
-import { pickContactMemory } from './pickContactMemory';
+import { pickContactMemory, toFormTransactionType } from './pickContactMemory';
 
 describe('pickContactMemory', () => {
   it('возвращает null для пустого списка', () => {
@@ -41,5 +41,22 @@ describe('pickContactMemory', () => {
       creditAccountId: 4004,
       transactionType: null,
     });
+  });
+});
+
+describe('toFormTransactionType', () => {
+  it('переводит PascalCase из БД в snake_case формы', () => {
+    expect(toFormTransactionType('OtherIncome')).toBe('other_income');
+    expect(toFormTransactionType('OtherExpense')).toBe('other_expense');
+    expect(toFormTransactionType('OwnerDrawing')).toBe('owner_drawing');
+    expect(toFormTransactionType('TransferFromAccount')).toBe(
+      'transfer_from_account',
+    );
+  });
+
+  it('возвращает null для пустого значения', () => {
+    expect(toFormTransactionType(null)).toBeNull();
+    expect(toFormTransactionType(undefined)).toBeNull();
+    expect(toFormTransactionType('')).toBeNull();
   });
 });

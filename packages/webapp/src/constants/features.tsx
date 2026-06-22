@@ -11,4 +11,5 @@ export const Features = {
   Notifications: 'notifications', // уведомления о кассовом разрыве/остатке/просрочке (㉒)
   InterfaceModes: 'interface_modes',
   FinancialModel: 'financial_model',
+  BankStatementImport: 'bank_statement_import',
 }

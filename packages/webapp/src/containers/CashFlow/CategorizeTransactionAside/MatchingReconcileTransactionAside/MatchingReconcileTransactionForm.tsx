@@ -86,7 +86,7 @@ function MatchingReconcileTransactionFormRoot({
           )
         ) {
           setErrors({
-            branchId: 'The branch is required.',
+            branchId: intl.get('cash_flow.matching.branch_required'),
           });
         } else {
           AppToaster.show({

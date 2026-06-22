@@ -9,6 +9,7 @@ const Schema = Yup.object().shape({
   creditAccountId: Yup.string().required().label('Credit account'),
   referenceNo: Yup.string().optional().label('Reference No.'),
   description: Yup.string().optional().label('Description'),
+  contactId: Yup.number().nullable().optional().label('Contact'),
 });
 
 export const CreateCategorizeTransactionSchema = Schema;

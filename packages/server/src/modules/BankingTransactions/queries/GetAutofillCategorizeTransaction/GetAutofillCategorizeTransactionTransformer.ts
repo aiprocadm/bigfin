@@ -21,6 +21,8 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
       'recognizedByRuleName',
       'isWithdrawalTransaction',
       'isDepositTransaction',
+      'payeeInn',
+      'payee',
     ];
   };
 
@@ -137,8 +139,18 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
   public payee() {
     return (
       this.options.firstUncategorizedTransaction?.recognizedTransaction
-        ?.assignedPayee || null
+        ?.assignedPayee ||
+      this.options.firstUncategorizedTransaction?.payee ||
+      null
     );
+  }
+
+  /**
+   * Retrieves the INN of the counterparty from the uncategorized transaction.
+   * @returns {string | null}
+   */
+  public payeeInn() {
+    return this.options.firstUncategorizedTransaction?.payeeInn || null;
   }
 
   /**

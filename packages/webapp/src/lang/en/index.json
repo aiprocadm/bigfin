@@ -3299,5 +3299,6 @@
   "bank_import.result": "Imported {imported}, skipped {skipped} duplicates",
   "bank_import.create_contact": "Create contact",
   "bank_import.counterparty_inn": "Counterparty INN",
+  "bank_import.counterparty": "Counterparty",
   "bank_import.parse_error": "Could not parse the statement file"
 }

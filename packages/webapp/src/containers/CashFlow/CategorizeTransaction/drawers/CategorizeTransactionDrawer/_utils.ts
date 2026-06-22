@@ -15,6 +15,7 @@ export const defaultInitialValues = {
   referenceNo: '',
   description: '',
   branchId: '',
+  contactId: null,
 };
 
 export const transformToCategorizeForm = (

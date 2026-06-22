@@ -3299,5 +3299,6 @@
   "bank_import.result": "Загружено {imported}, пропущено {skipped} дублей",
   "bank_import.create_contact": "Создать контрагента",
   "bank_import.counterparty_inn": "ИНН контрагента",
+  "bank_import.counterparty": "Контрагент",
   "bank_import.parse_error": "Не удалось разобрать файл выписки"
 }

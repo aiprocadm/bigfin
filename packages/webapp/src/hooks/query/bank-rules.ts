@@ -592,6 +592,8 @@ export interface GetAutofillCategorizeTransaction {
   referenceNo: null | string;
   isDepositTransaction: boolean;
   isWithdrawalTransaction: boolean;
+  payeeInn: string | null;
+  payee: string | null;
 }
 
 export function useGetAutofillCategorizeTransaction(

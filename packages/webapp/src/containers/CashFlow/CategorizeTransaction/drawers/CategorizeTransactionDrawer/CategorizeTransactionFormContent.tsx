@@ -2,8 +2,9 @@
 import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
-import { FormGroup } from '@blueprintjs/core';
+import { FormGroup, Tag } from '@blueprintjs/core';
 import { Box, FFormGroup, FSelect } from '@/components';
+import { ContactSelectField } from '@/components/Contacts/ContactSelectField';
 import { getAddMoneyInOptions, getAddMoneyOutOptions } from '@/constants';
 import { useFormikContext } from 'formik';
 import { useCategorizeTransactionTabsBoot } from '@/containers/CashFlow/CategorizeTransactionAside/CategorizeTransactionTabsBoot';
@@ -20,13 +21,19 @@ const Title = styled('h3')`
 `;
 
 export function CategorizeTransactionFormContent() {
-  const { autofillCategorizeValues } = useCategorizeTransactionBoot();
+  const { autofillCategorizeValues, contacts } = useCategorizeTransactionBoot();
+  const { values, setFieldValue } = useFormikContext();
 
   const transactionTypes = autofillCategorizeValues?.isDepositTransaction
     ? MoneyInOptions
     : MoneyOutOptions;
 
   const formattedAmount = autofillCategorizeValues?.formattedAmount;
+  const payeeInn = autofillCategorizeValues?.payeeInn;
+
+  const handleContactSelected = (contact) => {
+    setFieldValue('contactId', contact ? contact.id : null);
+  };
 
   return (
     <Box style={{ flex: 1, margin: 20 }}>
@@ -44,6 +51,20 @@ export function CategorizeTransactionFormContent() {
           fill
         />
       </FFormGroup>
+
+      <FormGroup label={intl.get('bank_import.counterparty')} inline>
+        <Box>
+          <ContactSelectField
+            contacts={contacts}
+            selectedContactId={values.contactId || null}
+            onContactSelected={handleContactSelected}
+            popoverFill
+          />
+          {payeeInn && (
+            <InnTag minimal>{intl.get('bank_import.counterparty_inn')}: {payeeInn}</InnTag>
+          )}
+        </Box>
+      </FormGroup>
 
       <CategorizeTransactionFormSubContent />
     </Box>
@@ -73,6 +94,11 @@ const CategorizeTransactionToAccount = React.lazy(
 const CategorizeTransactionOwnerDrawings = React.lazy(
   () => import('./MoneyOut/CategorizeTransactionOwnerDrawings'),
 );
+
+const InnTag = styled(Tag)`
+  margin-top: 4px;
+  font-size: 12px;
+`;
 
 function CategorizeTransactionFormSubContent() {
   const { values } = useFormikContext();

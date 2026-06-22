@@ -1,5 +1,6 @@
 import { decodeStatementBuffer } from './decodeStatement';
 import { parse1CStatement } from './parse1CStatement';
+import { resolveDirection, buildExternalId } from './statementHelpers';
 
 describe('decodeStatementBuffer', () => {
   it('декодирует windows-1251 в кириллицу', () => {
@@ -69,5 +70,39 @@ describe('parse1CStatement', () => {
 
   it('не падает на файле без документов', () => {
     expect(parse1CStatement('1CClientBankExchange\r\nКонецФайла').documents).toEqual([]);
+  });
+});
+
+describe('resolveDirection', () => {
+  const docIn = parse1CStatement(FIXTURE).documents[0]; // получатель = наш счёт
+  const docOut = parse1CStatement(FIXTURE).documents[1]; // плательщик = наш счёт
+  const acc = '40702810400000012345';
+
+  it('приход, если наш счёт — получатель', () => {
+    const r = resolveDirection(docIn, acc);
+    expect(r.direction).toBe('in');
+    expect(r.counterpartyInn).toBe('7701234567'); // плательщик
+    expect(r.counterpartyName).toBe('ООО "Клиент"');
+  });
+
+  it('расход, если наш счёт — плательщик', () => {
+    const r = resolveDirection(docOut, acc);
+    expect(r.direction).toBe('out');
+    expect(r.counterpartyInn).toBe('7709999999'); // получатель
+  });
+
+  it('unknown, если счёт не совпал', () => {
+    expect(resolveDirection(docIn, '00000000000000000000').direction).toBe('unknown');
+  });
+});
+
+describe('buildExternalId', () => {
+  it('устойчив к повторному вызову', () => {
+    const doc = parse1CStatement(FIXTURE).documents[0];
+    expect(buildExternalId(doc)).toBe(buildExternalId(doc));
+  });
+  it('различает разные документы', () => {
+    const [a, b] = parse1CStatement(FIXTURE).documents;
+    expect(buildExternalId(a)).not.toBe(buildExternalId(b));
   });
 });

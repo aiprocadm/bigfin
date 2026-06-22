@@ -30,6 +30,7 @@ export function CategorizeTransactionFormContent() {
 
   const formattedAmount = autofillCategorizeValues?.formattedAmount;
   const payeeInn = autofillCategorizeValues?.payeeInn;
+  const suggestedByContact = autofillCategorizeValues?.suggestedByContact;
 
   const handleContactSelected = (contact) => {
     setFieldValue('contactId', contact ? contact.id : null);
@@ -51,6 +52,12 @@ export function CategorizeTransactionFormContent() {
           fill
         />
       </FFormGroup>
+
+      {suggestedByContact && (
+        <SuggestionHint>
+          {intl.get('bank_import.suggested_by_contact')}
+        </SuggestionHint>
+      )}
 
       <FormGroup label={intl.get('bank_import.counterparty')} inline>
         <Box>
@@ -98,6 +105,12 @@ const CategorizeTransactionOwnerDrawings = React.lazy(
 const InnTag = styled(Tag)`
   margin-top: 4px;
   font-size: 12px;
+`;
+
+const SuggestionHint = styled('div')`
+  margin: -8px 0 14px 140px;
+  font-size: 12px;
+  color: #5c7080;
 `;
 
 function CategorizeTransactionFormSubContent() {

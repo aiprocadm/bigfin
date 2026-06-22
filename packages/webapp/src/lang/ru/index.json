@@ -3293,5 +3293,11 @@
   "financial_model.breakeven.clear": "Снять отметки",
   "financial_model.breakeven.empty_articles": "Нет расходных статей",
   "financial_model.breakeven.progress": "Прогресс к безубыточности",
-  "financial_model.breakeven.reached": "Точка безубыточности достигнута"
+  "financial_model.breakeven.reached": "Точка безубыточности достигнута",
+  "bank_import.title": "Импорт банковской выписки",
+  "bank_import.upload_1c": "Загрузить файл 1С (.txt)",
+  "bank_import.result": "Загружено {imported}, пропущено {skipped} дублей",
+  "bank_import.create_contact": "Создать контрагента",
+  "bank_import.counterparty_inn": "ИНН контрагента",
+  "bank_import.parse_error": "Не удалось разобрать файл выписки"
 }

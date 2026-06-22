@@ -3293,5 +3293,11 @@
   "financial_model.breakeven.clear": "Clear",
   "financial_model.breakeven.empty_articles": "No expense articles",
   "financial_model.breakeven.progress": "Progress to break-even",
-  "financial_model.breakeven.reached": "Break-even reached"
+  "financial_model.breakeven.reached": "Break-even reached",
+  "bank_import.title": "Import bank statement",
+  "bank_import.upload_1c": "Upload 1C file (.txt)",
+  "bank_import.result": "Imported {imported}, skipped {skipped} duplicates",
+  "bank_import.create_contact": "Create contact",
+  "bank_import.counterparty_inn": "Counterparty INN",
+  "bank_import.parse_error": "Could not parse the statement file"
 }

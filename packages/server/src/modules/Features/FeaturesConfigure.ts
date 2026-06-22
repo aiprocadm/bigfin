@@ -106,6 +106,10 @@ export class FeaturesConfigure {
         name: Features.FINANCIAL_MODEL,
         defaultValue: false,
       },
+      {
+        name: Features.BANK_STATEMENT_IMPORT,
+        defaultValue: false,
+      },
     ];
   }
 }

@@ -53,9 +53,19 @@ export function CategorizeTransactionFormContent() {
   const canCreateContact = Boolean(payeeInn && payee && !values.contactId);
 
   const handleCreateContact = async () => {
+    // Валюта обязательна для клиента (серверная валидация бьёт до фолбэка) —
+    // если базовая валюта организации ещё не загружена, не отправляем запрос.
+    const baseCurrency = organization?.base_currency;
+    if (!baseCurrency) {
+      AppToaster.show({
+        message: intl.get('bank_import.contact_create_failed'),
+        intent: Intent.DANGER,
+      });
+      return;
+    }
     const payload = {
       display_name: payee,
-      currency_code: organization?.base_currency,
+      currency_code: baseCurrency,
       inn: payeeInn,
       ...(isDeposit ? { customer_type: 'business' } : {}),
     };

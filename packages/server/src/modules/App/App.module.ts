@@ -46,6 +46,7 @@ import { DividendsModule } from '../Dividends/Dividends.module';
 import { CreditsModule } from '../Credits/Credits.module';
 import { FinancialModelModule } from '../FinancialModel/FinancialModel.module';
 import { BankStatementImportModule } from '../BankStatementImport/BankStatementImport.module';
+import { MoySkladModule } from '../MoySklad/MoySklad.module';
 import { MarketplacesModule } from '../Marketplaces/Marketplaces.module';
 import { BankApiSyncModule } from '../BankApiSync/BankApiSync.module';
 import { OnecExportModule } from '../OnecExport/OnecExport.module';
@@ -236,6 +237,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     CreditsModule,
     FinancialModelModule,
     BankStatementImportModule,
+    MoySkladModule,
     MarketplacesModule,
     BankApiSyncModule,
     OnecExportModule,

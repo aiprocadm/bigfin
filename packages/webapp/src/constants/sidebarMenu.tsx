@@ -822,6 +822,12 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.moysklad'} />,
+    href: '/moysklad',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Moysklad,
+  },
+  {
     text: <T id={'sidebar.marketplaces'} />,
     href: '/marketplaces',
     type: ISidebarMenuItemType.Link,

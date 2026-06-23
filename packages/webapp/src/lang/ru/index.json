@@ -3338,5 +3338,20 @@
   "crm_integration.sync.title": "Синхронизация",
   "crm_integration.sync.done": "Импортировано сделок: {deals}, контрагентов: {contacts}.",
   "crm_integration.sync.error": "Не удалось выполнить синхронизацию.",
-  "crm_integration.sync.summary": "Сделки: импортировано {deals}, пропущено {dealsSkipped}. Контрагенты: импортировано {contacts}, пропущено {contactsSkipped}."
+  "crm_integration.sync.summary": "Сделки: импортировано {deals}, пропущено {dealsSkipped}. Контрагенты: импортировано {contacts}, пропущено {contactsSkipped}.",
+  "sidebar.financial_ratios": "Показатели",
+  "financial_ratios.page.title": "Финансовые показатели",
+  "financial_ratios.roe": "Рентабельность собственного капитала (ROE)",
+  "financial_ratios.roa": "Рентабельность активов (ROA)",
+  "financial_ratios.net_margin": "Рентабельность по чистой прибыли",
+  "financial_ratios.current_ratio": "Текущая ликвидность",
+  "financial_ratios.quick_ratio": "Быстрая ликвидность",
+  "financial_ratios.working_capital": "Оборотный капитал",
+  "financial_ratios.debt_to_equity": "Долг к собственному капиталу",
+  "financial_ratios.debt_ratio": "Долговая нагрузка",
+  "financial_ratios.equity_ratio": "Коэффициент автономии",
+  "financial_ratios.vertical.title": "Вертикальный анализ ОПиУ (доля от выручки)",
+  "financial_ratios.vertical.article": "Раздел",
+  "financial_ratios.vertical.amount": "Сумма",
+  "financial_ratios.vertical.share": "Доля от выручки"
 }

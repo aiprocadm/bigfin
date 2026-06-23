@@ -3338,5 +3338,20 @@
   "crm_integration.sync.title": "Synchronization",
   "crm_integration.sync.done": "Imported {deals} deals and {contacts} counterparties.",
   "crm_integration.sync.error": "Synchronization failed.",
-  "crm_integration.sync.summary": "Deals: {deals} imported, {dealsSkipped} skipped. Counterparties: {contacts} imported, {contactsSkipped} skipped."
+  "crm_integration.sync.summary": "Deals: {deals} imported, {dealsSkipped} skipped. Counterparties: {contacts} imported, {contactsSkipped} skipped.",
+  "sidebar.financial_ratios": "Indicators",
+  "financial_ratios.page.title": "Financial indicators",
+  "financial_ratios.roe": "Return on equity (ROE)",
+  "financial_ratios.roa": "Return on assets (ROA)",
+  "financial_ratios.net_margin": "Net margin",
+  "financial_ratios.current_ratio": "Current ratio",
+  "financial_ratios.quick_ratio": "Quick ratio",
+  "financial_ratios.working_capital": "Working capital",
+  "financial_ratios.debt_to_equity": "Debt to equity",
+  "financial_ratios.debt_ratio": "Debt ratio",
+  "financial_ratios.equity_ratio": "Equity ratio (autonomy)",
+  "financial_ratios.vertical.title": "Vertical P&L analysis (share of revenue)",
+  "financial_ratios.vertical.article": "Section",
+  "financial_ratios.vertical.amount": "Amount",
+  "financial_ratios.vertical.share": "Share of revenue"
 }

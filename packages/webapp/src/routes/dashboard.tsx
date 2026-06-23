@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Financial ratios (㉕ Показатели)
+  {
+    path: `/financial-ratios`,
+    component: lazy(() => import('@/containers/FinancialRatios/FinancialRatiosPage')),
+    breadcrumb: intl.get('financial_ratios.page.title'),
+    pageTitle: intl.get('financial_ratios.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // CRM-интеграция (⑯a Битрикс24)
   {
     path: `/crm-integration`,

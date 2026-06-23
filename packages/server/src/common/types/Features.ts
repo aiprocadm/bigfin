@@ -23,6 +23,7 @@ export enum Features {
   INTERFACE_MODES = 'interface_modes',
   FINANCIAL_MODEL = 'financial_model',
   BANK_STATEMENT_IMPORT = 'bank_statement_import',
+  FINANCIAL_RATIOS = 'financial_ratios',
   CRM_INTEGRATION = 'crm_integration',
 }
 

@@ -13,6 +13,7 @@ export const Features = {
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
   Marketplaces: 'marketplaces', // ⑱ маркетплейсы WB/Ozon
+  OnecExport: 'onec_export', // ⑩ выгрузка в 1С (1CClientBankExchange)
   Acquiring: 'acquiring', // ⑨d эквайринг (YooKassa)
   Zenmoney: 'zenmoney_import', // ⑨b импорт Дзенмани
   VatAnalysis: 'vat_analysis', // ㉖ анализ НДС

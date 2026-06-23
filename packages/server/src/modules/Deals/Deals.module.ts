@@ -43,5 +43,6 @@ import { DeleteDealStageService } from './commands/DeleteDealStage.service';
     EditDealStageService,
     DeleteDealStageService,
   ],
+  exports: [CreateDealService],
 })
 export class DealsModule {}

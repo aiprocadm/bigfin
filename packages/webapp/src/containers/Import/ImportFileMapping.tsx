@@ -20,10 +20,7 @@ export function ImportFileMapping() {
     <ImportFileMapBootProvider importId={importId}>
       <ImportFileMappingForm>
         <ImportFileContainer>
-          <p>
-            Review and map the column headers in your csv/xlsx file with the
-            Bigfin fields.
-          </p>
+          <p>{intl.get('import.mapping.description')}</p>
 
           {entityColumns.map((entityColumn, index) => (
             <ImportFileMappingGroup
@@ -133,7 +130,7 @@ function ImportFileMappingFloatingActions() {
       <Group spacing={10}>
         <Button onClick={handleCancelBtnClick}>{intl.get('back')}</Button>
         <Button type="submit" intent={Intent.PRIMARY} loading={isSubmitting}>
-          Next
+          {intl.get('next')}
         </Button>
       </Group>
     </div>

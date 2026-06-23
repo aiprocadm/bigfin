@@ -1,14 +1,13 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React from 'react';
 import { FormattedMessage as T } from '@/components';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
-import { useQueryClient } from 'react-query';
 import { AppToaster } from '@/components';
 
-// import { withAccountsActions } from '@/containers/Accounts/withAccountsTableActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { useBulkInactivateAccounts } from '@/hooks/query/accounts';
 
 import { compose } from '@/utils';
 
@@ -17,14 +16,11 @@ function AccountBulkInactivateAlert({
   isOpen,
   payload: { accountsIds },
 
-  // #withAccountsActions
-  requestBulkInactiveAccounts,
-
   closeAlert,
 }) {
-  const [isLoading, setLoading] = useState(false);
-  const queryClient = useQueryClient();
-  const selectedRowsCount = 0;
+  const { mutateAsync: bulkInactivateAccounts, isLoading } =
+    useBulkInactivateAccounts();
+  const selectedRowsCount = accountsIds?.length || 0;
 
   // Handle alert cancel.
   const handleCancel = () => {
@@ -32,18 +28,20 @@ function AccountBulkInactivateAlert({
   };
   // Handle Bulk Inactive accounts confirm.
   const handleConfirmBulkInactive = () => {
-    setLoading(true);
-    requestBulkInactiveAccounts(accountsIds)
+    bulkInactivateAccounts(accountsIds)
       .then(() => {
         AppToaster.show({
           message: intl.get('the_accounts_have_been_successfully_inactivated'),
           intent: Intent.SUCCESS,
         });
-        queryClient.invalidateQueries('accounts-table');
       })
-      .catch((errors) => {})
+      .catch(() => {
+        AppToaster.show({
+          message: intl.get('something_went_wrong'),
+          intent: Intent.DANGER,
+        });
+      })
       .finally(() => {
-        setLoading(false);
         closeAlert(name);
       });
   };

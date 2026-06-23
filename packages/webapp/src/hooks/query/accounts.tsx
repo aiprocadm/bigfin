@@ -152,6 +152,45 @@ export function useInactivateAccount(props) {
 }
 
 /**
+ * Activates multiple accounts in bulk. Сервер не имеет отдельного
+ * bulk-эндпоинта активации, поэтому шлём параллельные одиночные запросы.
+ */
+export function useBulkActivateAccounts(props) {
+  const client = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation(
+    (ids: number[]) =>
+      Promise.all(ids.map((id) => apiRequest.post(`accounts/${id}/activate`))),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(client);
+      },
+      ...props,
+    },
+  );
+}
+
+/**
+ * Inactivates multiple accounts in bulk (параллельные одиночные запросы).
+ */
+export function useBulkInactivateAccounts(props) {
+  const client = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation(
+    (ids: number[]) =>
+      Promise.all(ids.map((id) => apiRequest.post(`accounts/${id}/inactivate`))),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(client);
+      },
+      ...props,
+    },
+  );
+}
+
+/**
  * Deletes multiple accounts in bulk.
  */
 export function useBulkDeleteAccounts(props) {

@@ -6,6 +6,7 @@ import {
   Get,
   Body,
   Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -58,7 +59,7 @@ export class CurrenciesController {
   })
   @ApiNotFoundResponse({ description: 'Currency not found.' })
   @ApiBadRequestResponse({ description: 'Invalid input data.' })
-  edit(@Param('id') id: number, @Body() dto: EditCurrencyDto) {
+  edit(@Param('id', ParseIntPipe) id: number, @Body() dto: EditCurrencyDto) {
     return this.currenciesApp.editCurrency(id, dto);
   }
 

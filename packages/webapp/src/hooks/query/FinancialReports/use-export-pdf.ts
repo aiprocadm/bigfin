@@ -47,12 +47,16 @@ export const useDownloadExportPdf = () => {
   const downloadAsync = (values) => {
     if (!isExportPdfLoading) {
       startProgress();
-      return mutateAsync(values).then((res) => {
-        downloadFile(res.data, `${values.resource}.pdf`);
-        stopProgress();
-
-        return res;
-      });
+      // .finally гарантирует остановку прогресс-индикатора и при ошибке —
+      // иначе таймер прогресса оставался висеть после неудачного экспорта.
+      return mutateAsync(values)
+        .then((res) => {
+          downloadFile(res.data, `${values.resource}.pdf`);
+          return res;
+        })
+        .finally(() => {
+          stopProgress();
+        });
     }
   };
   return {

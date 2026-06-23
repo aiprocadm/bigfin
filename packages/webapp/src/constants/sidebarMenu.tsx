@@ -828,6 +828,18 @@ export const SidebarMenu = [
     feature: Features.BankApiSync,
   },
   {
+    text: <T id={'sidebar.financial_ratios'} />,
+    href: '/financial-ratios',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.FinancialRatios,
+  },
+  {
+    text: <T id={'sidebar.crm_integration'} />,
+    href: '/crm-integration',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.CrmIntegration,
+  },
+  {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,
     children: [

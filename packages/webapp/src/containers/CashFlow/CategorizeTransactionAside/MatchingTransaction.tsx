@@ -80,7 +80,7 @@ function MatchingBankTransactionRoot({
           )
         ) {
           AppToaster.show({
-            message: `The total amount does not equal the uncategorized transaction.`,
+            message: intl.get('cash_flow.matching.total_mismatch'),
             intent: Intent.DANGER,
           });
           setSubmitting(false);
@@ -333,7 +333,7 @@ const MatchTransactionFooter = R.compose(withBankingActions)(({
               intent={Intent.PRIMARY}
               onClick={handleReconcileTransaction}
             >
-              Add Reconcile Transaction +
+              {intl.get('cash_flow.matching.add_reconcile')}
             </AnchorButton>
           )}
           <Text
@@ -344,7 +344,8 @@ const MatchTransactionFooter = R.compose(withBankingActions)(({
             }}
             tagName="span"
           >
-            Pending <FormatNumber value={totalPending} currency={'USD'} />
+            {intl.get('cash_flow.matching.pending')}{' '}
+            <FormatNumber value={totalPending} currency={'USD'} />
           </Text>
         </Group>
       </Box>
@@ -358,7 +359,7 @@ const MatchTransactionFooter = R.compose(withBankingActions)(({
             loading={isSubmitting}
             disabled={submitDisabled}
           >
-            Match
+            {intl.get('cash_flow.matching.match')}
           </Button>
 
           <Button onClick={handleCancelBtnClick}>{intl.get('cancel')}</Button>

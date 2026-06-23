@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Checkbox, Text } from '@blueprintjs/core';
 import { useUncontrolled } from '@/hooks/useUncontrolled';
@@ -45,7 +46,9 @@ export function MatchTransactionCheckbox({
     >
       <Stack spacing={2}>
         <span className={styles.label}>{label}</span>
-        <Text className={styles.date}>Date: {date}</Text>
+        <Text className={styles.date}>
+          {intl.get('cash_flow.matching.date', { date })}
+        </Text>
       </Stack>
 
       <Checkbox

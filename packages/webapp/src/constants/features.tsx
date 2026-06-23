@@ -13,4 +13,6 @@ export const Features = {
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
   BankApiSync: 'bank_api_sync', // ⑨c банковские API (Тинькофф/Альфа)
+  FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
+  CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
 }

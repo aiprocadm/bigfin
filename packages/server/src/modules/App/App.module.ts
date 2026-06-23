@@ -47,6 +47,8 @@ import { CreditsModule } from '../Credits/Credits.module';
 import { FinancialModelModule } from '../FinancialModel/FinancialModel.module';
 import { BankStatementImportModule } from '../BankStatementImport/BankStatementImport.module';
 import { BankApiSyncModule } from '../BankApiSync/BankApiSync.module';
+import { FinancialRatiosModule } from '../FinancialRatios/FinancialRatios.module';
+import { CrmIntegrationModule } from '../CrmIntegration/CrmIntegration.module';
 import { FixedAssetsModule } from '../FixedAssets/FixedAssets.module';
 import { CostAllocationModule } from '../CostAllocation/CostAllocation.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
@@ -230,6 +232,8 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     FinancialModelModule,
     BankStatementImportModule,
     BankApiSyncModule,
+    FinancialRatiosModule,
+    CrmIntegrationModule,
     FixedAssetsModule,
     CostAllocationModule,
     AccountsModule,

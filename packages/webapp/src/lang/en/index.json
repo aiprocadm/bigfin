@@ -3300,5 +3300,22 @@
   "bank_import.create_contact": "Create contact",
   "bank_import.counterparty_inn": "Counterparty INN",
   "bank_import.counterparty": "Counterparty",
-  "bank_import.parse_error": "Could not parse the statement file"
+  "bank_import.parse_error": "Could not parse the statement file",
+  "sidebar.crm_integration": "CRM integration",
+  "crm_integration.page.title": "CRM integration",
+  "crm_integration.page.subtitle": "One-way sync of deals and counterparties from your CRM into Bigfin.",
+  "crm_integration.bitrix24.title": "Bitrix24",
+  "crm_integration.bitrix24.connected": "Bitrix24 is connected.",
+  "crm_integration.webhook_url": "Inbound webhook URL",
+  "crm_integration.action.connect": "Connect",
+  "crm_integration.action.disconnect": "Disconnect",
+  "crm_integration.action.sync": "Sync now",
+  "crm_integration.connect.success": "Bitrix24 connected.",
+  "crm_integration.connect.error": "Could not connect Bitrix24. Check the webhook URL.",
+  "crm_integration.disconnect.success": "Bitrix24 disconnected.",
+  "crm_integration.disconnect.error": "Could not disconnect Bitrix24.",
+  "crm_integration.sync.title": "Synchronization",
+  "crm_integration.sync.done": "Imported {deals} deals and {contacts} counterparties.",
+  "crm_integration.sync.error": "Synchronization failed.",
+  "crm_integration.sync.summary": "Deals: {deals} imported, {dealsSkipped} skipped. Counterparties: {contacts} imported, {contactsSkipped} skipped."
 }

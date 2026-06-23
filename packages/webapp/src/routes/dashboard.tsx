@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // CRM-интеграция (⑯a Битрикс24)
+  {
+    path: `/crm-integration`,
+    component: lazy(() => import('@/containers/CrmIntegration/CrmIntegrationPage')),
+    breadcrumb: intl.get('crm_integration.page.title'),
+    pageTitle: intl.get('crm_integration.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,

@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Bank API sync (⑨c Тинькофф/Альфа)
+  {
+    path: `/bank-api-sync`,
+    component: lazy(() => import('@/containers/BankApiSync/BankApiSyncPage')),
+    breadcrumb: intl.get('bank_api.page.title'),
+    pageTitle: intl.get('bank_api.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,

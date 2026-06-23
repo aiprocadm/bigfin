@@ -822,6 +822,12 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.bank_api'} />,
+    href: '/bank-api-sync',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.BankApiSync,
+  },
+  {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,
     children: [

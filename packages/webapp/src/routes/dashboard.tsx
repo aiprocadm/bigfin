@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // MoySklad integration (㉛)
+  {
+    path: `/moysklad`,
+    component: lazy(() => import('@/containers/MoySklad/MoySkladPage')),
+    breadcrumb: intl.get('moysklad.page.title'),
+    pageTitle: intl.get('moysklad.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,

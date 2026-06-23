@@ -13,6 +13,7 @@ export const Features = {
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
   OnecExport: 'onec_export', // ⑩ выгрузка в 1С (1CClientBankExchange)
+  VatAnalysis: 'vat_analysis', // ㉖ анализ НДС
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
   CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
 }

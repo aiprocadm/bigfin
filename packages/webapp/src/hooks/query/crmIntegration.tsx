@@ -92,3 +92,12 @@ export function useRunCrmSync(props?: UseMutationOptions<any, any, void>) {
   const api: any = useApiRequest();
   return useMutation<any, any, void>(() => api.post('crm/sync'), { ...props });
 }
+
+/** Получить токен входящего webhook собственной CRM. */
+export function useGenerateOwnCrmToken(props?: UseMutationOptions<any, any, void>) {
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () => api.post('crm/owncrm/webhook-token'),
+    { ...props },
+  );
+}

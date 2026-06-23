@@ -12,6 +12,7 @@ import {
   useConnectAmocrm,
   useDisconnectAmocrm,
   useRunCrmSync,
+  useGenerateOwnCrmToken,
   CrmSyncResult,
 } from '@/hooks/query/crmIntegration';
 
@@ -32,6 +33,20 @@ export default function CrmIntegrationPage() {
   const connectAmo = useConnectAmocrm();
   const disconnectAmo = useDisconnectAmocrm();
   const sync = useRunCrmSync();
+  const genToken = useGenerateOwnCrmToken();
+  const [webhookUrlOwn, setWebhookUrlOwn] = React.useState('');
+
+  const handleGenToken = async () => {
+    try {
+      const res: any = await genToken.mutateAsync();
+      const token = (res?.data?.data ?? res?.data ?? res)?.token;
+      setWebhookUrlOwn(
+        `${window.location.origin}/api/crm/webhooks/inbound?token=${token}`,
+      );
+    } catch {
+      toast.error(intl.get('crm_integration.owncrm.error'));
+    }
+  };
 
   if (!featureCan('crm_integration')) return null;
 
@@ -189,6 +204,23 @@ export default function CrmIntegrationPage() {
               </Button>
             </div>
           </div>
+        )}
+      </div>
+
+      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+        <h2 className="font-medium">{intl.get('crm_integration.owncrm.title')}</h2>
+        <p className="text-sm text-muted-foreground">
+          {intl.get('crm_integration.owncrm.hint')}
+        </p>
+        <div className="flex justify-end">
+          <Button onClick={handleGenToken} disabled={genToken.isLoading}>
+            {intl.get('crm_integration.owncrm.get_url')}
+          </Button>
+        </div>
+        {webhookUrlOwn && (
+          <code className="break-all rounded bg-muted p-2 text-xs">
+            {webhookUrlOwn}
+          </code>
         )}
       </div>
 

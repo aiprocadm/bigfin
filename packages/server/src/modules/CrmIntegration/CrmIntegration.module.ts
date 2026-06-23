@@ -5,8 +5,13 @@ import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 import { CustomersModule } from '@/modules/Customers/Customers.module';
 import { DealsModule } from '@/modules/Deals/Deals.module';
+import { InjectSystemModel } from '@/modules/System/SystemModels/SystemModels.module';
 import { CrmIntegrationController } from './CrmIntegration.controller';
+import { CrmWebhooksController } from './CrmWebhooks.controller';
 import { CrmIntegrationApplication } from './CrmIntegration.application';
+import { CrmWebhookToken } from './models/CrmWebhookToken';
+import { CrmWebhookTenantService } from './commands/CrmWebhookTenant.service';
+import { GenerateCrmWebhookService } from './commands/GenerateCrmWebhook.service';
 import { CrmSettingsService } from './CrmSettings.service';
 import { CrmConnectorRegistry } from './CrmConnectorRegistry';
 import { CrmSyncService } from './commands/CrmSync.service';
@@ -28,8 +33,11 @@ import { AmoCrmConnector } from './connectors/amocrm/AmoCrmConnector';
     CustomersModule,
     DealsModule,
   ],
-  controllers: [CrmIntegrationController],
+  controllers: [CrmIntegrationController, CrmWebhooksController],
   providers: [
+    InjectSystemModel(CrmWebhookToken),
+    CrmWebhookTenantService,
+    GenerateCrmWebhookService,
     CrmIntegrationApplication,
     CrmSettingsService,
     CrmConnectorRegistry,

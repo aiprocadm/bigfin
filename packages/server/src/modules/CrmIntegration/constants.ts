@@ -14,5 +14,8 @@ export const BITRIX24_KEY = 'bitrix24';
 /** Ключ коннектора amoCRM. */
 export const AMOCRM_KEY = 'amocrm';
 
+/** Ключ собственной CRM (входящий webhook). */
+export const OWNCRM_KEY = 'owncrm';
+
 /** Таймаут REST-запросов к CRM, мс. */
 export const CRM_REQUEST_TIMEOUT_MS = 15000;

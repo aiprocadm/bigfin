@@ -3,6 +3,7 @@ import { CrmSettingsService } from './CrmSettings.service';
 import { CrmSyncService } from './commands/CrmSync.service';
 import { Bitrix24ApiService } from './connectors/bitrix24/Bitrix24Api.service';
 import { AmoCrmApiService } from './connectors/amocrm/AmoCrmApi.service';
+import { GenerateCrmWebhookService } from './commands/GenerateCrmWebhook.service';
 import { CrmSyncResult } from './types';
 import { BITRIX24_KEY } from './constants';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
@@ -20,7 +21,15 @@ export class CrmIntegrationApplication {
     private readonly sync: CrmSyncService,
     private readonly bitrixApi: Bitrix24ApiService,
     private readonly amoApi: AmoCrmApiService,
+    private readonly generateWebhook: GenerateCrmWebhookService,
   ) {}
+
+  /** Токен входящего webhook собственной CRM для текущей организации (⑯c). */
+  public async getOwnCrmWebhookToken(): Promise<{ token: string }> {
+    await this.assertEnabled();
+    const token = await this.generateWebhook.getOrCreateToken();
+    return { token };
+  }
 
   /** Статус подключения CRM (для UI). */
   public async status(): Promise<{

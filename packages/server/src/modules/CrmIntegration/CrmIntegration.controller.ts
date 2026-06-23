@@ -44,6 +44,13 @@ export class CrmIntegrationController {
     return this.app.disconnectAmocrm();
   }
 
+  @Post('owncrm/webhook-token')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Получить токен входящего webhook своей CRM (админ).' })
+  getOwnCrmWebhookToken() {
+    return this.app.getOwnCrmWebhookToken();
+  }
+
   @Post('sync')
   @RequirePermission('manage', 'all')
   @ApiOperation({ summary: 'Запустить синхронизацию CRM → Bigfin (только админ).' })

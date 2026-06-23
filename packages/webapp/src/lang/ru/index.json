@@ -3393,5 +3393,12 @@
   "acquiring.summary.gross": "Выручка",
   "acquiring.summary.commission": "Комиссия эквайера",
   "acquiring.summary.net": "К зачислению",
-  "acquiring.summary.count": "Платежей"
+  "acquiring.summary.count": "Платежей",
+  "sidebar.onec_export": "Выгрузка в 1С",
+  "onec_export.page.title": "Выгрузка в 1С",
+  "onec_export.page.subtitle": "Выгрузка денежных операций в файл 1CClientBankExchange для загрузки в 1С.",
+  "onec_export.account_id": "ID денежного счёта Bigfin",
+  "onec_export.action.download": "Скачать",
+  "onec_export.done": "Файл 1С сформирован.",
+  "onec_export.error": "Не удалось сформировать файл 1С."
 }

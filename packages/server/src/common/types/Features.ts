@@ -24,6 +24,7 @@ export enum Features {
   FINANCIAL_MODEL = 'financial_model',
   BANK_STATEMENT_IMPORT = 'bank_statement_import',
   MOYSKLAD = 'moysklad',
+  ACQUIRING = 'acquiring',
   ZENMONEY_IMPORT = 'zenmoney_import',
   VAT_ANALYSIS = 'vat_analysis',
   FINANCIAL_RATIOS = 'financial_ratios',

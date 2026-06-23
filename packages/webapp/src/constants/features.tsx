@@ -12,6 +12,7 @@ export const Features = {
   InterfaceModes: 'interface_modes',
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
+  Marketplaces: 'marketplaces', // ⑱ маркетплейсы WB/Ozon
   BankApiSync: 'bank_api_sync', // ⑨c банковские API (Тинькофф/Альфа)
   OnecExport: 'onec_export', // ⑩ выгрузка в 1С (1CClientBankExchange)
   Acquiring: 'acquiring', // ⑨d эквайринг (YooKassa)

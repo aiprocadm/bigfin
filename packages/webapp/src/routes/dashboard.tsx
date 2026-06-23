@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Zenmoney import (⑨b Дзенмани)
+  {
+    path: `/zenmoney`,
+    component: lazy(() => import('@/containers/Zenmoney/ZenmoneyPage')),
+    breadcrumb: intl.get('zenmoney.page.title'),
+    pageTitle: intl.get('zenmoney.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // VAT analysis (㉖ Анализ НДС)
   {
     path: `/vat-analysis`,

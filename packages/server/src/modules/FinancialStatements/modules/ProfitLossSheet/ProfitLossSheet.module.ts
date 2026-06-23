@@ -25,5 +25,6 @@ import { ProfitLossSheetApplication } from './ProfitLossSheetApplication';
     ProfitLossSheetRepository,
     TenancyContext,
   ],
+  exports: [ProfitLossSheetService],
 })
 export class ProfitLossSheetModule {}

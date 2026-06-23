@@ -828,6 +828,12 @@ export const SidebarMenu = [
     feature: Features.BankApiSync,
   },
   {
+    text: <T id={'sidebar.onec_export'} />,
+    href: '/onec-export',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.OnecExport,
+  },
+  {
     text: <T id={'sidebar.acquiring'} />,
     href: '/acquiring',
     type: ISidebarMenuItemType.Link,

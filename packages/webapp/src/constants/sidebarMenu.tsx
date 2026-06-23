@@ -822,6 +822,12 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.crm_integration'} />,
+    href: '/crm-integration',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.CrmIntegration,
+  },
+  {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,
     children: [

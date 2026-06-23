@@ -65,6 +65,7 @@ import { Notification } from '@/modules/Notifications/models/Notification.model'
 import { NotificationRead } from '@/modules/Notifications/models/NotificationRead.model';
 import { MarketingChannel } from '@/modules/FinancialModel/models/MarketingChannel.model';
 import { MarketingMonthly } from '@/modules/FinancialModel/models/MarketingMonthly.model';
+import { CrmSyncLink } from '@/modules/CrmIntegration/models/CrmSyncLink.model';
 
 const models = [
   Item,
@@ -129,6 +130,7 @@ const models = [
   NotificationRead,
   MarketingChannel,
   MarketingMonthly,
+  CrmSyncLink,
   TenantUser,
 ];
 

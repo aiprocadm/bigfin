@@ -24,6 +24,8 @@ export enum Features {
   FINANCIAL_MODEL = 'financial_model',
   BANK_STATEMENT_IMPORT = 'bank_statement_import',
   ONEC_EXPORT = 'onec_export',
+  FINANCIAL_RATIOS = 'financial_ratios',
+  CRM_INTEGRATION = 'crm_integration',
 }
 
 export interface IFeatureAllItem {

@@ -1,4 +1,12 @@
-import { Controller, Post, Param, Get, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Param,
+  ParseIntPipe,
+  Get,
+  Put,
+  Body,
+} from '@nestjs/common';
 import { GenerateApiKey } from './commands/GenerateApiKey.service';
 import { GetApiKeysService } from './queries/GetApiKeys.service';
 import {
@@ -67,7 +75,7 @@ export class AuthApiKeysController {
     description: 'API key revoked',
     type: ApiKeyRevokeResponseDto,
   })
-  async revoke(@Param('id') id: number) {
+  async revoke(@Param('id', ParseIntPipe) id: number) {
     return this.generateApiKeyService.revoke(id);
   }
 

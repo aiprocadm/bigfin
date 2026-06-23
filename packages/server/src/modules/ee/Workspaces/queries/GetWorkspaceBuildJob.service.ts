@@ -9,8 +9,10 @@ export class GetWorkspaceBuildJobService {
 
   /**
    * Returns the current status of a workspace build job.
+   * @param {string} buildJobId
+   * @param {number} [requestUserId] - Ownership guard: only the initiator polls.
    */
-  getJobDetails(buildJobId: string) {
-    return this.getBuildJobService.getJobDetails(buildJobId);
+  getJobDetails(buildJobId: string, requestUserId?: number) {
+    return this.getBuildJobService.getJobDetails(buildJobId, requestUserId);
   }
 }

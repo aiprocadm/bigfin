@@ -9,7 +9,22 @@ import { ExtensionAgnosticMigrationSource } from '@/libs/migration-seed/Extensio
 import { TENANCY_DB_CONNECTION } from './TenancyDB.constants';
 import { UnitOfWork } from './UnitOfWork.service';
 
-const lruCache = new LRUCache();
+// Без max этот кэш растёт неограниченно: пул соединений каждой организации
+// (до 7 PG-подключений) живёт до конца процесса. Ограничиваем число
+// одновременно закэшированных пулов и закрываем (destroy) вытесненный пул,
+// иначе при онбординге многих организаций соединения утекают.
+// lru-cache@6: dispose вызывается как (key, value); noDisposeOnSet не даёт
+// закрыть пул, который ещё может использоваться (редкая гонка двойного set).
+const MAX_CACHED_TENANT_DB_POOLS = 100;
+const lruCache = new LRUCache({
+  max: MAX_CACHED_TENANT_DB_POOLS,
+  noDisposeOnSet: true,
+  dispose: (_database: string, knexInstance: any) => {
+    if (knexInstance && typeof knexInstance.destroy === 'function') {
+      Promise.resolve(knexInstance.destroy()).catch(() => undefined);
+    }
+  },
+});
 
 export const TenancyDatabaseProxyProvider = ClsModule.forFeatureAsync({
   provide: TENANCY_DB_CONNECTION,

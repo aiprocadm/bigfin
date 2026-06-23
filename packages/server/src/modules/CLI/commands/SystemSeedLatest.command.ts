@@ -1,12 +1,30 @@
-import { Command, CommandRunner } from 'nest-commander';
+import { Command } from 'nest-commander';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { BaseCommand } from './BaseCommand';
 
+@Injectable()
 @Command({
   name: 'system:seed:latest',
-  description: 'Seed system database with the latest data',
+  description: 'Seed the system database with the latest seed data.',
 })
-export class SystemSeedLatestCommand extends CommandRunner {
+export class SystemSeedLatestCommand extends BaseCommand {
+  constructor(configService: ConfigService) {
+    super(configService);
+  }
+
   async run(): Promise<void> {
-    console.log('System seeding with latest data - No operation performed');
-    // TODO: Implement system seeding logic
+    try {
+      const sysKnex = this.initSystemKnex();
+      const [log] = await sysKnex.seed.run();
+
+      if (!log || log.length === 0) {
+        this.success('No seed files to run');
+      }
+
+      this.success(`Ran ${log.length} seed file(s)`);
+    } catch (error) {
+      this.exit(error);
+    }
   }
 }

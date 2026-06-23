@@ -866,6 +866,7 @@
   "should_total_of_credit_and_debit_be_equal": "Сумма дебета и кредита должна совпадать.",
   "no_accounts": "Нет счетов",
   "the_accounts_have_been_successfully_inactivated": "Счета деактивированы.",
+  "the_accounts_has_been_successfully_activated": "Счета активированы.",
   "account_code_is_required": "Код счёта обязателен.",
   "account_code_is_not_unique": "Код счёта должен быть уникальным.",
   "are_sure_to_publish_this_expense": "Опубликовать этот расход?",

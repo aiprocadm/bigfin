@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Button, Intent } from '@blueprintjs/core';
@@ -56,13 +56,27 @@ export function CompanyLogoUpload({
   );
   const openRef = useRef<() => void>(null);
 
+  // Создаём blob-URL предпросмотра один раз на смену файла (не на каждый
+  // рендер) и освобождаем предыдущий — иначе createObjectURL прямо в рендере
+  // течёт по объекту на каждый ре-рендер компонента.
+  const [localPreviewUrl, setLocalPreviewUrl] = useState<string>('');
+  useEffect(() => {
+    if (!localValue) {
+      setLocalPreviewUrl('');
+      return undefined;
+    }
+    const url = URL.createObjectURL(localValue);
+    setLocalPreviewUrl(url);
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [localValue]);
+
   const handleRemove = () => {
     handleChange(null);
     setInitialLocalPreview(null);
   };
-  const imagePreviewUrl = localValue
-    ? URL.createObjectURL(localValue)
-    : initialLocalPreview || '';
+  const imagePreviewUrl = localPreviewUrl || initialLocalPreview || '';
 
   return (
     <Dropzone

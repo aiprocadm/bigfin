@@ -12,6 +12,8 @@ export const useRequestPdf = (httpProps) => {
   const [filename, setFilename] = React.useState<string>('');
 
   React.useEffect(() => {
+    let objectUrl = '';
+    let cancelled = false;
     setIsLoading(true);
     apiRequest
       .http({
@@ -26,6 +28,14 @@ export const useRequestPdf = (httpProps) => {
 
         // Build a URL from the file
         const fileURL = URL.createObjectURL(file);
+        objectUrl = fileURL;
+
+        // Компонент размонтировали до завершения запроса — сразу освобождаем
+        // blob-URL и не трогаем состояние размонтированного компонента.
+        if (cancelled) {
+          URL.revokeObjectURL(fileURL);
+          return;
+        }
 
         // Extract the filename from the Content-Disposition header
         const contentDisposition = response.headers.get('Content-Disposition');
@@ -43,6 +53,15 @@ export const useRequestPdf = (httpProps) => {
         setResponse(response);
         setFilename(_filename);
       });
+
+    // Освобождаем blob-URL при размонтировании, иначе память браузера течёт
+    // на каждом предпросмотре PDF.
+    return () => {
+      cancelled = true;
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
   }, []);
 
   return {

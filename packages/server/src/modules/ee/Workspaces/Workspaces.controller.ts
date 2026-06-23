@@ -197,7 +197,10 @@ export class WorkspacesController {
     },
   })
   async buildJobStatus(@Param('buildJobId') buildJobId: string): Promise<WorkspaceBuildJobResponseDto> {
-    return this.getWorkspaceBuildJobService.getJobDetails(buildJobId);
+    // Ownership guard: only the user who initiated the build may poll its
+    // status (build job id is a guessable BullMQ id).
+    const userId = this.cls.get<number>('userId');
+    return this.getWorkspaceBuildJobService.getJobDetails(buildJobId, userId);
   }
 
   /**

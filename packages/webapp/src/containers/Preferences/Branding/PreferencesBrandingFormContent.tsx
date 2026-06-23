@@ -61,6 +61,14 @@ export function BrandingCompanyLogoUpload() {
     <CompanyLogoUpload
       initialPreview={values?.logoUri}
       onChange={(file) => {
+        // Освобождаем предыдущий blob-URL логотипа перед заменой —
+        // иначе он течёт на каждый выбор файла (серверные URL не трогаем).
+        if (
+          typeof values?.logoUri === 'string' &&
+          values.logoUri.startsWith('blob:')
+        ) {
+          URL.revokeObjectURL(values.logoUri);
+        }
         const imageUrl = file ? URL.createObjectURL(file) : '';
 
         setFieldValue('_logoFile', file);

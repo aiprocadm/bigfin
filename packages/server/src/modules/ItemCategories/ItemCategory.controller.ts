@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -59,7 +60,7 @@ export class ItemCategoryController {
   @Put(':id')
   @ApiOperation({ summary: 'Edit the given item category.' })
   async editItemCategory(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() itemCategoryDTO: EditItemCategoryDto,
   ) {
     return this.itemCategoryApplication.editItemCategory(id, itemCategoryDTO);
@@ -72,13 +73,13 @@ export class ItemCategoryController {
     description: 'The item category details have been successfully retrieved.',
     schema: { $ref: getSchemaPath(ItemCategoryResponseDto) },
   })
-  async getItemCategory(@Param('id') id: number) {
+  async getItemCategory(@Param('id', ParseIntPipe) id: number) {
     return this.itemCategoryApplication.getItemCategory(id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete the given item category.' })
-  async deleteItemCategory(@Param('id') id: number) {
+  async deleteItemCategory(@Param('id', ParseIntPipe) id: number) {
     return this.itemCategoryApplication.deleteItemCategory(id);
   }
 }

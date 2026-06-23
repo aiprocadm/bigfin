@@ -31,12 +31,15 @@ export class UnitOfWork {
       const result = await work(_trx);
 
       if (!trx) {
-        _trx.commit();
+        // Дожидаемся фиксации: без await запись могла вернуться до того, как
+        // транзакция надёжно зафиксировалась в БД (риск «потерянного» сохранения).
+        await _trx.commit();
       }
       return result;
     } catch (error) {
       if (!trx) {
-        _trx.rollback();
+        // Дожидаемся отката, но не даём его ошибке заслонить исходную причину.
+        await _trx.rollback().catch(() => undefined);
       }
       throw error;
     }

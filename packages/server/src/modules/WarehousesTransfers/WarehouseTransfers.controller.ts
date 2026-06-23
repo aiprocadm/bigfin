@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  ParseIntPipe,
   Query,
   Inject,
 } from '@nestjs/common';
@@ -75,7 +76,7 @@ export class WarehouseTransfersController {
       'The warehouse transfer transaction has been edited successfully.',
   })
   async editWarehouseTransfer(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() editWarehouseTransferDTO: EditWarehouseTransferDto,
   ) {
     const warehouseTransfer =
@@ -99,7 +100,7 @@ export class WarehouseTransfersController {
     status: 200,
     description: 'The warehouse transfer has been initiated successfully.',
   })
-  async initiateTransfer(@Param('id') id: number) {
+  async initiateTransfer(@Param('id', ParseIntPipe) id: number) {
     await this.warehouseTransferApplication.initiateWarehouseTransfer(id);
 
     return {
@@ -120,7 +121,7 @@ export class WarehouseTransfersController {
     description:
       'The warehouse transfer has been marked as transferred successfully.',
   })
-  async deliverTransfer(@Param('id') id: number) {
+  async deliverTransfer(@Param('id', ParseIntPipe) id: number) {
     await this.warehouseTransferApplication.transferredWarehouseTransfer(id);
 
     return {
@@ -178,7 +179,7 @@ export class WarehouseTransfersController {
       $ref: getSchemaPath(WarehouseTransferResponseDto),
     },
   })
-  async getWarehouseTransfer(@Param('id') id: number) {
+  async getWarehouseTransfer(@Param('id', ParseIntPipe) id: number) {
     const warehouseTransfer =
       await this.warehouseTransferApplication.getWarehouseTransfer(id);
 
@@ -195,7 +196,7 @@ export class WarehouseTransfersController {
     description:
       'The warehouse transfer transaction has been deleted successfully.',
   })
-  async deleteWarehouseTransfer(@Param('id') id: number) {
+  async deleteWarehouseTransfer(@Param('id', ParseIntPipe) id: number) {
     await this.warehouseTransferApplication.deleteWarehouseTransfer(id);
 
     return {

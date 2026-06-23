@@ -14,12 +14,24 @@ export class GetBuildOrganizationBuildJob {
   /**
    * Gets the build job details by job ID.
    * @param {string} jobId - The ID of the job to retrieve.
+   * @param {number} [requestUserId] - When provided, only the user who
+   *   initiated the build may read it (ownership guard).
    * @returns {Promise<any>} - Returns the job details.
    */
-  async getJobDetails(jobId: string): Promise<any> {
+  async getJobDetails(jobId: string, requestUserId?: number): Promise<any> {
     const job = await this.organizationBuildQueue.getJob(jobId);
 
     if (!job) {
+      throw new ServiceError('Job not found', 'JOB.NOT_FOUND');
+    }
+    // Guard against IDOR: a build job id is a guessable BullMQ id. Only the
+    // user who initiated the build may poll it. A foreign job is reported as
+    // not-found so we don't reveal that it exists.
+    if (
+      requestUserId != null &&
+      job.data?.userId != null &&
+      job.data.userId !== requestUserId
+    ) {
       throw new ServiceError('Job not found', 'JOB.NOT_FOUND');
     }
     const state = await job.getState();

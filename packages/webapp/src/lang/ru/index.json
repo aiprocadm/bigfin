@@ -3303,5 +3303,22 @@
   "bank_import.parse_error": "Не удалось разобрать файл выписки",
   "bank_import.suggested_by_contact": "Статья подставлена по истории контрагента",
   "bank_import.contact_created": "Контрагент создан и привязан.",
-  "bank_import.contact_create_failed": "Не удалось создать контрагента."
+  "bank_import.contact_create_failed": "Не удалось создать контрагента.",
+  "sidebar.acquiring": "Эквайринг",
+  "acquiring.page.title": "Эквайринг",
+  "acquiring.page.subtitle": "Финансовая сводка по эквайрингу (выручка за вычетом комиссии), только чтение.",
+  "acquiring.yookassa.title": "ЮKassa",
+  "acquiring.yookassa.connected": "ЮKassa подключена.",
+  "acquiring.yookassa.shop_id": "Идентификатор магазина (shopId)",
+  "acquiring.yookassa.secret_key": "Секретный ключ",
+  "acquiring.action.connect": "Подключить",
+  "acquiring.action.disconnect": "Отключить",
+  "acquiring.connect.success": "ЮKassa подключена.",
+  "acquiring.connect.error": "Не удалось подключить ЮKassa. Проверьте учётные данные.",
+  "acquiring.disconnect.success": "ЮKassa отключена.",
+  "acquiring.disconnect.error": "Не удалось отключить ЮKassa.",
+  "acquiring.summary.gross": "Выручка",
+  "acquiring.summary.commission": "Комиссия эквайера",
+  "acquiring.summary.net": "К зачислению",
+  "acquiring.summary.count": "Платежей"
 }

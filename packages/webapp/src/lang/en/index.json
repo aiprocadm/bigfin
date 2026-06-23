@@ -3303,5 +3303,22 @@
   "bank_import.parse_error": "Could not parse the statement file",
   "bank_import.suggested_by_contact": "Category filled in from the counterparty's history",
   "bank_import.contact_created": "The counterparty has been created and linked.",
-  "bank_import.contact_create_failed": "Could not create the counterparty."
+  "bank_import.contact_create_failed": "Could not create the counterparty.",
+  "sidebar.acquiring": "Acquiring",
+  "acquiring.page.title": "Acquiring",
+  "acquiring.page.subtitle": "Financial summary from acquiring (revenue net of fees), read-only.",
+  "acquiring.yookassa.title": "YooKassa",
+  "acquiring.yookassa.connected": "YooKassa is connected.",
+  "acquiring.yookassa.shop_id": "Shop ID",
+  "acquiring.yookassa.secret_key": "Secret key",
+  "acquiring.action.connect": "Connect",
+  "acquiring.action.disconnect": "Disconnect",
+  "acquiring.connect.success": "YooKassa connected.",
+  "acquiring.connect.error": "Could not connect YooKassa. Check the credentials.",
+  "acquiring.disconnect.success": "YooKassa disconnected.",
+  "acquiring.disconnect.error": "Could not disconnect YooKassa.",
+  "acquiring.summary.gross": "Revenue",
+  "acquiring.summary.commission": "Acquirer fee",
+  "acquiring.summary.net": "To be settled",
+  "acquiring.summary.count": "Payments"
 }

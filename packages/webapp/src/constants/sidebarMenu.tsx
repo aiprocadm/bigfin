@@ -828,6 +828,12 @@ export const SidebarMenu = [
     feature: Features.Moysklad,
   },
   {
+    text: <T id={'sidebar.zenmoney'} />,
+    href: '/zenmoney',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Zenmoney,
+  },
+  {
     text: <T id={'sidebar.vat_analysis'} />,
     href: '/vat-analysis',
     type: ISidebarMenuItemType.Link,

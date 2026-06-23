@@ -828,6 +828,12 @@ export const SidebarMenu = [
     feature: Features.Moysklad,
   },
   {
+    text: <T id={'sidebar.marketplaces'} />,
+    href: '/marketplaces',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Marketplaces,
+  },
+  {
     text: <T id={'sidebar.bank_api'} />,
     href: '/bank-api-sync',
     type: ISidebarMenuItemType.Link,

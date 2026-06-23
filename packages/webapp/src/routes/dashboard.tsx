@@ -1363,6 +1363,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('moysklad.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Marketplaces (⑱ WB/Ozon)
+  {
+    path: `/marketplaces`,
+    component: lazy(() => import('@/containers/Marketplaces/MarketplacesPage')),
+    breadcrumb: intl.get('marketplaces.page.title'),
+    pageTitle: intl.get('marketplaces.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Bank API sync (⑨c Тинькофф/Альфа)
   {
     path: `/bank-api-sync`,

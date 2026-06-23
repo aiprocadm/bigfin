@@ -124,4 +124,13 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   code?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Tax identification number (ИНН)',
+    example: '7707083893',
+  })
+  @IsOptional()
+  @IsString()
+  inn?: string;
 }

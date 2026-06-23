@@ -13,6 +13,7 @@ export const Features = {
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
   Moysklad: 'moysklad', // ㉛ интеграция МойСклад
+  VatAnalysis: 'vat_analysis', // ㉖ анализ НДС
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
   CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
 }

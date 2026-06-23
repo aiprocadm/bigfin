@@ -48,4 +48,9 @@ describe('mapInboundCrmPayload', () => {
     expect(() => mapInboundCrmPayload({ type: 'lead' })).toThrow();
     expect(() => mapInboundCrmPayload({})).toThrow();
   });
+
+  it('отсутствует externalId → ошибка (защита от схлопывания дедупа)', () => {
+    expect(() => mapInboundCrmPayload({ type: 'contact' })).toThrow();
+    expect(() => mapInboundCrmPayload({ type: 'deal', externalId: '' })).toThrow();
+  });
 });

@@ -14,13 +14,17 @@ export interface InboundCrmEntities {
 export const mapInboundCrmPayload = (body: any): InboundCrmEntities => {
   const type = body?.type;
 
-  if (type === 'contact') {
-    return { contact: toContact(body) };
+  if (type !== 'contact' && type !== 'deal') {
+    throw new Error('CRM_WEBHOOK_UNKNOWN_TYPE');
   }
-  if (type === 'deal') {
-    return { deal: toDeal(body) };
+  // externalId — ключ дедупликации; без него все записи схлопнулись бы в одну.
+  if (body?.externalId == null || body.externalId === '') {
+    throw new Error('CRM_WEBHOOK_MISSING_EXTERNAL_ID');
   }
-  throw new Error('CRM_WEBHOOK_UNKNOWN_TYPE');
+
+  return type === 'contact'
+    ? { contact: toContact(body) }
+    : { deal: toDeal(body) };
 };
 
 const toContact = (b: any): CrmContact => ({

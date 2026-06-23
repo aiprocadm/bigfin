@@ -1,5 +1,5 @@
 import { ClsService } from 'nestjs-cls';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CrmWebhookToken } from '../models/CrmWebhookToken';
 import { TenantModel } from '@/modules/System/models/TenantModel';
 import { SystemUser } from '@/modules/System/models/SystemUser';
@@ -28,10 +28,11 @@ export class CrmWebhookTenantService {
    * @param {() => T} callback — выполняется в тенант-контексте.
    */
   public async resolveAndRun<T>(token: string, callback: () => T): Promise<T> {
-    const record = await this.crmWebhookTokenModel
-      .query()
-      .findOne({ token })
-      .throwIfNotFound();
+    // Недействительный токен → 401, а не 500 с утечкой стека (публичный вход).
+    const record = await this.crmWebhookTokenModel.query().findOne({ token });
+    if (!record) {
+      throw new UnauthorizedException('Недействительный токен webhook.');
+    }
 
     const tenant = await this.tenantModel
       .query()
@@ -44,9 +45,12 @@ export class CrmWebhookTenantService {
       .modify('active')
       .throwIfNotFound();
 
-    this.clsService.set('organizationId', tenant.organizationId);
-    this.clsService.set('userId', user.id);
-
-    return callback();
+    // Изолированный дочерний CLS-контекст: тенант-подмена не утекает в исходный
+    // запрос/соседние async-цепочки (публичный webhook без organization-id).
+    return this.clsService.run(() => {
+      this.clsService.set('organizationId', tenant.organizationId);
+      this.clsService.set('userId', user.id);
+      return callback();
+    });
   }
 }

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   HttpCode,
   Post,
   Query,
@@ -9,9 +10,14 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CrmWebhookTenantService } from './commands/CrmWebhookTenant.service';
 import { CrmSyncService } from './commands/CrmSync.service';
-import { mapInboundCrmPayload } from './connectors/owncrm/mapInbound';
+import {
+  InboundCrmEntities,
+  mapInboundCrmPayload,
+} from './connectors/owncrm/mapInbound';
 import { OWNCRM_KEY } from './constants';
 import { PublicRoute } from '@/modules/Auth/guards/jwt.guard';
+import { FeaturesManager } from '@/modules/Features/FeaturesManager';
+import { Features } from '@/common/types/Features';
 
 /**
  * Публичный приёмник входящих webhook собственной CRM (⑯c). Без auth-сессии:
@@ -26,6 +32,7 @@ export class CrmWebhooksController {
   constructor(
     private readonly tenantResolver: CrmWebhookTenantService,
     private readonly sync: CrmSyncService,
+    private readonly featuresManager: FeaturesManager,
   ) {}
 
   @Post('inbound')
@@ -34,8 +41,23 @@ export class CrmWebhooksController {
   async inbound(@Query('token') token: string, @Body() body: any) {
     if (!token) throw new BadRequestException('Не передан token.');
 
-    return this.tenantResolver.resolveAndRun(token, () => {
-      const entities = mapInboundCrmPayload(body);
+    // Плохой payload → 400 (а не 500): разбираем ДО входа в тенант-контекст.
+    let entities: InboundCrmEntities;
+    try {
+      entities = mapInboundCrmPayload(body);
+    } catch {
+      throw new BadRequestException(
+        'Некорректный payload. Ожидается { type: contact | deal, externalId, ... }.',
+      );
+    }
+
+    return this.tenantResolver.resolveAndRun(token, async () => {
+      // Гейт флага в контексте тенанта (как у остальных операций CRM).
+      const enabled = await this.featuresManager.accessible(
+        Features.CRM_INTEGRATION,
+      );
+      if (!enabled) throw new ForbiddenException('CRM-интеграция выключена');
+
       return this.sync.importCanonical(OWNCRM_KEY, entities);
     });
   }

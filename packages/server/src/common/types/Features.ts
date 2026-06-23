@@ -24,6 +24,7 @@ export enum Features {
   FINANCIAL_MODEL = 'financial_model',
   BANK_STATEMENT_IMPORT = 'bank_statement_import',
   MARKETPLACES = 'marketplaces',
+  VAT_ANALYSIS = 'vat_analysis',
   FINANCIAL_RATIOS = 'financial_ratios',
   CRM_INTEGRATION = 'crm_integration',
 }

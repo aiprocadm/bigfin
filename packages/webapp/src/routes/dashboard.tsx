@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Acquiring (⑨d YooKassa)
+  {
+    path: `/acquiring`,
+    component: lazy(() => import('@/containers/Acquiring/AcquiringPage')),
+    breadcrumb: intl.get('acquiring.page.title'),
+    pageTitle: intl.get('acquiring.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Zenmoney import (⑨b Дзенмани)
   {
     path: `/zenmoney`,

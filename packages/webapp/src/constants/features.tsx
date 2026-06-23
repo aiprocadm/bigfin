@@ -12,6 +12,7 @@ export const Features = {
   InterfaceModes: 'interface_modes',
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
+  Acquiring: 'acquiring', // ⑨d эквайринг (YooKassa)
   Zenmoney: 'zenmoney_import', // ⑨b импорт Дзенмани
   VatAnalysis: 'vat_analysis', // ㉖ анализ НДС
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)

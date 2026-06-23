@@ -171,6 +171,13 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
           host: configService.get('queue.host'),
           port: configService.get('queue.port'),
         },
+        // Без политики удаления выполненные/упавшие задачи копятся в Redis
+        // бесконечно. Чистим по возрасту И количеству (одна настройка
+        // покрывает все очереди), сохраняя недавнюю историю для Bull Board.
+        defaultJobOptions: {
+          removeOnComplete: { age: 24 * 3600, count: 1000 },
+          removeOnFail: { age: 7 * 24 * 3600, count: 5000 },
+        },
       }),
       inject: [ConfigService],
     }),

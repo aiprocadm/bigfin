@@ -1355,6 +1355,22 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // VAT analysis (㉖ Анализ НДС)
+  {
+    path: `/vat-analysis`,
+    component: lazy(() => import('@/containers/VatAnalysis/VatAnalysisPage')),
+    breadcrumb: intl.get('vat_analysis.page.title'),
+    pageTitle: intl.get('vat_analysis.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  // Financial ratios (㉕ Показатели)
+  {
+    path: `/financial-ratios`,
+    component: lazy(() => import('@/containers/FinancialRatios/FinancialRatiosPage')),
+    breadcrumb: intl.get('financial_ratios.page.title'),
+    pageTitle: intl.get('financial_ratios.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // CRM-интеграция (⑯a Битрикс24)
   {
     path: `/crm-integration`,

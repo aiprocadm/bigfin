@@ -822,6 +822,18 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.vat_analysis'} />,
+    href: '/vat-analysis',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.VatAnalysis,
+  },
+  {
+    text: <T id={'sidebar.financial_ratios'} />,
+    href: '/financial-ratios',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.FinancialRatios,
+  },
+  {
     text: <T id={'sidebar.crm_integration'} />,
     href: '/crm-integration',
     type: ISidebarMenuItemType.Link,

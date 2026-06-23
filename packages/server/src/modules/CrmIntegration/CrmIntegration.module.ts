@@ -13,9 +13,11 @@ import { CrmSyncService } from './commands/CrmSync.service';
 import { CrmSyncLinkService } from './commands/CrmSyncLink.service';
 import { Bitrix24ApiService } from './connectors/bitrix24/Bitrix24Api.service';
 import { Bitrix24Connector } from './connectors/bitrix24/Bitrix24Connector';
+import { AmoCrmApiService } from './connectors/amocrm/AmoCrmApi.service';
+import { AmoCrmConnector } from './connectors/amocrm/AmoCrmConnector';
 
 /**
- * ⑯a CRM-интеграция: абстракция `CrmConnector` + коннектор Битрикс24.
+ * CRM-интеграция: абстракция `CrmConnector` + коннекторы Битрикс24 (⑯a) и amoCRM (⑯b).
  * Односторонняя синхронизация CRM → Bigfin за флагом `crm_integration`.
  */
 @Module({
@@ -35,6 +37,8 @@ import { Bitrix24Connector } from './connectors/bitrix24/Bitrix24Connector';
     CrmSyncLinkService,
     Bitrix24ApiService,
     Bitrix24Connector,
+    AmoCrmApiService,
+    AmoCrmConnector,
   ],
 })
 export class CrmIntegrationModule {}

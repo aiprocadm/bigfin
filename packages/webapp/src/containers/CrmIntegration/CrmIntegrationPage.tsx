@@ -9,6 +9,8 @@ import {
   useCrmStatus,
   useConnectBitrix24,
   useDisconnectBitrix24,
+  useConnectAmocrm,
+  useDisconnectAmocrm,
   useRunCrmSync,
   CrmSyncResult,
 } from '@/hooks/query/crmIntegration';
@@ -21,15 +23,41 @@ export default function CrmIntegrationPage() {
   const { featureCan } = useFeatureCan();
   const { data: status } = useCrmStatus();
   const [webhookUrl, setWebhookUrl] = React.useState('');
+  const [subdomain, setSubdomain] = React.useState('');
+  const [accessToken, setAccessToken] = React.useState('');
   const [lastResult, setLastResult] = React.useState<CrmSyncResult | null>(null);
 
   const connect = useConnectBitrix24();
   const disconnect = useDisconnectBitrix24();
+  const connectAmo = useConnectAmocrm();
+  const disconnectAmo = useDisconnectAmocrm();
   const sync = useRunCrmSync();
 
   if (!featureCan('crm_integration')) return null;
 
   const connected = !!status?.bitrix24Connected;
+  const amoConnected = !!status?.amocrmConnected;
+  const anyConnected = connected || amoConnected;
+
+  const handleConnectAmo = async () => {
+    try {
+      await connectAmo.mutateAsync({ subdomain, accessToken });
+      setSubdomain('');
+      setAccessToken('');
+      toast.success(intl.get('crm_integration.connect.success'));
+    } catch {
+      toast.error(intl.get('crm_integration.connect.error'));
+    }
+  };
+
+  const handleDisconnectAmo = async () => {
+    try {
+      await disconnectAmo.mutateAsync();
+      toast.success(intl.get('crm_integration.disconnect.success'));
+    } catch {
+      toast.error(intl.get('crm_integration.disconnect.error'));
+    }
+  };
 
   const handleConnect = async () => {
     try {
@@ -116,7 +144,55 @@ export default function CrmIntegrationPage() {
         )}
       </div>
 
-      {connected && (
+      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+        <h2 className="font-medium">{intl.get('crm_integration.amocrm.title')}</h2>
+
+        {amoConnected ? (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm text-green-700">
+              {intl.get('crm_integration.amocrm.connected')}
+            </span>
+            <Button
+              variant="secondary"
+              onClick={handleDisconnectAmo}
+              disabled={disconnectAmo.isLoading}
+            >
+              {intl.get('crm_integration.action.disconnect')}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <label className="text-sm">
+              {intl.get('crm_integration.amocrm.subdomain')}
+            </label>
+            <Input
+              type="text"
+              placeholder="mycompany"
+              value={subdomain}
+              onChange={(e) => setSubdomain(e.target.value)}
+            />
+            <label className="text-sm">
+              {intl.get('crm_integration.amocrm.token')}
+            </label>
+            <Input
+              type="password"
+              placeholder="eyJ0eXAiOiJKV1Qi..."
+              value={accessToken}
+              onChange={(e) => setAccessToken(e.target.value)}
+            />
+            <div className="flex justify-end">
+              <Button
+                onClick={handleConnectAmo}
+                disabled={!subdomain || !accessToken || connectAmo.isLoading}
+              >
+                {intl.get('crm_integration.action.connect')}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {anyConnected && (
         <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
           <h2 className="font-medium">{intl.get('crm_integration.sync.title')}</h2>
           <div className="flex justify-end">

@@ -2,6 +2,8 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CrmSettingsService } from './CrmSettings.service';
 import { CrmSyncService } from './commands/CrmSync.service';
 import { Bitrix24ApiService } from './connectors/bitrix24/Bitrix24Api.service';
+import { AmoCrmApiService } from './connectors/amocrm/AmoCrmApi.service';
+import { GenerateCrmWebhookService } from './commands/GenerateCrmWebhook.service';
 import { CrmSyncResult } from './types';
 import { BITRIX24_KEY } from './constants';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
@@ -18,16 +20,53 @@ export class CrmIntegrationApplication {
     private readonly settings: CrmSettingsService,
     private readonly sync: CrmSyncService,
     private readonly bitrixApi: Bitrix24ApiService,
+    private readonly amoApi: AmoCrmApiService,
+    private readonly generateWebhook: GenerateCrmWebhookService,
   ) {}
 
+  /** Токен входящего webhook собственной CRM для текущей организации (⑯c). */
+  public async getOwnCrmWebhookToken(): Promise<{ token: string }> {
+    await this.assertEnabled();
+    const token = await this.generateWebhook.getOrCreateToken();
+    return { token };
+  }
+
   /** Статус подключения CRM (для UI). */
-  public async status(): Promise<{ activeConnector: string | null; bitrix24Connected: boolean }> {
+  public async status(): Promise<{
+    activeConnector: string | null;
+    bitrix24Connected: boolean;
+    amocrmConnected: boolean;
+  }> {
     await this.assertEnabled();
     const activeConnector = await this.settings.getActiveConnector();
     const bitrix24Connected = Boolean(
       await this.settings.getBitrix24WebhookUrl(),
     );
-    return { activeConnector, bitrix24Connected };
+    const { subdomain, accessToken } = await this.settings.getAmocrm();
+    return {
+      activeConnector,
+      bitrix24Connected,
+      amocrmConnected: Boolean(subdomain && accessToken),
+    };
+  }
+
+  /** Подключает amoCRM: валидирует креды пробным вызовом, сохраняет. */
+  public async connectAmocrm(
+    subdomain: string,
+    accessToken: string,
+  ): Promise<{ connected: true }> {
+    await this.assertEnabled();
+    // Лёгкая проверка кредов (один запрос, бросит при 401/403).
+    await this.amoApi.ping(subdomain, accessToken);
+    await this.settings.setAmocrm(subdomain, accessToken);
+    return { connected: true };
+  }
+
+  /** Отключает amoCRM. */
+  public async disconnectAmocrm(): Promise<{ connected: false }> {
+    await this.assertEnabled();
+    await this.settings.clearAmocrm();
+    return { connected: false };
   }
 
   /** Подключает Битрикс24: валидирует webhook пробным вызовом, сохраняет. */

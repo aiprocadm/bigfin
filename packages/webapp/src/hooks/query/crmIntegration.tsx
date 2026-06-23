@@ -13,6 +13,7 @@ const CRM_STATUS_KEY = 'crm_status';
 export interface CrmStatus {
   activeConnector: string | null;
   bitrix24Connected: boolean;
+  amocrmConnected: boolean;
 }
 
 export interface CrmSyncResult {
@@ -32,9 +33,35 @@ export function useCrmStatus(props?: any) {
     { method: 'get', url: 'crm/status' },
     {
       select: (res: any) => res.data?.data ?? res.data,
-      defaultData: { activeConnector: null, bitrix24Connected: false },
+      defaultData: {
+        activeConnector: null,
+        bitrix24Connected: false,
+        amocrmConnected: false,
+      },
       ...props,
     },
+  );
+}
+
+/** Подключить amoCRM (поддомен + access-токен). */
+export function useConnectAmocrm(
+  props?: UseMutationOptions<any, any, { subdomain: string; accessToken: string }>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, { subdomain: string; accessToken: string }>(
+    (values) => api.post('crm/amocrm/connect', values),
+    { onSuccess: () => invalidateStatus(client), ...props },
+  );
+}
+
+/** Отключить amoCRM. */
+export function useDisconnectAmocrm(props?: UseMutationOptions<any, any, void>) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () => api.post('crm/amocrm/disconnect'),
+    { onSuccess: () => invalidateStatus(client), ...props },
   );
 }
 
@@ -64,4 +91,13 @@ export function useDisconnectBitrix24(props?: UseMutationOptions<any, any, void>
 export function useRunCrmSync(props?: UseMutationOptions<any, any, void>) {
   const api: any = useApiRequest();
   return useMutation<any, any, void>(() => api.post('crm/sync'), { ...props });
+}
+
+/** Получить токен входящего webhook собственной CRM. */
+export function useGenerateOwnCrmToken(props?: UseMutationOptions<any, any, void>) {
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () => api.post('crm/owncrm/webhook-token'),
+    { ...props },
+  );
 }

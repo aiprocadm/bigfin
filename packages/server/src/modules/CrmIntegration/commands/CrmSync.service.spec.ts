@@ -121,4 +121,53 @@ describe('CrmSyncService', () => {
     (service as any).registry.get = () => undefined;
     await expect(service.sync('missing')).rejects.toBeDefined();
   });
+
+  describe('importCanonical (входящий webhook ⑯c)', () => {
+    it('импортирует одиночные контакт и сделку', async () => {
+      const { service, createCustomer, createDeal } = makeService({});
+      const res = await service.importCanonical('owncrm', {
+        contact: {
+          externalId: 'c9',
+          displayName: 'ООО Тест',
+          inn: null,
+          email: null,
+          phone: null,
+          companyName: null,
+        },
+        deal: {
+          externalId: 'd9',
+          name: 'Новая сделка',
+          amount: 1000,
+          contactExternalId: null,
+          closedAt: null,
+        },
+      });
+      expect(res).toEqual({
+        contactsImported: 1,
+        contactsSkipped: 0,
+        dealsImported: 1,
+        dealsSkipped: 0,
+      });
+      expect(createCustomer.createCustomer).toHaveBeenCalledTimes(1);
+      expect(createDeal.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('идемпотентно: уже связанная сделка пропускается', async () => {
+      const { service, createDeal } = makeService({
+        dealExternalIds: new Set(['d9']),
+      });
+      const res = await service.importCanonical('owncrm', {
+        deal: {
+          externalId: 'd9',
+          name: 'Дубль',
+          amount: null,
+          contactExternalId: null,
+          closedAt: null,
+        },
+      });
+      expect(res.dealsImported).toBe(0);
+      expect(res.dealsSkipped).toBe(1);
+      expect(createDeal.create).not.toHaveBeenCalled();
+    });
+  });
 });

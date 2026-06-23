@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CrmIntegrationApplication } from './CrmIntegration.application';
 import { ConnectBitrix24Dto } from './dtos/ConnectBitrix24.dto';
+import { ConnectAmocrmDto } from './dtos/ConnectAmocrm.dto';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 
 @Controller('crm')
@@ -27,6 +28,27 @@ export class CrmIntegrationController {
   @ApiOperation({ summary: 'Отключить Битрикс24 (только админ).' })
   disconnectBitrix24() {
     return this.app.disconnectBitrix24();
+  }
+
+  @Post('amocrm/connect')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Подключить amoCRM (поддомен + токен, только админ).' })
+  connectAmocrm(@Body() dto: ConnectAmocrmDto) {
+    return this.app.connectAmocrm(dto.subdomain, dto.accessToken);
+  }
+
+  @Post('amocrm/disconnect')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Отключить amoCRM (только админ).' })
+  disconnectAmocrm() {
+    return this.app.disconnectAmocrm();
+  }
+
+  @Post('owncrm/webhook-token')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Получить токен входящего webhook своей CRM (админ).' })
+  getOwnCrmWebhookToken() {
+    return this.app.getOwnCrmWebhookToken();
   }
 
   @Post('sync')

@@ -70,4 +70,68 @@ export class CrmSettingsService {
     });
     await store.save();
   }
+
+  /** Учётные данные amoCRM (поддомен + access-токен) или null. */
+  public async getAmocrm(): Promise<{
+    subdomain: string | null;
+    accessToken: string | null;
+  }> {
+    const store = await this.settingsStore();
+    const subdomain =
+      (store.get(
+        { group: CRM_SETTINGS_GROUP, key: CRM_SETTINGS_KEYS.AMOCRM_SUBDOMAIN },
+        null,
+      ) as string | null) || null;
+    const accessToken =
+      (store.get(
+        {
+          group: CRM_SETTINGS_GROUP,
+          key: CRM_SETTINGS_KEYS.AMOCRM_ACCESS_TOKEN,
+        },
+        null,
+      ) as string | null) || null;
+    return { subdomain, accessToken };
+  }
+
+  /** Сохраняет учётные данные amoCRM и делает его активным коннектором. */
+  public async setAmocrm(subdomain: string, accessToken: string): Promise<void> {
+    const store = await this.settingsStore();
+    store.set({
+      group: CRM_SETTINGS_GROUP,
+      key: CRM_SETTINGS_KEYS.AMOCRM_SUBDOMAIN,
+      value: subdomain,
+    });
+    store.set({
+      group: CRM_SETTINGS_GROUP,
+      key: CRM_SETTINGS_KEYS.AMOCRM_ACCESS_TOKEN,
+      value: accessToken,
+    });
+    store.set({
+      group: CRM_SETTINGS_GROUP,
+      key: CRM_SETTINGS_KEYS.ACTIVE_CONNECTOR,
+      value: 'amocrm',
+    });
+    await store.save();
+  }
+
+  /** Сбрасывает учётные данные amoCRM и активный коннектор. */
+  public async clearAmocrm(): Promise<void> {
+    const store = await this.settingsStore();
+    store.set({
+      group: CRM_SETTINGS_GROUP,
+      key: CRM_SETTINGS_KEYS.AMOCRM_SUBDOMAIN,
+      value: '',
+    });
+    store.set({
+      group: CRM_SETTINGS_GROUP,
+      key: CRM_SETTINGS_KEYS.AMOCRM_ACCESS_TOKEN,
+      value: '',
+    });
+    store.set({
+      group: CRM_SETTINGS_GROUP,
+      key: CRM_SETTINGS_KEYS.ACTIVE_CONNECTOR,
+      value: '',
+    });
+    await store.save();
+  }
 }

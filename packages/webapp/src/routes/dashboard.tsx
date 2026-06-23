@@ -1363,6 +1363,22 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('marketplaces.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // Financial ratios (㉕ Показатели)
+  {
+    path: `/financial-ratios`,
+    component: lazy(() => import('@/containers/FinancialRatios/FinancialRatiosPage')),
+    breadcrumb: intl.get('financial_ratios.page.title'),
+    pageTitle: intl.get('financial_ratios.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  // CRM-интеграция (⑯a Битрикс24)
+  {
+    path: `/crm-integration`,
+    component: lazy(() => import('@/containers/CrmIntegration/CrmIntegrationPage')),
+    breadcrumb: intl.get('crm_integration.page.title'),
+    pageTitle: intl.get('crm_integration.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,

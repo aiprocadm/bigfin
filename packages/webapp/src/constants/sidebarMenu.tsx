@@ -822,6 +822,12 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.zenmoney'} />,
+    href: '/zenmoney',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Zenmoney,
+  },
+  {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,
     children: [

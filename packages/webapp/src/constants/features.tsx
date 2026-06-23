@@ -12,4 +12,5 @@ export const Features = {
   InterfaceModes: 'interface_modes',
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
+  Zenmoney: 'zenmoney_import', // ⑨b импорт Дзенмани
 }

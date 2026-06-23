@@ -3303,5 +3303,21 @@
   "bank_import.parse_error": "Не удалось разобрать файл выписки",
   "bank_import.suggested_by_contact": "Статья подставлена по истории контрагента",
   "bank_import.contact_created": "Контрагент создан и привязан.",
-  "bank_import.contact_create_failed": "Не удалось создать контрагента."
+  "bank_import.contact_create_failed": "Не удалось создать контрагента.",
+  "sidebar.zenmoney": "Дзенмани",
+  "zenmoney.page.title": "Импорт Дзенмани",
+  "zenmoney.page.subtitle": "Загрузка операций из Дзенмани в очередь разбора.",
+  "zenmoney.connected": "Дзенмани подключён.",
+  "zenmoney.token": "Токен доступа",
+  "zenmoney.action.connect": "Подключить",
+  "zenmoney.action.disconnect": "Отключить",
+  "zenmoney.action.import": "Импортировать",
+  "zenmoney.connect.success": "Дзенмани подключён.",
+  "zenmoney.connect.error": "Не удалось подключить Дзенмани. Проверьте токен.",
+  "zenmoney.disconnect.success": "Дзенмани отключён.",
+  "zenmoney.disconnect.error": "Не удалось отключить Дзенмани.",
+  "zenmoney.import.title": "Импорт операций",
+  "zenmoney.import.account_id": "ID денежного счёта Bigfin",
+  "zenmoney.import.done": "Загружено {imported}, пропущено {skipped} дублей.",
+  "zenmoney.import.error": "Не удалось импортировать операции."
 }

@@ -12,6 +12,7 @@ export const Features = {
   InterfaceModes: 'interface_modes',
   FinancialModel: 'financial_model',
   BankStatementImport: 'bank_statement_import',
+  VatAnalysis: 'vat_analysis', // ㉖ анализ НДС
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
   CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
 }

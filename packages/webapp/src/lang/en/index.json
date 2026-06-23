@@ -3353,5 +3353,12 @@
   "financial_ratios.vertical.title": "Vertical P&L analysis (share of revenue)",
   "financial_ratios.vertical.article": "Section",
   "financial_ratios.vertical.amount": "Amount",
-  "financial_ratios.vertical.share": "Share of revenue"
+  "financial_ratios.vertical.share": "Share of revenue",
+  "sidebar.vat_analysis": "VAT analysis",
+  "vat_analysis.page.title": "VAT analysis",
+  "vat_analysis.charged": "VAT charged (on sales)",
+  "vat_analysis.deductible": "VAT deductible (on purchases)",
+  "vat_analysis.payable": "VAT payable",
+  "vat_analysis.by_account.title": "By tax account",
+  "vat_analysis.by_account.account": "Tax account"
 }

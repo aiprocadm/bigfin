@@ -46,6 +46,7 @@ import { DividendsModule } from '../Dividends/Dividends.module';
 import { CreditsModule } from '../Credits/Credits.module';
 import { FinancialModelModule } from '../FinancialModel/FinancialModel.module';
 import { BankStatementImportModule } from '../BankStatementImport/BankStatementImport.module';
+import { VatAnalysisModule } from '../VatAnalysis/VatAnalysis.module';
 import { FinancialRatiosModule } from '../FinancialRatios/FinancialRatios.module';
 import { CrmIntegrationModule } from '../CrmIntegration/CrmIntegration.module';
 import { FixedAssetsModule } from '../FixedAssets/FixedAssets.module';
@@ -230,6 +231,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     CreditsModule,
     FinancialModelModule,
     BankStatementImportModule,
+    VatAnalysisModule,
     FinancialRatiosModule,
     CrmIntegrationModule,
     FixedAssetsModule,

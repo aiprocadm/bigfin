@@ -822,6 +822,12 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.vat_analysis'} />,
+    href: '/vat-analysis',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.VatAnalysis,
+  },
+  {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,
     children: [

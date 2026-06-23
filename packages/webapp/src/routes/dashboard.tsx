@@ -1355,6 +1355,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('financial_model.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // VAT analysis (㉖ Анализ НДС)
+  {
+    path: `/vat-analysis`,
+    component: lazy(() => import('@/containers/VatAnalysis/VatAnalysisPage')),
+    breadcrumb: intl.get('vat_analysis.page.title'),
+    pageTitle: intl.get('vat_analysis.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,

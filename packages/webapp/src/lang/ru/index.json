@@ -3300,5 +3300,12 @@
   "bank_import.create_contact": "Создать контрагента",
   "bank_import.counterparty_inn": "ИНН контрагента",
   "bank_import.counterparty": "Контрагент",
-  "bank_import.parse_error": "Не удалось разобрать файл выписки"
+  "bank_import.parse_error": "Не удалось разобрать файл выписки",
+  "sidebar.vat_analysis": "Анализ НДС",
+  "vat_analysis.page.title": "Анализ НДС",
+  "vat_analysis.charged": "НДС начислен (с продаж)",
+  "vat_analysis.deductible": "НДС к вычету (с покупок)",
+  "vat_analysis.payable": "НДС к уплате",
+  "vat_analysis.by_account.title": "По налоговым счетам",
+  "vat_analysis.by_account.account": "Налоговый счёт"
 }

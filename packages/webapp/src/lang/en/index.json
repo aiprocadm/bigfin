@@ -3300,5 +3300,12 @@
   "bank_import.create_contact": "Create contact",
   "bank_import.counterparty_inn": "Counterparty INN",
   "bank_import.counterparty": "Counterparty",
-  "bank_import.parse_error": "Could not parse the statement file"
+  "bank_import.parse_error": "Could not parse the statement file",
+  "sidebar.vat_analysis": "VAT analysis",
+  "vat_analysis.page.title": "VAT analysis",
+  "vat_analysis.charged": "VAT charged (on sales)",
+  "vat_analysis.deductible": "VAT deductible (on purchases)",
+  "vat_analysis.payable": "VAT payable",
+  "vat_analysis.by_account.title": "By tax account",
+  "vat_analysis.by_account.account": "Tax account"
 }

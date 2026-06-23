@@ -828,6 +828,12 @@ export const SidebarMenu = [
     feature: Features.Zenmoney,
   },
   {
+    text: <T id={'sidebar.vat_analysis'} />,
+    href: '/vat-analysis',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.VatAnalysis,
+  },
+  {
     text: <T id={'sidebar.financial_ratios'} />,
     href: '/financial-ratios',
     type: ISidebarMenuItemType.Link,

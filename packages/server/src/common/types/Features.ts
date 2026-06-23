@@ -23,6 +23,7 @@ export enum Features {
   INTERFACE_MODES = 'interface_modes',
   FINANCIAL_MODEL = 'financial_model',
   BANK_STATEMENT_IMPORT = 'bank_statement_import',
+  BANK_API_SYNC = 'bank_api_sync',
   ONEC_EXPORT = 'onec_export',
   ACQUIRING = 'acquiring',
   ZENMONEY_IMPORT = 'zenmoney_import',

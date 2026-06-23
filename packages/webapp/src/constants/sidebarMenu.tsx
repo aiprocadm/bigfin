@@ -828,6 +828,12 @@ export const SidebarMenu = [
     feature: Features.BankApiSync,
   },
   {
+    text: <T id={'sidebar.acquiring'} />,
+    href: '/acquiring',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Acquiring,
+  },
+  {
     text: <T id={'sidebar.zenmoney'} />,
     href: '/zenmoney',
     type: ISidebarMenuItemType.Link,

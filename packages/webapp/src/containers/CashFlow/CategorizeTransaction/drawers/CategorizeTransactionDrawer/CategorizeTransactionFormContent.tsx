@@ -2,11 +2,14 @@
 import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
-import { FormGroup, Tag } from '@blueprintjs/core';
-import { Box, FFormGroup, FSelect } from '@/components';
+import { Button, FormGroup, Intent, Tag } from '@blueprintjs/core';
+import { useQueryClient } from 'react-query';
+import { AppToaster, Box, FFormGroup, FSelect } from '@/components';
 import { ContactSelectField } from '@/components/Contacts/ContactSelectField';
 import { getAddMoneyInOptions, getAddMoneyOutOptions } from '@/constants';
 import { useFormikContext } from 'formik';
+import { useCreateCustomer, useCreateVendor } from '@/hooks/query';
+import { useCurrentOrganization } from '@/hooks/state';
 import { useCategorizeTransactionTabsBoot } from '@/containers/CashFlow/CategorizeTransactionAside/CategorizeTransactionTabsBoot';
 import { useCategorizeTransactionBoot } from './CategorizeTransactionBoot';
 
@@ -30,9 +33,60 @@ export function CategorizeTransactionFormContent() {
 
   const formattedAmount = autofillCategorizeValues?.formattedAmount;
   const payeeInn = autofillCategorizeValues?.payeeInn;
+  const payee = autofillCategorizeValues?.payee;
+  const isDeposit = autofillCategorizeValues?.isDepositTransaction;
+  const suggestedByContact = autofillCategorizeValues?.suggestedByContact;
+
+  const queryClient = useQueryClient();
+  const organization = useCurrentOrganization();
+  const { mutateAsync: createCustomer, isLoading: isCreatingCustomer } =
+    useCreateCustomer();
+  const { mutateAsync: createVendor, isLoading: isCreatingVendor } =
+    useCreateVendor();
 
   const handleContactSelected = (contact) => {
     setFieldValue('contactId', contact ? contact.id : null);
+  };
+
+  // «Создать контрагента из {имя, ИНН}» одним кликом: приход → клиент, расход →
+  // поставщик. Имя и ИНН берутся из выписки, валюта — базовая валюта организации.
+  const canCreateContact = Boolean(payeeInn && payee && !values.contactId);
+
+  const handleCreateContact = async () => {
+    // Валюта обязательна для клиента (серверная валидация бьёт до фолбэка) —
+    // если базовая валюта организации ещё не загружена, не отправляем запрос.
+    const baseCurrency = organization?.base_currency;
+    if (!baseCurrency) {
+      AppToaster.show({
+        message: intl.get('bank_import.contact_create_failed'),
+        intent: Intent.DANGER,
+      });
+      return;
+    }
+    const payload = {
+      display_name: payee,
+      currency_code: baseCurrency,
+      inn: payeeInn,
+      ...(isDeposit ? { customer_type: 'business' } : {}),
+    };
+    try {
+      const res = isDeposit
+        ? await createCustomer(payload)
+        : await createVendor(payload);
+      // Список контрагентов в селекторе берётся из auto-complete — обновляем его.
+      await queryClient.invalidateQueries(['CONTACTS', 'AUTO-COMPLETE']);
+      const newContactId = res?.data?.id;
+      if (newContactId) setFieldValue('contactId', newContactId);
+      AppToaster.show({
+        message: intl.get('bank_import.contact_created'),
+        intent: Intent.SUCCESS,
+      });
+    } catch (error) {
+      AppToaster.show({
+        message: intl.get('bank_import.contact_create_failed'),
+        intent: Intent.DANGER,
+      });
+    }
   };
 
   return (
@@ -52,6 +106,12 @@ export function CategorizeTransactionFormContent() {
         />
       </FFormGroup>
 
+      {suggestedByContact && (
+        <SuggestionHint>
+          {intl.get('bank_import.suggested_by_contact')}
+        </SuggestionHint>
+      )}
+
       <FormGroup label={intl.get('bank_import.counterparty')} inline>
         <Box>
           <ContactSelectField
@@ -62,6 +122,18 @@ export function CategorizeTransactionFormContent() {
           />
           {payeeInn && (
             <InnTag minimal>{intl.get('bank_import.counterparty_inn')}: {payeeInn}</InnTag>
+          )}
+          {canCreateContact && (
+            <Button
+              minimal
+              small
+              intent={Intent.PRIMARY}
+              loading={isCreatingCustomer || isCreatingVendor}
+              onClick={handleCreateContact}
+              style={{ marginTop: 4 }}
+            >
+              {intl.get('bank_import.create_contact')}
+            </Button>
           )}
         </Box>
       </FormGroup>
@@ -98,6 +170,12 @@ const CategorizeTransactionOwnerDrawings = React.lazy(
 const InnTag = styled(Tag)`
   margin-top: 4px;
   font-size: 12px;
+`;
+
+const SuggestionHint = styled('div')`
+  margin: -8px 0 14px 140px;
+  font-size: 12px;
+  color: #5c7080;
 `;
 
 function CategorizeTransactionFormSubContent() {

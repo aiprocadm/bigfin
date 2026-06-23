@@ -33,6 +33,8 @@ import { BankingUncategorizedTransactionsController } from './controllers/Bankin
 import { BankingPendingTransactionsController } from './controllers/BankingPendingTransactions.controller';
 import { GetPendingBankAccountTransactions } from './queries/GetPendingBankAccountTransaction.service';
 import { GetAutofillCategorizeTransactionService } from './queries/GetAutofillCategorizeTransaction/GetAutofillCategorizeTransaction.service';
+import { GetContactCategoryMemoryService } from './queries/GetContactCategoryMemory/GetContactCategoryMemory.service';
+import { ContactsModule } from '../Contacts/Contacts.module';
 
 const models = [
   RegisterTenancyModel(UncategorizedBankTransaction),
@@ -48,6 +50,7 @@ const models = [
     BranchesModule,
     DynamicListModule,
     TenancyModule,
+    ContactsModule,
     ...models,
   ],
   controllers: [
@@ -77,6 +80,7 @@ const models = [
     GetUncategorizedBankTransactionService,
     GetPendingBankAccountTransactions,
     GetAutofillCategorizeTransactionService,
+    GetContactCategoryMemoryService,
   ],
   exports: [
     ...models,

@@ -37,8 +37,10 @@ function ImportFilePreviewContent() {
               importPreview.createdCount <= 0 ? Intent.DANGER : Intent.NONE
             }
           >
-            {importPreview.createdCount} of {importPreview.totalCount} Items in
-            your file are ready to be imported.
+            {intl.get('import.preview.ready_summary', {
+              created: importPreview.createdCount,
+              total: importPreview.totalCount,
+            })}
           </Callout>
 
           <ImportFilePreviewImported />
@@ -58,21 +60,28 @@ function ImportFilePreviewImported() {
     <Section
       collapseProps={{ defaultIsOpen: false }}
       defaultIsOpen={true}
-      title={`(${importPreview.createdCount}) Items are ready to import`}
+      title={intl.get('import.preview.ready_title', {
+        count: importPreview.createdCount,
+      })}
     >
       <SectionCard padded={true}>
         <Text>
-          Items that are ready to be imported - {importPreview.createdCount}
+          {intl.get('import.preview.ready_text', {
+            count: importPreview.createdCount,
+          })}
         </Text>
         <ul className={styles.previewList}>
           <li>
-            Items to be created: <span>({importPreview.createdCount})</span>
+            {intl.get('import.preview.to_create')}{' '}
+            <span>({importPreview.createdCount})</span>
           </li>
           <li>
-            Items to be skipped: <span>({importPreview.skippedCount})</span>
+            {intl.get('import.preview.to_skip')}{' '}
+            <span>({importPreview.skippedCount})</span>
           </li>
           <li>
-            Items have errors: <span>({importPreview.errorsCount})</span>
+            {intl.get('import.preview.with_errors')}{' '}
+            <span>({importPreview.errorsCount})</span>
           </li>
         </ul>
       </SectionCard>
@@ -90,7 +99,9 @@ function ImportFilePreviewSkipped() {
     <Section
       collapseProps={{ defaultIsOpen: false }}
       collapsible={true}
-      title={`(${importPreview.skippedCount}) Items are skipped`}
+      title={intl.get('import.preview.skipped_title', {
+        count: importPreview.skippedCount,
+      })}
     >
       <SectionCard padded={true}>
         <table className={clsx('bp4-html-table', styles.skippedTable)}>
@@ -119,7 +130,9 @@ function ImportFilePreviewUnmapped() {
     <Section
       collapseProps={{ defaultIsOpen: false }}
       collapsible={true}
-      title={`(${importPreview?.unmappedColumnsCount}) Unmapped Columns`}
+      title={intl.get('import.preview.unmapped_title', {
+        count: importPreview?.unmappedColumnsCount,
+      })}
     >
       <SectionCard padded={true}>
         <ul className={styles.unmappedList}>
@@ -146,9 +159,9 @@ function ImportFilePreviewFloatingActions() {
       .then(() => {
         AppToaster.show({
           intent: Intent.SUCCESS,
-          message: `The ${
-            importPreview.createdCount
-          } of ${10} has imported successfully.`,
+          message: intl.get('import.preview.success', {
+            count: importPreview.createdCount,
+          }),
         });
         onImportSuccess && onImportSuccess();
       })
@@ -171,7 +184,7 @@ function ImportFilePreviewFloatingActions() {
           onClick={handleSubmitBtn}
           disabled={!isValidToImport}
         >
-          Import
+          {intl.get('import')}
         </Button>
       </Group>
     </div>

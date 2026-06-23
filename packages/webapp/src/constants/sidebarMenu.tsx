@@ -822,6 +822,12 @@ export const SidebarMenu = [
     feature: Features.FinancialModel,
   },
   {
+    text: <T id={'sidebar.financial_ratios'} />,
+    href: '/financial-ratios',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.FinancialRatios,
+  },
+  {
     text: <T id={'sidebar.system'} />,
     type: ISidebarMenuItemType.Group,
     children: [

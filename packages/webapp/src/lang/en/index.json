@@ -3300,5 +3300,20 @@
   "bank_import.create_contact": "Create contact",
   "bank_import.counterparty_inn": "Counterparty INN",
   "bank_import.counterparty": "Counterparty",
-  "bank_import.parse_error": "Could not parse the statement file"
+  "bank_import.parse_error": "Could not parse the statement file",
+  "sidebar.financial_ratios": "Indicators",
+  "financial_ratios.page.title": "Financial indicators",
+  "financial_ratios.roe": "Return on equity (ROE)",
+  "financial_ratios.roa": "Return on assets (ROA)",
+  "financial_ratios.net_margin": "Net margin",
+  "financial_ratios.current_ratio": "Current ratio",
+  "financial_ratios.quick_ratio": "Quick ratio",
+  "financial_ratios.working_capital": "Working capital",
+  "financial_ratios.debt_to_equity": "Debt to equity",
+  "financial_ratios.debt_ratio": "Debt ratio",
+  "financial_ratios.equity_ratio": "Equity ratio (autonomy)",
+  "financial_ratios.vertical.title": "Vertical P&L analysis (share of revenue)",
+  "financial_ratios.vertical.article": "Section",
+  "financial_ratios.vertical.amount": "Amount",
+  "financial_ratios.vertical.share": "Share of revenue"
 }

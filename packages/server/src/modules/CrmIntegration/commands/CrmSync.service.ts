@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CrmConnectorRegistry } from '../CrmConnectorRegistry';
 import { CrmSyncLinkService } from './CrmSyncLink.service';
-import { CrmSyncResult } from '../types';
+import { CrmContact, CrmDeal, CrmSyncResult } from '../types';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { CreateCustomer } from '@/modules/Customers/commands/CreateCustomer.service';
 import { CreateDealService } from '@/modules/Deals/commands/CreateDeal.service';
@@ -52,22 +52,11 @@ export class CrmSyncService {
     let contactsSkipped = 0;
 
     for (const c of contacts) {
-      if (contactMap.has(c.externalId)) {
+      if (await this.upsertContact(connectorKey, c, contactMap, baseCurrency)) {
+        contactsImported++;
+      } else {
         contactsSkipped++;
-        continue;
       }
-      const customer = await this.createCustomer.createCustomer({
-        customerType: 'business',
-        displayName: c.displayName,
-        currencyCode: baseCurrency,
-        inn: c.inn ?? undefined,
-        email: c.email ?? undefined,
-        workPhone: c.phone ?? undefined,
-        companyName: c.companyName ?? undefined,
-      } as any);
-      await this.links.record(connectorKey, c.externalId, 'contact', customer.id);
-      contactMap.set(c.externalId, customer.id);
-      contactsImported++;
     }
 
     // --- Сделки: создаём недостающие, связываем с контрагентом по карте.
@@ -76,24 +65,99 @@ export class CrmSyncService {
     let dealsSkipped = 0;
 
     for (const d of deals) {
-      if (dealExternalIds.has(d.externalId)) {
+      if (await this.upsertDeal(connectorKey, d, contactMap, dealExternalIds)) {
+        dealsImported++;
+      } else {
         dealsSkipped++;
-        continue;
       }
-      const contactId = d.contactExternalId
-        ? contactMap.get(d.contactExternalId) ?? null
-        : null;
-      const deal = await this.createDeal.create({
-        name: d.name,
-        costEstimate: d.amount ?? undefined,
-        contactId: contactId ?? undefined,
-        deadline: d.closedAt ?? undefined,
-      } as any);
-      await this.links.record(connectorKey, d.externalId, 'deal', deal.id);
-      dealsImported++;
     }
 
     return { contactsImported, contactsSkipped, dealsImported, dealsSkipped };
+  }
+
+  /**
+   * Импортирует ОДНУ каноническую сущность (контакт и/или сделку) — для входящего
+   * webhook собственной CRM (⑯c). Идемпотентно через `crm_sync_links`.
+   * @param {string} connectorKey
+   * @param {{contact?: CrmContact, deal?: CrmDeal}} payload
+   */
+  public async importCanonical(
+    connectorKey: string,
+    payload: { contact?: CrmContact; deal?: CrmDeal },
+  ): Promise<CrmSyncResult> {
+    const result: CrmSyncResult = {
+      contactsImported: 0,
+      contactsSkipped: 0,
+      dealsImported: 0,
+      dealsSkipped: 0,
+    };
+    const baseCurrency = await this.resolveBaseCurrency();
+    const contactMap = await this.links.getContactIdMap(connectorKey);
+
+    if (payload.contact) {
+      const imported = await this.upsertContact(
+        connectorKey,
+        payload.contact,
+        contactMap,
+        baseCurrency,
+      );
+      imported ? result.contactsImported++ : result.contactsSkipped++;
+    }
+    if (payload.deal) {
+      const dealExternalIds = await this.links.getDealExternalIds(connectorKey);
+      const imported = await this.upsertDeal(
+        connectorKey,
+        payload.deal,
+        contactMap,
+        dealExternalIds,
+      );
+      imported ? result.dealsImported++ : result.dealsSkipped++;
+    }
+    return result;
+  }
+
+  /** Создаёт контрагента и связку, если его ещё нет. true=создан, false=пропущен. */
+  private async upsertContact(
+    connectorKey: string,
+    c: CrmContact,
+    contactMap: Map<string, number>,
+    baseCurrency: string | undefined,
+  ): Promise<boolean> {
+    if (contactMap.has(c.externalId)) return false;
+    const customer = await this.createCustomer.createCustomer({
+      customerType: 'business',
+      displayName: c.displayName,
+      currencyCode: baseCurrency,
+      inn: c.inn ?? undefined,
+      email: c.email ?? undefined,
+      workPhone: c.phone ?? undefined,
+      companyName: c.companyName ?? undefined,
+    } as any);
+    await this.links.record(connectorKey, c.externalId, 'contact', customer.id);
+    contactMap.set(c.externalId, customer.id);
+    return true;
+  }
+
+  /** Создаёт сделку и связку, если её ещё нет. true=создана, false=пропущена. */
+  private async upsertDeal(
+    connectorKey: string,
+    d: CrmDeal,
+    contactMap: Map<string, number>,
+    dealExternalIds: Set<string>,
+  ): Promise<boolean> {
+    if (dealExternalIds.has(d.externalId)) return false;
+    const contactId = d.contactExternalId
+      ? contactMap.get(d.contactExternalId) ?? null
+      : null;
+    const deal = await this.createDeal.create({
+      name: d.name,
+      costEstimate: d.amount ?? undefined,
+      contactId: contactId ?? undefined,
+      deadline: d.closedAt ?? undefined,
+    } as any);
+    await this.links.record(connectorKey, d.externalId, 'deal', deal.id);
+    dealExternalIds.add(d.externalId);
+    return true;
   }
 
   /** Базовая валюта организации для создаваемых контрагентов. */

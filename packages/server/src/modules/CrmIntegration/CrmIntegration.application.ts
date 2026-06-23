@@ -33,11 +33,8 @@ export class CrmIntegrationApplication {
   /** Подключает Битрикс24: валидирует webhook пробным вызовом, сохраняет. */
   public async connectBitrix24(webhookUrl: string): Promise<{ connected: true }> {
     await this.assertEnabled();
-    // Пробный лёгкий вызов — проверяем, что webhook валиден (бросит при 401/403).
-    await this.bitrixApi.listAll(webhookUrl, 'crm.contact.list', {
-      select: ['ID'],
-      start: 0,
-    });
+    // Лёгкая проверка валидности webhook (один запрос, бросит при 401/403).
+    await this.bitrixApi.ping(webhookUrl);
     await this.settings.setBitrix24WebhookUrl(webhookUrl);
     return { connected: true };
   }

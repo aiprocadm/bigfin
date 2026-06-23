@@ -41,6 +41,18 @@ export class Bitrix24ApiService {
     return items;
   }
 
+  /**
+   * Лёгкая проверка валидности webhook-URL: один запрос на одну запись.
+   * Бросит INVALID_WEBHOOK при 401/403. НЕ пагинирует (в отличие от listAll).
+   */
+  public async ping(webhookUrl: string): Promise<void> {
+    const base = webhookUrl.endsWith('/') ? webhookUrl : `${webhookUrl}/`;
+    await this.call(`${base}crm.contact.list.json`, {
+      select: ['ID'],
+      start: 0,
+    });
+  }
+
   /** Одиночный POST-вызов метода Битрикс с маппингом ошибок. */
   private async call(url: string, body: Record<string, any>): Promise<any> {
     try {

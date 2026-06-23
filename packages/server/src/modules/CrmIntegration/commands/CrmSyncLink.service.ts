@@ -45,11 +45,12 @@ export class CrmSyncLinkService {
     entityType: CrmLinkEntityType,
     entityId: number,
   ): Promise<void> {
-    await this.linkModel().query().insert({
-      connectorKey,
-      externalId,
-      entityType,
-      entityId,
-    });
+    // onConflictIgnore по уникальному (connector_key, external_id, entity_type):
+    // защита от гонки параллельных синков (вставка-дубль не валит запрос).
+    await this.linkModel()
+      .query()
+      .insert({ connectorKey, externalId, entityType, entityId })
+      .onConflict(['connector_key', 'external_id', 'entity_type'])
+      .ignore();
   }
 }

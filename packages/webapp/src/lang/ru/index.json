@@ -3303,5 +3303,12 @@
   "bank_import.parse_error": "Не удалось разобрать файл выписки",
   "bank_import.suggested_by_contact": "Статья подставлена по истории контрагента",
   "bank_import.contact_created": "Контрагент создан и привязан.",
-  "bank_import.contact_create_failed": "Не удалось создать контрагента."
+  "bank_import.contact_create_failed": "Не удалось создать контрагента.",
+  "sidebar.onec_export": "Выгрузка в 1С",
+  "onec_export.page.title": "Выгрузка в 1С",
+  "onec_export.page.subtitle": "Выгрузка денежных операций в файл 1CClientBankExchange для загрузки в 1С.",
+  "onec_export.account_id": "ID денежного счёта Bigfin",
+  "onec_export.action.download": "Скачать",
+  "onec_export.done": "Файл 1С сформирован.",
+  "onec_export.error": "Не удалось сформировать файл 1С."
 }

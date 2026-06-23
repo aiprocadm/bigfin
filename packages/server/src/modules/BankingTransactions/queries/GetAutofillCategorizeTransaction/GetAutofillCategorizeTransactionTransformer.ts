@@ -23,6 +23,8 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
       'isDepositTransaction',
       'payeeInn',
       'payee',
+      'suggestedContactId',
+      'suggestedByContact',
     ];
   };
 
@@ -98,13 +100,15 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
   }
 
   /**
-   *
+   * Статья по умолчанию: распознанное правило → память по контрагенту → пусто.
    * @returns {number}
    */
   public creditAccountId() {
     return (
       this.options.firstUncategorizedTransaction?.recognizedTransaction
-        ?.assignedAccountId || null
+        ?.assignedAccountId ||
+      this.options.contactMemory?.creditAccountId ||
+      null
     );
   }
 
@@ -128,6 +132,7 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
 
     return (
       assignedCategory ||
+      this.options.contactMemory?.transactionType ||
       (this.isDepositTransaction() ? 'other_income' : 'other_expense')
     );
   }
@@ -151,6 +156,27 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
    */
   public payeeInn() {
     return this.options.firstUncategorizedTransaction?.payeeInn || null;
+  }
+
+  /**
+   * Контрагент, найденный по ИНН выписки (для авто-подстановки в форму «Разбор»).
+   * @returns {number | null}
+   */
+  public suggestedContactId() {
+    return this.options.suggestedContactId || null;
+  }
+
+  /**
+   * Признак, что статья подставлена из памяти по контрагенту (а не правилом).
+   * @returns {boolean}
+   */
+  public suggestedByContact() {
+    const recognized =
+      !!this.options.firstUncategorizedTransaction?.recognizedTransaction;
+
+    return (
+      !recognized && !!this.options.contactMemory?.creditAccountId
+    );
   }
 
   /**

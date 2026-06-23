@@ -53,5 +53,8 @@ export const useCategorizeTransactionFormInitialValues = () => {
 
     /** Assign the primary branch id as default value. */
     branchId: primaryBranch?.id || null,
+
+    /** Подставить контрагента, найденного по ИНН выписки (Фаза 2). */
+    contactId: autofillCategorizeValues?.suggestedContactId ?? null,
   };
 };

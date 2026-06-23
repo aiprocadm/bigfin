@@ -47,6 +47,7 @@ import { CreditsModule } from '../Credits/Credits.module';
 import { FinancialModelModule } from '../FinancialModel/FinancialModel.module';
 import { BankStatementImportModule } from '../BankStatementImport/BankStatementImport.module';
 import { MarketplacesModule } from '../Marketplaces/Marketplaces.module';
+import { BankApiSyncModule } from '../BankApiSync/BankApiSync.module';
 import { OnecExportModule } from '../OnecExport/OnecExport.module';
 import { AcquiringModule } from '../Acquiring/Acquiring.module';
 import { ZenmoneyImportModule } from '../ZenmoneyImport/ZenmoneyImport.module';
@@ -236,6 +237,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     FinancialModelModule,
     BankStatementImportModule,
     MarketplacesModule,
+    BankApiSyncModule,
     OnecExportModule,
     AcquiringModule,
     ZenmoneyImportModule,

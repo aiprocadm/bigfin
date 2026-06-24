@@ -1,7 +1,9 @@
 // @ts-nocheck — хуки в @/hooks/state и @/hooks/query не типизированы
 import { Bell, HelpCircle, Plus, Search } from 'lucide-react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
+import { OPEN_SEARCH } from '@/store/types';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,8 +21,12 @@ import { firstLettersArgs } from '@/utils';
 
 export const ConnectedTopbar = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const { setLogout } = useAuthActions();
   const { data: user } = useAuthenticatedAccount();
+
+  // Открыть оверлей универсального поиска (как по горячей клавише «/»).
+  const openSearch = () => dispatch({ type: OPEN_SEARCH });
 
   const initials = user
     ? firstLettersArgs(user.first_name, user.last_name)
@@ -30,10 +36,14 @@ export const ConnectedTopbar = () => {
     <Topbar
       searchSlot={
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+          {/* Поле-триггер: открывает оверлей универсального поиска. */}
           <Input
+            readOnly
             placeholder="Поиск по контрагентам, счетам..."
-            className="pl-9"
+            className="cursor-pointer pl-9"
+            onClick={openSearch}
+            onFocus={openSearch}
           />
         </div>
       }
@@ -45,12 +55,15 @@ export const ConnectedTopbar = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {/* TODO Phase 4: подключить к реальным dialog actions */}
-            <DropdownMenuItem disabled>Создать счёт (TBD)</DropdownMenuItem>
-            <DropdownMenuItem disabled>
-              Создать контрагента (TBD)
+            <DropdownMenuItem onClick={() => history.push('/invoices/new')}>
+              Счёт покупателю
             </DropdownMenuItem>
-            <DropdownMenuItem disabled>Создать сделку (TBD)</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => history.push('/bills/new')}>
+              Счёт поставщика
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => history.push('/customers/new')}>
+              Контрагента
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       }

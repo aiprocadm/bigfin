@@ -1,8 +1,7 @@
-const theme =
-  localStorage.getItem('theme') ||
-  (window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light');
+// Светлая тема — по умолчанию (выбор дизайн-системы). Тёмная включается
+// только если пользователь явно сохранил её в localStorage('theme'='dark').
+// Раньше тут следовали тёмной теме ОС, из-за чего весь интерфейс был тёмным.
+const theme = localStorage.getItem('theme') || 'light';
 
 if (theme === 'dark') {
   document.documentElement.classList.add('bp4-dark');

@@ -6,9 +6,10 @@
   text-align: center;
 
   &_title {
+    // D-redesign: типографика пустого состояния под новую систему.
     font-size: 20px;
-    color: var(--color-datatable-empty-status-title);
-    font-weight: 600;
+    color: rgb(var(--c-text-primary));
+    font-weight: 500;
     margin-left: auto;
     margin-bottom: 10px;
     margin-right: auto;
@@ -20,9 +21,8 @@
     }
   }
   &_desc {
-    font-size: 16px;
-    color: var(--color-datatable-empty-status-description);
-    opacity: 0.8;
+    font-size: 15px;
+    color: rgb(var(--c-text-secondary));
     line-height: 1.6;
   }
   &_actions {

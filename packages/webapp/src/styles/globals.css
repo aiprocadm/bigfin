@@ -1,3 +1,8 @@
+/* Явный порядок CSS-слоёв: utilities должен быть приоритетнее base,
+   иначе ручной сброс фона кнопок (@layer base) перебивает классы вроде
+   bg-action. Объявление @layer допустимо до @import по спецификации CSS. */
+@layer theme, base, components, utilities;
+
 @import '@fontsource-variable/inter';
 @import './tokens.css';
 
@@ -10,23 +15,27 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @theme {
-  --color-background: rgb(var(--color-background));
-  --color-surface: rgb(var(--color-surface));
-  --color-surface-elevated: rgb(var(--color-surface-elevated));
-  --color-border: rgb(var(--color-border));
+  --color-background: rgb(var(--c-background));
+  --color-surface: rgb(var(--c-surface));
+  --color-surface-elevated: rgb(var(--c-surface-elevated));
+  --color-border: rgb(var(--c-border));
 
-  --color-text-primary: rgb(var(--color-text-primary));
-  --color-text-secondary: rgb(var(--color-text-secondary));
-  --color-text-muted: rgb(var(--color-text-muted));
+  --color-text-primary: rgb(var(--c-text-primary));
+  --color-text-secondary: rgb(var(--c-text-secondary));
+  --color-text-muted: rgb(var(--c-text-muted));
 
-  --color-accent: rgb(var(--color-accent));
-  --color-accent-hover: rgb(var(--color-accent-hover));
-  --color-accent-fg: rgb(var(--color-accent-fg));
+  --color-action: rgb(var(--c-action));
+  --color-action-hover: rgb(var(--c-action-hover));
+  --color-action-fg: rgb(var(--c-action-fg));
 
-  --color-success: rgb(var(--color-success));
-  --color-danger: rgb(var(--color-danger));
-  --color-warning: rgb(var(--color-warning));
-  --color-info: rgb(var(--color-info));
+  --color-accent: rgb(var(--c-accent));
+  --color-accent-hover: rgb(var(--c-accent-hover));
+  --color-accent-fg: rgb(var(--c-accent-fg));
+
+  --color-success: rgb(var(--c-success));
+  --color-danger: rgb(var(--c-danger));
+  --color-warning: rgb(var(--c-warning));
+  --color-info: rgb(var(--c-info));
 
   --radius-default: var(--radius);
 

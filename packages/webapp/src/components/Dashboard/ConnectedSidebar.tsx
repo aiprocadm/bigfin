@@ -1,30 +1,48 @@
-// @ts-nocheck — useMainSidebarMenu и interfaces — легаси JS без типов
+// @ts-nocheck
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { Sidebar, type SidebarItemData } from '@/components/ui/Sidebar';
-import { useMainSidebarMenu } from '@/containers/Dashboard/Sidebar/hooks';
+import { Sidebar, type SidebarGroupData } from '@/components/ui/Sidebar';
+import { SidebarMenu } from '@/constants/sidebarMenu';
 import { ISidebarMenuItemType } from '@/containers/Dashboard/Sidebar/interfaces';
 
+// Формы создания (/new) в основную навигацию не выводим.
+const isCreateRoute = (href: string) => /\/new(\/|$)/.test(href);
+
+/**
+ * Рекурсивно собирает все навигационные ссылки (с href) из ветки меню,
+ * пропуская формы создания и дубли.
+ */
+function collectLinks(node, acc, seen) {
+  if (node?.href && !isCreateRoute(node.href) && !seen.has(node.href)) {
+    seen.add(node.href);
+    acc.push({ href: node.href, label: node.text });
+  }
+  (node?.children || []).forEach((child) => collectLinks(child, acc, seen));
+}
+
+/**
+ * Строит секции навигации из полного меню SidebarMenu.
+ * Раньше новый сайдбар показывал только 2 пункта, т.к. отбрасывал группы;
+ * теперь каждая секция меню → группа со своими списочными экранами.
+ */
+function buildNavGroups(): SidebarGroupData[] {
+  return SidebarMenu.map((top) => {
+    const items = [];
+    collectLinks(top, items, new Set());
+    const isStandalone = top.type === ISidebarMenuItemType.Link || top.href;
+    return { title: isStandalone ? undefined : top.text, items };
+  }).filter((group) => group.items.length > 0);
+}
+
+const NAV_GROUPS = buildNavGroups();
+
 export const ConnectedSidebar = () => {
-  const legacyMenu = useMainSidebarMenu();
   const location = useLocation();
   const history = useHistory();
 
-  // Преобразуем легаси-меню (уже плоское после useFlatSidebarMenu) в
-  // формат SidebarItemData. В Phase 3 поддерживаем только Link-тип; метка
-  // берётся из `text` (string | JSX) — поле `label` в легаси отсутствует.
-  // Overlay/Dialog/Group/Drawer в этой волне не отображаются (см. спеку:
-  // mapping BP-icon→Lucide и submenu — отдельный sub-project).
-  const items: SidebarItemData[] = (legacyMenu || [])
-    .filter((item) => item.type === ISidebarMenuItemType.Link && item.href)
-    .map((item) => ({
-      href: item.href,
-      label: item.text,
-    }));
-
   return (
     <Sidebar
-      items={items}
+      groups={NAV_GROUPS}
       activeHref={location.pathname}
       onItemClick={(item) => history.push(item.href)}
     />

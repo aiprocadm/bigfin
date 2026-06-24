@@ -168,7 +168,8 @@ export function DataTable({
                         {...cell.getCellProps()}
                         className={cn(
                           'px-3 py-2 text-text-primary',
-                          cell.column.align === 'right' && 'text-right',
+                          cell.column.align === 'right' &&
+                            'text-right tabular-nums whitespace-nowrap',
                         )}
                       >
                         {cell.render('Cell')}

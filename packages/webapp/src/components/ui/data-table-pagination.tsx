@@ -28,8 +28,8 @@ export function DataTablePagination({
       : (pageIndex + 1) * pageSize;
 
   return (
-    <div className="flex items-center justify-between py-3 text-sm text-text-secondary">
-      <span>
+    <div className="flex flex-wrap items-center justify-between gap-y-2 py-3 text-sm text-text-secondary">
+      <span className="tabular-nums">
         {from}–{to}
         {total != null ? ` / ${total}` : ''}
       </span>

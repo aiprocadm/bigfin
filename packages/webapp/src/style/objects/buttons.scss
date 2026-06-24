@@ -1,3 +1,31 @@
+/* D-redesign: скругления Blueprint-контролов под новую дизайн-систему
+   (6px вместо почти острых ~3px) — общий «современный» сигнал на всех экранах. */
+.bp4-button,
+.bp4-input,
+.bp4-tag-input,
+.bp4-tag,
+.bp4-card,
+.bp4-menu,
+.bp4-html-select select,
+.bp4-select select {
+  border-radius: 6px;
+}
+
+/* D-redesign: главные кнопки Blueprint (intent-primary) — чернильные,
+   как «главное действие» в новой системе (вместо синего Blueprint). */
+.bp4-button.bp4-intent-primary {
+  &,
+  &:hover,
+  &:active,
+  &.bp4-active {
+    background-color: rgb(var(--c-action));
+    color: rgb(var(--c-action-fg));
+  }
+  &:hover {
+    background-color: rgb(var(--c-action-hover));
+  }
+}
+
 .bp4-button {
   --color-button-color: #555;
 

@@ -8,6 +8,7 @@ const config: StorybookConfig = {
     // Bold Fintech-пилоты, рендерящиеся как самостоятельные страницы.
     '../src/components/auth/**/*.stories.@(ts|tsx|mdx)',
     '../src/components/legal/**/*.stories.@(ts|tsx|mdx)',
+    '../src/components/Dashboard/**/*.stories.@(ts|tsx|mdx)',
   ],
   addons: [
     '@storybook/addon-essentials',

@@ -31,7 +31,7 @@ export function ListToolbar({
   }
 
   return (
-    <div className="mb-3 flex items-center gap-2">
+    <div className="mb-3 flex flex-wrap items-center gap-2">
       {onSearchChange && (
         <div className="relative max-w-xs flex-1">
           <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />

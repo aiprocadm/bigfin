@@ -1,7 +1,7 @@
 // @ts-nocheck — хуки в @/hooks/state и @/hooks/query не типизированы
 import { Bell, HelpCircle, Plus, Search } from 'lucide-react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { OPEN_SEARCH } from '@/store/types';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -28,12 +28,22 @@ export const ConnectedTopbar = () => {
   // Открыть оверлей универсального поиска (как по горячей клавише «/»).
   const openSearch = () => dispatch({ type: OPEN_SEARCH });
 
+  // Заголовок текущей страницы (вернули в панель после удаления старой).
+  const pageTitle = useSelector((state) => state.dashboard?.pageTitle);
+
   const initials = user
     ? firstLettersArgs(user.first_name, user.last_name)
     : '??';
 
   return (
     <Topbar
+      titleSlot={
+        pageTitle ? (
+          <h1 className="truncate text-sm font-medium text-text-primary">
+            {pageTitle}
+          </h1>
+        ) : null
+      }
       searchSlot={
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { cn } from '@/lib/cn';
 
 interface TopbarProps {
+  titleSlot?: React.ReactNode;
   searchSlot?: React.ReactNode;
   quickActionsSlot?: React.ReactNode;
   notificationsSlot?: React.ReactNode;
@@ -13,6 +14,7 @@ interface TopbarProps {
 }
 
 export const Topbar = ({
+  titleSlot,
   searchSlot,
   quickActionsSlot,
   notificationsSlot,
@@ -28,7 +30,10 @@ export const Topbar = ({
         className,
       )}
     >
-      <div className="flex min-w-0 flex-1 items-center">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        {titleSlot && (
+          <div className="hidden shrink-0 md:block">{titleSlot}</div>
+        )}
         {searchSlot && <div className="min-w-0 max-w-md flex-1">{searchSlot}</div>}
       </div>
       <div className="flex items-center gap-1">

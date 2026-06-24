@@ -185,7 +185,8 @@ $dashboard-views-bar-height: 44px;
   }
 
   &__actions-bar {
-    border-bottom: 2px solid var(--color-dashboard-actionsbar-border);
+    // D-redesign: лёгкая граница на токене вместо 2px.
+    border-bottom: 1px solid rgb(var(--c-border));
 
     .bp4-navbar-divider {
       border-left-color: var(--color-dashboard-actionsbar-divider);
@@ -196,6 +197,8 @@ $dashboard-views-bar-height: 44px;
       padding-left: 12px;
       padding-right: 12px;
       background-color: var(--color-dashboard-navbar-background);
+      // На узких экранах тулбар прокручивается по горизонтали, а не ломается.
+      overflow-x: auto;
 
       &,
       &-group {

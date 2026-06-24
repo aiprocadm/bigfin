@@ -7,8 +7,8 @@ export interface PageHeaderProps {
 
 export function PageHeader({ title, action }: PageHeaderProps) {
   return (
-    <div className="mb-4 flex items-center justify-between gap-4">
-      <h1 className="text-xl font-semibold text-text-primary">{title}</h1>
+    <div className="mb-4 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <h1 className="text-xl font-medium text-text-primary">{title}</h1>
       {action}
     </div>
   );

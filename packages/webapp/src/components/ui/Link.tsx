@@ -12,8 +12,8 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
     <RouterLink
       ref={ref}
       className={cn(
-        'underline-offset-4 transition-colors focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-        variant === 'default' && 'text-accent hover:underline',
+        'underline-offset-4 transition-colors focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
+        variant === 'default' && 'text-action hover:underline',
         variant === 'muted' && 'text-text-secondary hover:text-text-primary',
         className,
       )}

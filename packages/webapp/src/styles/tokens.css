@@ -1,40 +1,67 @@
-/* Bigfin brand tokens v1 — Bold Fintech */
+/* Дизайн-токены Bigfin — светлая тема (основная) */
+
+/* «Сырые» цвета — это тройки RGB (например, 244 245 247). Они живут под именами
+   --c-*, чтобы НЕ конфликтовать с одноимёнными токенами Tailwind в globals.css.
+   Tailwind оборачивает их в rgb(...) и раздаёт классам (bg-surface, text-accent
+   и т.п.). Тройки (а не #HEX) нужны, чтобы работала прозрачность вида bg-accent/10. */
 
 :root {
-  /* Dark theme (primary) */
-  --color-background: 10 14 26;        /* #0A0E1A */
-  --color-surface: 19 24 43;           /* #13182B */
-  --color-surface-elevated: 31 37 65;  /* #1F2541 */
-  --color-border: 42 50 88;            /* #2A3258 */
+  /* Поверхности */
+  --c-background: 244 245 247;       /* #F4F5F7 — фон приложения */
+  --c-surface: 255 255 255;          /* #FFFFFF — карточки, панели */
+  --c-surface-elevated: 241 243 245; /* #F1F3F5 — ховер, приподнятые блоки */
+  --c-border: 228 231 236;           /* #E4E7EC — границы и разделители */
 
-  --color-text-primary: 255 255 255;
-  --color-text-secondary: 124 137 171; /* #7C89AB */
-  --color-text-muted: 90 100 128;      /* #5A6480 */
+  /* Текст */
+  --c-text-primary: 26 29 41;        /* #1A1D29 — основной текст */
+  --c-text-secondary: 90 100 120;    /* #5A6478 — вторичный текст */
+  --c-text-muted: 152 162 179;       /* #98A2B3 — подсказки, плейсхолдеры */
 
-  --color-accent: 255 211 0;           /* #FFD300 */
-  --color-accent-hover: 255 184 0;     /* #FFB800 */
-  --color-accent-fg: 10 14 26;         /* text on yellow */
+  /* Главное действие — чернильный (кнопки, ссылки, ключевые интерактивы) */
+  --c-action: 26 29 41;              /* #1A1D29 */
+  --c-action-hover: 42 47 61;        /* #2A2F3D — ховер */
+  --c-action-fg: 255 255 255;        /* текст на чернильном фоне */
 
-  --color-success: 91 186 111;         /* #5BBA6F */
-  --color-danger: 248 113 113;         /* #F87171 */
-  --color-warning: 249 168 37;         /* #F9A825 */
-  --color-info: 59 130 246;            /* #3B82F6 */
+  /* Фирменный акцент Bigfin — жёлтый (логотип, выделения; НЕ фон кнопок) */
+  --c-accent: 255 211 0;             /* #FFD300 */
+  --c-accent-hover: 245 195 0;       /* #F5C300 */
+  --c-accent-fg: 26 29 41;           /* тёмный текст на жёлтом — читаемо */
 
-  --radius: 0.5rem; /* 8px — default for shadcn */
+  /* Семантика и деньги */
+  --c-success: 31 157 87;            /* #1F9D57 — доход, успех */
+  --c-danger: 229 72 77;             /* #E5484D — расход, ошибка */
+  --c-warning: 245 166 35;           /* #F5A623 — предупреждение */
+  --c-info: 46 115 232;              /* #2E73E8 — информация */
+
+  --radius: 0.5rem;                  /* 8px — базовое скругление shadcn */
 }
 
-/* Light theme — best effort, не primary */
-.light {
-  --color-background: 250 250 247;     /* #FAFAF7 */
-  --color-surface: 255 255 255;
-  --color-surface-elevated: 245 244 241;
-  --color-border: 230 228 220;
+/* Тёмная тема — не основная. Включается классом .dark на корневом элементе. */
+.dark {
+  /* Поверхности */
+  --c-background: 10 14 26;          /* #0A0E1A */
+  --c-surface: 19 24 43;             /* #13182B */
+  --c-surface-elevated: 31 37 65;    /* #1F2541 */
+  --c-border: 42 50 88;              /* #2A3258 */
 
-  --color-text-primary: 10 14 26;
-  --color-text-secondary: 90 100 128;
-  --color-text-muted: 170 170 170;
+  /* Текст */
+  --c-text-primary: 255 255 255;
+  --c-text-secondary: 124 137 171;   /* #7C89AB */
+  --c-text-muted: 90 100 128;        /* #5A6480 */
 
-  --color-accent: 229 168 0;           /* #E5A800 — затемнённый для светлой */
-  --color-accent-hover: 200 145 0;
-  --color-accent-fg: 255 255 255;
+  /* Главное действие — в тёмной теме это жёлтый (чернильный не читается на тёмном) */
+  --c-action: 255 211 0;             /* #FFD300 */
+  --c-action-hover: 255 184 0;       /* #FFB800 */
+  --c-action-fg: 10 14 26;           /* тёмный текст на жёлтом */
+
+  /* Фирменный акцент */
+  --c-accent: 255 211 0;             /* #FFD300 */
+  --c-accent-hover: 255 184 0;       /* #FFB800 */
+  --c-accent-fg: 10 14 26;
+
+  /* Семантика и деньги */
+  --c-success: 91 186 111;           /* #5BBA6F */
+  --c-danger: 248 113 113;           /* #F87171 */
+  --c-warning: 249 168 37;           /* #F9A825 */
+  --c-info: 59 130 246;              /* #3B82F6 */
 }

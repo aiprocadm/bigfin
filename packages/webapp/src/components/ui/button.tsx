@@ -4,21 +4,22 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/cn';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        primary: 'bg-accent text-accent-fg hover:bg-accent-hover',
+        primary: 'bg-action text-action-fg hover:bg-action-hover',
         secondary: 'bg-surface-elevated text-text-primary border border-border hover:bg-surface',
         ghost: 'text-text-primary hover:bg-surface-elevated',
-        link: 'text-accent underline-offset-4 hover:underline',
+        link: 'text-action underline-offset-4 hover:underline',
         destructive: 'bg-danger text-white hover:bg-danger/90',
       },
+      // Размеры: на мобильном крупнее (под палец, ≥44px), на десктопе компактнее.
       size: {
         sm: 'h-8 px-3 text-xs',
-        md: 'h-10 px-4',
+        md: 'h-11 px-4 sm:h-10',
         lg: 'h-12 px-6 text-base',
-        icon: 'h-10 w-10',
+        icon: 'h-11 w-11 sm:h-10 sm:w-10',
       },
     },
     defaultVariants: {

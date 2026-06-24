@@ -2,6 +2,10 @@
 
 .bigfin-datatable {
   display: block;
+  // D-redesign: на узких экранах широкая таблица прокручивается внутри
+  // контейнера, а не ломает страницу горизонтально.
+  max-width: 100%;
+  overflow-x: auto;
 
   .table {
     text-align: left;

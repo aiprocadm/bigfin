@@ -5,13 +5,22 @@ import { cn } from '@/lib/cn';
 
 export interface SidebarItemData {
   href: string;
-  label: string;
+  label: React.ReactNode;
   icon?: LucideIcon;
   active?: boolean;
 }
 
-interface SidebarProps {
+export interface SidebarGroupData {
+  /** Заголовок секции (необязательный — пункты без секции рендерятся без него). */
+  title?: React.ReactNode;
   items: SidebarItemData[];
+}
+
+interface SidebarProps {
+  /** Плоский список пунктов (простой режим). */
+  items?: SidebarItemData[];
+  /** Группированная навигация по секциям (приоритетнее items, если задана). */
+  groups?: SidebarGroupData[];
   activeHref?: string;
   mini?: boolean;
   onItemClick?: (item: SidebarItemData) => void;
@@ -20,28 +29,42 @@ interface SidebarProps {
 
 export const Sidebar = ({
   items,
+  groups,
   activeHref,
   mini = false,
   onItemClick,
   className,
 }: SidebarProps) => {
+  // Если переданы группы — рендерим их; иначе плоский список как одну секцию.
+  const resolvedGroups: SidebarGroupData[] =
+    groups ?? (items ? [{ items }] : []);
+
   return (
     <nav
       aria-label="Главное меню"
       className={cn(
-        'flex h-full flex-col gap-1 border-r border-border bg-background py-4 transition-[width] duration-200',
+        'flex h-full flex-col gap-4 overflow-y-auto border-r border-border bg-background py-4 transition-[width] duration-200',
         mini ? 'w-16' : 'w-60',
         className,
       )}
     >
-      {items.map((item) => (
-        <SidebarItem
-          key={item.href}
-          item={item}
-          active={item.href === activeHref || item.active}
-          mini={mini}
-          onClick={onItemClick}
-        />
+      {resolvedGroups.map((group, gi) => (
+        <div key={gi} className="flex flex-col gap-1">
+          {group.title && !mini && (
+            <div className="mx-3 mb-1 px-2 text-xs font-medium uppercase tracking-wide text-text-muted">
+              {group.title}
+            </div>
+          )}
+          {group.items.map((item) => (
+            <SidebarItem
+              key={item.href}
+              item={item}
+              active={item.href === activeHref || item.active}
+              mini={mini}
+              onClick={onItemClick}
+            />
+          ))}
+        </div>
       ))}
     </nav>
   );
@@ -73,7 +96,7 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
           : 'text-text-secondary hover:bg-surface hover:text-text-primary',
         mini && 'justify-center',
       )}
-      title={mini ? item.label : undefined}
+      title={mini ? undefined : undefined}
     >
       {Icon && <Icon className="h-5 w-5 shrink-0" aria-hidden />}
       {!mini && <span className="truncate">{item.label}</span>}

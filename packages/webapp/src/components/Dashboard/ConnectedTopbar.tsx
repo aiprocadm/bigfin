@@ -1,5 +1,5 @@
 // @ts-nocheck — хуки в @/hooks/state и @/hooks/query не типизированы
-import { Bell, HelpCircle, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -77,23 +77,13 @@ export const ConnectedTopbar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       }
-      helpSlot={
-        <Button variant="ghost" size="icon" aria-label="Помощь">
-          <HelpCircle className="h-4 w-4" />
-        </Button>
-      }
-      notificationsSlot={
-        <Button variant="ghost" size="icon" aria-label="Уведомления">
-          <Bell className="h-4 w-4" />
-        </Button>
-      }
       avatarSlot={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               type="button"
               aria-label="Меню профиля"
-              className="ml-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="ml-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-action"
             >
               <Avatar>
                 <AvatarFallback>{initials}</AvatarFallback>

@@ -35,15 +35,15 @@ describe('categorizeTransactionSchema', () => {
 
 describe('resolveSubtypeConfig', () => {
   it('для расхода даёт счёт расхода с фильтром expense', () => {
-    const c = resolveSubtypeConfig('other_expense');
+    const c = resolveSubtypeConfig('other_expense')!;
     expect(c.creditFilterRootTypes).toEqual(['expense']);
     expect(c.creditAccountLabelKey).toBe('expense_account');
   });
   it('для прочего дохода — фильтр income', () => {
-    expect(resolveSubtypeConfig('other_income').creditFilterRootTypes).toEqual(['income']);
+    expect(resolveSubtypeConfig('other_income')!.creditFilterRootTypes).toEqual(['income']);
   });
   it('для перевода — фильтр asset', () => {
-    expect(resolveSubtypeConfig('transfer_to_account').creditFilterRootTypes).toEqual(['asset']);
+    expect(resolveSubtypeConfig('transfer_to_account')!.creditFilterRootTypes).toEqual(['asset']);
   });
   it('неизвестный тип → null', () => {
     expect(resolveSubtypeConfig('nope')).toBeNull();

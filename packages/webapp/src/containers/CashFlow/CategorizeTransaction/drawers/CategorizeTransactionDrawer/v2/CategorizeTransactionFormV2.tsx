@@ -11,6 +11,7 @@ import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/Spinner';
 import { AppToaster } from '@/components';
 import { ContactSelectField } from '@/components/Contacts/ContactSelectField';
 import { getAddMoneyInOptions, getAddMoneyOutOptions } from '@/constants';
@@ -49,6 +50,7 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
   const formattedAmount = autofillCategorizeValues?.formattedAmount;
   const payee = autofillCategorizeValues?.payee;
   const payeeInn = autofillCategorizeValues?.payeeInn;
+  const suggestedByContact = autofillCategorizeValues?.suggestedByContact;
   const typeOptions = useMemo(
     () => (isDeposit ? getAddMoneyInOptions() : getAddMoneyOutOptions()),
     [isDeposit],
@@ -156,6 +158,16 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
                       buttonProps={{ fill: true }}
                       popoverFill
                     />
+                    {payeeInn && (
+                      <span className="text-xs text-text-muted">
+                        {intl.get('bank_import.counterparty_inn')}: {payeeInn}
+                      </span>
+                    )}
+                    {suggestedByContact && (
+                      <p className="text-xs text-text-muted">
+                        {intl.get('bank_import.suggested_by_contact')}
+                      </p>
+                    )}
                     {canCreateContact && (
                       <Button
                         type="button"
@@ -180,6 +192,7 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
         {/* Футер */}
         <div className="mt-auto flex gap-2 border-t border-border p-4">
           <Button type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting && <Spinner size="sm" />}
             {intl.get('save')}
           </Button>
           <Button

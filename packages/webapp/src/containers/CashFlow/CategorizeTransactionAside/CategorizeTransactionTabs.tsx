@@ -2,7 +2,7 @@
 import intl from 'react-intl-universal';
 import { Tab, Tabs } from '@blueprintjs/core';
 import { MatchingBankTransaction } from './MatchingTransaction';
-import { CategorizeTransactionContent } from '../CategorizeTransaction/drawers/CategorizeTransactionDrawer/CategorizeTransactionContent';
+import { CategorizeTransactionContentV2 } from '../CategorizeTransaction/drawers/CategorizeTransactionDrawer/v2/CategorizeTransactionContentV2';
 import styles from './CategorizeTransactionTabs.module.scss';
 
 export function CategorizeTransactionTabs() {
@@ -18,7 +18,7 @@ export function CategorizeTransactionTabs() {
       <Tab
         id="categorize"
         title={intl.get('cash_flow.categorize_transaction.tab.categorize')}
-        panel={<CategorizeTransactionContent />}
+        panel={<CategorizeTransactionContentV2 />}
       />
       <Tab
         id="matching"

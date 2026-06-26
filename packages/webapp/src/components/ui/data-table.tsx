@@ -8,6 +8,58 @@ import { cn } from '@/lib/cn';
 import { Checkbox } from './checkbox';
 import { Skeleton } from './skeleton';
 
+export interface VirtualWindow {
+  startIndex: number;
+  endIndex: number;
+  padTop: number;
+  padBottom: number;
+}
+
+/**
+ * Чистый расчёт окна виртуализации (фиксированная высота строки).
+ * endIndex — полуоткрытый (для Array.slice).
+ */
+export function computeVirtualWindow(params: {
+  scrollTop: number;
+  viewportHeight: number;
+  rowHeight: number;
+  rowCount: number;
+  overscan: number;
+}): VirtualWindow {
+  const { scrollTop, viewportHeight, rowHeight, rowCount, overscan } = params;
+  if (rowCount <= 0 || rowHeight <= 0) {
+    return { startIndex: 0, endIndex: 0, padTop: 0, padBottom: 0 };
+  }
+  const first = Math.floor(scrollTop / rowHeight);
+  const last = Math.ceil((scrollTop + viewportHeight) / rowHeight);
+  const startIndex = Math.max(0, first - overscan);
+  const endIndex = Math.min(rowCount, last + overscan);
+  return {
+    startIndex,
+    endIndex,
+    padTop: startIndex * rowHeight,
+    padBottom: (rowCount - endIndex) * rowHeight,
+  };
+}
+
+/** Минимальная ширина колонки в px (нельзя схлопнуть). */
+export const MIN_COLUMN_WIDTH = 48;
+
+/**
+ * Чистое применение ресайза к map ширин колонок.
+ * При отсутствующем columnId база = minWidth.
+ */
+export function applyColumnResize(
+  widths: Record<string, number>,
+  columnId: string,
+  deltaPx: number,
+  minWidth: number,
+): Record<string, number> {
+  const baseWidth = widths[columnId] ?? minWidth;
+  const next = Math.max(minWidth, baseWidth + deltaPx);
+  return { ...widths, [columnId]: next };
+}
+
 export interface DataTableProps {
   columns: any[];
   data: any[];
@@ -19,6 +71,15 @@ export interface DataTableProps {
   onRowClick?: (row: any) => void;
   onSortChange?: (sortBy: { id: string; desc: boolean }[]) => void;
   emptyState?: React.ReactNode;
+  // Виртуализация (опционально; выключена по умолчанию)
+  virtualized?: boolean;
+  rowHeight?: number;
+  overscan?: number;
+  maxBodyHeight?: number;
+  // Ресайз колонок (опционально; выключен по умолчанию)
+  resizableColumns?: boolean;
+  columnWidths?: Record<string, number>;
+  onColumnWidthsChange?: (widths: Record<string, number>) => void;
 }
 
 export function DataTable({
@@ -32,6 +93,13 @@ export function DataTable({
   onRowClick,
   onSortChange,
   emptyState,
+  virtualized = false,
+  rowHeight = 40,
+  overscan = 8,
+  maxBodyHeight = 480,
+  resizableColumns = false,
+  columnWidths = {},
+  onColumnWidthsChange,
 }: DataTableProps) {
   const [internalSel, setInternalSel] = React.useState<string[]>([]);
   const selected = selectedIds ?? internalSel;
@@ -106,14 +174,69 @@ export function DataTable({
     onSortChange?.(sortBy);
   }, [sortByKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const [scrollTop, setScrollTop] = React.useState(0);
+  const vwin =
+    virtualized && !loading
+      ? computeVirtualWindow({
+          scrollTop,
+          viewportHeight: maxBodyHeight,
+          rowHeight,
+          rowCount: rows.length,
+          overscan,
+        })
+      : null;
+  const visibleRows = vwin ? rows.slice(vwin.startIndex, vwin.endIndex) : rows;
+
+  const startColumnResize = React.useCallback(
+    (e: React.MouseEvent, columnId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const startX = e.clientX;
+      const thEl = (e.currentTarget as HTMLElement)
+        .parentElement as HTMLElement | null;
+      const startWidth =
+        columnWidths[columnId] ?? thEl?.offsetWidth ?? MIN_COLUMN_WIDTH;
+      const seeded = { ...columnWidths, [columnId]: startWidth };
+      const onMove = (ev: MouseEvent) => {
+        const delta = ev.clientX - startX;
+        onColumnWidthsChange?.(
+          applyColumnResize(seeded, columnId, delta, MIN_COLUMN_WIDTH),
+        );
+      };
+      const onUp = () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    },
+    [columnWidths, onColumnWidthsChange],
+  );
+
   if (!loading && data.length === 0 && emptyState) {
     return <>{emptyState}</>;
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+    <div
+      className={cn(
+        'rounded-lg border border-border bg-surface',
+        virtualized ? 'overflow-auto' : 'overflow-x-auto',
+      )}
+      style={virtualized ? { maxHeight: maxBodyHeight } : undefined}
+      onScroll={
+        virtualized
+          ? (e) => setScrollTop((e.currentTarget as HTMLElement).scrollTop)
+          : undefined
+      }
+    >
       <table {...getTableProps()} className="w-full border-collapse text-sm">
-        <thead className="bg-surface-elevated">
+        <thead
+          className={cn(
+            'bg-surface-elevated',
+            virtualized && 'sticky top-0 z-10',
+          )}
+        >
           {headerGroups.map((hg: any) => (
             <tr {...hg.getHeaderGroupProps()}>
               {hg.headers.map((col: any) => (
@@ -121,8 +244,13 @@ export function DataTable({
                   {...col.getHeaderProps(
                     col.getSortByToggleProps ? col.getSortByToggleProps() : undefined,
                   )}
+                  style={
+                    resizableColumns && columnWidths[col.id] != null
+                      ? { width: columnWidths[col.id] }
+                      : undefined
+                  }
                   className={cn(
-                    'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
+                    'relative px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
                     col.align === 'right' && 'text-right',
                     !col.disableSortBy && 'cursor-pointer select-none',
                   )}
@@ -136,6 +264,16 @@ export function DataTable({
                         <ChevronUp className="h-3 w-3" />
                       ))}
                   </span>
+                  {resizableColumns && col.id !== '__select__' && (
+                    <span
+                      role="separator"
+                      aria-orientation="vertical"
+                      aria-label="resize-column"
+                      onMouseDown={(e) => startColumnResize(e, col.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none hover:bg-action"
+                    />
+                  )}
                 </th>
               ))}
             </tr>
@@ -152,32 +290,47 @@ export function DataTable({
                   ))}
                 </tr>
               ))
-            : rows.map((row: any) => {
-                prepareRow(row);
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    onClick={() => onRowClick?.(row.original)}
-                    className={cn(
-                      'border-t border-border',
-                      onRowClick && 'cursor-pointer hover:bg-surface-elevated',
-                    )}
-                  >
-                    {row.cells.map((cell: any) => (
-                      <td
-                        {...cell.getCellProps()}
-                        className={cn(
-                          'px-3 py-2 text-text-primary',
-                          cell.column.align === 'right' &&
-                            'text-right tabular-nums whitespace-nowrap',
-                        )}
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    ))}
+            : (
+              <>
+                {vwin && vwin.padTop > 0 && (
+                  <tr aria-hidden="true" style={{ height: vwin.padTop }}>
+                    <td colSpan={tableColumns.length} className="p-0" />
                   </tr>
-                );
-              })}
+                )}
+                {visibleRows.map((row: any) => {
+                  prepareRow(row);
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      onClick={() => onRowClick?.(row.original)}
+                      style={virtualized ? { height: rowHeight } : undefined}
+                      className={cn(
+                        'border-t border-border',
+                        onRowClick && 'cursor-pointer hover:bg-surface-elevated',
+                      )}
+                    >
+                      {row.cells.map((cell: any) => (
+                        <td
+                          {...cell.getCellProps()}
+                          className={cn(
+                            'px-3 py-2 text-text-primary',
+                            cell.column.align === 'right' &&
+                              'text-right tabular-nums whitespace-nowrap',
+                          )}
+                        >
+                          {cell.render('Cell')}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+                {vwin && vwin.padBottom > 0 && (
+                  <tr aria-hidden="true" style={{ height: vwin.padBottom }}>
+                    <td colSpan={tableColumns.length} className="p-0" />
+                  </tr>
+                )}
+              </>
+            )}
         </tbody>
       </table>
     </div>

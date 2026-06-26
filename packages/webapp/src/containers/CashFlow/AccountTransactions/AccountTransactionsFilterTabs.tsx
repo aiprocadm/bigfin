@@ -41,7 +41,7 @@ export function AccountTransactionsFilterTabs() {
               <span style={{ color: 'var(--color-danger)' }}>
                 {currentAccount.uncategorized_transactions}
               </span>{' '}
-              Uncategorized Transactions
+              {intl.get('cashflow.tabs.uncategorized')}
             </>
           }
           description={intl.get('cashflow.tabs.for_bank_statement')}

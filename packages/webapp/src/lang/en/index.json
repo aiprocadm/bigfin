@@ -2938,6 +2938,7 @@
   "cashflow.tabs.account_summary": "Account Summary",
   "cashflow.tabs.for_bank_statement": "For Bank Statement",
   "cashflow.tabs.in_bigfin": "In Bigfin",
+  "cashflow.tabs.uncategorized": "Uncategorized transactions",
   "cashflow.label.to_account": "To Account",
   "cashflow.label.from_account": "From Account",
   "cashflow.label.income_account": "Income Account",

@@ -8,6 +8,40 @@ import { cn } from '@/lib/cn';
 import { Checkbox } from './checkbox';
 import { Skeleton } from './skeleton';
 
+export interface VirtualWindow {
+  startIndex: number;
+  endIndex: number;
+  padTop: number;
+  padBottom: number;
+}
+
+/**
+ * Чистый расчёт окна виртуализации (фиксированная высота строки).
+ * endIndex — полуоткрытый (для Array.slice).
+ */
+export function computeVirtualWindow(params: {
+  scrollTop: number;
+  viewportHeight: number;
+  rowHeight: number;
+  rowCount: number;
+  overscan: number;
+}): VirtualWindow {
+  const { scrollTop, viewportHeight, rowHeight, rowCount, overscan } = params;
+  if (rowCount <= 0 || rowHeight <= 0) {
+    return { startIndex: 0, endIndex: 0, padTop: 0, padBottom: 0 };
+  }
+  const first = Math.floor(scrollTop / rowHeight);
+  const last = Math.ceil((scrollTop + viewportHeight) / rowHeight);
+  const startIndex = Math.max(0, first - overscan);
+  const endIndex = Math.min(rowCount, last + overscan);
+  return {
+    startIndex,
+    endIndex,
+    padTop: startIndex * rowHeight,
+    padBottom: (rowCount - endIndex) * rowHeight,
+  };
+}
+
 export interface DataTableProps {
   columns: any[];
   data: any[];

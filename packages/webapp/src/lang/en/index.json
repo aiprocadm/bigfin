@@ -3464,5 +3464,8 @@
   "moysklad.products.cost": "Cost price",
   "moysklad.sales.title": "Sales",
   "moysklad.sales.name": "Sale",
-  "moysklad.sales.amount": "Amount"
+  "moysklad.sales.amount": "Amount",
+  "actions": "Actions",
+  "uncategorize": "Uncategorize",
+  "unmatch": "Unmatch"
 }

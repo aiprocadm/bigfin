@@ -3464,5 +3464,8 @@
   "moysklad.products.cost": "Себестоимость",
   "moysklad.sales.title": "Продажи",
   "moysklad.sales.name": "Продажа",
-  "moysklad.sales.amount": "Сумма"
+  "moysklad.sales.amount": "Сумма",
+  "actions": "Действия",
+  "uncategorize": "Снять категорию",
+  "unmatch": "Отвязать"
 }

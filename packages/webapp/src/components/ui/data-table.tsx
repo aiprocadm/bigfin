@@ -42,6 +42,24 @@ export function computeVirtualWindow(params: {
   };
 }
 
+/** Минимальная ширина колонки в px (нельзя схлопнуть). */
+export const MIN_COLUMN_WIDTH = 48;
+
+/**
+ * Чистое применение ресайза к map ширин колонок.
+ * При отсутствующем columnId база = minWidth.
+ */
+export function applyColumnResize(
+  widths: Record<string, number>,
+  columnId: string,
+  deltaPx: number,
+  minWidth: number,
+): Record<string, number> {
+  const baseWidth = widths[columnId] ?? minWidth;
+  const next = Math.max(minWidth, baseWidth + deltaPx);
+  return { ...widths, [columnId]: next };
+}
+
 export interface DataTableProps {
   columns: any[];
   data: any[];

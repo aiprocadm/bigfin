@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeVirtualWindow } from './data-table';
+import { computeVirtualWindow, applyColumnResize } from './data-table';
 
 describe('computeVirtualWindow', () => {
   const base = { viewportHeight: 400, rowHeight: 40, rowCount: 100, overscan: 0 };
@@ -40,5 +40,30 @@ describe('computeVirtualWindow', () => {
   it('пустой список: всё по нулям', () => {
     const w = computeVirtualWindow({ ...base, rowCount: 0, scrollTop: 0 });
     expect(w).toEqual({ startIndex: 0, endIndex: 0, padTop: 0, padBottom: 0 });
+  });
+});
+
+describe('applyColumnResize', () => {
+  it('увеличивает ширину на delta', () => {
+    const out = applyColumnResize({ a: 100 }, 'a', 30, 48);
+    expect(out.a).toBe(130);
+  });
+  it('уменьшает ширину на отрицательный delta', () => {
+    const out = applyColumnResize({ a: 100 }, 'a', -30, 48);
+    expect(out.a).toBe(70);
+  });
+  it('клампит по minWidth', () => {
+    const out = applyColumnResize({ a: 100 }, 'a', -200, 48);
+    expect(out.a).toBe(48);
+  });
+  it('отсутствующий columnId: база = minWidth', () => {
+    const out = applyColumnResize({}, 'a', 10, 48);
+    expect(out.a).toBe(58);
+  });
+  it('не мутирует исходный объект и сохраняет другие колонки', () => {
+    const input = { a: 100, b: 200 };
+    const out = applyColumnResize(input, 'a', 10, 48);
+    expect(out).toEqual({ a: 110, b: 200 });
+    expect(input.a).toBe(100);
   });
 });

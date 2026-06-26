@@ -71,6 +71,11 @@ export interface DataTableProps {
   onRowClick?: (row: any) => void;
   onSortChange?: (sortBy: { id: string; desc: boolean }[]) => void;
   emptyState?: React.ReactNode;
+  // Виртуализация (опционально; выключена по умолчанию)
+  virtualized?: boolean;
+  rowHeight?: number;
+  overscan?: number;
+  maxBodyHeight?: number;
 }
 
 export function DataTable({
@@ -84,6 +89,10 @@ export function DataTable({
   onRowClick,
   onSortChange,
   emptyState,
+  virtualized = false,
+  rowHeight = 40,
+  overscan = 8,
+  maxBodyHeight = 480,
 }: DataTableProps) {
   const [internalSel, setInternalSel] = React.useState<string[]>([]);
   const selected = selectedIds ?? internalSel;
@@ -158,14 +167,43 @@ export function DataTable({
     onSortChange?.(sortBy);
   }, [sortByKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const [scrollTop, setScrollTop] = React.useState(0);
+  const vwin =
+    virtualized && !loading
+      ? computeVirtualWindow({
+          scrollTop,
+          viewportHeight: maxBodyHeight,
+          rowHeight,
+          rowCount: rows.length,
+          overscan,
+        })
+      : null;
+  const visibleRows = vwin ? rows.slice(vwin.startIndex, vwin.endIndex) : rows;
+
   if (!loading && data.length === 0 && emptyState) {
     return <>{emptyState}</>;
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+    <div
+      className={cn(
+        'rounded-lg border border-border bg-surface',
+        virtualized ? 'overflow-auto' : 'overflow-x-auto',
+      )}
+      style={virtualized ? { maxHeight: maxBodyHeight } : undefined}
+      onScroll={
+        virtualized
+          ? (e) => setScrollTop((e.currentTarget as HTMLElement).scrollTop)
+          : undefined
+      }
+    >
       <table {...getTableProps()} className="w-full border-collapse text-sm">
-        <thead className="bg-surface-elevated">
+        <thead
+          className={cn(
+            'bg-surface-elevated',
+            virtualized && 'sticky top-0 z-10',
+          )}
+        >
           {headerGroups.map((hg: any) => (
             <tr {...hg.getHeaderGroupProps()}>
               {hg.headers.map((col: any) => (
@@ -204,32 +242,47 @@ export function DataTable({
                   ))}
                 </tr>
               ))
-            : rows.map((row: any) => {
-                prepareRow(row);
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    onClick={() => onRowClick?.(row.original)}
-                    className={cn(
-                      'border-t border-border',
-                      onRowClick && 'cursor-pointer hover:bg-surface-elevated',
-                    )}
-                  >
-                    {row.cells.map((cell: any) => (
-                      <td
-                        {...cell.getCellProps()}
-                        className={cn(
-                          'px-3 py-2 text-text-primary',
-                          cell.column.align === 'right' &&
-                            'text-right tabular-nums whitespace-nowrap',
-                        )}
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    ))}
+            : (
+              <>
+                {vwin && vwin.padTop > 0 && (
+                  <tr aria-hidden="true" style={{ height: vwin.padTop }}>
+                    <td colSpan={tableColumns.length} className="p-0" />
                   </tr>
-                );
-              })}
+                )}
+                {visibleRows.map((row: any) => {
+                  prepareRow(row);
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      onClick={() => onRowClick?.(row.original)}
+                      style={virtualized ? { height: rowHeight } : undefined}
+                      className={cn(
+                        'border-t border-border',
+                        onRowClick && 'cursor-pointer hover:bg-surface-elevated',
+                      )}
+                    >
+                      {row.cells.map((cell: any) => (
+                        <td
+                          {...cell.getCellProps()}
+                          className={cn(
+                            'px-3 py-2 text-text-primary',
+                            cell.column.align === 'right' &&
+                              'text-right tabular-nums whitespace-nowrap',
+                          )}
+                        >
+                          {cell.render('Cell')}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+                {vwin && vwin.padBottom > 0 && (
+                  <tr aria-hidden="true" style={{ height: vwin.padBottom }}>
+                    <td colSpan={tableColumns.length} className="p-0" />
+                  </tr>
+                )}
+              </>
+            )}
         </tbody>
       </table>
     </div>

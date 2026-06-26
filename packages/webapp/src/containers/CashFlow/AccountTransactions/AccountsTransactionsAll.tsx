@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import '@/style/pages/CashFlow/AccountTransactions/List.scss';
 
-import AccountTransactionsDataTable from './AccountTransactionsDataTable';
+import { AccountTransactionsDataTableV2 } from './v2/AccountTransactionsDataTableV2';
 import { AccountTransactionsAllProvider } from './AccountTransactionsAllBoot';
 
 const Box = styled.div`
@@ -23,7 +23,7 @@ export default function AccountTransactionsAll() {
     <AccountTransactionsAllProvider>
       <Box>
         <CashflowTransactionsTableCard>
-          <AccountTransactionsDataTable />
+          <AccountTransactionsDataTableV2 />
         </CashflowTransactionsTableCard>
       </Box>
     </AccountTransactionsAllProvider>

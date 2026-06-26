@@ -76,21 +76,26 @@ function AccountTransactionsDataTableV2Root({
     onUnmatch: handleUnmatch,
   });
 
-  const handleRowClick = (row: any) =>
-    handleCashFlowTransactionType(row, openDrawer);
+  const handleRowClick = React.useCallback(
+    (row: any) => handleCashFlowTransactionType(row, openDrawer),
+    [openDrawer],
+  );
 
   // Неконтролируемый выбор: пушим uncategorized_transaction_id выбранных строк в Redux
   // (для массового «разкатегоризировать» в панели действий).
-  const handleSelectionChange = (ids: string[]) => {
-    const selectedUncatIds = cashflowTransactions
-      .filter(
-        (t: any) =>
-          ids.includes(getTransactionRowId(t)) &&
-          t.uncategorized_transaction_id,
-      )
-      .map((t: any) => t.uncategorized_transaction_id);
-    setCategorizedTransactionsSelected(selectedUncatIds);
-  };
+  const handleSelectionChange = React.useCallback(
+    (ids: string[]) => {
+      const selectedUncatIds = cashflowTransactions
+        .filter(
+          (t: any) =>
+            ids.includes(getTransactionRowId(t)) &&
+            t.uncategorized_transaction_id,
+        )
+        .map((t: any) => t.uncategorized_transaction_id);
+      setCategorizedTransactionsSelected(selectedUncatIds);
+    },
+    [cashflowTransactions, setCategorizedTransactionsSelected],
+  );
 
   return (
     <DataTable

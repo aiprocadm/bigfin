@@ -76,6 +76,10 @@ export interface DataTableProps {
   rowHeight?: number;
   overscan?: number;
   maxBodyHeight?: number;
+  // Ресайз колонок (опционально; выключен по умолчанию)
+  resizableColumns?: boolean;
+  columnWidths?: Record<string, number>;
+  onColumnWidthsChange?: (widths: Record<string, number>) => void;
 }
 
 export function DataTable({
@@ -93,6 +97,9 @@ export function DataTable({
   rowHeight = 40,
   overscan = 8,
   maxBodyHeight = 480,
+  resizableColumns = false,
+  columnWidths = {},
+  onColumnWidthsChange,
 }: DataTableProps) {
   const [internalSel, setInternalSel] = React.useState<string[]>([]);
   const selected = selectedIds ?? internalSel;
@@ -180,6 +187,32 @@ export function DataTable({
       : null;
   const visibleRows = vwin ? rows.slice(vwin.startIndex, vwin.endIndex) : rows;
 
+  const startColumnResize = React.useCallback(
+    (e: React.MouseEvent, columnId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const startX = e.clientX;
+      const thEl = (e.currentTarget as HTMLElement)
+        .parentElement as HTMLElement | null;
+      const startWidth =
+        columnWidths[columnId] ?? thEl?.offsetWidth ?? MIN_COLUMN_WIDTH;
+      const seeded = { ...columnWidths, [columnId]: startWidth };
+      const onMove = (ev: MouseEvent) => {
+        const delta = ev.clientX - startX;
+        onColumnWidthsChange?.(
+          applyColumnResize(seeded, columnId, delta, MIN_COLUMN_WIDTH),
+        );
+      };
+      const onUp = () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    },
+    [columnWidths, onColumnWidthsChange],
+  );
+
   if (!loading && data.length === 0 && emptyState) {
     return <>{emptyState}</>;
   }
@@ -211,8 +244,13 @@ export function DataTable({
                   {...col.getHeaderProps(
                     col.getSortByToggleProps ? col.getSortByToggleProps() : undefined,
                   )}
+                  style={
+                    resizableColumns && columnWidths[col.id] != null
+                      ? { width: columnWidths[col.id] }
+                      : undefined
+                  }
                   className={cn(
-                    'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
+                    'relative px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
                     col.align === 'right' && 'text-right',
                     !col.disableSortBy && 'cursor-pointer select-none',
                   )}
@@ -226,6 +264,16 @@ export function DataTable({
                         <ChevronUp className="h-3 w-3" />
                       ))}
                   </span>
+                  {resizableColumns && col.id !== '__select__' && (
+                    <span
+                      role="separator"
+                      aria-orientation="vertical"
+                      aria-label="resize-column"
+                      onMouseDown={(e) => startColumnResize(e, col.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none hover:bg-action"
+                    />
+                  )}
                 </th>
               ))}
             </tr>

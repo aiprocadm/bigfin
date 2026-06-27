@@ -4,6 +4,7 @@ import * as React from 'react';
 // @ts-ignore
 import { useTable, useSortBy } from 'react-table';
 import { ChevronUp, ChevronDown } from 'lucide-react';
+import intl from 'react-intl-universal';
 import { cn } from '@/lib/cn';
 import { Checkbox } from './checkbox';
 import { Skeleton } from './skeleton';
@@ -131,7 +132,7 @@ export function DataTable({
       width: 40,
       Header: () => (
         <Checkbox
-          aria-label="select-all"
+          aria-label={intl.get('data_table.aria.select_all')}
           checked={allChecked ? true : someChecked ? 'indeterminate' : false}
           onCheckedChange={(v: boolean | 'indeterminate') => toggleAll(v === true)}
         />
@@ -140,7 +141,7 @@ export function DataTable({
         const id = getRowId(row.original);
         return (
           <Checkbox
-            aria-label="select-row"
+            aria-label={intl.get('data_table.aria.select_row')}
             checked={selected.includes(id)}
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
             onCheckedChange={(v: boolean | 'indeterminate') => toggleRow(id, v === true)}
@@ -268,7 +269,7 @@ export function DataTable({
                     <span
                       role="separator"
                       aria-orientation="vertical"
-                      aria-label="resize-column"
+                      aria-label={intl.get('data_table.aria.resize_column')}
                       onMouseDown={(e) => startColumnResize(e, col.id)}
                       onClick={(e) => e.stopPropagation()}
                       className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none hover:bg-action"

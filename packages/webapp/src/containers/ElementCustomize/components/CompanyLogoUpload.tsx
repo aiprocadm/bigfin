@@ -4,7 +4,11 @@ import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Button, Intent } from '@blueprintjs/core';
 import { Icon, Stack } from '@/components';
-import { Dropzone, DropzoneProps } from '@/components/Dropzone';
+import {
+  Dropzone,
+  DropzoneProps,
+  showDropzoneRejectToast,
+} from '@/components/Dropzone';
 import { MIME_TYPES } from '@/components/Dropzone/mine-types';
 import { useUncontrolled } from '@/hooks/useUncontrolled';
 import styles from './CompanyLogoUpload.module.scss';
@@ -81,7 +85,7 @@ export function CompanyLogoUpload({
   return (
     <Dropzone
       onDrop={(files) => handleChange(files[0])}
-      onReject={(files) => console.log('rejected files', files)}
+      onReject={showDropzoneRejectToast}
       maxSize={5 * 1024 ** 2}
       accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
       classNames={{ root: clsx(styles?.root, classNames?.root), content: styles.dropzoneContent }}

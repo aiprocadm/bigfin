@@ -125,7 +125,7 @@ export class Mail {
    * Retrieve view content from the view directory.
    */
   static getViewContent(view: string): string {
-    const filePath = path.join(__dirname, '../../..', `static/${view}`);
+    const filePath = path.join(__dirname, '../../..', 'static', view);
     return fs.readFileSync(filePath, 'utf8');
   }
 }

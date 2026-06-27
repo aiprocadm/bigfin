@@ -110,6 +110,42 @@ export class FeaturesConfigure {
         name: Features.BANK_STATEMENT_IMPORT,
         defaultValue: false,
       },
+      {
+        name: Features.ZENMONEY_IMPORT,
+        defaultValue: false,
+      },
+      {
+        name: Features.BANK_API_SYNC,
+        defaultValue: false,
+      },
+      {
+        name: Features.ACQUIRING,
+        defaultValue: false,
+      },
+      {
+        name: Features.ONEC_EXPORT,
+        defaultValue: false,
+      },
+      {
+        name: Features.CRM_INTEGRATION,
+        defaultValue: false,
+      },
+      {
+        name: Features.MARKETPLACES,
+        defaultValue: false,
+      },
+      {
+        name: Features.MOYSKLAD,
+        defaultValue: false,
+      },
+      {
+        name: Features.VAT_ANALYSIS,
+        defaultValue: false,
+      },
+      {
+        name: Features.FINANCIAL_RATIOS,
+        defaultValue: false,
+      },
     ];
   }
 }

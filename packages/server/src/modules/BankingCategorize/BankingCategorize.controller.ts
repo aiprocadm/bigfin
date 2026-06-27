@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Param, Post, Query } from '@nestjs/common';
 import { castArray, omit } from 'lodash';
 import { BankingCategorizeApplication } from './BankingCategorize.application';
 import { CategorizeBankTransactionRouteDto } from './dtos/CategorizeBankTransaction.dto';
+import { CategorizeTransactionAsExpenseRouteDto } from './dtos/CategorizeTransactionAsExpense.dto';
 import {
   ApiBody,
   ApiOperation,
@@ -33,6 +34,22 @@ export class BankingCategorizeController {
     return this.bankingCategorizeApplication.categorizeTransaction(
       castArray(body.uncategorizedTransactionIds),
       omit(body, 'uncategorizedTransactionIds'),
+    );
+  }
+
+  @Post('/expense')
+  @ApiOperation({ summary: 'Categorize a bank transaction as an expense.' })
+  @ApiBody({ type: CategorizeTransactionAsExpenseRouteDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The bank transaction has been categorized as an expense.',
+  })
+  public categorizeTransactionAsExpense(
+    @Body() body: CategorizeTransactionAsExpenseRouteDto,
+  ) {
+    return this.bankingCategorizeApplication.categorizeTransactionAsExpenseType(
+      Number(body.cashflowTransactionId),
+      omit(body, 'cashflowTransactionId'),
     );
   }
 

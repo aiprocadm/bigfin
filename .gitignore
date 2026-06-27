@@ -38,3 +38,6 @@ test-results/
 /apply-block-secrets-hook.js
 /inject-i18n-keys.js
 /move-repo-flat.js
+
+# Local git-conflict / push helper scripts (machine-local tooling, not product code)
+/tools/

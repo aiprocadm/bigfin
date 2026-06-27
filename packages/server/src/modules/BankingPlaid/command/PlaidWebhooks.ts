@@ -25,16 +25,21 @@ export class PlaidWebooks {
   ): Promise<void> {
     const _webhookType = webhookType.toLowerCase();
 
-    // There are five types of webhooks: AUTH, TRANSACTIONS, ITEM, INCOME, and ASSETS.
-    // @TODO implement handling for remaining webhook types.
+    // Plaid emits five webhook types: AUTH, TRANSACTIONS, ITEM, INCOME, ASSETS.
+    // Bigfin only consumes TRANSACTIONS (new bank data) and ITEM (item health)
+    // webhooks; AUTH/INCOME/ASSETS are intentionally routed to the unhandled
+    // logger so they are observable rather than silently dropped.
     const webhookHandlerMap = {
       transactions: this.handleTransactionsWebooks.bind(this),
       item: this.itemsHandler.bind(this),
     };
-    const webhookHandler =
-      webhookHandlerMap[_webhookType] || this.unhandledWebhook;
+    const webhookHandler = webhookHandlerMap[_webhookType];
 
-    await webhookHandler(plaidItemId, webhookCode);
+    if (webhookHandler) {
+      await webhookHandler(plaidItemId, webhookCode);
+    } else {
+      await this.unhandledWebhook(_webhookType, webhookCode, plaidItemId);
+    }
   }
 
   /**
@@ -135,9 +140,24 @@ export class PlaidWebooks {
         this.serverLogAndEmitSocket('is updated', webhookCode, plaidItemId);
         break;
       case 'ERROR': {
+        // The Item entered an error state (e.g. ITEM_LOGIN_REQUIRED). Surface
+        // it so it is observable; recovery requires the user to re-authenticate
+        // through the Plaid Link update flow, not via this webhook.
+        this.serverLogAndEmitSocket(
+          'item entered an error state and may need re-authentication',
+          webhookCode,
+          plaidItemId,
+        );
         break;
       }
       case 'PENDING_EXPIRATION': {
+        // The Item's access consent is expiring (~7 days); the user must
+        // re-authenticate to keep syncing. Surface it so it is observable.
+        this.serverLogAndEmitSocket(
+          'item access consent is pending expiration; re-authentication required',
+          webhookCode,
+          plaidItemId,
+        );
         break;
       }
       default:

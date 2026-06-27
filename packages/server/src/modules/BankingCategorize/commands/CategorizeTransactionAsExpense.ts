@@ -6,11 +6,10 @@ import { Inject } from '@nestjs/common';
 import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
 import { Injectable } from '@nestjs/common';
 import { events } from '@/common/events/events';
-import {
-  ICashflowTransactionCategorizedPayload,
-  ICategorizeCashflowTransactioDTO,
-} from '../types/BankingCategorize.types';
+import { ICashflowTransactionCategorizedPayload } from '../types/BankingCategorize.types';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { CreateExpenseDto } from '@/modules/Expenses/dtos/Expense.dto';
+import { CategorizeTransactionAsExpenseDTO } from '@/modules/BankingTransactions/types/BankingTransactions.types';
 
 @Injectable()
 export class CategorizeTransactionAsExpense {
@@ -32,7 +31,7 @@ export class CategorizeTransactionAsExpense {
    */
   public async categorize(
     cashflowTransactionId: number,
-    transactionDTO: ICategorizeCashflowTransactioDTO,
+    transactionDTO: CategorizeTransactionAsExpenseDTO,
   ) {
     const transaction = await this.bankTransactionModel()
       .query()
@@ -47,13 +46,36 @@ export class CategorizeTransactionAsExpense {
           trx,
         } as ICashflowTransactionCategorizedPayload,
       );
-      // Creates a new expense transaction.
-      // TODO: the DTO is not complete, we need to add the missing properties.
-      // @ts-ignore
-      const expenseTransaction = await this.createExpenseService.newExpense({
-        // ...transactionDTO,
-        // publishedAt: transaction.publishedAt,
-      });
+      // Maps the bank transaction and the categorize DTO onto an expense DTO.
+      // The amount and the paying (bank/cash) account come from the bank
+      // transaction itself so they can never be substituted; the user only
+      // chooses the expense account (category) and optional overrides.
+      const expenseDTO: CreateExpenseDto = {
+        paymentDate: transaction.date,
+        paymentAccountId: transaction.cashflowAccountId,
+        referenceNo: transactionDTO.referenceNo ?? transaction.referenceNo,
+        description: transactionDTO.description ?? transaction.description,
+        currencyCode: transaction.currencyCode,
+        exchangeRate:
+          transactionDTO.exchangeRate ?? transaction.exchangeRate ?? 1,
+        branchId: transactionDTO.branchId ?? transaction.branchId,
+        payeeId: transaction.contactId,
+        publish: true,
+        categories: [
+          {
+            index: 1,
+            expenseAccountId: transactionDTO.expenseAccountId,
+            amount: transaction.amount,
+            description:
+              transactionDTO.description ?? transaction.description,
+          },
+        ],
+      };
+      // Creates a new expense transaction from the mapped DTO.
+      const expenseTransaction = await this.createExpenseService.newExpense(
+        expenseDTO,
+        trx,
+      );
 
       // Updates the item on the storage and fetches the updated once.
       const cashflowTransaction = await this.bankTransactionModel()

@@ -36,7 +36,8 @@ export class ImportFileMapping {
     // Invalidate the from/to map attributes.
     this.validateMapsAttrs(importFile, maps);
 
-    // @todo validate the required fields.
+    // Validate that every required resource field is covered by a map entry.
+    this.validateRequiredFields(importFile, maps);
 
     // Validate the diplicated relations of map attrs.
     this.validateDuplicatedMapAttrs(maps);
@@ -93,6 +94,49 @@ export class ImportFileMapping {
   }
 
   /**
+   * Validate that every required resource field (including required nested
+   * fields of group/collection fields) is covered by a mapping attribute.
+   * @param {any} importFile
+   * @param {ImportMappingAttr[]} maps
+   * @throws {ServiceError(ERRORS.REQUIRED_FIELDS_NOT_MAPPED)}
+   */
+  private validateRequiredFields(importFile: any, maps: ImportMappingAttr[]) {
+    const fields = this.resource.getResourceFields2(importFile.resource);
+
+    // The set of destination paths the user actually mapped. Nested
+    // destinations are keyed as `group.to`, top-level ones as `to`.
+    const mappedPaths = new Set(
+      maps.map((map) => (map.group ? `${map.group}.${map.to}` : map.to)),
+    );
+
+    const missing: string[] = [];
+
+    Object.entries(fields).forEach(([key, field]: [string, any]) => {
+      // Group/collection fields hold their required fields nested under `fields`.
+      if (field?.fields) {
+        Object.entries(field.fields).forEach(
+          ([nestedKey, nestedField]: [string, any]) => {
+            if (
+              nestedField?.required &&
+              !mappedPaths.has(`${key}.${nestedKey}`)
+            ) {
+              missing.push(`${key}.${nestedKey}`);
+            }
+          },
+        );
+        return;
+      }
+      if (field?.required && !mappedPaths.has(key)) {
+        missing.push(key);
+      }
+    });
+
+    if (missing.length > 0) {
+      throw new ServiceError(ERRORS.REQUIRED_FIELDS_NOT_MAPPED);
+    }
+  }
+
+  /**
    * Validate the map attrs relation should be one-to-one relation only.
    * @param {ImportMappingAttr[]} maps
    */
@@ -128,12 +172,17 @@ export class ImportFileMapping {
     maps: ImportMappingAttr[],
   ) {
     const fields = this.resource.getResourceImportableFields(resource);
-    // @todo Validate date type of the nested fields.
+    // Full field meta is used to resolve nested (group) destination fields,
+    // which are not present in the flat importable-fields map.
+    const fields2 = this.resource.getResourceFields2(resource);
+
     maps.forEach((map) => {
-      if (
-        typeof fields[map.to] !== 'undefined' &&
-        fields[map.to].fieldType === 'date'
-      ) {
+      // Resolve the destination field meta, supporting nested (group) fields.
+      const field: any = map.group
+        ? (fields2[map.group] as any)?.fields?.[map.to]
+        : fields[map.to];
+
+      if (typeof field !== 'undefined' && field.fieldType === 'date') {
         if (
           typeof map.dateFormat !== 'undefined' &&
           ImportDateFormats.indexOf(map.dateFormat) === -1

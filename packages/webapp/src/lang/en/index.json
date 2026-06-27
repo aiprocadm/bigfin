@@ -3079,6 +3079,7 @@
   "import.dropzone.supported_formats": "Supported Formats: CSV, XLSX",
   "import.dropzone.maximum_size": "Maximum size: 25MB",
   "import.mapping.error.duplicated_columns": "Selected the same sheet columns to multiple fields.",
+  "import.mapping.error.required_fields_not_mapped": "Please map all required fields before continuing.",
   "import.upload.error.unsupported_extension": "The extension of the uploaded file is not supported.",
   "import.sample.download_success": "The sample sheet has been downloaded successfully.",
   "import.stepper.file_upload": "File Upload",

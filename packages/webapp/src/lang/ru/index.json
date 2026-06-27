@@ -3079,6 +3079,7 @@
   "import.dropzone.supported_formats": "Поддерживаемые форматы: CSV, XLSX",
   "import.dropzone.maximum_size": "Максимальный размер: 25 МБ",
   "import.mapping.error.duplicated_columns": "Один и тот же столбец таблицы выбран для нескольких полей.",
+  "import.mapping.error.required_fields_not_mapped": "Сопоставьте все обязательные поля, прежде чем продолжить.",
   "import.upload.error.unsupported_extension": "Формат загруженного файла не поддерживается.",
   "import.sample.download_success": "Образец таблицы скачан.",
   "import.stepper.file_upload": "Загрузка файла",

@@ -38,6 +38,16 @@ export function ImportFileMappingForm({
             intent: Intent.DANGER,
           });
         }
+        if (
+          data.errors.find((e) => e.type === 'REQUIRED_FIELDS_NOT_MAPPED')
+        ) {
+          AppToaster.show({
+            message: intl.get(
+              'import.mapping.error.required_fields_not_mapped',
+            ),
+            intent: Intent.DANGER,
+          });
+        }
         setSubmitting(false);
       });
   };

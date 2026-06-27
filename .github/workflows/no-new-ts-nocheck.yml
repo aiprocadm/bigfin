@@ -1,0 +1,34 @@
+name: No new @ts-nocheck
+
+on:
+  pull_request:
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - 'scripts/check-no-new-ts-nocheck.mjs'
+      - '.github/workflows/no-new-ts-nocheck.yml'
+
+defaults:
+  run:
+    shell: 'bash'
+
+jobs:
+  guard:
+    name: Block new @ts-nocheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          # Полная история нужна, чтобы дифф против базовой ветки PR был доступен.
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '18'
+
+      - name: Check for new @ts-nocheck
+        run: node scripts/check-no-new-ts-nocheck.mjs --base origin/${{ github.base_ref }}

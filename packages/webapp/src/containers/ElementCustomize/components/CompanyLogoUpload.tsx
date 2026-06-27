@@ -111,7 +111,7 @@ export function CompanyLogoUpload({
             outlined
             small
           >
-            {'Upload File'}
+            {intl.get('upload_file')}
           </Button>
         </Stack>
       )}

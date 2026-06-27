@@ -14,7 +14,11 @@ export const logEvent = (
     | PlaidLinkOnExitMetadata,
   error?: PlaidLinkError | null,
 ) => {
-  console.log(`Link Event: ${eventName}`, metadata, error);
+  // Plaid Link metadata may contain sensitive banking data (institution,
+  // accounts, session id) — keep it out of the production console.
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Link Event: ${eventName}`, metadata, error);
+  }
 };
 
 export const logSuccess = async ({

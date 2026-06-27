@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
 import { compose } from '@/utils';
@@ -17,7 +18,7 @@ function RuleFormDialogRoot({
   return (
     <Dialog
       name={dialogName}
-      title={bankRuleId ? 'Edit Bank Rule' : 'New Bank Rule'}
+      title={intl.get(bankRuleId ? 'edit_bank_rule' : 'new_bank_rule')}
       isOpen={isOpen}
       canEscapeJeyClose={true}
       autoFocus={true}

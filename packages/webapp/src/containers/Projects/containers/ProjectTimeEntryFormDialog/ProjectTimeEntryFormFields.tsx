@@ -93,7 +93,7 @@ function ProjectTimeEntryFormFields() {
           <DurationInputGroup
             name="duration"
             inputProps={{}}
-            placeholder="HH:MM"
+            placeholder={intl.get('project_time_entry.dialog.duration.placeholder')}
           />
         </FFormGroup>
 

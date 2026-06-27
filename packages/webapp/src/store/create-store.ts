@@ -17,11 +17,19 @@ declare global {
 }
 
 const createStoreFactory = (initialState = {}) => {
-  const middleware = [thunkMiddleware, loggerMiddleware];
-  const enhancers = [monitorReducerEnhancer, ResetMiddleware] as any[];
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  // The action logger and reducer-timing monitor are dev-only debugging tools;
+  // keep them out of production builds (no console noise, no per-action cost).
+  const middleware = isDevelopment
+    ? [thunkMiddleware, loggerMiddleware]
+    : [thunkMiddleware];
+  const enhancers = (isDevelopment
+    ? [monitorReducerEnhancer, ResetMiddleware]
+    : [ResetMiddleware]) as any[];
   let composeEnhancers: typeof compose = compose;
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     if (typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') {
       composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
     }

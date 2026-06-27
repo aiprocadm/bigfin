@@ -1,2 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
+
+# Запрет НОВЫХ // @ts-nocheck (см. scripts/check-no-new-ts-nocheck.mjs)
+node ./scripts/check-no-new-ts-nocheck.mjs

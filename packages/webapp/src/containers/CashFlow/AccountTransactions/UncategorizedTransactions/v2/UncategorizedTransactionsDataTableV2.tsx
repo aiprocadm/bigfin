@@ -1,5 +1,4 @@
 import React from 'react';
-import intl from 'react-intl-universal';
 import { DataTable } from '@/components/ui/data-table';
 import { compose } from '@/utils';
 import { useLocalStorage } from '@/hooks';
@@ -10,6 +9,7 @@ import { useAccountUncategorizedTransactionsContext } from '../../AllTransaction
 import { useUncategorizedTransactionsColumnsV2 } from './useUncategorizedTransactionsColumnsV2';
 import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
 import { selectRowsByIds } from '../../v2/selectRowsByIds';
+import { DataTableEmpty } from '../../v2/DataTableEmpty';
 
 const getRowId = (row: any) => String(row.id);
 
@@ -102,9 +102,7 @@ function UncategorizedTransactionsDataTableV2Root({
       columnWidths={columnWidths}
       onColumnWidthsChange={setColumnWidths}
       emptyState={
-        <div className="px-3 py-8 text-center text-sm text-text-muted">
-          {intl.get('cash_flow.uncategorized_transactions.no_results')}
-        </div>
+        <DataTableEmpty messageKey="cash_flow.uncategorized_transactions.no_results" />
       }
     />
   );

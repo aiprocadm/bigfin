@@ -1,5 +1,4 @@
 import React from 'react';
-import intl from 'react-intl-universal';
 import { DataTable } from '@/components/ui/data-table';
 import { compose } from '@/utils';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
@@ -11,6 +10,7 @@ import { handleCashFlowTransactionType } from '../utils';
 import { useAccountTransactionsColumnsV2 } from './useAccountTransactionsColumnsV2';
 import { notifyTransactionResult } from './notifyTransactionResult';
 import { selectRowsByIds } from './selectRowsByIds';
+import { DataTableEmpty } from './DataTableEmpty';
 
 // Строки «Всех транзакций» не имеют собственного `id` (сервер отдаёт
 // reference_type + reference_id). Сервер сам использует эту пару как
@@ -87,9 +87,7 @@ function AccountTransactionsDataTableV2Root({
       onSelectionChange={handleSelectionChange}
       onRowClick={handleRowClick}
       emptyState={
-        <div className="px-3 py-8 text-center text-sm text-text-muted">
-          {intl.get('cash_flow.account_transactions.no_results')}
-        </div>
+        <DataTableEmpty messageKey="cash_flow.account_transactions.no_results" />
       }
     />
   );

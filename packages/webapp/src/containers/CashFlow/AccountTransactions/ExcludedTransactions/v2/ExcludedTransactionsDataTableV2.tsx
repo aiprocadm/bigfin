@@ -1,5 +1,4 @@
 import React from 'react';
-import intl from 'react-intl-universal';
 import { DataTable } from '@/components/ui/data-table';
 import { compose } from '@/utils';
 import { useLocalStorage } from '@/hooks';
@@ -9,6 +8,7 @@ import { useExcludedTransactionsBoot } from '../ExcludedTransactionsTableBoot';
 import { useExcludedTransactionsColumnsV2 } from './useExcludedTransactionsColumnsV2';
 import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
 import { selectRowsByIds } from '../../v2/selectRowsByIds';
+import { DataTableEmpty } from '../../v2/DataTableEmpty';
 
 // У исключённых транзакций есть собственный `id` (в отличие от «Всех»/«Ожидающих»),
 // он же — ключ для выбора и восстановления.
@@ -71,9 +71,7 @@ function ExcludedTransactionsDataTableV2Root({
       columnWidths={columnWidths}
       onColumnWidthsChange={setColumnWidths}
       emptyState={
-        <div className="px-3 py-8 text-center text-sm text-text-muted">
-          {intl.get('cash_flow.excluded_transactions.no_results')}
-        </div>
+        <DataTableEmpty messageKey="cash_flow.excluded_transactions.no_results" />
       }
     />
   );

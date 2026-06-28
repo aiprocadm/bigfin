@@ -46,9 +46,16 @@ export class SetupPlaidItemTenantService {
       .modify('active')
       .throwIfNotFound();
 
-    this.clsService.set('organizationId', tenant.organizationId);
-    this.clsService.set('userId', user.id);
+    // Run the callback inside an isolated CLS child store so the tenant
+    // override does not mutate the calling request's shared store. The Plaid
+    // webhook is a public route without an `organization-id` header, so the
+    // request store would otherwise leak this tenant context into the request
+    // lifetime and any concurrent async chains (cross-tenant isolation risk).
+    return this.clsService.run(() => {
+      this.clsService.set('organizationId', tenant.organizationId);
+      this.clsService.set('userId', user.id);
 
-    return callback();
+      return callback();
+    });
   }
 }

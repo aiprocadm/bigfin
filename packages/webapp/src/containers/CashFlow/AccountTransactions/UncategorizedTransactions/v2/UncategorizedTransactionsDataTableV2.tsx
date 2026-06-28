@@ -1,8 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { Intent } from '@blueprintjs/core';
 import { DataTable } from '@/components/ui/data-table';
-import { AppToaster } from '@/components';
 import { compose } from '@/utils';
 import { useLocalStorage } from '@/hooks';
 import { withBankingActions } from '../../../withBankingActions';
@@ -10,6 +8,7 @@ import { withBanking } from '../../../withBanking';
 import { useExcludeUncategorizedTransaction } from '@/hooks/query/bank-rules';
 import { useAccountUncategorizedTransactionsContext } from '../../AllTransactionsUncategorizedBoot';
 import { useUncategorizedTransactionsColumnsV2 } from './useUncategorizedTransactionsColumnsV2';
+import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
 
 const getRowId = (row: any) => String(row.id);
 
@@ -61,21 +60,11 @@ function UncategorizedTransactionsDataTableV2Root({
   );
 
   const handleExclude = React.useCallback(
-    (row: any) => {
-      excludeTransaction(row.id)
-        .then(() =>
-          AppToaster.show({
-            intent: Intent.SUCCESS,
-            message: intl.get('cashflow.notify.transaction_excluded'),
-          }),
-        )
-        .catch(() =>
-          AppToaster.show({
-            intent: Intent.DANGER,
-            message: intl.get('something_went_wrong'),
-          }),
-        );
-    },
+    (row: any) =>
+      notifyTransactionResult(
+        excludeTransaction(row.id),
+        'cashflow.notify.transaction_excluded',
+      ),
     [excludeTransaction],
   );
 

@@ -1,14 +1,13 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { Intent } from '@blueprintjs/core';
 import { DataTable } from '@/components/ui/data-table';
-import { AppToaster } from '@/components';
 import { compose } from '@/utils';
 import { useLocalStorage } from '@/hooks';
 import { withBankingActions } from '../../../withBankingActions';
 import { useUnexcludeUncategorizedTransaction } from '@/hooks/query/bank-rules';
 import { useExcludedTransactionsBoot } from '../ExcludedTransactionsTableBoot';
 import { useExcludedTransactionsColumnsV2 } from './useExcludedTransactionsColumnsV2';
+import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
 
 // У исключённых транзакций есть собственный `id` (в отличие от «Всех»/«Ожидающих»),
 // он же — ключ для выбора и восстановления.
@@ -34,21 +33,11 @@ function ExcludedTransactionsDataTableV2Root({
   );
 
   const handleRestore = React.useCallback(
-    (row: any) => {
-      unexcludeBankTransaction(row.id)
-        .then(() =>
-          AppToaster.show({
-            message: intl.get('cashflow.notify.excluded_transaction_restored'),
-            intent: Intent.SUCCESS,
-          }),
-        )
-        .catch(() =>
-          AppToaster.show({
-            message: intl.get('something_went_wrong'),
-            intent: Intent.DANGER,
-          }),
-        );
-    },
+    (row: any) =>
+      notifyTransactionResult(
+        unexcludeBankTransaction(row.id),
+        'cashflow.notify.excluded_transaction_restored',
+      ),
     [unexcludeBankTransaction],
   );
 

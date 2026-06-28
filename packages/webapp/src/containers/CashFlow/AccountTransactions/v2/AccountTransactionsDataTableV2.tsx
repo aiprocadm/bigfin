@@ -1,8 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { Intent } from '@blueprintjs/core';
 import { DataTable } from '@/components/ui/data-table';
-import { AppToaster } from '@/components';
 import { compose } from '@/utils';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { withBankingActions } from '../../withBankingActions';
@@ -11,6 +9,7 @@ import { useUnmatchMatchedUncategorizedTransaction } from '@/hooks/query/bank-ru
 import { useAccountTransactionsAllContext } from '../AccountTransactionsAllBoot';
 import { handleCashFlowTransactionType } from '../utils';
 import { useAccountTransactionsColumnsV2 } from './useAccountTransactionsColumnsV2';
+import { notifyTransactionResult } from './notifyTransactionResult';
 
 // Строки «Всех транзакций» не имеют собственного `id` (сервер отдаёт
 // reference_type + reference_id). Сервер сам использует эту пару как
@@ -34,40 +33,20 @@ function AccountTransactionsDataTableV2Root({
     useUnmatchMatchedUncategorizedTransaction();
 
   const handleUncategorize = React.useCallback(
-    (row: any) => {
-      uncategorizeTransaction(row.uncategorized_transaction_id)
-        .then(() =>
-          AppToaster.show({
-            message: intl.get('cashflow.notify.transaction_uncategorized'),
-            intent: Intent.SUCCESS,
-          }),
-        )
-        .catch(() =>
-          AppToaster.show({
-            message: intl.get('something_went_wrong'),
-            intent: Intent.DANGER,
-          }),
-        );
-    },
+    (row: any) =>
+      notifyTransactionResult(
+        uncategorizeTransaction(row.uncategorized_transaction_id),
+        'cashflow.notify.transaction_uncategorized',
+      ),
     [uncategorizeTransaction],
   );
 
   const handleUnmatch = React.useCallback(
-    (row: any) => {
-      unmatchTransaction({ id: row.uncategorized_transaction_id })
-        .then(() =>
-          AppToaster.show({
-            message: intl.get('cashflow.notify.transaction_unmatched'),
-            intent: Intent.SUCCESS,
-          }),
-        )
-        .catch(() =>
-          AppToaster.show({
-            message: intl.get('something_went_wrong'),
-            intent: Intent.DANGER,
-          }),
-        );
-    },
+    (row: any) =>
+      notifyTransactionResult(
+        unmatchTransaction({ id: row.uncategorized_transaction_id }),
+        'cashflow.notify.transaction_unmatched',
+      ),
     [unmatchTransaction],
   );
 

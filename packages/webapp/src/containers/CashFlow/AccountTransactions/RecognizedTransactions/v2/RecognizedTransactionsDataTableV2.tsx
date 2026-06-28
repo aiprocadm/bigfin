@@ -1,14 +1,13 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { Intent } from '@blueprintjs/core';
 import { DataTable } from '@/components/ui/data-table';
-import { AppToaster } from '@/components';
 import { compose } from '@/utils';
 import { useLocalStorage } from '@/hooks';
 import { withBankingActions } from '../../../withBankingActions';
 import { useExcludeUncategorizedTransaction } from '@/hooks/query/bank-rules';
 import { useRecognizedTransactionsBoot } from '../RecognizedTransactionsTableBoot';
 import { useRecognizedTransactionsColumnsV2 } from './useRecognizedTransactionsColumnsV2';
+import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
 
 // Распознанные строки идентифицируем по uncategorized_transaction_id —
 // он же ключ категоризации/исключения.
@@ -40,21 +39,11 @@ function RecognizedTransactionsDataTableV2Root({
   );
 
   const handleExclude = React.useCallback(
-    (row: any) => {
-      excludeBankTransaction(row.uncategorized_transaction_id)
-        .then(() =>
-          AppToaster.show({
-            intent: Intent.SUCCESS,
-            message: intl.get('cashflow.notify.transaction_excluded'),
-          }),
-        )
-        .catch(() =>
-          AppToaster.show({
-            intent: Intent.DANGER,
-            message: intl.get('something_went_wrong'),
-          }),
-        );
-    },
+    (row: any) =>
+      notifyTransactionResult(
+        excludeBankTransaction(row.uncategorized_transaction_id),
+        'cashflow.notify.transaction_excluded',
+      ),
     [excludeBankTransaction],
   );
 

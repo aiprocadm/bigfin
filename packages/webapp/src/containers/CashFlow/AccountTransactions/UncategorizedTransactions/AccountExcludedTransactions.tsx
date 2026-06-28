@@ -5,7 +5,9 @@ import {
   WithBankingActionsProps,
   withBankingActions,
 } from '../../withBankingActions';
-import { ExcludedTransactionsTable } from '../ExcludedTransactions/ExcludedTransactionsTable';
+// D-redesign слайс 4b: рендер на новом примитиве data-table.tsx.
+// Откат — вернуть импорт и тег легаси `ExcludedTransactionsTable` из '../ExcludedTransactions/ExcludedTransactionsTable'.
+import { ExcludedTransactionsDataTableV2 } from '../ExcludedTransactions/v2/ExcludedTransactionsDataTableV2';
 import { ExcludedBankTransactionsTableBoot } from '../ExcludedTransactions/ExcludedTransactionsTableBoot';
 import { AccountTransactionsCard } from './AccountTransactionsCard';
 
@@ -25,7 +27,7 @@ function AccountExcludedTransactionsRoot({
   return (
     <ExcludedBankTransactionsTableBoot>
       <AccountTransactionsCard>
-        <ExcludedTransactionsTable />
+        <ExcludedTransactionsDataTableV2 />
       </AccountTransactionsCard>
     </ExcludedBankTransactionsTableBoot>
   );

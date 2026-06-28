@@ -35,7 +35,7 @@
     "@playwright/test": "^1.32.3",
     "husky": "^8.0.3",
     "lerna": "^8.1.2",
-    "pnpm": "^9.0.5"
+    "pnpm": "^10.34.4"
   },
   "engines": {
     "node": ">=18.16.1"

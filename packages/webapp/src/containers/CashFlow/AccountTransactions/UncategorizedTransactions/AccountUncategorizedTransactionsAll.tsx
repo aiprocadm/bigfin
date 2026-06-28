@@ -1,6 +1,8 @@
 import * as R from 'ramda';
 import { useEffect } from 'react';
-import AccountTransactionsUncategorizedTable from './AccountTransactionsUncategorizedTable';
+// D-redesign слайс 4d: рендер на новом примитиве data-table.tsx.
+// Откат — вернуть default-импорт и тег легаси `AccountTransactionsUncategorizedTable` из './AccountTransactionsUncategorizedTable'.
+import { UncategorizedTransactionsDataTableV2 } from './v2/UncategorizedTransactionsDataTableV2';
 import { AccountUncategorizedTransactionsBoot } from '../AllTransactionsUncategorizedBoot';
 import { AccountTransactionsCard } from './AccountTransactionsCard';
 import {
@@ -24,7 +26,7 @@ function AccountUncategorizedTransactionsAllRoot({
   return (
     <AccountUncategorizedTransactionsBoot>
       <AccountTransactionsCard>
-        <AccountTransactionsUncategorizedTable />
+        <UncategorizedTransactionsDataTableV2 />
       </AccountTransactionsCard>
     </AccountUncategorizedTransactionsBoot>
   );

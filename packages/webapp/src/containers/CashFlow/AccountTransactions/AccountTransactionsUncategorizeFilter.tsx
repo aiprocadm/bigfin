@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useMemo } from 'react';
 import * as R from 'ramda';
+import intl from 'react-intl-universal';
 import { useAppQueryString } from '@/hooks';
 import { Group, Stack, } from '@/components';
 import { useAccountTransactionsContext } from './AccountTransactionsProvider';
@@ -30,7 +31,8 @@ export function AccountTransactionsUncategorizeFilter() {
           value: 'pending',
           label: (
             <>
-              Pending <strong>({totalPending})</strong>
+              {intl.get('cashflow.uncategorized.filter.pending')}{' '}
+              <strong>({totalPending})</strong>
             </>
           ),
         }),
@@ -39,7 +41,8 @@ export function AccountTransactionsUncategorizeFilter() {
           value: 'all',
           label: (
             <>
-              All <strong>({totalUncategorized})</strong>
+              {intl.get('cashflow.uncategorized.filter.all')}{' '}
+              <strong>({totalUncategorized})</strong>
             </>
           ),
         },
@@ -47,7 +50,8 @@ export function AccountTransactionsUncategorizeFilter() {
           value: 'recognized',
           label: (
             <>
-              Recognized <strong>({totalRecognized})</strong>
+              {intl.get('cashflow.uncategorized.filter.recognized')}{' '}
+              <strong>({totalRecognized})</strong>
             </>
           ),
         },
@@ -68,7 +72,12 @@ export function AccountTransactionsUncategorizeFilter() {
       </Group>
 
       <TagsControl
-        options={[{ value: 'excluded', label: 'Excluded' }]}
+        options={[
+          {
+            value: 'excluded',
+            label: intl.get('cashflow.uncategorized.filter.excluded'),
+          },
+        ]}
         value={locationQuery?.uncategorizedFilter || 'all'}
         onValueChange={handleTabsChange}
       />

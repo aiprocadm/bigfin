@@ -162,6 +162,11 @@ export function DataTable({
         columns: tableColumns,
         data,
         manualSortBy: true,
+        // Сортировка идёт только через сервер (manualSortBy): без обработчика
+        // onSortChange кликать по заголовку бессмысленно — данные не переупорядочатся.
+        // Поэтому при отсутствии onSortChange гасим сортируемость всей таблицы,
+        // чтобы не показывать «мёртвый» аффорданс (курсор/шеврон) на заголовках.
+        disableSortBy: !onSortChange,
         autoResetSortBy: false,
         disableSortRemove: true,
       } as any,
@@ -253,7 +258,9 @@ export function DataTable({
                   className={cn(
                     'relative px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
                     col.align === 'right' && 'text-right',
-                    !col.disableSortBy && 'cursor-pointer select-none',
+                    // col.canSort учитывает и колоночный disableSortBy, и табличный
+                    // (выставляется выше при отсутствии onSortChange).
+                    col.canSort && 'cursor-pointer select-none',
                   )}
                 >
                   <span className="inline-flex items-center gap-1">

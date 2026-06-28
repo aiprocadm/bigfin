@@ -1,8 +1,5 @@
 import React from 'react';
-import intl from 'react-intl-universal';
-import { Intent } from '@blueprintjs/core';
 import { DataTable } from '@/components/ui/data-table';
-import { AppToaster } from '@/components';
 import { compose } from '@/utils';
 import { useLocalStorage } from '@/hooks';
 import { withBankingActions } from '../../../withBankingActions';
@@ -10,6 +7,9 @@ import { withBanking } from '../../../withBanking';
 import { useExcludeUncategorizedTransaction } from '@/hooks/query/bank-rules';
 import { useAccountUncategorizedTransactionsContext } from '../../AllTransactionsUncategorizedBoot';
 import { useUncategorizedTransactionsColumnsV2 } from './useUncategorizedTransactionsColumnsV2';
+import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
+import { selectRowsByIds } from '../../v2/selectRowsByIds';
+import { DataTableEmpty } from '../../v2/DataTableEmpty';
 
 const getRowId = (row: any) => String(row.id);
 
@@ -61,21 +61,11 @@ function UncategorizedTransactionsDataTableV2Root({
   );
 
   const handleExclude = React.useCallback(
-    (row: any) => {
-      excludeTransaction(row.id)
-        .then(() =>
-          AppToaster.show({
-            intent: Intent.SUCCESS,
-            message: intl.get('cashflow.notify.transaction_excluded'),
-          }),
-        )
-        .catch(() =>
-          AppToaster.show({
-            intent: Intent.DANGER,
-            message: intl.get('something_went_wrong'),
-          }),
-        );
-    },
+    (row: any) =>
+      notifyTransactionResult(
+        excludeTransaction(row.id),
+        'cashflow.notify.transaction_excluded',
+      ),
     [excludeTransaction],
   );
 
@@ -88,9 +78,11 @@ function UncategorizedTransactionsDataTableV2Root({
   // Примитив отдаёт строковые getRowId; мапим обратно в исходные id.
   const handleSelectionChange = React.useCallback(
     (ids: string[]) => {
-      const transactionIds = (uncategorizedTransactions || [])
-        .filter((t: any) => ids.includes(String(t.id)))
-        .map((t: any) => t.id);
+      const transactionIds = selectRowsByIds(
+        uncategorizedTransactions,
+        ids,
+        getRowId,
+      ).map((t: any) => t.id);
       setUncategorizedTransactionsSelected(transactionIds);
     },
     [uncategorizedTransactions, setUncategorizedTransactionsSelected],
@@ -110,9 +102,7 @@ function UncategorizedTransactionsDataTableV2Root({
       columnWidths={columnWidths}
       onColumnWidthsChange={setColumnWidths}
       emptyState={
-        <div className="px-3 py-8 text-center text-sm text-text-muted">
-          {intl.get('cash_flow.uncategorized_transactions.no_results')}
-        </div>
+        <DataTableEmpty messageKey="cash_flow.uncategorized_transactions.no_results" />
       }
     />
   );

@@ -1,8 +1,8 @@
 import React from 'react';
-import intl from 'react-intl-universal';
 import { DataTable } from '@/components/ui/data-table';
 import { usePendingTransactionsContext } from '../PendingTransactionsTableBoot';
 import { usePendingTransactionsColumnsV2 } from './usePendingTransactionsColumnsV2';
+import { DataTableEmpty } from '../../v2/DataTableEmpty';
 
 // Строки ожидающих транзакций не имеют собственного `id` (сервер отдаёт
 // reference_type + reference_id). Та же составная пара, что у слайса 2 —
@@ -28,9 +28,7 @@ export function PendingTransactionsDataTableV2() {
       loading={isPendingTransactionsLoading}
       virtualized
       emptyState={
-        <div className="px-3 py-8 text-center text-sm text-text-muted">
-          {intl.get('cash_flow.pending_transactions.no_results')}
-        </div>
+        <DataTableEmpty messageKey="cash_flow.pending_transactions.no_results" />
       }
     />
   );

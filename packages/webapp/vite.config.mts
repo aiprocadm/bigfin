@@ -66,6 +66,29 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'dist',
+      // После сплита самые крупные чанки — это намеренно изолированные единицы:
+      // app-core (react/redux/app), вся Blueprint и timezone-база moment-timezone
+      // (~914 КБ сырых, но всего ~81 КБ в gzip). Они меняются редко и кешируются
+      // браузером надолго, поэтому держим порог предупреждения чуть выше app-core,
+      // чтобы не шуметь на ожидаемо «толстых» вендор-чанках.
+      chunkSizeWarningLimit: 1800,
+      rollupOptions: {
+        output: {
+          // Консервативное разбиение: выносим ТОЛЬКО тяжёлые, самостоятельные
+          // вендор-семейства в отдельные кешируемые чанки. React/Redux и весь
+          // остальной код оставляем в дефолтном чанке Vite, чтобы не трогать
+          // порядок инициализации модулей (там живут TDZ-баги при сплите).
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined;
+            if (id.includes('@blueprintjs')) return 'vendor-blueprint';
+            if (id.includes('@radix-ui')) return 'vendor-radix';
+            if (/node_modules[\\/](recharts|d3-[^\\/]+|victory-vendor|internmap)[\\/]/.test(id))
+              return 'vendor-charts';
+            if (/node_modules[\\/]moment(-timezone)?[\\/]/.test(id)) return 'vendor-moment';
+            return undefined;
+          },
+        },
+      },
     },
     test: {
       globals: true,

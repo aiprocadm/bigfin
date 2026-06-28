@@ -8,6 +8,7 @@ import { useUnexcludeUncategorizedTransaction } from '@/hooks/query/bank-rules';
 import { useExcludedTransactionsBoot } from '../ExcludedTransactionsTableBoot';
 import { useExcludedTransactionsColumnsV2 } from './useExcludedTransactionsColumnsV2';
 import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
+import { selectRowsByIds } from '../../v2/selectRowsByIds';
 
 // У исключённых транзакций есть собственный `id` (в отличие от «Всех»/«Ожидающих»),
 // он же — ключ для выбора и восстановления.
@@ -47,9 +48,11 @@ function ExcludedTransactionsDataTableV2Root({
   // (панель массовых действий ждёт реальные идентификаторы транзакций).
   const handleSelectionChange = React.useCallback(
     (ids: string[]) => {
-      const selectedIds = (excludedBankTransactions || [])
-        .filter((t: any) => ids.includes(String(t.id)))
-        .map((t: any) => t.id);
+      const selectedIds = selectRowsByIds(
+        excludedBankTransactions,
+        ids,
+        getRowId,
+      ).map((t: any) => t.id);
       setExcludedTransactionsSelected(selectedIds);
     },
     [excludedBankTransactions, setExcludedTransactionsSelected],

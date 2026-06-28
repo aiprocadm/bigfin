@@ -9,6 +9,7 @@ import { useExcludeUncategorizedTransaction } from '@/hooks/query/bank-rules';
 import { useAccountUncategorizedTransactionsContext } from '../../AllTransactionsUncategorizedBoot';
 import { useUncategorizedTransactionsColumnsV2 } from './useUncategorizedTransactionsColumnsV2';
 import { notifyTransactionResult } from '../../v2/notifyTransactionResult';
+import { selectRowsByIds } from '../../v2/selectRowsByIds';
 
 const getRowId = (row: any) => String(row.id);
 
@@ -77,9 +78,11 @@ function UncategorizedTransactionsDataTableV2Root({
   // Примитив отдаёт строковые getRowId; мапим обратно в исходные id.
   const handleSelectionChange = React.useCallback(
     (ids: string[]) => {
-      const transactionIds = (uncategorizedTransactions || [])
-        .filter((t: any) => ids.includes(String(t.id)))
-        .map((t: any) => t.id);
+      const transactionIds = selectRowsByIds(
+        uncategorizedTransactions,
+        ids,
+        getRowId,
+      ).map((t: any) => t.id);
       setUncategorizedTransactionsSelected(transactionIds);
     },
     [uncategorizedTransactions, setUncategorizedTransactionsSelected],

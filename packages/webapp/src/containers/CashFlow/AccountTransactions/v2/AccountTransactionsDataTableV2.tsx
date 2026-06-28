@@ -10,6 +10,7 @@ import { useAccountTransactionsAllContext } from '../AccountTransactionsAllBoot'
 import { handleCashFlowTransactionType } from '../utils';
 import { useAccountTransactionsColumnsV2 } from './useAccountTransactionsColumnsV2';
 import { notifyTransactionResult } from './notifyTransactionResult';
+import { selectRowsByIds } from './selectRowsByIds';
 
 // Строки «Всех транзакций» не имеют собственного `id` (сервер отдаёт
 // reference_type + reference_id). Сервер сам использует эту пару как
@@ -64,13 +65,13 @@ function AccountTransactionsDataTableV2Root({
   // (для массового «разкатегоризировать» в панели действий).
   const handleSelectionChange = React.useCallback(
     (ids: string[]) => {
-      const selectedUncatIds = cashflowTransactions
-        .filter(
-          (t: any) =>
-            ids.includes(getTransactionRowId(t)) &&
-            t.uncategorized_transaction_id,
-        )
-        .map((t: any) => t.uncategorized_transaction_id);
+      const selectedUncatIds = selectRowsByIds(
+        cashflowTransactions,
+        ids,
+        getTransactionRowId,
+      )
+        .map((t: any) => t.uncategorized_transaction_id)
+        .filter(Boolean);
       setCategorizedTransactionsSelected(selectedUncatIds);
     },
     [cashflowTransactions, setCategorizedTransactionsSelected],

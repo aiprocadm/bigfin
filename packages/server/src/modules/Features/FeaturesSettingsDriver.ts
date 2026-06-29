@@ -24,6 +24,7 @@ export class FeaturesSettingsDriver {
     const settingsStore = await this.settings();
 
     settingsStore.set({ group: 'features', key: feature, value: true });
+    await settingsStore.save();
   }
 
   /**
@@ -35,6 +36,7 @@ export class FeaturesSettingsDriver {
     const settingsStore = await this.settings();
 
     settingsStore.set({ group: 'features', key: feature, value: false });
+    await settingsStore.save();
   }
 
   /**

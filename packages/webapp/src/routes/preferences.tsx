@@ -135,6 +135,11 @@ export const getPreferenceRoutes = () => [
     exact: true,
   },
   {
+    path: `${BASE_URL}/modules`,
+    component: lazy(() => import('@/containers/Preferences/Modules/ModulesPage')),
+    exact: true,
+  },
+  {
     path: `${BASE_URL}/`,
     component: lazy(() => import('../containers/Preferences/DefaultRoute')),
     exact: true,

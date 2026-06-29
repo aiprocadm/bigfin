@@ -13,6 +13,10 @@ export const PreferencesMenu = [
     href: '/preferences/interface-mode',
   },
   {
+    text: <T id={'preferences.modules.menu'} />,
+    href: '/preferences/modules',
+  },
+  {
     text: 'Branding',
     disabled: false,
     href: '/preferences/branding',

@@ -8,6 +8,8 @@
 
 **Tech Stack:** NestJS + Jest (server), React 18 + Blueprint + react-query + Redux (webapp), react-intl-universal (i18n).
 
+> **Политика типов (ВАЖНО):** новые `.ts/.tsx` файлы пишем БЕЗ `// @ts-nocheck` — guard `.husky/pre-commit` (`scripts/check-no-new-ts-nocheck.mjs`) блокирует добавление прагмы в новых файлах. Редактирование существующих `@ts-nocheck`-файлов (маршруты/меню) допустимо. Новым файлам дать минимальные аннотации до чистого `pnpm typecheck` (легаси-хелперы вроде `useApiRequest` типизируем как `any` по образцу `notifications.tsx`). НИКОГДА не обходить хук через `--no-verify`.
+
 Спека: [../specs/2026-06-29-feature-toggle-modules-design.md](../specs/2026-06-29-feature-toggle-modules-design.md).
 
 **Отклонение от спеки (зафиксировано):** легаси-меню Настроек (`PreferencesSidebar`) не поддерживает фильтр по правам, поэтому пункт «Модули» показывается всем пользователям (как «Пользователи»/«Роли»). Границу доступа держит сервер (`@RequirePermission` на `turn-on`/`turn-off`). Ролевое скрытие пункта меню — в бэклоге.
@@ -330,13 +332,12 @@ git commit -m "feat(server): эндпоинт /features (turn-on/off + all) с �
 - [ ] **Step 1: Создать хук**
 
 ```tsx
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import useApiRequest from '../useRequest';
 import t from './types';
 
 /** Включает модуль (feature) и обновляет состояние фич в дашборде. */
-export function useTurnOnFeature(props) {
+export function useTurnOnFeature(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -377,7 +378,6 @@ git commit -m "feat(webapp): хуки useTurnOnFeature/useTurnOffFeature (+ ин
 - [ ] **Step 1: Создать страницу (клон InterfaceModePage, Blueprint Switch)**
 
 ```tsx
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
 import { Switch, Intent } from '@blueprintjs/core';

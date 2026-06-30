@@ -1,21 +1,24 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
-import { Formik } from 'formik';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useHistory } from 'react-router-dom';
 import { Intent } from '@blueprintjs/core';
 
-import '@/style/pages/Preferences/GeneralForm.scss';
-
 import { AppToaster } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
 import GeneralForm from './GeneralForm';
-import { PreferencesGeneralSchema } from './General.schema';
+import { generalSchema, type GeneralFormValues } from './General.zod';
 import { useGeneralFormContext } from './GeneralFormProvider';
+import type { GeneralFormContextValue } from './General.types';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
-
 import { compose, transformToForm } from '@/utils';
 
-const defaultValues = {
+const defaultValues: GeneralFormValues = {
   name: '',
+  tax_number: '',
   industry: '',
   location: '',
   base_currency: '',
@@ -23,59 +26,73 @@ const defaultValues = {
   fiscal_year: '',
   date_format: '',
   timezone: '',
-  tax_number: '',
   address: {},
 };
 
-/**
- * Preferences - General form Page.
- */
-function GeneralFormPage({
-  // #withDashboardActions
-  changePreferencesPageTitle,
-}) {
-  const { updateOrganization, organization } = useGeneralFormContext();
+interface GeneralFormPageProps {
+  changePreferencesPageTitle: (title: string) => void;
+}
+
+function GeneralFormPage({ changePreferencesPageTitle }: GeneralFormPageProps) {
+  const history = useHistory();
+  const { updateOrganization, organization } =
+    useGeneralFormContext() as GeneralFormContextValue;
 
   useEffect(() => {
     changePreferencesPageTitle(intl.get('general'));
   }, [changePreferencesPageTitle]);
 
-  // Initial values.
-  const initialValues = {
+  const initialValues: GeneralFormValues = {
     ...defaultValues,
     ...transformToForm(organization.metadata, defaultValues),
   };
-  // Handle the form submit.
-  const handleFormSubmit = (values, { setSubmitting, resetForm }) => {
-    // Handle request success.
-    const onSuccess = (response) => {
+
+  const form = useForm<GeneralFormValues>({
+    resolver: zodResolver(generalSchema),
+    defaultValues: initialValues,
+  });
+
+  const onSubmit = async (values: GeneralFormValues) => {
+    try {
+      await updateOrganization({ ...values });
       AppToaster.show({
         message: intl.get('preferences.general.success_message'),
         intent: Intent.SUCCESS,
       });
-      setSubmitting(false);
-
-      // Reboot the application if the application's language is mutated.
+      // Перезагружаем приложение при смене языка интерфейса (как в легаси).
       if (organization.metadata?.language !== values.language) {
         window.location.reload();
       }
-    };
-    // Handle request error.
-    const onError = (errors) => {
-      setSubmitting(false);
-    };
-    updateOrganization({ ...values })
-      .then(onSuccess)
-      .catch(onError);
+    } catch {
+      // Ошибки полей возвращает бэкенд; глобальный тост не показываем (как в легаси).
+    }
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={PreferencesGeneralSchema}
-      onSubmit={handleFormSubmit}
-      component={GeneralForm}
-    />
+    <Card>
+      <CardContent className="p-6">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-8"
+          >
+            <GeneralForm />
+            <div className="flex gap-3 border-t border-border pt-6">
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {intl.get('save')}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => history.go(-1)}
+              >
+                {intl.get('close')}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
 

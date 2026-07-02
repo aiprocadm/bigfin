@@ -1,38 +1,56 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useActivateContact } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useActivateContact } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface VendorActivateAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { vendorId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Vendor activate alert.
+ * Подтверждение активации поставщика (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('vendor-activate', { vendorId }).
  */
-function VendorActivateAlert({
+function VendorActivateAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { vendorId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: activateContact, isLoading } = useActivateContact();
+}: VendorActivateAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: activateContact, isLoading } = useActivateContact(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const vendorId = payload?.vendorId;
 
-  // Handle activate vendor alert cancel.
-  const handleCancelActivateVendor = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm vendor activated.
-  const handleConfirmVendorActivate = () => {
+  // Подтверждение: активируем поставщика, показываем тост.
+  const handleConfirm = () => {
     activateContact(vendorId)
       .then(() => {
         AppToaster.show({
@@ -40,30 +58,34 @@ function VendorActivateAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'activate'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancelActivateVendor}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('activate_vendor')}
+      description={intl.get(
+        'vendor.alert.are_you_sure_want_to_activate_this_vendor',
+      )}
+      confirmLabel={intl.get('activate')}
       loading={isLoading}
-      onConfirm={handleConfirmVendorActivate}
-    >
-      <p>
-        {intl.get('vendor.alert.are_you_sure_want_to_activate_this_vendor')}
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(VendorActivateAlert);
+)(VendorActivateAlertRoot) as ComponentType<VendorActivateAlertProps>;

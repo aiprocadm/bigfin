@@ -1,67 +1,54 @@
-// @ts-nocheck
-import React, { useCallback } from 'react';
-import { compose } from '@/utils';
+import { useCallback } from 'react';
 
-import { DataTable, TableSkeletonRows } from '@/components';
-
-import { useCurrenciesContext } from './CurrenciesProvider';
-
-import { ActionMenuList, useCurrenciesTableColumns } from './components';
-
+import { DataTable } from '@/components/ui/data-table';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import styled from 'styled-components';
+import { compose } from '@/utils';
+
+import { useCurrenciesContext } from './CurrenciesProvider';
+import { useCurrenciesTableColumns, type CurrencyRow } from './components';
+
+const getCurrencyRowId = (row: CurrencyRow) => row.currency_code;
 
 /**
- * Currencies table.
+ * Таблица валют (новый DataTable).
  */
 function CurrenciesDataTable({
-  // #ownProps
-  tableProps,
-
-  // #withDialog.
+  // #withDialogActions
   openDialog,
-
   // #withAlertActions
   openAlert,
-}) {
-  const { currencies, isCurrenciesLoading } = useCurrenciesContext();
+}: any) {
+  const { currencies, isCurrenciesLoading } = useCurrenciesContext() as any;
 
-  // Table columns.
-  const columns = useCurrenciesTableColumns();
-
-  // Handle Edit Currency.
   const handleEditCurrency = useCallback(
-    (currency) => {
-      openDialog('currency-form', {
-        action: 'edit',
-        currency: currency,
-      });
+    (currency: CurrencyRow) => {
+      openDialog('currency-form', { action: 'edit', currency });
     },
     [openDialog],
   );
 
-  // Handle delete currency.
-  const handleDeleteCurrency = ({ currency_code }) => {
-    openAlert('currency-delete', { currency_code: currency_code });
-  };
+  const handleDeleteCurrency = useCallback(
+    ({ currency_code }: CurrencyRow) => {
+      openAlert('currency-delete', { currency_code });
+    },
+    [openAlert],
+  );
+
+  const columns = useCurrenciesTableColumns({
+    onEditCurrency: handleEditCurrency,
+    onDeleteCurrency: handleDeleteCurrency,
+  });
 
   return (
-    <CurrencieDataTable
-      columns={columns}
-      data={currencies}
-      loading={isCurrenciesLoading}
-      progressBarLoading={isCurrenciesLoading}
-      TableLoadingRenderer={TableSkeletonRows}
-      ContextMenu={ActionMenuList}
-      noInitialFetch={true}
-      payload={{
-        onDeleteCurrency: handleDeleteCurrency,
-        onEditCurrency: handleEditCurrency,
-      }}
-      rowContextMenu={ActionMenuList}
-      {...tableProps}
-    />
+    <div className="bigfin-ui p-4">
+      <DataTable
+        columns={columns}
+        data={currencies ?? []}
+        getRowId={getCurrencyRowId}
+        loading={isCurrenciesLoading}
+      />
+    </div>
   );
 }
 
@@ -69,11 +56,3 @@ export default compose(
   withDialogActions,
   withAlertActions,
 )(CurrenciesDataTable);
-
-const CurrencieDataTable = styled(DataTable)`
-  .table .th,
-  .table .td {
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
-  }
-`;

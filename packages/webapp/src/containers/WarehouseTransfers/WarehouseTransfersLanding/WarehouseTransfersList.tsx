@@ -3,7 +3,7 @@ import React from 'react';
 
 import { DashboardPageContent } from '@/components';
 import WarehouseTransfersActionsBar from './WarehouseTransfersActionsBar';
-import WarehouseTransfersDataTable from './WarehouseTransfersDataTable';
+import { WarehouseTransfersTableV2 } from './v2/WarehouseTransfersTableV2';
 import { withWarehouseTransfers } from './withWarehouseTransfers';
 import { withWarehouseTransfersActions } from './withWarehouseTransfersActions';
 
@@ -34,7 +34,9 @@ function WarehouseTransfersList({
       <WarehouseTransfersActionsBar />
 
       <DashboardPageContent>
-        <WarehouseTransfersDataTable />
+        <div className="bigfin-ui">
+          <WarehouseTransfersTableV2 />
+        </div>
       </DashboardPageContent>
     </WarehouseTransfersListProvider>
   );

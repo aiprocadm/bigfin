@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from 'react';
-import { Spinner } from '@blueprintjs/core';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   GetPaymentServicesStateResponse,
   useGetPaymentServicesState,
@@ -25,7 +25,12 @@ const PaymentMethodsBoot = ({ children }: PaymentMethodsProviderProps) => {
   const value = { isPaymentMethodsStateLoading, paymentMethodsState };
 
   if (isPaymentMethodsStateLoading) {
-    return <Spinner size={20} />;
+    return (
+      <div className="bigfin-ui flex w-full flex-col gap-4">
+        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-44 w-full rounded-xl" />
+      </div>
+    );
   }
   return (
     <PaymentMethodsContext.Provider value={value}>

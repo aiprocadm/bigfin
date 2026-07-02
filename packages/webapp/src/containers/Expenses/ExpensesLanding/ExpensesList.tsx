@@ -6,7 +6,7 @@ import '@/style/pages/Expense/List.scss';
 import { DashboardPageContent } from '@/components';
 
 import ExpenseActionsBar from './ExpenseActionsBar';
-import ExpenseDataTable from './ExpenseDataTable';
+import { ExpensesTableV2 } from './v2/ExpensesTableV2';
 
 import { withExpenses } from './withExpenses';
 import { withExpensesActions } from './withExpensesActions';
@@ -41,7 +41,9 @@ function ExpensesList({
       <ExpenseActionsBar />
 
       <DashboardPageContent>
-        <ExpenseDataTable />
+        <div className="bigfin-ui">
+          <ExpensesTableV2 />
+        </div>
       </DashboardPageContent>
     </ExpensesListProvider>
   );

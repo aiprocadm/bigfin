@@ -1,37 +1,56 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useInactivateContact } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useInactivateContact } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface CustomerInactivateAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { customerId?: number | string; service?: string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * customer inactivate alert.
+ * Подтверждение деактивации клиента (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('customer-inactivate', { customerId }).
  */
-function CustomerInactivateAlert({
+function CustomerInactivateAlertRoot({
   name,
-  // #withAlertStoreConnect
   isOpen,
-  payload: { customerId, service },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: inactivateContact, isLoading } = useInactivateContact();
+}: CustomerInactivateAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: inactivateContact, isLoading } = useInactivateContact(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const customerId = payload?.customerId;
 
-  // Handle cancel inactivate alert.
-  const handleCancelInactivateCustomer = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm contact Inactive.
-  const handleConfirmCustomerInactive = () => {
+  // Подтверждение: деактивируем клиента, показываем тост.
+  const handleConfirm = () => {
     inactivateContact(customerId)
       .then(() => {
         AppToaster.show({
@@ -39,31 +58,34 @@ function CustomerInactivateAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'inactivate'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancelInactivateCustomer}
-      onConfirm={handleConfirmCustomerInactive}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('inactivate_customer')}
+      description={intl.get(
+        'customer.alert.are_you_sure_want_to_inactivate_this_customer',
+      )}
+      confirmLabel={intl.get('inactivate')}
       loading={isLoading}
-    >
-      <p>
-        {intl.get(
-          'customer.alert.are_you_sure_want_to_inactivate_this_customer',
-        )}
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
+
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(CustomerInactivateAlert);
+)(CustomerInactivateAlertRoot) as ComponentType<CustomerInactivateAlertProps>;

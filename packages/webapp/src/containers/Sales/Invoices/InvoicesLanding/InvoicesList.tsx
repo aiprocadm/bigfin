@@ -6,12 +6,11 @@ import '@/style/pages/SaleInvoice/List.scss';
 import { DashboardPageContent } from '@/components';
 import { InvoicesListProvider } from './InvoicesListProvider';
 
-import InvoicesDataTable from './InvoicesDataTable';
-import InvoicesActionsBar from './InvoicesActionsBar';
+import { InvoicesToolbarV2 } from './v2/InvoicesToolbarV2';
+import { InvoicesTableV2 } from './v2/InvoicesTableV2';
 
 import { withInvoices } from './withInvoices';
 import { withInvoiceActions } from './withInvoiceActions';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
 
 import { transformTableStateToQuery, compose } from '@/utils';
 
@@ -25,13 +24,15 @@ function InvoicesList({
 
   // #withInvoicesActions
   resetInvoicesTableState,
+  resetInvoicesSelectedRows,
 }) {
   // Resets the invoices table state once the page unmount.
   React.useEffect(
     () => () => {
       resetInvoicesTableState();
+      resetInvoicesSelectedRows();
     },
-    [resetInvoicesTableState],
+    [resetInvoicesTableState, resetInvoicesSelectedRows],
   );
 
   return (
@@ -39,10 +40,12 @@ function InvoicesList({
       query={transformTableStateToQuery(invoicesTableState)}
       tableStateChanged={invoicesTableStateChanged}
     >
-      <InvoicesActionsBar />
+      <InvoicesToolbarV2 />
 
       <DashboardPageContent>
-        <InvoicesDataTable />
+        <div className="bigfin-ui">
+          <InvoicesTableV2 />
+        </div>
       </DashboardPageContent>
     </InvoicesListProvider>
   );
@@ -54,5 +57,4 @@ export default compose(
     invoicesTableStateChanged,
   })),
   withInvoiceActions,
-  withAlertActions,
 )(InvoicesList);

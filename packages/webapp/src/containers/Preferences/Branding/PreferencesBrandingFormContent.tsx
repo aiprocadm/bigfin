@@ -1,97 +1,146 @@
-// @ts-nocheck
+import { useRef } from 'react';
 import intl from 'react-intl-universal';
-import { Button, Classes, Intent, Text } from '@blueprintjs/core';
-import { useFormikContext } from 'formik';
-import { FFormGroup, Group, Stack } from '@/components';
-import { FColorInput } from '@/components/Forms/FColorInput';
-import { CompanyLogoUpload } from '@/containers/ElementCustomize/components/CompanyLogoUpload';
-import { PreferencesBrandingFormValues } from './_types';
-import styles from './PreferencesBranding.module.scss';
-import { useIsDarkMode } from '@/hooks/useDarkMode';
+import { useFormContext } from 'react-hook-form';
+import { ImageIcon, Upload, X } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import type { BrandingFormValues } from './PreferencesBranding.zod';
+
+const ACCEPTED_TYPES = 'image/png,image/jpeg,image/svg+xml';
+const HEX_RE = /^#[0-9a-f]{6}$/i;
+
+/**
+ * Поля формы оформления: логотип компании и основной цвет документов.
+ */
 export function PreferencesBrandingFormContent() {
-  return (
-    <Stack style={{ flex: '1' }} spacing={10}>
-      <FFormGroup
-        name={'companyLogo'}
-        label={intl.get('preferences.branding.company_logo')}
-      >
-        <Group spacing={15} align={'left'}>
-          <BrandingCompanyLogoUpload />
-          <BrandingCompanyLogoDesc />
-        </Group>
-      </FFormGroup>
+  const form = useFormContext<BrandingFormValues>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoUri = form.watch('logoUri');
 
-      <FFormGroup
-        name={'primaryColor'}
-        label={intl.get('preferences.branding.primary_color')}
-        helperText={
-          'Note: These preferences will be applied across PDF and mail templates, including the customer payment page.'
-        }
-      >
-        <FColorInput name={'primaryColor'} />
-      </FFormGroup>
-    </Stack>
-  );
-}
-
-export function PreferencesBrandingFormFooter() {
-  const { isSubmitting } = useFormikContext();
-  const isDarkMode = useIsDarkMode();
+  // Подмена логотипа: освобождаем предыдущий blob-URL, чтобы не тёк
+  // на каждый выбор файла (серверные URL не трогаем) — как в легаси.
+  const applyLogoFile = (file: File | null) => {
+    if (typeof logoUri === 'string' && logoUri.startsWith('blob:')) {
+      URL.revokeObjectURL(logoUri);
+    }
+    form.setValue('_logoFile', file ?? undefined, { shouldDirty: true });
+    form.setValue('logoUri', file ? URL.createObjectURL(file) : '', {
+      shouldDirty: true,
+    });
+    form.setValue('logoKey', '', { shouldDirty: true });
+  };
 
   return (
-    <Group
-      style={{
-        padding: '12px 0',
-        borderTop: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.25)' : '#e1e1e1'}`,
-      }}
-    >
-      <Button intent={Intent.PRIMARY} type={'submit'} loading={isSubmitting}>
-        Submit
-      </Button>
-    </Group>
-  );
-}
+    <div className="flex max-w-2xl flex-col gap-8">
+      {/* ----------- Логотип ----------- */}
+      <div className="flex flex-col gap-2">
+        <Label>{intl.get('preferences.branding.company_logo')}</Label>
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files?.[0];
+            if (file) applyLogoFile(file);
+          }}
+          className="flex items-center gap-4 rounded-lg border border-dashed border-border bg-surface p-5"
+        >
+          {logoUri ? (
+            <img
+              src={logoUri}
+              alt={intl.get('preferences.branding.company_logo')}
+              className="h-16 w-16 rounded-lg bg-surface-elevated object-contain"
+            />
+          ) : (
+            <span className="flex h-16 w-16 items-center justify-center rounded-lg bg-surface-elevated text-text-muted">
+              <ImageIcon className="h-7 w-7" aria-hidden />
+            </span>
+          )}
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-medium text-text-primary">
+              {intl.get('preferences.branding.logo.drop_hint')}
+            </div>
+            <div className="mt-1 text-xs text-text-secondary">
+              {intl.get('preferences.branding.logo.dimensions')}
+            </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ACCEPTED_TYPES}
+            className="hidden"
+            onChange={(e) => applyLogoFile(e.target.files?.[0] ?? null)}
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('preferences.branding.logo.choose_file')}
+          </Button>
+          {logoUri ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={intl.get('preferences.branding.logo.remove')}
+              onClick={() => {
+                applyLogoFile(null);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+              }}
+            >
+              <X className="h-4 w-4" aria-hidden />
+            </Button>
+          ) : null}
+        </div>
+        <p className="text-xs text-text-secondary">
+          {intl.get('preferences.branding.logo.description')}
+        </p>
+      </div>
 
-export function BrandingCompanyLogoUpload() {
-  const { setFieldValue, values } =
-    useFormikContext<PreferencesBrandingFormValues>();
-
-  return (
-    <CompanyLogoUpload
-      initialPreview={values?.logoUri}
-      onChange={(file) => {
-        // Освобождаем предыдущий blob-URL логотипа перед заменой —
-        // иначе он течёт на каждый выбор файла (серверные URL не трогаем).
-        if (
-          typeof values?.logoUri === 'string' &&
-          values.logoUri.startsWith('blob:')
-        ) {
-          URL.revokeObjectURL(values.logoUri);
-        }
-        const imageUrl = file ? URL.createObjectURL(file) : '';
-
-        setFieldValue('_logoFile', file);
-        setFieldValue('logoUri', imageUrl);
-        setFieldValue('logoKey', '');
-      }}
-      classNames={{
-        root: styles.fileUploadRoot,
-      }}
-    />
-  );
-}
-
-function BrandingCompanyLogoDesc() {
-  return (
-    <Stack spacing={10} style={{ fontSize: 12, paddingTop: 12, flex: 1 }}>
-      <Text className={Classes.TEXT_MUTED}>
-        This logo will be displayed in transaction PDFs and email notifications.
-      </Text>
-      <Text className={Classes.TEXT_MUTED}>
-        Preferred Image Dimensions: 240 × 240 pixels @ 72 DPI Maximum File Size:
-        1MB
-      </Text>
-    </Stack>
+      {/* ----------- Основной цвет ----------- */}
+      <FormField
+        control={form.control}
+        name="primaryColor"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              {intl.get('preferences.branding.primary_color')}
+            </FormLabel>
+            <FormControl>
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  aria-label={intl.get('preferences.branding.primary_color')}
+                  value={HEX_RE.test(field.value ?? '') ? field.value : '#ffffff'}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  className="h-10 w-14 cursor-pointer rounded-md border border-border bg-surface p-1"
+                />
+                <Input
+                  {...field}
+                  value={field.value ?? ''}
+                  placeholder="#2E73E8"
+                  className="max-w-[140px]"
+                />
+              </div>
+            </FormControl>
+            <FormDescription>
+              {intl.get('preferences.branding.primary_color.note')}
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 }

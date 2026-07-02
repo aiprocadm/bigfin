@@ -1,40 +1,35 @@
-// @ts-nocheck
-import React from 'react';
-import { Button, Intent } from '@blueprintjs/core';
-import { FormattedMessage as T, EmptyStatus } from '@/components';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import intl from 'react-intl-universal';
 
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
+/**
+ * Пустое состояние вкладки «Филиалы» — приглашение активировать функцию.
+ */
 function BranchesEmptyStatus({
   // #withDialogActions
   openDialog,
-}) {
-  // Handle activate action branch.
+}: any) {
+  // Открывает диалог активации филиалов.
   const handleActivateBranch = () => {
     openDialog('branch-activate', {});
   };
 
   return (
-    <EmptyStatus
-      title={<T id={'branches.empty_status.title'} />}
-      description={
-        <p>
-          <T id={'branches.empty_status.description'} />
-        </p>
-      }
-      action={
-        <React.Fragment>
-          <Button
-            intent={Intent.PRIMARY}
-            large={true}
-            onClick={handleActivateBranch}
-          >
-            <T id={'branches.activate_button'} />
+    <div className="bigfin-ui p-4">
+      <EmptyState
+        title={intl.get('branches.empty_status.title')}
+        description={intl.get('branches.empty_status.description')}
+        action={
+          <Button onClick={handleActivateBranch}>
+            {intl.get('branches.activate_button')}
           </Button>
-        </React.Fragment>
-      }
-    />
+        }
+      />
+    </div>
   );
 }
+
 export default compose(withDialogActions)(BranchesEmptyStatus);

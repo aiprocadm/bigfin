@@ -1,0 +1,124 @@
+import { ReactNode } from 'react';
+import intl from 'react-intl-universal';
+
+import { Card } from '@/components/ui/card';
+
+import type { CreditNoteDetail, CreditNoteEntry } from './types';
+
+const EMPTY_VALUE = '—';
+
+function DetailRow({ label, children }: { label: string; children?: ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 border-t border-border py-2.5 first:border-t-0 first:pt-0 last:pb-0">
+      <dt className="shrink-0 text-sm text-text-muted">{label}</dt>
+      <dd className="m-0 text-right text-sm text-text-primary">
+        {children ?? EMPTY_VALUE}
+      </dd>
+    </div>
+  );
+}
+
+/** Есть ли скидка хотя бы в одной позиции — тогда показываем колонку. */
+const hasDiscount = (entries: CreditNoteEntry[]) =>
+  entries.some((entry) => entry.discount_formatted);
+
+/**
+ * Вкладка «Детали» возврата покупателю: сумма + реквизиты, позиции.
+ */
+export function CreditNoteDetailOverviewTabV2({
+  creditNote,
+}: {
+  creditNote: CreditNoteDetail;
+}) {
+  const entries = creditNote.entries ?? [];
+  const showDiscount = hasDiscount(entries);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Card className="p-4 sm:p-5">
+        <div className="text-sm text-text-secondary">{intl.get('amount')}</div>
+        <div className="mt-1 text-2xl font-semibold tabular-nums text-text-primary">
+          {creditNote.total_formatted || EMPTY_VALUE}
+        </div>
+
+        <dl className="m-0 mt-4">
+          <DetailRow
+            label={intl.get('credit_note.drawer.label_credit_note_date')}
+          >
+            {creditNote.formatted_credit_note_date || EMPTY_VALUE}
+          </DetailRow>
+          <DetailRow
+            label={intl.get('credit_note.drawer.label_credit_note_no')}
+          >
+            {creditNote.credit_note_number || EMPTY_VALUE}
+          </DetailRow>
+          <DetailRow label={intl.get('customer_name')}>
+            {creditNote.customer?.display_name || EMPTY_VALUE}
+          </DetailRow>
+          <DetailRow
+            label={intl.get('credit_note.drawer.label_credits_remaining')}
+          >
+            <span className="tabular-nums">
+              {creditNote.formatted_credits_remaining || EMPTY_VALUE}
+            </span>
+          </DetailRow>
+          <DetailRow label={intl.get('reference')}>
+            {creditNote.reference_no || EMPTY_VALUE}
+          </DetailRow>
+          <DetailRow label={intl.get('credit_note.drawer.label_created_at')}>
+            {creditNote.formatted_created_at || EMPTY_VALUE}
+          </DetailRow>
+        </dl>
+      </Card>
+
+      <Card className="p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead className="bg-surface-elevated">
+              <tr className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                <th className="px-3 py-2 text-left">
+                  {intl.get('product_and_service')}
+                </th>
+                <th className="px-3 py-2 text-left">
+                  {intl.get('description')}
+                </th>
+                <th className="px-3 py-2 text-right">{intl.get('quantity')}</th>
+                <th className="px-3 py-2 text-right">{intl.get('rate')}</th>
+                {showDiscount ? (
+                  <th className="px-3 py-2 text-right">
+                    {intl.get('discount')}
+                  </th>
+                ) : null}
+                <th className="px-3 py-2 text-right">{intl.get('amount')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((entry, index) => (
+                <tr key={index} className="border-t border-border">
+                  <td className="px-3 py-2">{entry.item?.name}</td>
+                  <td className="px-3 py-2 text-text-secondary">
+                    {entry.description}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums">
+                    {entry.quantity_formatted}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums">
+                    {entry.rate_formatted}
+                  </td>
+                  {showDiscount ? (
+                    <td className="px-3 py-2 text-right tabular-nums">
+                      {entry.discount_formatted}
+                    </td>
+                  ) : null}
+                  <td className="px-3 py-2 text-right font-medium tabular-nums">
+                    {entry.total_formatted}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}

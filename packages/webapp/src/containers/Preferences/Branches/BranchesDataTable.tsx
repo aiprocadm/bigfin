@@ -1,98 +1,82 @@
-// @ts-nocheck
-import React from 'react';
+import { useCallback } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
+// Intent используется только для AppToaster-тостов — легитимный паттерн проекта.
 import { Intent } from '@blueprintjs/core';
 
-import '@/style/pages/Preferences/branchesList.scss';
-
-import { DataTable, Card, AppToaster, TableSkeletonRows } from '@/components';
-import { useBranchesTableColumns, ActionsMenu } from './components';
-import { useBranchesContext } from './BranchesProvider';
+import { DataTable } from '@/components/ui/data-table';
+import { AppToaster } from '@/components';
 import { useMarkBranchAsPrimary } from '@/hooks/query';
-
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
 import { compose } from '@/utils';
 
+import { useBranchesContext } from './BranchesProvider';
+import { useBranchesTableColumns, type BranchRow } from './components';
+
+const getBranchRowId = (row: BranchRow) => String(row.id);
+
 /**
- * Branches data table.
+ * Таблица филиалов (новый DataTable).
  */
 function BranchesDataTable({
-  // #withDialogAction
+  // #withDialogActions
   openDialog,
-
   // #withAlertActions
   openAlert,
-}) {
-  // Table columns.
-  const columns = useBranchesTableColumns();
+}: any) {
+  const { branches, isBranchesLoading } = useBranchesContext() as any;
 
-  // MarkBranchAsPrimary
-  const { mutateAsync: markBranchAsPrimaryMutate } = useMarkBranchAsPrimary();
+  // Легаси-хук без типов — типизируем мутацию локально.
+  const { mutateAsync: markBranchAsPrimaryMutate } =
+    useMarkBranchAsPrimary({}) as unknown as {
+      mutateAsync: (id: number) => Promise<unknown>;
+    };
 
-  const { branches, isBranchesLoading, isBranchesFetching } =
-    useBranchesContext();
+  // Редактирование филиала.
+  const handleEditBranch = useCallback(
+    (branch: BranchRow) => {
+      openDialog('branch-form', { branchId: branch.id, action: 'edit' });
+    },
+    [openDialog],
+  );
 
-  // Handle edit branch.
-  const handleEditBranch = ({ id }) => {
-    openDialog('branch-form', { branchId: id, action: 'edit' });
-  };
+  // Удаление филиала.
+  const handleDeleteBranch = useCallback(
+    (branch: BranchRow) => {
+      openAlert('branch-delete', { branchId: branch.id });
+    },
+    [openAlert],
+  );
 
-  // Handle delete branch.
-  const handleDeleteBranch = ({ id }) => {
-    openAlert('branch-delete', { branchId: id });
-  };
-
-  // Handle mark  branch as primary.
-  const handleMarkBranchAsPrimary = ({ id }) => {
-    markBranchAsPrimaryMutate(id).then(() => {
-      AppToaster.show({
-        message: intl.get('branch.alert.mark_primary_message'),
-        intent: Intent.SUCCESS,
+  // Отметить филиал как основной.
+  const handleMarkBranchAsPrimary = useCallback(
+    (branch: BranchRow) => {
+      markBranchAsPrimaryMutate(branch.id).then(() => {
+        AppToaster.show({
+          message: intl.get('branch.alert.mark_primary_message'),
+          intent: Intent.SUCCESS,
+        });
       });
-    });
-  };
+    },
+    [markBranchAsPrimaryMutate],
+  );
+
+  const columns = useBranchesTableColumns({
+    onEdit: handleEditBranch,
+    onDelete: handleDeleteBranch,
+    onMarkPrimary: handleMarkBranchAsPrimary,
+  });
 
   return (
-    <BranchesTableCard>
-      <BranchesTable
+    <div className="bigfin-ui p-4">
+      <DataTable
         columns={columns}
-        data={branches}
+        data={branches ?? []}
+        getRowId={getBranchRowId}
         loading={isBranchesLoading}
-        headerLoading={isBranchesLoading}
-        progressBarLoading={isBranchesFetching}
-        TableLoadingRenderer={TableSkeletonRows}
-        noInitialFetch={true}
-        ContextMenu={ActionsMenu}
-        payload={{
-          onEdit: handleEditBranch,
-          onDelete: handleDeleteBranch,
-          onMarkPrimary: handleMarkBranchAsPrimary,
-        }}
       />
-    </BranchesTableCard>
+    </div>
   );
 }
 
 export default compose(withDialogActions, withAlertActions)(BranchesDataTable);
-
-const BranchesTableCard = styled(Card)`
-  padding: 0;
-`;
-
-const BranchesTable = styled(DataTable)`
-  .table .tr {
-    min-height: 38px;
-
-    .td.td-name {
-      .bp4-icon {
-        margin: 0;
-        margin-left: 2px;
-        vertical-align: top;
-        color: #e1b31d;
-      }
-    }
-  }
-`;

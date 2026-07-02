@@ -1,125 +1,129 @@
-// @ts-nocheck
-import React from 'react';
-import { Form, useFormikContext } from 'formik';
-import { Button, Intent } from '@blueprintjs/core';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
+import { useMemo } from 'react';
+import intl from 'react-intl-universal';
+import { useFormContext } from 'react-hook-form';
+
+import { Combobox } from '@/components/ui/combobox';
 import {
-  AccountsSelect,
-  FieldRequiredHint,
-  FormattedMessage as T,
-  FFormGroup,
-  CardFooterActions,
-} from '@/components';
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { ACCOUNT_PARENT_TYPE, ACCOUNT_TYPE } from '@/constants/accountTypes';
-
+import { filterAccountsByQuery, nestedArrayToflatten } from '@/utils';
 import { useItemPreferencesFormContext } from './ItemPreferencesFormProvider';
+import type { ItemPreferencesFormValues } from './ItemPreferences.zod';
 
-/**
- * Item preferences form.
- */
-export default function ItemForm() {
-  const history = useHistory();
-  const { accounts } = useItemPreferencesFormContext();
-
-  const { isSubmitting } = useFormikContext();
-
-  const handleCloseClick = () => {
-    history.go(-1);
-  };
-
-  return (
-    <Form>
-      {/* ----------- Preferred Sell Account ----------- */}
-      <ItemFormGroup
-        name={'preferred_sell_account'}
-        label={
-          <strong>
-            <T id={'preferred_sell_account'} />
-          </strong>
-        }
-        helperText={
-          <T
-            id={
-              'select_a_preferred_account_to_deposit_into_it_after_customer_make_payment'
-            }
-          />
-        }
-        labelInfo={<FieldRequiredHint />}
-        fastField={true}
-      >
-        <AccountsSelect
-          name={'preferred_sell_account'}
-          items={accounts}
-          placeholder={<T id={'select_payment_account'} />}
-          filterByParentTypes={[ACCOUNT_PARENT_TYPE.INCOME]}
-        />
-      </ItemFormGroup>
-
-      {/* ----------- Preferred Cost Account ----------- */}
-      <ItemFormGroup
-        name={'preferred_cost_account'}
-        label={
-          <strong>
-            <T id={'preferred_cost_account'} />
-          </strong>
-        }
-        helperText={
-          <T
-            id={
-              'select_a_preferred_account_to_deposit_into_it_after_customer_make_payment'
-            }
-          />
-        }
-        labelInfo={<FieldRequiredHint />}
-        fastField={true}
-      >
-        <AccountsSelect
-          name={'preferred_cost_account'}
-          items={accounts}
-          placeholder={<T id={'select_payment_account'} />}
-          filterByParentTypes={[ACCOUNT_PARENT_TYPE.EXPENSE]}
-        />
-      </ItemFormGroup>
-
-      {/* ----------- Preferred Inventory Account ----------- */}
-      <ItemFormGroup
-        name={'preferred_inventory_account'}
-        label={
-          <strong>
-            <T id={'preferred_inventory_account'} />
-          </strong>
-        }
-        helperText={
-          <T
-            id={
-              'select_a_preferred_account_to_deposit_into_it_vendor_advanced_deposits'
-            }
-          />
-        }
-        labelInfo={<FieldRequiredHint />}
-        fastField={true}
-      >
-        <AccountsSelect
-          name={'preferred_inventory_account'}
-          items={accounts}
-          placeholder={<T id={'select_payment_account'} />}
-          filterByTypes={[ACCOUNT_TYPE.INVENTORY]}
-        />
-      </ItemFormGroup>
-
-      <CardFooterActions>
-        <Button intent={Intent.PRIMARY} loading={isSubmitting} type="submit">
-          <T id={'save'} />
-        </Button>
-        <Button onClick={handleCloseClick} disabled={isSubmitting}>
-          <T id={'close'} />
-        </Button>
-      </CardFooterActions>
-    </Form>
-  );
+interface AccountRecord {
+  id: number | string;
+  name: string;
+  account_parent_type?: string;
+  account_type?: string;
 }
 
-const ItemFormGroup = styled(FFormGroup)`
-  max-width: 400px;
-`;
+/** Приводит счета к опциям Combobox с той же фильтрацией, что в легаси. */
+const toOptions = (accounts: AccountRecord[]) =>
+  accounts.map((a) => ({ value: String(a.id), label: a.name }));
+
+/**
+ * Поля формы настроек товаров (Items): предпочтительные счета
+ * продаж, себестоимости и склада.
+ */
+export default function ItemPreferencesForm() {
+  const form = useFormContext<ItemPreferencesFormValues>();
+  const { accounts } = useItemPreferencesFormContext() as {
+    accounts: AccountRecord[];
+  };
+
+  const search = intl.get('preferences.combobox.search');
+  const empty = intl.get('preferences.combobox.empty');
+  const placeholder = intl.get('select_payment_account');
+
+  // Та же предобработка, что в легаси AccountsSelect (flatten + фильтры).
+  const flatten = useMemo(
+    () => nestedArrayToflatten(accounts ?? []),
+    [accounts],
+  );
+  const sellOptions = useMemo(
+    () =>
+      toOptions(
+        filterAccountsByQuery(flatten, {
+          filterByParentTypes: [ACCOUNT_PARENT_TYPE.INCOME],
+        }),
+      ),
+    [flatten],
+  );
+  const costOptions = useMemo(
+    () =>
+      toOptions(
+        filterAccountsByQuery(flatten, {
+          filterByParentTypes: [ACCOUNT_PARENT_TYPE.EXPENSE],
+        }),
+      ),
+    [flatten],
+  );
+  const inventoryOptions = useMemo(
+    () =>
+      toOptions(
+        filterAccountsByQuery(flatten, {
+          filterByTypes: [ACCOUNT_TYPE.INVENTORY],
+        }),
+      ),
+    [flatten],
+  );
+
+  const FIELDS = [
+    {
+      name: 'preferred_sell_account' as const,
+      labelKey: 'preferred_sell_account',
+      helpKey:
+        'select_a_preferred_account_to_deposit_into_it_after_customer_make_payment',
+      options: sellOptions,
+    },
+    {
+      name: 'preferred_cost_account' as const,
+      labelKey: 'preferred_cost_account',
+      helpKey:
+        'select_a_preferred_account_to_deposit_into_it_after_customer_make_payment',
+      options: costOptions,
+    },
+    {
+      name: 'preferred_inventory_account' as const,
+      labelKey: 'preferred_inventory_account',
+      helpKey:
+        'select_a_preferred_account_to_deposit_into_it_vendor_advanced_deposits',
+      options: inventoryOptions,
+    },
+  ];
+
+  return (
+    <div className="flex max-w-md flex-col gap-6">
+      {FIELDS.map(({ name, labelKey, helpKey, options }) => (
+        <FormField
+          key={name}
+          control={form.control}
+          name={name}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{intl.get(labelKey)}</FormLabel>
+              <FormControl>
+                <Combobox
+                  items={options}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  placeholder={placeholder}
+                  searchPlaceholder={search}
+                  emptyText={empty}
+                />
+              </FormControl>
+              <FormDescription>{intl.get(helpKey)}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      ))}
+    </div>
+  );
+}

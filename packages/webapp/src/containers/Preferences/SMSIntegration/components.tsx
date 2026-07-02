@@ -1,145 +1,155 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
-import { Intent, Button, Menu, MenuItem, MenuDivider } from '@blueprintjs/core';
+import { Bell, BellOff, MoreHorizontal, Pencil } from 'lucide-react';
 
-import { SwitchFieldCell } from '@/components/DataTableCells';
-import { safeInvoke } from '@/utils';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-/**
- * Notification accessor.
- */
-export const NotificationAccessor = (row) => {
-  return (
-    <span className="notification">
-      <NotificationLabel>{row.notification_label}</NotificationLabel>
-      <NotificationDescription>
-        {row.notification_description}
-      </NotificationDescription>
-    </span>
-  );
-};
+export interface SMSNotificationRow {
+  key: string;
+  notification_label: string;
+  notification_description: string;
+  module_formatted: string;
+  sms_message: string;
+  is_notification_enabled: boolean;
+}
 
-/**
- * SMS notification message cell.
- */
-export const SMSMessageCell = ({
-  payload: { onEditMessageText },
-  row: { original },
-}) => (
-  <div>
-    <MessageBox>{original.sms_message}</MessageBox>
-    <MessageBoxActions>
-      <Button
-        minimal={true}
-        small={true}
-        intent={Intent.NONE}
-        onClick={() => safeInvoke(onEditMessageText, original)}
-      >
-        {intl.get('sms_messages.label_edit_message')}
-      </Button>
-    </MessageBoxActions>
-  </div>
-);
+export interface SMSNotificationRowActions {
+  onEditMessageText: (row: SMSNotificationRow) => void;
+  onEnableNotification: (row: SMSNotificationRow) => void;
+  onDisableNotification: (row: SMSNotificationRow) => void;
+  onToggleNotification: (row: SMSNotificationRow, value: boolean) => void;
+}
 
 /**
- * Context menu of SMS notification messages.
+ * Меню действий строки SMS-уведомления (shadcn DropdownMenu).
  */
-export function ActionsMenu({
-  payload: { onEditMessageText, onEnableNotification, onDisableNotification },
-  row: { original },
+export function SMSNotificationActionsMenu({
+  row,
+  actions,
+}: {
+  row: SMSNotificationRow;
+  actions: SMSNotificationRowActions;
 }) {
   return (
-    <Menu>
-      <MenuItem
-        text={intl.get('sms_notifications.edit_message_text')}
-        onClick={() => safeInvoke(onEditMessageText, original)}
-      />
-      <MenuDivider />
-      {!original.is_notification_enabled ? (
-        <MenuItem
-          text={intl.get('sms_notifications.enable_notification')}
-          onClick={() => safeInvoke(onEnableNotification, original)}
-        />
-      ) : (
-        <MenuItem
-          text={intl.get('sms_notifications.disable_notification')}
-          onClick={() => safeInvoke(onDisableNotification, original)}
-        />
-      )}
-    </Menu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={intl.get('more_actions')}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <MoreHorizontal className="h-4 w-4" aria-hidden />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem onClick={() => actions.onEditMessageText(row)}>
+          <Pencil className="mr-2 h-4 w-4" aria-hidden />
+          {intl.get('sms_notifications.edit_message_text')}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        {!row.is_notification_enabled ? (
+          <DropdownMenuItem onClick={() => actions.onEnableNotification(row)}>
+            <Bell className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('sms_notifications.enable_notification')}
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => actions.onDisableNotification(row)}>
+            <BellOff className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('sms_notifications.disable_notification')}
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
 /**
- * Retrieve SMS notifications messages table columns
- * @returns
+ * Колонки таблицы SMS-уведомлений для нового DataTable (react-table v7 формат).
  */
-export function useSMSIntegrationTableColumns({ onSwitchChange }) {
-  return React.useMemo(
+export function useSMSIntegrationTableColumns(
+  actions: SMSNotificationRowActions,
+) {
+  return useMemo(
     () => [
       {
         id: 'notification',
         Header: intl.get('sms_messages.column.notification'),
-        accessor: NotificationAccessor,
-        className: 'notification',
-        width: '180',
+        accessor: 'notification_label',
         disableSortBy: true,
+        width: 200,
+        Cell: ({ row }: { row: { original: SMSNotificationRow } }) => (
+          <div>
+            <div className="font-medium">{row.original.notification_label}</div>
+            <div className="mt-1 text-xs text-text-secondary">
+              {row.original.notification_description}
+            </div>
+          </div>
+        ),
       },
       {
+        id: 'service',
         Header: intl.get('sms_messages.column.service'),
         accessor: 'module_formatted',
-        className: 'service',
-        width: '80',
         disableSortBy: true,
+        width: 120,
       },
       {
+        id: 'sms_message',
         Header: intl.get('sms_messages.column.message'),
         accessor: 'sms_message',
-        Cell: SMSMessageCell,
-        className: 'sms_message',
-        width: '180',
         disableSortBy: true,
+        width: 280,
+        Cell: ({ row }: { row: { original: SMSNotificationRow } }) => (
+          <div className="max-w-md">
+            <div className="whitespace-pre-line rounded-md border border-dashed border-border bg-surface-elevated px-3 py-2 text-sm leading-relaxed text-text-secondary">
+              {row.original.sms_message}
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-1"
+              onClick={() => actions.onEditMessageText(row.original)}
+            >
+              {intl.get('sms_messages.label_edit_message')}
+            </Button>
+          </div>
+        ),
       },
       {
+        id: 'is_notification_enabled',
         Header: intl.get('sms_messages.column.auto'),
         accessor: 'is_notification_enabled',
-        Cell: SwitchFieldCell,
-        className: 'is_notification_enabled',
-        disableResizing: true,
         disableSortBy: true,
-        width: '80',
-        onSwitchChange,
+        width: 80,
+        Cell: ({ row }: { row: { original: SMSNotificationRow } }) => (
+          <Switch
+            aria-label={intl.get('sms_messages.column.auto')}
+            checked={!!row.original.is_notification_enabled}
+            onCheckedChange={(value) =>
+              actions.onToggleNotification(row.original, value)
+            }
+          />
+        ),
+      },
+      {
+        id: '__actions__',
+        Header: '',
+        disableSortBy: true,
+        width: 48,
+        Cell: ({ row }: { row: { original: SMSNotificationRow } }) => (
+          <SMSNotificationActionsMenu row={row.original} actions={actions} />
+        ),
       },
     ],
-    [onSwitchChange],
+    [actions],
   );
 }
-
-const NotificationLabel = styled.div`
-  font-weight: 500;
-`;
-
-const NotificationDescription = styled.div`
-  font-size: 14px;
-  margin-top: 6px;
-  display: block;
-  opacity: 0.75;
-`;
-
-const MessageBox = styled.div`
-  padding: 10px;
-  background-color: #fbfbfb;
-  border: 1px dashed #dcdcdc;
-  font-size: 14px;
-  line-height: 1.45;
-`;
-
-const MessageBoxActions = styled.div`
-  margin-top: 2px;
-
-  button {
-    font-size: 12px;
-  }
-`;

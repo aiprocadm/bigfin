@@ -1,9 +1,19 @@
-import { Spinner } from '@blueprintjs/core';
-import React, { createContext, useContext } from 'react';
-import { Box } from '@/components';
+import { createContext, useContext, type ReactNode } from 'react';
+
+import { Spinner } from '@/components/ui/Spinner';
 import { useImportFileMeta } from '@/hooks/query/import';
 
-interface ImportFileMapBootContextValue {}
+/** Метаданные загруженного файла импорта (map используется в _utils). */
+export interface ImportFileMetaData {
+  map?: { from: string; to: string; group: string }[];
+  [key: string]: unknown;
+}
+
+interface ImportFileMapBootContextValue {
+  importFile?: ImportFileMetaData;
+  isImportFileLoading: boolean;
+  isImportFileFetching: boolean;
+}
 
 const ImportFileMapBootContext = createContext<ImportFileMapBootContextValue>(
   {} as ImportFileMapBootContextValue,
@@ -24,7 +34,7 @@ export const useImportFileMapBootContext = () => {
 
 interface ImportFileMapBootProps {
   importId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const ImportFileMapBootProvider = ({
@@ -39,17 +49,18 @@ export const ImportFileMapBootProvider = ({
     enabled: Boolean(importId),
   });
 
-  const value = {
-    importFile,
+  const value: ImportFileMapBootContextValue = {
+    // Хук из легаси-файла без типов — приводим к известной форме локально.
+    importFile: importFile as ImportFileMetaData | undefined,
     isImportFileLoading,
     isImportFileFetching,
   };
   return (
     <ImportFileMapBootContext.Provider value={value}>
       {isImportFileLoading ? (
-        <Box style={{ padding: '2rem', textAlign: 'center' }}>
-          <Spinner size={26} />
-        </Box>
+        <div className="flex flex-1 items-center justify-center py-16 text-text-muted">
+          <Spinner size="lg" />
+        </div>
       ) : (
         <>{children}</>
       )}

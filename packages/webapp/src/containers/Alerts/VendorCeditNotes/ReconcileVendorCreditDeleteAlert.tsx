@@ -1,89 +1,83 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useDeleteReconcileVendorCredit } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface ReconcileVendorCreditDeleteAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { vendorCreditId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Reconcile vendor credit delete alert.
+ * Подтверждение удаления сверки возврата поставщику (shadcn ConfirmDialog).
+ * Механизм прежний: redux-алерт по имени.
  */
-function ReconcileVendorCreditDeleteAlert({
+function ReconcileVendorCreditDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { vendorCreditId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
+}: ReconcileVendorCreditDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  const { mutateAsync: deleteReconcileVendorCreditMutate, isLoading } =
+    useDeleteReconcileVendorCredit({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const vendorCreditId = payload?.vendorCreditId;
 
-  // #withDrawerActions
-  closeDrawer,
-}) {
-  const { isLoading, mutateAsync: deleteReconcileVendorCreditMutate } =
-    useDeleteReconcileVendorCredit();
-
-  // handle cancel delete credit note alert.
-  const handleCancelDeleteAlert = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  const handleConfirmReconcileVendorCreditDelete = () => {
+  const handleConfirm = useCallback(() => {
     deleteReconcileVendorCreditMutate(vendorCreditId)
       .then(() => {
         AppToaster.show({
           message: intl.get('reconcile_vendor_credit.alert.success_message'),
           intent: Intent.SUCCESS,
         });
-        // closeDrawer('vendor-credit-detail-drawer');
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
       .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [deleteReconcileVendorCreditMutate, vendorCreditId, closeAlert, name]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmReconcileVendorCreditDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('reconcile_vendor_credit.delete_title')}
+      description={intl.getHTML(
+        'reconcile_vendor_credit.alert.once_you_delete_this_reconcile_vendor_credit',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={
-            'reconcile_vendor_credit.alert.once_you_delete_this_reconcile_vendor_credit'
-          }
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-  withDrawerActions,
-)(ReconcileVendorCreditDeleteAlert);
+)(ReconcileVendorCreditDeleteAlertRoot) as ComponentType<ReconcileVendorCreditDeleteAlertProps>;

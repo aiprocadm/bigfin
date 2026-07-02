@@ -1,137 +1,110 @@
-// @ts-nocheck
 import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { TableStyle } from '@/constants';
-import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
 import {
-  FinancialSheet,
-  ReportDataTable,
-  TableFastCell,
-  TableVirtualizedListRows,
-} from '@/components';
-
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useGeneralLedgerContext } from './GeneralLedgerProvider';
-import { useGeneralLedgerTableColumns } from './dynamicColumns';
+
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface GeneralLedgerServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: GeneralLedgerServerColumn[];
+}
+
+interface GeneralLedgerContextValue {
+  generalLedger: {
+    table: {
+      columns: GeneralLedgerServerColumn[];
+      rows: ReportTableRow[];
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedGeneralLedgerContext =
+  useGeneralLedgerContext as unknown as () => GeneralLedgerContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: GeneralLedgerServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align:
+          column.key === 'credit' ||
+          column.key === 'debit' ||
+          column.key === 'amount' ||
+          column.key === 'running_balance'
+            ? 'right'
+            : undefined,
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface GeneralLedgerTableProps {
+  companyName?: string;
+}
 
 /**
- * General ledger table.
+ * Главная книга — движок ReportSheet + ReportTable
+ * (виртуализация: транзакций тысячи; группы-счета развёрнуты на 1 уровень).
  */
-export default function GeneralLedgerTable({ companyName }) {
-  // General ledger context.
+export default function GeneralLedgerTable({
+  companyName,
+}: GeneralLedgerTableProps) {
   const {
-    generalLedger: { query, table, meta },
-    isLoading,
-  } = useGeneralLedgerContext();
+    generalLedger: { table, meta },
+  } = useTypedGeneralLedgerContext();
 
-  // General ledger table columns.
-  const columns = useGeneralLedgerTableColumns();
-
-  // Default expanded rows of general ledger table.
-  const expandedRows = useMemo(
-    () => defaultExpanderReducer(table.rows, 1),
-    [table.rows],
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
   );
 
   return (
-    <FinancialSheet
+    <ReportSheet
       companyName={companyName}
       sheetType={intl.get('general_ledger_sheet')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
-      loading={isLoading}
-      fullWidth={true}
+      className="w-full"
     >
-      <GeneralLedgerDataTable
-        noResults={intl.get(
+      <ReportTable
+        columns={columns}
+        rows={table.rows ?? []}
+        virtualized
+        defaultExpandedDepth={1}
+        isFinalRow={() => false}
+        emptyText={intl.get(
           'this_report_does_not_contain_any_data_between_date_period',
         )}
-        columns={columns}
-        data={table.rows}
-        rowClassNames={tableRowTypesToClassnames}
-        expanded={expandedRows}
-        virtualizedRows={true}
-        fixedItemSize={30}
-        fixedSizeHeight={1000}
-        expandable={true}
-        expandToggleColumn={1}
-        sticky={true}
-        TableRowsRenderer={TableVirtualizedListRows}
-        // #TableVirtualizedListRows props.
-        vListrowHeight={28}
-        vListOverscanRowCount={0}
-        TableCellRenderer={TableFastCell}
-        styleName={TableStyle.Constrant}
       />
-    </FinancialSheet>
+    </ReportSheet>
   );
 }
-
-const GeneralLedgerDataTable = styled(ReportDataTable)`
-  --color-table-text-color: #252a31;
-  --color-table-total-text-color: #000;
-  --color-table-border-color: #ececec;
-  --color-table-total-border-color: #ddd;
-
-  .bp4-dark & {
-    --color-table-text-color: var(--color-light-gray1);
-    --color-table-total-text-color: var(--color-light-gray4);
-    --color-table-border-color: var(--color-dark-gray4);
-    --color-table-total-border-color: var(--color-dark-gray4);
-  }
-
-  .tbody {
-    .tr .td {
-      padding-top: 0.2rem;
-      padding-bottom: 0.2rem;
-    }
-    .tr.is-expanded {
-      .td:not(.date) .cell-inner {
-        opacity: 0;
-      }
-    }
-    .tr:not(.no-results) .td:not(:first-of-type) {
-      border-left: 1px solid var(--color-table-border-color);
-    }
-    .tr:last-child .td {
-      border-bottom: 1px solid var(--color-table-border-color);
-    }
-    .tr.row_type {
-      &--ACCOUNT {
-        .td {
-          &.date {
-            font-weight: 500;
-
-            .cell-inner {
-              position: absolute;
-            }
-          }
-        }
-      }
-      &--OPENING_BALANCE,
-      &--CLOSING_BALANCE {
-        .td {
-          color: var(--color-table-total-text-color);
-        }
-        .date {
-          font-weight: 500;
-
-          .cell-inner {
-            position: absolute;
-          }
-        }
-        .amount {
-          font-weight: 500;
-        }
-      }
-      &--CLOSING_BALANCE {
-        .name {
-          font-weight: 500;
-        }
-        .td {
-          border-top: 1px solid var(--color-table-total-border-color);
-        }
-      }
-    }
-  }
-`;

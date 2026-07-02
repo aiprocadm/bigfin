@@ -1,99 +1,116 @@
-// @ts-nocheck
-import React from 'react';
+import { useCallback } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
+// Intent используется только для AppToaster — легитимное исключение проекта.
 import { Intent } from '@blueprintjs/core';
 
-import { DataTable, AppToaster, TableSkeletonRows } from '@/components';
-
-import { useSMSIntegrationTableColumns, ActionsMenu } from './components';
-import { useSMSIntegrationContext } from './SMSIntegrationProvider';
+import { AppToaster } from '@/components';
+import { DataTable } from '@/components/ui/data-table';
 import { useSettingEditSMSNotification } from '@/hooks/query';
-
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
+import { useSMSIntegrationContext } from './SMSIntegrationProvider';
+import {
+  useSMSIntegrationTableColumns,
+  type SMSNotificationRow,
+} from './components';
+
+const getNotificationRowId = (row: SMSNotificationRow) => row.key;
+
+// Легаси-хуки без типов — кастуем локально.
+const useEditSMSNotification = useSettingEditSMSNotification as unknown as () => {
+  mutateAsync: (values: {
+    notification_key: string;
+    is_notification_enabled: boolean;
+  }) => Promise<unknown>;
+};
+
+const useSMSContext = useSMSIntegrationContext as unknown as () => {
+  notifications: SMSNotificationRow[];
+  isSMSNotificationsLoading: boolean;
+  isSMSNotificationsFetching: boolean;
+};
+
 /**
- * SMS Message data table.
+ * Таблица SMS-уведомлений (новый DataTable).
  */
 function SMSMessagesDataTable({
-  // #withDialogAction
+  // #withDialogActions
   openDialog,
-}) {
-  // Edit SMS message notification mutations.
-  const { mutateAsync: editSMSNotificationMutate } =
-    useSettingEditSMSNotification();
+}: any) {
+  // Мутация редактирования SMS-уведомления.
+  const { mutateAsync: editSMSNotification } = useEditSMSNotification();
 
-  const toggleSmsNotification = (notificationKey, value) => {
-    editSMSNotificationMutate({
-      notification_key: notificationKey,
-      is_notification_enabled: value,
-    }).then(() => {
-      AppToaster.show({
-        message: intl.get(
-          'sms_messages.notification_switch_change_success_message',
-        ),
-        intent: Intent.SUCCESS,
-      });
-    });
-  };
+  const { notifications, isSMSNotificationsLoading } = useSMSContext();
 
-  // Handle notification switch change.
-  const handleNotificationSwitchChange = React.useCallback(
-    (event, value, notification) => {
-      toggleSmsNotification(notification.key, value);
+  const toggleSmsNotification = useCallback(
+    (notificationKey: string, value: boolean) => {
+      editSMSNotification({
+        notification_key: notificationKey,
+        is_notification_enabled: value,
+      })
+        .then(() => {
+          AppToaster.show({
+            message: intl.get(
+              'sms_messages.notification_switch_change_success_message',
+            ),
+            intent: Intent.SUCCESS,
+          });
+        })
+        .catch(() => {
+          AppToaster.show({
+            message: intl.get('something_went_wrong'),
+            intent: Intent.DANGER,
+          });
+        });
     },
-    [editSMSNotificationMutate],
+    [editSMSNotification],
   );
 
-  // Table columns.
+  // Открывает диалог редактирования текста сообщения (имя диалога сохранено).
+  const handleEditMessageText = useCallback(
+    ({ key }: SMSNotificationRow) => {
+      openDialog('sms-message-form', { notificationkey: key });
+    },
+    [openDialog],
+  );
+
+  const handleEnableNotification = useCallback(
+    (notification: SMSNotificationRow) => {
+      toggleSmsNotification(notification.key, true);
+    },
+    [toggleSmsNotification],
+  );
+
+  const handleDisableNotification = useCallback(
+    (notification: SMSNotificationRow) => {
+      toggleSmsNotification(notification.key, false);
+    },
+    [toggleSmsNotification],
+  );
+
+  const handleToggleNotification = useCallback(
+    (notification: SMSNotificationRow, value: boolean) => {
+      toggleSmsNotification(notification.key, value);
+    },
+    [toggleSmsNotification],
+  );
+
   const columns = useSMSIntegrationTableColumns({
-    onSwitchChange: handleNotificationSwitchChange,
+    onEditMessageText: handleEditMessageText,
+    onEnableNotification: handleEnableNotification,
+    onDisableNotification: handleDisableNotification,
+    onToggleNotification: handleToggleNotification,
   });
 
-  const {
-    notifications,
-    isSMSNotificationsLoading,
-    isSMSNotificationsFetching,
-  } = useSMSIntegrationContext();
-
-  // handle edit message link click
-  const handleEditMessageText = ({ key }) => {
-    openDialog('sms-message-form', { notificationkey: key });
-  };
-
-  const handleEnableNotification = (notification) => {
-    toggleSmsNotification(notification.key, true);
-  };
-
-  const handleDisableNotification = (notification) => {
-    toggleSmsNotification(notification.key, false);
-  };
-
   return (
-    <SMSNotificationsTable
+    <DataTable
       columns={columns}
-      data={notifications}
+      data={notifications ?? []}
+      getRowId={getNotificationRowId}
       loading={isSMSNotificationsLoading}
-      progressBarLoading={isSMSNotificationsFetching}
-      TableLoadingRenderer={TableSkeletonRows}
-      ContextMenu={ActionsMenu}
-      payload={{
-        onEditMessageText: handleEditMessageText,
-        onEnableNotification: handleEnableNotification,
-        onDisableNotification: handleDisableNotification,
-      }}
     />
   );
 }
 
 export default compose(withDialogActions)(SMSMessagesDataTable);
-
-const SMSNotificationsTable = styled(DataTable)`
-  .table .tbody .tr .td {
-    align-items: flex-start;
-  }
-  .table .tbody .td {
-    padding: 0.8rem;
-  }
-`;

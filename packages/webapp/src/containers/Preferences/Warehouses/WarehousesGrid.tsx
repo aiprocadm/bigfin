@@ -1,32 +1,41 @@
-// @ts-nocheck
-import React from 'react';
+import * as React from 'react';
+
 import WarehousesEmptyStatus from './WarehousesEmptyStatus';
 import { useWarehousesContext } from './WarehousesProvider';
-import { WarehousesList, WarehousesSkeleton } from './components';
+import {
+  WarehousesList,
+  WarehousesSkeleton,
+  type WarehouseRow,
+} from './components';
 import WarehousesGridItems from './WarehousesGridItems';
 
+interface WarehousesContextValue {
+  warehouses?: WarehouseRow[];
+  isWarehouesLoading?: boolean;
+  isEmptyStatus?: boolean;
+}
+
 /**
- * Warehouses grid.
+ * Сетка складов: скелетон / пустое состояние / карточки.
  */
 export default function WarehousesGrid() {
-  // Retrieve list context.
-  const {
-    warehouses,
-    isWarehouesLoading,
-    isEmptyStatus,
-  } = useWarehousesContext();
+  // Легаси-контекст без типов — кастуем локально.
+  const { warehouses, isWarehouesLoading, isEmptyStatus } =
+    useWarehousesContext() as unknown as WarehousesContextValue;
 
   return (
-    <React.Fragment>
-      <WarehousesList>
-        {isWarehouesLoading ? (
+    <div className="bigfin-ui p-4">
+      {isWarehouesLoading ? (
+        <WarehousesList>
           <WarehousesSkeleton />
-        ) : isEmptyStatus ? (
-          <WarehousesEmptyStatus />
-        ) : (
-          <WarehousesGridItems warehouses={warehouses} />
-        )}
-      </WarehousesList>
-    </React.Fragment>
+        </WarehousesList>
+      ) : isEmptyStatus ? (
+        <WarehousesEmptyStatus />
+      ) : (
+        <WarehousesList>
+          <WarehousesGridItems warehouses={warehouses ?? []} />
+        </WarehousesList>
+      )}
+    </div>
   );
 }

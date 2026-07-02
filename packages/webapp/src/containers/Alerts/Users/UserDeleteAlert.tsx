@@ -1,81 +1,102 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeleteUser } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useDeleteUser } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface UserDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { userId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
+
 /**
- * User delete alert.
+ * Подтверждение удаления пользователя (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('user-delete', { userId }).
  */
-function UserDeleteAlert({
-  // #ownProps
+function UserDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { userId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: deleteUserMutate, isLoading } = useDeleteUser();
+}: UserDeleteAlertProps & WithAlertStoreConnectProps & WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteUserMutate, isLoading } = useDeleteUser(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const userId = payload?.userId;
 
-  const handleCancelUserDelete = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  const handleConfirmUserDelete = () => {
+  // Подтверждение: удаляем пользователя, показываем тост.
+  const handleConfirm = () => {
     deleteUserMutate(userId)
-      .then((response) => {
+      .then(() => {
         AppToaster.show({
           message: intl.get('the_user_has_been_deleted_successfully'),
           intent: Intent.SUCCESS,
         });
         closeAlert(name);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          if (errors.find((e) => e.type === 'CANNOT_DELETE_LAST_USER')) {
-            AppToaster.show({
-              message: intl.get('cannot_delete_the_last_user_in_the_system'),
-              intent: Intent.DANGER,
-            });
-          }
-          closeAlert(name);
-        },
-      );
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (errors?.find((e) => e.type === 'CANNOT_DELETE_LAST_USER')) {
+          AppToaster.show({
+            message: intl.get('cannot_delete_the_last_user_in_the_system'),
+            intent: Intent.DANGER,
+          });
+        }
+        closeAlert(name);
+      });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelUserDelete}
-      onConfirm={handleConfirmUserDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_user')}
+      description={intl.getHTML(
+        'once_delete_this_user_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        Once you delete this user, you won't be able to restore it later. Are
-        you sure you want to delete ?
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(UserDeleteAlert);
+)(UserDeleteAlertRoot) as ComponentType<UserDeleteAlertProps>;

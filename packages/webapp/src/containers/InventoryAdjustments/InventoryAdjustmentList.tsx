@@ -3,10 +3,10 @@ import React from 'react';
 
 import '@/style/pages/InventoryAdjustments/List.scss';
 
-import { DashboardContentTable, DashboardPageContent } from '@/components';
+import { DashboardPageContent } from '@/components';
 
 import { InventoryAdjustmentsProvider } from './InventoryAdjustmentsProvider';
-import InventoryAdjustmentTable from './InventoryAdjustmentTable';
+import { InventoryAdjustmentTableV2 } from './v2/InventoryAdjustmentTableV2';
 
 import { withInventoryAdjustments } from './withInventoryAdjustments';
 
@@ -24,9 +24,9 @@ function InventoryAdjustmentList({
       query={transformTableStateToQuery(inventoryAdjustmentTableState)}
     >
       <DashboardPageContent>
-        <DashboardContentTable>
-          <InventoryAdjustmentTable />
-        </DashboardContentTable>
+        <div className="bigfin-ui">
+          <InventoryAdjustmentTableV2 />
+        </div>
       </DashboardPageContent>
     </InventoryAdjustmentsProvider>
   );

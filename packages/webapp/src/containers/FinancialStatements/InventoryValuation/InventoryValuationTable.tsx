@@ -1,84 +1,100 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { TableStyle } from '@/constants';
-import { ReportDataTable, FinancialSheet } from '@/components';
-import { tableRowTypesToClassnames } from '@/utils';
-
+import {
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useInventoryValuationContext } from './InventoryValuationProvider';
-import { useInventoryValuationColumns } from './dynamicColumns';
+
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface InventoryValuationServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: InventoryValuationServerColumn[];
+}
+
+interface InventoryValuationContextValue {
+  inventoryValuation: {
+    table: {
+      columns: InventoryValuationServerColumn[];
+      rows: ReportTableRow[];
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedInventoryValuationContext =
+  useInventoryValuationContext as unknown as () => InventoryValuationContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: InventoryValuationServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align: column.key === 'name' ? undefined : 'right',
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface InventoryValuationTableProps {
+  companyName?: string;
+}
 
 /**
- * Inventory valuation data table.
+ * Оценка запасов — движок ReportSheet + ReportTable.
  */
 export default function InventoryValuationTable({
-  // #ownProps
   companyName,
-}) {
-  // Inventory valuation context.
+}: InventoryValuationTableProps) {
   const {
-    inventoryValuation: { table, query, meta },
-    isLoading,
-  } = useInventoryValuationContext();
+    inventoryValuation: { table, meta },
+  } = useTypedInventoryValuationContext();
 
-  // Inventory valuation table columns.
-  const columns = useInventoryValuationColumns();
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
+  );
 
   return (
-    <InventoryValuationSheet
+    <ReportSheet
       companyName={companyName}
       sheetType={intl.get('inventory_valuation')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
-      loading={isLoading}
     >
-      <InventoryValuationDataTable
+      <ReportTable
         columns={columns}
-        data={table.rows}
-        expandable={true}
-        expandToggleColumn={1}
-        expandColumnSpace={1}
-        sticky={true}
-        rowClassNames={tableRowTypesToClassnames}
-        styleName={TableStyle.Constrant}
-        noResults={intl.get(
+        rows={table.rows ?? []}
+        isFinalRow={() => false}
+        emptyText={intl.get(
           'there_were_no_inventory_transactions_during_the_selected_date_range',
         )}
       />
-    </InventoryValuationSheet>
+    </ReportSheet>
   );
 }
-
-const InventoryValuationSheet = styled(FinancialSheet)`
-  min-width: 850px;
-`;
-
-const InventoryValuationDataTable = styled(ReportDataTable)`
-  --color-table-text-color: #252a31;
-  --color-table-total-text-color: #000;
-  --color-table-total-border: #bbb;
-
-  .bp4-dark & {
-    --color-table-text-color: var(--color-light-gray1);
-    --color-table-total-text-color: var(--color-light-gray4);
-    --color-table-total-border: var(--color-dark-gray5);
-  }
-
-  .table {
-    .tbody {
-      .tr .td {
-        border-bottom: 0;
-        padding-top: 0.4rem;
-        padding-bottom: 0.4rem;
-        color: var(--color-table-text-color);
-      }
-      .tr.row_type--TOTAL .td {
-        border-top: 1px solid var(--color-table-total-border);
-        border-bottom: 3px double var(--color-table-total-border);
-        font-weight: 500;
-        color: var(--color-table-total-text-color);
-      }
-    }
-  }
-`;

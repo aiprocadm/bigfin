@@ -1,49 +1,69 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeletePaymentReceive } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import { useDeletePaymentReceive } from '@/hooks/query';
+import { compose } from '@/utils';
 
 import { handleDeleteErrors } from './_utils';
-import { compose } from '@/utils';
-import { DRAWERS } from '@/constants/drawers';
+
+interface PaymentReceivedDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { paymentReceiveId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
 
 /**
- * Payment receive delete alert.
+ * Подтверждение удаления поступления (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('payment-received-delete', { paymentReceiveId }).
  */
-function PaymentReceivedDeleteAlert({
+function PaymentReceivedDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { paymentReceiveId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
+}: PaymentReceivedDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
   const { mutateAsync: deletePaymentReceiveMutate, isLoading } =
-    useDeletePaymentReceive();
+    useDeletePaymentReceive({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const paymentReceiveId = payload?.paymentReceiveId;
 
-  // Handle cancel payment Receive.
-  const handleCancelDeleteAlert = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm delete payment receive.
-  const handleConfirmPaymentReceiveDelete = () => {
+  // Подтверждение: удаляем поступление, показываем тост, закрываем drawer.
+  const handleConfirm = () => {
     deletePaymentReceiveMutate(paymentReceiveId)
       .then(() => {
         AppToaster.show({
@@ -54,42 +74,41 @@ function PaymentReceivedDeleteAlert({
         });
         closeDrawer(DRAWERS.PAYMENT_RECEIVED_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (errors) {
           handleDeleteErrors(errors);
-        },
-      )
+        }
+      })
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmPaymentReceiveDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_payment_received')}
+      description={intl.getHTML(
+        'once_delete_this_payment_received_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={'once_delete_this_payment_received_you_will_able_to_restore_it'}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(PaymentReceivedDeleteAlert);
+)(PaymentReceivedDeleteAlertRoot) as ComponentType<PaymentReceivedDeleteAlertProps>;

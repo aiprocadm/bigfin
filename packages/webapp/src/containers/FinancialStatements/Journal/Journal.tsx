@@ -4,8 +4,10 @@ import moment from 'moment';
 
 import { FinancialStatement, DashboardPageContent } from '@/components';
 
-import JournalHeader from './JournalHeader';
-import JournalActionsBar from './JournalActionsBar';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси JournalHeader/JournalActionsBar остаются на месте (не удаляем).
+import { JournalHeaderV2 } from './v2/JournalHeaderV2';
+import { JournalToolbarV2 } from './v2/JournalToolbarV2';
 import { JournalBody } from './JournalBody';
 import { JournalSheetProvider } from './JournalProvider';
 import { JournalSheetLoadingBar, JournalSheetAlerts } from './components';
@@ -48,11 +50,11 @@ function Journal({
 
   return (
     <JournalSheetProvider query={query}>
-      <JournalActionsBar />
+      <JournalToolbarV2 />
 
       <DashboardPageContent>
         <FinancialStatement>
-          <JournalHeader
+          <JournalHeaderV2
             onSubmitFilter={handleFilterSubmit}
             pageFilter={query}
           />

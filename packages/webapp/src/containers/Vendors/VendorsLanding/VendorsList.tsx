@@ -6,8 +6,8 @@ import '@/style/pages/Vendors/List.scss';
 import { DashboardPageContent } from '@/components';
 
 import { VendorsListProvider } from './VendorsListProvider';
-import VendorActionsBar from './VendorActionsBar';
-import VendorsTable from './VendorsTable';
+import { VendorsToolbarV2 } from './v2/VendorsToolbarV2';
+import { VendorsTableV2 } from './v2/VendorsTableV2';
 
 import { withVendors } from './withVendors';
 import { withVendorsActions } from './withVendorsActions';
@@ -40,10 +40,12 @@ function VendorsList({
       tableState={vendorsTableState}
       tableStateChanged={vendorsTableStateChanged}
     >
-      <VendorActionsBar />
+      <VendorsToolbarV2 />
 
       <DashboardPageContent>
-        <VendorsTable />
+        <div className="bigfin-ui">
+          <VendorsTableV2 />
+        </div>
       </DashboardPageContent>
     </VendorsListProvider>
   );

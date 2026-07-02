@@ -1,56 +1,62 @@
-// @ts-nocheck
-import React from 'react';
-import { Intent, Alert } from '@blueprintjs/core';
-import { FormattedMessage as T } from '@/components';
+import { ComponentType } from 'react';
+import intl from 'react-intl-universal';
 
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-
 import { compose, saveInvoke } from '@/utils';
 
+interface ExpenseDeleteEntriesAlertProps {
+  name: string;
+  onConfirm?: (event?: unknown) => void;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Alert description.
+ * Подтверждение очистки строк расхода (shadcn ConfirmDialog).
+ * Механизм прежний: redux-алерт с колбэком onConfirm (без мутации).
  */
-function ExpenseDeleteEntriesAlert({
+function ExpenseDeleteEntriesAlertRoot({
   name,
   onConfirm,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: {  },
-
-  // #withAlertActions
   closeAlert,
-}) {
-  // Handle the alert cancel.
+}: ExpenseDeleteEntriesAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
   const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm the alert.
-  const handleConfirm = (event) => {
+  const handleConfirm = () => {
     closeAlert(name);
-    saveInvoke(onConfirm, event)
+    saveInvoke(onConfirm);
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'clear_all_lines'} />}
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancel}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('clear_all_lines')}
+      description={intl.get('expenses.clear_lines_confirm')}
+      confirmLabel={intl.get('clear_all_lines')}
+      intent="danger"
       onConfirm={handleConfirm}
-      loading={false}
-    >
-      <p>
-        Clearing the table lines will delete all expense amounts were applied, Is this okay?
-      </p>
-    </Alert>
+      onCancel={handleCancel}
+    />
   );
 }
 
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(ExpenseDeleteEntriesAlert);
+)(ExpenseDeleteEntriesAlertRoot) as ComponentType<ExpenseDeleteEntriesAlertProps>;

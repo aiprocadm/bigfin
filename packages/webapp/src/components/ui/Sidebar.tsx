@@ -92,7 +92,7 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
       className={cn(
         'mx-2 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
         active
-          ? 'bg-accent/10 text-accent'
+          ? 'bg-surface text-text-primary font-semibold'
           : 'text-text-secondary hover:bg-surface hover:text-text-primary',
         mini && 'justify-center',
       )}
@@ -100,6 +100,12 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
     >
       {Icon && <Icon className="h-5 w-5 shrink-0" aria-hidden />}
       {!mini && <span className="truncate">{item.label}</span>}
+      {!mini && active && (
+        <span
+          className="ml-auto h-1.5 w-1.5 rounded-full bg-accent"
+          aria-hidden
+        />
+      )}
     </a>
   );
 };

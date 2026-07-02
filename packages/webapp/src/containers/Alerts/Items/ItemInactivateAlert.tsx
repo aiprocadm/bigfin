@@ -1,38 +1,56 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useInactivateItem } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useInactivateItem } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface ItemInactivateAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { itemId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Item inactivate alert.
+ * Подтверждение деактивации позиции (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('item-inactivate', { itemId }).
  */
-function ItemInactivateAlert({
+function ItemInactivateAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { itemId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: inactivateItem, isLoading } = useInactivateItem();
+}: ItemInactivateAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: inactivateItem, isLoading } = useInactivateItem(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const itemId = payload?.itemId;
 
-  // Handle cancel inactivate alert.
-  const handleCancelInactivateItem = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm item Inactive.
-  const handleConfirmItemInactive = () => {
+  // Подтверждение: деактивируем позицию, показываем тост.
+  const handleConfirm = () => {
     inactivateItem(itemId)
       .then(() => {
         AppToaster.show({
@@ -40,30 +58,32 @@ function ItemInactivateAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'inactivate'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancelInactivateItem}
-      onConfirm={handleConfirmItemInactive}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('inactivate_item')}
+      description={intl.get('are_sure_to_inactive_this_item')}
+      confirmLabel={intl.get('inactivate')}
       loading={isLoading}
-    >
-      <p>
-        <T id={'are_sure_to_inactive_this_item'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(ItemInactivateAlert);
+)(ItemInactivateAlertRoot) as ComponentType<ItemInactivateAlertProps>;

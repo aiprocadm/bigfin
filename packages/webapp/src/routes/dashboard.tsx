@@ -696,7 +696,7 @@ export const getDashboardRoutes = () => [
     path: `/estimates/:id/edit`,
     component: lazy(
       () =>
-        import('@/containers/Sales/Estimates/EstimateForm/EstimateFormPage'),
+        import('@/containers/Sales/Estimates/EstimateForm/v2/EstimateFormPageV2'),
     ),
     name: 'estimate-edit',
     breadcrumb: intl.get('edit'),
@@ -710,7 +710,7 @@ export const getDashboardRoutes = () => [
     path: `/invoices/new?from_estimate_id=/:id`,
     component: lazy(
       () =>
-        import('@/containers/Sales/Estimates/EstimateForm/EstimateFormPage'),
+        import('@/containers/Sales/Estimates/EstimateForm/v2/EstimateFormPageV2'),
     ),
     name: 'convert-to-invoice',
     breadcrumb: intl.get('new_estimate'),
@@ -724,7 +724,7 @@ export const getDashboardRoutes = () => [
     path: `/estimates/new`,
     component: lazy(
       () =>
-        import('@/containers/Sales/Estimates/EstimateForm/EstimateFormPage'),
+        import('@/containers/Sales/Estimates/EstimateForm/v2/EstimateFormPageV2'),
     ),
     name: 'estimate-new',
     breadcrumb: intl.get('new_estimate'),
@@ -763,7 +763,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/invoices/:id/edit`,
     component: lazy(
-      () => import('@/containers/Sales/Invoices/InvoiceForm/InvoiceFormPage'),
+      () => import('@/containers/Sales/Invoices/InvoiceForm/v2/InvoiceFormPageV2'),
     ),
     name: 'invoice-edit',
     breadcrumb: intl.get('edit'),
@@ -776,7 +776,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/invoices/new`,
     component: lazy(
-      () => import('@/containers/Sales/Invoices/InvoiceForm/InvoiceFormPage'),
+      () => import('@/containers/Sales/Invoices/InvoiceForm/v2/InvoiceFormPageV2'),
     ),
     name: 'invoice-new',
     breadcrumb: intl.get('new_invoice'),
@@ -814,7 +814,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/receipts/:id/edit`,
     component: lazy(
-      () => import('@/containers/Sales/Receipts/ReceiptForm/ReceiptFormPage'),
+      () => import('@/containers/Sales/Receipts/ReceiptForm/v2/ReceiptFormPageV2'),
     ),
     name: 'receipt-edit',
     breadcrumb: intl.get('edit'),
@@ -827,7 +827,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/receipts/new`,
     component: lazy(
-      () => import('@/containers/Sales/Receipts/ReceiptForm/ReceiptFormPage'),
+      () => import('@/containers/Sales/Receipts/ReceiptForm/v2/ReceiptFormPageV2'),
     ),
     name: 'receipt-new',
     breadcrumb: intl.get('new_receipt'),
@@ -997,7 +997,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/bills/:id/edit`,
     component: lazy(
-      () => import('@/containers/Purchases/Bills/BillForm/BillFormPage'),
+      () => import('@/containers/Purchases/Bills/BillForm/v2/BillFormPageV2'),
     ),
     name: 'bill-edit',
     breadcrumb: intl.get('edit'),
@@ -1010,7 +1010,7 @@ export const getDashboardRoutes = () => [
   {
     path: `/bills/new`,
     component: lazy(
-      () => import('@/containers/Purchases/Bills/BillForm/BillFormPage'),
+      () => import('@/containers/Purchases/Bills/BillForm/v2/BillFormPageV2'),
     ),
     name: 'bill-new',
     breadcrumb: intl.get('new_bill'),

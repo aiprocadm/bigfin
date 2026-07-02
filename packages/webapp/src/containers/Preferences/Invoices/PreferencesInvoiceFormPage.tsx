@@ -1,82 +1,110 @@
-// @ts-nocheck
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import intl from 'react-intl-universal';
-import { Formik } from 'formik';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useHistory } from 'react-router-dom';
 import { Intent } from '@blueprintjs/core';
-import * as R from 'ramda';
 
 import { AppToaster } from '@/components';
-import { PreferencesInvoiceFormSchema } from './PreferencesInvoiceForm.schema';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
 import { PreferencesInvoicesForm } from './PreferencesInvoicesForm';
+import {
+  invoicesSchema,
+  type InvoicesFormValues,
+} from './PreferencesInvoices.zod';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
-
-import { compose, transformToForm, transfromToSnakeCase } from '@/utils';
 import { withSettings } from '@/containers/Settings/withSettings';
 import { transferObjectOptionsToArray } from '../Accountant/utils';
+import { compose, transformToForm, transfromToSnakeCase } from '@/utils';
 import { useSaveSettings } from '@/hooks/query';
 
-const defaultValues = {
-  termsConditions: '',
+const defaultValues: InvoicesFormValues = {
   customerNotes: '',
+  termsConditions: '',
 };
 
-/**
- * Preferences - Invoices.
- */
-function PreferencesInvoiceFormPage({
+interface PreferencesInvoiceFormPageProps {
   // #withDashboardActions
-  changePreferencesPageTitle,
-
+  changePreferencesPageTitle: (title: string) => void;
   // #withSettings
+  invoiceSettings: Record<string, unknown>;
+}
+
+function PreferencesInvoiceFormPage({
+  changePreferencesPageTitle,
   invoiceSettings,
-}) {
-  // Save settings.
-  const { mutateAsync: saveSettingMutate } = useSaveSettings();
+}: PreferencesInvoiceFormPageProps) {
+  const history = useHistory();
+  const { mutateAsync: saveSettingMutate } = useSaveSettings({});
+  // useSaveSettings — легаси-хук (ts-nocheck (директива легаси)), TVariables выводится как void.
+  // Уточняем тип payload точечно, не трогая общий хук.
+  const saveSettings = saveSettingMutate as unknown as (
+    vars: { options: unknown },
+  ) => Promise<unknown>;
 
   useEffect(() => {
     changePreferencesPageTitle(intl.get('preferences.invoices'));
   }, [changePreferencesPageTitle]);
 
-  // Initial values.
-  const initialValues = {
+  const initialValues: InvoicesFormValues = {
     ...defaultValues,
     ...transformToForm(invoiceSettings, defaultValues),
   };
-  // Handle the form submit.
-  const handleFormSubmit = (values, { setSubmitting }) => {
-    const options = R.compose(
-      transferObjectOptionsToArray,
-      transfromToSnakeCase,
-    )({ salesInvoices: { ...values } });
 
-    // Handle request success.
-    const onSuccess = () => {
+  const form = useForm<InvoicesFormValues>({
+    resolver: zodResolver(invoicesSchema),
+    defaultValues: initialValues,
+  });
+
+  const onSubmit = async (values: InvoicesFormValues) => {
+    const options = transferObjectOptionsToArray(
+      transfromToSnakeCase({ salesInvoices: { ...values } }),
+    );
+
+    try {
+      await saveSettings({ options });
       AppToaster.show({
         message: intl.get('preferences.invoices.success_message'),
         intent: Intent.SUCCESS,
       });
-      setSubmitting(false);
-    };
-    // Handle request error.
-    const onError = () => {
-      setSubmitting(false);
-    };
-    saveSettingMutate({ options }).then(onSuccess).catch(onError);
+    } catch {
+      // Ошибки полей возвращает бэкенд; глобальный тост не показываем (как в легаси).
+    }
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={PreferencesInvoiceFormSchema}
-      onSubmit={handleFormSubmit}
-      component={PreferencesInvoicesForm}
-    />
+    <Card>
+      <CardContent className="p-6">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-8"
+          >
+            <PreferencesInvoicesForm />
+            <div className="flex gap-3 border-t border-border pt-6">
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {intl.get('save')}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => history.go(-1)}
+              >
+                {intl.get('close')}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
 
 export default compose(
   withDashboardActions,
-  withSettings(({ invoiceSettings }) => ({
-    invoiceSettings: invoiceSettings,
+  withSettings((mapped: { invoiceSettings: Record<string, unknown> }) => ({
+    invoiceSettings: mapped.invoiceSettings,
   })),
 )(PreferencesInvoiceFormPage);

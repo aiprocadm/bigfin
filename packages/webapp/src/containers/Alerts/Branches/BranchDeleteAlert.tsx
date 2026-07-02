@@ -1,43 +1,62 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeleteBranch } from '@/hooks/query';
-import { handleDeleteErrors } from '@/containers/Preferences/Branches/utils';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { handleDeleteErrors } from '@/containers/Preferences/Branches/utils';
+import { useDeleteBranch } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface BranchDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { branchId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
+
 /**
- * Branch delete alert.
+ * Подтверждение удаления филиала (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('branch-delete', { branchId }).
  */
-function BranchDeleteAlert({
+function BranchDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { branchId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: deleteBranch, isLoading } = useDeleteBranch();
+}: BranchDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteBranch, isLoading } = useDeleteBranch(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const branchId = payload?.branchId;
 
-  // Handle cancel delete alert.
-  const handleCancelDelete = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm delete branch.
-  const handleConfirmDeleteBranch = () => {
+  // Подтверждение: удаляем филиал, показываем тост.
+  const handleConfirm = () => {
     deleteBranch(branchId)
       .then(() => {
         AppToaster.show({
@@ -45,39 +64,38 @@ function BranchDeleteAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (errors) {
           handleDeleteErrors(errors);
-        },
-      )
+        }
+      })
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDelete}
-      onConfirm={handleConfirmDeleteBranch}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_branch')}
+      description={intl.getHTML('branch.once_delete_this_branch')}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage id={'branch.once_delete_this_branch'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(BranchDeleteAlert);
+)(BranchDeleteAlertRoot) as ComponentType<BranchDeleteAlertProps>;

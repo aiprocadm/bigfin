@@ -1,34 +1,78 @@
-// @ts-nocheck
-import React from 'react';
-import { Drawer, DrawerSuspense } from '@/components';
-import { withDrawers } from '@/containers/Drawer/withDrawers';
+import { ComponentType, Suspense, lazy } from 'react';
 
+import { Spinner } from '@/components/ui/Spinner';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import { withDrawers } from '@/containers/Drawer/withDrawers';
 import { compose } from '@/utils';
 
-const InvoiceDetailDrawerContent = React.lazy(() =>
-  import('./InvoiceDetailDrawerContent'),
+const InvoiceDetailContentV2 = lazy(() =>
+  import('./v2/InvoiceDetailContentV2').then((module) => ({
+    default: module.InvoiceDetailContentV2,
+  })),
 );
 
+interface InvoiceDetailDrawerProps {
+  name: string;
+  // #withDrawers
+  isOpen?: boolean;
+  payload?: { invoiceId?: number | string };
+}
+
+// withDrawerActions — легаси-HOC без типов: описываем инжектируемые
+// пропсы локально, не трогая общий модуль.
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string, payload?: Record<string, unknown>) => void;
+}
+
 /**
- * Invoice Detail drawer.
+ * Drawer «Детали счёта покупателю» (shadcn Drawer + вкладки на v2-контенте).
+ * Механизм открытия прежний: redux openDrawer(DRAWERS.INVOICE_DETAILS,
+ * { invoiceId }).
  */
-function InvoiceDetailDrawer({
+function InvoiceDetailDrawerRoot({
   name,
-  // #withDrawer
   isOpen,
-  payload: { invoiceId },
-}) {
+  payload,
+  closeDrawer,
+}: InvoiceDetailDrawerProps & WithDrawerActionsProps) {
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      closeDrawer(name);
+    }
+  };
+
   return (
-    <Drawer
-      isOpen={isOpen}
-      name={name}
-      style={{ minWidth: '700px', maxWidth: '1000px' }}
-      size={'65%'}
-    >
-      <DrawerSuspense>
-        <InvoiceDetailDrawerContent invoiceId={invoiceId} />
-      </DrawerSuspense>
+    <Drawer open={Boolean(isOpen)} onOpenChange={handleOpenChange}>
+      <DrawerContent
+        side="right"
+        aria-describedby={undefined}
+        // bigfin-ui: контент рендерится в портале вне «нового» дерева —
+        // подключаем reset/шрифт/tabular-nums вручную. Фон серый
+        // (bg-background), карточки внутри — белые.
+        className="bigfin-ui w-full max-w-[750px] gap-0 overflow-hidden bg-background p-0"
+      >
+        <Suspense
+          fallback={
+            <div className="flex flex-1 items-center justify-center py-16 text-text-muted">
+              <Spinner size="lg" />
+            </div>
+          }
+        >
+          <InvoiceDetailContentV2 invoiceId={payload?.invoiceId} />
+        </Suspense>
+      </DrawerContent>
     </Drawer>
   );
 }
-export default compose(withDrawers())(InvoiceDetailDrawer);
+
+// withDrawers — легаси-HOC без типов: mapState фактически необязателен,
+// кастуем сигнатуру локально.
+const withDrawersLoose = withDrawers as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
+export default compose(
+  withDrawersLoose(),
+  withDrawerActions,
+)(InvoiceDetailDrawerRoot) as ComponentType<{ name: string }>;

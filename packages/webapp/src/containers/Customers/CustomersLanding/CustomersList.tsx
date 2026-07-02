@@ -5,8 +5,8 @@ import '@/style/pages/Customers/List.scss';
 
 import { DashboardPageContent } from '@/components';
 
-import CustomersActionsBar from './CustomersActionsBar';
-import CustomersTable from './CustomersTable';
+import { CustomersToolbarV2 } from './v2/CustomersToolbarV2';
+import { CustomersTableV2 } from './v2/CustomersTableV2';
 import { CustomersListProvider } from './CustomersListProvider';
 
 import { withCustomers } from './withCustomers';
@@ -40,10 +40,12 @@ function CustomersList({
       tableState={customersTableState}
       tableStateChanged={customersTableStateChanged}
     >
-      <CustomersActionsBar />
+      <CustomersToolbarV2 />
 
       <DashboardPageContent>
-        <CustomersTable />
+        <div className="bigfin-ui">
+          <CustomersTableV2 />
+        </div>
       </DashboardPageContent>
     </CustomersListProvider>
   );

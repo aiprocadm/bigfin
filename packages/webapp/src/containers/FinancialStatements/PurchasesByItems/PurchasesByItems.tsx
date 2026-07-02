@@ -2,8 +2,10 @@
 import React, { useEffect, useCallback } from 'react';
 import moment from 'moment';
 
-import PurchasesByItemsActionsBar from './PurchasesByItemsActionsBar';
-import PurchasesByItemsHeader from './PurchasesByItemsHeader';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси PurchasesByItemsHeader/PurchasesByItemsActionsBar остаются на месте (не удаляем).
+import { PurchasesByItemsHeaderV2 } from './v2/PurchasesByItemsHeaderV2';
+import { PurchasesByItemsToolbarV2 } from './v2/PurchasesByItemsToolbarV2';
 
 import { FinancialStatement, DashboardPageContent } from '@/components';
 import { PurchasesByItemsLoadingBar } from './components';
@@ -53,7 +55,7 @@ function PurchasesByItems({
 
   return (
     <PurchasesByItemsProvider query={query}>
-      <PurchasesByItemsActionsBar
+      <PurchasesByItemsToolbarV2
         numberFormat={query.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
@@ -61,7 +63,7 @@ function PurchasesByItems({
 
       <DashboardPageContent>
         <FinancialStatement>
-          <PurchasesByItemsHeader
+          <PurchasesByItemsHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

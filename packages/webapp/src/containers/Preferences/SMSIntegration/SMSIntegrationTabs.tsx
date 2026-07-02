@@ -1,53 +1,65 @@
-// @ts-nocheck
-import React from 'react';
+import { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
-import classNames from 'classnames';
-import { Tabs, Tab } from '@blueprintjs/core';
 
-import { CLASSES } from '@/constants/classes';
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+
 import SMSMessagesDataTable from './SMSMessagesDataTable';
-import { Card } from '@/components';
-
-import '@/style/pages/Preferences/SMSIntegration.scss';
 
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
-
 import { compose } from '@/utils';
 
 /**
- * SMS Integration Tabs.
- * @returns {React.JSX}
+ * Вкладки SMS-интеграции (shadcn Tabs).
  */
 function SMSIntegrationTabs({
   // #withDashboardActions
   changePreferencesPageTitle,
-}) {
-  React.useEffect(() => {
+}: any) {
+  const [activeTab, setActiveTab] = useState('sms_messages');
+
+  useEffect(() => {
     changePreferencesPageTitle(intl.get('sms_integration.label'));
   }, [changePreferencesPageTitle]);
 
   return (
-    <SMSIntegrationCard>
-      <div className={classNames(CLASSES.PREFERENCES_PAGE_TABS)}>
-        <Tabs animate={true} defaultSelectedTabId={'sms_messages'}>
-          <Tab
-            id="overview"
-            title={intl.get('sms_integration.label.overview')}
+    <div className="bigfin-ui p-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="overview">
+            {intl.get('sms_integration.label.overview')}
+          </TabsTrigger>
+          <TabsTrigger value="sms_messages">
+            {intl.get('sms_integration.label.sms_messages')}
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview" className="mt-4">
+          <EmptyState
+            title={intl.get('sms_integration.overview.empty.title')}
+            description={intl.get('sms_integration.overview.empty.description')}
+            action={
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setActiveTab('sms_messages')}
+              >
+                {intl.get('sms_integration.overview.empty.action')}
+              </Button>
+            }
           />
-          <Tab
-            id="sms_messages"
-            title={intl.get('sms_integration.label.sms_messages')}
-            panel={<SMSMessagesDataTable />}
-          />
-        </Tabs>
-      </div>
-    </SMSIntegrationCard>
+        </TabsContent>
+        <TabsContent value="sms_messages" className="mt-4">
+          <SMSMessagesDataTable />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }
 
 export default compose(withDashboardActions)(SMSIntegrationTabs);
-
-const SMSIntegrationCard = styled(Card)`
-  padding: 0;
-`;

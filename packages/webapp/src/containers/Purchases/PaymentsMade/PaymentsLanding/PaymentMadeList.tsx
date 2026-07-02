@@ -5,8 +5,8 @@ import '@/style/pages/PaymentMade/List.scss';
 
 import { DashboardPageContent } from '@/components';
 import { PaymentMadesListProvider } from './PaymentMadesListProvider';
-import PaymentMadeActionsBar from './PaymentMadeActionsBar';
-import PaymentMadesTable from './PaymentMadesTable';
+import { PaymentsMadeToolbarV2 } from './v2/PaymentsMadeToolbarV2';
+import { PaymentsMadeTableV2 } from './v2/PaymentsMadeTableV2';
 
 import { withPaymentMade } from './withPaymentMade';
 import { withPaymentMadeActions } from './withPaymentMadeActions';
@@ -37,10 +37,12 @@ function PaymentMadeList({
       query={transformTableStateToQuery(paymentMadesTableState)}
       tableStateChanged={paymentsTableStateChanged}
     >
-      <PaymentMadeActionsBar />
+      <PaymentsMadeToolbarV2 />
 
       <DashboardPageContent>
-        <PaymentMadesTable />
+        <div className="bigfin-ui">
+          <PaymentsMadeTableV2 />
+        </div>
       </DashboardPageContent>
     </PaymentMadesListProvider>
   );

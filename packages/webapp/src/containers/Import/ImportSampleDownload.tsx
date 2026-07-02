@@ -1,29 +1,32 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
-import { AppToaster, Box, Group } from '@/components';
+import { Intent } from '@blueprintjs/core';
+import { ChevronDown, Download } from 'lucide-react';
+
+import { AppToaster } from '@/components';
+import { Button } from '@/components/ui/button';
 import {
-  Button,
-  Intent,
-  Menu,
-  MenuItem,
-  Popover,
-  PopoverInteractionKind,
-} from '@blueprintjs/core';
-import styles from './ImportSampleDownload.module.scss';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useSampleSheetImport } from '@/hooks/query/import';
 import { useImportFileContext } from './ImportFileProvider';
 
+type SampleFormat = 'csv' | 'xlsx';
+
+/** Карточка со скачиванием файла-образца (CSV/XLSX). */
 export function ImportSampleDownload() {
   const { resource, sampleFileName, exampleTitle, exampleDescription } =
     useImportFileContext();
   const { mutateAsync: downloadSample } = useSampleSheetImport();
 
-  // Handle download button click.
-  const handleDownloadBtnClick = (format) => () => {
+  // Скачивание образца в выбранном формате.
+  const handleDownloadBtnClick = (format: SampleFormat) => () => {
     downloadSample({
       filename: sampleFileName || `sample-${resource}`,
       resource,
-      format: format,
+      format,
     })
       .then(() => {
         AppToaster.show({
@@ -31,36 +34,38 @@ export function ImportSampleDownload() {
           message: intl.get('import.sample.download_success'),
         });
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   return (
-    <Group className={styles.root} noWrap>
-      <Box>
-        <h3 className={styles.title}>{exampleTitle}</h3>
-        <p className={styles.description}>{exampleDescription}</p>
-      </Box>
+    <div className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-border bg-surface p-5">
+      <div className="min-w-0 flex-1">
+        <h3 className="text-sm font-medium text-text-primary">
+          {exampleTitle}
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed text-text-secondary">
+          {exampleDescription}
+        </p>
+      </div>
 
-      <Box className={styles.buttonWrap}>
-        <Popover
-          content={
-            <Menu>
-              <MenuItem onClick={handleDownloadBtnClick('csv')} text={'CSV'} />
-              <MenuItem
-                onClick={handleDownloadBtnClick('xlsx')}
-                text={'XLSX'}
-              />
-            </Menu>
-          }
-          interactionKind={PopoverInteractionKind.CLICK}
-          placement="bottom-start"
-          minimal
-        >
-          <Button minimal outlined>
-            Download File
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button type="button" variant="secondary">
+            <Download className="h-4 w-4" aria-hidden />
+            {intl.get('import.sample.download_file')}
+            <ChevronDown className="h-4 w-4 opacity-60" aria-hidden />
           </Button>
-        </Popover>
-      </Box>
-    </Group>
+        </DropdownMenuTrigger>
+        {/* Контент в портале вне .bigfin-ui — класс нужен для шрифта/сброса. */}
+        <DropdownMenuContent align="end" className="bigfin-ui">
+          <DropdownMenuItem onClick={handleDownloadBtnClick('csv')}>
+            CSV
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDownloadBtnClick('xlsx')}>
+            XLSX
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }

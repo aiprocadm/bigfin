@@ -1,68 +1,88 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useActivateAccount } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface AccountActivateAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { accountId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Account activate alert.
+ * Подтверждение активации счёта (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('account-activate', { accountId }).
  */
-function AccountActivateAlert({
-  name,
+function AccountActivateAlertRoot({
   isOpen,
-  payload: { accountId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  
-  const {
-    mutateAsync: activateAccount,
-    isLoading 
-  } = useActivateAccount();
+}: AccountActivateAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: activateAccount, isLoading } = useActivateAccount(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const accountId = payload?.accountId;
 
-  // Handle alert cancel.
+  // Отмена: закрываем алерт по имени (redux).
   const handleCancel = () => {
     closeAlert('account-activate');
   };
 
-  // Handle activate account confirm.
-  const handleConfirmAccountActivate = () => {
-    activateAccount(accountId).then(() => {
-      AppToaster.show({
-        message: intl.get('the_account_has_been_successfully_activated'),
-        intent: Intent.SUCCESS,
+  // Подтверждение: активируем счёт, показываем тост, закрываем алерт.
+  const handleConfirm = () => {
+    activateAccount(accountId)
+      .then(() => {
+        AppToaster.show({
+          message: intl.get('the_account_has_been_successfully_activated'),
+          intent: Intent.SUCCESS,
+        });
+        closeAlert('account-activate');
+      })
+      .finally(() => {
+        closeAlert('account-activate');
       });
-      closeAlert('account-activate');
-    }).finally(() => {
-      closeAlert('account-activate');
-    });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'activate'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancel}
-      onConfirm={handleConfirmAccountActivate}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('activate_account')}
+      description={intl.get('are_sure_to_activate_this_account')}
+      confirmLabel={intl.get('activate')}
       loading={isLoading}
-    >
-      <p>
-        <T id={'are_sure_to_activate_this_account'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(AccountActivateAlert);
+)(AccountActivateAlertRoot) as ComponentType<AccountActivateAlertProps>;

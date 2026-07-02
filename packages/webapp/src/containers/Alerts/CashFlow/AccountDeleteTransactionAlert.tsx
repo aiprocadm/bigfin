@@ -1,48 +1,67 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeleteCashflowTransaction } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
-import { compose } from '@/utils';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { DRAWERS } from '@/constants/drawers';
+import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import { useDeleteCashflowTransaction } from '@/hooks/query';
+import { compose } from '@/utils';
+
+interface AccountDeleteTransactionAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { referenceId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
 
 /**
- * Account delete transaction alert.
+ * Подтверждение удаления денежной операции (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('account-delete-transaction', { referenceId }).
  */
-function AccountDeleteTransactionAlert({
+function AccountDeleteTransactionAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { referenceId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
+}: AccountDeleteTransactionAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
   const { mutateAsync: deleteTransactionMutate, isLoading } =
-    useDeleteCashflowTransaction();
+    useDeleteCashflowTransaction({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const referenceId = payload?.referenceId;
 
-  // handle cancel delete alert
-  const handleCancelDeleteAlert = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // handleConfirm delete transaction.
-  const handleConfirmTransactioneDelete = () => {
+  // Подтверждение: удаляем операцию, показываем тост, закрываем drawer.
+  const handleConfirm = () => {
     deleteTransactionMutate(referenceId)
       .then(() => {
         AppToaster.show({
@@ -51,64 +70,61 @@ function AccountDeleteTransactionAlert({
         });
         closeDrawer(DRAWERS.CASHFLOW_TRNASACTION_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          if (
-            errors.find(
-              (e) =>
-                e.type ===
-                'CANNOT_DELETE_TRANSACTION_CONVERTED_FROM_UNCATEGORIZED',
-            )
-          ) {
-            AppToaster.show({
-              message:
-                'Cannot delete transaction converted from uncategorized transaction but you uncategorize it.',
-              intent: Intent.DANGER,
-            });
-          } else if (
-            errors.find((e) => e.type === 'CANNOT_DELETE_TRANSACTION_MATCHED')
-          ) {
-            AppToaster.show({
-              message:
-                'Cannot delete a transaction matched to the bank transaction',
-              intent: Intent.DANGER,
-            });
-          }
-        },
-      )
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (
+          errors?.find(
+            (e) =>
+              e.type ===
+              'CANNOT_DELETE_TRANSACTION_CONVERTED_FROM_UNCATEGORIZED',
+          )
+        ) {
+          AppToaster.show({
+            message: intl.get(
+              'cashflow.error.cannot_delete_transaction_converted_from_uncategorized',
+            ),
+            intent: Intent.DANGER,
+          });
+        } else if (
+          errors?.find((e) => e.type === 'CANNOT_DELETE_TRANSACTION_MATCHED')
+        ) {
+          AppToaster.show({
+            message: intl.get(
+              'invoices.error.cannot_delete_transaction_matched_with_bank',
+            ),
+            intent: Intent.DANGER,
+          });
+        }
+      })
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmTransactioneDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('cash_flow_transaction.delete.title')}
+      description={intl.getHTML(
+        'cash_flow_transaction_once_delete_this_transaction_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={
-            'cash_flow_transaction_once_delete_this_transaction_you_will_able_to_restore_it'
-          }
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(AccountDeleteTransactionAlert);
+)(AccountDeleteTransactionAlertRoot) as ComponentType<AccountDeleteTransactionAlertProps>;

@@ -1,38 +1,56 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useCloseReceipt } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useCloseReceipt } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface ReceiptCloseAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { receiptId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Receipt close alert.
+ * Подтверждение закрытия чека (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('receipt-close', { receiptId }).
  */
-function ReceiptCloseAlert({
+function ReceiptCloseAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { receiptId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: closeReceiptMutate, isLoading } = useCloseReceipt();
+}: ReceiptCloseAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: closeReceiptMutate, isLoading } = useCloseReceipt(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const receiptId = payload?.receiptId;
 
-  // handle cancel delete alert.
-  const handleCancelDeleteAlert = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm receipt close.
-  const handleConfirmReceiptClose = () => {
+  // Подтверждение: закрываем чек, показываем тост.
+  const handleConfirm = () => {
     closeReceiptMutate(receiptId)
       .then(() => {
         AppToaster.show({
@@ -40,30 +58,31 @@ function ReceiptCloseAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'close'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmReceiptClose}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('are_sure_to_close_this_receipt')}
+      confirmLabel={intl.get('close')}
       loading={isLoading}
-    >
-      <p>
-        <T id={'are_sure_to_close_this_receipt'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(ReceiptCloseAlert);
+)(ReceiptCloseAlertRoot) as ComponentType<ReceiptCloseAlertProps>;

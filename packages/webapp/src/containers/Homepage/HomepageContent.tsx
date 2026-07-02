@@ -1,14 +1,14 @@
-// @ts-nocheck
-import React from 'react';
 import AccountsReceivableSection from './AccountsReceivableSection';
 import AccountsPayableSection from './AccountsPayableSection';
 import FinancialAccountingSection from './FinancialAccountingSection';
 import ProductsServicesSection from './ProductsServicesSection';
-import '@/style/pages/HomePage/HomePage.scss';
 
+/**
+ * Содержимое главной: секции быстрых ссылок по разделам учёта.
+ */
 function HomepageContent() {
   return (
-    <div className="financial-reports">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 p-6">
       <AccountsReceivableSection />
       <AccountsPayableSection />
       <FinancialAccountingSection />

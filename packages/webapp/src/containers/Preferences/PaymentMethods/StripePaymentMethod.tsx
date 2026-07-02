@@ -1,18 +1,21 @@
-// @ts-nocheck
-import React from 'react';
-import styled from 'styled-components';
+import intl from 'react-intl-universal';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
-  Button,
-  Classes,
-  Intent,
-  Menu,
-  MenuItem,
-  Popover,
-  Tag,
-  Text,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
   Tooltip,
-} from '@blueprintjs/core';
-import { Box, Card, Group, Stack } from '@/components';
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { StripeLogo } from '@/icons/StripeLogo';
 import { usePaymentMethodsBoot } from './PreferencesPaymentMethodsBoot';
 import { DialogsName } from '@/constants/dialogs';
@@ -22,14 +25,39 @@ import {
   useDrawerActions,
 } from '@/hooks/state';
 import { DRAWERS } from '@/constants/drawers';
-import { MoreIcon } from '@/icons/More';
 import { STRIPE_PRICING_LINK } from './constants';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 
+/**
+ * Бейдж статуса с подсказкой (destructive-статусы Stripe-аккаунта).
+ */
+function StatusBadgeWithHint({ label, hint }: { label: string; hint: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="inline-flex">
+          <Badge variant="destructive">{label}</Badge>
+        </span>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-[320px]">{hint}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+/**
+ * Карточка способа оплаты Stripe (D-redesign, shadcn).
+ */
 export function StripePaymentMethod() {
-  const { openDialog } = useDialogActions();
-  const { openDrawer } = useDrawerActions();
-  const { openAlert } = useAlertActions();
+  // Легаси-хуки состояния без типов — уточняем типы локально.
+  const { openDialog } = useDialogActions() as unknown as {
+    openDialog: (name: string, payload?: Record<string, unknown>) => void;
+  };
+  const { openDrawer } = useDrawerActions() as unknown as {
+    openDrawer: (name: string, payload?: Record<string, unknown>) => void;
+  };
+  const { openAlert } = useAlertActions() as unknown as {
+    openAlert: (name: string, payload?: Record<string, unknown>) => void;
+  };
   const isDarkMode = useIsDarkMode();
 
   const { paymentMethodsState } = usePaymentMethodsBoot();
@@ -62,98 +90,101 @@ export function StripePaymentMethod() {
   };
 
   return (
-    <Card style={{ margin: 0 }}>
-      <Group position="apart">
-        <Group>
-          <StripeLogo
-            color={isDarkMode ? 'rgba(255, 255, 255, 0.85)' : '#0A2540'}
-          />
-          <Group spacing={10}>
-            {isStripeEnabled && (
-              <Tag minimal intent={Intent.SUCCESS}>
-                Active
-              </Tag>
-            )}
-            {!isPaymentEnabled && isAccountCreated && (
-              <Tooltip content="The account cannot accept payments because verification may be incomplete, there may be legal or compliance issues, or required documents haven't been submitted or verified.">
-                <Tag minimal intent={Intent.DANGER}>
-                  Payment Not Enabled
-                </Tag>
-              </Tooltip>
-            )}
-            {!isPayoutEnabled && isAccountCreated && (
-              <Tooltip content="The account cannot receive payouts due to incomplete or invalid bank details, pending identity verification, or compliance restrictions.">
-                <Tag minimal intent={Intent.DANGER}>
-                  Payout Not Enabled
-                </Tag>
-              </Tooltip>
-            )}
-          </Group>
-        </Group>
-        <Group spacing={10}>
-          {isAccountCreated && (
-            <Button small onClick={handleEditBtnClick}>
-              Edit
-            </Button>
-          )}
-          {!isAccountCreated && (
-            <Button intent={Intent.PRIMARY} small onClick={handleSetUpBtnClick}>
-              Set it Up
-            </Button>
-          )}
-          {isAccountCreated && (
-            <Popover
-              content={
-                <Menu>
-                  <MenuItem
-                    intent={Intent.DANGER}
-                    text={'Delete Connection'}
-                    onClick={handleDeleteConnectionClick}
+    <Card>
+      <CardContent className="flex flex-col gap-3 p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-4">
+            <StripeLogo
+              color={isDarkMode ? 'rgba(255, 255, 255, 0.85)' : '#0A2540'}
+            />
+            <TooltipProvider delayDuration={150}>
+              <div className="flex flex-wrap items-center gap-2">
+                {isStripeEnabled && (
+                  <Badge variant="success">{intl.get('active')}</Badge>
+                )}
+                {!isPaymentEnabled && isAccountCreated && (
+                  <StatusBadgeWithHint
+                    label={intl.get(
+                      'preferences.payment_methods.stripe.badge.payment_not_enabled',
+                    )}
+                    hint={intl.get(
+                      'preferences.payment_methods.stripe.badge.payment_not_enabled_hint',
+                    )}
                   />
-                </Menu>
-              }
-            >
-              <Button small icon={<MoreIcon height={10} width={10} />} />
-            </Popover>
-          )}
-        </Group>
-      </Group>
+                )}
+                {!isPayoutEnabled && isAccountCreated && (
+                  <StatusBadgeWithHint
+                    label={intl.get(
+                      'preferences.payment_methods.stripe.badge.payout_not_enabled',
+                    )}
+                    hint={intl.get(
+                      'preferences.payment_methods.stripe.badge.payout_not_enabled_hint',
+                    )}
+                  />
+                )}
+              </div>
+            </TooltipProvider>
+          </div>
 
-      <PaymentDescription
-        className={Classes.TEXT_MUTED}
-        style={{ fontSize: 13 }}
-      >
-        Stripe is a secure online payment platform that lets you easily accept
-        both one-time and recurring payments. It simplifies managing
-        transactions and streamlines reconciliation. Setup is quick, helping you
-        get paid faster and more efficiently.
-      </PaymentDescription>
+          <div className="flex items-center gap-2">
+            {isAccountCreated && (
+              <Button variant="secondary" size="sm" onClick={handleEditBtnClick}>
+                {intl.get('edit')}
+              </Button>
+            )}
+            {!isAccountCreated && (
+              <Button size="sm" onClick={handleSetUpBtnClick}>
+                {intl.get('preferences.payment_methods.stripe.setup')}
+              </Button>
+            )}
+            {isAccountCreated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={intl.get('more_actions')}
+                  >
+                    <MoreHorizontal className="h-4 w-4" aria-hidden />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="text-danger focus:text-danger"
+                    onClick={handleDeleteConnectionClick}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" aria-hidden />
+                    {intl.get(
+                      'preferences.payment_methods.stripe.delete_connection',
+                    )}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+        </div>
 
-      <PaymentFooter>
-        <Stack spacing={10}>
-          <Text>
-            <a target="_blank" rel="noreferrer" href={STRIPE_PRICING_LINK}>
-              View Stripe's Transaction Fees
-            </a>
-          </Text>
+        <p className="text-[13px] leading-relaxed text-text-secondary">
+          {intl.get('preferences.payment_methods.stripe.description')}
+        </p>
+
+        <div className="flex flex-col gap-1.5 text-xs">
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={STRIPE_PRICING_LINK}
+            className="w-fit text-action underline-offset-4 hover:underline"
+          >
+            {intl.get('preferences.payment_methods.stripe.pricing_link')}
+          </a>
 
           {!isStripeServerConfigured && (
-            <Text style={{ color: '#CD4246' }}>
-              Stripe payment is not configured from the server.{' '}
-            </Text>
+            <span className="text-danger">
+              {intl.get('preferences.payment_methods.stripe.not_configured')}
+            </span>
           )}
-        </Stack>
-      </PaymentFooter>
+        </div>
+      </CardContent>
     </Card>
   );
 }
-
-const PaymentDescription = styled(Text)`
-  font-size: 13px;
-  margin-top: 12px;
-`;
-
-const PaymentFooter = styled(Box)`
-  margin-top: 14px;
-  font-size: 12px;
-`;

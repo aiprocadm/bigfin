@@ -1,42 +1,57 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { FormattedMessage as T, AppToaster } from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeleteRefundCreditNote } from '@/hooks/query';
-
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
+import { useDeleteRefundCreditNote } from '@/hooks/query';
 import { compose } from '@/utils';
-import { DRAWERS } from '@/constants/drawers';
+
+interface RefundCreditNoteDeleteAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { creditNoteId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
 
 /**
- * Refund credit transactions delete alert
+ * Подтверждение удаления возврата средств по возврату покупателю
+ * (shadcn ConfirmDialog). Механизм прежний: redux-алерт по имени.
  */
-function RefundCreditNoteDeleteAlert({
+function RefundCreditNoteDeleteAlertRoot({
   name,
-  // #withAlertStoreConnect
   isOpen,
-  payload: { creditNoteId },
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
+}: RefundCreditNoteDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
   const { mutateAsync: deleteRefundCreditMutate, isLoading } =
-    useDeleteRefundCreditNote();
+    useDeleteRefundCreditNote({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const creditNoteId = payload?.creditNoteId;
 
-  // Handle cancel delete.
-  const handleCancelAlert = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm delete .
-  const handleConfirmRefundCreditDelete = () => {
+  const handleConfirm = useCallback(() => {
     deleteRefundCreditMutate(creditNoteId)
       .then(() => {
         AppToaster.show({
@@ -45,34 +60,33 @@ function RefundCreditNoteDeleteAlert({
         });
         closeDrawer(DRAWERS.REFUND_CREDIT_NOTE_DETAILS);
       })
-      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [deleteRefundCreditMutate, creditNoteId, closeDrawer, closeAlert, name]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelAlert}
-      onConfirm={handleConfirmRefundCreditDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('refund_credit_transactions.delete_title')}
+      description={intl.get(
+        'refund_credit_transactions.once_your_delete_this_refund_credit_note',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <T
-          id={`refund_credit_transactions.once_your_delete_this_refund_credit_note`}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(RefundCreditNoteDeleteAlert);
+)(RefundCreditNoteDeleteAlertRoot) as ComponentType<RefundCreditNoteDeleteAlertProps>;

@@ -1,101 +1,114 @@
-// @ts-nocheck
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
-  Menu,
-  Popover,
-  Button,
-  Position,
-  MenuItem,
-  MenuDivider,
-  Intent,
-  Tag,
-} from '@blueprintjs/core';
-import { Icon } from '@/components';
-import { safeCallback } from '@/utils';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+export interface CurrencyRow {
+  currency_name: string;
+  currency_code: string;
+  currency_sign: string;
+  is_base_currency?: boolean;
+}
+
+export interface CurrencyRowActions {
+  onEditCurrency: (row: CurrencyRow) => void;
+  onDeleteCurrency: (row: CurrencyRow) => void;
+}
 
 /**
- * Row actions menu list.
+ * Меню действий строки валюты (shadcn DropdownMenu).
  */
-export function ActionMenuList({
-  row: { original },
-  payload: { onEditCurrency, onDeleteCurrency },
+export function CurrencyActionsMenu({
+  row,
+  actions,
+}: {
+  row: CurrencyRow;
+  actions: CurrencyRowActions;
 }) {
   return (
-    <Menu>
-      <MenuItem
-        icon={<Icon icon="pen-18" />}
-        text={intl.get('edit_currency')}
-        onClick={safeCallback(onEditCurrency, original)}
-      />
-      <MenuDivider />
-      <MenuItem
-        icon={<Icon icon="trash-16" iconSize={16} />}
-        text={intl.get('delete_currency')}
-        onClick={safeCallback(onDeleteCurrency, original)}
-        intent={Intent.DANGER}
-      />
-    </Menu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={intl.get('more_actions')}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <MoreHorizontal className="h-4 w-4" aria-hidden />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem onClick={() => actions.onEditCurrency(row)}>
+          <Pencil className="mr-2 h-4 w-4" aria-hidden />
+          {intl.get('edit_currency')}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-danger focus:text-danger"
+          onClick={() => actions.onDeleteCurrency(row)}
+        >
+          <Trash2 className="mr-2 h-4 w-4" aria-hidden />
+          {intl.get('delete_currency')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
 /**
- * Actions cell.
+ * Колонки таблицы валют для нового DataTable (react-table v7 формат).
  */
-export const ActionsCell = (props) => {
-  return (
-    <Popover
-      position={Position.RIGHT_BOTTOM}
-      content={<ActionMenuList {...props} />}
-    >
-      <Button icon={<Icon icon="more-h-16" iconSize={16} />} />
-    </Popover>
-  );
-};
-
-export const CurrencyNameAccessor = (value) => {
-  return (
-    <CurrencyNameRoot>
-      {value.currency_name}{' '}
-      {value.is_base_currency && <Tag>{intl.get('base_currency')}</Tag>}
-    </CurrencyNameRoot>
-  );
-};
-
-const CurrencyNameRoot = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-export function useCurrenciesTableColumns() {
+export function useCurrenciesTableColumns(actions: CurrencyRowActions) {
   return useMemo(
     () => [
       {
+        id: 'currency_name',
         Header: intl.get('currency_name'),
-        accessor: CurrencyNameAccessor,
-        width: 150,
+        accessor: 'currency_name',
+        disableSortBy: true,
+        width: 200,
+        Cell: ({ row }: { row: { original: CurrencyRow } }) => (
+          <span className="flex items-center gap-2">
+            <span className="font-medium">{row.original.currency_name}</span>
+            {row.original.is_base_currency && (
+              <Badge variant="secondary">{intl.get('base_currency')}</Badge>
+            )}
+          </span>
+        ),
       },
       {
+        id: 'currency_code',
         Header: intl.get('currency_code'),
         accessor: 'currency_code',
-        className: 'currency_code',
+        disableSortBy: true,
         width: 120,
       },
       {
+        id: 'currency_sign',
         Header: intl.get('currency_sign'),
-        width: 120,
         accessor: 'currency_sign',
+        disableSortBy: true,
+        width: 120,
       },
       {
-        id: 'actions',
+        id: '__actions__',
         Header: '',
-        Cell: ActionsCell,
-        className: 'actions',
-        width: 50,
-        disableResizing: true,
+        disableSortBy: true,
+        width: 48,
+        Cell: ({ row }: { row: { original: CurrencyRow } }) => (
+          <CurrencyActionsMenu row={row.original} actions={actions} />
+        ),
       },
     ],
-    [],
+    [actions],
   );
 }

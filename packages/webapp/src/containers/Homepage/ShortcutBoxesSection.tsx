@@ -1,34 +1,62 @@
-// @ts-nocheck
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { For } from '@/components';
 
-import '@/style/pages/FinancialStatements/FinancialSheets.scss';
 import { useFilterShortcutBoxesSection } from './components';
 
-function ShortcutBox({ title, link, description }) {
+interface Shortcut {
+  title: React.ReactNode;
+  description: React.ReactNode;
+  link: string;
+}
+
+interface ShortcutSection {
+  sectionTitle: React.ReactNode;
+  shortcuts: Shortcut[];
+}
+
+function ShortcutBox({ title, link, description }: Shortcut) {
   return (
-    <div className={'financial-reports__item'}>
-      <Link className="title" to={link}>
-        {title}
-      </Link>
-      <p className="desc">{description}</p>
-    </div>
+    <Link
+      to={link}
+      className="group flex flex-col gap-1 rounded-xl border border-border bg-surface p-4 transition-colors hover:bg-surface-elevated"
+    >
+      <span className="text-sm font-semibold text-text-primary">{title}</span>
+      <span className="text-xs leading-relaxed text-text-secondary">
+        {description}
+      </span>
+    </Link>
   );
 }
 
-function ShortcutBoxes({ sectionTitle, shortcuts }) {
+function ShortcutBoxes({ sectionTitle, shortcuts }: ShortcutSection) {
   return (
-    <div className="financial-reports__section">
-      <div className="section-title">{sectionTitle}</div>
-      <div className="financial-reports__list">
-        <For render={ShortcutBox} of={shortcuts} />
+    <section className="flex flex-col gap-3">
+      <h2 className="text-sm font-semibold text-text-primary">
+        {sectionTitle}
+      </h2>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {shortcuts.map((shortcut, i) => (
+          <ShortcutBox key={i} {...shortcut} />
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
 
-export default function ShortcutBoxesSection({ section }) {
-  const BoxSection = useFilterShortcutBoxesSection(section);
-  return <For render={ShortcutBoxes} of={BoxSection} />;
+export default function ShortcutBoxesSection({
+  section,
+}: {
+  section: ShortcutSection[];
+}) {
+  const sections = useFilterShortcutBoxesSection(
+    section,
+  ) as ShortcutSection[];
+
+  return (
+    <>
+      {sections.map((s, i) => (
+        <ShortcutBoxes key={i} {...s} />
+      ))}
+    </>
+  );
 }

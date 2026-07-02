@@ -1,82 +1,100 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { ReportDataTable, FinancialSheet } from '@/components';
-
+import {
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { usePurchaseByItemsContext } from './PurchasesByItemsProvider';
 
-import { tableRowTypesToClassnames } from '@/utils';
-import { TableStyle } from '@/constants';
-import { usePurchasesByItemsTableColumns } from './dynamicColumns';
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface PurchasesByItemsServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: PurchasesByItemsServerColumn[];
+}
+
+interface PurchasesByItemsContextValue {
+  purchaseByItems: {
+    table: {
+      columns: PurchasesByItemsServerColumn[];
+      rows: ReportTableRow[];
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedPurchasesByItemsContext =
+  usePurchaseByItemsContext as unknown as () => PurchasesByItemsContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: PurchasesByItemsServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align: column.key === 'name' ? undefined : 'right',
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface PurchasesByItemsTableProps {
+  companyName?: string;
+}
 
 /**
- * Purchases by items data table.
+ * Закупки по товарам — движок ReportSheet + ReportTable.
  */
-export default function PurchasesByItemsTable({ companyName }) {
-  // Purchases by items context.
+export default function PurchasesByItemsTable({
+  companyName,
+}: PurchasesByItemsTableProps) {
   const {
-    purchaseByItems: { table, query, meta },
-  } = usePurchaseByItemsContext();
+    purchaseByItems: { table, meta },
+  } = useTypedPurchasesByItemsContext();
 
-  // Purchases by items table columns.
-  const columns = usePurchasesByItemsTableColumns();
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
+  );
 
   return (
-    <PurchasesByItemsSheet
+    <ReportSheet
       companyName={companyName}
       sheetType={intl.get('purchases_by_items')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
     >
-      <PurchasesByItemsDataTable
+      <ReportTable
         columns={columns}
-        data={table.rows}
-        expandable={true}
-        expandToggleColumn={1}
-        expandColumnSpace={1}
-        sticky={true}
-        rowClassNames={tableRowTypesToClassnames}
-        noResults={intl.get(
+        rows={table.rows ?? []}
+        isFinalRow={() => false}
+        emptyText={intl.get(
           'there_were_no_purchases_during_the_selected_date_range',
         )}
-        styleName={TableStyle.Constrant}
       />
-    </PurchasesByItemsSheet>
+    </ReportSheet>
   );
 }
-
-const PurchasesByItemsSheet = styled(FinancialSheet)`
-  min-width: 850px;
-`;
-
-const PurchasesByItemsDataTable = styled(ReportDataTable)`
-  --x-table-total-border-bottom-color: #000;
-  --x-table-total-border-top-color: #bbb;
-  --x-table-total-border-bottom-color: var(
-    --color-datatable-constrant-cell-border
-  );
-  --x-table-total-border-top-color: var(
-    --color-datatable-constrant-cell-border
-  );
-
-  .table {
-    .tbody {
-      .tr .td {
-        border-bottom-width: 0;
-        padding-top: 0.36rem;
-        padding-bottom: 0.36rem;
-      }
-      .tr.row_type--TOTAL .td {
-        border-top-width: 1px;
-        font-weight: 500;
-        border-top-width: 1px;
-        border-top-style: solid;
-        border-top-color: var(--x-table-total-border-top-color);
-        border-bottom-style: double;
-        border-bottom-width: 3px;
-        border-bottom-color: var(--x-table-total-border-bottom-color);
-      }
-    }
-  }
-`;

@@ -2,12 +2,15 @@
 import React, { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
-import { FinancialStatement, DashboardPageContent } from '@/components';
+import { DashboardPageContent } from '@/components';
 import { TrialBalanceSheetBody } from './TrialBalanceSheetBody';
 import { TrialBalanceSheetProvider } from './TrialBalanceProvider';
 import { useTrialBalanceSheetQuery } from './utils';
 import TrialBalanceActionsBar from './TrialBalanceActionsBar';
-import TrialBalanceSheetHeader from './TrialBalanceSheetHeader';
+
+// D-redesign: панель настроек на общем shadcn-каркасе (v2, тираж пилота ОПиУ).
+// Легаси TrialBalanceSheetHeader остаётся на месте (не удаляем).
+import { TrialBalanceSheetHeaderV2 } from './v2/TrialBalanceSheetHeaderV2';
 
 import {
   TrialBalanceSheetAlerts,
@@ -64,13 +67,11 @@ function TrialBalanceSheet({
       <TrialBalanceSheetAlerts />
 
       <DashboardPageContent>
-        <FinancialStatement>
-          <TrialBalanceSheetHeader
-            pageFilter={query}
-            onSubmitFilter={handleFilterSubmit}
-          />
-          <TrialBalanceSheetBody />
-        </FinancialStatement>
+        <TrialBalanceSheetHeaderV2
+          pageFilter={query}
+          onSubmitFilter={handleFilterSubmit}
+        />
+        <TrialBalanceSheetBody />
       </DashboardPageContent>
 
       <TrialBalanceSheetDialogs />

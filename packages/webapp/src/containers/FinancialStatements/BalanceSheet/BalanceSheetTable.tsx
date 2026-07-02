@@ -1,100 +1,115 @@
-// @ts-nocheck
-import React from 'react';
-import styled from 'styled-components';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
 
-import { TableStyle } from '@/constants';
-import { ReportDataTable, FinancialSheet } from '@/components';
+import {
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useBalanceSheetContext } from './BalanceSheetProvider';
-import { useBalanceSheetColumns } from './components';
-import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
 
 /**
- * Balance sheet table.
+ * Колонка отчётной таблицы в формате сервера FinancialStatements
+ * (snake_case на клиенте): total-колонка и колонки date-periods могут
+ * содержать вложенные children (сравнения: прошлый год/период, проценты).
+ */
+interface BalanceSheetServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: BalanceSheetServerColumn[];
+}
+
+interface BalanceSheetContextValue {
+  balanceSheet: {
+    table: {
+      columns: BalanceSheetServerColumn[];
+      rows: ReportTableRow[];
+    };
+    query: {
+      basis?: string;
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedBalanceSheetContext =
+  useBalanceSheetContext as unknown as () => BalanceSheetContextValue;
+
+/**
+ * Разворачивает дерево серверных колонок в плоский список колонок
+ * ReportTable: листья несут cell_index; у вложенных листьев подпись
+ * склеивается с родительской («Янв 2026 — % от колонок»), чтобы
+ * колонки сравнений оставались различимы без групповых заголовков.
+ */
+function flattenServerColumns(
+  columns: BalanceSheetServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        // Первая колонка — название счёта; остальные — деньги/проценты.
+        align: column.key === 'name' ? undefined : 'right',
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface BalanceSheetTableProps {
+  companyName?: string;
+}
+
+/**
+ * Таблица баланса на движке ReportSheet + ReportTable
+ * (стандарт «Простота Bigfin», без Blueprint).
  */
 export default function BalanceSheetTable({
-  // #ownProps
   companyName,
-}) {
-  // Balance sheet context.
+}: BalanceSheetTableProps) {
   const {
     balanceSheet: { table, query, meta },
-  } = useBalanceSheetContext();
+  } = useTypedBalanceSheetContext();
 
-  // Retrieve the database columns.
-  const tableColumns = useBalanceSheetColumns();
-
-  // Retrieve default expanded rows of balance sheet.
-  const expandedRows = React.useMemo(
-    () => defaultExpanderReducer(table.rows, 3),
-    [table],
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns),
+    [table.columns],
   );
 
   return (
-    <FinancialSheet
+    <ReportSheet
       companyName={companyName}
       sheetType={intl.get('balance_sheet')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
       basis={query.basis}
     >
-      <BalanceSheetDataTable
-        columns={tableColumns}
-        data={table.rows}
-        rowClassNames={tableRowTypesToClassnames}
-        noInitialFetch={true}
-        expandable={true}
-        expanded={expandedRows}
-        expandToggleColumn={1}
-        expandColumnSpace={0.8}
-        headerLoading={true}
-        sticky={true}
-        styleName={TableStyle.Constrant}
+      <ReportTable
+        columns={columns}
+        rows={table.rows}
+        // У баланса нет единой финальной строки («Чистая прибыль» в ОПиУ):
+        // итоги «Итого активы» и «Итого обязательства и капитал» — вложенные
+        // TOTAL-строки, их выделяет стилизация TOTAL (полужирный + граница).
+        isFinalRow={() => false}
       />
-    </FinancialSheet>
+    </ReportSheet>
   );
 }
-
-const BalanceSheetDataTable = styled(ReportDataTable)`
-  --color-table-text-color: #252a31;
-  --color-table-total-text-color: #000;
-
-  .bp4-dark & {
-    --color-table-text-color: var(--color-light-gray1);
-    --color-table-total-text-color: var(--color-light-gray4);
-  }
-  .table {
-    .tbody .tr {
-      .td {
-        border-bottom-width: 0;
-        padding-top: 0.32rem;
-        padding-bottom: 0.32rem;
-        color: var(--color-table-text-color);
-      }
-      &.is-expanded {
-        .td:not(.name) .cell-inner {
-          opacity: 0;
-        }
-      }
-      &.row_type--TOTAL {
-        .td {
-          color: var(--color-table-total-text-color);
-          font-weight: 500;
-          border-top-width: 1px;
-          border-top-style: solid;
-        }
-      }
-      &:last-of-type .td {
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-      }
-      &.row_type--TOTAL.row-id--ASSETS,
-      &.row_type--TOTAL.row-id--LIABILITY_EQUITY {
-        .td {
-          color: var(--color-table-total-text-color);
-          border-bottom-width: 3px;
-          border-bottom-style: double;
-        }
-      }
-    }
-  }
-`;

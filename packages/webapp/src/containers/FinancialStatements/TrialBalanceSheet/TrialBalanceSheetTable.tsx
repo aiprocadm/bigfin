@@ -1,75 +1,101 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { TableStyle } from '@/constants';
-import { tableRowTypesToClassnames } from '@/utils';
-import { ReportDataTable, FinancialSheet } from '@/components';
-
+import {
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useTrialBalanceSheetContext } from './TrialBalanceProvider';
-import { useTrialBalanceSheetTableColumns } from './hooks';
+
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface TrialBalanceServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: TrialBalanceServerColumn[];
+}
+
+interface TrialBalanceSheetContextValue {
+  trialBalanceSheet: {
+    table: {
+      columns: TrialBalanceServerColumn[];
+      rows: ReportTableRow[];
+    };
+    query: { basis?: string };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedTrialBalanceContext =
+  useTrialBalanceSheetContext as unknown as () => TrialBalanceSheetContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: TrialBalanceServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align: column.key === 'name' ? undefined : 'right',
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface TrialBalanceSheetTableProps {
+  companyName?: string;
+}
 
 /**
- * Trial Balance sheet data table.
+ * Оборотно-сальдовая ведомость на движке ReportSheet + ReportTable.
  */
-export default function TrialBalanceSheetTable({ companyName }) {
-  // Trial balance sheet context.
+export default function TrialBalanceSheetTable({
+  companyName,
+}: TrialBalanceSheetTableProps) {
   const {
-    trialBalanceSheet: { table, query, meta },
-    isLoading,
-  } = useTrialBalanceSheetContext();
+    trialBalanceSheet: { table, meta },
+  } = useTypedTrialBalanceContext();
 
-  // Trial balance sheet table columns.
-  const columns = useTrialBalanceSheetTableColumns();
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
+  );
 
   return (
-    <FinancialSheet
+    <ReportSheet
       companyName={companyName}
       sheetType={intl.get('trial_balance_sheet')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
-      name="trial-balance"
-      loading={isLoading}
-      basis={'cash'}
+      // Легаси показывал фиксированную подпись «кассовый метод» — сохраняем.
+      basis="cash"
     >
-      <TrialBalanceDataTable
+      <ReportTable
         columns={columns}
-        data={table.rows}
-        expandable={true}
-        expandToggleColumn={1}
-        expandColumnSpace={1}
-        sticky={true}
-        rowClassNames={tableRowTypesToClassnames}
-        styleName={TableStyle.Constrant}
+        rows={table.rows ?? []}
+        // Единственная TOTAL-строка внизу — её выделяет стилизация TOTAL.
+        isFinalRow={() => false}
       />
-    </FinancialSheet>
+    </ReportSheet>
   );
 }
-
-const TrialBalanceDataTable = styled(ReportDataTable)`
-  --color-table-text-color: #252a31;
-  --color-table-total-text-color: #000;
-
-  .bp4-dark & {
-    --color-table-text-color: var(--color-light-gray1);
-    --color-table-total-text-color: var(--color-light-gray4);
-  }
-  .table {
-    .tbody {
-      .tr .td {
-        border-bottom-width: 0;
-        padding-top: 0.36rem;
-        padding-bottom: 0.36rem;
-        color: var(--color-table-text-color);
-      }
-      .tr.row_type--TOTAL .td {
-        font-weight: 500;
-        color: var(--color-table-total-text-color);
-        border-top-width: 1px;
-        border-top-style: solid;
-        border-bottom-width: 3px;
-        border-bottom-style: double;
-      }
-    }
-  }
-`;

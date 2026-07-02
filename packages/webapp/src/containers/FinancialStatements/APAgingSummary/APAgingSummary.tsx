@@ -5,8 +5,10 @@ import moment from 'moment';
 import { useAPAgingSummaryQuery } from './common';
 import { FinancialStatement, DashboardPageContent } from '@/components';
 
-import APAgingSummaryHeader from './APAgingSummaryHeader';
-import APAgingSummaryActionsBar from './APAgingSummaryActionsBar';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси APAgingSummaryHeader/APAgingSummaryActionsBar остаются на месте (не удаляем).
+import { APAgingSummaryHeaderV2 } from './v2/APAgingSummaryHeaderV2';
+import { APAgingSummaryToolbarV2 } from './v2/APAgingSummaryToolbarV2';
 
 import { APAgingSummaryBody } from './APAgingSummaryBody';
 import { APAgingSummaryProvider } from './APAgingSummaryProvider';
@@ -55,7 +57,7 @@ function APAgingSummary({
 
   return (
     <APAgingSummaryProvider filter={query}>
-      <APAgingSummaryActionsBar
+      <APAgingSummaryToolbarV2
         numberFormat={query.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
@@ -63,7 +65,7 @@ function APAgingSummary({
 
       <DashboardPageContent>
         <FinancialStatement name={'AP-aging-summary'}>
-          <APAgingSummaryHeader
+          <APAgingSummaryHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

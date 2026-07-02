@@ -6,8 +6,10 @@ import { SalesByItemsBody } from './SalesByItemsBody';
 import { SalesByItemProvider } from './SalesByItemProvider';
 import { SalesByItemsLoadingBar } from './components';
 import { FinancialStatement, DashboardPageContent } from '@/components';
-import SalesByItemsActionsBar from './SalesByItemsActionsBar';
-import SalesByItemsHeader from './SalesByItemsHeader';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси SalesByItemsHeader/SalesByItemsActionsBar остаются на месте (не удаляем).
+import { SalesByItemsHeaderV2 } from './v2/SalesByItemsHeaderV2';
+import { SalesByItemsToolbarV2 } from './v2/SalesByItemsToolbarV2';
 
 import { withSalesByItemsActions } from './withSalesByItemsActions';
 
@@ -52,7 +54,7 @@ function SalesByItems({
 
   return (
     <SalesByItemProvider query={query}>
-      <SalesByItemsActionsBar
+      <SalesByItemsToolbarV2
         numberFormat={query.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
@@ -60,7 +62,7 @@ function SalesByItems({
 
       <DashboardPageContent>
         <FinancialStatement>
-          <SalesByItemsHeader
+          <SalesByItemsHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

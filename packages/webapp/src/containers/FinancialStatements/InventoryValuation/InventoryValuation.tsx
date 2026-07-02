@@ -3,8 +3,10 @@ import { useEffect, useCallback } from 'react';
 import moment from 'moment';
 
 import { DashboardPageContent } from '@/components';
-import InventoryValuationActionsBar from './InventoryValuationActionsBar';
-import InventoryValuationHeader from './InventoryValuationHeader';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси InventoryValuationHeader/InventoryValuationActionsBar остаются на месте (не удаляем).
+import { InventoryValuationHeaderV2 } from './v2/InventoryValuationHeaderV2';
+import { InventoryValuationToolbarV2 } from './v2/InventoryValuationToolbarV2';
 
 import { InventoryValuationProvider } from './InventoryValuationProvider';
 import { InventoryValuationBody } from './InventoryValuationBody';
@@ -53,14 +55,14 @@ function InventoryValuation({
 
   return (
     <InventoryValuationProvider query={query}>
-      <InventoryValuationActionsBar
+      <InventoryValuationToolbarV2
         numberFormat={query.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
       <InventoryValuationLoadingBar />
 
       <DashboardPageContent>
-        <InventoryValuationHeader
+        <InventoryValuationHeaderV2
           pageFilter={query}
           onSubmitFilter={handleFilterSubmit}
         />

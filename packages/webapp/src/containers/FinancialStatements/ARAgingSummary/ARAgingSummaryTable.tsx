@@ -1,87 +1,98 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { TableStyle } from '@/constants';
-import { ReportDataTable, FinancialSheet } from '@/components';
-
+import {
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useARAgingSummaryContext } from './ARAgingSummaryProvider';
-import { useARAgingSummaryColumns } from './components';
 
-import { tableRowTypesToClassnames } from '@/utils';
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface ARAgingServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: ARAgingServerColumn[];
+}
+
+interface ARAgingSummaryContextValue {
+  ARAgingSummary: {
+    table: {
+      columns: ARAgingServerColumn[];
+      rows: ReportTableRow[];
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedARAgingContext =
+  useARAgingSummaryContext as unknown as () => ARAgingSummaryContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: ARAgingServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align: column.key === 'name' ? undefined : 'right',
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface ARAgingSummaryTableProps {
+  organizationName?: string;
+}
 
 /**
- * AR aging summary table sheet.
+ * Старение дебиторской задолженности — движок ReportSheet + ReportTable.
  */
 export default function ReceivableAgingSummaryTable({
-  // #ownProps
   organizationName,
-}) {
-  // AR aging summary report context.
+}: ARAgingSummaryTableProps) {
   const {
-    ARAgingSummary: { table, query, meta },
-    isARAgingLoading,
-  } = useARAgingSummaryContext();
+    ARAgingSummary: { table, meta },
+  } = useTypedARAgingContext();
 
-  // AR aging summary columns.
-  const columns = useARAgingSummaryColumns();
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
+  );
 
   return (
-    <FinancialSheet
+    <ReportSheet
       companyName={organizationName}
       sheetType={intl.get('receivable_aging_summary')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
-      loading={isARAgingLoading}
     >
-      <ARAgingSummaryDataTable
+      <ReportTable
         columns={columns}
-        data={table.rows}
-        rowClassNames={tableRowTypesToClassnames}
-        noInitialFetch={true}
-        sticky={true}
-        styleName={TableStyle.Constrant}
+        rows={table.rows ?? []}
+        // Итоговую строку выделяет стилизация TOTAL (row_types: ['total']).
+        isFinalRow={() => false}
       />
-    </FinancialSheet>
+    </ReportSheet>
   );
 }
-
-const ARAgingSummaryDataTable = styled(ReportDataTable)`
-  --color-table-text-color: #252a31;
-  --color-table-total-text-color: #000;
-  --color-table-total-border-top: #bbb;
-
-  .bp4-dark & {
-    --color-table-text-color: var(--color-light-gray1);
-    --color-table-total-text-color: var(--color-light-gray4);
-    --color-table-total-border-top: var(--color-dark-gray5);
-  }
-  .table {
-    .tbody .tr {
-      .td {
-        border-bottom-width: 0;
-        padding-top: 0.32rem;
-        padding-bottom: 0.32rem;
-      }
-      &:not(.no-results) {
-        .td {
-          border-bottom-width: 0;
-          padding-top: 0.4rem;
-          padding-bottom: 0.4rem;
-        }
-        &:not(:first-child) .td {
-          border-top: 1px solid transparent;
-        }
-        &.row_type--total {
-          font-weight: 500;
-
-          .td {
-            border-top: 1px solid var(--color-table-total-border-top);
-            border-bottom-width: 3px;
-            border-bottom-style: double;
-          }
-        }
-      }
-    }
-  }
-`;

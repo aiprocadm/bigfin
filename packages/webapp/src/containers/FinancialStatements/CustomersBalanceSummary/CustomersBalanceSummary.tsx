@@ -5,8 +5,10 @@ import * as R from 'ramda';
 
 import { FinancialStatement, DashboardPageContent } from '@/components';
 
-import CustomersBalanceSummaryActionsBar from './CustomersBalanceSummaryActionsBar';
-import CustomersBalanceSummaryHeader from './CustomersBalanceSummaryHeader';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси CustomersBalanceSummaryHeader/ActionsBar остаются на месте (не удаляем).
+import { CustomersBalanceSummaryHeaderV2 } from './v2/CustomersBalanceSummaryHeaderV2';
+import { CustomersBalanceSummaryToolbarV2 } from './v2/CustomersBalanceSummaryToolbarV2';
 
 import { CustomerBalanceSummaryBody } from './CustomerBalanceSummaryBody';
 import { CustomersBalanceSummaryProvider } from './CustomersBalanceSummaryProvider';
@@ -36,7 +38,7 @@ function CustomersBalanceSummary({
   // Handle number format.
   const handleNumberFormat = (values) => {
     setLocationQuery({
-      ...filter,
+      ...query,
       numberFormat: values,
     });
   };
@@ -48,7 +50,7 @@ function CustomersBalanceSummary({
 
   return (
     <CustomersBalanceSummaryProvider filter={query}>
-      <CustomersBalanceSummaryActionsBar
+      <CustomersBalanceSummaryToolbarV2
         numberFormat={query?.numberFormat}
         onNumberFormatSubmit={handleNumberFormat}
       />
@@ -56,7 +58,7 @@ function CustomersBalanceSummary({
 
       <DashboardPageContent>
         <FinancialStatement>
-          <CustomersBalanceSummaryHeader
+          <CustomersBalanceSummaryHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

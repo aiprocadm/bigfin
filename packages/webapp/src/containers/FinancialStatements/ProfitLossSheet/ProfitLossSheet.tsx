@@ -3,8 +3,10 @@ import React from 'react';
 import moment from 'moment';
 import * as R from 'ramda';
 
-import ProfitLossSheetHeader from './ProfitLossSheetHeader';
-import ProfitLossActionsBar from './ProfitLossActionsBar';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси ProfitLossSheetHeader/ProfitLossActionsBar остаются на месте (не удаляем).
+import { ProfitLossHeaderV2 } from './v2/ProfitLossHeaderV2';
+import { ProfitLossToolbarV2 } from './v2/ProfitLossToolbarV2';
 
 import { DashboardPageContent } from '@/components';
 
@@ -54,7 +56,7 @@ function ProfitLossSheet({
 
   return (
     <ProfitLossSheetProvider query={query}>
-      <ProfitLossActionsBar
+      <ProfitLossToolbarV2
         numberFormat={query.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
@@ -62,7 +64,7 @@ function ProfitLossSheet({
       <ProfitLossSheetAlerts />
 
       <DashboardPageContent>
-        <ProfitLossSheetHeader
+        <ProfitLossHeaderV2
           pageFilter={query}
           onSubmitFilter={handleSubmitFilter}
         />

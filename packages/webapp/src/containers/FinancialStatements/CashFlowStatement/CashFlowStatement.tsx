@@ -2,11 +2,13 @@
 import React, { useEffect } from 'react';
 import moment from 'moment';
 
-import { FinancialStatement, DashboardPageContent } from '@/components';
+import { DashboardPageContent } from '@/components';
 import { CashFlowStatementBody } from './CashFlowStatementBody';
 import { CashFlowStatementProvider } from './CashFlowStatementProvider';
 
-import CashFlowStatementHeader from './CashFlowStatementHeader';
+// D-redesign: панель настроек на общем shadcn-каркасе (v2, тираж пилота ОПиУ).
+// Легаси CashFlowStatementHeader остаётся на месте (не удаляем).
+import { CashFlowStatementHeaderV2 } from './v2/CashFlowStatementHeaderV2';
 import CashFlowStatementActionsBar from './CashFlowStatementActionsBar';
 
 import { withCashFlowStatementActions } from './withCashFlowStatementActions';
@@ -64,13 +66,11 @@ function CashFlowStatement({
       <CashFlowStatementAlerts />
 
       <DashboardPageContent>
-        <FinancialStatement>
-          <CashFlowStatementHeader
-            pageFilter={query}
-            onSubmitFilter={handleFilterSubmit}
-          />
-          <CashFlowStatementBody />
-        </FinancialStatement>
+        <CashFlowStatementHeaderV2
+          pageFilter={query}
+          onSubmitFilter={handleFilterSubmit}
+        />
+        <CashFlowStatementBody />
       </DashboardPageContent>
 
       <CashflowSheetDialogs />

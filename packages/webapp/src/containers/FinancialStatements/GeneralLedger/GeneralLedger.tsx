@@ -2,8 +2,10 @@
 import React, { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
-import GeneralLedgerHeader from './GeneralLedgerHeader';
-import GeneralLedgerActionsBar from './GeneralLedgerActionsBar';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси GeneralLedgerHeader/GeneralLedgerActionsBar остаются на месте (не удаляем).
+import { GeneralLedgerHeaderV2 } from './v2/GeneralLedgerHeaderV2';
+import { GeneralLedgerToolbarV2 } from './v2/GeneralLedgerToolbarV2';
 import { GeneralLedgerBody } from './GeneralLedgerBody';
 import { useGeneralLedgerQuery } from './common';
 import { GeneralLedgerProvider } from './GeneralLedgerProvider';
@@ -50,11 +52,11 @@ function GeneralLedger({
 
   return (
     <GeneralLedgerProvider query={query}>
-      <GeneralLedgerActionsBar />
+      <GeneralLedgerToolbarV2 />
 
       <DashboardPageContent>
         <FinancialStatement>
-          <GeneralLedgerHeader
+          <GeneralLedgerHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

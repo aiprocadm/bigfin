@@ -1,80 +1,97 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { TableStyle } from '@/constants';
-import { ReportDataTable, FinancialSheet } from '@/components';
-import { tableRowTypesToClassnames } from '@/utils';
-import { useVendorsBalanceColumns } from './components';
+import {
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useVendorsBalanceSummaryContext } from './VendorsBalanceSummaryProvider';
 
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface VendorsBalanceServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: VendorsBalanceServerColumn[];
+}
+
+interface VendorsBalanceSummaryContextValue {
+  VendorBalanceSummary: {
+    table: {
+      columns: VendorsBalanceServerColumn[];
+      rows: ReportTableRow[];
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedVendorsBalanceContext =
+  useVendorsBalanceSummaryContext as unknown as () => VendorsBalanceSummaryContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: VendorsBalanceServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align: column.key === 'name' ? undefined : 'right',
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface VendorsBalanceSummaryTableProps {
+  organizationName?: string;
+}
+
 /**
- * Vendors balance summary table.
+ * Сальдо по поставщикам — движок ReportSheet + ReportTable.
  */
 export default function VendorsBalanceSummaryTable({
-  //#ownProps
   organizationName,
-}) {
+}: VendorsBalanceSummaryTableProps) {
   const {
-    VendorBalanceSummary: { table, query, meta },
-  } = useVendorsBalanceSummaryContext();
+    VendorBalanceSummary: { table, meta },
+  } = useTypedVendorsBalanceContext();
 
-  // vendors balance summary columns.
-  const columns = useVendorsBalanceColumns();
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
+  );
 
   return (
-    <VendorBalanceFinancialSheet
+    <ReportSheet
       companyName={organizationName}
       sheetType={intl.get('vendors_balance_summary')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
     >
-      <VendorBalanceDataTable
+      <ReportTable
         columns={columns}
-        data={table.rows}
-        rowClassNames={tableRowTypesToClassnames}
-        noInitialFetch={true}
-        sticky={true}
-        styleName={TableStyle.Constrant}
+        rows={table.rows ?? []}
+        isFinalRow={() => false}
       />
-    </VendorBalanceFinancialSheet>
+    </ReportSheet>
   );
 }
-
-const VendorBalanceFinancialSheet = styled(FinancialSheet)``;
-
-const VendorBalanceDataTable = styled(ReportDataTable)`
-  --x-table-total-border-bottom-color: #333;
-  --x-table-total-border-top-color: #bbb;
-  --x-table-total-border-bottom-color: var(
-    --color-datatable-constrant-cell-border
-  );
-  --x-table-total-border-top-color: var(
-    --color-datatable-constrant-cell-border
-  );
-
-  .table {
-    .tbody {
-      .tr:not(.no-results) {
-        .td {
-          border-bottom-width: 0;
-          padding-top: 0.4rem;
-          padding-bottom: 0.4rem;
-        }
-        &.row_type--TOTAL {
-          .td {
-            font-weight: 500;
-            border-top-width: 1px;
-            font-weight: 500;
-            border-top-width: 1px;
-            border-top-style: solid;
-            border-top-color: var(--x-table-total-border-top-color);
-            border-bottom-style: double;
-            border-bottom-width: 3px;
-            border-bottom-color: var(--x-table-total-border-bottom-color);
-          }
-        }
-      }
-    }
-  }
-`;

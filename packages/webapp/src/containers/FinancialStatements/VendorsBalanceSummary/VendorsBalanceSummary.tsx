@@ -4,8 +4,10 @@ import moment from 'moment';
 
 import { FinancialStatement, DashboardPageContent } from '@/components';
 
-import VendorsBalanceSummaryHeader from './VendorsBalanceSummaryHeader';
-import VendorsBalanceSummaryActionsBar from './VendorsBalanceSummaryActionsBar';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси VendorsBalanceSummaryHeader/ActionsBar остаются на месте (не удаляем).
+import { VendorsBalanceSummaryHeaderV2 } from './v2/VendorsBalanceSummaryHeaderV2';
+import { VendorsBalanceSummaryToolbarV2 } from './v2/VendorsBalanceSummaryToolbarV2';
 
 import { VendorsBalanceSummaryProvider } from './VendorsBalanceSummaryProvider';
 import { VendorsSummarySheetLoadingBar } from './components';
@@ -38,7 +40,7 @@ function VendorsBalanceSummary({
   // Handle number format submit.
   const handleNumberFormatSubmit = (format) => {
     setLocationQuery({
-      ...filter,
+      ...query,
       numberFormat: format,
     });
   };
@@ -50,7 +52,7 @@ function VendorsBalanceSummary({
 
   return (
     <VendorsBalanceSummaryProvider filter={query}>
-      <VendorsBalanceSummaryActionsBar
+      <VendorsBalanceSummaryToolbarV2
         numberFormat={query?.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
@@ -58,7 +60,7 @@ function VendorsBalanceSummary({
 
       <DashboardPageContent>
         <FinancialStatement>
-          <VendorsBalanceSummaryHeader
+          <VendorsBalanceSummaryHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

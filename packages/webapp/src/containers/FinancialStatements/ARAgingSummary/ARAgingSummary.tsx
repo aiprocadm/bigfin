@@ -2,8 +2,10 @@
 import { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
-import ARAgingSummaryHeader from './ARAgingSummaryHeader';
-import ARAgingSummaryActionsBar from './ARAgingSummaryActionsBar';
+// D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
+// Легаси ARAgingSummaryHeader/ARAgingSummaryActionsBar остаются на месте (не удаляем).
+import { ARAgingSummaryHeaderV2 } from './v2/ARAgingSummaryHeaderV2';
+import { ARAgingSummaryToolbarV2 } from './v2/ARAgingSummaryToolbarV2';
 
 import { FinancialStatement, DashboardPageContent } from '@/components';
 import { ARAgingSummaryProvider } from './ARAgingSummaryProvider';
@@ -50,7 +52,7 @@ function ReceivableAgingSummarySheet({
 
   return (
     <ARAgingSummaryProvider filter={query}>
-      <ARAgingSummaryActionsBar
+      <ARAgingSummaryToolbarV2
         numberFormat={query.numberFormat}
         onNumberFormatSubmit={handleNumberFormatSubmit}
       />
@@ -58,7 +60,7 @@ function ReceivableAgingSummarySheet({
 
       <DashboardPageContent>
         <FinancialStatement>
-          <ARAgingSummaryHeader
+          <ARAgingSummaryHeaderV2
             pageFilter={query}
             onSubmitFilter={handleFilterSubmit}
           />

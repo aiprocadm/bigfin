@@ -1,100 +1,103 @@
-// @ts-nocheck
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
 
-import { TableStyle } from '@/constants';
 import {
-  ReportDataTable,
-  FinancialSheet,
-  TableFastCell,
-  TableVirtualizedListRows,
-} from '@/components';
-
+  ReportSheet,
+  ReportTable,
+  type ReportTableColumn,
+  type ReportTableRow,
+} from '@/components/ui/report-table';
 import { useJournalSheetContext } from './JournalProvider';
 
-import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
-import { useJournalSheetColumns } from './dynamicColumns';
+/** Колонка в формате сервера FinancialStatements (snake_case на клиенте). */
+interface JournalServerColumn {
+  key: string;
+  label: string;
+  cell_index?: number;
+  children?: JournalServerColumn[];
+}
+
+interface JournalSheetContextValue {
+  journalSheet: {
+    table: {
+      columns: JournalServerColumn[];
+      rows: ReportTableRow[];
+    };
+    meta?: {
+      formatted_date_range?: string;
+      formatted_as_date?: string;
+    };
+  };
+}
+
+// Легаси-контекст без типов — кастуем локально.
+const useTypedJournalContext =
+  useJournalSheetContext as unknown as () => JournalSheetContextValue;
+
+/** Разворачивает дерево серверных колонок до листьев (несут cell_index). */
+function flattenServerColumns(
+  columns: JournalServerColumn[],
+  parentKey?: string,
+  parentLabel?: string,
+): ReportTableColumn[] {
+  return columns.flatMap((column): ReportTableColumn[] => {
+    const key = parentKey ? `${parentKey}.${column.key}` : column.key;
+
+    if (column.children && column.children.length > 0) {
+      return flattenServerColumns(column.children, key, column.label);
+    }
+    const label =
+      parentLabel && parentLabel !== column.label
+        ? `${parentLabel} — ${column.label}`
+        : column.label;
+
+    return [
+      {
+        key,
+        label,
+        align:
+          column.key === 'credit' || column.key === 'debit'
+            ? 'right'
+            : undefined,
+        cellIndex: column.cell_index,
+      },
+    ];
+  });
+}
+
+interface JournalTableProps {
+  companyName?: string;
+}
 
 /**
- * Journal sheet table.
- * @returns {JSX.Element}
+ * Журнал — движок ReportSheet + ReportTable (виртуализация: записей тысячи).
  */
-export function JournalTable({ companyName }) {
-  // Journal sheet context.
+export function JournalTable({ companyName }: JournalTableProps) {
   const {
-    journalSheet: { table, query, meta },
-    isLoading,
-  } = useJournalSheetContext();
+    journalSheet: { table, meta },
+  } = useTypedJournalContext();
 
-  // Retrieves the journal table columns.
-  const columns = useJournalSheetColumns();
-
-  // Default expanded rows of general journal table.
-  const expandedRows = useMemo(() => defaultExpanderReducer([], 1), []);
+  const columns = useMemo(
+    () => flattenServerColumns(table.columns ?? []),
+    [table.columns],
+  );
 
   return (
-    <FinancialSheet
+    <ReportSheet
       companyName={companyName}
       sheetType={intl.get('journal_sheet')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
-      loading={isLoading}
-      fullWidth={true}
-      name="journal"
+      className="w-full"
     >
-      <JournalDataTable
+      <ReportTable
         columns={columns}
-        data={table.rows}
-        rowClassNames={tableRowTypesToClassnames}
-        noResults={intl.get(
+        rows={table.rows ?? []}
+        virtualized
+        isFinalRow={() => false}
+        emptyText={intl.get(
           'this_report_does_not_contain_any_data_between_date_period',
         )}
-        expanded={expandedRows}
-        sticky={true}
-        TableRowsRenderer={TableVirtualizedListRows}
-        // #TableVirtualizedListRows props.
-        vListrowHeight={28}
-        vListOverscanRowCount={2}
-        TableCellRenderer={TableFastCell}
-        id={'journal'}
-        styleName={TableStyle.Constrant}
       />
-    </FinancialSheet>
+    </ReportSheet>
   );
 }
-
-const JournalDataTable = styled(ReportDataTable)`
-  --color-table-text-color: var(--color-light-gray1);
-  --color-table-total-text-color: var(--color-light-gray4);
-  --color-table-border-color: var(--color-dark-gray4);
-  --color-table-total-border-color: #dbdbdb;
-  --color-table-total-border-color: var(--color-table-border-color);
-
-  .table {
-    .tbody {
-      .tr:not(.no-results) .td {
-        padding: 0.3rem 0.4rem;
-        color: var(--color-table-text-color);
-        border-bottom-color: transparent;
-        border-left: 1px solid var(--color-table-border-color);
-        min-height: 28px;
-
-        &:first-of-type {
-          border-left: 0;
-        }
-      }
-      .tr:not(.no-results):last-child {
-        .td {
-          border-bottom: 1px solid var(--color-table-total-border-color);
-        }
-      }
-      .tr.row_type--TOTAL{
-        font-weight: 600;
-        color: var(--color-table-total-text-color);
-      }
-      .tr:not(.no-results) {
-        height: 28px;
-      }
-    }
-  }
-`;

@@ -3,9 +3,11 @@ import React, { useEffect } from 'react';
 import moment from 'moment';
 
 import { BalanceSheetAlerts, BalanceSheetLoadingBar } from './components';
-import { FinancialStatement, DashboardPageContent } from '@/components';
+import { DashboardPageContent } from '@/components';
 
-import BalanceSheetHeader from './BalanceSheetHeader';
+// D-redesign: панель настроек на общем shadcn-каркасе (v2, тираж пилота ОПиУ).
+// Легаси BalanceSheetHeader остаётся на месте (не удаляем).
+import { BalanceSheetHeaderV2 } from './v2/BalanceSheetHeaderV2';
 import BalanceSheetActionsBar from './BalanceSheetActionsBar';
 import { BalanceSheetProvider } from './BalanceSheetProvider';
 import { BalanceSheetBody } from './BalanceSheetBody';
@@ -60,13 +62,11 @@ function BalanceSheet({
       <BalanceSheetAlerts />
 
       <DashboardPageContent>
-        <FinancialStatement>
-          <BalanceSheetHeader
-            pageFilter={query}
-            onSubmitFilter={handleFilterSubmit}
-          />
-          <BalanceSheetBody />
-        </FinancialStatement>
+        <BalanceSheetHeaderV2
+          pageFilter={query}
+          onSubmitFilter={handleFilterSubmit}
+        />
+        <BalanceSheetBody />
       </DashboardPageContent>
 
       <BalanceSheetDialogs />

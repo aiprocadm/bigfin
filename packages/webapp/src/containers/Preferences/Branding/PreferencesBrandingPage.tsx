@@ -1,32 +1,32 @@
-// @ts-nocheck
-import * as R from 'ramda';
 import { useEffect } from 'react';
-import { Stack } from '@/components';
+import intl from 'react-intl-universal';
+
+import { Card, CardContent } from '@/components/ui/card';
 import { PreferencesBrandingBoot } from './PreferencesBrandingBoot';
 import { PreferencesBrandingForm } from './PreferencesBrandingForm';
-import {
-  PreferencesBrandingFormContent,
-  PreferencesBrandingFormFooter,
-} from './PreferencesBrandingFormContent';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
+import { compose } from '@/utils';
 
-function PreferencesBrandingPageRoot({ changePreferencesPageTitle }) {
+interface PreferencesBrandingPageProps {
+  changePreferencesPageTitle: (title: string) => void;
+}
+
+function PreferencesBrandingPageRoot({
+  changePreferencesPageTitle,
+}: PreferencesBrandingPageProps) {
   useEffect(() => {
-    changePreferencesPageTitle('Branding');
+    changePreferencesPageTitle(intl.get('preferences.branding.title'));
   }, [changePreferencesPageTitle]);
 
   return (
-    <Stack
-      style={{ padding: '20px 40px 0', maxWidth: 900, width: '100%', flex: 1 }}
-    >
-      <PreferencesBrandingBoot>
-        <PreferencesBrandingForm>
-          <PreferencesBrandingFormContent />
-          <PreferencesBrandingFormFooter />
-        </PreferencesBrandingForm>
-      </PreferencesBrandingBoot>
-    </Stack>
+    <Card>
+      <CardContent className="p-6">
+        <PreferencesBrandingBoot>
+          <PreferencesBrandingForm />
+        </PreferencesBrandingBoot>
+      </CardContent>
+    </Card>
   );
 }
 
-export default R.compose(withDashboardActions)(PreferencesBrandingPageRoot);
+export default compose(withDashboardActions)(PreferencesBrandingPageRoot);

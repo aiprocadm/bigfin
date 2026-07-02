@@ -1,22 +1,34 @@
-// @ts-nocheck
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
-import { RadioGroup, Radio, Button, Intent } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
 import { AppToaster } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/cn';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
 import { useCurrentOrganization } from '@/hooks/state/organizations';
 import { useUpdateOrganization } from '@/hooks/query/organization';
 import { INTERFACE_MODE } from '@/constants/interfaceMode';
 import { compose } from '@/utils';
 
-function InterfaceModePage({ changePreferencesPageTitle }) {
-  const organization = useCurrentOrganization();
-  const { mutateAsync: updateOrganization, isLoading } = useUpdateOrganization();
+interface InterfaceModePageProps {
+  changePreferencesPageTitle: (title: string) => void;
+}
+
+function InterfaceModePage({
+  changePreferencesPageTitle,
+}: InterfaceModePageProps) {
+  // Легаси-хук без типов — уточняем форму организации локально.
+  const organization = useCurrentOrganization() as {
+    metadata?: { interfaceMode?: string };
+  };
+  const { mutateAsync: updateOrganization, isLoading } =
+    useUpdateOrganization();
 
   const currentMode =
     organization?.metadata?.interfaceMode ?? INTERFACE_MODE.Business;
-  const [mode, setMode] = useState(currentMode);
+  const [mode, setMode] = useState<string>(currentMode);
 
   useEffect(() => {
     changePreferencesPageTitle(intl.get('interface_mode.title'));
@@ -42,30 +54,56 @@ function InterfaceModePage({ changePreferencesPageTitle }) {
       });
   };
 
+  const MODES = [
+    { value: INTERFACE_MODE.Business, label: intl.get('interface_mode.business') },
+    {
+      value: INTERFACE_MODE.Accountant,
+      label: intl.get('interface_mode.accountant'),
+    },
+  ];
+
   return (
-    <div style={{ maxWidth: 520 }}>
-      <p>{intl.get('interface_mode.description')}</p>
+    <Card>
+      <CardContent className="max-w-xl p-6">
+        <p className="text-sm text-text-secondary">
+          {intl.get('interface_mode.description')}
+        </p>
 
-      <RadioGroup onChange={(e) => setMode(e.currentTarget.value)} selectedValue={mode}>
-        <Radio
-          label={intl.get('interface_mode.business')}
-          value={INTERFACE_MODE.Business}
-        />
-        <Radio
-          label={intl.get('interface_mode.accountant')}
-          value={INTERFACE_MODE.Accountant}
-        />
-      </RadioGroup>
+        {/* Сегмент-контрол: два взаимоисключающих режима. */}
+        <div
+          role="radiogroup"
+          aria-label={intl.get('interface_mode.title')}
+          className="mt-4 inline-flex gap-0.5 rounded-lg bg-surface-elevated p-1"
+        >
+          {MODES.map((m) => (
+            <button
+              key={m.value}
+              type="button"
+              role="radio"
+              aria-checked={mode === m.value}
+              onClick={() => setMode(m.value)}
+              className={cn(
+                'rounded-md px-5 py-2 text-sm font-medium transition-colors',
+                mode === m.value
+                  ? 'bg-surface font-semibold text-text-primary shadow-sm'
+                  : 'text-text-secondary hover:text-text-primary',
+              )}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
 
-      <Button
-        intent={Intent.PRIMARY}
-        loading={isLoading}
-        disabled={mode === currentMode}
-        onClick={handleSave}
-      >
-        {intl.get('interface_mode.save')}
-      </Button>
-    </div>
+        <div className="mt-6 border-t border-border pt-6">
+          <Button
+            onClick={handleSave}
+            disabled={isLoading || mode === currentMode}
+          >
+            {intl.get('interface_mode.save')}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

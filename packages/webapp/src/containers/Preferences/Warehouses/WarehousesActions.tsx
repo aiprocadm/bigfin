@@ -1,36 +1,39 @@
-// @ts-nocheck
-import React from 'react';
-import { Button, Intent } from '@blueprintjs/core';
+import * as React from 'react';
+import intl from 'react-intl-universal';
+import { Plus } from 'lucide-react';
 
 import { Features } from '@/constants';
-import { FeatureCan, FormattedMessage as T, Icon } from '@/components';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { compose } from '@/utils';
+import { FeatureCan as FeatureCanBase } from '@/components';
+import { Button } from '@/components/ui/button';
+import {
+  withDialogActions,
+  type WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
+
+// Легаси-компонент без типов — кастуем локально.
+const FeatureCan = FeatureCanBase as unknown as React.ComponentType<{
+  feature: string;
+  children?: React.ReactNode;
+}>;
 
 /**
- * Warehouse actions.
+ * Панель действий вкладки «Склады»: одна primary-кнопка.
  */
-function WarehousesActions({
-  //#ownProps
-  openDialog,
-}) {
+function WarehousesActionsRoot({ openDialog }: WithDialogActionsProps) {
   const handleClickNewWarehouse = () => {
     openDialog('warehouse-form');
   };
 
   return (
-    <React.Fragment>
+    <div className="bigfin-ui">
       <FeatureCan feature={Features.Warehouses}>
-        <Button
-          icon={<Icon icon="plus" iconSize={12} />}
-          onClick={handleClickNewWarehouse}
-          intent={Intent.PRIMARY}
-        >
-          <T id={'warehouses.label.new_warehouse'} />
+        <Button size="sm" onClick={handleClickNewWarehouse}>
+          <Plus className="h-4 w-4" aria-hidden />
+          {intl.get('warehouses.label.new_warehouse')}
         </Button>
       </FeatureCan>
-    </React.Fragment>
+    </div>
   );
 }
 
-export default compose(withDialogActions)(WarehousesActions);
+export default withDialogActions(WarehousesActionsRoot);

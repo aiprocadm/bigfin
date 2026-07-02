@@ -1,32 +1,32 @@
-// @ts-nocheck
-import React from 'react';
-import { Button, Intent } from '@blueprintjs/core';
+import intl from 'react-intl-universal';
+import { Plus } from 'lucide-react';
 
 import { Features } from '@/constants';
-import { FeatureCan, FormattedMessage as T, Icon } from '@/components';
+import { FeatureCan } from '@/components';
+import { Button } from '@/components/ui/button';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
+/**
+ * Тулбар вкладки «Филиалы»: одна primary-кнопка добавления.
+ */
 function BranchesActions({
-  //#ownProps
+  // #withDialogActions
   openDialog,
-}) {
-  const handleClickNewBranche = () => {
+}: any) {
+  const handleClickNewBranch = () => {
     openDialog('branch-form');
   };
 
   return (
-    <React.Fragment>
+    <div className="bigfin-ui flex items-center">
       <FeatureCan feature={Features.Branches}>
-        <Button
-          icon={<Icon icon="plus" iconSize={12} />}
-          onClick={handleClickNewBranche}
-          intent={Intent.PRIMARY}
-        >
-          <T id={'branches.label.new_branch'} />
+        <Button size="sm" onClick={handleClickNewBranch}>
+          <Plus className="h-4 w-4" aria-hidden />
+          {intl.get('branches.label.new_branch')}
         </Button>
       </FeatureCan>
-    </React.Fragment>
+    </div>
   );
 }
 

@@ -1,107 +1,114 @@
-// @ts-nocheck
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import intl from 'react-intl-universal';
-
-import { compose } from '@/utils';
-import { DataTable, TableSkeletonRows, AppToaster } from '@/components';
-import { useResendInvitation } from '@/hooks/query';
-
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
-import { ActionsMenu, useUsersListColumns } from './components';
-import { useUsersListContext } from './UsersProvider';
 import { Intent } from '@blueprintjs/core';
 
+import { DataTable } from '@/components/ui/data-table';
+import { AppToaster } from '@/components';
+import { useResendInvitation } from '@/hooks/query';
+import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { compose } from '@/utils';
+
+import { useUsersListContext } from './UsersProvider';
+import { useUsersTableColumns, type UserRow } from './components';
+
+const getUserRowId = (row: UserRow) => String(row.id);
+
+interface ResendError {
+  response?: { data?: { errors?: { type: string }[] } };
+}
+
+// Легаси-хук без типов — кастуем локально.
+const useResendInvitationTyped = useResendInvitation as unknown as () => {
+  mutateAsync: (userId: number) => Promise<unknown>;
+};
+
 /**
- * Users datatable.
+ * Таблица пользователей (новый DataTable).
  */
 function UsersDataTable({
   // #withDialogActions
   openDialog,
-
   // #withAlertActions
   openAlert,
-}) {
-  const { mutateAsync: resendInviation } = useResendInvitation();
+}: any) {
+  const { mutateAsync: resendInvitation } = useResendInvitationTyped();
 
-  // Users list columns.
-  const columns = useUsersListColumns();
+  // Контекст списка пользователей (легаси-провайдер без типов).
+  const { users, isUsersLoading } = useUsersListContext() as {
+    users: UserRow[];
+    isUsersLoading: boolean;
+    isUsersFetching: boolean;
+  };
 
-  // Users list context.
-  const { users, isUsersLoading, isUsersFetching } = useUsersListContext();
-
-  // Handle edit user action.
-  const handleEditUserAction = useCallback(
-    (user) => {
+  // Редактирование пользователя.
+  const handleEditUser = useCallback(
+    (user: UserRow) => {
       openDialog('user-form', { action: 'edit', userId: user.id });
     },
     [openDialog],
   );
-  // Handle inactivate user action.
+  // Деактивация пользователя.
   const handleInactivateUser = useCallback(
-    (user) => {
+    (user: UserRow) => {
       openAlert('user-inactivate', { userId: user.id });
     },
     [openAlert],
   );
-  // Handle activate user action.
-  const handleActivateuser = useCallback(
-    (user) => {
+  // Активация пользователя.
+  const handleActivateUser = useCallback(
+    (user: UserRow) => {
       openAlert('user-activate', { userId: user.id });
     },
     [openAlert],
   );
-  // Handle delete user action.
+  // Удаление пользователя.
   const handleDeleteUser = useCallback(
-    (user) => {
+    (user: UserRow) => {
       openAlert('user-delete', { userId: user.id });
     },
     [openAlert],
   );
-  const handleResendInvitation = useCallback((user) => {
-    resendInviation(user.id)
-      .then(() => {
-        AppToaster.show({
-          message: intl.get('preferences.users.invite_resent'),
-          intent: Intent.SUCCESS,
-        });
-      })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          if (errors.find((e) => e.type === 'USER_RECENTLY_INVITED')) {
+  // Повторная отправка приглашения.
+  const handleResendInvitation = useCallback(
+    (user: UserRow) => {
+      resendInvitation(user.id)
+        .then(() => {
+          AppToaster.show({
+            message: intl.get('preferences.users.invite_resent'),
+            intent: Intent.SUCCESS,
+          });
+        })
+        .catch((error: ResendError) => {
+          const errors = error?.response?.data?.errors ?? [];
+          if (errors.some((e) => e.type === 'USER_RECENTLY_INVITED')) {
             AppToaster.show({
-              message:
-                'This person was recently invited. No need to invite them again just yet.',
+              message: intl.get('preferences.users.recently_invited'),
               intent: Intent.WARNING,
             });
           }
-        },
-      );
+        });
+    },
+    [resendInvitation],
+  );
+
+  const columns = useUsersTableColumns({
+    onEdit: handleEditUser,
+    onActivate: handleActivateUser,
+    onInactivate: handleInactivateUser,
+    onDelete: handleDeleteUser,
+    onResendInvitation: handleResendInvitation,
   });
 
   return (
-    <DataTable
-      columns={columns}
-      data={users}
-      loading={isUsersLoading}
-      headerLoading={isUsersLoading}
-      progressBarLoading={isUsersFetching}
-      TableLoadingRenderer={TableSkeletonRows}
-      noInitialFetch={true}
-      ContextMenu={ActionsMenu}
-      payload={{
-        onEdit: handleEditUserAction,
-        onActivate: handleActivateuser,
-        onInactivate: handleInactivateUser,
-        onDelete: handleDeleteUser,
-        onResendInvitation: handleResendInvitation,
-      }}
-    />
+    <div className="bigfin-ui p-4">
+      <DataTable
+        columns={columns}
+        data={users ?? []}
+        getRowId={getUserRowId}
+        loading={isUsersLoading}
+      />
+    </div>
   );
 }
 

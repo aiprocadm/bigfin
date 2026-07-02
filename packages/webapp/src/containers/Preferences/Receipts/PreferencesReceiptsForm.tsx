@@ -1,79 +1,53 @@
-// @ts-nocheck
-import styled from 'styled-components';
-import { Form } from 'formik';
-import { Button, Intent } from '@blueprintjs/core';
-import { useHistory } from 'react-router-dom';
+import intl from 'react-intl-universal';
+import { useFormContext } from 'react-hook-form';
 
-import { FormattedMessage as T, FFormGroup, FTextArea } from '@/components';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
+import type { ReceiptsFormValues } from './PreferencesReceipts.zod';
 
 /**
- * Preferences general form.
+ * Поля формы настроек чеков (Receipts).
  */
-export function PreferencesReceiptsForm({ isSubmitting }) {
-  const history = useHistory();
-
-  // Handle close click.
-  const handleCloseClick = () => {
-    history.go(-1);
-  };
+export function PreferencesReceiptsForm() {
+  const form = useFormContext<ReceiptsFormValues>();
 
   return (
-    <Form>
-      {/* ---------- Customer Notes ----------  */}
-      <FFormGroup
-        name={'receiptMessage'}
-        label={<T id={'pref.receipts.receiptMessage.field'} />}
-        fastField={true}
-      >
-        <FTextArea
-          medium={'true'}
-          name={'receiptMessage'}
-          fastField={true}
-          fill={true}
-        />
-      </FFormGroup>
+    <div className="flex max-w-2xl flex-col gap-6">
+      <FormField
+        control={form.control}
+        name="receiptMessage"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{intl.get('pref.receipts.receiptMessage.field')}</FormLabel>
+            <FormControl>
+              <Textarea rows={4} {...field} value={field.value ?? ''} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-      {/* ---------- Terms & Conditions ----------  */}
-      <FFormGroup
-        name={'termsConditions'}
-        label={<T id={'pref.receipts.termsConditions.field'} />}
-        fastField={true}
-      >
-        <FTextArea
-          medium={'true'}
-          name={'termsConditions'}
-          fastField={true}
-          fill={true}
-        />
-      </FFormGroup>
-
-      <CardFooterActions>
-        <Button loading={isSubmitting} intent={Intent.PRIMARY} type="submit">
-          <T id={'save'} />
-        </Button>
-        <Button onClick={handleCloseClick}>
-          <T id={'close'} />
-        </Button>
-      </CardFooterActions>
-    </Form>
+      <FormField
+        control={form.control}
+        name="termsConditions"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              {intl.get('pref.receipts.termsConditions.field')}
+            </FormLabel>
+            <FormControl>
+              <Textarea rows={4} {...field} value={field.value ?? ''} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 }
-
-const CardFooterActions = styled.div`
-  --x-color-border: #e0e7ea;
-
-  .bp4-dark & {
-    --x-color-border: rgba(255, 255, 255, 0.15);
-  }
-  padding-top: 16px;
-  border-top: 1px solid var(--x-color-border);
-  margin-top: 30px;
-
-  .bp4-button {
-    min-width: 70px;
-
-    + .bp4-button {
-      margin-left: 10px;
-    }
-  }
-`;

@@ -1,13 +1,19 @@
-// @ts-nocheck
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import intl from 'react-intl-universal';
-import { Formik } from 'formik';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useHistory } from 'react-router-dom';
 import { Intent } from '@blueprintjs/core';
-import { AppToaster } from '@/components';
-import { omit } from 'lodash';
-import { ItemPreferencesSchema } from './ItemPreferences.schema';
-import ItemPreferencesForm from './ItemPreferencesForm';
 
+import { AppToaster } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
+import ItemPreferencesForm from './ItemPreferencesForm';
+import {
+  itemPreferencesSchema,
+  type ItemPreferencesFormValues,
+} from './ItemPreferences.zod';
 import { useItemPreferencesFormContext } from './ItemPreferencesFormProvider';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
 import { withSettings } from '@/containers/Settings/withSettings';
@@ -18,69 +24,100 @@ import {
   transformToForm,
 } from '@/utils';
 
-import '@/style/pages/Preferences/Accounting.scss';
-
-const defaultFormValues = {
+const defaultFormValues: ItemPreferencesFormValues = {
   preferred_sell_account: '',
   preferred_cost_account: '',
   preferred_inventory_account: '',
 };
 
-// item form page preferences.
-function ItemPreferencesFormPage({
+interface ItemPreferencesFormPageProps {
   // #withSettings
-  itemsSettings,
-
+  itemsSettings: Record<string, unknown>;
   // #withDashboardActions
-  changePreferencesPageTitle,
-}) {
-  const { saveSettingMutate } = useItemPreferencesFormContext();
+  changePreferencesPageTitle: (title: string) => void;
+}
 
-  // Initial values.
-  const initialValues = {
-    ...defaultFormValues,
-    ...transformToForm(
-      transformGeneralSettings(itemsSettings),
-      defaultFormValues,
-    ),
+function ItemPreferencesFormPage({
+  itemsSettings,
+  changePreferencesPageTitle,
+}: ItemPreferencesFormPageProps) {
+  const history = useHistory();
+  const { saveSettingMutate } = useItemPreferencesFormContext() as {
+    saveSettingMutate: (vars: { options: unknown }) => Promise<unknown>;
   };
 
   useEffect(() => {
     changePreferencesPageTitle(intl.get('items'));
   }, [changePreferencesPageTitle]);
 
-  // Handle form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
-    const options = optionsMapToArray(values).map((option) => ({
-      ...option,
-      group: 'items',
-    }));
+  // Из настроек id счетов приходят числами/строками — в форме держим строками.
+  const stored = transformToForm(
+    transformGeneralSettings(itemsSettings),
+    defaultFormValues,
+  ) as Record<string, unknown>;
+  const initialValues: ItemPreferencesFormValues = {
+    ...defaultFormValues,
+    ...Object.fromEntries(
+      Object.entries(stored).map(([k, v]) => [k, v == null ? '' : String(v)]),
+    ),
+  };
 
-    const onSuccess = () => {
+  const form = useForm<ItemPreferencesFormValues>({
+    resolver: zodResolver(itemPreferencesSchema),
+    defaultValues: initialValues,
+  });
+
+  const onSubmit = async (values: ItemPreferencesFormValues) => {
+    // Непустые id обратно в числа — тот же контракт, что у легаси-формы.
+    const numeric = Object.fromEntries(
+      Object.entries(values).map(([k, v]) => [k, v === '' ? '' : Number(v)]),
+    );
+    const options = (
+      optionsMapToArray(numeric) as Array<Record<string, unknown>>
+    ).map((option) => ({ ...option, group: 'items' }));
+
+    try {
+      await saveSettingMutate({ options });
       AppToaster.show({
         message: intl.get('the_items_preferences_has_been_saved'),
         intent: Intent.SUCCESS,
       });
-      setSubmitting(false);
-    };
-
-    const onError = (errors) => {
-      setSubmitting(false);
-    };
-    saveSettingMutate({ options }).then(onSuccess).catch(onError);
+    } catch {
+      // Ошибки полей возвращает бэкенд; глобальный тост не показываем (как в легаси).
+    }
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={ItemPreferencesSchema}
-      onSubmit={handleFormSubmit}
-      component={ItemPreferencesForm}
-    />
+    <Card>
+      <CardContent className="p-6">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-8"
+          >
+            <ItemPreferencesForm />
+            <div className="flex gap-3 border-t border-border pt-6">
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {intl.get('save')}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => history.go(-1)}
+              >
+                {intl.get('close')}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
 
 export default compose(
-  withSettings(({ itemsSettings }) => ({ itemsSettings })),
+  withSettings((mapped: { itemsSettings: Record<string, unknown> }) => ({
+    itemsSettings: mapped.itemsSettings,
+  })),
   withDashboardActions,
 )(ItemPreferencesFormPage);

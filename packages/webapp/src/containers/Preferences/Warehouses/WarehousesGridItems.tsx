@@ -1,41 +1,51 @@
-// @ts-nocheck
-import React from 'react';
+import * as React from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
-import { ContextMenu2 } from '@blueprintjs/popover2';
 
 import { AppToaster } from '@/components';
-import { WarehouseContextMenu, WarehousesGridItemBox } from './components';
 import { useMarkWarehouseAsPrimary } from '@/hooks/query';
 
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
-/**
- *  warehouse grid item.
- */
-function WarehouseGridItem({
+import { WarehouseCard, type WarehouseRow } from './components';
+
+interface WarehouseGridItemProps {
+  warehouse: WarehouseRow;
+
   // #withAlertActions
-  openAlert,
+  openAlert: (name: string, payload?: Record<string, unknown>) => void;
 
   // #withDialogActions
-  openDialog,
+  openDialog: (name: string, payload?: Record<string, unknown>) => void;
+}
 
+// Легаси-хук без типов — кастуем локально.
+const useMarkWarehouseAsPrimaryTyped = useMarkWarehouseAsPrimary as unknown as () => {
+  mutateAsync: (warehouseId: number) => Promise<unknown>;
+};
+
+/**
+ * Карточка склада с действиями (редактировать / сделать основным / удалить).
+ */
+function WarehouseGridItemRoot({
   warehouse,
-}) {
+  openAlert,
+  openDialog,
+}: WarehouseGridItemProps) {
   const { mutateAsync: markWarehouseAsPrimaryMutate } =
-    useMarkWarehouseAsPrimary();
+    useMarkWarehouseAsPrimaryTyped();
 
-  // Handle edit warehouse.
+  // Открывает диалог редактирования склада.
   const handleEditWarehouse = () => {
     openDialog('warehouse-form', { warehouseId: warehouse.id, action: 'edit' });
   };
-  // Handle delete warehouse.
+  // Открывает алерт удаления склада.
   const handleDeleteWarehouse = () => {
     openAlert('warehouse-delete', { warehouseId: warehouse.id });
   };
-  // Handle mark primary warehouse.
+  // Помечает склад основным.
   const handleMarkWarehouseAsPrimary = () => {
     markWarehouseAsPrimaryMutate(warehouse.id).then(() => {
       AppToaster.show({
@@ -46,39 +56,37 @@ function WarehouseGridItem({
   };
 
   return (
-    <ContextMenu2
-      content={
-        <WarehouseContextMenu
-          warehouse={warehouse}
-          onEditClick={handleEditWarehouse}
-          onDeleteClick={handleDeleteWarehouse}
-          onMarkPrimary={handleMarkWarehouseAsPrimary}
-        />
-      }
-    >
-      <WarehousesGridItemBox
-        title={warehouse.name}
-        code={warehouse.code}
-        city={warehouse.city}
-        country={warehouse.country}
-        email={warehouse.email}
-        phoneNumber={warehouse.phone_number}
-        primary={warehouse.primary}
-      />
-    </ContextMenu2>
+    <WarehouseCard
+      warehouse={warehouse}
+      actions={{
+        onEdit: handleEditWarehouse,
+        onDelete: handleDeleteWarehouse,
+        onMarkPrimary: handleMarkWarehouseAsPrimary,
+      }}
+    />
   );
 }
 
 const WarehousesGridItem = compose(
   withAlertActions,
   withDialogActions,
-)(WarehouseGridItem);
+)(WarehouseGridItemRoot) as unknown as React.ComponentType<{
+  warehouse: WarehouseRow;
+}>;
 
 /**
- * warehouses grid items,
+ * Карточки складов.
  */
-export default function WarehousesGridItems({ warehouses }) {
-  return warehouses.map((warehouse) => (
-    <WarehousesGridItem warehouse={warehouse} />
-  ));
+export default function WarehousesGridItems({
+  warehouses,
+}: {
+  warehouses: WarehouseRow[];
+}) {
+  return (
+    <>
+      {warehouses.map((warehouse) => (
+        <WarehousesGridItem key={warehouse.id} warehouse={warehouse} />
+      ))}
+    </>
+  );
 }

@@ -1,215 +1,171 @@
-// @ts-nocheck
-import React from 'react';
+import * as React from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
-import {
-  Menu,
-  MenuItem,
-  MenuDivider,
-  Intent,
-  Classes,
-} from '@blueprintjs/core';
+import { MoreHorizontal, Pencil, Star, Trash2 } from 'lucide-react';
 
-import { Icon, If } from '@/components';
-import { safeCallback } from '@/utils';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const WAREHOUSES_SKELETON_N = 4;
 
+export interface WarehouseRow {
+  id: number;
+  name: string;
+  code?: string | null;
+  city?: string | null;
+  country?: string | null;
+  email?: string | null;
+  phone_number?: string | null;
+  primary?: boolean;
+}
+
+export interface WarehouseCardActions {
+  onEdit: () => void;
+  onDelete: () => void;
+  onMarkPrimary: () => void;
+}
+
 /**
- * Warehouse grid item box context menu.
- * @returns {JSX.Element}
+ * Меню действий карточки склада (shadcn DropdownMenu).
  */
-export function WarehouseContextMenu({
-  onEditClick,
-  onDeleteClick,
-  onMarkPrimary,
+export function WarehouseActionsMenu({
   warehouse,
+  actions,
+}: {
+  warehouse: WarehouseRow;
+  actions: WarehouseCardActions;
 }) {
   return (
-    <Menu>
-      <MenuItem
-        icon={<Icon icon="pen-18" />}
-        text={intl.get('warehouses.action.edit_warehouse')}
-        onClick={safeCallback(onEditClick)}
-      />
-      <If condition={!warehouse.primary}>
-        <MenuItem
-          icon={<Icon icon={'check'} iconSize={18} />}
-          text={intl.get('warehouses.action.make_as_parimary')}
-          onClick={safeCallback(onMarkPrimary)}
-        />
-      </If>
-      <MenuDivider />
-      <MenuItem
-        text={intl.get('warehouses.action.delete_warehouse')}
-        icon={<Icon icon="trash-16" iconSize={16} />}
-        intent={Intent.DANGER}
-        onClick={safeCallback(onDeleteClick)}
-      />
-    </Menu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 shrink-0 text-text-muted sm:h-8 sm:w-8"
+          aria-label={intl.get('more_actions')}
+        >
+          <MoreHorizontal className="h-4 w-4" aria-hidden />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={actions.onEdit}>
+          <Pencil className="mr-2 h-4 w-4" aria-hidden />
+          {intl.get('warehouses.action.edit_warehouse')}
+        </DropdownMenuItem>
+        {!warehouse.primary && (
+          <DropdownMenuItem onClick={actions.onMarkPrimary}>
+            <Star className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('warehouses.action.make_as_parimary')}
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-danger focus:text-danger"
+          onClick={actions.onDelete}
+        >
+          <Trash2 className="mr-2 h-4 w-4" aria-hidden />
+          {intl.get('warehouses.action.delete_warehouse')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
 /**
- * Warehouse grid item box skeleton.
- * @returns {JSX.Element}
+ * Карточка склада (shadcn Card, волосяная граница, без теней).
  */
-function WarehouseGridItemSkeletonBox() {
-  return (
-    <WarehouseBoxRoot>
-      <WarehouseHeader>
-        <WarehouseTitle className={Classes.SKELETON}>X</WarehouseTitle>
-        <WarehouseCode className={Classes.SKELETON}>X</WarehouseCode>
-      </WarehouseHeader>
+export function WarehouseCard({
+  warehouse,
+  actions,
+}: {
+  warehouse: WarehouseRow;
+  actions: WarehouseCardActions;
+}) {
+  const details = [
+    warehouse.city,
+    warehouse.country,
+    warehouse.email,
+    warehouse.phone_number,
+  ].filter(Boolean) as string[];
 
-      <WarehouseContent>
-        <WarehouseItem className={Classes.SKELETON}>X</WarehouseItem>
-        <WarehouseItem className={Classes.SKELETON}>X</WarehouseItem>
-      </WarehouseContent>
-    </WarehouseBoxRoot>
+  return (
+    <Card className="flex min-h-[140px] flex-col gap-3 p-4 shadow-none">
+      <div className="flex items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h3 className="truncate text-sm font-medium text-text-primary">
+              {warehouse.name}
+            </h3>
+            {warehouse.primary && (
+              <Badge variant="secondary" className="shrink-0">
+                {intl.get('warehouses.badge.primary')}
+              </Badge>
+            )}
+          </div>
+          {warehouse.code && (
+            <p className="mt-1 text-xs text-text-muted">{warehouse.code}</p>
+          )}
+        </div>
+        <WarehouseActionsMenu warehouse={warehouse} actions={actions} />
+      </div>
+
+      <div className="mt-auto space-y-1">
+        {details.map((detail, index) => (
+          <p key={index} className="truncate text-xs text-text-secondary">
+            {detail}
+          </p>
+        ))}
+      </div>
+    </Card>
   );
 }
 
 /**
- * Warehouse grid item box.
- * @returns {JSX.Element}
+ * Скелетон карточки склада.
  */
-export function WarehousesGridItemBox({
-  title,
-  code,
-  city,
-  country,
-  email,
-  phoneNumber,
-  primary,
-}) {
+function WarehouseCardSkeleton() {
   return (
-    <WarehouseBoxRoot>
-      <WarehouseHeader>
-        <WarehouseTitle>
-          {title} {primary ? <Icon icon={'star-18dp'} iconSize={16} /> : null}
-        </WarehouseTitle>
-        <WarehouseCode>{code}</WarehouseCode>
-        <WarehouseIcon>
-          <Icon icon="warehouse-16" iconSize={20} />
-        </WarehouseIcon>
-      </WarehouseHeader>
-      <WarehouseContent>
-        {city && <WarehouseItem>{city}</WarehouseItem>}
-        {country && <WarehouseItem>{country}</WarehouseItem>}
-        {email && <WarehouseItem>{email}</WarehouseItem>}
-        {phoneNumber && <WarehouseItem>{phoneNumber}</WarehouseItem>}
-      </WarehouseContent>
-    </WarehouseBoxRoot>
+    <Card className="flex min-h-[140px] flex-col gap-3 p-4 shadow-none">
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-3 w-1/4" />
+      </div>
+      <div className="mt-auto space-y-2">
+        <Skeleton className="h-3 w-1/2" />
+        <Skeleton className="h-3 w-2/3" />
+      </div>
+    </Card>
   );
 }
 
+/**
+ * Скелетоны сетки складов (на время загрузки).
+ */
 export function WarehousesSkeleton() {
-  return [...Array(WAREHOUSES_SKELETON_N)].map((key, value) => (
-    <WarehouseGridItemSkeletonBox />
-  ));
+  return (
+    <>
+      {Array.from({ length: WAREHOUSES_SKELETON_N }).map((_, index) => (
+        <WarehouseCardSkeleton key={index} />
+      ))}
+    </>
+  );
 }
 
-export const WarehousesList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin: 15px;
-  height: 100%;
-`;
-
-export const WarehouseBoxRoot = styled.div`
-  --x-box-border-color: #c8cad0;
-  --x-box-background-color: #fff;
-  --x-box-hover-border-color: #0153cc;
-
-  .bp4-dark & {
-    --x-box-border-color: rgba(255, 255, 255, 0.2);
-    --x-box-background-color: var(--color-dark-gray3);
-    --x-box-hover-border-color: #0153cc;
-  }
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  border-radius: 5px;
-  border: 1px solid var(--x-box-border-color);
-  background: var(--x-box-background-color);
-  margin: 5px 5px 8px;
-  width: 200px;
-  height: 160px;
-  transition: all 0.1s ease-in-out;
-  padding: 12px;
-  position: relative;
-
-  &:hover {
-    border-color: var(--x-box-hover-border-color);
-  }
-`;
-
-export const WarehouseHeader = styled.div`
-  position: relative;
-  padding-right: 24px;
-  padding-top: 2px;
-`;
-
-export const WarehouseTitle = styled.div`
-  --x-title-color: #000;
-  --x-title-icon-color: #e1b31d;
-
-  .bp4-dark & {
-    --x-title-color: var(--color-light-gray5);
-    --x-title-icon-color: #e1b31d;
-  }
-  font-size: 14px;
-  font-style: inherit;
-  color: var(--x-title-color);
-  white-space: nowrap;
-  font-weight: 500;
-  line-height: 1;
-
-  .bp4-icon {
-    margin: 0;
-    margin-left: 2px;
-    vertical-align: top;
-    color: var(--x-title-icon-color);
-  }
-`;
-
-const WarehouseCode = styled.div`
-  --x-code-color: #6b7176;
-
-  .bp4-dark & {
-    --x-code-color: var(--color-muted-text);
-  }
-  display: block;
-  font-size: 11px;
-  color: var(--x-code-color);
-  margin-top: 4px;
-`;
-
-const WarehouseIcon = styled.div`
-  position: absolute;
-  top: 0;
-  color: #abb3bb;
-  right: 0;
-`;
-
-const WarehouseContent = styled.div`
-  width: 100%;
-  margin-top: auto;
-`;
-
-const WarehouseItem = styled.div`
-  --x-item-color: #000;
-
-  .bp4-dark & {
-    --x-item-color: var(--color-light-gray1);
-  }
-  font-size: 11px;
-  color: var(--x-item-color);
-  text-overflow: ellipsis;
-  overflow: hidden;
-
-  &:not(:last-of-type) {
-    margin-bottom: 5px;
-  }
-`;
+/**
+ * Сетка карточек складов: 1 колонка на мобильном, 2–3 на десктопе.
+ */
+export function WarehousesList({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {children}
+    </div>
+  );
+}

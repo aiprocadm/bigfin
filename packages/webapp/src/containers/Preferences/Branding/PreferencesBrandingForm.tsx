@@ -1,115 +1,125 @@
-import React, { CSSProperties } from 'react';
 import intl from 'react-intl-universal';
-import { Formik, Form, FormikHelpers } from 'formik';
-import * as Yup from 'yup';
-import { omit } from 'lodash';
-import { PreferencesBrandingFormValues } from './_types';
-import { useUploadAttachments } from '@/hooks/query/attachments';
-import { AppToaster } from '@/components';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Intent } from '@blueprintjs/core';
+import { omit } from 'lodash';
+
+import { AppToaster } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useUploadAttachments } from '@/hooks/query/attachments';
+import { useUpdateOrganization } from '@/hooks/query';
 import {
   excludePrivateProps,
   transformToCamelCase,
   transformToForm,
   transfromToSnakeCase,
 } from '@/utils';
-import { useUpdateOrganization } from '@/hooks/query';
+import { PreferencesBrandingFormContent } from './PreferencesBrandingFormContent';
+import {
+  brandingSchema,
+  type BrandingFormValues,
+} from './PreferencesBranding.zod';
 import { usePreferencesBrandingBoot } from './PreferencesBrandingBoot';
 
-const initialValues = {
+const defaultValues: BrandingFormValues = {
   logoKey: '',
   logoUri: '',
   primaryColor: '',
 };
 
-const validationSchema = Yup.object({
-  logoKey: Yup.string().optional(),
-  logoUri: Yup.string().optional(),
-  primaryColor: Yup.string().required('Primary color is required'),
-});
+/**
+ * Форма оформления: RHF-обёртка с загрузкой логотипа и сохранением.
+ */
+export const PreferencesBrandingForm = () => {
+  const { organization, isOrganizationLoading } = usePreferencesBrandingBoot();
 
-interface PreferencesBrandingFormProps {
-  children: React.ReactNode;
-}
+  // Данные организации нужны для initial values — ждём загрузку.
+  if (isOrganizationLoading) {
+    return <Skeleton className="h-48 w-full max-w-2xl" />;
+  }
+  return <BrandingFormInner organization={organization} />;
+};
 
-export const PreferencesBrandingForm = ({
-  children,
-}: PreferencesBrandingFormProps) => {
-  // Uploads the attachments.
-  const { mutateAsync: uploadAttachments } = useUploadAttachments({});
-  // Mutate organization information.
-  const { mutateAsync: updateOrganization } = useUpdateOrganization();
+function BrandingFormInner({
+  organization,
+}: {
+  organization: { metadata?: Record<string, unknown> };
+}) {
+  // Легаси-хуки без типов — уточняем сигнатуры локально.
+  const { mutateAsync: uploadAttachmentsMutate } = useUploadAttachments({});
+  const uploadAttachments = uploadAttachmentsMutate as unknown as (
+    fd: FormData,
+  ) => Promise<{ key?: string }>;
 
-  const { organization } = usePreferencesBrandingBoot();
+  const { mutateAsync: updateOrganizationMutate } = useUpdateOrganization();
+  const updateOrganization = updateOrganizationMutate as unknown as (
+    values: Record<string, unknown>,
+  ) => Promise<unknown>;
 
-  const formInitialValues = {
+  const initialValues: BrandingFormValues = {
+    ...defaultValues,
     ...transformToForm(
       transformToCamelCase(organization?.metadata),
-      initialValues,
+      defaultValues,
     ),
-  } as PreferencesBrandingFormValues;
+  };
 
-  // Handle the form submitting.
-  const handleSubmit = async (
-    values: PreferencesBrandingFormValues,
-    { setSubmitting }: FormikHelpers<PreferencesBrandingFormValues>,
-  ) => {
+  const form = useForm<BrandingFormValues>({
+    resolver: zodResolver(brandingSchema),
+    defaultValues: initialValues,
+  });
+
+  const onSubmit = async (values: BrandingFormValues) => {
     const _values = { ...values };
 
-    const handleError = (message: string) => {
-      AppToaster.show({ intent: Intent.DANGER, message });
-      setSubmitting(false);
-    };
-    // Start upload the company logo file if it is presented.
+    // Сначала выгружаем файл логотипа, если он выбран.
     if (values._logoFile) {
       const formData = new FormData();
-      const key = Date.now().toString();
-
       formData.append('file', values._logoFile);
-      formData.append('internalKey', key);
+      formData.append('internalKey', Date.now().toString());
 
       try {
-        // @ts-expect-error
-        const uploadedAttachmentRes = await uploadAttachments(formData);
-        setSubmitting(false);
-
-        // Adds the attachment key to the values after finishing upload.
-        _values['logoKey'] = uploadedAttachmentRes?.key;
+        const uploaded = await uploadAttachments(formData);
+        _values.logoKey = uploaded?.key ?? '';
       } catch {
-        handleError('An error occurred while uploading company logo.');
-        setSubmitting(false);
+        AppToaster.show({
+          message: intl.get('preferences.branding.logo.upload_failed'),
+          intent: Intent.DANGER,
+        });
         return;
       }
     }
-    // Exclude all the private props that starts with _.
-    const excludedPrivateValues = excludePrivateProps(_values);
+    // Приватные поля (_*) и локальный logoUri на сервер не отправляем.
+    const payload = transfromToSnakeCase(
+      omit(excludePrivateProps(_values), ['logoUri']),
+    ) as Record<string, unknown>;
 
-    const __values = transfromToSnakeCase(
-      omit(excludedPrivateValues, ['logoUri']),
-    );
-    // Update organization branding.
-    // @ts-expect-error
-    await updateOrganization({ ...__values });
-
-    AppToaster.show({
-      message: intl.get('preferences.branding.updated_successfully'),
-      intent: Intent.SUCCESS,
-    });
+    try {
+      await updateOrganization(payload);
+      AppToaster.show({
+        message: intl.get('preferences.branding.updated_successfully'),
+        intent: Intent.SUCCESS,
+      });
+    } catch {
+      // Ошибки полей возвращает бэкенд; глобальный тост не показываем (как в легаси).
+    }
   };
 
   return (
-    <Formik
-      initialValues={formInitialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      <Form style={formStyle}>{children}</Form>
-    </Formik>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-8"
+      >
+        <PreferencesBrandingFormContent />
+        <div className="flex gap-3 border-t border-border pt-6">
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {intl.get('save')}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
-};
-
-const formStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  flex: 1,
-};
+}

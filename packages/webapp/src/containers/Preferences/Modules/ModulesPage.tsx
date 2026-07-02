@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
-import { Switch, Intent } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
 import { AppToaster } from '@/components';
+import { Card, CardContent } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { useTurnOnFeature, useTurnOffFeature } from '@/hooks/query/features';
@@ -61,36 +63,47 @@ function ModulesPage({ changePreferencesPageTitle }: ModulesPageProps) {
   };
 
   return (
-    <div style={{ maxWidth: 640 }}>
-      <p>{intl.get('preferences.modules.description')}</p>
-      <p style={{ color: '#5c7080' }}>
-        {intl.get('preferences.modules.note_interface_mode')}
-      </p>
+    <Card>
+      <CardContent className="max-w-2xl p-6">
+        <p className="text-sm text-text-primary">
+          {intl.get('preferences.modules.description')}
+        </p>
+        <p className="mt-1 text-sm text-text-secondary">
+          {intl.get('preferences.modules.note_interface_mode')}
+        </p>
 
-      {MODULE_GROUPS.map(({ group, features }) => (
-        <div key={group} style={{ marginBottom: 24 }}>
-          <h4>{intl.get(`modules.group.${group}`)}</h4>
-          {features.map((feature) => (
-            <Switch
-              key={feature}
-              checked={featureCan(feature)}
-              disabled={busy}
-              labelElement={
-                <span>
-                  <strong>{intl.get(`modules.${feature}.label`)}</strong>
-                  <span style={{ display: 'block', color: '#5c7080', fontSize: 12 }}>
-                    {intl.get(`modules.${feature}.desc`)}
-                  </span>
-                </span>
-              }
-              onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                handleToggle(feature, e.currentTarget.checked)
-              }
-            />
+        <div className="mt-6 flex flex-col gap-8">
+          {MODULE_GROUPS.map(({ group, features }) => (
+            <div key={group} className="flex flex-col gap-1">
+              <h3 className="mb-2 text-sm font-semibold text-text-primary">
+                {intl.get(`modules.group.${group}`)}
+              </h3>
+              {features.map((feature) => (
+                <div
+                  key={feature}
+                  className="flex items-center justify-between gap-4 border-t border-border py-3 first-of-type:border-t-0"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-text-primary">
+                      {intl.get(`modules.${feature}.label`)}
+                    </div>
+                    <div className="text-xs text-text-secondary">
+                      {intl.get(`modules.${feature}.desc`)}
+                    </div>
+                  </div>
+                  <Switch
+                    checked={featureCan(feature)}
+                    disabled={busy}
+                    onCheckedChange={(next) => handleToggle(feature, next)}
+                    aria-label={intl.get(`modules.${feature}.label`)}
+                  />
+                </div>
+              ))}
+            </div>
           ))}
         </div>
-      ))}
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

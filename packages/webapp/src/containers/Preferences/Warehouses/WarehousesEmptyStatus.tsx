@@ -1,41 +1,35 @@
-// @ts-nocheck
-import React from 'react';
-import { Button, Intent } from '@blueprintjs/core';
-import { FormattedMessage as T, EmptyStatus } from '@/components';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import * as React from 'react';
+import intl from 'react-intl-universal';
+import { Warehouse } from 'lucide-react';
 
-import { compose } from '@/utils';
+import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import {
+  withDialogActions,
+  type WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 
-function WarehousesEmptyStatus({
-  // #withDialogActions
-  openDialog,
-}) {
-  // Handle activate action warehouse.
+/**
+ * Пустое состояние вкладки «Склады»: заголовок, одна строка, одна кнопка.
+ */
+function WarehousesEmptyStatusRoot({ openDialog }: WithDialogActionsProps) {
+  // Открывает диалог активации складов.
   const handleActivateWarehouse = () => {
     openDialog('warehouse-activate', {});
   };
 
   return (
-    <EmptyStatus
-      title={<T id={'warehouses.empty_status.title'} />}
-      description={
-        <p>
-          <T id={'warehouses.empty_status.description'} />
-        </p>
-      }
+    <EmptyState
+      icon={<Warehouse className="h-8 w-8" aria-hidden />}
+      title={intl.get('warehouses.empty_status.title')}
+      description={intl.get('warehouses.empty_status.description')}
       action={
-        <React.Fragment>
-          <Button
-            intent={Intent.PRIMARY}
-            large={true}
-            onClick={handleActivateWarehouse}
-          >
-            <T id={'warehouses.activate_button'} />
-          </Button>
-        </React.Fragment>
+        <Button onClick={handleActivateWarehouse}>
+          {intl.get('warehouses.activate_button')}
+        </Button>
       }
     />
   );
 }
 
-export default compose(withDialogActions)(WarehousesEmptyStatus);
+export default withDialogActions(WarehousesEmptyStatusRoot);

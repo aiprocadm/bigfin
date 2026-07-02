@@ -1,156 +1,215 @@
-// @ts-nocheck
-import React from 'react';
+import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import { FormattedMessage as T, Icon, If } from '@/components';
 import {
-  Intent,
-  Button,
-  Popover,
-  Menu,
-  MenuDivider,
-  Tag,
-  MenuItem,
-  Position,
-} from '@blueprintjs/core';
-import { safeCallback, firstLettersArgs } from '@/utils';
+  MoreHorizontal,
+  Pause,
+  Pencil,
+  Play,
+  Send,
+  Trash2,
+} from 'lucide-react';
 
-/**
- * Avatar cell.
- */
-function AvatarCell(row) {
-  return <span className={'avatar'}>{firstLettersArgs(row.email)}</span>;
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+export interface UserRow {
+  id: number;
+  email: string;
+  full_name?: string;
+  role_name?: string;
+  active?: boolean;
+  is_invite_accepted?: boolean;
+  invite_accepted_at?: string | null;
+}
+
+export interface UserRowActions {
+  onEdit: (row: UserRow) => void;
+  onActivate: (row: UserRow) => void;
+  onInactivate: (row: UserRow) => void;
+  onDelete: (row: UserRow) => void;
+  onResendInvitation: (row: UserRow) => void;
 }
 
 /**
- * Users table actions menu.
+ * Инициалы пользователя для аватара (имя — для принявших приглашение,
+ * иначе email).
  */
-export function ActionsMenu({
-  row: { original },
-  payload: { onEdit, onInactivate, onActivate, onDelete, onResendInvitation },
+function userInitials(user: UserRow): string {
+  const source =
+    user.is_invite_accepted && user.full_name ? user.full_name : user.email;
+  return source
+    .split(' ')
+    .slice(0, 2)
+    .map((word) => word.charAt(0))
+    .join('')
+    .toUpperCase();
+}
+
+/**
+ * Аватар-кружок с инициалами.
+ */
+function UserAvatar({ user }: { user: UserRow }) {
+  return (
+    <span
+      aria-hidden
+      className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-elevated text-xs font-semibold text-text-secondary"
+    >
+      {userInitials(user)}
+    </span>
+  );
+}
+
+/**
+ * Статус пользователя — пилюля (Badge).
+ */
+export function UserStatusBadge({ user }: { user: UserRow }) {
+  if (!user.is_invite_accepted) {
+    return (
+      <Badge variant="secondary">
+        {intl.get('preferences.users.status.invited')}
+      </Badge>
+    );
+  }
+  return user.active ? (
+    <Badge variant="success">
+      {intl.get('preferences.users.status.active')}
+    </Badge>
+  ) : (
+    <Badge variant="outline">
+      {intl.get('preferences.users.status.inactive')}
+    </Badge>
+  );
+}
+
+/**
+ * Меню действий строки пользователя (shadcn DropdownMenu).
+ */
+export function UserActionsMenu({
+  row,
+  actions,
+}: {
+  row: UserRow;
+  actions: UserRowActions;
 }) {
   return (
-    <Menu>
-      <If condition={original.invite_accepted_at}>
-        <MenuItem
-          icon={<Icon icon="pen-18" />}
-          text={intl.get('edit_user')}
-          onClick={safeCallback(onEdit, original)}
-        />
-        <MenuDivider />
-
-        {original.active ? (
-          <MenuItem
-            text={intl.get('inactivate_user')}
-            onClick={safeCallback(onInactivate, original)}
-            icon={<Icon icon="pause-16" iconSize={16} />}
-          />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={intl.get('more_actions')}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <MoreHorizontal className="h-4 w-4" aria-hidden />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+        {row.invite_accepted_at ? (
+          <>
+            <DropdownMenuItem onClick={() => actions.onEdit(row)}>
+              <Pencil className="mr-2 h-4 w-4" aria-hidden />
+              {intl.get('edit_user')}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {row.active ? (
+              <DropdownMenuItem onClick={() => actions.onInactivate(row)}>
+                <Pause className="mr-2 h-4 w-4" aria-hidden />
+                {intl.get('inactivate_user')}
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => actions.onActivate(row)}>
+                <Play className="mr-2 h-4 w-4" aria-hidden />
+                {intl.get('activate_user')}
+              </DropdownMenuItem>
+            )}
+          </>
         ) : (
-          <MenuItem
-            text={intl.get('activate_user')}
-            onClick={safeCallback(onActivate, original)}
-            icon={<Icon icon="play-16" iconSize={16} />}
-          />
+          <DropdownMenuItem onClick={() => actions.onResendInvitation(row)}>
+            <Send className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('preferences.users.resend_invitation')}
+          </DropdownMenuItem>
         )}
-      </If>
-
-      <If condition={!original.invite_accepted_at}>
-        <MenuItem
-          text={'Resend invitation'}
-          onClick={safeCallback(onResendInvitation, original)}
-          icon={<Icon icon="send" iconSize={16} />}
-        />
-      </If>
-
-      <MenuItem
-        icon={<Icon icon="trash-16" iconSize={16} />}
-        text={intl.get('delete_user')}
-        onClick={safeCallback(onDelete, original)}
-        intent={Intent.DANGER}
-      />
-    </Menu>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-danger focus:text-danger"
+          onClick={() => actions.onDelete(row)}
+        >
+          <Trash2 className="mr-2 h-4 w-4" aria-hidden />
+          {intl.get('delete_user')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
 /**
- * Status accessor.
+ * Колонки таблицы пользователей для нового DataTable (react-table v7 формат).
  */
-function StatusAccessor(user) {
-  return !user.is_invite_accepted ? (
-    <Tag minimal={true}>
-      <T id={'inviting'} />
-    </Tag>
-  ) : user.active ? (
-    <Tag intent={Intent.SUCCESS} minimal={true}>
-      <T id={'activate'} />
-    </Tag>
-  ) : (
-    <Tag intent={Intent.WARNING} minimal={true}>
-      <T id={'inactivate'} />
-    </Tag>
-  );
-}
-
-/**
- * Actions cell.
- */
-function ActionsCell(props) {
-  return (
-    <Popover
-      content={<ActionsMenu {...props} />}
-      position={Position.RIGHT_BOTTOM}
-    >
-      <Button icon={<Icon icon="more-h-16" iconSize={16} />} />
-    </Popover>
-  );
-}
-
-function FullNameAccessor(user) {
-  return user.is_invite_accepted ? user.full_name : user.email;
-}
-
-export const useUsersListColumns = () => {
-  return React.useMemo(
+export function useUsersTableColumns(actions: UserRowActions) {
+  return useMemo(
     () => [
       {
         id: 'avatar',
         Header: '',
-        accessor: AvatarCell,
-        width: 40,
+        disableSortBy: true,
+        width: 48,
+        Cell: ({ row }: { row: { original: UserRow } }) => (
+          <UserAvatar user={row.original} />
+        ),
       },
       {
         id: 'full_name',
         Header: intl.get('full_name'),
-        accessor: FullNameAccessor,
-        width: 150,
+        disableSortBy: true,
+        width: 200,
+        Cell: ({ row }: { row: { original: UserRow } }) => (
+          <span className="font-medium">
+            {row.original.is_invite_accepted
+              ? row.original.full_name
+              : row.original.email}
+          </span>
+        ),
       },
       {
         id: 'email',
         Header: intl.get('email'),
         accessor: 'email',
-        width: 150,
+        disableSortBy: true,
+        width: 200,
       },
       {
         id: 'role_name',
         Header: intl.get('users.column.role_name'),
         accessor: 'role_name',
-        width: 120,
+        disableSortBy: true,
+        width: 140,
       },
       {
         id: 'status',
         Header: intl.get('status'),
-        accessor: StatusAccessor,
-        width: 80,
-        className: 'status',
+        disableSortBy: true,
+        width: 110,
+        Cell: ({ row }: { row: { original: UserRow } }) => (
+          <UserStatusBadge user={row.original} />
+        ),
       },
       {
-        id: 'actions',
+        id: '__actions__',
         Header: '',
-        Cell: ActionsCell,
-        className: 'actions',
-        width: 50,
-        disableResizing: true,
+        disableSortBy: true,
+        width: 48,
+        Cell: ({ row }: { row: { original: UserRow } }) => (
+          <UserActionsMenu row={row.original} actions={actions} />
+        ),
       },
     ],
-    [],
+    [actions],
   );
-};
+}

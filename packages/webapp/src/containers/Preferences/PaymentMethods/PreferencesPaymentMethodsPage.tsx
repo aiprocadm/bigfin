@@ -1,50 +1,44 @@
-// @ts-nocheck
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { Classes, Text } from '@blueprintjs/core';
-import { Box, Stack } from '@/components';
+import { useEffect } from 'react';
+import intl from 'react-intl-universal';
+
 import { PaymentMethodsBoot } from './PreferencesPaymentMethodsBoot';
 import { StripePreSetupDialog } from './dialogs/StripePreSetupDialog/StripePreSetupDialog';
-import { useChangePreferencesPageTitle } from '@/hooks/state';
 import { StripeIntegrationEditDrawer } from './drawers/StripeIntegrationEditDrawer';
 import { StripePaymentMethod } from './StripePaymentMethod';
+import { useChangePreferencesPageTitle } from '@/hooks/state';
 import { DialogsName } from '@/constants/dialogs';
 import { DRAWERS } from '@/constants/drawers';
 
 /**
- * Payment methods page.
+ * Страница настроек «Способы оплаты» (D-redesign, shadcn).
  * @returns {JSX.Element}
  */
 export default function PreferencesPaymentMethodsPage() {
-  const changePageTitle = useChangePreferencesPageTitle();
+  // useChangePreferencesPageTitle — легаси-хук без типов; уточняем тип локально.
+  const changePageTitle = useChangePreferencesPageTitle() as unknown as (
+    title: string,
+  ) => void;
 
   useEffect(() => {
-    changePageTitle('Payment Methods');
+    changePageTitle(intl.get('payment_methods'));
   }, [changePageTitle]);
 
   return (
-    <PaymentMethodsRoot>
+    <div className="bigfin-ui m-5 w-full max-w-[700px]">
       <PaymentMethodsBoot>
-        <Text className={Classes.TEXT_MUTED} style={{ marginBottom: 20 }}>
-          Accept payments from all the major debit and credit card networks
-          through the supported payment methods.
-        </Text>
+        <p className="mb-5 text-sm text-text-secondary">
+          {intl.get('preferences.payment_methods.description')}
+        </p>
 
-        <Stack>
+        <div className="flex flex-col gap-4">
           <StripePaymentMethod />
-        </Stack>
+        </div>
 
         <StripePreSetupDialog dialogName={DialogsName.StripeSetup} />
         <StripeIntegrationEditDrawer
           name={DRAWERS.STRIPE_PAYMENT_INTEGRATION_EDIT}
         />
       </PaymentMethodsBoot>
-    </PaymentMethodsRoot>
+    </div>
   );
 }
-
-const PaymentMethodsRoot = styled(Box)`
-  witdth: 100%;
-  max-width: 700px;
-  margin: 20px;
-`;

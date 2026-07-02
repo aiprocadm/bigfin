@@ -16,6 +16,7 @@ import { DashboardSockets } from './DashboardSockets';
 import { DashboardShell } from '@/components/Dashboard/DashboardShell';
 import { ConnectedSidebar } from '@/components/Dashboard/ConnectedSidebar';
 import { ConnectedTopbar } from '@/components/Dashboard/ConnectedTopbar';
+import { Toaster } from '@/components/ui/sonner';
 
 /**
  * Dashboard preferences.
@@ -56,6 +57,7 @@ export default function Dashboard() {
       <DialogsContainer />
       <DrawersContainer />
       <AlertsContainer />
+      <Toaster />
     </DashboardProvider>
   );
 }

@@ -1,89 +1,77 @@
-// @ts-nocheck
-import React from 'react';
-import { FormattedMessage as T } from '@/components';
+import {
+  Blocks,
+  Building2,
+  Calculator,
+  ClipboardList,
+  Coins,
+  CreditCard,
+  FileMinus,
+  FileText,
+  KeyRound,
+  LayoutDashboard,
+  type LucideIcon,
+  Package,
+  Palette,
+  ReceiptText,
+  Settings,
+  Users,
+  Warehouse,
+} from 'lucide-react';
 
-export const PreferencesMenu = [
+export interface PreferencesMenuItem {
+  /** Ключ i18n для подписи пункта. */
+  labelId: string;
+  href: string;
+  icon: LucideIcon;
+  disabled?: boolean;
+}
+
+export interface PreferencesMenuSection {
+  /** Ключ i18n для заголовка секции. */
+  titleId: string;
+  items: PreferencesMenuItem[];
+}
+
+export const PreferencesMenu: PreferencesMenuSection[] = [
   {
-    text: <T id={'general'} />,
-    disabled: false,
-    href: '/preferences/general',
+    titleId: 'preferences.sidebar.section.organization',
+    items: [
+      { labelId: 'general', href: '/preferences/general', icon: Settings },
+      { labelId: 'interface_mode.menu', href: '/preferences/interface-mode', icon: LayoutDashboard },
+      { labelId: 'preferences.modules.menu', href: '/preferences/modules', icon: Blocks },
+      { labelId: 'branding', href: '/preferences/branding', icon: Palette },
+      { labelId: 'users', href: '/preferences/users', icon: Users },
+    ],
   },
   {
-    text: <T id={'interface_mode.menu'} />,
-    href: '/preferences/interface-mode',
+    titleId: 'preferences.sidebar.section.documents',
+    items: [
+      { labelId: 'preferences.estimates', href: '/preferences/estimates', icon: ClipboardList },
+      { labelId: 'preferences.invoices', href: '/preferences/invoices', icon: FileText },
+      { labelId: 'preferences.receipts', href: '/preferences/receipts', icon: ReceiptText },
+      { labelId: 'preferences.creditNotes', href: '/preferences/credit-notes', icon: FileMinus },
+    ],
   },
   {
-    text: <T id={'preferences.modules.menu'} />,
-    href: '/preferences/modules',
+    titleId: 'preferences.sidebar.section.finance',
+    items: [
+      { labelId: 'payment_methods', href: '/preferences/payment-methods', icon: CreditCard },
+      { labelId: 'currencies', href: '/preferences/currencies', icon: Coins },
+      { labelId: 'accountant', href: '/preferences/accountant', icon: Calculator },
+    ],
   },
   {
-    text: 'Branding',
-    disabled: false,
-    href: '/preferences/branding',
-  },
-  // {
-  //   text: 'Billing',
-  //   href: '/preferences/billing',
-  // },
-  {
-    text: <T id={'users'} />,
-    href: '/preferences/users',
+    titleId: 'preferences.sidebar.section.structure',
+    items: [
+      { labelId: 'branches.label', href: '/preferences/branches', icon: Building2 },
+      { labelId: 'warehouses.label', href: '/preferences/warehouses', icon: Warehouse },
+      { labelId: 'items', href: '/preferences/items', icon: Package },
+    ],
   },
   {
-    text: 'Payment Methods',
-    href: '/preferences/payment-methods'
+    titleId: 'preferences.sidebar.section.other',
+    items: [
+      { labelId: 'api_keys', href: '/preferences/api-keys', icon: KeyRound },
+    ],
   },
-  {
-    text: <T id={'preferences.estimates'} />,
-    href: '/preferences/estimates',
-  },
-  {
-    text: <T id={'preferences.invoices'} />,
-    href: '/preferences/invoices',
-  },
-  {
-    text: <T id={'preferences.receipts'} />,
-    href: '/preferences/receipts',
-  },
-  {
-    text: <T id={'preferences.creditNotes'} />,
-    href: '/preferences/credit-notes',
-  },
-  {
-    text: <T id={'currencies'} />,
-    href: '/preferences/currencies',
-  },
-  {
-    text: <T id={'branches.label'} />,
-    href: '/preferences/branches',
-  },
-  {
-    text: <T id={'warehouses.label'} />,
-    href: '/preferences/warehouses',
-  },
-  {
-    text: <T id={'accountant'} />,
-    disabled: false,
-    href: '/preferences/accountant',
-  },
-  {
-    text: <T id={'items'} />,
-    disabled: false,
-    href: '/preferences/items',
-  },
-  // {
-  //   text: 'Integrations',
-  //   disabled: false,
-  //   href: '/preferences/integrations'
-  // },
-  {
-    text: 'API Keys',
-    disabled: false,
-    href: '/preferences/api-keys',
-  },
-  // {
-  //   text: <T id={'sms_integration.label'} />,
-  //   disabled: false,
-  //   href: '/preferences/sms-message',
-  // },
 ];

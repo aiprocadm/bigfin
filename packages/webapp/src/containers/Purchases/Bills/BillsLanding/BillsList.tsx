@@ -6,8 +6,8 @@ import '@/style/pages/Bills/List.scss';
 
 import { BillsListProvider } from './BillsListProvider';
 
-import BillsActionsBar from './BillsActionsBar';
-import BillsTable from './BillsTable';
+import { BillsToolbarV2 } from './v2/BillsToolbarV2';
+import { BillsTableV2 } from './v2/BillsTableV2';
 
 import { withBills } from './withBills';
 import { withBillsActions } from './withBillsActions';
@@ -24,13 +24,15 @@ function BillsList({
 
   // #withBillsActions
   resetBillsTableState,
+  setBillsSelectedRows,
 }) {
-  // Resets the accounts table state once the page unmount.
+  // Resets the bills table state and selection once the page unmount.
   useEffect(
     () => () => {
       resetBillsTableState();
+      setBillsSelectedRows([]);
     },
-    [resetBillsTableState],
+    [resetBillsTableState, setBillsSelectedRows],
   );
 
   return (
@@ -38,10 +40,12 @@ function BillsList({
       query={transformTableStateToQuery(billsTableState)}
       tableStateChanged={billsTableStateChanged}
     >
-      <BillsActionsBar />
+      <BillsToolbarV2 />
 
       <DashboardPageContent>
-        <BillsTable />
+        <div className="bigfin-ui">
+          <BillsTableV2 />
+        </div>
       </DashboardPageContent>
     </BillsListProvider>
   );

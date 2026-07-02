@@ -7,8 +7,8 @@ import { DashboardPageContent } from '@/components';
 import { transformTableStateToQuery, compose } from '@/utils';
 
 import { ManualJournalsListProvider } from './ManualJournalsListProvider';
-import ManualJournalsDataTable from './ManualJournalsDataTable';
-import ManualJournalsActionsBar from './ManualJournalActionsBar';
+import { ManualJournalsTableV2 } from './v2/ManualJournalsTableV2';
+import { ManualJournalsToolbarV2 } from './v2/ManualJournalsToolbarV2';
 import { withManualJournals } from './withManualJournals';
 
 
@@ -25,10 +25,12 @@ function ManualJournalsTable({
       query={transformTableStateToQuery(journalsTableState)}
       tableStateChanged={journalsTableStateChanged}
     >
-      <ManualJournalsActionsBar />
+      <ManualJournalsToolbarV2 />
 
       <DashboardPageContent>
-        <ManualJournalsDataTable />
+        <div className="bigfin-ui">
+          <ManualJournalsTableV2 />
+        </div>
       </DashboardPageContent>
     </ManualJournalsListProvider>
   );

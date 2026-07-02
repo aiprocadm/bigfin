@@ -4,8 +4,8 @@ import { DashboardPageContent } from '@/components';
 
 import '@/style/pages/SaleReceipt/List.scss';
 
-import ReceiptActionsBar from './ReceiptActionsBar';
-import ReceiptsTable from './ReceiptsTable';
+import { ReceiptsToolbarV2 } from './v2/ReceiptsToolbarV2';
+import { ReceiptsTableV2 } from './v2/ReceiptsTableV2';
 
 import { withReceipts } from './withReceipts';
 import { withReceiptsActions } from './withReceiptsActions';
@@ -23,13 +23,15 @@ function ReceiptsList({
 
   // #withReceiptsActions
   resetReceiptsTableState,
+  setReceiptsSelectedRows,
 }) {
   // Resets the receipts table state once the page unmount.
   React.useEffect(
     () => () => {
       resetReceiptsTableState();
+      setReceiptsSelectedRows([]);
     },
-    [resetReceiptsTableState],
+    [resetReceiptsTableState, setReceiptsSelectedRows],
   );
 
   return (
@@ -37,12 +39,12 @@ function ReceiptsList({
       query={transformTableStateToQuery(receiptTableState)}
       tableStateChanged={receiptsTableStateChanged}
     >
-      <DashboardPageContent>
-        <ReceiptActionsBar />
+      <ReceiptsToolbarV2 />
 
-        <DashboardPageContent>
-          <ReceiptsTable />
-        </DashboardPageContent>
+      <DashboardPageContent>
+        <div className="bigfin-ui">
+          <ReceiptsTableV2 />
+        </div>
       </DashboardPageContent>
     </ReceiptsListProvider>
   );

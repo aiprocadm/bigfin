@@ -7,8 +7,8 @@ import '@/style/pages/Items/List.scss';
 import { DashboardPageContent } from '@/components';
 import { ItemsListProvider } from './ItemsListProvider';
 
-import ItemsActionsBar from './ItemsActionsBar';
-import ItemsDataTable from './ItemsDataTable';
+import { ItemsToolbarV2 } from './v2/ItemsToolbarV2';
+import { ItemsTableV2 } from './v2/ItemsTableV2';
 
 import { withItems } from './withItems';
 import { withItemsActions } from './withItemsActions';
@@ -23,13 +23,15 @@ function ItemsList({
 
   // #withItemsActions
   resetItemsTableState,
+  setItemsSelectedRows,
 }) {
   // Resets items table query state once the page unmount.
   React.useEffect(
     () => () => {
       resetItemsTableState();
+      setItemsSelectedRows([]);
     },
-    [resetItemsTableState],
+    [resetItemsTableState, setItemsSelectedRows],
   );
 
   return (
@@ -37,10 +39,12 @@ function ItemsList({
       tableState={itemsTableState}
       tableStateChanged={itemsTableStateChanged}
     >
-      <ItemsActionsBar />
+      <ItemsToolbarV2 />
 
       <DashboardPageContent>
-        <ItemsDataTable />
+        <div className="bigfin-ui">
+          <ItemsTableV2 />
+        </div>
       </DashboardPageContent>
     </ItemsListProvider>
   );

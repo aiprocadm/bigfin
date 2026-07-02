@@ -4,8 +4,8 @@ import { DashboardPageContent } from '@/components';
 
 import '@/style/pages/SaleEstimate/List.scss';
 
-import EstimatesActionsBar from './EstimatesActionsBar';
-import EstimatesDataTable from './EstimatesDataTable';
+import { EstimatesToolbarV2 } from './v2/EstimatesToolbarV2';
+import { EstimatesTableV2 } from './v2/EstimatesTableV2';
 
 import { withEstimates } from './withEstimates';
 import { withEstimatesActions } from './withEstimatesActions';
@@ -23,13 +23,15 @@ function EstimatesList({
 
   // #withEstimatesActions
   resetEstimatesTableState,
+  setEstimatesSelectedRows,
 }) {
   // Resets the estimates table state once the page unmount.
   React.useEffect(
     () => () => {
       resetEstimatesTableState();
+      setEstimatesSelectedRows([]);
     },
-    [resetEstimatesTableState],
+    [resetEstimatesTableState, setEstimatesSelectedRows],
   );
 
   return (
@@ -37,10 +39,12 @@ function EstimatesList({
       query={transformTableStateToQuery(estimatesTableState)}
       tableStateChanged={estimatesTableStateChanged}
     >
-      <EstimatesActionsBar />
+      <EstimatesToolbarV2 />
 
       <DashboardPageContent>
-        <EstimatesDataTable />
+        <div className="bigfin-ui">
+          <EstimatesTableV2 />
+        </div>
       </DashboardPageContent>
     </EstimatesListProvider>
   );

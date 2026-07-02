@@ -5,8 +5,8 @@ import '@/style/pages/PaymentReceive/List.scss';
 
 import { DashboardPageContent } from '@/components';
 import { PaymentsReceivedListProvider } from './PaymentsReceivedListProvider';
-import PaymentReceivesTable from './PaymentsReceivedTable';
-import PaymentsReceivedActionsBar from './PaymentsReceivedActionsBar';
+import { PaymentsReceivedTableV2 } from './v2/PaymentsReceivedTableV2';
+import { PaymentsReceivedToolbarV2 } from './v2/PaymentsReceivedToolbarV2';
 
 import { withPaymentsReceived } from './withPaymentsReceived';
 import { withPaymentsReceivedActions } from './withPaymentsReceivedActions';
@@ -20,13 +20,15 @@ function PaymentsReceivedList({
 
   // #withPaymentsReceivedActions
   resetPaymentReceivesTableState,
+  setPaymentReceivesSelectedRows,
 }) {
   // Resets the payment receives table state once the page unmount.
   React.useEffect(
     () => () => {
       resetPaymentReceivesTableState();
+      setPaymentReceivesSelectedRows([]);
     },
-    [resetPaymentReceivesTableState],
+    [resetPaymentReceivesTableState, setPaymentReceivesSelectedRows],
   );
 
   return (
@@ -34,10 +36,12 @@ function PaymentsReceivedList({
       query={transformTableStateToQuery(paymentReceivesTableState)}
       tableStateChanged={paymentsTableStateChanged}
     >
-      <PaymentsReceivedActionsBar />
+      <PaymentsReceivedToolbarV2 />
 
       <DashboardPageContent>
-        <PaymentReceivesTable />
+        <div className="bigfin-ui">
+          <PaymentsReceivedTableV2 />
+        </div>
       </DashboardPageContent>
     </PaymentsReceivedListProvider>
   );

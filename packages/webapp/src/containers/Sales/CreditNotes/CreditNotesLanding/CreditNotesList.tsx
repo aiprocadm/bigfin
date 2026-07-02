@@ -5,7 +5,7 @@ import '@/style/pages/CreditNote/List.scss';
 
 import { DashboardPageContent } from '@/components';
 import CreditNotesActionsBar from './CreditNotesActionsBar';
-import CreditNotesDataTable from './CreditNotesDataTable';
+import { CreditNotesTableV2 } from './v2/CreditNotesTableV2';
 
 import { withCreditNotes } from './withCreditNotes';
 import { withCreditNotesActions } from './withCreditNotesActions';
@@ -37,7 +37,9 @@ function CreditNotesList({
       <CreditNotesActionsBar />
 
       <DashboardPageContent>
-        <CreditNotesDataTable />
+        <div className="bigfin-ui">
+          <CreditNotesTableV2 />
+        </div>
       </DashboardPageContent>
     </CreditNotesListProvider>
   );

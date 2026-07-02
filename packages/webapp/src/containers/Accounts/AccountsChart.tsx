@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 
 import '@/style/pages/Accounts/List.scss';
 
-import { DashboardPageContent, DashboardContentTable } from '@/components';
+import { DashboardPageContent } from '@/components';
 import { AccountsChartProvider } from './AccountsChartProvider';
-import AccountsActionsBar from './AccountsActionsBar';
-import AccountsDataTable from './AccountsDataTable';
+import { AccountsToolbarV2 } from './v2/AccountsToolbarV2';
+import { AccountsTableV2 } from './v2/AccountsTableV2';
 
 import { withAccounts } from '@/containers/Accounts/withAccounts';
 import { withAccountsTableActions } from './withAccountsTableActions';
@@ -24,13 +24,15 @@ function AccountsChart({
 
   // #withAccountsActions
   resetAccountsTableState,
+  setAccountsSelectedRows,
 }) {
   // Resets the accounts table state once the page unmount.
   useEffect(
     () => () => {
       resetAccountsTableState();
+      setAccountsSelectedRows([]);
     },
-    [resetAccountsTableState],
+    [resetAccountsTableState, setAccountsSelectedRows],
   );
 
   return (
@@ -38,12 +40,12 @@ function AccountsChart({
       query={transformAccountsStateToQuery(accountsTableState)}
       tableStateChanged={accountsTableStateChanged}
     >
-      <AccountsActionsBar />
+      <AccountsToolbarV2 />
 
       <DashboardPageContent>
-        <DashboardContentTable>
-          <AccountsDataTable />
-        </DashboardContentTable>
+        <div className="bigfin-ui">
+          <AccountsTableV2 />
+        </div>
       </DashboardPageContent>
     </AccountsChartProvider>
   );

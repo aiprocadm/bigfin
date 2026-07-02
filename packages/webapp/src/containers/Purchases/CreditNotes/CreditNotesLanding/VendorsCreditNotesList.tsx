@@ -5,7 +5,7 @@ import '@/style/pages/VendorsCreditNote/List.scss';
 
 import { DashboardPageContent } from '@/components';
 import VendorsCreditNoteActionsBar from './VendorsCreditNoteActionsBar';
-import VendorsCreditNoteDataTable from './VendorsCreditNoteDataTable';
+import { VendorsCreditNotesTableV2 } from './v2/VendorsCreditNotesTableV2';
 
 import { withVendorsCreditNotes } from './withVendorsCreditNotes';
 import { withVendorsCreditNotesActions } from './withVendorsCreditNotesActions';
@@ -36,7 +36,9 @@ function VendorsCreditNotesList({
     >
       <VendorsCreditNoteActionsBar />
       <DashboardPageContent>
-        <VendorsCreditNoteDataTable />
+        <div className="bigfin-ui">
+          <VendorsCreditNotesTableV2 />
+        </div>
       </DashboardPageContent>
     </VendorsCreditNoteListProvider>
   );

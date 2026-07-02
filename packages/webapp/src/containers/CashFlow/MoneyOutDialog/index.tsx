@@ -1,43 +1,95 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, Suspense, lazy } from 'react';
 import intl from 'react-intl-universal';
-import { Dialog, DialogSuspense } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
-import { compose } from 'redux';
 
-const MoneyOutDialogContent = React.lazy(() =>
-  import('./MoneyOutDialogContent'),
+import withDialogRedux from '@/components/DialogReduxConnect';
+import { Spinner } from '@/components/ui/Spinner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  withDialogActions,
+  type WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
+import { compose } from '@/utils';
+
+const MoneyOutFormV2 = lazy(() =>
+  import('./v2/MoneyOutFormV2').then((module) => ({
+    default: module.MoneyOutFormV2,
+  })),
 );
 
-/**
- * Money out dialog.
- */
-function MoneyOutDialog({
-  dialogName,
-  payload = { account_type: null, account_id: null, account_name: '' },
+interface MoneyOutDialogProps {
+  dialogName: string;
+  // #withDialogRedux
+  isOpen?: boolean;
+  payload?: {
+    account_id?: number | null;
+    account_type?: string | null;
+    account_name?: string;
+  };
+}
 
+/**
+ * Диалог «Деньги ушли» (shadcn Dialog + RHF/Zod-форма).
+ * Механизм открытия прежний: redux openDialog('money-out', { account_id,
+ * account_type, account_name }).
+ */
+function MoneyOutDialogRoot({
+  dialogName,
   isOpen,
-}) {
+  payload,
+  closeDialog,
+}: MoneyOutDialogProps & WithDialogActionsProps) {
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      closeDialog(dialogName);
+    }
+  };
+
   return (
-    <Dialog
-      name={dialogName}
-      title={intl.get('cash_flow_transaction.money_out', {
-        value: payload.account_name,
-      })}
-      isOpen={isOpen}
-      canEscapeJeyClose={true}
-      autoFocus={true}
-      className={'dialog--money-out'}
-    >
-      <DialogSuspense>
-        <MoneyOutDialogContent
-          dialogName={dialogName}
-          accountId={payload.account_id}
-          accountType={payload.account_type}
-        />
-      </DialogSuspense>
+    <Dialog open={Boolean(isOpen)} onOpenChange={handleOpenChange}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[calc(100vh-3rem)] overflow-y-auto sm:max-w-xl"
+      >
+        <DialogHeader>
+          <DialogTitle>
+            {intl
+              .get('cash_flow_transaction.money_out', {
+                value: payload?.account_name ?? '',
+              })
+              .trim()}
+          </DialogTitle>
+        </DialogHeader>
+
+        <Suspense
+          fallback={
+            <div className="flex justify-center py-8 text-text-muted">
+              <Spinner size="lg" />
+            </div>
+          }
+        >
+          <MoneyOutFormV2
+            accountId={payload?.account_id ?? null}
+            accountType={payload?.account_type ?? null}
+            onClose={() => closeDialog(dialogName)}
+          />
+        </Suspense>
+      </DialogContent>
     </Dialog>
   );
 }
 
-export default compose(withDialogRedux())(MoneyOutDialog);
+// DialogReduxConnect — легаси-HOC: параметр mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withDialogReduxLoose = withDialogRedux as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ dialogName: string }>;
+
+export default compose(
+  withDialogReduxLoose(),
+  withDialogActions,
+)(MoneyOutDialogRoot) as ComponentType<{ dialogName: string }>;

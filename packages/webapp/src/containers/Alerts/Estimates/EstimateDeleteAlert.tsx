@@ -1,47 +1,68 @@
-// @ts-nocheck
-import React, { useCallback } from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeleteEstimate } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
-import { compose } from '@/utils';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { DRAWERS } from '@/constants/drawers';
+import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import { useDeleteEstimate } from '@/hooks/query';
+import { compose } from '@/utils';
+
+interface EstimateDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { estimateId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
 
 /**
- * Estimate delete alert.
+ * Подтверждение удаления сметы (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('estimate-delete', { estimateId }).
  */
-function EstimateDeleteAlert({
+function EstimateDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { estimateId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
-  const { mutateAsync: deleteEstimateMutate, isLoading } = useDeleteEstimate();
+}: EstimateDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteEstimateMutate, isLoading } = useDeleteEstimate(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const estimateId = payload?.estimateId;
 
-  // handle cancel delete  alert.
-  const handleAlertCancel = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // handle confirm delete estimate
-  const handleAlertConfirm = () => {
+  // Подтверждение: удаляем смету, показываем тост, закрываем drawer.
+  const handleConfirm = () => {
     deleteEstimateMutate(estimateId)
       .then(() => {
         AppToaster.show({
@@ -50,51 +71,48 @@ function EstimateDeleteAlert({
         });
         closeDrawer(DRAWERS.ESTIMATE_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          if (
-            errors.find((e) => e.type === 'SALE_ESTIMATE_CONVERTED_TO_INVOICE')
-          ) {
-            AppToaster.show({
-              intent: Intent.DANGER,
-              message: intl.get(
-                'estimate.delete.error.estimate_converted_to_invoice',
-              ),
-            });
-          }
-        },
-      )
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (
+          errors?.find((e) => e.type === 'SALE_ESTIMATE_CONVERTED_TO_INVOICE')
+        ) {
+          AppToaster.show({
+            intent: Intent.DANGER,
+            message: intl.get(
+              'estimate.delete.error.estimate_converted_to_invoice',
+            ),
+          });
+        }
+      })
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_estimate')}
+      description={intl.getHTML(
+        'once_delete_this_estimate_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-      onCancel={handleAlertCancel}
-      onConfirm={handleAlertConfirm}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={'once_delete_this_estimate_you_will_able_to_restore_it'}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(EstimateDeleteAlert);
+)(EstimateDeleteAlertRoot) as ComponentType<EstimateDeleteAlertProps>;

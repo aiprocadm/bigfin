@@ -1,45 +1,50 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useDeleteReconcileCredit } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface ReconcileCreditNoteDeleteAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { creditNoteId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Reconcile credit note delete alert.
+ * Подтверждение удаления сверки возврата покупателю (shadcn ConfirmDialog).
+ * Механизм прежний: redux-алерт по имени.
  */
-function ReconcileCreditNoteDeleteAlert({
+function ReconcileCreditNoteDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { creditNoteId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
+}: ReconcileCreditNoteDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  const { mutateAsync: deleteReconcileCreditMutate, isLoading } =
+    useDeleteReconcileCredit({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const creditNoteId = payload?.creditNoteId;
 
-  // #withDrawerActions
-  closeDrawer,
-}) {
-  const { isLoading, mutateAsync: deleteReconcileCreditMutate } =
-    useDeleteReconcileCredit();
-
-  // handle cancel delete credit note alert.
-  const handleCancelDeleteAlert = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  const handleConfirmVendorCreditDelete = () => {
+  const handleConfirm = useCallback(() => {
     deleteReconcileCreditMutate(creditNoteId)
       .then(() => {
         AppToaster.show({
@@ -47,44 +52,32 @@ function ReconcileCreditNoteDeleteAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          // handleDeleteErrors(errors);
-        },
-      )
       .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [deleteReconcileCreditMutate, creditNoteId, closeAlert, name]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmVendorCreditDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('reconcile_credit_note.delete_title')}
+      description={intl.getHTML(
+        'reconcile_credit_note.once_you_delete_this_reconcile_credit_note',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={
-            'reconcile_credit_note.once_you_delete_this_reconcile_credit_note'
-          }
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-  withDrawerActions,
-)(ReconcileCreditNoteDeleteAlert);
+)(ReconcileCreditNoteDeleteAlertRoot) as ComponentType<ReconcileCreditNoteDeleteAlertProps>;

@@ -6,7 +6,7 @@ import withDialogRedux from '@/components/DialogReduxConnect';
 import { compose } from '@/utils';
 
 const CurrencyFormDialogContent = lazy(() =>
-  import('./CurrencyFormDialogContent'),
+  import('./v2/CurrencyFormDialogContentV2'),
 );
 
 /**
@@ -31,12 +31,15 @@ function CurrencyFormDialog({
       isOpen={isOpen}
       autoFocus={true}
       canEscapeKeyClose={true}
-      style={{ width: '400px' }}
+      // Radix-поповер комбобокса рендерится вне DOM диалога Blueprint —
+      // enforceFocus мешал бы вводу в поиске по валютам.
+      enforceFocus={false}
+      style={{ width: '400px', paddingBottom: 0 }}
     >
       <DialogSuspense>
         <CurrencyFormDialogContent
           dialogName={dialogName}
-          currencyCode={payload.currency}
+          currency={payload.currency}
           action={payload.action}
         />
       </DialogSuspense>

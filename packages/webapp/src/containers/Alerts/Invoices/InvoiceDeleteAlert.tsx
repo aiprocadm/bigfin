@@ -1,48 +1,69 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
-import { useDeleteInvoice } from '@/hooks/query';
+import { Intent } from '@blueprintjs/core';
 
-import { handleDeleteErrors } from '@/containers/Sales/Invoices/InvoicesLanding/components';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
-import { compose } from '@/utils';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { DRAWERS } from '@/constants/drawers';
+import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import { handleDeleteErrors } from '@/containers/Sales/Invoices/InvoicesLanding/components';
+import { useDeleteInvoice } from '@/hooks/query';
+import { compose } from '@/utils';
+
+interface InvoiceDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { invoiceId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
 
 /**
- * Invoice delete alert.
+ * Подтверждение удаления счёта на продажу (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('invoice-delete', { invoiceId }).
  */
-function InvoiceDeleteAlert({
+function InvoiceDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { invoiceId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
-  const { mutateAsync: deleteInvoiceMutate, isLoading } = useDeleteInvoice();
+}: InvoiceDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteInvoiceMutate, isLoading } = useDeleteInvoice(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const invoiceId = payload?.invoiceId;
 
-  // handle cancel delete invoice alert.
-  const handleCancelDeleteAlert = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // handleConfirm delete invoice
-  const handleConfirmInvoiceDelete = () => {
+  // Подтверждение: удаляем счёт, показываем тост, закрываем drawer.
+  const handleConfirm = () => {
     deleteInvoiceMutate(invoiceId)
       .then(() => {
         AppToaster.show({
@@ -51,42 +72,41 @@ function InvoiceDeleteAlert({
         });
         closeDrawer(DRAWERS.INVOICE_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (errors) {
           handleDeleteErrors(errors);
-        },
-      )
+        }
+      })
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmInvoiceDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_invoice')}
+      description={intl.getHTML(
+        'once_delete_this_invoice_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={'once_delete_this_invoice_you_will_able_to_restore_it'}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(InvoiceDeleteAlert);
+)(InvoiceDeleteAlertRoot) as ComponentType<InvoiceDeleteAlertProps>;

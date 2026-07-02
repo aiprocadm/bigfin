@@ -1,38 +1,51 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useOpenCreditNote } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useOpenCreditNote } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface CreditNoteOpenedAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { creditNoteId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Credit note opened alert.
+ * Подтверждение открытия возврата покупателю (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('credit-note-open', { creditNoteId }).
  */
-function CreditNoteOpenedAlert({
+function CreditNoteOpenedAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { creditNoteId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: openCreditNoteMutate, isLoading } = useOpenCreditNote();
+}: CreditNoteOpenedAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  const { mutateAsync: openCreditNoteMutate, isLoading } = useOpenCreditNote(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const creditNoteId = payload?.creditNoteId;
 
-  // Handle cancel opened credit note alert.
-  const handleAlertCancel = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm credit note opened.
-  const handleAlertConfirm = () => {
+  const handleConfirm = useCallback(() => {
     openCreditNoteMutate(creditNoteId)
       .then(() => {
         AppToaster.show({
@@ -40,29 +53,30 @@ function CreditNoteOpenedAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
       .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [openCreditNoteMutate, creditNoteId, closeAlert, name]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'open'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleAlertCancel}
-      onConfirm={handleAlertConfirm}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('credit_note.action.make_as_open')}
+      description={intl.get('credit_note_opened.are_sure_to_open_this_credit')}
+      confirmLabel={intl.get('open')}
+      intent="default"
       loading={isLoading}
-    >
-      <p>
-        <T id={'credit_note_opened.are_sure_to_open_this_credit'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
+
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(CreditNoteOpenedAlert);
+)(CreditNoteOpenedAlertRoot) as ComponentType<CreditNoteOpenedAlertProps>;

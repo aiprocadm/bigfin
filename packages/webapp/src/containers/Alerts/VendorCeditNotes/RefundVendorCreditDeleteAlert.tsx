@@ -1,41 +1,57 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { FormattedMessage as T, AppToaster } from '@/components';
-import { useDeleteRefundVendorCredit } from '@/hooks/query';
+import { Intent } from '@blueprintjs/core';
 
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
+import { useDeleteRefundVendorCredit } from '@/hooks/query';
 import { compose } from '@/utils';
-import { DRAWERS } from '@/constants/drawers';
+
+interface RefundVendorCreditDeleteAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { vendorCreditId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
 
 /**
- * Refund Vendor transactions delete alert.
+ * Подтверждение удаления возврата средств по возврату поставщику
+ * (shadcn ConfirmDialog). Механизм прежний: redux-алерт по имени.
  */
-function RefundVendorCreditDeleteAlert({
+function RefundVendorCreditDeleteAlertRoot({
   name,
-  // #withAlertStoreConnect
   isOpen,
-  payload: { vendorCreditId },
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
+}: RefundVendorCreditDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
   const { mutateAsync: deleteRefundVendorCreditMutate, isLoading } =
-    useDeleteRefundVendorCredit();
+    useDeleteRefundVendorCredit({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const vendorCreditId = payload?.vendorCreditId;
 
-  // Handle cancel delete.
-  const handleCancelAlert = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm delete .
-  const handleConfirmRefundVendorCreditDelete = () => {
+  const handleConfirm = useCallback(() => {
     deleteRefundVendorCreditMutate(vendorCreditId)
       .then(() => {
         AppToaster.show({
@@ -46,34 +62,39 @@ function RefundVendorCreditDeleteAlert({
         });
         closeDrawer(DRAWERS.REFUND_VENDOR_CREDIT_DETAILS);
       })
-      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [
+    deleteRefundVendorCreditMutate,
+    vendorCreditId,
+    closeDrawer,
+    closeAlert,
+    name,
+  ]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelAlert}
-      onConfirm={handleConfirmRefundVendorCreditDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('refund_vendor_credit_transactions.delete_title')}
+      description={intl.get(
+        'refund_vendor_credit_transactions.once_your_delete_this_refund_vendor_credit',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <T
-          id={`refund_vendor_credit_transactions.once_your_delete_this_refund_vendor_credit`}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(RefundVendorCreditDeleteAlert);
+)(RefundVendorCreditDeleteAlertRoot) as ComponentType<RefundVendorCreditDeleteAlertProps>;

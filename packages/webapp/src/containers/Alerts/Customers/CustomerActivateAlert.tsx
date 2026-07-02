@@ -1,38 +1,56 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useActivateContact } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useActivateContact } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface CustomerActivateAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { customerId?: number | string; service?: string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Customer activate alert.
+ * Подтверждение активации клиента (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('customer-activate', { customerId }).
  */
-function CustomerActivateAlert({
+function CustomerActivateAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { customerId, service },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
-  const { mutateAsync: activateContact, isLoading } = useActivateContact();
+}: CustomerActivateAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: activateContact, isLoading } = useActivateContact(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const customerId = payload?.customerId;
 
-  // Handle activate constomer alert cancel.
-  const handleCancelActivateCustomer = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm customer activated.
-  const handleConfirmCustomerActivate = () => {
+  // Подтверждение: активируем клиента, показываем тост.
+  const handleConfirm = () => {
     activateContact(customerId)
       .then(() => {
         AppToaster.show({
@@ -40,30 +58,34 @@ function CustomerActivateAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'activate'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancelActivateCustomer}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('activate_customer')}
+      description={intl.get(
+        'customer.alert.are_you_sure_want_to_activate_this_customer',
+      )}
+      confirmLabel={intl.get('activate')}
       loading={isLoading}
-      onConfirm={handleConfirmCustomerActivate}
-    >
-      <p>
-        {intl.get('customer.alert.are_you_sure_want_to_activate_this_customer')}
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(CustomerActivateAlert);
+)(CustomerActivateAlertRoot) as ComponentType<CustomerActivateAlertProps>;

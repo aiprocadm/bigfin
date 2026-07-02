@@ -1,47 +1,69 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
+import { Intent } from '@blueprintjs/core';
 
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { DRAWERS } from '@/constants/drawers';
 import { handleDeleteErrors } from '@/containers/Accounts/utils';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
 import { useDeleteAccount } from '@/hooks/query';
 import { compose } from '@/utils';
-import { DRAWERS } from '@/constants/drawers';
+
+interface AccountDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { accountId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
 
 /**
- * Account delete alerts.
+ * Подтверждение удаления счёта (плана счетов) — shadcn ConfirmDialog.
+ * Механизм прежний: redux openAlert('account-delete', { accountId }).
  */
-function AccountDeleteAlert({
+function AccountDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { accountId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
-  const { isLoading, mutateAsync: deleteAccount } = useDeleteAccount();
+}: AccountDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteAccount, isLoading } = useDeleteAccount(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const accountId = payload?.accountId;
 
-  // handle cancel delete account alert.
-  const handleCancelAccountDelete = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
-  // Handle confirm account delete.
-  const handleConfirmAccountDelete = () => {
+
+  // Подтверждение: удаляем счёт, показываем тост, закрываем алерт и drawer.
+  const handleConfirm = () => {
     deleteAccount(accountId)
       .then(() => {
         AppToaster.show({
@@ -51,40 +73,39 @@ function AccountDeleteAlert({
         closeAlert(name);
         closeDrawer(DRAWERS.ACCOUNT_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (errors) {
           handleDeleteErrors(errors);
-          closeAlert(name);
-        },
-      );
+        }
+        closeAlert(name);
+      });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelAccountDelete}
-      onConfirm={handleConfirmAccountDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_account')}
+      description={intl.getHTML(
+        'once_delete_this_account_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={'once_delete_this_account_you_will_able_to_restore_it'}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(AccountDeleteAlert);
+)(AccountDeleteAlertRoot) as ComponentType<AccountDeleteAlertProps>;

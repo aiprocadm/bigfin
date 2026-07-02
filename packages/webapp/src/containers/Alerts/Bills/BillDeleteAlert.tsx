@@ -1,43 +1,69 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
 import { handleDeleteErrors } from '@/containers/Purchases/Bills/BillForm/utils';
 import { useDeleteBill } from '@/hooks/query';
 import { compose } from '@/utils';
-import { DRAWERS } from '@/constants/drawers';
+
+interface BillDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { billId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
+
+/** Ответ API с типизированными ошибками удаления. */
+interface ApiErrorResponse {
+  response?: { data?: { errors?: { type: string }[] } };
+}
 
 /**
- * Bill delete alert.
+ * Подтверждение удаления счёта поставщика (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('bill-delete', { billId }).
  */
-function BillDeleteAlert({
+function BillDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { billId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
-  const { isLoading, mutateAsync: deleteBillMutate } = useDeleteBill();
+}: BillDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteBillMutate, isLoading } = useDeleteBill(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const billId = payload?.billId;
 
-  // Handle cancel Bill
+  // Отмена: закрываем алерт по имени (redux).
   const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm delete invoice
-  const handleConfirmBillDelete = () => {
+  // Подтверждение: удаляем счёт поставщика, показываем тост, закрываем drawer.
+  const handleConfirm = () => {
     deleteBillMutate(billId)
       .then(() => {
         AppToaster.show({
@@ -46,40 +72,41 @@ function BillDeleteAlert({
         });
         closeDrawer(DRAWERS.BILL_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
+      .catch((error: ApiErrorResponse) => {
+        const errors = error.response?.data?.errors;
+        if (errors) {
           handleDeleteErrors(errors);
-        },
-      )
+        }
+      })
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon={'trash'}
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancel}
-      onConfirm={handleConfirmBillDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_bill')}
+      description={intl.getHTML(
+        'once_delete_this_bill_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <T id={'once_delete_this_bill_you_will_able_to_restore_it'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(BillDeleteAlert);
+)(BillDeleteAlertRoot) as ComponentType<BillDeleteAlertProps>;

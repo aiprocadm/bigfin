@@ -1,70 +1,81 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { usePublishInventoryAdjustment } from '@/hooks/query';
+import { Intent } from '@blueprintjs/core';
 
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-
+import { usePublishInventoryAdjustment } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface InventoryAdjustmentPublishAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { inventoryId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Inventory Adjustment publish alert.
+ * Подтверждение публикации инвентаризации (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('inventory-adjustment-publish', { inventoryId }).
  */
-
-function InventoryAdjustmentPublishAlert({
+function InventoryAdjustmentPublishAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { inventoryId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
+}: InventoryAdjustmentPublishAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
   const { mutateAsync: publishInventoryAdjustmentMutate, isLoading } =
-    usePublishInventoryAdjustment();
+    usePublishInventoryAdjustment({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const inventoryId = payload?.inventoryId;
 
-  // Handle cancel inventory adjustment alert.
-  const handleCancelPublish = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle publish inventory adjustment confirm.
-  const handleConfirmPublish = () => {
+  const handleConfirm = useCallback(() => {
     publishInventoryAdjustmentMutate(inventoryId)
       .then(() => {
         AppToaster.show({
           message: intl.get('inventory_adjustment.publish.success_message'),
           intent: Intent.SUCCESS,
         });
-        closeAlert(name);
       })
-      .catch((error) => {
+      .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [publishInventoryAdjustmentMutate, inventoryId, closeAlert, name]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'publish'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleCancelPublish}
-      onConfirm={handleConfirmPublish}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('publish_adjustment')}
+      description={intl.get('inventory_adjustment.publish.alert_message')}
+      confirmLabel={intl.get('publish')}
+      intent="default"
       loading={isLoading}
-    >
-      <p>
-        <T id={'inventory_adjustment.publish.alert_message'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(InventoryAdjustmentPublishAlert);
+)(InventoryAdjustmentPublishAlertRoot) as ComponentType<InventoryAdjustmentPublishAlertProps>;

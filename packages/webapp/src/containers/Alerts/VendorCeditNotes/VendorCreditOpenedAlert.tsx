@@ -1,39 +1,50 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, useCallback } from 'react';
 import intl from 'react-intl-universal';
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useOpenVendorCredit } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useOpenVendorCredit } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface VendorCreditOpenedAlertProps {
+  name: string;
+}
+
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { vendorCreditId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- *  Vendor credit opened alert.
+ * Подтверждение открытия возврата поставщику (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('vendor-credit-open', { vendorCreditId }).
  */
-function VendorCreditOpenedAlert({
+function VendorCreditOpenedAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { vendorCreditId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
+}: VendorCreditOpenedAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
   const { mutateAsync: openVendorCreditMutate, isLoading } =
-    useOpenVendorCredit();
+    useOpenVendorCredit({}) as unknown as {
+      mutateAsync: (id?: number | string) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const vendorCreditId = payload?.vendorCreditId;
 
-  // Handle cancel opened credit note alert.
-  const handleAlertCancel = () => {
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm  vendor credit as opened.
-  const handleAlertConfirm = () => {
+  const handleConfirm = useCallback(() => {
     openVendorCreditMutate(vendorCreditId)
       .then(() => {
         AppToaster.show({
@@ -41,29 +52,30 @@ function VendorCreditOpenedAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
       .finally(() => {
         closeAlert(name);
       });
-  };
+  }, [openVendorCreditMutate, vendorCreditId, closeAlert, name]);
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'open'} />}
-      intent={Intent.WARNING}
-      isOpen={isOpen}
-      onCancel={handleAlertCancel}
-      onConfirm={handleAlertConfirm}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('vendor_credits.action.mark_as_open')}
+      description={intl.get('vendor_credit_opened.are_sure_to_open_this_credit')}
+      confirmLabel={intl.get('open')}
+      intent="default"
       loading={isLoading}
-    >
-      <p>
-        <T id={'vendor_credit_opened.are_sure_to_open_this_credit'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
+
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(VendorCreditOpenedAlert);
+)(VendorCreditOpenedAlertRoot) as ComponentType<VendorCreditOpenedAlertProps>;

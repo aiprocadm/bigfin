@@ -1,47 +1,63 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import {
-  AppToaster,
-  FormattedMessage as T,
-  FormattedHTMLMessage,
-} from '@/components';
-import { Intent, Alert } from '@blueprintjs/core';
+import { Intent } from '@blueprintjs/core';
 
-import { useDeleteReceipt } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-
-import { compose } from '@/utils';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { DRAWERS } from '@/constants/drawers';
+import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import { useDeleteReceipt } from '@/hooks/query';
+import { compose } from '@/utils';
+
+interface ReceiptDeleteAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { receiptId?: number | string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string) => void;
+}
 
 /**
- * Invoice  alert.
+ * Подтверждение удаления чека (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('receipt-delete', { receiptId }).
  */
-function NameDeleteAlert({
+function ReceiptDeleteAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { receiptId },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-
-  // #withDrawerActions
   closeDrawer,
-}) {
-  const { mutateAsync: deleteReceiptMutate, isLoading } = useDeleteReceipt();
+}: ReceiptDeleteAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps &
+  WithDrawerActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
+  const { mutateAsync: deleteReceiptMutate, isLoading } = useDeleteReceipt(
+    {},
+  ) as unknown as {
+    mutateAsync: (id?: number | string) => Promise<unknown>;
+    isLoading: boolean;
+  };
+  const receiptId = payload?.receiptId;
 
-  // Handle cancel delete  alert.
-  const handleCancelDeleteAlert = () => {
+  // Отмена: закрываем алерт по имени (redux).
+  const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm delete receipt
-  const handleConfirmReceiptDelete = () => {
+  // Подтверждение: удаляем чек, показываем тост, закрываем drawer.
+  const handleConfirm = () => {
     deleteReceiptMutate(receiptId)
       .then(() => {
         AppToaster.show({
@@ -57,27 +73,29 @@ function NameDeleteAlert({
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
-      icon="trash"
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancelDeleteAlert}
-      onConfirm={handleConfirmReceiptDelete}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('delete_receipt')}
+      description={intl.getHTML(
+        'once_delete_this_receipt_you_will_able_to_restore_it',
+      )}
+      confirmLabel={intl.get('delete')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <FormattedHTMLMessage
-          id={'once_delete_this_receipt_you_will_able_to_restore_it'}
-        />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
   withDrawerActions,
-)(NameDeleteAlert);
+)(ReceiptDeleteAlertRoot) as ComponentType<ReceiptDeleteAlertProps>;

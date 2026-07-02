@@ -1,43 +1,56 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType } from 'react';
 import intl from 'react-intl-universal';
-import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { Intent } from '@blueprintjs/core';
 
-import { useCancelUnlockingPartialTransactions } from '@/hooks/query';
-
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { AppToaster } from '@/components';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
-
+import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
+import { useCancelUnlockingPartialTransactions } from '@/hooks/query';
 import { compose } from '@/utils';
 
+interface CancelUnlockingPartialAlertProps {
+  name: string;
+}
+
+// Легаси-HOC'и (без типов) не экспортируют типы инжектируемых пропсов —
+// описываем локально, не трогая общие модули.
+interface WithAlertStoreConnectProps {
+  isOpen?: boolean;
+  payload?: { module?: string };
+}
+interface WithAlertActionsProps {
+  closeAlert: (name: string) => void;
+}
+
 /**
- * Cancel Unlocking partial transactions alerts.
+ * Подтверждение отмены частичной разблокировки операций (shadcn ConfirmDialog).
+ * Механизм прежний: redux openAlert('cancel-unlocking-partial-transactions', { module }).
  */
-function CancelUnlockingPartialTarnsactions({
+function CancelUnlockingPartialAlertRoot({
   name,
-
-  // #withAlertStoreConnect
   isOpen,
-  payload: { module },
-
-  // #withAlertActions
+  payload,
   closeAlert,
-}) {
+}: CancelUnlockingPartialAlertProps &
+  WithAlertStoreConnectProps &
+  WithAlertActionsProps) {
+  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
   const { mutateAsync: cancelUnlockingPartial, isLoading } =
-    useCancelUnlockingPartialTransactions();
+    useCancelUnlockingPartialTransactions({}) as unknown as {
+      mutateAsync: (values: { module?: string }) => Promise<unknown>;
+      isLoading: boolean;
+    };
+  const module = payload?.module;
 
-  // Handle cancel.
+  // Отмена: закрываем алерт по имени (redux).
   const handleCancel = () => {
     closeAlert(name);
   };
 
-  // Handle confirm.
+  // Подтверждение: отменяем частичную разблокировку, показываем тост.
   const handleConfirm = () => {
-    const values = {
-      module: module,
-    };
-    cancelUnlockingPartial(values)
+    cancelUnlockingPartial({ module })
       .then(() => {
         AppToaster.show({
           message: intl.get(
@@ -46,36 +59,33 @@ function CancelUnlockingPartialTarnsactions({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
+      .catch(() => {})
       .finally(() => {
         closeAlert(name);
       });
   };
 
   return (
-    <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'yes'} />}
-      intent={Intent.DANGER}
-      isOpen={isOpen}
-      onCancel={handleCancel}
-      onConfirm={handleConfirm}
+    <ConfirmDialog
+      open={Boolean(isOpen)}
+      title={intl.get('unlocking_partial_transactions.alert.title')}
+      description={intl.get('unlocking_partial_transactions.alert.message')}
+      confirmLabel={intl.get('yes')}
+      intent="danger"
       loading={isLoading}
-    >
-      <p>
-        <T id={'unlocking_partial_transactions.alert.message'} />
-      </p>
-    </Alert>
+      onConfirm={handleConfirm}
+      onCancel={handleCancel}
+    />
   );
 }
 
+// withAlertStoreConnect — легаси-HOC (без типов): mapState фактически
+// необязателен, кастуем сигнатуру локально, не трогая общий модуль.
+const withAlertStoreConnectLoose = withAlertStoreConnect as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
 export default compose(
-  withAlertStoreConnect(),
+  withAlertStoreConnectLoose(),
   withAlertActions,
-)(CancelUnlockingPartialTarnsactions);
+)(CancelUnlockingPartialAlertRoot) as ComponentType<CancelUnlockingPartialAlertProps>;

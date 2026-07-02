@@ -3,7 +3,7 @@ import * as React from 'react';
 // (no new deps). The legacy DataTable uses @ts-nocheck; we keep the rest of this file typed.
 // @ts-ignore
 import { useTable, useSortBy } from 'react-table';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 import intl from 'react-intl-universal';
 import { cn } from '@/lib/cn';
 import { Checkbox } from './checkbox';
@@ -81,6 +81,22 @@ export interface DataTableProps {
   resizableColumns?: boolean;
   columnWidths?: Record<string, number>;
   onColumnWidthsChange?: (widths: Record<string, number>) => void;
+  // Древовидные строки (опционально; выключено по умолчанию).
+  // Если задан getSubRows — virtualized игнорируется (вместе не поддерживаются).
+  getSubRows?: (row: any) => any[] | undefined;
+  defaultExpanded?: boolean;
+  /**
+   * Id колонки, в которой рисуется шеврон/отступ дерева.
+   * По умолчанию — первая data-колонка (после selection, если она включена).
+   */
+  treeColumnId?: string;
+}
+
+/** Метаданные строки дерева (глубина, наличие детей, развёрнутость). */
+interface TreeRowMeta {
+  depth: number;
+  hasChildren: boolean;
+  expanded: boolean;
 }
 
 export function DataTable({
@@ -101,6 +117,9 @@ export function DataTable({
   resizableColumns = false,
   columnWidths = {},
   onColumnWidthsChange,
+  getSubRows,
+  defaultExpanded = false,
+  treeColumnId,
 }: DataTableProps) {
   const [internalSel, setInternalSel] = React.useState<string[]>([]);
   const selected = selectedIds ?? internalSel;
@@ -110,7 +129,55 @@ export function DataTable({
     onSelectionChange?.(ids);
   };
 
-  const allIds = React.useMemo(() => data.map(getRowId), [data, getRowId]);
+  // --- Древовидные строки ---
+  const treeEnabled = Boolean(getSubRows);
+  // Дерево + виртуализация вместе не поддерживаются: при заданном getSubRows
+  // виртуализация игнорируется (список строк меняется при сворачивании).
+  const virtualizedEnabled = virtualized && !treeEnabled;
+
+  // Храним не «развёрнутые» id, а «переключённые» относительно defaultExpanded:
+  // так defaultExpanded=true работает и для данных, пришедших позже (async).
+  const [toggledIds, setToggledIds] = React.useState<Set<string>>(
+    () => new Set(),
+  );
+  const toggleExpanded = (id: string) =>
+    setToggledIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  // Плоский список видимых строк (dfs с учётом развёрнутости) + метаданные.
+  // Без getSubRows возвращаем data как есть — поведение прежних потребителей
+  // не меняется (тот же массив по ссылке, treeMeta = null).
+  const { flatData, treeMeta } = React.useMemo((): {
+    flatData: any[];
+    treeMeta: Map<string, TreeRowMeta> | null;
+  } => {
+    if (!treeEnabled) return { flatData: data, treeMeta: null };
+    const meta = new Map<string, TreeRowMeta>();
+    const out: any[] = [];
+    const walk = (nodes: any[], depth: number) => {
+      for (const node of nodes) {
+        const id = getRowId(node);
+        const children = getSubRows?.(node);
+        const hasChildren = Array.isArray(children) && children.length > 0;
+        const expanded =
+          hasChildren &&
+          (defaultExpanded ? !toggledIds.has(id) : toggledIds.has(id));
+        meta.set(id, { depth, hasChildren, expanded });
+        out.push(node);
+        if (expanded) walk(children as any[], depth + 1);
+      }
+    };
+    walk(data, 0);
+    return { flatData: out, treeMeta: meta };
+  }, [treeEnabled, data, getRowId, getSubRows, defaultExpanded, toggledIds]);
+
+  // Selection работает по всем ВИДИМЫМ строкам (для дерева — включая
+  // развёрнутых детей, исключая свёрнутых).
+  const allIds = React.useMemo(() => flatData.map(getRowId), [flatData, getRowId]);
   // Content-based (not length-based) so the header can't show "all selected"
   // when the selection actually holds ids from a different page.
   const allChecked =
@@ -160,7 +227,7 @@ export function DataTable({
     useTable(
       {
         columns: tableColumns,
-        data,
+        data: flatData,
         manualSortBy: true,
         // Сортировка идёт только через сервер (manualSortBy): без обработчика
         // onSortChange кликать по заголовку бессмысленно — данные не переупорядочатся.
@@ -182,7 +249,7 @@ export function DataTable({
 
   const [scrollTop, setScrollTop] = React.useState(0);
   const vwin =
-    virtualized && !loading
+    virtualizedEnabled && !loading
       ? computeVirtualWindow({
           scrollTop,
           viewportHeight: maxBodyHeight,
@@ -227,11 +294,11 @@ export function DataTable({
     <div
       className={cn(
         'rounded-lg border border-border bg-surface',
-        virtualized ? 'overflow-auto' : 'overflow-x-auto',
+        virtualizedEnabled ? 'overflow-auto' : 'overflow-x-auto',
       )}
-      style={virtualized ? { maxHeight: maxBodyHeight } : undefined}
+      style={virtualizedEnabled ? { maxHeight: maxBodyHeight } : undefined}
       onScroll={
-        virtualized
+        virtualizedEnabled
           ? (e) => setScrollTop((e.currentTarget as HTMLElement).scrollTop)
           : undefined
       }
@@ -240,7 +307,7 @@ export function DataTable({
         <thead
           className={cn(
             'bg-surface-elevated',
-            virtualized && 'sticky top-0 z-10',
+            virtualizedEnabled && 'sticky top-0 z-10',
           )}
         >
           {headerGroups.map((hg: any) => (
@@ -307,28 +374,80 @@ export function DataTable({
                 )}
                 {visibleRows.map((row: any) => {
                   prepareRow(row);
+                  const rowId = getRowId(row.original);
+                  const rowMeta = treeMeta?.get(rowId);
                   return (
                     <tr
                       {...row.getRowProps()}
                       onClick={() => onRowClick?.(row.original)}
-                      style={virtualized ? { height: rowHeight } : undefined}
+                      style={
+                        virtualizedEnabled ? { height: rowHeight } : undefined
+                      }
                       className={cn(
                         'border-t border-border',
                         onRowClick && 'cursor-pointer hover:bg-surface-elevated',
                       )}
                     >
-                      {row.cells.map((cell: any) => (
-                        <td
-                          {...cell.getCellProps()}
-                          className={cn(
-                            'px-3 py-2 text-text-primary',
-                            cell.column.align === 'right' &&
-                              'text-right tabular-nums whitespace-nowrap',
-                          )}
-                        >
-                          {cell.render('Cell')}
-                        </td>
-                      ))}
+                      {row.cells.map((cell: any, cellIndex: number) => {
+                        // Шеврон/отступ дерева — в колонке treeColumnId, а при
+                        // её отсутствии — в первой видимой data-колонке
+                        // (после selection-колонки, если она включена).
+                        const isTreeCell =
+                          rowMeta != null &&
+                          (treeColumnId != null
+                            ? cell.column.id === treeColumnId
+                            : cellIndex === (enableSelection ? 1 : 0));
+                        return (
+                          <td
+                            {...cell.getCellProps()}
+                            className={cn(
+                              'px-3 py-2 text-text-primary',
+                              cell.column.align === 'right' &&
+                                'text-right tabular-nums whitespace-nowrap',
+                            )}
+                          >
+                            {isTreeCell ? (
+                              <span
+                                className="flex items-center"
+                                style={{ paddingLeft: rowMeta.depth * 20 }}
+                              >
+                                {rowMeta.hasChildren ? (
+                                  <button
+                                    type="button"
+                                    aria-expanded={rowMeta.expanded}
+                                    aria-label={intl.get(
+                                      rowMeta.expanded
+                                        ? 'data_table.aria.collapse_row'
+                                        : 'data_table.aria.expand_row',
+                                    )}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleExpanded(rowId);
+                                    }}
+                                    className="mr-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded text-text-secondary hover:bg-border"
+                                  >
+                                    {rowMeta.expanded ? (
+                                      <ChevronDown className="h-4 w-4" />
+                                    ) : (
+                                      <ChevronRight className="h-4 w-4" />
+                                    )}
+                                  </button>
+                                ) : (
+                                  <span
+                                    className="mr-1 h-5 w-5 shrink-0"
+                                    aria-hidden="true"
+                                  />
+                                )}
+                                <span className="min-w-0 flex-1">
+                                  {cell.render('Cell')}
+                                </span>
+                              </span>
+                            ) : (
+                              cell.render('Cell')
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })}

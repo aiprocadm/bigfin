@@ -1,13 +1,10 @@
-// @ts-nocheck
 import { ImportStepper } from './ImportStepper';
-import { Box } from '@/components';
 import { ImportFileProvider } from './ImportFileProvider';
-import styles from './ImportView.module.scss';
 
 interface ImportViewProps {
   resource: string;
   description?: string;
-  params: Record<string, any>;
+  params?: Record<string, any>;
   onImportSuccess?: () => void;
   onImportFailed?: () => void;
   onCancelClick?: () => void;
@@ -17,12 +14,16 @@ interface ImportViewProps {
   exampleDescription?: string;
 }
 
+/**
+ * Мастер импорта CSV/XLSX (shadcn). Механизм прежний:
+ * контекст ImportFileProvider + три шага (загрузка → сопоставление → результат).
+ */
 export function ImportView({ ...props }: ImportViewProps) {
   return (
-    <Box className={styles.root}>
+    <div className="bigfin-ui flex min-h-full flex-1 flex-col bg-background">
       <ImportFileProvider {...props}>
         <ImportStepper />
       </ImportFileProvider>
-    </Box>
+    </div>
   );
 }

@@ -1,7 +1,6 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
-import { Callout, Classes, Intent } from '@blueprintjs/core';
-import { Stack } from '@/components';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ImportDropzone } from './ImportDropzone';
 import { ImportSampleDownload } from './ImportSampleDownload';
 import { ImportFileUploadForm } from './ImportFileUploadForm';
@@ -11,19 +10,21 @@ import { useImportFileContext } from './ImportFileProvider';
 import { AlertsManager, useAlertsManager } from './AlertsManager';
 import { ImportAlert } from './_types';
 
-function ImportFileUploadCallouts() {
+/** Ошибка «пустой лист» после попытки загрузки файла. */
+function ImportFileUploadAlerts() {
   const { isAlertActive } = useAlertsManager();
+
+  if (!isAlertActive(ImportAlert.IMPORTED_SHEET_EMPTY)) {
+    return null;
+  }
   return (
-    <>
-      {isAlertActive(ImportAlert.IMPORTED_SHEET_EMPTY) && (
-        <Callout intent={Intent.DANGER} icon={null}>
-          {intl.get('import.upload.sheet_empty')}
-        </Callout>
-      )}
-    </>
+    <Alert variant="destructive">
+      <AlertDescription>{intl.get('import.upload.sheet_empty')}</AlertDescription>
+    </Alert>
   );
 }
 
+/** Шаг 1 мастера импорта — загрузка CSV/XLSX-файла. */
 export function ImportFileUploadStep() {
   const { exampleDownload } = useImportFileContext();
 
@@ -31,21 +32,18 @@ export function ImportFileUploadStep() {
     <AlertsManager>
       <ImportFileUploadForm>
         <ImportFileContainer>
-          <p
-            className={Classes.TEXT_MUTED}
-            style={{ marginBottom: 18, lineHeight: 1.6 }}
-          >
+          <p className="mb-5 text-sm leading-relaxed text-text-secondary">
             {intl.get('import.upload.sample_hint')}
           </p>
 
-          <Stack>
-            <ImportFileUploadCallouts />
+          <div className="flex flex-col gap-4">
+            <ImportFileUploadAlerts />
 
-            <Stack spacing={40}>
+            <div className="flex flex-col gap-8">
               <ImportDropzone />
               {exampleDownload && <ImportSampleDownload />}
-            </Stack>
-          </Stack>
+            </div>
+          </div>
         </ImportFileContainer>
 
         <ImportFileUploadFooterActions />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, {
   Dispatch,
   SetStateAction,
@@ -6,6 +5,7 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import intl from 'react-intl-universal';
 
 export type EntityColumnField = {
   key: string;
@@ -54,7 +54,7 @@ interface ImportFileContextValue {
 interface ImportFileProviderProps {
   resource: string;
   description?: string;
-  params: Record<string, any>;
+  params?: Record<string, any>;
   onImportSuccess?: () => void;
   onImportFailed?: () => void;
   onCancelClick?: () => void;
@@ -65,10 +65,6 @@ interface ImportFileProviderProps {
   exampleTitle?: string;
   exampleDescription?: string;
 }
-
-const ExampleDescription =
-  'You can download the sample file to obtain detailed information about the data fields used during the import.';
-const ExampleTitle = 'Table Example';
 
 const ImportFileContext = createContext<ImportFileContextValue>(
   {} as ImportFileContextValue,
@@ -89,24 +85,24 @@ export const ImportFileProvider = ({
   resource,
   children,
   description,
-  params,
+  params = {},
   onImportFailed,
   onImportSuccess,
   onCancelClick,
   sampleFileName,
 
   exampleDownload = true,
-  exampleTitle = ExampleTitle,
-  exampleDescription = ExampleDescription,
+  exampleTitle,
+  exampleDescription,
 }: ImportFileProviderProps) => {
   const [sheetColumns, setSheetColumns] = useState<SheetColumn[]>([]);
-  const [entityColumns, setEntityColumns] = useState<SheetColumn[]>([]);
+  const [entityColumns, setEntityColumns] = useState<EntityColumn[]>([]);
   const [sheetMapping, setSheetMapping] = useState<SheetMap[]>([]);
   const [importId, setImportId] = useState<string>('');
 
   const [step, setStep] = useState<number>(0);
 
-  const value = {
+  const value: ImportFileContextValue = {
     sheetColumns,
     setSheetColumns,
 
@@ -133,8 +129,9 @@ export const ImportFileProvider = ({
     sampleFileName,
 
     exampleDownload,
-    exampleTitle,
-    exampleDescription,
+    exampleTitle: exampleTitle ?? intl.get('import.example.title'),
+    exampleDescription:
+      exampleDescription ?? intl.get('import.example.description'),
   };
 
   return (

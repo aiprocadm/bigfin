@@ -1,36 +1,78 @@
-// @ts-nocheck
-import React from 'react';
+import { ComponentType, Suspense, lazy } from 'react';
 
-import { Drawer, DrawerSuspense } from '@/components';
+import { Spinner } from '@/components/ui/Spinner';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { withDrawers } from '@/containers/Drawer/withDrawers';
-
 import { compose } from '@/utils';
 
-const CashFlowTransactionDrawerContent = React.lazy(() =>
-  import('./CashflowTransactionDrawerContent'),
+const CashflowTransactionContentV2 = lazy(() =>
+  import('./v2/CashflowTransactionContentV2').then((module) => ({
+    default: module.CashflowTransactionContentV2,
+  })),
 );
 
+interface CashflowTransactionDetailDrawerProps {
+  name: string;
+  // #withDrawers
+  isOpen?: boolean;
+  payload?: { referenceId?: number | string };
+}
+
+// withDrawerActions — легаси-HOC без типов: описываем инжектируемые
+// пропсы локально, не трогая общий модуль.
+interface WithDrawerActionsProps {
+  closeDrawer: (name: string, payload?: Record<string, unknown>) => void;
+}
+
 /**
- * Cash flow transaction drawer
+ * Drawer «Детали денежной операции» (shadcn Drawer + карточки на
+ * v2-контенте). Механизм открытия прежний: redux
+ * openDrawer(DRAWERS.CASHFLOW_TRNASACTION_DETAILS, { referenceId }).
  */
-function CashflowTransactionDetailDrawer({
+function CashflowTransactionDetailDrawerRoot({
   name,
-  // #withDrawer
   isOpen,
-  payload: { referenceId },
-}) {
+  payload,
+  closeDrawer,
+}: CashflowTransactionDetailDrawerProps & WithDrawerActionsProps) {
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      closeDrawer(name);
+    }
+  };
+
   return (
-    <Drawer
-      isOpen={isOpen}
-      name={name}
-      size={'65%'}
-      style={{ minWidth: '700px', maxWidth: '900px' }}
-    >
-      <DrawerSuspense>
-        <CashFlowTransactionDrawerContent referenceId={referenceId} />
-      </DrawerSuspense>
+    <Drawer open={Boolean(isOpen)} onOpenChange={handleOpenChange}>
+      <DrawerContent
+        side="right"
+        aria-describedby={undefined}
+        // bigfin-ui: контент рендерится в портале вне «нового» дерева —
+        // подключаем reset/шрифт/tabular-nums вручную. Фон серый
+        // (bg-background), карточки внутри — белые.
+        className="bigfin-ui w-full max-w-[750px] gap-0 overflow-hidden bg-background p-0"
+      >
+        <Suspense
+          fallback={
+            <div className="flex flex-1 items-center justify-center py-16 text-text-muted">
+              <Spinner size="lg" />
+            </div>
+          }
+        >
+          <CashflowTransactionContentV2 referenceId={payload?.referenceId} />
+        </Suspense>
+      </DrawerContent>
     </Drawer>
   );
 }
 
-export default compose(withDrawers())(CashflowTransactionDetailDrawer);
+// withDrawers — легаси-HOC без типов: mapState фактически необязателен,
+// кастуем сигнатуру локально.
+const withDrawersLoose = withDrawers as unknown as (
+  mapState?: unknown,
+) => (component: ComponentType<any>) => ComponentType<{ name: string }>;
+
+export default compose(
+  withDrawersLoose(),
+  withDrawerActions,
+)(CashflowTransactionDetailDrawerRoot) as ComponentType<{ name: string }>;

@@ -86,6 +86,9 @@ const headCell: CSSProperties = {
   fontSize: 7,
   textAlign: 'center',
   verticalAlign: 'middle',
+  // Перенос по словам; посреди слова — только если слово не влезает.
+  wordBreak: 'normal',
+  overflowWrap: 'break-word',
 };
 
 const numCell: CSSProperties = { ...cell, fontSize: 7, textAlign: 'center' };
@@ -328,14 +331,14 @@ export function RuTorg12PaperTemplate({
             </th>
           </tr>
           <tr>
-            <th style={headCell}>
+            <th style={{ ...headCell, width: '20%' }}>
               наименование, характеристика, сорт, артикул товара
             </th>
-            <th style={headCell}>код</th>
-            <th style={headCell}>наименование</th>
-            <th style={headCell}>код по ОКЕИ</th>
-            <th style={headCell}>в одном месте</th>
-            <th style={headCell}>мест, штук</th>
+            <th style={{ ...headCell, width: '6%' }}>код</th>
+            <th style={{ ...headCell, width: '5%' }}>наименование</th>
+            <th style={{ ...headCell, width: '4%' }}>код по ОКЕИ</th>
+            <th style={{ ...headCell, width: '5%' }}>в одном месте</th>
+            <th style={{ ...headCell, width: '5%' }}>мест, штук</th>
             <th style={headCell}>ставка, %</th>
             <th style={headCell}>сумма, {currencyLabel}</th>
           </tr>

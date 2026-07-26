@@ -5,6 +5,7 @@ import {
   buildOrganizationAddress,
   buildOrgRequisitesLine,
   formatInnKpp,
+  formatQuantity,
   hasGoodsEntries,
   isSoleProprietorInn,
   mapEntriesToRuVatLines,
@@ -129,9 +130,31 @@ describe('hasGoodsEntries', () => {
     );
   });
 
+  it('смешанный счёт «товар + услуга» — true', () => {
+    expect(
+      hasGoodsEntries([
+        { item: { type: 'service' } },
+        { item: { type: 'inventory' } },
+      ]),
+    ).toBe(true);
+  });
+
   it('пустой список — false', () => {
     expect(hasGoodsEntries([])).toBe(false);
     expect(hasGoodsEntries(undefined as any)).toBe(false);
+  });
+});
+
+describe('formatQuantity', () => {
+  it('целое печатается без дробной части', () => {
+    expect(formatQuantity(2)).toBe('2');
+    expect(formatQuantity(0)).toBe('0');
+  });
+
+  it('дробное — с запятой и округлением до трёх знаков', () => {
+    expect(formatQuantity(2.5)).toBe('2,5');
+    expect(formatQuantity(1.2345)).toBe('1,235');
+    expect(formatQuantity(0.0004)).toBe('0');
   });
 });
 

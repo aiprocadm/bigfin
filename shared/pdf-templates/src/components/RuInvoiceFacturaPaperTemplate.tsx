@@ -138,6 +138,9 @@ const headCell: CSSProperties = {
   fontSize: 6,
   textAlign: 'center',
   verticalAlign: 'middle',
+  // Перенос по словам; посреди слова — только если слово не влезает.
+  wordBreak: 'normal',
+  overflowWrap: 'break-word',
 };
 
 const numCell: CSSProperties = { ...cell, fontSize: 6, textAlign: 'center' };
@@ -238,7 +241,9 @@ export function RuInvoiceFacturaPaperTemplate({
       </div>
 
       {/* Строки (1)…(8) */}
-      <table style={{ ...ruTable, tableLayout: 'auto', marginBottom: 8 }}>
+      <table
+        style={{ ...ruTable, tableLayout: 'auto', width: 'auto', marginBottom: 8 }}
+      >
         <tbody>
           <tr>
             <td style={{ ...rowLabel, width: 26, textAlign: 'right' }}>(1)</td>

@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { RuPrintFormsController } from './RuPrintForms.controller';
 import { GetRuPaymentInvoicePdf } from './queries/GetRuPaymentInvoicePdf.service';
 import { GetRuActPdf } from './queries/GetRuActPdf.service';
+import { GetRuUpdPdf } from './queries/GetRuUpdPdf.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 import { ChromiumlyTenancyModule } from '@/modules/ChromiumlyTenancy/ChromiumlyTenancy.module';
@@ -20,6 +21,6 @@ import { SaleInvoicesModule } from '@/modules/SaleInvoices/SaleInvoices.module';
     SaleInvoicesModule,
   ],
   controllers: [RuPrintFormsController],
-  providers: [GetRuPaymentInvoicePdf, GetRuActPdf],
+  providers: [GetRuPaymentInvoicePdf, GetRuActPdf, GetRuUpdPdf],
 })
 export class RuPrintFormsModule {}

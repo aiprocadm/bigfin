@@ -58,6 +58,17 @@ export const mapEntriesToRuFormLines = (entries: any[]): RuFormLine[] =>
     ),
   }));
 
+/** Однострочный почтовый адрес контакта из billing-полей. */
+export const buildContactAddress = (customer: any): string =>
+  joinRequisites([
+    customer?.billingAddressPostcode,
+    customer?.billingAddressCountry,
+    customer?.billingAddressState,
+    customer?.billingAddressCity,
+    customer?.billingAddress1,
+    customer?.billingAddress2,
+  ]);
+
 export interface RuFormTotals {
   subtotal: string;
   vatLabel: string;

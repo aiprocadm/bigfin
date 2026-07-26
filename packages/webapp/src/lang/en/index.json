@@ -3350,6 +3350,7 @@
   "modules.ru_print_forms.desc": "Payment invoice and other Russian document forms",
   "ru_print_forms.payment_invoice.button": "Payment invoice (RF)",
   "ru_print_forms.act.button": "Act (RF)",
+  "ru_print_forms.upd.button": "UPD (RF)",
   "modules.financial_ratios.label": "Financial ratios",
   "modules.financial_ratios.desc": "Profitability, liquidity, leverage",
   "modules.data_quality.label": "Data quality",

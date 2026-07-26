@@ -8,6 +8,7 @@ import {
   IsBoolean,
   IsEmail,
   IsString,
+  MaxLength,
   ValidateIf,
 } from 'class-validator';
 import { ContactAddressDto } from '@/modules/Customers/dtos/ContactAddress.dto';
@@ -133,4 +134,68 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   inn?: string;
+
+  // Российские юр.реквизиты контрагента (②a/②c).
+  @ApiProperty({ required: false, description: 'Legal form (ООО/ИП/…)' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  legalForm?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Tax registration reason code (КПП)',
+    example: '770701001',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(9)
+  kpp?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Primary state registration number (ОГРН/ОГРНИП)',
+    example: '1027700132195',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(15)
+  ogrn?: string;
+
+  @ApiProperty({ required: false, description: 'Bank name' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  bankName?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Bank identification code (БИК)',
+    example: '044525225',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(9)
+  bankBik?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Bank account number (р/с)',
+    example: '40702810400000000001',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  bankAccount?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Correspondent account number (к/с)',
+    example: '30101810400000000225',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  bankCorrespondentAccount?: string;
 }
+

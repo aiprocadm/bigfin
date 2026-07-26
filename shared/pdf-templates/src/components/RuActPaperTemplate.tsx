@@ -3,25 +3,22 @@ import {
   ruCell,
   ruCellNoBorder,
   ruPage,
-  ruSmall,
   ruTable,
 } from './_ruFormStyles';
 
 /**
- * Российская печатная форма «Счёт на оплату».
+ * Российская печатная форма «Акт выполненных работ (оказанных услуг)».
  *
  * Тексты формы намеренно фиксированные русские (не i18n): это нормативная
  * печатная форма РФ, её язык не зависит от языка интерфейса организации.
- * Вёрстка — обычные <table> с инлайн-стилями: форма не поддерживает
- * пользовательский брендинг (цвета/лого), в отличие от Invoice-шаблона.
  */
 
-export interface RuPaymentInvoiceLine {
+export interface RuActLine {
   index: number;
-  /** Наименование товара (работы, услуги) */
+  /** Наименование работы (услуги) */
   title: string;
   quantity: string;
-  /** Единица измерения (шт, усл. и т.п.) */
+  /** Единица измерения */
   unit?: string;
   /** Цена за единицу, формат «1 500,00» */
   price: string;
@@ -29,109 +26,56 @@ export interface RuPaymentInvoiceLine {
   amount: string;
 }
 
-export interface RuPaymentInvoicePaperTemplateProps {
-  // Шапка с банковскими реквизитами получателя (поставщика).
-  bankName?: string;
-  bankBik?: string;
-  bankCorrespondentAccount?: string;
-  bankAccount?: string;
-  sellerInn?: string;
-  sellerKpp?: string;
-  /** Получатель платежа (название организации) */
-  sellerName?: string;
-
-  // Документ.
+export interface RuActPaperTemplateProps {
   documentNumber?: string;
-  /** Дата в формате «26 июля 2026 г.» либо любом читаемом */
+  /** «26 июля 2026 г.» */
   documentDate?: string;
 
-  // Стороны.
-  /** «ООО Ромашка, ИНН 7707083893, КПП 770701001, адрес…» — собирается сервером */
+  /** «ООО Ромашка, ИНН …, КПП …, адрес…» */
   sellerLine?: string;
   buyerLine?: string;
 
-  lines?: RuPaymentInvoiceLine[];
+  lines?: RuActLine[];
 
   /** Итого, формат «1 500,00» */
   subtotal?: string;
-  /** Строка НДС: сумма при наличии налога, иначе не задана */
-  vatAmount?: string;
-  /** Подпись строки НДС: «В том числе НДС» | «Без налога (НДС)» */
+  /** «В том числе НДС» | «Без налога (НДС)» */
   vatLabel?: string;
+  vatAmount?: string;
   /** Всего к оплате */
   total?: string;
 
-  /** Кол-во наименований */
   itemsCount?: number;
   /** «Одна тысяча пятьсот рублей 00 копеек» */
   totalInWords?: string;
+
+  /** Текст о приёмке; дефолт — типовая формулировка */
+  acceptanceText?: string;
 }
 
-export function RuPaymentInvoicePaperTemplate({
-  bankName = '',
-  bankBik = '',
-  bankCorrespondentAccount = '',
-  bankAccount = '',
-  sellerInn = '',
-  sellerKpp = '',
-  sellerName = '',
+const DEFAULT_ACCEPTANCE_TEXT =
+  'Вышеперечисленные работы (услуги) выполнены полностью и в срок. ' +
+  'Заказчик претензий по объёму, качеству и срокам оказания услуг не имеет.';
+
+export function RuActPaperTemplate({
   documentNumber = '',
   documentDate = '',
   sellerLine = '',
   buyerLine = '',
   lines = [],
   subtotal = '',
-  vatAmount,
   vatLabel = 'Без налога (НДС)',
+  vatAmount,
   total = '',
   itemsCount = 0,
   totalInWords = '',
-}: RuPaymentInvoicePaperTemplateProps) {
+  acceptanceText = DEFAULT_ACCEPTANCE_TEXT,
+}: RuActPaperTemplateProps) {
   return (
     <div style={ruPage}>
-      {/* Банковские реквизиты получателя */}
-      <table style={ruTable}>
-        <tbody>
-          <tr>
-            <td colSpan={2} rowSpan={2} style={{ ...ruCell, width: '55%' }}>
-              {bankName}
-              <div style={ruSmall}>Банк получателя</div>
-            </td>
-            <td style={{ ...ruCell, width: '10%' }}>БИК</td>
-            <td style={{ ...ruCell, width: '35%' }}>{bankBik}</td>
-          </tr>
-          <tr>
-            <td style={ruCell}>Сч. №</td>
-            <td style={ruCell}>{bankCorrespondentAccount}</td>
-          </tr>
-          <tr>
-            <td style={{ ...ruCell, width: '27%' }}>ИНН {sellerInn}</td>
-            <td style={{ ...ruCell, width: '28%' }}>КПП {sellerKpp}</td>
-            <td rowSpan={2} style={ruCell}>
-              Сч. №
-            </td>
-            <td rowSpan={2} style={ruCell}>
-              {bankAccount}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={ruCell}>
-              {sellerName}
-              <div style={ruSmall}>Получатель</div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
       {/* Заголовок */}
-      <h1
-        style={{
-          margin: '24px 0 6px',
-          fontSize: 18,
-          fontWeight: 700,
-        }}
-      >
-        Счёт на оплату № {documentNumber} от {documentDate}
+      <h1 style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 700 }}>
+        Акт № {documentNumber} от {documentDate}
       </h1>
       <div style={{ borderBottom: '2px solid #000', marginBottom: 16 }} />
 
@@ -139,15 +83,13 @@ export function RuPaymentInvoicePaperTemplate({
       <table style={{ ...ruTable, tableLayout: 'auto', marginBottom: 16 }}>
         <tbody>
           <tr>
-            <td style={{ ...ruCellNoBorder, width: 160, ...ruBold }}>
-              Поставщик (Исполнитель):
+            <td style={{ ...ruCellNoBorder, width: 120, ...ruBold }}>
+              Исполнитель:
             </td>
             <td style={ruCellNoBorder}>{sellerLine}</td>
           </tr>
           <tr>
-            <td style={{ ...ruCellNoBorder, ...ruBold }}>
-              Покупатель (Заказчик):
-            </td>
+            <td style={{ ...ruCellNoBorder, ...ruBold }}>Заказчик:</td>
             <td style={ruCellNoBorder}>{buyerLine}</td>
           </tr>
         </tbody>
@@ -158,7 +100,9 @@ export function RuPaymentInvoicePaperTemplate({
         <thead>
           <tr>
             <th style={{ ...ruCell, ...ruBold, width: '5%' }}>№</th>
-            <th style={{ ...ruCell, ...ruBold }}>Товары (работы, услуги)</th>
+            <th style={{ ...ruCell, ...ruBold }}>
+              Наименование работ (услуг)
+            </th>
             <th style={{ ...ruCell, ...ruBold, width: '10%' }}>Кол-во</th>
             <th style={{ ...ruCell, ...ruBold, width: '8%' }}>Ед.</th>
             <th style={{ ...ruCell, ...ruBold, width: '14%' }}>Цена</th>
@@ -200,7 +144,7 @@ export function RuPaymentInvoicePaperTemplate({
           </tr>
           <tr>
             <td style={{ ...ruCellNoBorder, textAlign: 'right', ...ruBold }}>
-              Всего к оплате:
+              Всего:
             </td>
             <td style={{ ...ruCellNoBorder, textAlign: 'right', ...ruBold }}>
               {total}
@@ -211,9 +155,12 @@ export function RuPaymentInvoicePaperTemplate({
 
       {/* Сумма прописью */}
       <div style={{ marginTop: 12 }}>
-        Всего наименований {itemsCount}, на сумму {total} руб.
+        Всего оказано услуг (выполнено работ) {itemsCount}, на сумму {total} руб.
       </div>
-      <div style={{ ...ruBold, marginBottom: 24 }}>{totalInWords}</div>
+      <div style={{ ...ruBold, marginBottom: 16 }}>{totalInWords}</div>
+
+      {/* Приёмка */}
+      <div style={{ marginBottom: 24 }}>{acceptanceText}</div>
 
       <div style={{ borderBottom: '2px solid #000', marginBottom: 28 }} />
 
@@ -222,7 +169,7 @@ export function RuPaymentInvoicePaperTemplate({
         <tbody>
           <tr>
             <td style={{ ...ruCellNoBorder, width: 120, ...ruBold }}>
-              Руководитель
+              Исполнитель
             </td>
             <td
               style={{
@@ -233,7 +180,7 @@ export function RuPaymentInvoicePaperTemplate({
             />
             <td style={{ ...ruCellNoBorder, width: 40 }} />
             <td style={{ ...ruCellNoBorder, width: 120, ...ruBold }}>
-              Бухгалтер
+              Заказчик
             </td>
             <td style={{ ...ruCellNoBorder, borderBottom: '1px solid #000' }} />
           </tr>

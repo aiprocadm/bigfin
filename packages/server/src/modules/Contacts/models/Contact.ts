@@ -18,7 +18,16 @@ export class Contact extends BaseModel {
 
   displayName: string;
 
+  // Российские юр.реквизиты (②a; колонки добавлены миграцией
+  // 20260527154001, в модель подняты для печатных форм ②c).
+  legalForm?: string;
   inn?: string;
+  kpp?: string;
+  ogrn?: string;
+  bankName?: string;
+  bankBik?: string;
+  bankAccount?: string;
+  bankCorrespondentAccount?: string;
 
   email?: string;
   workPhone?: string;

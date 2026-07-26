@@ -3350,6 +3350,7 @@
   "modules.ru_print_forms.desc": "Счёт на оплату и другие российские формы документов",
   "ru_print_forms.payment_invoice.button": "Счёт (РФ)",
   "ru_print_forms.act.button": "Акт (РФ)",
+  "ru_print_forms.upd.button": "УПД (РФ)",
   "modules.financial_ratios.label": "Финансовые показатели",
   "modules.financial_ratios.desc": "Рентабельность, ликвидность, нагрузка",
   "modules.data_quality.label": "Качество данных",

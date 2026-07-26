@@ -12,6 +12,7 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetRuPaymentInvoicePdf } from './queries/GetRuPaymentInvoicePdf.service';
 import { GetRuActPdf } from './queries/GetRuActPdf.service';
+import { GetRuUpdPdf } from './queries/GetRuUpdPdf.service';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
 import { Features } from '@/common/types/Features';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
@@ -29,6 +30,7 @@ export class RuPrintFormsController {
   constructor(
     private readonly getRuPaymentInvoicePdfService: GetRuPaymentInvoicePdf,
     private readonly getRuActPdfService: GetRuActPdf,
+    private readonly getRuUpdPdfService: GetRuUpdPdf,
     private readonly featuresManager: FeaturesManager,
   ) {}
 
@@ -112,6 +114,44 @@ export class RuPrintFormsController {
       res.send(pdfContent);
     } else {
       const htmlContent = await this.getRuActPdfService.getActHtml(id);
+      return { htmlContent };
+    }
+  }
+
+  @Get('sale-invoices/:id/upd')
+  @RequirePermission(SaleInvoiceAction.View, AbilitySubject.SaleInvoice)
+  @ApiOperation({
+    summary:
+      'Печатная форма РФ «Универсальный передаточный документ» (УПД, статус 1) по счёту-продаже.',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    type: Number,
+    description: 'The sale invoice id',
+  })
+  @ApiResponse({ status: 200, description: 'PDF либо { htmlContent }.' })
+  @ApiResponse({ status: 403, description: 'Модуль «Печатные формы РФ» выключен.' })
+  @ApiResponse({ status: 404, description: 'The sale invoice not found.' })
+  async upd(
+    @Param('id', ParseIntPipe) id: number,
+    @Headers('accept') acceptHeader: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.assertFeatureEnabled();
+
+    if (acceptHeader?.includes(AcceptType.ApplicationPdf)) {
+      const [pdfContent, filename] =
+        await this.getRuUpdPdfService.getUpdPdf(id);
+
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Length': pdfContent.length,
+        'Content-Disposition': `attachment; filename="${filename}.pdf"`,
+      });
+      res.send(pdfContent);
+    } else {
+      const htmlContent = await this.getRuUpdPdfService.getUpdHtml(id);
       return { htmlContent };
     }
   }

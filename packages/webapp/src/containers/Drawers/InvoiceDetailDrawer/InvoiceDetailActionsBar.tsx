@@ -105,6 +105,7 @@ function InvoiceDetailActionsBar({
   };
   const handleRuPaymentInvoice = () => openRuPrintForm('payment-invoice');
   const handleRuAct = () => openRuPrintForm('act');
+  const handleRuUpd = () => openRuPrintForm('upd');
 
   // Handle quick payment invoice.
   const handleQuickPaymentInvoice = () => {
@@ -185,6 +186,12 @@ function InvoiceDetailActionsBar({
               icon={<Icon icon="print-16" />}
               text={<T id={'ru_print_forms.act.button'} />}
               onClick={handleRuAct}
+            />
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="print-16" />}
+              text={<T id={'ru_print_forms.upd.button'} />}
+              onClick={handleRuUpd}
             />
           </FeatureCan>
           <NavbarDivider />

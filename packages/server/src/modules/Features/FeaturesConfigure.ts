@@ -143,6 +143,10 @@ export class FeaturesConfigure {
         defaultValue: false,
       },
       {
+        name: Features.RU_PRINT_FORMS,
+        defaultValue: false,
+      },
+      {
         name: Features.FINANCIAL_RATIOS,
         defaultValue: false,
       },

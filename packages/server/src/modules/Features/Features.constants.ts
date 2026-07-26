@@ -14,6 +14,7 @@ export const MODULE_ALLOWLIST: string[] = [
   Features.MGMT_ARTICLES, Features.DEALS, Features.COST_ALLOCATION, Features.DEBTS,
   Features.PAYMENT_REQUESTS, Features.DIVIDENDS, Features.CREDITS, Features.FIXED_ASSETS,
   Features.PAYROLL, Features.VAT_ANALYSIS, Features.FINANCIAL_RATIOS, Features.DATA_QUALITY,
+  Features.RU_PRINT_FORMS,
   // Интеграции
   Features.BANK_API_SYNC, Features.ACQUIRING, Features.ZENMONEY_IMPORT, Features.ONEC_EXPORT,
   Features.MOYSKLAD, Features.MARKETPLACES, Features.CRM_INTEGRATION,

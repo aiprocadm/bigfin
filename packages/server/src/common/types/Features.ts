@@ -30,6 +30,7 @@ export enum Features {
   ACQUIRING = 'acquiring',
   ZENMONEY_IMPORT = 'zenmoney_import',
   VAT_ANALYSIS = 'vat_analysis',
+  RU_PRINT_FORMS = 'ru_print_forms',
   FINANCIAL_RATIOS = 'financial_ratios',
   CRM_INTEGRATION = 'crm_integration',
 }

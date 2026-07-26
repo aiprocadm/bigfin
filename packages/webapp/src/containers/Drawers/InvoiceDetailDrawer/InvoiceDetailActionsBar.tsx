@@ -24,6 +24,9 @@ import {
   DrawerActionsBar,
   FormattedMessage as T,
 } from '@/components';
+import { FeatureCan } from '@/components/FeatureGuard/FeatureCan';
+import { Features } from '@/constants/features';
+import useApiRequest from '@/hooks/useRequest';
 import {
   SaleInvoiceAction,
   PaymentReceiveAction,
@@ -82,6 +85,23 @@ function InvoiceDetailActionsBar({
   // Handle print invoices.
   const handlePrintInvoice = () => {
     openDialog('invoice-pdf-preview', { invoiceId });
+  };
+
+  const apiRequest = useApiRequest();
+
+  // Печатная форма РФ «Счёт на оплату» (за флагом ru_print_forms).
+  const handleRuPaymentInvoice = () => {
+    apiRequest
+      .http({
+        method: 'get',
+        url: `/api/ru-print-forms/sale-invoices/${invoiceId}/payment-invoice`,
+        headers: { accept: 'application/pdf' },
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const file = new Blob([response.data], { type: 'application/pdf' });
+        window.open(URL.createObjectURL(file));
+      });
   };
 
   // Handle quick payment invoice.
@@ -151,6 +171,14 @@ function InvoiceDetailActionsBar({
             text={<T id={'print'} />}
             onClick={handlePrintInvoice}
           />
+          <FeatureCan feature={Features.RuPrintForms}>
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="print-16" />}
+              text={<T id={'ru_print_forms.payment_invoice.button'} />}
+              onClick={handleRuPaymentInvoice}
+            />
+          </FeatureCan>
           <NavbarDivider />
         </Can>
         <Can I={SaleInvoiceAction.Delete} a={AbilitySubject.Invoice}>

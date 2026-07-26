@@ -19,6 +19,7 @@ import {
   ListTree,
   Package,
   Percent,
+  Printer,
   Scale,
   ShieldCheck,
   ShoppingCart,
@@ -45,7 +46,7 @@ const MODULE_GROUPS: { group: string; features: string[] }[] = [
     features: [
       'mgmt_articles', 'deals', 'cost_allocation', 'debts', 'payment_requests',
       'dividends', 'credits', 'fixed_assets', 'payroll', 'vat_analysis',
-      'financial_ratios', 'data_quality',
+      'financial_ratios', 'data_quality', 'ru_print_forms',
     ],
   },
   {
@@ -73,6 +74,7 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   fixed_assets: Boxes,
   payroll: Users,
   vat_analysis: Percent,
+  ru_print_forms: Printer,
   financial_ratios: Gauge,
   data_quality: ShieldCheck,
   bank_api_sync: Landmark,

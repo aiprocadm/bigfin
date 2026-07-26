@@ -53,6 +53,7 @@ import { OnecExportModule } from '../OnecExport/OnecExport.module';
 import { AcquiringModule } from '../Acquiring/Acquiring.module';
 import { ZenmoneyImportModule } from '../ZenmoneyImport/ZenmoneyImport.module';
 import { VatAnalysisModule } from '../VatAnalysis/VatAnalysis.module';
+import { RuPrintFormsModule } from '../RuPrintForms/RuPrintForms.module';
 import { FinancialRatiosModule } from '../FinancialRatios/FinancialRatios.module';
 import { CrmIntegrationModule } from '../CrmIntegration/CrmIntegration.module';
 import { FixedAssetsModule } from '../FixedAssets/FixedAssets.module';
@@ -251,6 +252,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     AcquiringModule,
     ZenmoneyImportModule,
     VatAnalysisModule,
+    RuPrintFormsModule,
     FinancialRatiosModule,
     CrmIntegrationModule,
     FixedAssetsModule,

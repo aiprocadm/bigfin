@@ -4,7 +4,15 @@ import { extractCritical } from '@emotion/server';
 import { OpenSansFontLink } from '../constants';
 import { PaperTemplateLayout } from '../components/PaperTemplateLayout';
 
-export const renderSSR = (children: React.ReactNode) => {
+interface RenderSSROptions {
+  lang?: string;
+  title?: string;
+}
+
+export const renderSSR = (
+  children: React.ReactNode,
+  { lang = 'en', title = 'Invoice' }: RenderSSROptions = {}
+) => {
   const key = 'invoice-paper-template';
   const cache = createCache({ key });
 
@@ -14,12 +22,12 @@ export const renderSSR = (children: React.ReactNode) => {
   const extractedHtml = extractCritical(renderedHtml);
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice</title>
+    <title>${title}</title>
     ${OpenSansFontLink}
     <style data-emotion="${key} ${extractedHtml.ids.join(' ')}">${extractedHtml.css
     }</style>

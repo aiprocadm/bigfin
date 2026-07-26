@@ -19,6 +19,7 @@ export const Features = {
   Acquiring: 'acquiring', // ⑨d эквайринг (YooKassa)
   Zenmoney: 'zenmoney_import', // ⑨b импорт Дзенмани
   VatAnalysis: 'vat_analysis', // ㉖ анализ НДС
+  RuPrintForms: 'ru_print_forms', // ②c печатные формы РФ (счёт на оплату и др.)
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
   CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
 }

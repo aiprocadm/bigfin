@@ -7,6 +7,7 @@ export * from './components/PaymentReceivedPaperTemplate';
 export * from './components/FinancialSheetTemplate';
 export * from './components/ExportResourceTableTemplate';
 export * from './components/RuPaymentInvoicePaperTemplate';
+export * from './components/RuActPaperTemplate';
 
 export * from './renders/render-invoice-paper-template';
 export * from './renders/render-credit-note-paper-template';
@@ -16,3 +17,4 @@ export * from './renders/render-payment-received-paper-template';
 export * from './renders/render-financial-sheet-template';
 export * from './renders/render-export-resource-table-template';
 export * from './renders/render-ru-payment-invoice';
+export * from './renders/render-ru-act';

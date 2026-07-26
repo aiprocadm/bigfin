@@ -46,6 +46,19 @@ describe('transformToRuPaymentInvoiceProps', () => {
     expect(props.buyerLine).toBe('ИП Иванов И. И., ИНН 500100732259');
   });
 
+  it('покупатель с КПП — строка «ИНН …, КПП …»', () => {
+    const props = transformToRuPaymentInvoiceProps(
+      {
+        ...invoice,
+        customer: { ...invoice.customer, kpp: '770701002' },
+      },
+      metadata,
+    );
+    expect(props.buyerLine).toBe(
+      'ИП Иванов И. И., ИНН 500100732259, КПП 770701002',
+    );
+  });
+
   it('покупатель без ИНН — только название', () => {
     const props = transformToRuPaymentInvoiceProps(
       { ...invoice, customer: { displayName: 'Физлицо' } },

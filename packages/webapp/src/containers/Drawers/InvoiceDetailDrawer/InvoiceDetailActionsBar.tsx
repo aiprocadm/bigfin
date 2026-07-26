@@ -89,12 +89,12 @@ function InvoiceDetailActionsBar({
 
   const apiRequest = useApiRequest();
 
-  // Печатная форма РФ «Счёт на оплату» (за флагом ru_print_forms).
-  const handleRuPaymentInvoice = () => {
+  // Печатные формы РФ (за флагом ru_print_forms): открывает PDF в новой вкладке.
+  const openRuPrintForm = (form) => {
     apiRequest
       .http({
         method: 'get',
-        url: `/api/ru-print-forms/sale-invoices/${invoiceId}/payment-invoice`,
+        url: `/api/ru-print-forms/sale-invoices/${invoiceId}/${form}`,
         headers: { accept: 'application/pdf' },
         responseType: 'blob',
       })
@@ -103,6 +103,8 @@ function InvoiceDetailActionsBar({
         window.open(URL.createObjectURL(file));
       });
   };
+  const handleRuPaymentInvoice = () => openRuPrintForm('payment-invoice');
+  const handleRuAct = () => openRuPrintForm('act');
 
   // Handle quick payment invoice.
   const handleQuickPaymentInvoice = () => {
@@ -177,6 +179,12 @@ function InvoiceDetailActionsBar({
               icon={<Icon icon="print-16" />}
               text={<T id={'ru_print_forms.payment_invoice.button'} />}
               onClick={handleRuPaymentInvoice}
+            />
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="print-16" />}
+              text={<T id={'ru_print_forms.act.button'} />}
+              onClick={handleRuAct}
             />
           </FeatureCan>
           <NavbarDivider />

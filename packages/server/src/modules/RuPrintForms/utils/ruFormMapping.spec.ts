@@ -8,6 +8,8 @@ import {
   hasGoodsEntries,
   isSoleProprietorInn,
   mapEntriesToRuVatLines,
+  mapInvoiceToRuVatLines,
+  resolveVatRate,
   stripHtmlToText,
 } from './ruFormMapping';
 
@@ -290,5 +292,114 @@ describe('mapEntriesToRuVatLines', () => {
     expect(mapped.totalExclVatText).toBe('0,00');
     expect(mapped.totalInclVatText).toBe('0,00');
     expect(mapped.totalVatText).toBe('Без НДС');
+  });
+
+  it('ставка НДС 0% (экспорт) — это «0%», а не «Без НДС»', () => {
+    const mapped = mapEntriesToRuVatLines([
+      {
+        item: { name: 'Экспорт' },
+        quantity: 2,
+        rate: 1500,
+        taxRateId: 7,
+        taxRate: 0,
+        taxAmount: 0,
+        subtotalExcludingTax: 3000,
+        subtotalInclusingTax: 3000,
+      },
+    ]);
+
+    expect(mapped.lines[0].vatRateText).toBe('0%');
+    expect(mapped.lines[0].vatAmountText).toBe('0,00');
+    expect(mapped.totalVatText).toBe('0,00');
+    expect(mapped.hasAnyVat).toBe(true);
+  });
+
+  it('скидка строки уменьшает суммы позиции', () => {
+    // 10 × 100 = 1000, скидка 10% = 100, НДС 200 → к оплате 1100.
+    const mapped = mapEntriesToRuVatLines([
+      {
+        item: { name: 'Со скидкой' },
+        quantity: 10,
+        rate: 100,
+        taxRate: 20,
+        taxAmount: 200,
+        discountAmount: 100,
+        subtotalExcludingTax: 1000,
+        subtotalInclusingTax: 1200,
+        total: 1100,
+      },
+    ]);
+
+    expect(mapped.lines[0].amountInclVatText).toBe('1 100,00');
+    expect(mapped.lines[0].amountExclVatText).toBe('900,00');
+    expect(mapped.totalInclVatText).toBe('1 100,00');
+  });
+});
+
+describe('resolveVatRate', () => {
+  it('ставка привязана — возвращается её процент, включая ноль', () => {
+    expect(resolveVatRate({ taxRateId: 7, taxRate: 0 })).toBe(0);
+    expect(resolveVatRate({ taxRate: 20 })).toBe(20);
+    expect(resolveVatRate({ tax: { rate: 10 }, taxRate: 10 })).toBe(10);
+  });
+
+  it('ставки нет — null', () => {
+    expect(resolveVatRate({ quantity: 1 })).toBeNull();
+    expect(resolveVatRate(undefined)).toBeNull();
+  });
+});
+
+describe('mapInvoiceToRuVatLines', () => {
+  const entry = {
+    item: { name: 'Товар А' },
+    quantity: 2,
+    rate: 1000,
+    taxRate: 20,
+    taxAmount: 400,
+    subtotalExcludingTax: 2000,
+    subtotalInclusingTax: 2400,
+    total: 2400,
+  };
+
+  it('без скидки документа итог равен сумме строк', () => {
+    const mapped = mapInvoiceToRuVatLines({ entries: [entry], total: 2400 });
+
+    expect(mapped.totalInclVatText).toBe('2 400,00');
+    expect(mapped.lines[0].amountInclVatText).toBe('2 400,00');
+  });
+
+  it('скидка всего документа разносится по позициям — итог сходится со счётом', () => {
+    // Скидка документа 240 → к оплате 2160.
+    const mapped = mapInvoiceToRuVatLines({ entries: [entry], total: 2160 });
+
+    expect(mapped.totalInclVatText).toBe('2 160,00');
+    expect(mapped.lines[0].amountInclVatText).toBe('2 160,00');
+    expect(mapped.lines[0].vatAmountText).toBe('360,00');
+    expect(mapped.lines[0].amountExclVatText).toBe('1 800,00');
+  });
+
+  it('остаток от округления уходит в последнюю позицию, итог точный', () => {
+    const mapped = mapInvoiceToRuVatLines({
+      entries: [
+        { item: { name: 'А' }, quantity: 1, rate: 100, total: 100 },
+        { item: { name: 'Б' }, quantity: 1, rate: 100, total: 100 },
+        { item: { name: 'В' }, quantity: 1, rate: 100, total: 100 },
+      ],
+      total: 100,
+    });
+
+    const sum = mapped.lines.reduce((acc, line) => acc + line.amountInclVat, 0);
+    expect(Math.round(sum * 100) / 100).toBe(100);
+    expect(mapped.totalInclVatText).toBe('100,00');
+  });
+
+  it('итог счёта неизвестен — берутся суммы строк', () => {
+    const mapped = mapInvoiceToRuVatLines({ entries: [entry] });
+    expect(mapped.totalInclVatText).toBe('2 400,00');
+  });
+
+  it('пустой счёт не валится', () => {
+    expect(mapInvoiceToRuVatLines({}).lines).toEqual([]);
+    expect(mapInvoiceToRuVatLines({ entries: [], total: 0 }).lines).toEqual([]);
   });
 });

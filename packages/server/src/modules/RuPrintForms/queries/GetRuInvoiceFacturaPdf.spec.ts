@@ -1,5 +1,8 @@
 // © 2026 Bigfin
-import { transformToRuInvoiceFacturaProps } from './GetRuInvoiceFacturaPdf.service';
+import {
+  isInvoiceFacturaRedaction2026,
+  transformToRuInvoiceFacturaProps,
+} from './GetRuInvoiceFacturaPdf.service';
 
 const metadata = {
   name: 'ООО «Ромашка»',
@@ -80,7 +83,41 @@ describe('transformToRuInvoiceFacturaProps', () => {
     expect(props.correctionDate).toBe('—');
     expect(props.paymentDocument).toBe('—');
     expect(props.shipmentDocument).toBe('—');
+    expect(props.advanceInvoice).toBe('—');
     expect(props.govContractId).toBe('—');
+  });
+
+  it('редакция бланка выбирается по дате счёта, а не по сегодняшней', () => {
+    expect(
+      transformToRuInvoiceFacturaProps(invoice, metadata).isRedaction2026,
+    ).toBe(true);
+
+    expect(
+      transformToRuInvoiceFacturaProps(
+        { ...invoice, invoiceDate: '2026-03-31' },
+        metadata,
+      ).isRedaction2026,
+    ).toBe(false);
+  });
+});
+
+describe('isInvoiceFacturaRedaction2026', () => {
+  it('с 01.04.2026 включительно — новый бланк', () => {
+    expect(isInvoiceFacturaRedaction2026('2026-04-01')).toBe(true);
+    expect(isInvoiceFacturaRedaction2026('2026-12-31')).toBe(true);
+    expect(isInvoiceFacturaRedaction2026(new Date(2026, 3, 1))).toBe(true);
+  });
+
+  it('до 01.04.2026 — прежний бланк', () => {
+    expect(isInvoiceFacturaRedaction2026('2026-03-31')).toBe(false);
+    expect(isInvoiceFacturaRedaction2026('2025-01-01')).toBe(false);
+    expect(isInvoiceFacturaRedaction2026(new Date(2026, 2, 31))).toBe(false);
+  });
+
+  it('дату разобрать не удалось — действующий бланк', () => {
+    expect(isInvoiceFacturaRedaction2026('')).toBe(true);
+    expect(isInvoiceFacturaRedaction2026(undefined as any)).toBe(true);
+    expect(isInvoiceFacturaRedaction2026(new Date('nope'))).toBe(true);
   });
 
   it('позиция с НДС: количество, цена без налога, ставка и суммы', () => {

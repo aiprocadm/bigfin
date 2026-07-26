@@ -56,6 +56,12 @@ export interface RuTorg12PaperTemplateProps {
   totalVatAmount?: string;
   totalAmountInclVat?: string;
 
+  /**
+   * Подпись денежных граф. Для рублёвого счёта — «руб. коп.», иначе код
+   * валюты: подписывать валютные суммы рублями нельзя.
+   */
+  currencyLabel?: string;
+
   /** Число записей прописью: «две» */
   entriesCountInWords?: string;
   /** «Три тысячи шестьсот рублей 00 копеек» */
@@ -137,6 +143,7 @@ export function RuTorg12PaperTemplate({
   totalAmountExclVat = '',
   totalVatAmount = '',
   totalAmountInclVat = '',
+  currencyLabel = 'руб. коп.',
   entriesCountInWords = '',
   totalInWords = '',
 }: RuTorg12PaperTemplateProps) {
@@ -308,16 +315,16 @@ export function RuTorg12PaperTemplate({
               Количество (масса нетто)
             </th>
             <th style={{ ...headCell, width: '7%' }} rowSpan={2}>
-              Цена, руб. коп.
+              Цена, {currencyLabel}
             </th>
             <th style={{ ...headCell, width: '8%' }} rowSpan={2}>
-              Сумма без учёта НДС, руб. коп.
+              Сумма без учёта НДС, {currencyLabel}
             </th>
             <th style={{ ...headCell, width: '11%' }} colSpan={2}>
               НДС
             </th>
             <th style={{ ...headCell, width: '10%' }} rowSpan={2}>
-              Сумма с учётом НДС, руб. коп.
+              Сумма с учётом НДС, {currencyLabel}
             </th>
           </tr>
           <tr>
@@ -330,7 +337,7 @@ export function RuTorg12PaperTemplate({
             <th style={headCell}>в одном месте</th>
             <th style={headCell}>мест, штук</th>
             <th style={headCell}>ставка, %</th>
-            <th style={headCell}>сумма, руб. коп.</th>
+            <th style={headCell}>сумма, {currencyLabel}</th>
           </tr>
           <tr>
             {Array.from({ length: 15 }, (_, i) => (

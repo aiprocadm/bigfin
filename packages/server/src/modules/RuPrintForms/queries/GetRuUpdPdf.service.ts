@@ -11,7 +11,7 @@ import { formatDateRu } from '../utils/amountToWordsRu';
 import {
   buildContactAddress,
   joinRequisites,
-  mapEntriesToRuVatLines,
+  mapInvoiceToRuVatLines,
 } from '../utils/ruFormMapping';
 
 /**
@@ -68,7 +68,7 @@ export const transformToRuUpdProps = (
   invoice: any,
   metadata: any,
 ): RuUpdPaperTemplateProps => {
-  const mapped = mapEntriesToRuVatLines(invoice.entries || []);
+  const mapped = mapInvoiceToRuVatLines(invoice);
 
   const lines = mapped.lines.map((line) => ({
     index: line.index,

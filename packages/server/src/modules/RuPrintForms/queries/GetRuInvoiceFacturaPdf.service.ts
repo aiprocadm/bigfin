@@ -7,7 +7,10 @@ import {
 import { GetSaleInvoice } from '@/modules/SaleInvoices/queries/GetSaleInvoice.service';
 import { ChromiumlyTenancy } from '@/modules/ChromiumlyTenancy/ChromiumlyTenancy.service';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
-import { formatDateNumericRu } from '../utils/amountToWordsRu';
+import {
+  formatDateNumericRu,
+  toIsoDateString,
+} from '../utils/amountToWordsRu';
 import {
   buildContactAddress,
   buildContactShippingAddress,
@@ -17,8 +20,26 @@ import {
   hasGoodsEntries,
   isSoleProprietorInn,
   joinRequisites,
-  mapEntriesToRuVatLines,
+  mapInvoiceToRuVatLines,
 } from '../utils/ruFormMapping';
+
+/**
+ * Дата, с которой применяется бланк в редакции постановления
+ * Правительства РФ от 23.01.2026 № 26.
+ */
+const REDACTION_2026_APPLIED_FROM = '2026-04-01';
+
+/**
+ * Печатать ли бланк в редакции 2026 года. Решает ДАТА ДОКУМЕНТА:
+ * счёт, выставленный до 01.04.2026, должен печататься по прежнему бланку
+ * и после этой даты. Дату разобрать не удалось — берём действующий бланк.
+ */
+export const isInvoiceFacturaRedaction2026 = (
+  invoiceDate: Date | string,
+): boolean => {
+  const isoDate = toIsoDateString(invoiceDate);
+  return !isoDate || isoDate >= REDACTION_2026_APPLIED_FROM;
+};
 
 /**
  * Печатная форма РФ «Счёт-фактура» по счёту-продаже.
@@ -78,7 +99,7 @@ export const transformToRuInvoiceFacturaProps = (
   metadata: any,
 ): RuInvoiceFacturaPaperTemplateProps => {
   const entries = invoice.entries || [];
-  const mapped = mapEntriesToRuVatLines(entries);
+  const mapped = mapInvoiceToRuVatLines(invoice);
   const customer = invoice.customer;
 
   // Грузоотправителя и грузополучателя заполняют только при отгрузке
@@ -104,6 +125,8 @@ export const transformToRuInvoiceFacturaProps = (
       : DASH,
     paymentDocument: DASH,
     shipmentDocument: DASH,
+    advanceInvoice: DASH,
+    isRedaction2026: isInvoiceFacturaRedaction2026(invoice.invoiceDate),
 
     buyerName: customer?.displayName ?? '',
     buyerAddress: buildContactAddress(customer),

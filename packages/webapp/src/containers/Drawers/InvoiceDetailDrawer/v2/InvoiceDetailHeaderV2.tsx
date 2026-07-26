@@ -25,6 +25,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Features } from '@/constants';
@@ -42,9 +45,19 @@ import {
 } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useFeatureCan } from '@/hooks/state';
+import useApiRequest from '@/hooks/useRequest';
 import { compose } from '@/utils';
 
 import type { InvoiceDetail } from './types';
+
+/** Печатные формы РФ (②c): путь эндпоинта и ключ подписи пункта меню. */
+const RU_PRINT_FORMS: { form: string; labelKey: string }[] = [
+  { form: 'payment-invoice', labelKey: 'ru_print_forms.payment_invoice.button' },
+  { form: 'act', labelKey: 'ru_print_forms.act.button' },
+  { form: 'upd', labelKey: 'ru_print_forms.upd.button' },
+  { form: 'torg12', labelKey: 'ru_print_forms.torg12.button' },
+  { form: 'invoice-factura', labelKey: 'ru_print_forms.invoice_factura.button' },
+];
 
 interface InvoiceDetailHeaderV2Props {
   invoice: InvoiceDetail;
@@ -134,6 +147,23 @@ function InvoiceDetailHeaderV2Root({
   const handleMailInvoice = () =>
     openDrawer(DRAWERS.INVOICE_SEND_MAIL, { invoiceId });
 
+  const apiRequest = useApiRequest();
+
+  // Печатная форма РФ: запрашиваем PDF и открываем его в новой вкладке.
+  const openRuPrintForm = (form: string) => {
+    apiRequest
+      .http({
+        method: 'get',
+        url: `/api/ru-print-forms/sale-invoices/${invoiceId}/${form}`,
+        headers: { accept: 'application/pdf' },
+        responseType: 'blob',
+      })
+      .then((response: { data: BlobPart }) => {
+        const file = new Blob([response.data], { type: 'application/pdf' });
+        window.open(URL.createObjectURL(file));
+      });
+  };
+
   const showAddPayment = Boolean(invoice.is_delivered && !invoice.is_fully_paid);
 
   return (
@@ -189,6 +219,25 @@ function InvoiceDetailHeaderV2Root({
                   <Printer className="mr-2 h-4 w-4" aria-hidden />
                   {intl.get('print')}
                 </DropdownMenuItem>
+
+                {featureCan(Features.RuPrintForms) ? (
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <Printer className="mr-2 h-4 w-4" aria-hidden />
+                      {intl.get('ru_print_forms.submenu')}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      {RU_PRINT_FORMS.map(({ form, labelKey }) => (
+                        <DropdownMenuItem
+                          key={form}
+                          onClick={() => openRuPrintForm(form)}
+                        >
+                          {intl.get(labelKey)}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                ) : null}
               </Can>
 
               <DropdownMenuItem onClick={handleShareLink}>

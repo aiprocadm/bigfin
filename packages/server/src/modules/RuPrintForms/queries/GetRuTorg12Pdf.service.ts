@@ -17,7 +17,7 @@ import {
   buildContactRequisitesLine,
   buildContactShippingAddress,
   buildOrgRequisitesLine,
-  mapEntriesToRuVatLines,
+  mapInvoiceToRuVatLines,
 } from '../utils/ruFormMapping';
 
 /**
@@ -75,8 +75,11 @@ export const transformToRuTorg12Props = (
   invoice: any,
   metadata: any,
 ): RuTorg12PaperTemplateProps => {
-  const mapped = mapEntriesToRuVatLines(invoice.entries || []);
+  const mapped = mapInvoiceToRuVatLines(invoice);
   const customer = invoice.customer;
+  // Пустая строка в referenceNo — типовой случай, договором её считать нельзя.
+  const hasContractReference = Boolean(String(invoice.referenceNo ?? '').trim());
+  const isRubles = (invoice.currencyCode ?? 'RUB') === 'RUB';
 
   // Организация выступает и грузоотправителем, и поставщиком;
   // контрагент — и грузополучателем (адрес доставки), и плательщиком.
@@ -99,10 +102,16 @@ export const transformToRuTorg12Props = (
     ),
 
     // Основанием служит договор, если у счёта заполнена ссылка на него,
-    // иначе сам счёт.
-    basisName: invoice.referenceNo ? 'Договор' : 'Счёт',
-    basisNumber: invoice.referenceNo ?? invoice.invoiceNo ?? '',
-    basisDate: formatDateNumericRu(invoice.invoiceDate),
+    // иначе сам счёт. Дату договора система не хранит, поэтому у договора
+    // дату не печатаем — подставлять дату счёта нельзя, это заведомо
+    // неверный реквизит.
+    basisName: hasContractReference ? 'Договор' : 'Счёт',
+    basisNumber: hasContractReference
+      ? String(invoice.referenceNo).trim()
+      : (invoice.invoiceNo ?? ''),
+    basisDate: hasContractReference
+      ? ''
+      : formatDateNumericRu(invoice.invoiceDate),
 
     lines: mapped.lines.map((line) => ({
       index: line.index,
@@ -120,6 +129,9 @@ export const transformToRuTorg12Props = (
     totalAmountExclVat: mapped.totalExclVatText,
     totalVatAmount: mapped.totalVatText,
     totalAmountInclVat: mapped.totalInclVatText,
+
+    // Денежные графы подписываются рублями только для рублёвого счёта.
+    currencyLabel: isRubles ? 'руб. коп.' : (invoice.currencyCode ?? ''),
 
     entriesCountInWords: integerToWordsRu(mapped.lines.length),
     totalInWords: buildAmountInWords(mapped.totalInclVat, invoice.currencyCode),

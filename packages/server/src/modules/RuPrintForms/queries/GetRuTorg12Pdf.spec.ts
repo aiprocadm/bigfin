@@ -80,6 +80,29 @@ describe('transformToRuTorg12Props', () => {
 
     expect(props.basisName).toBe('Договор');
     expect(props.basisNumber).toBe('ДГ-7');
+    // Даты договора система не хранит — дату счёта подставлять нельзя.
+    expect(props.basisDate).toBe('');
+  });
+
+  it('пустая ссылка на договор договором не считается', () => {
+    const props = transformToRuTorg12Props(
+      { ...invoice, referenceNo: '   ' },
+      metadata,
+    );
+
+    expect(props.basisName).toBe('Счёт');
+    expect(props.basisNumber).toBe('INV-42');
+    expect(props.basisDate).toBe('26.07.2026');
+  });
+
+  it('денежные графы подписаны рублями только для рублёвого счёта', () => {
+    expect(transformToRuTorg12Props(invoice, metadata).currencyLabel).toBe(
+      'руб. коп.',
+    );
+    expect(
+      transformToRuTorg12Props({ ...invoice, currencyCode: 'USD' }, metadata)
+        .currencyLabel,
+    ).toBe('USD');
   });
 
   it('позиция: код товара, количество, цена без НДС, ставка и суммы', () => {

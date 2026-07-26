@@ -37,6 +37,22 @@ const INVOICE_ID_PARAM = {
 };
 
 /**
+ * Заголовок Content-Disposition по RFC 5987.
+ *
+ * Номер счёта в РФ сплошь и рядом содержит кириллицу («СЧ-000123»), а Node
+ * отвергает такие символы в значении заголовка — без кодирования отдача PDF
+ * падает с ошибкой. Поэтому даём ASCII-запасной вариант и полное имя в UTF-8.
+ */
+export const buildPdfContentDisposition = (filename: string): string => {
+  const fullName = `${filename}.pdf`;
+  const asciiName = fullName.replace(/[^\x20-\x7E]/g, '_').replace(/"/g, "'");
+
+  return `attachment; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(
+    fullName,
+  )}`;
+};
+
+/**
  * Печатные формы РФ (②c): счёт на оплату, акт, УПД, ТОРГ-12, счёт-фактура.
  * Все формы за флагом `ru_print_forms`.
  */
@@ -81,7 +97,7 @@ export class RuPrintFormsController {
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Length': pdfContent.length,
-      'Content-Disposition': `attachment; filename="${filename}.pdf"`,
+      'Content-Disposition': buildPdfContentDisposition(filename),
     });
     res.send(pdfContent);
   }

@@ -6,12 +6,47 @@ import { ruBold, ruCellNoBorder, ruPage, ruSmall, ruTable } from './_ruFormStyle
  * Правительства РФ от 26.12.2011 № 1137) — строки 1…8 и графы 1…14,
  * включая графы прослеживаемости.
  *
+ * Состав бланка зависит от даты документа: постановление Правительства РФ
+ * от 23.01.2026 № 26 (применяется с 01.04.2026) добавило строку (5б),
+ * изменило подпись графы 14 и текст блока подписи ИП. Переключает
+ * проп `isRedaction2026` — он считается от даты документа, а не от
+ * текущей даты, иначе задним числом сломается печать старых счетов.
+ *
  * Печатается в альбомной ориентации. Тексты формы фиксированные русские.
  *
  * Графы, которые сознательно не заполняются (нет данных в системе):
  * код вида товара, единица измерения, акциз, страна происхождения,
  * номер декларации и все графы прослеживаемости.
  */
+
+/**
+ * Формулировки бланка, сверенные по вторичным источникам.
+ * Собраны в один словарь, чтобы правка по первоисточнику была точечной.
+ * TODO: сверить дословно с текстом постановлений на pravo.gov.ru.
+ */
+const LABELS = {
+  row5: 'К платёжно-расчётному документу №',
+  row5a: 'Документ об отгрузке: наименование, №',
+  row5b:
+    'К счёту-фактуре (счетам-фактурам), выставленному (выставленным) при ' +
+    'получении оплаты, частичной оплаты или иных платежей в счёт предстоящих ' +
+    'поставок товаров (выполнения работ, оказания услуг), передачи ' +
+    'имущественных прав',
+  column5: 'Стоимость товаров (работ, услуг), имущественных прав без налога - всего',
+  column9: 'Стоимость товаров (работ, услуг), имущественных прав с налогом - всего',
+  column14Legacy:
+    'Стоимость товара, подлежащего прослеживаемости, без налога на ' +
+    'добавленную стоимость, в рублях',
+  column14From2026:
+    'Стоимость товара, подлежащего прослеживаемости, без налога на ' +
+    'добавленную стоимость, в рублях и копейках',
+  soleProprietorLegacy:
+    '(реквизиты свидетельства о государственной регистрации ' +
+    'индивидуального предпринимателя)',
+  soleProprietorFrom2026:
+    '(основной государственный регистрационный номер индивидуального ' +
+    'предпринимателя и дата присвоения такого номера)',
+};
 
 export interface RuInvoiceFacturaLine {
   index: number;
@@ -50,6 +85,14 @@ export interface RuInvoiceFacturaPaperTemplateProps {
   paymentDocument?: string;
   /** Строка (5а) */
   shipmentDocument?: string;
+  /** Строка (5б) — только для документов от 01.04.2026 */
+  advanceInvoice?: string;
+
+  /**
+   * Бланк в редакции постановления № 26, применяемой с 01.04.2026:
+   * появляется строка (5б), меняются подпись графы 14 и блок подписи ИП.
+   */
+  isRedaction2026?: boolean;
 
   buyerName?: string;
   buyerAddress?: string;
@@ -172,6 +215,8 @@ export function RuInvoiceFacturaPaperTemplate({
   consigneeLine = DASH,
   paymentDocument = DASH,
   shipmentDocument = DASH,
+  advanceInvoice = DASH,
+  isRedaction2026 = true,
   buyerName = '',
   buyerAddress = '',
   buyerInnKpp = '',
@@ -232,16 +277,11 @@ export function RuInvoiceFacturaPaperTemplate({
             label="Грузополучатель и его адрес"
             value={consigneeLine}
           />
-          <HeaderRow
-            code="5"
-            label="К платёжно-расчётному документу"
-            value={paymentDocument}
-          />
-          <HeaderRow
-            code="5а"
-            label="Документ об отгрузке"
-            value={shipmentDocument}
-          />
+          <HeaderRow code="5" label={LABELS.row5} value={paymentDocument} />
+          <HeaderRow code="5а" label={LABELS.row5a} value={shipmentDocument} />
+          {isRedaction2026 ? (
+            <HeaderRow code="5б" label={LABELS.row5b} value={advanceInvoice} />
+          ) : null}
           <HeaderRow code="6" label="Покупатель" value={buyerName} />
           <HeaderRow code="6а" label="Адрес" value={buyerAddress} />
           <HeaderRow code="6б" label="ИНН/КПП покупателя" value={buyerInnKpp} />
@@ -282,8 +322,7 @@ export function RuInvoiceFacturaPaperTemplate({
               Цена (тариф) за единицу измерения
             </th>
             <th style={{ ...headCell, width: '7%' }} rowSpan={2}>
-              Стоимость товаров (работ, услуг), имущественных прав без налога —
-              всего
+              {LABELS.column5}
             </th>
             <th style={{ ...headCell, width: '5%' }} rowSpan={2}>
               В том числе сумма акциза
@@ -295,8 +334,7 @@ export function RuInvoiceFacturaPaperTemplate({
               Сумма налога, предъявляемая покупателю
             </th>
             <th style={{ ...headCell, width: '7%' }} rowSpan={2}>
-              Стоимость товаров (работ, услуг), имущественных прав с налогом —
-              всего
+              {LABELS.column9}
             </th>
             <th style={{ ...headCell, width: '9%' }} colSpan={2}>
               Страна происхождения товара
@@ -314,8 +352,9 @@ export function RuInvoiceFacturaPaperTemplate({
               единице измерения товара
             </th>
             <th style={{ ...headCell, width: '5%' }} rowSpan={2}>
-              Стоимость товара, подлежащего прослеживаемости, без налога на
-              добавленную стоимость, в рублях
+              {isRedaction2026
+                ? LABELS.column14From2026
+                : LABELS.column14Legacy}
             </th>
           </tr>
           <tr>
@@ -370,8 +409,10 @@ export function RuInvoiceFacturaPaperTemplate({
             <td style={{ ...cell, ...ruBold, textAlign: 'right' }}>
               {totalAmountExclVat}
             </td>
-            <td style={{ ...cell, textAlign: 'center' }}>{CROSS}</td>
-            <td style={{ ...cell, textAlign: 'center' }}>{CROSS}</td>
+            {/* Графы 6 и 7 в итоговой строке объединены и содержат «Х». */}
+            <td colSpan={2} style={{ ...cell, textAlign: 'center' }}>
+              {CROSS}
+            </td>
             <td style={{ ...cell, ...ruBold, textAlign: 'right' }}>
               {totalVatAmount}
             </td>
@@ -388,7 +429,11 @@ export function RuInvoiceFacturaPaperTemplate({
         {isSoleProprietor ? (
           <SignatureBlock
             title="Индивидуальный предприниматель или иное уполномоченное лицо"
-            extraLabel="(реквизиты свидетельства о государственной регистрации индивидуального предпринимателя)"
+            extraLabel={
+              isRedaction2026
+                ? LABELS.soleProprietorFrom2026
+                : LABELS.soleProprietorLegacy
+            }
             extraValue={soleProprietorOgrn}
           />
         ) : (

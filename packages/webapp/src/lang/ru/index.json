@@ -3351,6 +3351,8 @@
   "ru_print_forms.payment_invoice.button": "Счёт (РФ)",
   "ru_print_forms.act.button": "Акт (РФ)",
   "ru_print_forms.upd.button": "УПД (РФ)",
+  "ru_print_forms.torg12.button": "ТОРГ-12 (РФ)",
+  "ru_print_forms.invoice_factura.button": "Счёт-фактура (РФ)",
   "modules.financial_ratios.label": "Финансовые показатели",
   "modules.financial_ratios.desc": "Рентабельность, ликвидность, нагрузка",
   "modules.data_quality.label": "Качество данных",

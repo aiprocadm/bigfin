@@ -9,6 +9,8 @@ export * from './components/ExportResourceTableTemplate';
 export * from './components/RuPaymentInvoicePaperTemplate';
 export * from './components/RuActPaperTemplate';
 export * from './components/RuUpdPaperTemplate';
+export * from './components/RuTorg12PaperTemplate';
+export * from './components/RuInvoiceFacturaPaperTemplate';
 
 export * from './renders/render-invoice-paper-template';
 export * from './renders/render-credit-note-paper-template';
@@ -20,3 +22,5 @@ export * from './renders/render-export-resource-table-template';
 export * from './renders/render-ru-payment-invoice';
 export * from './renders/render-ru-act';
 export * from './renders/render-ru-upd';
+export * from './renders/render-ru-torg12';
+export * from './renders/render-ru-invoice-factura';

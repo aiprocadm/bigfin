@@ -3351,6 +3351,8 @@
   "ru_print_forms.payment_invoice.button": "Payment invoice (RF)",
   "ru_print_forms.act.button": "Act (RF)",
   "ru_print_forms.upd.button": "UPD (RF)",
+  "ru_print_forms.torg12.button": "TORG-12 (RF)",
+  "ru_print_forms.invoice_factura.button": "VAT invoice (RF)",
   "modules.financial_ratios.label": "Financial ratios",
   "modules.financial_ratios.desc": "Profitability, liquidity, leverage",
   "modules.data_quality.label": "Data quality",

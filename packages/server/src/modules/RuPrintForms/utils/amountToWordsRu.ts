@@ -192,6 +192,24 @@ const RU_MONTHS_GENITIVE = [
   'декабря',
 ];
 
+/**
+ * Дата цифрами для унифицированных бланков: 2026-07-26 → «26.07.2026».
+ * В ТОРГ-12 и счёте-фактуре дата составления печатается цифрами,
+ * в отличие от счёта на оплату и акта (см. formatDateRu).
+ */
+export const formatDateNumericRu = (date: Date | string): string => {
+  if (typeof date === 'string') {
+    const match = date.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) return '';
+    const [, year, month, day] = match;
+    return `${day}.${month}.${year}`;
+  }
+  if (!date || Number.isNaN(date.getTime())) return '';
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${day}.${month}.${date.getFullYear()}`;
+};
+
 /** Дата для печатной формы: 2026-07-26 → «26 июля 2026 г.» */
 export const formatDateRu = (date: Date | string): string => {
   // ISO-строку разбираем вручную, чтобы полночь UTC не уехала

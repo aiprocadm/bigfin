@@ -1,9 +1,18 @@
 // © 2026 Bigfin
 /**
  * Общий маппинг данных счёта-продажи и реквизитов в props российских
- * печатных форм (используется формами «Счёт на оплату» и «Акт»).
+ * печатных форм (счёт на оплату, акт, УПД, ТОРГ-12, счёт-фактура).
  */
 import { amountToWordsRu, formatMoneyRu } from './amountToWordsRu';
+
+/** Прочерк в незаполняемом реквизите унифицированного бланка. */
+export const DASH = '—';
+
+/** «Х» в ячейках итоговой строки, которые по форме не заполняются. */
+export const CROSS = 'Х';
+
+/** Подпись ставки/суммы налога для позиций без НДС. */
+export const NO_VAT = 'Без НДС';
 
 /** Части реквизитов через запятую, пустые — пропускаются. */
 export const joinRequisites = (
@@ -77,6 +86,215 @@ export interface RuFormTotals {
   totalInWords: string;
 }
 
+/**
+ * HTML → плоский текст: `addressTextFormatted` организации возвращает
+ * разметку (`<strong>Название</strong><br />…`), а в бланки нужен текст.
+ */
+export const stripHtmlToText = (html: string): string =>
+  String(html ?? '')
+    .replace(/<br\s*\/?>/gi, ', ')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/^[,\s]+|[,\s]+$/g, '')
+    .trim();
+
+/**
+ * Адрес организации одной строкой, без названия. Берём структурные поля
+ * `metadata.address`; если они пусты — вытаскиваем текст из
+ * `addressTextFormatted` и отрезаем название организации в начале.
+ */
+export const buildOrganizationAddress = (metadata: any): string => {
+  const address = metadata?.address;
+  const structured = joinRequisites([
+    address?.postalCode,
+    address?.stateProvince,
+    address?.city,
+    address?.address1,
+    address?.address2,
+  ]);
+  if (structured) return structured;
+
+  const text = stripHtmlToText(metadata?.addressTextFormatted ?? '');
+  const name = metadata?.name ?? '';
+  return name && text.startsWith(name)
+    ? text.slice(name.length).replace(/^[,\s]+/, '')
+    : text;
+};
+
+/** Адрес доставки контакта; если не заполнен — платёжный. */
+export const buildContactShippingAddress = (customer: any): string =>
+  joinRequisites([
+    customer?.shippingAddressPostcode,
+    customer?.shippingAddressCountry,
+    customer?.shippingAddressState,
+    customer?.shippingAddressCity,
+    customer?.shippingAddress1,
+    customer?.shippingAddress2,
+  ]) || buildContactAddress(customer);
+
+/** «ИНН / КПП»; у ИП КПП нет — печатаем только ИНН, без слэша. */
+export const formatInnKpp = (inn?: string, kpp?: string): string => {
+  const innValue = (inn ?? '').trim();
+  const kppValue = (kpp ?? '').trim();
+
+  if (!innValue) return kppValue;
+  if (!kppValue) return innValue;
+  return `${innValue} / ${kppValue}`;
+};
+
+/** Признак ИП: ИНН физлица состоит из 12 цифр (у организаций — 10). */
+export const isSoleProprietorInn = (inn?: string): boolean =>
+  /^\d{12}$/.test((inn ?? '').trim());
+
+/**
+ * Есть ли среди позиций хоть один товар (не услуга) — от этого зависит,
+ * заполнять ли грузоотправителя и грузополучателя в счёте-фактуре.
+ */
+export const hasGoodsEntries = (entries: any[]): boolean =>
+  (entries || []).some(
+    // Требуем положительного признака товара: у строки без справочной
+    // позиции вид неизвестен, и заявлять отгрузку по ней нельзя.
+    (entry: any) => !!entry?.item?.type && entry.item.type !== 'service',
+  );
+
+/** Полные реквизиты организации одной строкой (шапка ТОРГ-12). */
+export const buildOrgRequisitesLine = (metadata: any): string =>
+  joinRequisites([
+    metadata?.name,
+    metadata?.inn && `ИНН ${metadata.inn}`,
+    metadata?.kpp && `КПП ${metadata.kpp}`,
+    buildOrganizationAddress(metadata),
+    metadata?.bankName && `банк ${metadata.bankName}`,
+    metadata?.bankAccount && `р/с ${metadata.bankAccount}`,
+    metadata?.bankBik && `БИК ${metadata.bankBik}`,
+    metadata?.bankCorrespondentAccount &&
+      `к/с ${metadata.bankCorrespondentAccount}`,
+  ]);
+
+/** Полные реквизиты контрагента одной строкой; адрес передаётся готовым. */
+export const buildContactRequisitesLine = (
+  customer: any,
+  address: string,
+): string =>
+  joinRequisites([
+    customer?.displayName,
+    customer?.inn && `ИНН ${customer.inn}`,
+    customer?.kpp && `КПП ${customer.kpp}`,
+    address,
+    customer?.bankName && `банк ${customer.bankName}`,
+    customer?.bankAccount && `р/с ${customer.bankAccount}`,
+    customer?.bankBik && `БИК ${customer.bankBik}`,
+    customer?.bankCorrespondentAccount &&
+      `к/с ${customer.bankCorrespondentAccount}`,
+  ]);
+
+export interface RuVatLine {
+  index: number;
+  title: string;
+  /** Код товара из справочника (графа «код» ТОРГ-12). */
+  code: string;
+  quantity: number;
+  quantityText: string;
+  /** Цена за единицу без НДС. */
+  priceExclVatText: string;
+  amountExclVat: number;
+  amountExclVatText: string;
+  /** «20%» либо «Без НДС». */
+  vatRateText: string;
+  vatAmount: number;
+  /** «600,00» либо «Без НДС». */
+  vatAmountText: string;
+  amountInclVat: number;
+  amountInclVatText: string;
+}
+
+export interface RuVatMapped {
+  lines: RuVatLine[];
+  totalQuantity: number;
+  totalQuantityText: string;
+  totalExclVat: number;
+  totalExclVatText: string;
+  totalVat: number;
+  /** «Без НДС», если налога нет ни в одной позиции. */
+  totalVatText: string;
+  totalInclVat: number;
+  totalInclVatText: string;
+  hasAnyVat: boolean;
+}
+
+/**
+ * Разбор позиций с НДС для форм, где налог показывается построчно
+ * (УПД, ТОРГ-12, счёт-фактура). Цена считается от суммы без НДС,
+ * поэтому итоги сходятся по суммам, а не по произведению цены на количество.
+ */
+export const mapEntriesToRuVatLines = (entries: any[]): RuVatMapped => {
+  let totalQuantity = 0;
+  let totalExclVat = 0;
+  let totalVat = 0;
+  let totalInclVat = 0;
+  let hasAnyVat = false;
+
+  const lines = (entries || []).map((entry: any, index: number) => {
+    const quantity = Number(entry.quantity) || 0;
+    const amount = quantity * (Number(entry.rate) || 0);
+    const vatAmount = Number(entry.taxAmount) || 0;
+    const amountExclVat = Number(entry.subtotalExcludingTax ?? amount) || 0;
+    const amountInclVat =
+      Number(entry.subtotalInclusingTax ?? amountExclVat + vatAmount) || 0;
+    const priceExclVat = quantity ? amountExclVat / quantity : 0;
+    const hasVat = vatAmount > 0;
+
+    totalQuantity += quantity;
+    totalExclVat += amountExclVat;
+    totalVat += vatAmount;
+    totalInclVat += amountInclVat;
+    hasAnyVat = hasAnyVat || hasVat;
+
+    return {
+      index: index + 1,
+      title: entry.item?.name ?? entry.description ?? '',
+      code: entry.item?.code ?? '',
+      quantity,
+      quantityText: formatQuantity(quantity),
+      priceExclVatText: formatMoneyRu(priceExclVat),
+      amountExclVat,
+      amountExclVatText: formatMoneyRu(amountExclVat),
+      vatRateText: hasVat ? `${Number(entry.taxRate) || 0}%` : NO_VAT,
+      vatAmount,
+      vatAmountText: hasVat ? formatMoneyRu(vatAmount) : NO_VAT,
+      amountInclVat,
+      amountInclVatText: formatMoneyRu(amountInclVat),
+    };
+  });
+
+  return {
+    lines,
+    totalQuantity,
+    totalQuantityText: formatQuantity(totalQuantity),
+    totalExclVat,
+    totalExclVatText: formatMoneyRu(totalExclVat),
+    totalVat,
+    totalVatText: hasAnyVat ? formatMoneyRu(totalVat) : NO_VAT,
+    totalInclVat,
+    totalInclVatText: formatMoneyRu(totalInclVat),
+    hasAnyVat,
+  };
+};
+
+/**
+ * Сумма прописью для печатной формы: только для рублёвых сумм и только
+ * для неотрицательных. Отрицательный итог оставляем без расшифровки —
+ * лучше пустая строка, чем «Ноль рублей» или падение генерации PDF.
+ */
+export const buildAmountInWords = (
+  amount: number,
+  currencyCode?: string,
+): string => {
+  if ((currencyCode ?? 'RUB') !== 'RUB') return '';
+  if (!Number.isFinite(amount) || amount < 0) return '';
+  return amountToWordsRu(amount);
+};
+
 /** Итоги: суммы, строка НДС и сумма прописью (только для рублей). */
 export const buildRuFormTotals = (invoice: any): RuFormTotals => {
   const vatAmount = Number(invoice.taxAmountWithheld) || 0;
@@ -89,7 +307,6 @@ export const buildRuFormTotals = (invoice: any): RuFormTotals => {
     vatAmount: hasVat ? formatMoneyRu(vatAmount) : undefined,
     total: formatMoneyRu(total),
     // Словесная форма жёстко привязана к «рублям/копейкам».
-    totalInWords:
-      (invoice.currencyCode ?? 'RUB') === 'RUB' ? amountToWordsRu(total) : '',
+    totalInWords: buildAmountInWords(total, invoice.currencyCode),
   };
 };

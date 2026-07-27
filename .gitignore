@@ -41,3 +41,5 @@ test-results/
 
 # Local git-conflict / push helper scripts (machine-local tooling, not product code)
 /tools/
+# Локальные логи dev-запуска (npm run dev пишет их в пакеты)
+*.log

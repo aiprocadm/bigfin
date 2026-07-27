@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import {
   amountToWordsRu,
+  formatDateNumericRu,
   formatDateRu,
   formatMoneyRu,
   integerToWordsRu,
@@ -131,5 +132,25 @@ describe('formatDateRu', () => {
 
   it('невалидная дата → пустая строка', () => {
     expect(formatDateRu('not-a-date')).toBe('');
+  });
+});
+
+describe('formatDateNumericRu', () => {
+  it('ISO-строка → «26.07.2026»', () => {
+    expect(formatDateNumericRu('2026-07-26')).toBe('26.07.2026');
+  });
+
+  it('ISO с временем — берётся только дата, без сдвига часового пояса', () => {
+    expect(formatDateNumericRu('2026-01-01T00:00:00.000Z')).toBe('01.01.2026');
+  });
+
+  it('объект Date → «01.01.2026» с ведущими нулями', () => {
+    expect(formatDateNumericRu(new Date(2026, 0, 1))).toBe('01.01.2026');
+  });
+
+  it('невалидные значения → пустая строка', () => {
+    expect(formatDateNumericRu('not-a-date')).toBe('');
+    expect(formatDateNumericRu(new Date('nope'))).toBe('');
+    expect(formatDateNumericRu(undefined as any)).toBe('');
   });
 });

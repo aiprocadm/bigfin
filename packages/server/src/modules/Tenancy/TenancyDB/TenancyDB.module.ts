@@ -33,7 +33,13 @@ export const TenancyDatabaseProxyProvider = ClsModule.forFeatureAsync({
   inject: [ConfigService, ClsService],
   useFactory: async (configService: ConfigService, cls: ClsService) => () => {
     const organizationId = cls.get('organizationId');
-    const database = `bigfin_tenant_${organizationId}`;
+    // Префикс берём из конфига (TENANT_DB_NAME_PERFIX), а не прошиваем в код.
+    // Раньше здесь была строковая константа, и настройка учитывалась наполовину:
+    // база организации СОЗДАВАЛАСЬ с настроенным префиксом, а подключались к ней
+    // по прошитому — миграции падали с Unknown database, организация оставалась
+    // с пустой базой. Проявляется у всех, кто менял префикс.
+    const dbNamePrefix = configService.get('tenantDatabase.dbNamePrefix');
+    const database = `${dbNamePrefix}${organizationId}`;
     const cachedInstance = lruCache.get(database);
 
     if (cachedInstance) {
@@ -43,6 +49,7 @@ export const TenancyDatabaseProxyProvider = ClsModule.forFeatureAsync({
       client: configService.get('tenantDatabase.client'),
       connection: {
         host: configService.get('tenantDatabase.host'),
+        port: Number(configService.get('tenantDatabase.port')),
         user: configService.get('tenantDatabase.user'),
         password: configService.get('tenantDatabase.password'),
         database,

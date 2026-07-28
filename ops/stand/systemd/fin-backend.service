@@ -1,0 +1,38 @@
+# Тестовый стенд fin.ptsfera.online — сервер (NestJS).
+# Ставится в /etc/systemd/system/fin-backend.service. См. docs/RUNBOOK_TEST_STAND.md.
+#
+# Витрину этот юнит не поднимает: собранная статика packages/webapp/dist
+# отдаётся самим nginx (см. ops/stand/nginx/fin.ptsfera.online.conf).
+#
+# WorkingDirectory — packages/server внутри ОТДЕЛЬНОЙ копии репозитория.
+# Именно из этой папки приложение читает свой .env (ConfigModule ищет его
+# относительно текущего каталога), поэтому запуск из корня не годится.
+#
+# У стенда ВСЁ своё: отдельный экземпляр MySQL на порту 3307, отдельный Redis
+# на 6380, своя системная база, свой префикс баз организаций, свои секреты,
+# свой порт 3020. С разработкой не пересекается ничем.
+#
+# User=aiproc принципиален: благодаря ему стенд перезапускается без sudo —
+# сигналом своему же процессу, а Restart=always вернёт службу через 5 секунд.
+
+[Unit]
+Description=bigfin — сервер (NestJS) для fin.ptsfera.online
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aiproc
+Group=aiproc
+WorkingDirectory=/home/aiproc/stands/bigfin/packages/server
+EnvironmentFile=/home/aiproc/stands/bigfin/packages/server/.env
+Environment=PATH=/home/aiproc/.nvm/versions/node/v24.18.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/aiproc/.nvm/versions/node/v24.18.0/bin/node dist/main
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=fin-backend
+
+[Install]
+WantedBy=multi-user.target

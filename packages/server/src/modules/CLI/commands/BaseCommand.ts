@@ -17,6 +17,10 @@ export abstract class BaseCommand extends CommandRunner {
       client: this.configService.get('systemDatabase.client'),
       connection: {
         host: this.configService.get('systemDatabase.host'),
+        // Порт передаём явно: конфиг его объявляет (SYSTEM_DB_PORT/TENANT_DB_PORT/DB_PORT),
+        // но раньше сюда не попадал — драйвер молча брал стандартный 3306, и подключиться
+        // к MySQL на другом порту было невозможно ни миграциями, ни приложением.
+        port: Number(this.configService.get('systemDatabase.port')),
         user: this.configService.get('systemDatabase.user'),
         password: this.configService.get('systemDatabase.password'),
         database: this.configService.get('systemDatabase.databaseName'),
@@ -39,6 +43,7 @@ export abstract class BaseCommand extends CommandRunner {
       client: this.configService.get('tenantDatabase.client'),
       connection: {
         host: this.configService.get('tenantDatabase.host'),
+        port: Number(this.configService.get('tenantDatabase.port')),
         user: this.configService.get('tenantDatabase.user'),
         password: this.configService.get('tenantDatabase.password'),
         database: `${this.configService.get('tenantDatabase.dbNamePrefix')}${organizationId}`,

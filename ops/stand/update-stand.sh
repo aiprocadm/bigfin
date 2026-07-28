@@ -13,9 +13,15 @@
 # уже приводило к простою в несколько суток, причём внешне выглядело сетевой
 # проблемой.
 #
-# Главный принцип: стенд НИКОГДА не остаётся без рабочей витрины. Перед
-# пересборкой снимается копия packages/webapp/dist, и при любой осечке всё
-# откатывается на предыдущее рабочее состояние, а служба не трогается.
+# Главный принцип: стенд НИКОГДА не остаётся без рабочих артефактов. Перед
+# пересборкой снимаются копии ОБЕИХ папок сборки — витрины и сервера — и при
+# любой осечке всё откатывается на предыдущее рабочее состояние, а служба
+# не трогается.
+#
+# Копия сервера принципиальна: `nest build` СТИРАЕТ packages/server/dist
+# в начале работы. Если сборка упадёт, служба останется без dist/main.js
+# и уйдёт в бесконечный цикл падений — «сайт просто лежит», причём причину
+# ищут где угодно, только не в сборке.
 #
 # Миграции: системные применяются автоматически. Базы организаций мигрируются
 # приложением при обращении, отдельного шага здесь нет.
@@ -30,6 +36,8 @@
 #   STAND_UNIT      — служба сервера (default fin-backend)
 #   STAND_LOG       — журнал обновлений (default <STAND_DIR>/../logs/fin-update.log)
 #   STAND_NODE_BIN  — папка с node/pnpm (default /home/aiproc/.nvm/versions/node/v24.18.0/bin)
+#   STAND_HEALTH_URL     — что дёрнуть после перезапуска, чтобы убедиться, что служба жива
+#   STAND_HEALTH_TIMEOUT — сколько ждать ответа, секунд (default 90)
 #
 # Установка в cron (пользователь, от которого работают службы; НЕ root):
 #   */10 * * * * /home/aiproc/stands/bigfin/ops/stand/update-stand.sh
@@ -45,6 +53,8 @@ STAND_BRANCH="${STAND_BRANCH:-develop}"
 STAND_UNIT="${STAND_UNIT:-fin-backend}"
 STAND_LOG="${STAND_LOG:-$(dirname "$STAND_DIR")/logs/fin-update.log}"
 STAND_NODE_BIN="${STAND_NODE_BIN:-/home/aiproc/.nvm/versions/node/v24.18.0/bin}"
+STAND_HEALTH_URL="${STAND_HEALTH_URL:-http://127.0.0.1:3020/api/auth/signin}"
+STAND_HEALTH_TIMEOUT="${STAND_HEALTH_TIMEOUT:-90}"
 
 # Скрипт лежит ВНУТРИ той самой копии, которую сам же перезаписывает через
 # `git reset --hard`. Bash дочитывает файл по ходу выполнения, поэтому подмена
@@ -89,8 +99,9 @@ fi
 log "новый код ${prev:0:8} -> ${target:0:8}, начинаю обновление"
 
 # Снимок рабочей витрины — страховка на случай неудачи.
-rm -rf packages/webapp/dist.bak
+rm -rf packages/webapp/dist.bak packages/server/dist.bak
 [[ -d packages/webapp/dist ]] && cp -a packages/webapp/dist packages/webapp/dist.bak
+[[ -d packages/server/dist ]] && cp -a packages/server/dist packages/server/dist.bak
 
 rollback() {
     log "ОТКАТ: возвращаю предыдущую рабочую версию ${prev:0:8}"
@@ -98,6 +109,10 @@ rollback() {
     if [[ -d packages/webapp/dist.bak ]]; then
         rm -rf packages/webapp/dist
         mv packages/webapp/dist.bak packages/webapp/dist
+    fi
+    if [[ -d packages/server/dist.bak ]]; then
+        rm -rf packages/server/dist
+        mv packages/server/dist.bak packages/server/dist
     fi
     log "откат завершён, стенд продолжает работать на старой версии"
 }
@@ -128,13 +143,22 @@ if ! pnpm build >>"$STAND_LOG" 2>&1; then
     exit 1
 fi
 
+# Сборка обязана оставить после себя запускаемый файл сервера. «Собралось, но
+# результата нет» — не теоретический случай: без dist/main.js служба падает,
+# systemd поднимает её снова, и так по кругу.
+if [[ ! -f packages/server/dist/main.js ]]; then
+    log "ОШИБКА: сборка прошла, но packages/server/dist/main.js не появился"
+    rollback
+    exit 1
+fi
+
 # Системные миграции — после успешной сборки. База у стенда своя,
 # разработку это не заденет.
 if ! (cd packages/server && node dist/cli.js system:migrate:latest) >>"$STAND_LOG" 2>&1; then
     log "ПРЕДУПРЕЖДЕНИЕ: системные миграции не применились, продолжаю"
 fi
 
-rm -rf packages/webapp/dist.bak
+rm -rf packages/webapp/dist.bak packages/server/dist.bak
 
 main_pid="$(systemctl show -p MainPID --value "$STAND_UNIT" 2>/dev/null)"
 if [[ -n "$main_pid" && "$main_pid" != "0" ]]; then
@@ -142,6 +166,25 @@ if [[ -n "$main_pid" && "$main_pid" != "0" ]]; then
 else
     # Безобидно: служба сейчас в паузе перезапуска и стартует уже с новым кодом.
     log "ПРЕДУПРЕЖДЕНИЕ: не нашёл процесс службы $STAND_UNIT, перезапуск пропущен"
+fi
+
+# Ждём, пока служба реально начнёт отвечать. Без этой проверки неудачный старт
+# обнаруживается только тогда, когда на него пожалуется живой человек.
+if [[ -n "$main_pid" && "$main_pid" != "0" ]]; then
+    deadline=$((SECONDS + STAND_HEALTH_TIMEOUT))
+    healthy=0
+    while (( SECONDS < deadline )); do
+        if curl -s -o /dev/null --max-time 5 "$STAND_HEALTH_URL" 2>/dev/null; then
+            healthy=1
+            break
+        fi
+        sleep 3
+    done
+    if [[ "$healthy" -eq 1 ]]; then
+        log "стенд отвечает после перезапуска"
+    else
+        log "ВНИМАНИЕ: за ${STAND_HEALTH_TIMEOUT} с стенд так и не ответил — смотреть journalctl -u $STAND_UNIT"
+    fi
 fi
 
 log "готово: стенд обновлён до ${target:0:8} — $(git log -1 --format='%s' | head -c 80)"

@@ -2,5 +2,37 @@ packages:
   # all packages in direct subdirs of packages/
   - 'packages/*'
   - 'shared/*'
+# Начиная с pnpm 10 установочные скрипты блокируются по умолчанию, и
+# `pnpm install` падает с ERR_PNPM_IGNORED_BUILDS. Перечислены пакеты,
+# которым скрипт нужен по делу: esbuild и msgpackr-extract распаковывают
+# бинарники под платформу, остальные готовят свои артефакты или печатают
+# баннер. Список закрытый — новый пакет сюда добавляется осознанно.
 allowBuilds:
+  '@nestjs/core': true
   bcrypt: true
+  core-js: true
+  core-js-pure: true
+  es5-ext: true
+  esbuild: true
+  msgpackr-extract: true
+  nx: true
+  react-intl-universal: true
+
+# Перенесено из поля "pnpm" в package.json: начиная с pnpm 10 это поле
+# больше не читается, и `pnpm install --frozen-lockfile` падал с
+# ERR_PNPM_LOCKFILE_CONFIG_MISMATCH — файл блокировки помнил overrides,
+# а из package.json их уже никто не брал.
+overrides:
+  bcrypt: 'npm:bcryptjs@^2.4.3'
+
+supportedArchitectures:
+  os:
+    - win32
+    - linux
+    - darwin
+  cpu:
+    - x64
+    - arm64
+  libc:
+    - glibc
+    - musl

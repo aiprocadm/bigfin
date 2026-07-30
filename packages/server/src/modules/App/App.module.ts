@@ -109,6 +109,7 @@ import { WorkspacesModule } from '../ee/Workspaces/Workspaces.module';
 import { TenantDBManagerModule } from '../TenantDBManager/TenantDBManager.module';
 import { PaymentServicesModule } from '../PaymentServices/PaymentServices.module';
 import { AuthModule } from '../Auth/Auth.module';
+import { TwoFactorModule } from '../TwoFactor/TwoFactor.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { OrganizationI18nModule } from '../OrganizationI18n/OrganizationI18n.module';
 import { LoopsModule } from '../Loops/Loops.module';
@@ -226,6 +227,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     TenancyModelsModule,
     TenantModelsInitializeModule,
     AuthModule,
+    TwoFactorModule,
     TenancyModule,
     OrganizationI18nModule,
     ChromiumlyTenancyModule,

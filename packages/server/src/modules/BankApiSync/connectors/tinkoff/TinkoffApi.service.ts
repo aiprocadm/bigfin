@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { ServiceError } from '@/modules/Items/ServiceError';
+import { mapTinkoffOperation } from './mapTinkoff';
+import {
+  BankApiOperation,
+  BankConnector,
+  BankCredentials,
+  BankProviderId,
+} from '../BankProvider.types';
 
 export const TINKOFF_ERRORS = {
   INVALID_TOKEN: 'TINKOFF_INVALID_TOKEN',
@@ -11,11 +18,37 @@ const BASE = 'https://business.tinkoff.ru/openapi';
 const REQUEST_TIMEOUT_MS = 30000;
 
 /**
- * Тонкий клиент Statement API Тинькофф Бизнес. Авторизация — Bearer-токен.
+ * Коннектор Тинькофф Бизнес (Statement API). Авторизация — Bearer-токен.
  * Прямой axios (как остальные интеграции сессии).
  */
 @Injectable()
-export class TinkoffApiService {
+export class TinkoffApiService implements BankConnector {
+  public readonly id: BankProviderId = 'tinkoff';
+
+  /** Операции за период в канонической форме (контракт `BankConnector`). */
+  public async fetchOperations(
+    credentials: BankCredentials,
+    accountNumber: string,
+    from: string,
+    to: string,
+  ): Promise<BankApiOperation[]> {
+    const token = this.assertToken(credentials);
+    const operations = await this.getOperations(
+      token,
+      accountNumber,
+      from,
+      to,
+    );
+    return operations.map(mapTinkoffOperation);
+  }
+
+  private assertToken(credentials: BankCredentials): string {
+    if (!credentials || credentials.kind !== 'token' || !credentials.token) {
+      throw new ServiceError(TINKOFF_ERRORS.INVALID_TOKEN);
+    }
+    return credentials.token;
+  }
+
   /**
    * Операции по счёту за период (`/api/v1/bank-statement`).
    * @param {string} token
@@ -37,8 +70,9 @@ export class TinkoffApiService {
     return Array.isArray(data?.operations) ? data.operations : [];
   }
 
-  /** Лёгкая проверка токена (список счетов). Бросит INVALID_TOKEN при 401/403. */
-  public async ping(token: string): Promise<void> {
+  /** Лёгкая проверка учётных данных (список счетов). */
+  public async ping(credentials: BankCredentials): Promise<void> {
+    const token = this.assertToken(credentials);
     await this.call(`${BASE}/api/v1/bank-accounts`, token);
   }
 

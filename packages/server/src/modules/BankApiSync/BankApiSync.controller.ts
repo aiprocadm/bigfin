@@ -1,16 +1,32 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { BankApiSyncApplication } from './BankApiSync.application';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 
-class ConnectTinkoffDto {
+/**
+ * Учётные данные банка: у Тинькофф — токен, у Альфы — OAuth-приложение.
+ * Поля опциональны в DTO, обязательность проверяет прикладной слой по банку.
+ */
+class ConnectBankDto {
   @IsString()
-  @IsNotEmpty()
-  token: string;
+  @IsOptional()
+  token?: string;
+
+  @IsString()
+  @IsOptional()
+  clientId?: string;
+
+  @IsString()
+  @IsOptional()
+  clientSecret?: string;
+
+  @IsString()
+  @IsOptional()
+  refreshToken?: string;
 }
 
-class ImportTinkoffDto {
+class ImportStatementDto {
   @IsInt()
   accountId: number;
 
@@ -42,25 +58,31 @@ export class BankApiSyncController {
     return this.app.status();
   }
 
-  @Post('tinkoff/connect')
+  // Параметрические роуты: прежние /tinkoff/* продолжают работать как
+  // частный случай, старому фронту ломаться не о что.
+  @Post(':provider/connect')
   @RequirePermission('manage', 'all')
-  @ApiOperation({ summary: 'Подключить Тинькофф по токену (только админ).' })
-  connect(@Body() dto: ConnectTinkoffDto) {
-    return this.app.connectTinkoff(dto.token);
+  @ApiOperation({ summary: 'Подключить банк по учётным данным (только админ).' })
+  connect(@Param('provider') provider: string, @Body() dto: ConnectBankDto) {
+    return this.app.connect(provider, { ...dto });
   }
 
-  @Post('tinkoff/disconnect')
+  @Post(':provider/disconnect')
   @RequirePermission('manage', 'all')
-  @ApiOperation({ summary: 'Отключить Тинькофф (только админ).' })
-  disconnect() {
-    return this.app.disconnectTinkoff();
+  @ApiOperation({ summary: 'Отключить банк (только админ).' })
+  disconnect(@Param('provider') provider: string) {
+    return this.app.disconnect(provider);
   }
 
-  @Post('tinkoff/import')
+  @Post(':provider/import')
   @RequirePermission('manage', 'all')
-  @ApiOperation({ summary: 'Импортировать выписку Тинькофф за период (только админ).' })
-  import(@Body() dto: ImportTinkoffDto) {
-    return this.app.importTinkoffStatement(
+  @ApiOperation({ summary: 'Импортировать выписку банка за период (только админ).' })
+  import(
+    @Param('provider') provider: string,
+    @Body() dto: ImportStatementDto,
+  ) {
+    return this.app.importStatementFor(
+      provider,
       dto.accountId,
       dto.accountNumber,
       dto.currencyCode,

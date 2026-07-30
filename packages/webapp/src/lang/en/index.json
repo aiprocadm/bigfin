@@ -3536,10 +3536,10 @@
   "bank_api.action.connect": "Connect",
   "bank_api.action.disconnect": "Disconnect",
   "bank_api.action.import": "Import",
-  "bank_api.connect.success": "Tinkoff connected.",
-  "bank_api.connect.error": "Could not connect Tinkoff. Check the token.",
-  "bank_api.disconnect.success": "Tinkoff disconnected.",
-  "bank_api.disconnect.error": "Could not disconnect Tinkoff.",
+  "bank_api.connect.success": "Bank connected.",
+  "bank_api.connect.error": "Could not connect the bank. Check the credentials.",
+  "bank_api.disconnect.success": "Bank disconnected.",
+  "bank_api.disconnect.error": "Could not disconnect the bank.",
   "bank_api.import.title": "Import statement",
   "bank_api.import.account_id": "Bigfin cash account ID",
   "bank_api.import.account_number": "Bank account number",
@@ -3762,5 +3762,12 @@
   "two_factor.regenerate_dialog.title": "Regenerate backup codes",
   "two_factor.regenerate_dialog.description": "Enter the code from the app. All old backup codes will stop working.",
   "two_factor.error.invalid_code": "Invalid code, try again",
-  "two_factor.error.invalid_password": "Invalid password"
+  "two_factor.error.invalid_password": "Invalid password",
+  "bank_api.alfa.title": "Alfa-Bank",
+  "bank_api.alfa.connected": "Alfa-Bank is connected.",
+  "bank_api.alfa.hint": "Register an application in Alfa-Bank's developer portal and paste its credentials here.",
+  "bank_api.alfa.client_id": "client_id",
+  "bank_api.alfa.client_secret": "client_secret",
+  "bank_api.alfa.refresh_token": "Refresh token",
+  "bank_api.import.bank": "Bank"
 }

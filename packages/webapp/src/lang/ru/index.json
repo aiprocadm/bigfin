@@ -3536,10 +3536,10 @@
   "bank_api.action.connect": "Подключить",
   "bank_api.action.disconnect": "Отключить",
   "bank_api.action.import": "Импортировать",
-  "bank_api.connect.success": "Тинькофф подключён.",
-  "bank_api.connect.error": "Не удалось подключить Тинькофф. Проверьте токен.",
-  "bank_api.disconnect.success": "Тинькофф отключён.",
-  "bank_api.disconnect.error": "Не удалось отключить Тинькофф.",
+  "bank_api.connect.success": "Банк подключён.",
+  "bank_api.connect.error": "Не удалось подключить банк. Проверьте данные.",
+  "bank_api.disconnect.success": "Банк отключён.",
+  "bank_api.disconnect.error": "Не удалось отключить банк.",
   "bank_api.import.title": "Импорт выписки",
   "bank_api.import.account_id": "ID денежного счёта Bigfin",
   "bank_api.import.account_number": "Номер счёта в банке",
@@ -3762,5 +3762,12 @@
   "two_factor.regenerate_dialog.title": "Перевыпуск резервных кодов",
   "two_factor.regenerate_dialog.description": "Введите код из приложения. Все старые резервные коды перестанут работать.",
   "two_factor.error.invalid_code": "Неверный код, попробуйте ещё раз",
-  "two_factor.error.invalid_password": "Неверный пароль"
+  "two_factor.error.invalid_password": "Неверный пароль",
+  "bank_api.alfa.title": "Альфа-Банк",
+  "bank_api.alfa.connected": "Альфа-Банк подключён.",
+  "bank_api.alfa.hint": "Зарегистрируйте приложение в кабинете разработчика Альфа-Банка и вставьте его данные сюда.",
+  "bank_api.alfa.client_id": "client_id",
+  "bank_api.alfa.client_secret": "client_secret",
+  "bank_api.alfa.refresh_token": "Refresh-токен",
+  "bank_api.import.bank": "Банк"
 }

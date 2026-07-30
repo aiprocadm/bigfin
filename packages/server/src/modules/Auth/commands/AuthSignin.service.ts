@@ -8,6 +8,10 @@ import { ModelObject } from 'objection';
 import { JwtPayload } from '../Auth.interfaces';
 import { InvalidEmailPasswordException } from '../exceptions/InvalidEmailPassword.exception';
 import { UserNotFoundException } from '../exceptions/UserNotFound.exception';
+import { TwoFactorTokenInvalidException } from '@/modules/TwoFactor/exceptions/TwoFactor.exceptions';
+
+/** Метка полу-токена: годен только для второго шага входа (ввода кода 2FA). */
+const TWO_FACTOR_TOKEN_SCOPE = 'two-factor';
 
 @Injectable()
 export class AuthSigninService {
@@ -60,17 +64,57 @@ export class AuthSigninService {
     let user: SystemUser;
     let tenant: TenantModel | undefined;
 
+    // Полу-токен 2FA — не access-токен: обычные запросы с ним не пускаем.
+    if ((payload as any).scope === TWO_FACTOR_TOKEN_SCOPE) {
+      throw new TwoFactorTokenInvalidException();
+    }
     try {
       user = await this.systemUserModel
         .query()
         .findOne({ email: payload.sub })
         .throwIfNotFound();
-      
+
       this.clsService.set('userId', user.id);
     } catch (error) {
       throw new UserNotFoundException(String(payload.sub));
     }
     return payload;
+  }
+
+  /**
+   * Подписывает полу-токен для второго шага входа (2FA): 5 минут,
+   * scope 'two-factor', как access-токен не работает.
+   */
+  signPendingToken(user: SystemUser): string {
+    return this.jwtService.sign(
+      { sub: user.email, scope: TWO_FACTOR_TOKEN_SCOPE },
+      { expiresIn: '5m' },
+    );
+  }
+
+  /**
+   * Проверяет полу-токен второго шага входа и возвращает пользователя.
+   * Битый, просроченный или «не тот» токен → 401 TWO_FACTOR_TOKEN_INVALID.
+   */
+  async verifyPendingToken(token: string): Promise<SystemUser> {
+    let payload: JwtPayload & { scope?: string };
+
+    try {
+      payload = this.jwtService.verify(token);
+    } catch (error) {
+      throw new TwoFactorTokenInvalidException();
+    }
+    if (payload.scope !== TWO_FACTOR_TOKEN_SCOPE) {
+      throw new TwoFactorTokenInvalidException();
+    }
+    try {
+      return await this.systemUserModel
+        .query()
+        .findOne({ email: payload.sub })
+        .throwIfNotFound();
+    } catch (error) {
+      throw new TwoFactorTokenInvalidException();
+    }
   }
 
   /**

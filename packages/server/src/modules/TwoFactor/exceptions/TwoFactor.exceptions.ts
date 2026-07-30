@@ -34,24 +34,39 @@ export class TwoFactorNotConfiguredException extends BadRequestException {
   }
 }
 
-export class TwoFactorInvalidCodeException extends UnauthorizedException {
+// В настройках 2FA неверный код/пароль — ошибка ввода, а не протухшая
+// сессия: авторизованный http-клиент webapp разлогинивает на ЛЮБОЙ 401,
+// поэтому здесь строго 400. Для второго шага входа есть 401-исключения ниже.
+export class TwoFactorInvalidCodeException extends BadRequestException {
   constructor() {
     super({
-      statusCode: 401,
-      error: 'Unauthorized',
+      statusCode: 400,
+      error: 'Bad Request',
       message: 'Invalid two-factor authentication code.',
       code: ERRORS.TWO_FACTOR_INVALID_CODE,
     });
   }
 }
 
-export class TwoFactorInvalidPasswordException extends UnauthorizedException {
+export class TwoFactorInvalidPasswordException extends BadRequestException {
+  constructor() {
+    super({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Invalid password.',
+      code: ERRORS.TWO_FACTOR_INVALID_PASSWORD,
+    });
+  }
+}
+
+/** Неверный код на втором шаге входа (публичный роут — 401 уместен). */
+export class SigninTwoFactorInvalidCodeException extends UnauthorizedException {
   constructor() {
     super({
       statusCode: 401,
       error: 'Unauthorized',
-      message: 'Invalid password.',
-      code: ERRORS.TWO_FACTOR_INVALID_PASSWORD,
+      message: 'Invalid two-factor authentication code.',
+      code: ERRORS.TWO_FACTOR_INVALID_CODE,
     });
   }
 }

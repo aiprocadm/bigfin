@@ -150,7 +150,11 @@ export const LoginPage = () => {
             </Alert>
           ) : null}
 
-          <Form {...codeForm}>
+          {/* key обязателен: у шага пароля и шага кода совпадает структура
+              JSX, и React переиспользует те же узлы. Controller тогда
+              остаётся привязанным к полю первой формы, и поле кода молча
+              не принимает ввод. */}
+          <Form key="two-factor" {...codeForm}>
             <form
               onSubmit={codeForm.handleSubmit(onSubmitCode)}
               className="flex flex-col gap-4"

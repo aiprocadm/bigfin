@@ -231,3 +231,36 @@ describe('TwoFactorRegenerateBackupCodesService', () => {
     });
   });
 });
+
+describe('статусы ошибок настроек 2FA', () => {
+  // Авторизованный http-клиент webapp разлогинивает на ЛЮБОЙ 401,
+  // поэтому ошибки ввода в настройках обязаны быть 400.
+  it('неверный код при включении → 400, а не 401', async () => {
+    const secret = generateTotpSecret();
+    const { model } = fakeUserModel({
+      ...baseUser,
+      twoFactorSecret: encryptTwoFactorSecret(secret, APP_SECRET),
+    });
+    const service = new TwoFactorEnableService(model, configService);
+
+    await expect(service.enable(7, '000000')).rejects.toMatchObject({
+      status: 400,
+      response: { code: 'TWO_FACTOR_INVALID_CODE' },
+    });
+  });
+
+  it('неверный пароль при отключении → 400, а не 401', async () => {
+    const { model } = fakeUserModel({
+      ...baseUser,
+      twoFactorEnabled: true,
+      twoFactorSecret: 'x:y:z',
+      twoFactorBackupCodes: '[]',
+    });
+    const service = new TwoFactorDisableService(model);
+
+    await expect(service.disable(7, 'не тот')).rejects.toMatchObject({
+      status: 400,
+      response: { code: 'TWO_FACTOR_INVALID_PASSWORD' },
+    });
+  });
+});

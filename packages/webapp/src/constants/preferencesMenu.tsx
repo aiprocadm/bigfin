@@ -14,6 +14,7 @@ import {
   Palette,
   ReceiptText,
   Settings,
+  ShieldCheck,
   Users,
   Warehouse,
 } from 'lucide-react';
@@ -41,6 +42,7 @@ export const PreferencesMenu: PreferencesMenuSection[] = [
       { labelId: 'preferences.modules.menu', href: '/preferences/modules', icon: Blocks },
       { labelId: 'branding', href: '/preferences/branding', icon: Palette },
       { labelId: 'users', href: '/preferences/users', icon: Users },
+      { labelId: 'preferences.security.menu', href: '/preferences/security', icon: ShieldCheck },
     ],
   },
   {

@@ -24,21 +24,44 @@ import { Spinner } from '@/components/ui/Spinner';
 import { Toaster } from '@/components/ui/sonner';
 // The hooks module is @ts-nocheck legacy JS — useMutation params are
 // inferred as `void`, so we narrow them here at the call site.
-import { useAuthLogin } from '@/hooks/query/authentication';
+import {
+  useAuthLogin,
+  useAuthSigninTwoFactor,
+} from '@/hooks/query/authentication';
 
-import { loginSchema, type LoginInput } from './schemas';
+import {
+  loginSchema,
+  twoFactorCodeSchema,
+  type LoginInput,
+  type TwoFactorCodeInput,
+} from './schemas';
 
 type LoginVars = { email: string; password: string };
+type TwoFactorVars = { twoFactorToken: string; code: string };
 type AuthMutation<V> = { mutateAsync: (vars: V) => Promise<unknown> };
+type SigninResponse = {
+  data?: { requires_two_factor?: boolean; two_factor_token?: string };
+};
 
 export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  // Полу-токен второго шага: не null — показываем форму кода 2FA.
+  const [twoFactorToken, setTwoFactorToken] = useState<string | null>(null);
+  const [useBackupCode, setUseBackupCode] = useState(false);
   const { mutateAsync: login } = useAuthLogin({}) as unknown as AuthMutation<LoginVars>;
+  const { mutateAsync: loginTwoFactor } = useAuthSigninTwoFactor(
+    {},
+  ) as unknown as AuthMutation<TwoFactorVars>;
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '', rememberMe: false },
+  });
+
+  const codeForm = useForm<TwoFactorCodeInput>({
+    resolver: zodResolver(twoFactorCodeSchema),
+    defaultValues: { code: '' },
   });
 
   const onSubmit = async (data: LoginInput) => {
@@ -46,7 +69,16 @@ export const LoginPage = () => {
     try {
       // rememberMe is intentionally not forwarded — backend ignores it.
       // EnsureAuthNotAuthenticated guard around /auth/* redirects to / on success.
-      await login({ email: data.email, password: data.password });
+      const res = (await login({
+        email: data.email,
+        password: data.password,
+      })) as SigninResponse;
+
+      // Сервер сериализует ответы в snake_case.
+      if (res?.data?.requires_two_factor && res.data.two_factor_token) {
+        setTwoFactorToken(res.data.two_factor_token);
+        codeForm.reset({ code: '' });
+      }
     } catch (err) {
       const status =
         err && typeof err === 'object' && 'response' in err
@@ -60,6 +92,136 @@ export const LoginPage = () => {
       toast.error(`Сетевая ошибка: ${message}`);
     }
   };
+
+  const backToPassword = (message: string | null = null) => {
+    setTwoFactorToken(null);
+    setUseBackupCode(false);
+    setServerError(message);
+  };
+
+  const onSubmitCode = async (data: TwoFactorCodeInput) => {
+    if (!twoFactorToken) return;
+    setServerError(null);
+    try {
+      // Успех → EnsureAuthNotAuthenticated redirects to / (как обычный вход).
+      await loginTwoFactor({ twoFactorToken, code: data.code });
+    } catch (err) {
+      const response =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as {
+              response?: { status?: number; data?: { code?: string } };
+            }).response
+          : undefined;
+      // Полу-токен живёт 5 минут: истёк — возвращаемся к паролю.
+      if (response?.data?.code === 'TWO_FACTOR_TOKEN_INVALID') {
+        backToPassword('Время вышло, войдите заново');
+        return;
+      }
+      if (response?.status === 401 || response?.status === 403) {
+        setServerError('Неверный код, попробуйте ещё раз');
+        return;
+      }
+      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
+      toast.error(`Сетевая ошибка: ${message}`);
+    }
+  };
+
+  // Шаг 2: у аккаунта включена 2FA — спрашиваем код.
+  if (twoFactorToken) {
+    return (
+      <AuthLayout>
+        <Toaster />
+        <div className="flex flex-col gap-6">
+          <div>
+            <h1 className="text-3xl font-semibold text-text-primary">
+              Подтвердите вход
+            </h1>
+            <p className="mt-1 text-text-secondary">
+              {useBackupCode
+                ? 'Введите один из резервных кодов'
+                : 'Введите код из приложения-аутентификатора'}
+            </p>
+          </div>
+
+          {serverError ? (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{serverError}</AlertDescription>
+            </Alert>
+          ) : null}
+
+          <Form {...codeForm}>
+            <form
+              onSubmit={codeForm.handleSubmit(onSubmitCode)}
+              className="flex flex-col gap-4"
+            >
+              <FormField
+                control={codeForm.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {useBackupCode ? 'Резервный код' : 'Код из приложения'}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        autoFocus
+                        inputMode={useBackupCode ? 'text' : 'numeric'}
+                        autoComplete="one-time-code"
+                        placeholder={useBackupCode ? 'XXXX-XXXX' : '123456'}
+                        maxLength={useBackupCode ? 9 : 6}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                disabled={codeForm.formState.isSubmitting}
+              >
+                {codeForm.formState.isSubmitting ? (
+                  <>
+                    <Spinner size="sm" />
+                    Проверяем...
+                  </>
+                ) : (
+                  <>
+                    Подтвердить
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+
+              <button
+                type="button"
+                className="text-sm text-text-secondary underline-offset-4 hover:underline"
+                onClick={() => {
+                  setUseBackupCode((v) => !v);
+                  setServerError(null);
+                  codeForm.reset({ code: '' });
+                }}
+              >
+                {useBackupCode
+                  ? 'Ввести код из приложения'
+                  : 'Использовать резервный код'}
+              </button>
+
+              <button
+                type="button"
+                className="text-sm text-text-muted underline-offset-4 hover:underline"
+                onClick={() => backToPassword()}
+              >
+                Назад ко входу
+              </button>
+            </form>
+          </Form>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout>

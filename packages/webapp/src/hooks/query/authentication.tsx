@@ -14,6 +14,7 @@ import {
 
 const AuthRoute = {
   Signin: 'auth/signin',
+  Signin2FA: 'auth/signin/2fa',
   Signup: 'auth/signup',
   SignupVerify: 'auth/signup/verify',
   SignupVerifyResend: 'auth/signup/verify/resend',
@@ -47,6 +48,12 @@ export const useAuthLogin = (props) => {
 
   return useMutation((values) => apiRequest.post(AuthRoute.Signin, values), {
     onSuccess: (res) => {
+      // Включена 2FA: вместо токена пришёл полу-токен — куки не ставим,
+      // страница входа покажет шаг ввода кода.
+      if (res.data.requires_two_factor) {
+        props?.onSuccess && props?.onSuccess(res);
+        return;
+      }
       // Set authentication cookies.
       setAuthLoginCookies(res.data);
 
@@ -64,6 +71,34 @@ export const useAuthLogin = (props) => {
     },
     ...props,
   });
+};
+
+/**
+ * Второй шаг входа: обмен полу-токена и кода 2FA на обычный access-токен.
+ */
+export const useAuthSigninTwoFactor = (props) => {
+  const apiRequest = useAuthApiRequest();
+
+  const setAuthToken = useSetAuthToken();
+  const setOrganizationId = useSetOrganizationId();
+  const setUserId = useSetAuthUserId();
+
+  return useMutation(
+    (values) => apiRequest.post(AuthRoute.Signin2FA, values),
+    {
+      onSuccess: (res) => {
+        setAuthLoginCookies(res.data);
+
+        batch(() => {
+          setAuthToken(res.data.access_token);
+          setOrganizationId(res.data.organization_id);
+          setUserId(res.data.user_id);
+        });
+        props?.onSuccess && props?.onSuccess(res);
+      },
+      ...props,
+    },
+  );
 };
 
 /**

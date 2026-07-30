@@ -10,57 +10,82 @@ import useApiRequest from '../useRequest';
 
 const STATUS_KEY = 'bank_api_status';
 
-export interface ImportTinkoffValues {
+/** Идентификаторы банков волны 1 (совпадают с серверным реестром). */
+export type BankProviderId = 'tinkoff' | 'alfa';
+
+export interface ImportStatementValues {
   accountId: number;
   accountNumber: string;
   from: string;
   to: string;
 }
 
+/** Учётные данные: токен (Тинькофф) или OAuth-приложение (Альфа). */
+export interface ConnectBankValues {
+  token?: string;
+  clientId?: string;
+  clientSecret?: string;
+  refreshToken?: string;
+}
+
 const invalidateStatus = (c: QueryClient) => c.invalidateQueries(STATUS_KEY);
 
-/** Статус подключения банковских API. */
+/** Статус подключения банковских API: карта «банк → подключён». */
 export function useBankApiStatus(props?: any) {
   return useRequestQuery(
     [STATUS_KEY],
     { method: 'get', url: 'bank-api-sync/status' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
-      defaultData: { tinkoffConnected: false },
+      select: (res: any) => {
+        const data = res.data?.data ?? res.data;
+        return {
+          connected: data?.connected ?? {
+            // Ответ сервера до мультипровайдерности.
+            tinkoff: !!data?.tinkoff_connected,
+            alfa: false,
+          },
+        };
+      },
+      defaultData: { connected: { tinkoff: false, alfa: false } },
       ...props,
     },
   );
 }
 
-/** Подключить Тинькофф по токену. */
-export function useConnectTinkoff(
-  props?: UseMutationOptions<any, any, { token: string }>,
+/** Подключить банк по его учётным данным. */
+export function useConnectBank(
+  provider: BankProviderId,
+  props?: UseMutationOptions<any, any, ConnectBankValues>,
 ) {
   const client = useQueryClient();
   const api: any = useApiRequest();
-  return useMutation<any, any, { token: string }>(
-    (values) => api.post('bank-api-sync/tinkoff/connect', values),
+  return useMutation<any, any, ConnectBankValues>(
+    (values) => api.post(`bank-api-sync/${provider}/connect`, values),
     { onSuccess: () => invalidateStatus(client), ...props },
   );
 }
 
-/** Отключить Тинькофф. */
-export function useDisconnectTinkoff(props?: UseMutationOptions<any, any, void>) {
+/** Отключить банк. */
+export function useDisconnectBank(
+  provider: BankProviderId,
+  props?: UseMutationOptions<any, any, void>,
+) {
   const client = useQueryClient();
   const api: any = useApiRequest();
   return useMutation<any, any, void>(
-    () => api.post('bank-api-sync/tinkoff/disconnect'),
+    () => api.post(`bank-api-sync/${provider}/disconnect`),
     { onSuccess: () => invalidateStatus(client), ...props },
   );
 }
 
-/** Импортировать выписку Тинькофф за период. */
-export function useImportTinkoff(
-  props?: UseMutationOptions<any, any, ImportTinkoffValues>,
+/** Импортировать выписку банка за период. */
+export function useImportBankStatement(
+  provider: BankProviderId,
+  props?: UseMutationOptions<any, any, ImportStatementValues>,
 ) {
   const api: any = useApiRequest();
-  return useMutation<any, any, ImportTinkoffValues>(
-    (values) => api.post('bank-api-sync/tinkoff/import', values),
+  return useMutation<any, any, ImportStatementValues>(
+    (values) => api.post(`bank-api-sync/${provider}/import`, values),
     { ...props },
   );
 }

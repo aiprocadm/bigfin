@@ -4,6 +4,10 @@ import {
   hashBackupCodes,
 } from './backupCodes';
 
+// bcrypt здесь — bcryptjs (pnpm-override, чистый JS): 10 хэшей + десятки
+// сравнений на тест не укладываются в дефолтные 5 секунд jest.
+jest.setTimeout(30_000);
+
 describe('backupCodes', () => {
   it('генерирует 10 уникальных кодов формата XXXX-XXXX', () => {
     const codes = generateBackupCodes();

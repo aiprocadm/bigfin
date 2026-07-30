@@ -14,6 +14,11 @@ export class SystemUser extends BaseModel {
   public readonly verified: boolean;
   public readonly inviteAcceptedAt!: string;
 
+  public twoFactorEnabled: boolean;
+  public twoFactorSecret: string | null;
+  public twoFactorBackupCodes: string | null;
+  public twoFactorEnabledAt: Date | string | null;
+
   static get tableName() {
     return 'users';
   }

@@ -32,7 +32,7 @@ import { AuthMetaResponseDto } from './dtos/AuthMetaResponse.dto';
 import { LocalAuthGuard } from './guards/Local.guard';
 import { AuthSigninService } from './commands/AuthSignin.service';
 import { TwoFactorVerifyService } from '../TwoFactor/commands/TwoFactorVerify.service';
-import { TwoFactorInvalidCodeException } from '../TwoFactor/exceptions/TwoFactor.exceptions';
+import { SigninTwoFactorInvalidCodeException } from '../TwoFactor/exceptions/TwoFactor.exceptions';
 import { SystemUser } from '../System/models/SystemUser';
 
 @Controller('/auth')
@@ -109,7 +109,7 @@ export class AuthController {
     const valid = await this.twoFactorVerify.verify(user, dto.code);
 
     if (!valid) {
-      throw new TwoFactorInvalidCodeException();
+      throw new SigninTwoFactorInvalidCodeException();
     }
     return this.buildSigninResponse(user);
   }

@@ -11,6 +11,7 @@ import { AuthSignupService } from './commands/AuthSignup.service';
 import { AuthSigninService } from './commands/AuthSignin.service';
 import { PasswordReset } from './models/PasswordReset';
 import { TenantDBManagerModule } from '../TenantDBManager/TenantDBManager.module';
+import { TwoFactorModule } from '../TwoFactor/TwoFactor.module';
 import { AuthenticationMailMesssages } from './AuthMailMessages.esrvice';
 import { LocalStrategy } from './strategies/Local.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -64,6 +65,7 @@ const models = [
       }),
     }),
     TenantDBManagerModule,
+    TwoFactorModule,
     TenancyModule,
     BullModule.registerQueue({ name: SendResetPasswordMailQueue }),
     BullModule.registerQueue({ name: SendSignupVerificationMailQueue }),

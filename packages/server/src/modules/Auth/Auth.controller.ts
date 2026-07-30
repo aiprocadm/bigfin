@@ -26,9 +26,13 @@ import { AuthSignupVerifyDto } from './dtos/AuthSignupVerify.dto';
 import { AuthSendResetPasswordDto } from './dtos/AuthSendResetPassword.dto';
 import { AuthResetPasswordDto } from './dtos/AuthResetPassword.dto';
 import { AuthSigninResponseDto } from './dtos/AuthSigninResponse.dto';
+import { AuthSigninTwoFactorDto } from './dtos/AuthSigninTwoFactor.dto';
+import { AuthSigninTwoFactorRequiredResponseDto } from './dtos/AuthSigninTwoFactorRequiredResponse.dto';
 import { AuthMetaResponseDto } from './dtos/AuthMetaResponse.dto';
 import { LocalAuthGuard } from './guards/Local.guard';
 import { AuthSigninService } from './commands/AuthSignin.service';
+import { TwoFactorVerifyService } from '../TwoFactor/commands/TwoFactorVerify.service';
+import { TwoFactorInvalidCodeException } from '../TwoFactor/exceptions/TwoFactor.exceptions';
 import { SystemUser } from '../System/models/SystemUser';
 
 @Controller('/auth')
@@ -40,7 +44,29 @@ export class AuthController {
   constructor(
     private readonly authApp: AuthenticationApplication,
     private readonly authSignin: AuthSigninService,
+    private readonly twoFactorVerify: TwoFactorVerifyService,
   ) { }
+
+  /** Общая часть успешного входа: тенант + access-токен. */
+  private async buildSigninResponse(
+    user: SystemUser,
+  ): Promise<AuthSigninResponseDto> {
+    const tenant = await this.authSignin.resolveSigninTenant(user);
+
+    if (!tenant) {
+      throw new UnauthorizedException({
+        message:
+          'No active workspace available. Please contact the administrator.',
+        errors: [{ type: 'ORGANIZATION.INACTIVE' }],
+      });
+    }
+    return {
+      accessToken: this.authSignin.signToken(user),
+      organizationId: tenant.organizationId,
+      tenantId: tenant.id,
+      userId: user.id,
+    };
+  }
 
   @Post('/signin')
   @UseGuards(LocalAuthGuard)
@@ -54,23 +80,38 @@ export class AuthController {
   async signin(
     @Request() req: Request & { user: SystemUser },
     @Body() signinDto: AuthSigninDto,
-  ): Promise<AuthSigninResponseDto> {
+  ): Promise<AuthSigninResponseDto | AuthSigninTwoFactorRequiredResponseDto> {
     const { user } = req;
-    const tenant = await this.authSignin.resolveSigninTenant(user);
 
-    if (!tenant) {
-      throw new UnauthorizedException({
-        message: 'No active workspace available. Please contact the administrator.',
-        errors: [{ type: 'ORGANIZATION.INACTIVE' }],
-      });
+    // Включена 2FA — вместо access-токена отдаём полу-токен на 5 минут:
+    // доступ только после кода из приложения (POST /auth/signin/2fa).
+    if (user.twoFactorEnabled) {
+      return {
+        requiresTwoFactor: true,
+        twoFactorToken: this.authSignin.signPendingToken(user),
+      };
     }
+    return this.buildSigninResponse(user);
+  }
 
-    return {
-      accessToken: this.authSignin.signToken(user),
-      organizationId: tenant.organizationId,
-      tenantId: tenant.id,
-      userId: user.id,
-    };
+  @Post('/signin/2fa')
+  @ApiOperation({ summary: 'Second sign-in step: verify the 2FA code' })
+  @ApiBody({ type: AuthSigninTwoFactorDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Code accepted. Returns access token and tenant/organization IDs.',
+    schema: { $ref: getSchemaPath(AuthSigninResponseDto) },
+  })
+  async signinTwoFactor(
+    @Body() dto: AuthSigninTwoFactorDto,
+  ): Promise<AuthSigninResponseDto> {
+    const user = await this.authSignin.verifyPendingToken(dto.twoFactorToken);
+    const valid = await this.twoFactorVerify.verify(user, dto.code);
+
+    if (!valid) {
+      throw new TwoFactorInvalidCodeException();
+    }
+    return this.buildSigninResponse(user);
   }
 
   @Post('/signup')

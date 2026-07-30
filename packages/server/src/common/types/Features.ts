@@ -27,6 +27,7 @@ export enum Features {
   MARKETPLACES = 'marketplaces',
   BANK_API_SYNC = 'bank_api_sync',
   ONEC_EXPORT = 'onec_export',
+  ONEC_IMPORT = 'onec_import',
   ACQUIRING = 'acquiring',
   ZENMONEY_IMPORT = 'zenmoney_import',
   VAT_ANALYSIS = 'vat_analysis',

@@ -47,6 +47,6 @@ import { ValidateBulkDeleteItemsService } from './ValidateBulkDeleteItems.servic
     BulkDeleteItemsService,
     ValidateBulkDeleteItemsService,
   ],
-  exports: [ItemsEntriesService, ItemsExportable, ItemsImportable],
+  exports: [ItemsEntriesService, ItemsExportable, ItemsImportable, CreateItemService],
 })
 export class ItemsModule { }

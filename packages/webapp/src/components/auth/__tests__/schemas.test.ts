@@ -5,6 +5,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
   inviteAcceptSchema,
+  twoFactorCodeSchema,
 } from '../schemas';
 
 describe('loginSchema', () => {
@@ -189,5 +190,30 @@ describe('inviteAcceptSchema', () => {
     expect(
       inviteAcceptSchema.safeParse({ ...validInput, lastName: '' }).success,
     ).toBe(false);
+  });
+});
+
+describe('twoFactorCodeSchema', () => {
+  it('принимает 6-значный код из приложения', () => {
+    expect(twoFactorCodeSchema.safeParse({ code: '123456' }).success).toBe(
+      true,
+    );
+  });
+
+  it('принимает резервный код XXXX-XXXX (в любом регистре, с дефисом и без)', () => {
+    expect(twoFactorCodeSchema.safeParse({ code: 'AB2C-3DEF' }).success).toBe(
+      true,
+    );
+    expect(twoFactorCodeSchema.safeParse({ code: 'ab2c3def' }).success).toBe(
+      true,
+    );
+  });
+
+  it('отклоняет пустое, слишком короткое и мусор', () => {
+    expect(twoFactorCodeSchema.safeParse({ code: '' }).success).toBe(false);
+    expect(twoFactorCodeSchema.safeParse({ code: '123' }).success).toBe(false);
+    expect(twoFactorCodeSchema.safeParse({ code: '!!!@@@' }).success).toBe(
+      false,
+    );
   });
 });

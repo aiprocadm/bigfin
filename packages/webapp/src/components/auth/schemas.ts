@@ -23,6 +23,18 @@ export const registerSchema = z
     path: ['agreedToTerms'],
   });
 
+// Код 2FA: 6 цифр из приложения-аутентификатора
+// или резервный код из 8 букв/цифр (дефис в середине не обязателен).
+export const twoFactorCodeSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .refine(
+      (v) => /^\d{6}$/.test(v) || /^[a-z0-9]{4}-?[a-z0-9]{4}$/i.test(v),
+      'Введите 6-значный код или резервный код',
+    ),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z.string().email('Введите корректный email'),
 });
@@ -54,3 +66,4 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type InviteAcceptInput = z.infer<typeof inviteAcceptSchema>;
+export type TwoFactorCodeInput = z.infer<typeof twoFactorCodeSchema>;

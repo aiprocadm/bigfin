@@ -21,6 +21,8 @@ const defaultValues = {
   language: 'ru',
   fiscalYear: '',
   timezone: '',
+  // ③ Целевая аудитория — не бухгалтеры: по умолчанию простой режим.
+  interfaceMode: 'business',
 };
 
 /**

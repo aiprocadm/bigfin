@@ -80,6 +80,17 @@ export class BuildOrganizationDto {
     example: 'MM/DD/YYYY',
   })
   dateFormat?: string;
+
+  // ③ Выбор режима в онбординге; сохраняется тем же saveMetadata-спредом,
+  // что и остальные поля. Пусто = business (нормализация при чтении).
+  @IsOptional()
+  @IsIn(INTERFACE_MODES)
+  @ApiPropertyOptional({
+    description: 'Interface mode: business (hides bookkeeping screens) or accountant',
+    enum: INTERFACE_MODES,
+    example: 'business',
+  })
+  interfaceMode?: string;
 }
 
 export class UpdateOrganizationDto {

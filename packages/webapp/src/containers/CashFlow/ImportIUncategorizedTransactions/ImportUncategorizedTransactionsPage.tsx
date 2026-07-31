@@ -8,6 +8,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Features } from '@/constants/features';
 import { useImport1CStatement } from '@/hooks/query/bank-statement-import';
+import { TableStatementUpload } from './TableStatementUpload';
 
 export default function ImportUncategorizedTransactions() {
   const history = useHistory();
@@ -78,6 +79,11 @@ export default function ImportUncategorizedTransactions() {
           >
             {intl.get('bank_import.upload_1c')}
           </button>
+
+          <TableStatementUpload
+            accountId={params.id}
+            onImported={handleImportSuccess}
+          />
         </div>
       )}
       <ImportView

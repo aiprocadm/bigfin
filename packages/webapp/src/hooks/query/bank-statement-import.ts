@@ -44,3 +44,81 @@ export function useImport1CStatement(props = {}) {
     },
   );
 }
+
+interface TableStatementValues {
+  accountId: string | number;
+  file: File;
+  currencyCode?: string;
+}
+
+export interface TableStatementPreview {
+  total: number;
+  toImport: number;
+  duplicates: number;
+  unparsed: number;
+  columns: Record<string, string>;
+  warnings: string[];
+  sample: Array<{
+    date: string;
+    amount: number;
+    payee: string | null;
+    description: string | null;
+  }>;
+}
+
+/** Ответы приходят в snake_case — приводим к виду, ожидаемому страницей. */
+const toPreview = (raw: any): TableStatementPreview => ({
+  total: raw?.total ?? 0,
+  toImport: raw?.to_import ?? raw?.toImport ?? 0,
+  duplicates: raw?.duplicates ?? 0,
+  unparsed: raw?.unparsed ?? 0,
+  columns: raw?.columns ?? {},
+  warnings: raw?.warnings ?? [],
+  sample: (raw?.sample ?? []).map((r: any) => ({
+    date: r.date,
+    amount: r.amount,
+    payee: r.payee ?? null,
+    description: r.description ?? null,
+  })),
+});
+
+const tableFormData = (values: TableStatementValues): FormData => {
+  const formData = new FormData();
+  formData.append('file', values.file);
+  if (values.currencyCode) formData.append('currencyCode', values.currencyCode);
+  return formData;
+};
+
+/** Предпросмотр выписки таблицей (CSV/Excel): что распозналось. */
+export function usePreviewTableStatement(props = {}) {
+  const apiRequest = useApiRequest();
+
+  return useMutation<TableStatementPreview, Error, TableStatementValues>(
+    (values) =>
+      apiRequest
+        .post(
+          `cashflow-accounts/${values.accountId}/import/table/preview`,
+          tableFormData(values),
+          { headers: { 'Content-Type': 'multipart/form-data' } },
+        )
+        .then((res) => toPreview(res.data?.data ?? res.data)),
+    { ...props },
+  );
+}
+
+/** Импорт выписки таблицей (CSV/Excel). */
+export function useImportTableStatement(props = {}) {
+  const apiRequest = useApiRequest();
+
+  return useMutation<Import1CStatementResponse, Error, TableStatementValues>(
+    (values) =>
+      apiRequest
+        .post(
+          `cashflow-accounts/${values.accountId}/import/table`,
+          tableFormData(values),
+          { headers: { 'Content-Type': 'multipart/form-data' } },
+        )
+        .then((res) => res.data?.data ?? res.data),
+    { ...props },
+  );
+}

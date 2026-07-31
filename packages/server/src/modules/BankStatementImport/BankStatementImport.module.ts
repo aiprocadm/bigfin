@@ -2,12 +2,14 @@
 import { Module } from '@nestjs/common';
 import { BankStatementImportController } from './BankStatementImport.controller';
 import { Import1CStatementService } from './commands/Import1CStatement.service';
+import { ImportTableStatementService } from './commands/ImportTableStatement.service';
 import { BankingCategorizeModule } from '../BankingCategorize/BankingCategorize.module';
 import { BankingTransactionsModule } from '../BankingTransactions/BankingTransactions.module';
 import { FeaturesModule } from '../Features/Features.module';
 
 /**
- * Модуль импорта банковских выписок в формате 1С КлиентБанк.
+ * Модуль импорта банковских выписок: формат 1С КлиентБанк (.txt) и
+ * выписка таблицей — CSV/Excel с распознаванием колонок (⑨a).
  *
  * DI-зависимости:
  *  - CreateUncategorizedTransactionService  — экспортируется из BankingCategorizeModule
@@ -19,6 +21,6 @@ import { FeaturesModule } from '../Features/Features.module';
 @Module({
   imports: [BankingCategorizeModule, BankingTransactionsModule, FeaturesModule],
   controllers: [BankStatementImportController],
-  providers: [Import1CStatementService],
+  providers: [Import1CStatementService, ImportTableStatementService],
 })
 export class BankStatementImportModule {}

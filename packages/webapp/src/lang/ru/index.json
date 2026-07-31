@@ -3784,5 +3784,15 @@
   "onec_import.result.contacts": "Контрагенты: создано {created}, обновлено {updated}.",
   "onec_import.done": "Готово: создано {created}, обновлено {updated}.",
   "onec_import.error.parse": "Не удалось прочитать файл. Проверьте, что это выгрузка CommerceML.",
-  "onec_import.error.import": "Не удалось импортировать файл."
+  "onec_import.error.import": "Не удалось импортировать файл.",
+  "bank_import.table.upload": "Загрузить выписку таблицей (CSV/Excel)",
+  "bank_import.table.preview_summary": "Распознано операций: {total}, из них к загрузке {toImport}, уже загружено ранее {duplicates}.",
+  "bank_import.table.unparsed": "Строк без даты или суммы пропущено: {count}.",
+  "bank_import.table.sign_assumed": "Все суммы положительные, а вида операции в файле нет — они считаются приходом. Проверьте перед загрузкой.",
+  "bank_import.table.columns": "Распознанные колонки: {columns}",
+  "bank_import.table.columns_error": "Не удалось распознать колонки. В файле должны быть колонка с датой и колонка с суммой (либо приход и расход).",
+  "bank_import.table.import": "Загрузить операции",
+  "bank_import.table.col_date": "Дата",
+  "bank_import.table.col_amount": "Сумма",
+  "bank_import.table.col_description": "Контрагент / назначение"
 }

@@ -11,8 +11,6 @@ import {
   useOnecImportPreview,
 } from '@/hooks/query/onecImport';
 
-const unwrap = (res: any) => res?.data?.data ?? res?.data ?? res;
-
 /**
  * ⑩ Импорт справочников из 1С (CommerceML): выбор файла → предпросмотр →
  * импорт. За флагом `onec_import`.
@@ -37,7 +35,7 @@ export default function OnecImportPage() {
   const handlePreview = async () => {
     if (!file) return;
     try {
-      setPreview(unwrap(await previewMutation.mutateAsync(file)));
+      setPreview(await previewMutation.mutateAsync(file));
       setResult(null);
     } catch {
       toast.error(intl.get('onec_import.error.parse'));
@@ -47,7 +45,7 @@ export default function OnecImportPage() {
   const handleImport = async () => {
     if (!file) return;
     try {
-      const report = unwrap(await importMutation.mutateAsync(file));
+      const report = await importMutation.mutateAsync(file);
       setResult(report);
       toast.success(
         intl.get('onec_import.done', {

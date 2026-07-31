@@ -846,6 +846,12 @@ export const SidebarMenu = [
     feature: Features.OnecExport,
   },
   {
+    text: <T id={'sidebar.onec_import'} />,
+    href: '/onec-import',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.OnecImport,
+  },
+  {
     text: <T id={'sidebar.acquiring'} />,
     href: '/acquiring',
     type: ISidebarMenuItemType.Link,

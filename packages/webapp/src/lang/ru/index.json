@@ -3769,5 +3769,20 @@
   "bank_api.alfa.client_id": "client_id",
   "bank_api.alfa.client_secret": "client_secret",
   "bank_api.alfa.refresh_token": "Refresh-токен",
-  "bank_api.import.bank": "Банк"
+  "bank_api.import.bank": "Банк",
+  "sidebar.onec_import": "Импорт из 1С",
+  "onec_import.page.title": "Импорт из 1С (CommerceML)",
+  "onec_import.page.subtitle": "Загрузите товары и контрагентов из файла выгрузки 1С. Повторная загрузка того же файла обновит карточки, а не создаст дубликаты.",
+  "onec_import.file": "Файл CommerceML (.xml)",
+  "onec_import.action.preview": "Проверить файл",
+  "onec_import.action.import": "Импортировать",
+  "onec_import.preview.title": "Что произойдёт",
+  "onec_import.preview.items": "Товары: {create} новых, {update} обновится.",
+  "onec_import.preview.contacts": "Контрагенты: {create} новых, {update} обновится.",
+  "onec_import.result.title": "Результат импорта",
+  "onec_import.result.items": "Товары: создано {created}, обновлено {updated}.",
+  "onec_import.result.contacts": "Контрагенты: создано {created}, обновлено {updated}.",
+  "onec_import.done": "Готово: создано {created}, обновлено {updated}.",
+  "onec_import.error.parse": "Не удалось прочитать файл. Проверьте, что это выгрузка CommerceML.",
+  "onec_import.error.import": "Не удалось импортировать файл."
 }

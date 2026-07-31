@@ -1387,6 +1387,14 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('onec_export.page.title'),
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
+  // 1C import (⑩ импорт справочников CommerceML)
+  {
+    path: `/onec-import`,
+    component: lazy(() => import('@/containers/OnecImport/OnecImportPage')),
+    breadcrumb: intl.get('onec_import.page.title'),
+    pageTitle: intl.get('onec_import.page.title'),
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   // Acquiring (⑨d YooKassa)
   {
     path: `/acquiring`,

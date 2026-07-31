@@ -50,6 +50,7 @@ import { MoySkladModule } from '../MoySklad/MoySklad.module';
 import { MarketplacesModule } from '../Marketplaces/Marketplaces.module';
 import { BankApiSyncModule } from '../BankApiSync/BankApiSync.module';
 import { OnecExportModule } from '../OnecExport/OnecExport.module';
+import { OnecImportModule } from '../OnecImport/OnecImport.module';
 import { AcquiringModule } from '../Acquiring/Acquiring.module';
 import { ZenmoneyImportModule } from '../ZenmoneyImport/ZenmoneyImport.module';
 import { VatAnalysisModule } from '../VatAnalysis/VatAnalysis.module';
@@ -251,6 +252,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     MarketplacesModule,
     BankApiSyncModule,
     OnecExportModule,
+    OnecImportModule,
     AcquiringModule,
     ZenmoneyImportModule,
     VatAnalysisModule,

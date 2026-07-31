@@ -66,6 +66,7 @@ import { NotificationRead } from '@/modules/Notifications/models/NotificationRea
 import { MarketingChannel } from '@/modules/FinancialModel/models/MarketingChannel.model';
 import { MarketingMonthly } from '@/modules/FinancialModel/models/MarketingMonthly.model';
 import { CrmSyncLink } from '@/modules/CrmIntegration/models/CrmSyncLink.model';
+import { OnecImportLink } from '@/modules/OnecImport/models/OnecImportLink.model';
 
 const models = [
   Item,
@@ -131,6 +132,7 @@ const models = [
   MarketingChannel,
   MarketingMonthly,
   CrmSyncLink,
+  OnecImportLink,
   TenantUser,
 ];
 

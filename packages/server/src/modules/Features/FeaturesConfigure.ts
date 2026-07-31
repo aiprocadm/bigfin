@@ -127,6 +127,10 @@ export class FeaturesConfigure {
         defaultValue: false,
       },
       {
+        name: Features.ONEC_IMPORT,
+        defaultValue: false,
+      },
+      {
         name: Features.CRM_INTEGRATION,
         defaultValue: false,
       },

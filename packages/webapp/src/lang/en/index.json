@@ -3769,5 +3769,20 @@
   "bank_api.alfa.client_id": "client_id",
   "bank_api.alfa.client_secret": "client_secret",
   "bank_api.alfa.refresh_token": "Refresh token",
-  "bank_api.import.bank": "Bank"
+  "bank_api.import.bank": "Bank",
+  "sidebar.onec_import": "1C import",
+  "onec_import.page.title": "Import from 1C (CommerceML)",
+  "onec_import.page.subtitle": "Load products and counterparties from a 1C export file. Re-importing the same file updates the cards instead of duplicating them.",
+  "onec_import.file": "CommerceML file (.xml)",
+  "onec_import.action.preview": "Check file",
+  "onec_import.action.import": "Import",
+  "onec_import.preview.title": "What will happen",
+  "onec_import.preview.items": "Products: {create} new, {update} to update.",
+  "onec_import.preview.contacts": "Counterparties: {create} new, {update} to update.",
+  "onec_import.result.title": "Import result",
+  "onec_import.result.items": "Products: {created} created, {updated} updated.",
+  "onec_import.result.contacts": "Counterparties: {created} created, {updated} updated.",
+  "onec_import.done": "Done: {created} created, {updated} updated.",
+  "onec_import.error.parse": "Could not read the file. Check that it is a CommerceML export.",
+  "onec_import.error.import": "Could not import the file."
 }

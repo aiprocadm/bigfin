@@ -3784,5 +3784,15 @@
   "onec_import.result.contacts": "Counterparties: {created} created, {updated} updated.",
   "onec_import.done": "Done: {created} created, {updated} updated.",
   "onec_import.error.parse": "Could not read the file. Check that it is a CommerceML export.",
-  "onec_import.error.import": "Could not import the file."
+  "onec_import.error.import": "Could not import the file.",
+  "bank_import.table.upload": "Upload statement as a table (CSV/Excel)",
+  "bank_import.table.preview_summary": "Recognized {total} operations: {toImport} to import, {duplicates} already imported.",
+  "bank_import.table.unparsed": "Rows without a date or amount were skipped: {count}.",
+  "bank_import.table.sign_assumed": "All amounts are positive and the file has no operation type — they are treated as income. Check before importing.",
+  "bank_import.table.columns": "Recognized columns: {columns}",
+  "bank_import.table.columns_error": "Could not recognize the columns. The file must have a date column and an amount column (or income/expense columns).",
+  "bank_import.table.import": "Import operations",
+  "bank_import.table.col_date": "Date",
+  "bank_import.table.col_amount": "Amount",
+  "bank_import.table.col_description": "Counterparty / purpose"
 }

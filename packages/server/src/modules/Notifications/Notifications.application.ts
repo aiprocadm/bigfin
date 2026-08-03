@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { GetNotificationPreferencesService } from './queries/GetNotificationPreferences.service';
 import { UpdateNotificationPreferencesService } from './commands/UpdateNotificationPreferences.service';
+import { PullTelegramEntriesService } from './commands/PullTelegramEntries.service';
 import { ConnectTelegramService } from './commands/ConnectTelegram.service';
 import { InAppNotificationsService } from './queries/InAppNotifications.service';
 import { UpdateNotificationPreferencesDto } from './dtos/NotificationPreferences.dto';
@@ -13,6 +14,7 @@ export class NotificationsApplication {
     private readonly updatePreferencesService: UpdateNotificationPreferencesService,
     private readonly connectTelegramService: ConnectTelegramService,
     private readonly inAppService: InAppNotificationsService,
+    private readonly pullTelegramEntriesService: PullTelegramEntriesService,
   ) {}
 
   getPreferences() {
@@ -29,6 +31,20 @@ export class NotificationsApplication {
 
   disconnectTelegram() {
     return this.connectTelegramService.disconnect();
+  }
+
+  /** ㉓ Забрать новые сообщения бота и записать операции. */
+  pullTelegramEntries() {
+    return this.pullTelegramEntriesService.pull();
+  }
+
+  /** ㉓ Счёт, на который попадают операции из Telegram. */
+  setTelegramEntryAccount(accountId: number | null) {
+    return this.pullTelegramEntriesService.setEntryAccount(accountId);
+  }
+
+  getTelegramEntryAccount() {
+    return this.pullTelegramEntriesService.getEntryAccount();
   }
 
   listNotifications() {

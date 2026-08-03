@@ -127,6 +127,10 @@ export class FeaturesConfigure {
         defaultValue: false,
       },
       {
+        name: Features.TELEGRAM_QUICK_ENTRY,
+        defaultValue: false,
+      },
+      {
         name: Features.ONEC_IMPORT,
         defaultValue: false,
       },

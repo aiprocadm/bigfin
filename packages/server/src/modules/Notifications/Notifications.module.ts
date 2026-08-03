@@ -21,10 +21,15 @@ import { TelegramChannelService } from './delivery/TelegramChannel.service';
 import { ConnectTelegramService } from './commands/ConnectTelegram.service';
 import { NotificationEvaluationProcessor } from './jobs/NotificationEvaluation.processor';
 import { NotificationsCron } from './jobs/NotificationsCron';
+import { TelegramEntriesCron } from './jobs/TelegramEntriesCron';
+import { TelegramEntriesProcessor } from './jobs/TelegramEntriesProcessor';
+import { PullTelegramEntriesService } from './commands/PullTelegramEntries.service';
+import { BankingCategorizeModule } from '../BankingCategorize/BankingCategorize.module';
+import { BankingTransactionsModule } from '../BankingTransactions/BankingTransactions.module';
 import { GetNotificationPreferencesService } from './queries/GetNotificationPreferences.service';
 import { UpdateNotificationPreferencesService } from './commands/UpdateNotificationPreferences.service';
 import { InAppNotificationsService } from './queries/InAppNotifications.service';
-import { NOTIFICATIONS_QUEUE } from './constants';
+import { NOTIFICATIONS_QUEUE, TELEGRAM_ENTRIES_QUEUE } from './constants';
 
 @Module({
   imports: [
@@ -33,9 +38,16 @@ import { NOTIFICATIONS_QUEUE } from './constants';
     MailModule,
     FeaturesModule,
     ExchangeRatesModule,
+    BankingCategorizeModule,
+    BankingTransactionsModule,
     BullModule.registerQueue({ name: NOTIFICATIONS_QUEUE }),
+    BullModule.registerQueue({ name: TELEGRAM_ENTRIES_QUEUE }),
     BullBoardModule.forFeature({
       name: NOTIFICATIONS_QUEUE,
+      adapter: BullMQAdapter,
+    }),
+    BullBoardModule.forFeature({
+      name: TELEGRAM_ENTRIES_QUEUE,
       adapter: BullMQAdapter,
     }),
   ],
@@ -52,6 +64,9 @@ import { NOTIFICATIONS_QUEUE } from './constants';
     ConnectTelegramService,
     NotificationEvaluationProcessor,
     NotificationsCron,
+    TelegramEntriesCron,
+    TelegramEntriesProcessor,
+    PullTelegramEntriesService,
     GetNotificationPreferencesService,
     UpdateNotificationPreferencesService,
     InAppNotificationsService,

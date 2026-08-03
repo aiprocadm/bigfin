@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { useFeatureCan } from '@/hooks/state/feature';
+import { TelegramQuickEntryBlock } from './TelegramQuickEntryBlock';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
@@ -497,6 +498,8 @@ export default function NotificationsSettingsPage() {
                     </div>
                   </>
                 )}
+
+                {telegramConnected && <TelegramQuickEntryBlock />}
               </CardContent>
             </Card>
 

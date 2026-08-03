@@ -16,7 +16,7 @@ export const MODULE_ALLOWLIST: string[] = [
   Features.PAYROLL, Features.VAT_ANALYSIS, Features.FINANCIAL_RATIOS, Features.DATA_QUALITY,
   Features.RU_PRINT_FORMS,
   // Интеграции
-  Features.BANK_API_SYNC, Features.ACQUIRING, Features.ZENMONEY_IMPORT, Features.ONEC_EXPORT, Features.ONEC_IMPORT,
+  Features.BANK_API_SYNC, Features.ACQUIRING, Features.ZENMONEY_IMPORT, Features.ONEC_EXPORT, Features.TELEGRAM_QUICK_ENTRY, Features.ONEC_IMPORT,
   Features.MOYSKLAD, Features.MARKETPLACES, Features.CRM_INTEGRATION,
   // Структура
   Features.BRANCHES, Features.WAREHOUSES,

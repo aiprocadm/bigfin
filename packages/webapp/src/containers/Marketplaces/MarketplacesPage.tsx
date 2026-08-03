@@ -11,6 +11,8 @@ import {
   useConnectWildberries,
   useDisconnectWildberries,
 } from '@/hooks/query/marketplaces';
+import { OzonSection } from './OzonSection';
+import { SummaryCards } from './SummaryCards';
 
 const monthAgo = () => {
   const d = new Date();
@@ -18,21 +20,10 @@ const monthAgo = () => {
   return d.toISOString().slice(0, 10);
 };
 const today = () => new Date().toISOString().slice(0, 10);
-const money = (v: number): string =>
-  new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v ?? 0);
-
-function Card({ title, value }: { title: string; value: string }) {
-  return (
-    <div className="rounded-md border p-4">
-      <div className="text-sm text-muted-foreground">{title}</div>
-      <div className="text-2xl font-semibold">{value}</div>
-    </div>
-  );
-}
-
 /**
- * ⑱ Страница маркетплейсов: подключение Wildberries + финансовая сводка за
- * период (выручка за вычетом удержаний), read-only. За флагом `marketplaces`.
+ * ⑱ Страница маркетплейсов: подключение Wildberries и Ozon + финансовая
+ * сводка за период (выручка за вычетом удержаний), read-only.
+ * За флагом `marketplaces`.
  */
 export default function MarketplacesPage() {
   const { featureCan } = useFeatureCan();
@@ -44,6 +35,7 @@ export default function MarketplacesPage() {
   const connect = useConnectWildberries();
   const disconnect = useDisconnectWildberries();
   const connected = !!status?.wildberriesConnected;
+  const ozonConnected = !!status?.ozonConnected;
   const { data: summary } = useWildberriesSummary(fromDate, toDate, {
     enabled: connected,
   });
@@ -112,7 +104,13 @@ export default function MarketplacesPage() {
         )}
       </div>
 
-      {connected && (
+      <OzonSection
+        connected={ozonConnected}
+        fromDate={fromDate}
+        toDate={toDate}
+      />
+
+      {(connected || ozonConnected) && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-end gap-2">
             <input
@@ -130,13 +128,11 @@ export default function MarketplacesPage() {
             />
           </div>
           {summary && (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-              <Card title={intl.get('marketplaces.summary.revenue')} value={money(summary.revenue)} />
-              <Card title={intl.get('marketplaces.summary.to_pay')} value={money(summary.toPay)} />
-              <Card title={intl.get('marketplaces.summary.deductions')} value={money(summary.deductions)} />
-              <Card title={intl.get('marketplaces.summary.logistics')} value={money(summary.logistics)} />
-              <Card title={intl.get('marketplaces.summary.penalties')} value={money(summary.penalties)} />
-              <Card title={intl.get('marketplaces.summary.storage')} value={money(summary.storage)} />
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
+                {intl.get('marketplaces.wb.title')}
+              </h3>
+              <SummaryCards summary={summary} />
             </div>
           )}
         </div>

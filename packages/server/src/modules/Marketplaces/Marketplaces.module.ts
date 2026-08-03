@@ -5,6 +5,8 @@ import { MarketplacesApplication } from './Marketplaces.application';
 import { MarketplacesSettingsService } from './MarketplacesSettings.service';
 import { WildberriesApiService } from './connectors/wildberries/WildberriesApi.service';
 import { WildberriesConnector } from './connectors/wildberries/WildberriesConnector';
+import { OzonApiService } from './connectors/ozon/OzonApi.service';
+import { OzonConnector } from './connectors/ozon/OzonConnector';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 
 /**
@@ -20,6 +22,8 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     MarketplacesSettingsService,
     WildberriesApiService,
     WildberriesConnector,
+    OzonApiService,
+    OzonConnector,
   ],
 })
 export class MarketplacesModule {}

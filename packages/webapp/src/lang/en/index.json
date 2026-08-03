@@ -3804,5 +3804,10 @@
   "notifications.telegram.entry.pull": "Fetch now",
   "notifications.telegram.entry.pulled": "Recorded {imported}, skipped {skipped}.",
   "notifications.telegram.entry.pull_failed": "Could not fetch messages.",
-  "setup.organization.interface_mode": "Interface mode"
+  "setup.organization.interface_mode": "Interface mode",
+  "marketplaces.ozon.title": "Ozon",
+  "marketplaces.ozon.connected": "Ozon is connected.",
+  "marketplaces.ozon.hint": "Create an API key in the Ozon seller account (Settings → API keys) and paste the Client-Id and the key here.",
+  "marketplaces.ozon.client_id": "Client-Id",
+  "marketplaces.ozon.api_key": "Api-Key"
 }

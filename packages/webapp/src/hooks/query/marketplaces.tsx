@@ -27,8 +27,17 @@ export function useMarketplacesStatus(props?: any) {
     [STATUS_KEY],
     { method: 'get', url: 'marketplaces/status' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
-      defaultData: { wildberriesConnected: false },
+      select: (res: any) => {
+        // Ответы сервера сериализуются в snake_case.
+        const d = res.data?.data ?? res.data ?? {};
+        return {
+          wildberriesConnected: Boolean(
+            d.wildberries_connected ?? d.wildberriesConnected,
+          ),
+          ozonConnected: Boolean(d.ozon_connected ?? d.ozonConnected),
+        };
+      },
+      defaultData: { wildberriesConnected: false, ozonConnected: false },
       ...props,
     },
   );
@@ -75,6 +84,45 @@ export function useDisconnectWildberries(
   const api: any = useApiRequest();
   return useMutation<any, any, void>(
     () => api.post('marketplaces/wildberries/disconnect'),
+    { onSuccess: () => invalidateStatus(client), ...props },
+  );
+}
+
+/** Финансовая сводка Ozon за период. */
+export function useOzonSummary(fromDate: string, toDate: string, props?: any) {
+  return useRequestQuery(
+    ['ozon_summary', fromDate, toDate],
+    {
+      method: 'get',
+      url: 'marketplaces/ozon/summary',
+      params: { fromDate, toDate },
+    },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: null,
+      ...props,
+    },
+  );
+}
+
+/** Подключить Ozon по Client-Id и Api-Key. */
+export function useConnectOzon(
+  props?: UseMutationOptions<any, any, { clientId: string; apiKey: string }>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, { clientId: string; apiKey: string }>(
+    (values) => api.post('marketplaces/ozon/connect', values),
+    { onSuccess: () => invalidateStatus(client), ...props },
+  );
+}
+
+/** Отключить Ozon. */
+export function useDisconnectOzon(props?: UseMutationOptions<any, any, void>) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () => api.post('marketplaces/ozon/disconnect', {}),
     { onSuccess: () => invalidateStatus(client), ...props },
   );
 }

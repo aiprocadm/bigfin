@@ -3803,5 +3803,6 @@
   "notifications.telegram.entry.account_save_failed": "Could not save the account.",
   "notifications.telegram.entry.pull": "Fetch now",
   "notifications.telegram.entry.pulled": "Recorded {imported}, skipped {skipped}.",
-  "notifications.telegram.entry.pull_failed": "Could not fetch messages."
+  "notifications.telegram.entry.pull_failed": "Could not fetch messages.",
+  "setup.organization.interface_mode": "Interface mode"
 }

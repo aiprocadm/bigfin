@@ -9,6 +9,8 @@ export interface SetupOrganizationFormValues {
   language: string;
   fiscalYear: string;
   timezone: string;
+  // ③ Есть только в онбординге; форма воркспейсов режим не выбирает.
+  interfaceMode?: string;
 }
 
 // Retrieve the setup organization form validation.
@@ -24,4 +26,5 @@ export const getSetupOrganizationValidation = () =>
     language: Yup.string().required().label(intl.get('language')),
     fiscalYear: Yup.string().required().label(intl.get('fiscal_year_')),
     timezone: Yup.string().required().label(intl.get('time_zone_')),
+    interfaceMode: Yup.string().oneOf(['business', 'accountant']),
   });

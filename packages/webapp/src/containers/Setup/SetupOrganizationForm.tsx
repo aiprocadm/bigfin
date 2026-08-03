@@ -18,6 +18,7 @@ import { Col, Row } from '@/components';
 import { inputIntent } from '@/utils';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 
+import intl from 'react-intl-universal';
 import { getFiscalYear } from '@/constants/fiscalYearOptions';
 import { getLanguages } from '@/constants/languagesOptions';
 import { getAllCurrenciesOptions } from '@/constants/currencies';
@@ -138,6 +139,27 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
             fill: true,
             large: true,
           }}
+        />
+      </FFormGroup>
+
+      {/* ---------- Режим интерфейса (③) ---------- */}
+      <FFormGroup
+        name={'interfaceMode'}
+        label={<T id={'setup.organization.interface_mode'} />}
+        helperText={<T id={'interface_mode.description'} />}
+        fastField
+      >
+        <FSelect
+          name={'interfaceMode'}
+          items={[
+            { key: 'business', name: intl.get('interface_mode.business') },
+            { key: 'accountant', name: intl.get('interface_mode.accountant') },
+          ]}
+          valueAccessor={'key'}
+          textAccessor={'name'}
+          popoverProps={{ minimal: true }}
+          buttonProps={{ large: true }}
+          fastField
         />
       </FFormGroup>
 

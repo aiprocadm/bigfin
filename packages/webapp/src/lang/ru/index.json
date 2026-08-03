@@ -3803,5 +3803,6 @@
   "notifications.telegram.entry.account_save_failed": "Не удалось сохранить счёт.",
   "notifications.telegram.entry.pull": "Забрать сейчас",
   "notifications.telegram.entry.pulled": "Записано: {imported}, пропущено: {skipped}.",
-  "notifications.telegram.entry.pull_failed": "Не удалось забрать сообщения."
+  "notifications.telegram.entry.pull_failed": "Не удалось забрать сообщения.",
+  "setup.organization.interface_mode": "Режим интерфейса"
 }

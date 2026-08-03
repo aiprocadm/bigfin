@@ -27,6 +27,7 @@ export enum Features {
   MARKETPLACES = 'marketplaces',
   BANK_API_SYNC = 'bank_api_sync',
   ONEC_EXPORT = 'onec_export',
+  TELEGRAM_QUICK_ENTRY = 'telegram_quick_entry',
   ONEC_IMPORT = 'onec_import',
   ACQUIRING = 'acquiring',
   ZENMONEY_IMPORT = 'zenmoney_import',

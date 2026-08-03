@@ -5,6 +5,11 @@ export type NotificationEvent = (typeof NOTIFICATION_EVENTS)[number];
 export const NOTIFICATIONS_QUEUE = 'notifications-evaluation';
 export const NOTIFICATIONS_EVAL_JOB = 'evaluate-tenant';
 
+// ㉓ Быстрый ввод из Telegram — отдельная очередь: на одну очередь BullMQ
+// должен приходиться один воркер, иначе задачи разбирают оба вперемешку.
+export const TELEGRAM_ENTRIES_QUEUE = 'telegram-quick-entries';
+export const TELEGRAM_ENTRIES_JOB = 'pull-telegram-entries';
+
 export const DEFAULT_COOLDOWN_HOURS = 24;
 export const DEFAULT_CASH_GAP_HORIZON_DAYS = 7;
 
@@ -21,6 +26,9 @@ export const SETTINGS_KEYS = {
   COOLDOWN_HOURS: 'cooldown_hours',
   TELEGRAM_BOT_TOKEN: 'telegram_bot_token',
   TELEGRAM_CHAT_ID: 'telegram_chat_id',
+  // ㉓ Быстрый ввод операций из Telegram.
+  TELEGRAM_LAST_UPDATE_ID: 'telegram_last_update_id',
+  TELEGRAM_ENTRY_ACCOUNT_ID: 'telegram_entry_account_id',
 };
 
 export const ERRORS = {

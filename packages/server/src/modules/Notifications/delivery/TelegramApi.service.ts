@@ -4,7 +4,9 @@ import axios from 'axios';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { ERRORS } from '../constants';
 
-const API_BASE = 'https://api.telegram.org';
+// Базовый адрес API. Переопределяется TELEGRAM_API_BASE — это нужно для
+// живой проверки полного цикла против локального двойника Telegram.
+const API_BASE = process.env.TELEGRAM_API_BASE || 'https://api.telegram.org';
 
 // Защита от зависшего запроса: воркер/HTTP-запрос не должен блокироваться навечно.
 const REQUEST_TIMEOUT_MS = 10000;
@@ -15,11 +17,16 @@ export class TelegramApiService {
     return `${API_BASE}/bot${token}`;
   }
 
-  /** Опрашивает входящие апдейты бота (для авто-привязки chat_id). */
-  public async getUpdates(token: string): Promise<any> {
+  /**
+   * Опрашивает входящие апдейты бота (авто-привязка chat_id и ㉓ быстрый ввод).
+   * @param {number} offset — брать апдейты начиная с этого id; Telegram при
+   *   этом подтверждает более ранние, и они больше не приходят.
+   */
+  public async getUpdates(token: string, offset?: number): Promise<any> {
     try {
       const res = await axios.get(`${this.baseFor(token)}/getUpdates`, {
         timeout: REQUEST_TIMEOUT_MS,
+        params: offset ? { offset } : undefined,
       });
       return res.data;
     } catch (err: any) {

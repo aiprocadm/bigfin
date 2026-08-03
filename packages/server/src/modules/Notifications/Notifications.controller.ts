@@ -43,6 +43,28 @@ export class NotificationsController {
     return this.app.disconnectTelegram();
   }
 
+  @Post('telegram/entries/pull')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({
+    summary: 'Pull new Telegram messages and record them as operations (admin only).',
+  })
+  pullTelegramEntries() {
+    return this.app.pullTelegramEntries();
+  }
+
+  @Get('telegram/entry-account')
+  @ApiOperation({ summary: 'Account used for operations coming from Telegram.' })
+  getTelegramEntryAccount() {
+    return this.app.getTelegramEntryAccount();
+  }
+
+  @Put('telegram/entry-account')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Set the account for Telegram operations (admin only).' })
+  setTelegramEntryAccount(@Body('accountId') accountId: number | null) {
+    return this.app.setTelegramEntryAccount(accountId ?? null);
+  }
+
   @Get()
   @ApiOperation({ summary: 'List recent in-app notifications for the current user.' })
   listNotifications() {

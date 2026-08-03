@@ -16,6 +16,7 @@ export const Features = {
   Marketplaces: 'marketplaces', // ⑱ маркетплейсы WB/Ozon
   BankApiSync: 'bank_api_sync', // ⑨c банковские API (Тинькофф/Альфа)
   OnecExport: 'onec_export', // ⑩ выгрузка в 1С (1CClientBankExchange)
+  TelegramQuickEntry: 'telegram_quick_entry', // ㉓ ввод операций через Telegram
   OnecImport: 'onec_import', // ⑩ импорт справочников из 1С (CommerceML)
   Acquiring: 'acquiring', // ⑨d эквайринг (YooKassa)
   Zenmoney: 'zenmoney_import', // ⑨b импорт Дзенмани

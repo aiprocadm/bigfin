@@ -10,6 +10,17 @@ class ConnectWbDto {
   apiKey: string;
 }
 
+/** Ozon авторизует парой: идентификатор кабинета + ключ. */
+class ConnectOzonDto {
+  @IsString()
+  @IsNotEmpty()
+  clientId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  apiKey: string;
+}
+
 @Controller('marketplaces')
 @ApiTags('marketplaces')
 export class MarketplacesController {
@@ -42,5 +53,28 @@ export class MarketplacesController {
   @ApiOperation({ summary: 'Отключить Wildberries (только админ).' })
   disconnectWb() {
     return this.app.disconnectWildberries();
+  }
+
+  @Get('ozon/summary')
+  @ApiOperation({ summary: 'Финансовая сводка Ozon за период.' })
+  ozonSummary(
+    @Query('fromDate') fromDate: string,
+    @Query('toDate') toDate: string,
+  ) {
+    return this.app.ozonSummary(fromDate, toDate);
+  }
+
+  @Post('ozon/connect')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Подключить Ozon по Client-Id и Api-Key (только админ).' })
+  connectOzon(@Body() dto: ConnectOzonDto) {
+    return this.app.connectOzon(dto.clientId, dto.apiKey);
+  }
+
+  @Post('ozon/disconnect')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Отключить Ozon (только админ).' })
+  disconnectOzon() {
+    return this.app.disconnectOzon();
   }
 }

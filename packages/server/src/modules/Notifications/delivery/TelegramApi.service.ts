@@ -4,9 +4,7 @@ import axios from 'axios';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { ERRORS } from '../constants';
 
-// Базовый адрес API. Переопределяется TELEGRAM_API_BASE — это нужно для
-// живой проверки полного цикла против локального двойника Telegram.
-const API_BASE = process.env.TELEGRAM_API_BASE || 'https://api.telegram.org';
+const DEFAULT_API_BASE = 'https://api.telegram.org';
 
 // Защита от зависшего запроса: воркер/HTTP-запрос не должен блокироваться навечно.
 const REQUEST_TIMEOUT_MS = 10000;
@@ -14,7 +12,12 @@ const REQUEST_TIMEOUT_MS = 10000;
 @Injectable()
 export class TelegramApiService {
   private baseFor(token: string) {
-    return `${API_BASE}/bot${token}`;
+    // Читаем переменную в момент вызова, а не при импорте модуля: .env
+    // подхватывается позже, и значение, взятое на этапе загрузки, всегда
+    // оказывалось бы дефолтным. Переопределение нужно для проверки полного
+    // цикла против локального двойника Telegram.
+    const apiBase = process.env.TELEGRAM_API_BASE || DEFAULT_API_BASE;
+    return `${apiBase}/bot${token}`;
   }
 
   /**

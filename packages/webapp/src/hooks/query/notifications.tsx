@@ -169,3 +169,48 @@ export function useMarkAllNotificationsRead(
     },
   );
 }
+
+const TELEGRAM_ENTRY_ACCOUNT_KEY = 'telegram_entry_account';
+
+/** ㉓ Счёт, на который записываются операции из Telegram. */
+export function useTelegramEntryAccount(props?: any) {
+  return useRequestQuery(
+    [TELEGRAM_ENTRY_ACCOUNT_KEY],
+    { method: 'get', url: 'notifications/telegram/entry-account' },
+    {
+      select: (res: any) => {
+        const d = res.data?.data ?? res.data;
+        return { accountId: d?.account_id ?? d?.accountId ?? null };
+      },
+      defaultData: { accountId: null },
+      ...props,
+    },
+  );
+}
+
+/** ㉓ Сохранить счёт для операций из Telegram. */
+export function useSetTelegramEntryAccount(
+  props?: UseMutationOptions<any, any, { accountId: number | null }>,
+) {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  return useMutation<any, any, { accountId: number | null }>(
+    (values) => api.put('notifications/telegram/entry-account', values),
+    {
+      onSuccess: () => client.invalidateQueries(TELEGRAM_ENTRY_ACCOUNT_KEY),
+      ...props,
+    },
+  );
+}
+
+/** ㉓ Забрать новые сообщения бота прямо сейчас. */
+export function usePullTelegramEntries(props?: UseMutationOptions<any, any, void>) {
+  const api: any = useApiRequest();
+  return useMutation<any, any, void>(
+    () =>
+      api
+        .post('notifications/telegram/entries/pull', {})
+        .then((res: any) => res.data?.data ?? res.data),
+    props,
+  );
+}

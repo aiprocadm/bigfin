@@ -3794,5 +3794,14 @@
   "bank_import.table.import": "Import operations",
   "bank_import.table.col_date": "Date",
   "bank_import.table.col_amount": "Amount",
-  "bank_import.table.col_description": "Counterparty / purpose"
+  "bank_import.table.col_description": "Counterparty / purpose",
+  "notifications.telegram.entry.title": "Quick entry from Telegram",
+  "notifications.telegram.entry.help": "Send the bot a message like «-1500 taxi» (expense) or «+50000 client payment» (income) — it lands in the categorize queue. Messages are read every 5 minutes.",
+  "notifications.telegram.entry.account": "Account for these operations",
+  "notifications.telegram.entry.account_none": "Not selected — operations are not recorded",
+  "notifications.telegram.entry.account_saved": "Account saved.",
+  "notifications.telegram.entry.account_save_failed": "Could not save the account.",
+  "notifications.telegram.entry.pull": "Fetch now",
+  "notifications.telegram.entry.pulled": "Recorded {imported}, skipped {skipped}.",
+  "notifications.telegram.entry.pull_failed": "Could not fetch messages."
 }

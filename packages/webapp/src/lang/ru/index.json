@@ -3794,5 +3794,14 @@
   "bank_import.table.import": "Загрузить операции",
   "bank_import.table.col_date": "Дата",
   "bank_import.table.col_amount": "Сумма",
-  "bank_import.table.col_description": "Контрагент / назначение"
+  "bank_import.table.col_description": "Контрагент / назначение",
+  "notifications.telegram.entry.title": "Быстрый ввод из Telegram",
+  "notifications.telegram.entry.help": "Отправьте боту сообщение вида «-1500 такси» (расход) или «+50000 оплата от клиента» (приход) — операция попадёт в «Разбор». Сообщения читаются раз в 5 минут.",
+  "notifications.telegram.entry.account": "Счёт для таких операций",
+  "notifications.telegram.entry.account_none": "Не выбран — операции не записываются",
+  "notifications.telegram.entry.account_saved": "Счёт сохранён.",
+  "notifications.telegram.entry.account_save_failed": "Не удалось сохранить счёт.",
+  "notifications.telegram.entry.pull": "Забрать сейчас",
+  "notifications.telegram.entry.pulled": "Записано: {imported}, пропущено: {skipped}.",
+  "notifications.telegram.entry.pull_failed": "Не удалось забрать сообщения."
 }

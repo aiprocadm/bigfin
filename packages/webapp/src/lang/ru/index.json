@@ -3794,5 +3794,6 @@
   "bank_import.table.import": "Загрузить операции",
   "bank_import.table.col_date": "Дата",
   "bank_import.table.col_amount": "Сумма",
-  "bank_import.table.col_description": "Контрагент / назначение"
+  "bank_import.table.col_description": "Контрагент / назначение",
+  "setup.organization.interface_mode": "Режим интерфейса"
 }

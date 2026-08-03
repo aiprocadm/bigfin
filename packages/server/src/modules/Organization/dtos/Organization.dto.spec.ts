@@ -40,3 +40,29 @@ describe('Organization DTO — язык организации', () => {
     expect(ACCEPTED_LOCALES).toContain('ru');
   });
 });
+
+describe('BuildOrganizationDto — режим интерфейса в онбординге (③)', () => {
+  it('принимает business и accountant', async () => {
+    for (const mode of ['business', 'accountant']) {
+      const dto = plainToInstance(BuildOrganizationDto, {
+        ...validRussianOrg,
+        interfaceMode: mode,
+      });
+      expect(await validate(dto)).toHaveLength(0);
+    }
+  });
+
+  it('поле необязательно — без него организация создаётся (режим по умолчанию business)', async () => {
+    const dto = plainToInstance(BuildOrganizationDto, validRussianOrg);
+    expect(await validate(dto)).toHaveLength(0);
+  });
+
+  it('отклоняет неизвестный режим', async () => {
+    const dto = plainToInstance(BuildOrganizationDto, {
+      ...validRussianOrg,
+      interfaceMode: 'superuser',
+    });
+    const errors = await validate(dto);
+    expect(errors.length).toBeGreaterThan(0);
+  });
+});

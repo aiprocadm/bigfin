@@ -3794,5 +3794,6 @@
   "bank_import.table.import": "Import operations",
   "bank_import.table.col_date": "Date",
   "bank_import.table.col_amount": "Amount",
-  "bank_import.table.col_description": "Counterparty / purpose"
+  "bank_import.table.col_description": "Counterparty / purpose",
+  "setup.organization.interface_mode": "Interface mode"
 }

@@ -8,6 +8,10 @@ import {
   useAuthToken,
 } from './state';
 import { getCookie, normalizeApiPath } from '../utils';
+import {
+  withCamelAliases,
+  shouldAliasResponse,
+} from '../utils/withCamelAliases';
 
 export default function useApiRequest() {
   const setGlobalErrors = useSetGlobalErrors();
@@ -46,7 +50,15 @@ export default function useApiRequest() {
     );
     // Response interceptors.
     instance.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Сервер отдаёт поля в snake_case, а страницы читают их в camelCase.
+        // Добавляем camelCase-псевдонимы рядом с исходными ключами: старый код
+        // продолжает работать, новый перестаёт получать undefined.
+        if (shouldAliasResponse(response.config?.url)) {
+          withCamelAliases(response.data);
+        }
+        return response;
+      },
       (error) => {
         const { status, data } = error.response;
 

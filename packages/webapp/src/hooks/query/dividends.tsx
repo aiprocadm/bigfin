@@ -8,6 +8,10 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import {
+  mapDividendsSummary,
+  mapDividendPayouts,
+} from '@/containers/Dividends/mapDividends';
 
 export interface DividendsSummary {
   netProfit: number;
@@ -47,7 +51,8 @@ export function useDividendsSummary(props?: any) {
     [t.DIVIDENDS_SUMMARY],
     { method: 'get', url: 'dividends/summary' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      // Ответ приходит в snake_case — приводим к виду, привычному странице.
+      select: (res: any) => mapDividendsSummary(res.data?.data ?? res.data),
       defaultData: {
         netProfit: 0,
         totalPaidOut: 0,
@@ -66,10 +71,7 @@ export function useDividendPayouts(props?: any) {
     [t.DIVIDENDS_PAYOUTS],
     { method: 'get', url: 'dividends/payouts' },
     {
-      select: (res: any) => {
-        const payload = res.data?.data ?? res.data;
-        return payload?.payouts ?? [];
-      },
+      select: (res: any) => mapDividendPayouts(res.data?.data ?? res.data),
       defaultData: [],
       ...props,
     },

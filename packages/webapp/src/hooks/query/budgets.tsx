@@ -7,6 +7,11 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import {
+  mapBudget,
+  mapBudgets,
+  mapPlanFact,
+} from '@/containers/Budgets/mapBudget';
 
 export interface BudgetValues {
   name: string;
@@ -34,7 +39,8 @@ export function useBudgets(props?: any) {
   return useRequestQuery(
     [t.BUDGETS],
     { method: 'get', url: 'budgets' },
-    { select: (res: any) => res.data.data, defaultData: [], ...props },
+    // Ответы приходят в snake_case — приводим к виду, привычному страницам.
+    { select: (res: any) => mapBudgets(res.data.data), defaultData: [], ...props },
   );
 }
 
@@ -42,7 +48,7 @@ export function useBudget(id: number | string, props?: any) {
   return useRequestQuery(
     [t.BUDGET, id],
     { method: 'get', url: `budgets/${id}` },
-    { select: (res: any) => res.data, defaultData: {}, ...props },
+    { select: (res: any) => mapBudget(res.data), defaultData: {}, ...props },
   );
 }
 
@@ -54,7 +60,7 @@ export function useBudgetPlanFact(
   return useRequestQuery(
     [t.BUDGET_PLAN_FACT, id, query],
     { method: 'get', url: `budgets/${id}/plan-fact`, params: query },
-    { select: (res: any) => res.data, defaultData: { rows: [] }, ...props },
+    { select: (res: any) => mapPlanFact(res.data), defaultData: { rows: [] }, ...props },
   );
 }
 

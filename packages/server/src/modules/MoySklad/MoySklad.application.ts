@@ -7,6 +7,11 @@ import {
   MoyskladProduct,
   MoyskladSale,
 } from './mapMoysklad';
+import {
+  ImportMoyskladProductsService,
+  MoyskladImportPreview,
+  MoyskladImportResult,
+} from './commands/ImportMoyskladProducts.service';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
 import { Features } from '@/common/types/Features';
 
@@ -25,6 +30,7 @@ export class MoySkladApplication {
     private readonly featuresManager: FeaturesManager,
     private readonly settings: MoyskladSettingsService,
     private readonly api: MoyskladApiService,
+    private readonly importProducts: ImportMoyskladProductsService,
   ) {}
 
   /** Статус подключения (для UI). */
@@ -62,6 +68,18 @@ export class MoySkladApplication {
       products: productsRaw.map(mapMoyskladProduct),
       sales: salesRaw.map(mapMoyskladSale),
     };
+  }
+
+  /** Что даст импорт товаров: сколько создастся/обновится и образец строк. */
+  public async importPreview(): Promise<MoyskladImportPreview> {
+    await this.assertEnabled();
+    return this.importProducts.preview();
+  }
+
+  /** Переносит справочник товаров МойСклад в карточки Bigfin. */
+  public async import(): Promise<MoyskladImportResult> {
+    await this.assertEnabled();
+    return this.importProducts.import();
   }
 
   private async assertEnabled(): Promise<void> {

@@ -27,6 +27,20 @@ export class MoySkladController {
     return this.app.preview();
   }
 
+  @Get('import/preview')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Что даст импорт товаров из МойСклад.' })
+  importPreview() {
+    return this.app.importPreview();
+  }
+
+  @Post('import')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({ summary: 'Импортировать товары МойСклад с себестоимостью.' })
+  import() {
+    return this.app.import();
+  }
+
   @Post('connect')
   @RequirePermission('manage', 'all')
   @ApiOperation({ summary: 'Подключить МойСклад по токену (только админ).' })

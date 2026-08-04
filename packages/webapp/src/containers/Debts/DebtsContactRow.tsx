@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useContactDebts, useRemindDebtor } from '@/hooks/query/debts';
 import { RepaymentPlanDialog } from './RepaymentPlanDialog';
+import { formatShortDate } from '@/utils/formatShortDate';
 
 const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
 
@@ -66,7 +67,8 @@ export function DebtsContactRow({ contact, side }: Props) {
               className="flex items-center justify-between text-sm"
             >
               <span>
-                {intl.get('debts.doc', { number: d.number })} · {d.dueDate}
+                {intl.get('debts.doc', { number: d.number })} ·{' '}
+                {formatShortDate(d.dueDate)}
                 {d.overdueDays > 0 && (
                   <span className="text-red-600">
                     {' '}

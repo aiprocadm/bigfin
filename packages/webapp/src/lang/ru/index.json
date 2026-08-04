@@ -3809,5 +3809,13 @@
   "marketplaces.ozon.connected": "Ozon подключён.",
   "marketplaces.ozon.hint": "Создайте API-ключ в кабинете продавца Ozon (Настройки → API-ключи) и вставьте сюда Client-Id и ключ.",
   "marketplaces.ozon.client_id": "Client-Id",
-  "marketplaces.ozon.api_key": "Api-Key"
+  "marketplaces.ozon.api_key": "Api-Key",
+  "moysklad.import.title": "Импорт товаров",
+  "moysklad.import.hint": "Переносит список товаров из МойСклад в карточки Bigfin вместе с себестоимостью. Повторный импорт обновляет карточки, а не создаёт дубликаты.",
+  "moysklad.import.summary": "Будет создано: {toCreate}, обновлено: {toUpdate}.",
+  "moysklad.import.sample": "Что приедет",
+  "moysklad.import.action.check": "Проверить",
+  "moysklad.import.action.run": "Импортировать",
+  "moysklad.import.success": "Импорт завершён. Создано: {created}, обновлено: {updated}.",
+  "moysklad.import.error": "Не удалось импортировать товары из МойСклад"
 }

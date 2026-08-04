@@ -10,6 +10,8 @@ import {
   useMoyskladPreview,
   useConnectMoysklad,
   useDisconnectMoysklad,
+  useMoyskladImportPreview,
+  useMoyskladImport,
   MoyskladProduct,
   MoyskladSale,
 } from '@/hooks/query/moysklad';
@@ -18,8 +20,9 @@ const money = (v: number): string =>
   new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(v ?? 0);
 
 /**
- * ㉛ Страница интеграции МойСклад: подключение по токену + превью товаров и
- * продаж (read-only). За флагом `moysklad`.
+ * ㉛ Страница интеграции МойСклад: подключение по токену, превью товаров и
+ * продаж, а также импорт справочника товаров с себестоимостью в карточки
+ * Bigfin. За флагом `moysklad`.
  */
 export default function MoySkladPage() {
   const { featureCan } = useFeatureCan();
@@ -95,6 +98,8 @@ export default function MoySkladPage() {
         )}
       </div>
 
+      {connected && <ImportBlock />}
+
       {connected && (
         <>
           <PreviewTable
@@ -114,6 +119,88 @@ export default function MoySkladPage() {
           />
         </>
       )}
+    </div>
+  );
+}
+
+/** Блок импорта: сначала «Проверить», потом «Импортировать». */
+function ImportBlock() {
+  const [checked, setChecked] = React.useState(false);
+  const { data: report, isFetching, refetch } = useMoyskladImportPreview({
+    enabled: false,
+  });
+  const run = useMoyskladImport();
+
+  const handleCheck = async () => {
+    try {
+      await refetch();
+      setChecked(true);
+    } catch {
+      toast.error(intl.get('moysklad.import.error'));
+    }
+  };
+
+  const handleImport = async () => {
+    try {
+      const res: any = await run.mutateAsync();
+      const data = res?.data?.data ?? res?.data ?? {};
+      toast.success(
+        intl.get('moysklad.import.success', {
+          created: data.created ?? 0,
+          updated: data.updated ?? 0,
+        }),
+      );
+      setChecked(false);
+    } catch {
+      toast.error(intl.get('moysklad.import.error'));
+    }
+  };
+
+  return (
+    <div className="flex max-w-3xl flex-col gap-3 rounded-md border p-4">
+      <div>
+        <h2 className="font-medium">{intl.get('moysklad.import.title')}</h2>
+        <p className="text-sm text-muted-foreground">
+          {intl.get('moysklad.import.hint')}
+        </p>
+      </div>
+
+      {checked && report && (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm">
+            {intl.get('moysklad.import.summary', {
+              toCreate: report.toCreate,
+              toUpdate: report.toUpdate,
+            })}
+          </p>
+          {report.sample.length > 0 && (
+            <PreviewTable
+              title={intl.get('moysklad.import.sample')}
+              cols={[
+                intl.get('moysklad.products.name'),
+                intl.get('moysklad.products.code'),
+                intl.get('moysklad.products.cost'),
+                intl.get('moysklad.products.sell'),
+              ]}
+              rows={report.sample.map((p: MoyskladProduct) => [
+                p.name,
+                p.code,
+                money(p.costPrice),
+                money(p.sellPrice),
+              ])}
+            />
+          )}
+        </div>
+      )}
+
+      <div className="flex justify-end gap-2">
+        <Button variant="secondary" onClick={handleCheck} disabled={isFetching}>
+          {intl.get('moysklad.import.action.check')}
+        </Button>
+        <Button onClick={handleImport} disabled={!checked || run.isLoading}>
+          {intl.get('moysklad.import.action.run')}
+        </Button>
+      </div>
     </div>
   );
 }

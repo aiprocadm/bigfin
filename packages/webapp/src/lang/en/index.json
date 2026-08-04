@@ -3809,5 +3809,13 @@
   "marketplaces.ozon.connected": "Ozon is connected.",
   "marketplaces.ozon.hint": "Create an API key in the Ozon seller account (Settings → API keys) and paste the Client-Id and the key here.",
   "marketplaces.ozon.client_id": "Client-Id",
-  "marketplaces.ozon.api_key": "Api-Key"
+  "marketplaces.ozon.api_key": "Api-Key",
+  "moysklad.import.title": "Import products",
+  "moysklad.import.hint": "Transfers the MoySklad product list into Bigfin cards together with cost price. A repeat import updates cards instead of creating duplicates.",
+  "moysklad.import.summary": "Will create: {toCreate}, will update: {toUpdate}.",
+  "moysklad.import.sample": "What will be imported",
+  "moysklad.import.action.check": "Check",
+  "moysklad.import.action.run": "Import",
+  "moysklad.import.success": "Import done. Created: {created}, updated: {updated}.",
+  "moysklad.import.error": "Could not import products from MoySklad"
 }

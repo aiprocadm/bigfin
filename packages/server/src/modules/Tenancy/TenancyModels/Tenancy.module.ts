@@ -67,6 +67,7 @@ import { MarketingChannel } from '@/modules/FinancialModel/models/MarketingChann
 import { MarketingMonthly } from '@/modules/FinancialModel/models/MarketingMonthly.model';
 import { CrmSyncLink } from '@/modules/CrmIntegration/models/CrmSyncLink.model';
 import { OnecImportLink } from '@/modules/OnecImport/models/OnecImportLink.model';
+import { MoyskladImportLink } from '@/modules/MoySklad/models/MoyskladImportLink.model';
 
 const models = [
   Item,
@@ -133,6 +134,7 @@ const models = [
   MarketingMonthly,
   CrmSyncLink,
   OnecImportLink,
+  MoyskladImportLink,
   TenantUser,
 ];
 

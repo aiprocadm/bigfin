@@ -5,14 +5,22 @@ import { MoySkladApplication } from './MoySklad.application';
 import { MoyskladSettingsService } from './MoyskladSettings.service';
 import { MoyskladApiService } from './MoyskladApi.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
+import { ItemsModule } from '@/modules/Items/Items.module';
+import { ImportMoyskladProductsService } from './commands/ImportMoyskladProducts.service';
 
 /**
- * ㉛ Интеграция МойСклад: pull-превью товаров и продаж (read-only). За флагом
- * `moysklad`. Финансовое отражение в ДДС/ОПиУ по статьям — следующий этап.
+ * ㉛ Интеграция МойСклад: pull-превью товаров и продаж плюс импорт справочника
+ * товаров с себестоимостью в карточки Bigfin. За флагом `moysklad`.
+ * Идемпотентность импорта — таблица `moysklad_import_links`.
  */
 @Module({
-  imports: [FeaturesModule],
+  imports: [FeaturesModule, ItemsModule],
   controllers: [MoySkladController],
-  providers: [MoySkladApplication, MoyskladSettingsService, MoyskladApiService],
+  providers: [
+    MoySkladApplication,
+    MoyskladSettingsService,
+    MoyskladApiService,
+    ImportMoyskladProductsService,
+  ],
 })
 export class MoySkladModule {}

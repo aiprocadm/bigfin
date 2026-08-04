@@ -5,5 +5,8 @@
   "previous_year_date": "{date} (ПГ)",
   "previous_year_change": "Изменение (ПГ)",
   "previous_year_percentage": "% изменения (ПГ)",
-  "total_row": "Итого {value}"
+  "total_row": "Итого {value}",
+  "date_range": "С {from} по {to}",
+  "date_range_to": "С {from} по {to}",
+  "as_date": "На {date}"
 }

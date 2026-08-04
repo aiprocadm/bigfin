@@ -183,11 +183,11 @@ export const financialReportMenus = [
     ],
   },
   {
-    sectionTitle: 'Taxes',
+    sectionTitle: <T id={'taxes'} />,
     reports: [
       {
-        title: 'Sales Tax Liability Summary',
-        desc: 'Reports the total amount of sales tax collected from customers',
+        title: <T id={'sales_tax_liability_summary_report'} />,
+        desc: <T id={'reports_the_total_amount_of_sales_tax_collected'} />,
         link: '/financial-reports/sales-tax-liability-summary',
         subject: AbilitySubject.Report,
         ability: ReportsAction.READ_SALES_TAX_LIABILITY_SUMMARY,

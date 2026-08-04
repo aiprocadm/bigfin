@@ -1,32 +1,28 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { ForecastDay } from './mapForecast';
+import { formatDay, isWeekend } from './formatDay';
 
-interface ForecastLine {
-  direction: 'inflow' | 'outflow';
-  amount: number;
-  label: string;
-  source: string;
-}
-interface Day {
-  date: string;
-  balance: number;
-  lines?: ForecastLine[];
-}
+const money = (amount: number): string =>
+  `${amount.toLocaleString('ru-RU')} ₽`;
 
-export function DayRow({ day }: { day: Day }) {
+export function DayRow({ day }: { day: ForecastDay }) {
   const negative = day.balance < 0;
+  const weekend = isWeekend(day.date);
+
   return (
-    <div className="border-b py-2">
+    <div className={`border-b py-2 ${weekend ? 'bg-muted/40' : ''}`}>
       <div
         className={`flex items-center justify-between px-2 ${
           negative ? 'text-red-600 font-semibold' : ''
         }`}
       >
-        <span>{day.date}</span>
+        <span className={weekend && !negative ? 'text-muted-foreground' : ''}>
+          {formatDay(day.date)}
+        </span>
         <span>
           {negative ? '🔴 ' : ''}
-          {intl.get('payment_calendar.balance')}:{' '}
-          {day.balance.toLocaleString('ru-RU')} ₽
+          {intl.get('payment_calendar.balance')}: {money(day.balance)}
         </span>
       </div>
       {(day.lines ?? []).map((line, i) => (
@@ -39,7 +35,7 @@ export function DayRow({ day }: { day: Day }) {
           <span>{line.label}</span>
           <span>
             {line.direction === 'inflow' ? '+' : '−'}
-            {line.amount.toLocaleString('ru-RU')}
+            {money(line.amount)}
           </span>
         </div>
       ))}

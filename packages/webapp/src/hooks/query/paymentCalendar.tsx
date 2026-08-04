@@ -7,6 +7,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { mapForecast } from '@/containers/PaymentCalendar/mapForecast';
 
 export interface PlannedOperationValues {
   direction: 'inflow' | 'outflow';
@@ -39,8 +40,9 @@ export function usePaymentCalendar(query?: any, props?: any) {
     [t.PAYMENT_CALENDAR_FORECAST, query],
     { method: 'get', url: 'payment-calendar', params: query },
     {
-      select: (res: any) => res.data,
-      defaultData: { days: [], gap: null },
+      // Ответ приходит в snake_case — приводим к виду, привычному странице.
+      select: (res: any) => mapForecast(res.data),
+      defaultData: { days: [], gap: null, openingBalance: 0, baseCurrency: 'RUB' },
       ...props,
     },
   );

@@ -7,6 +7,20 @@ import { useBudget, useUpsertBudgetLines } from '@/hooks/query/budgets';
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i); // 0..11
 
+/**
+ * Названия месяцев берём у браузера (`Intl`) на языке интерфейса: колонки
+ * «1…12» читаются плохо, а у moment русская локаль подключается отдельно.
+ */
+const monthLabel = (month: number): string => {
+  const current = intl.getInitOptions?.()?.currentLocale;
+  const locale =
+    current === 'en' ? 'en-US' : current === 'ar' ? 'ar' : 'ru-RU';
+
+  return new Intl.DateTimeFormat(locale, { month: 'short' }).format(
+    new Date(Date.UTC(2000, month, 1)),
+  );
+};
+
 const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
 
 const periodOf = (year: number, monthIdx: number) =>
@@ -140,7 +154,7 @@ export function BudgetGrid({
               </th>
               {MONTHS.map((m) => (
                 <th key={m} className="px-2 py-1 text-right">
-                  {m + 1}
+                  {monthLabel(m)}
                 </th>
               ))}
               <th className="px-2 py-1 text-right">

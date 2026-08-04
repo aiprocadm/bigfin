@@ -25,21 +25,32 @@ export class UpsertBudgetLinesService {
   public async upsert(budgetId: number, dto: UpsertBudgetLinesDto) {
     await this.validator.validateBudgetExists(budgetId);
 
+    const now = new Date();
     const rows = dto.lines.map((l) => ({
       budgetId,
       articleId: l.articleId,
       period: l.period,
       scenario: l.scenario,
       plannedAmount: l.plannedAmount,
+      createdAt: now,
+      updatedAt: now,
     }));
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       if (rows.length === 0) return [];
-      return this.lineModel()
-        .query(trx)
+
+      // Пишем через knex, а не через модель: вставку СПИСКА строк Objection
+      // умеет только в PostgreSQL и SQL Server («batch insert only works
+      // with Postgresql and SQL Server»), а у нас MySQL — сохранение сетки
+      // бюджета падало с 500. Knex же собирает мультивставку с
+      // `ON DUPLICATE KEY UPDATE` по уникальному ключу ячейки.
+      // Отметки времени проставляем сами: минуя модель, её хуки не сработают.
+      await trx(BudgetLine.tableName)
         .insert(rows)
         .onConflict(['budgetId', 'articleId', 'period', 'scenario'])
         .merge(['plannedAmount', 'updatedAt']);
+
+      return rows.length;
     });
   }
 }

@@ -7,6 +7,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface ManagementArticleValues {
   name: string;
@@ -35,7 +36,7 @@ export function useManagementArticles(query?: any, props?: any) {
     [t.MANAGEMENT_ARTICLES, query],
     { method: 'get', url: 'management-articles', params: query },
     {
-      select: (res: any) => res.data.data,
+      select: (res: any) => unwrapData(res),
       defaultData: [],
       ...props,
     },

@@ -12,6 +12,7 @@ import {
   mapBudgets,
   mapPlanFact,
 } from '@/containers/Budgets/mapBudget';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface BudgetValues {
   name: string;
@@ -40,7 +41,7 @@ export function useBudgets(props?: any) {
     [t.BUDGETS],
     { method: 'get', url: 'budgets' },
     // Ответы приходят в snake_case — приводим к виду, привычному страницам.
-    { select: (res: any) => mapBudgets(res.data.data), defaultData: [], ...props },
+    { select: (res: any) => mapBudgets(unwrapData(res)), defaultData: [], ...props },
   );
 }
 

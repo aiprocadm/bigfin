@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface PaymentRequestValues {
   amount: number;
@@ -30,7 +31,7 @@ export function usePaymentRequests(query?: any, props?: any) {
   return useRequestQuery(
     [t.PAYMENT_REQUESTS, query],
     { method: 'get', url: 'payment-requests', params: query },
-    { select: (res: any) => res.data.data, defaultData: [], ...props },
+    { select: (res: any) => unwrapData(res), defaultData: [], ...props },
   );
 }
 

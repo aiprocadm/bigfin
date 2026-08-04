@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface DealValues {
   name: string;
@@ -30,7 +31,7 @@ export function useDeals(query?: any, props?: any) {
   return useRequestQuery(
     [t.DEALS, query],
     { method: 'get', url: 'deals', params: query },
-    { select: (res: any) => res.data.data, defaultData: [], ...props },
+    { select: (res: any) => unwrapData(res), defaultData: [], ...props },
   );
 }
 

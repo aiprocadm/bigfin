@@ -8,6 +8,7 @@ import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
 import { mapForecast } from '@/containers/PaymentCalendar/mapForecast';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface PlannedOperationValues {
   direction: 'inflow' | 'outflow';
@@ -54,7 +55,7 @@ export function usePlannedOperations(query?: any, props?: any) {
     [t.PLANNED_OPERATIONS, query],
     { method: 'get', url: 'payment-calendar/planned-operations', params: query },
     {
-      select: (res: any) => res.data.data,
+      select: (res: any) => unwrapData(res),
       defaultData: [],
       ...props,
     },

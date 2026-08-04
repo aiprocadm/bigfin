@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface CostAllocationRuleValues {
   name: string;
@@ -29,7 +30,7 @@ export function useCostAllocationRules(query?: any, props?: any) {
   return useRequestQuery(
     [t.COST_ALLOCATION_RULES, query],
     { method: 'get', url: 'cost-allocation-rules', params: query },
-    { select: (res: any) => res.data.data, defaultData: [], ...props },
+    { select: (res: any) => unwrapData(res), defaultData: [], ...props },
   );
 }
 

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useDealStages, useDeleteStage } from '@/hooks/query/dealStages';
 import { DealStageDialog } from './DealStageDialog';
+import { formatShortDate } from '@/utils/formatShortDate';
 
 const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
 const pct = (n: number) => `${Math.round((n ?? 0) * 100)}%`;
@@ -75,7 +76,7 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
                 <span className="font-medium">{s.name}</span>
                 <span className="text-muted-foreground">
                   {intl.get(`deal_stages.status.${s.status}`)}
-                  {s.closedDate ? ` · ${s.closedDate}` : ''} · {fmt(s.plannedRevenue)} → {fmt(s.plannedCost)}
+                  {s.closedDate ? ` · ${formatShortDate(s.closedDate)}` : ''} · {fmt(s.plannedRevenue)} → {fmt(s.plannedCost)}
                 </span>
               </div>
               <div className="flex items-center gap-2">

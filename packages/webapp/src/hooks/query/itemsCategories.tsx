@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 const commonInvalidateQueries = (queryClient) => {
   // Invalidate items categories.
@@ -70,7 +71,7 @@ export function useDeleteItemCategory(props) {
 }
 
 const transformCategories = (res) => ({
-  itemsCategories: res.data.data,
+  itemsCategories: unwrapData(res),
   pagination: res.data.pagination,
 });
 

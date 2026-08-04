@@ -3817,5 +3817,8 @@
   "moysklad.import.action.check": "Check",
   "moysklad.import.action.run": "Import",
   "moysklad.import.success": "Import done. Created: {created}, updated: {updated}.",
-  "moysklad.import.error": "Could not import products from MoySklad"
+  "moysklad.import.error": "Could not import products from MoySklad",
+  "sales_tax_liability_summary_report": "Sales Tax Liability Summary",
+  "reports_the_total_amount_of_sales_tax_collected": "Reports the total amount of sales tax collected from customers",
+  "taxes": "Taxes"
 }

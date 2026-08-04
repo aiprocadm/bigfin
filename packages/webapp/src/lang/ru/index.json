@@ -1348,7 +1348,7 @@
   "manage_manual_journal_transactions_on_accounts": "Управляйте ручными проводками по счетам, центрам затрат и проектам.",
   "track_your_indirect_expenses_under_specific_categories": "Учитывайте косвенные расходы по категориям: зарплата, аренда и т. п.",
   "financial_statements": "Финансовая отчётность",
-  "show_financial_reports_about_your_organization": "Show financial reports about your organization to summarize your business’s financial performance.",
+  "show_financial_reports_about_your_organization": "Смотрите финансовые отчёты по вашей организации — они показывают, как идут дела в бизнесе.",
   "products_services": "Товары и услуги",
   "manage_your_products_inventory_or_non_inventory": "Управляйте товарами (со складом или без) и услугами, группируйте их по категориям.",
   "products_services_categories": "Категории товаров и услуг",
@@ -3817,5 +3817,8 @@
   "moysklad.import.action.check": "Проверить",
   "moysklad.import.action.run": "Импортировать",
   "moysklad.import.success": "Импорт завершён. Создано: {created}, обновлено: {updated}.",
-  "moysklad.import.error": "Не удалось импортировать товары из МойСклад"
+  "moysklad.import.error": "Не удалось импортировать товары из МойСклад",
+  "sales_tax_liability_summary_report": "Сводка по налогу с продаж",
+  "reports_the_total_amount_of_sales_tax_collected": "Показывает, сколько налога с продаж собрано с клиентов.",
+  "taxes": "Налоги"
 }

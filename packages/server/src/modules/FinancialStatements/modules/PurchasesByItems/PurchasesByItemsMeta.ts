@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { I18nService } from 'nestjs-i18n';
 import { Injectable } from '@nestjs/common';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
 import {
@@ -10,6 +11,7 @@ import {
 export class PurchasesByItemsMeta {
   constructor(
     private financialSheetMetaModel: FinancialSheetMeta,
+    private readonly i18n: I18nService,
   ) {}
 
   /**
@@ -18,12 +20,16 @@ export class PurchasesByItemsMeta {
    * @returns {IPurchasesByItemsSheetMeta}
    */
   public async meta(
-    query: IPurchasesByItemsReportQuery
+    query: IPurchasesByItemsReportQuery,
   ): Promise<IPurchasesByItemsSheetMeta> {
     const commonMeta = await this.financialSheetMetaModel.meta();
     const formattedToDate = moment(query.toDate).format(commonMeta.dateFormat);
-    const formattedFromDate = moment(query.fromDate).format(commonMeta.dateFormat);
-    const formattedDateRange = `From ${formattedFromDate} | To ${formattedToDate}`;
+    const formattedFromDate = moment(query.fromDate).format(
+      commonMeta.dateFormat,
+    );
+    const formattedDateRange = this.i18n.t('financial_sheet.date_range', {
+      args: { from: formattedFromDate, to: formattedToDate },
+    });
 
     return {
       ...commonMeta,

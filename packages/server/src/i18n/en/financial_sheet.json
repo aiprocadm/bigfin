@@ -5,5 +5,8 @@
   "previous_year_date": "{date} (PY)",
   "previous_year_change": "Change (PY)",
   "previous_year_percentage": "% Change (PY)",
-  "total_row": "Total {value}"
+  "total_row": "Total {value}",
+  "date_range": "From {from} | To {to}",
+  "date_range_to": "From {from} to {to}",
+  "as_date": "As {date}"
 }

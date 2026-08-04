@@ -43,3 +43,6 @@ test-results/
 /tools/
 # Локальные логи dev-запуска (npm run dev пишет их в пакеты)
 *.log
+
+# Служебные снимки Playwright MCP (локальная отладка)
+.playwright-mcp/

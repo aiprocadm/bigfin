@@ -7,8 +7,18 @@ export const MOYSKLAD_ERRORS = {
   API_ERROR: 'MOYSKLAD_API_ERROR',
 };
 
-const BASE = 'https://api.moysklad.ru/api/remap/1.2';
+const DEFAULT_BASE = 'https://api.moysklad.ru/api/remap/1.2';
 const REQUEST_TIMEOUT_MS = 15000;
+/** Ограничение МойСклад на размер страницы. */
+const PAGE_SIZE = 100;
+/** Предохранитель от бесконечного обхода, если API вернёт странную разметку. */
+const MAX_PAGES = 200;
+
+/**
+ * Адрес API читается ВНУТРИ вызова, а не на уровне модуля: переменные из .env
+ * подгружаются позже импорта модулей, и константа получила бы пустое значение.
+ */
+const baseUrl = (): string => process.env.MOYSKLAD_API_BASE || DEFAULT_BASE;
 
 /**
  * Тонкий клиент JSON API МойСклад (remap/1.2) с токеном (Bearer). Прямой axios.
@@ -27,13 +37,39 @@ export class MoyskladApiService {
     entity: 'product' | 'demand',
     limit = 100,
   ): Promise<any[]> {
-    const data = await this.call(`${BASE}/entity/${entity}?limit=${limit}`, token);
+    const data = await this.call(
+      `${baseUrl()}/entity/${entity}?limit=${limit}`,
+      token,
+    );
     return Array.isArray(data?.rows) ? data.rows : [];
+  }
+
+  /**
+   * Все строки сущности постранично — для импорта справочника целиком.
+   * Превью обходится первой страницей, импорту нужен весь список.
+   */
+  public async listAll(
+    token: string,
+    entity: 'product' | 'demand',
+  ): Promise<any[]> {
+    const all: any[] = [];
+
+    for (let page = 0; page < MAX_PAGES; page += 1) {
+      const url = `${baseUrl()}/entity/${entity}?limit=${PAGE_SIZE}&offset=${
+        page * PAGE_SIZE
+      }`;
+      const data = await this.call(url, token);
+      const rows = Array.isArray(data?.rows) ? data.rows : [];
+      all.push(...rows);
+
+      if (rows.length < PAGE_SIZE) break;
+    }
+    return all;
   }
 
   /** Лёгкая проверка токена (одна запись). Бросит INVALID_TOKEN при 401/403. */
   public async ping(token: string): Promise<void> {
-    await this.call(`${BASE}/entity/product?limit=1`, token);
+    await this.call(`${baseUrl()}/entity/product?limit=1`, token);
   }
 
   private async call(url: string, token: string): Promise<any> {

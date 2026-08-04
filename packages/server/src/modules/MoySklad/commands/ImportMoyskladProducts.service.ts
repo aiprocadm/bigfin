@@ -123,7 +123,7 @@ export class ImportMoyskladProductsService {
     const token = await this.settings.getToken();
     if (!token) return [];
 
-    const raw = await this.api.list(token, 'product');
+    const raw = await this.api.listAll(token, 'product');
     return (raw ?? []).map(mapMoyskladProduct);
   }
 

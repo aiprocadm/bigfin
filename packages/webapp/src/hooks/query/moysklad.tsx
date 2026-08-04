@@ -43,17 +43,26 @@ export interface MoyskladImportResult {
 const invalidateStatus = (c: QueryClient) => c.invalidateQueries(STATUS_KEY);
 
 /** Ответы API приходят в snake_case — приводим к виду, привычному фронту. */
+const toProduct = (p: any): MoyskladProduct => ({
+  externalId: p.external_id ?? p.externalId,
+  name: p.name,
+  code: p.code,
+  sellPrice: p.sell_price ?? p.sellPrice ?? 0,
+  costPrice: p.cost_price ?? p.costPrice ?? 0,
+});
+
+const toSale = (s: any): MoyskladSale => ({
+  externalId: s.external_id ?? s.externalId,
+  name: s.name,
+  amount: s.amount ?? 0,
+  date: s.date ?? null,
+});
+
 const toImportPreview = (raw: any): MoyskladImportPreview => ({
   toCreate: raw?.to_create ?? raw?.toCreate ?? 0,
   toUpdate: raw?.to_update ?? raw?.toUpdate ?? 0,
   skipped: raw?.skipped ?? 0,
-  sample: (raw?.sample ?? []).map((p: any) => ({
-    externalId: p.external_id ?? p.externalId,
-    name: p.name,
-    code: p.code,
-    sellPrice: p.sell_price ?? p.sellPrice ?? 0,
-    costPrice: p.cost_price ?? p.costPrice ?? 0,
-  })),
+  sample: (raw?.sample ?? []).map(toProduct),
 });
 
 /** Статус подключения МойСклад. */
@@ -75,7 +84,13 @@ export function useMoyskladPreview(props?: any) {
     ['moysklad_preview'],
     { method: 'get', url: 'moysklad/preview' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => {
+        const raw = res.data?.data ?? res.data;
+        return {
+          products: (raw?.products ?? []).map(toProduct),
+          sales: (raw?.sales ?? []).map(toSale),
+        };
+      },
       defaultData: { products: [], sales: [] },
       ...props,
     },

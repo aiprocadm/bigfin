@@ -14,7 +14,7 @@ function makeDeps(products: any[], existing: { links?: any[]; items?: any[] } = 
   const links = [...(existing.links ?? [])];
   const items = [...(existing.items ?? [])];
 
-  const api = { list: jest.fn().mockResolvedValue(products) };
+  const api = { listAll: jest.fn().mockResolvedValue(products) };
   const settings = { getToken: jest.fn().mockResolvedValue('TOKEN') };
 
   const query = (rows: any[]) => ({
@@ -89,7 +89,7 @@ describe('ImportMoyskladProductsService.preview', () => {
     const report = await deps.service.preview();
 
     expect(report).toMatchObject({ toCreate: 0, toUpdate: 0 });
-    expect(deps.api.list).not.toHaveBeenCalled();
+    expect(deps.api.listAll).not.toHaveBeenCalled();
   });
 });
 

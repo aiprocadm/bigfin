@@ -8,6 +8,10 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import {
+  mapDebtsOverview,
+  mapDebtDocuments,
+} from '@/containers/Debts/mapDebts';
 
 export interface InstallmentInput {
   dueDate: string;
@@ -40,7 +44,8 @@ export function useDebtsOverview(query?: any, props?: any) {
   return useRequestQuery(
     [t.DEBTS_OVERVIEW, query],
     { method: 'get', url: 'debts/overview', params: query },
-    { select: (res: any) => res.data, defaultData: {}, ...props },
+    // Ответы приходят в snake_case — приводим к виду, привычному странице.
+    { select: (res: any) => mapDebtsOverview(res.data), defaultData: {}, ...props },
   );
 }
 
@@ -50,7 +55,7 @@ export function useContactDebts(contactId: number, query?: any, props?: any) {
     [t.DEBTS_CONTACT, contactId, query],
     { method: 'get', url: `debts/contact/${contactId}`, params: query },
     {
-      select: (res: any) => res.data,
+      select: (res: any) => mapDebtDocuments(res.data),
       defaultData: [],
       enabled: !!contactId,
       ...props,

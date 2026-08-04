@@ -21,7 +21,10 @@ export default function DebtsPage() {
   const { featureCan } = useFeatureCan();
   const [side, setSide] = React.useState<Side>('receivable');
 
-  const { data: overview } = useDebtsOverview({ side }, {});
+  // Обзор запрашиваем целиком, без фильтра стороны: странице нужны обе
+  // (переключатель рисуется на клиенте), а «нетто» сервер считает только
+  // когда знает и дебиторку, и кредиторку — с фильтром оно не приходило вовсе.
+  const { data: overview } = useDebtsOverview({}, {});
   const { data: plans } = useRepaymentPlans({ side }, {});
 
   if (!featureCan('debts')) return null;

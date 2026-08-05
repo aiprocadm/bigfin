@@ -17,6 +17,7 @@ import { LegalForm, TaxRegime } from '../../RussianLegalAttributes/constants';
 import { InnConstraint } from '../../RussianLegalAttributes/validators/inn.validator';
 import { KppConstraint } from '../../RussianLegalAttributes/validators/kpp.validator';
 import { BikConstraint } from '../../RussianLegalAttributes/validators/bik.validator';
+import { OgrnAnyConstraint } from '../../RussianLegalAttributes/validators/ogrnAny.validator';
 import {
   BankAccountConstraint,
   CorrespondentAccountConstraint,
@@ -243,13 +244,11 @@ export class UpdateOrganizationDto {
   })
   kpp?: string;
 
-  // OGRN (13 digits) or OGRNIP (15 digits) share this column. Length check only —
-  // full checksum (OgrnConstraint / OgrnipConstraint by length) is backlog.
+  // ОГРН (13 цифр) и ОГРНИП (15) лежат в одной колонке. Проверяем не только
+  // длину, но и контрольную цифру: опечатка уезжает в счёт и УПД.
   @IsOptional()
   @IsString()
-  @Matches(/^\d{13}$|^\d{15}$/, {
-    message: 'ogrn must be 13 digits (OGRN) or 15 digits (OGRNIP)',
-  })
+  @Validate(OgrnAnyConstraint)
   @ApiPropertyOptional({
     description: 'OGRN (13 digits) or OGRNIP (15 digits)',
     example: '1027700132195',

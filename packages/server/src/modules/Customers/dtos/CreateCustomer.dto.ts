@@ -6,10 +6,14 @@ import {
   IsString,
   MaxLength,
   ValidateIf,
+  Validate,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
 import { ContactAddressDto } from './ContactAddress.dto';
+import { InnConstraint } from '@/modules/RussianLegalAttributes/validators/inn.validator';
+import { KppConstraint } from '@/modules/RussianLegalAttributes/validators/kpp.validator';
+import { OgrnAnyConstraint } from '@/modules/RussianLegalAttributes/validators/ogrnAny.validator';
 
 export class CreateCustomerDto extends ContactAddressDto {
   @ApiProperty({
@@ -173,6 +177,9 @@ export class CreateCustomerDto extends ContactAddressDto {
   })
   @IsOptional()
   @IsString()
+  // Реквизиты контрагента уезжают в счёт, акт и УПД: опечатка делает
+  // первичный документ дефектным, поэтому проверяем контрольную сумму.
+  @Validate(InnConstraint)
   inn?: string;
 
   // Российские юр.реквизиты контрагента (②a/②c).
@@ -190,6 +197,7 @@ export class CreateCustomerDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(9)
+  @Validate(KppConstraint)
   kpp?: string;
 
   @ApiProperty({
@@ -200,6 +208,7 @@ export class CreateCustomerDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(15)
+  @Validate(OgrnAnyConstraint)
   ogrn?: string;
 
   @ApiProperty({ required: false, description: 'Bank name' })

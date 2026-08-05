@@ -11,6 +11,7 @@ import useApiRequest from '../useRequest';
 import { transformPagination, transformToCamelCase } from '@/utils';
 import { useRequestPdf } from '../useRequestPdf';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 const commonInvalidateQueries = (queryClient) => {
   // Invalidate receipts.
@@ -166,7 +167,7 @@ export function useCloseReceipt(props) {
 }
 
 const transformReceipts = (res) => ({
-  receipts: res.data.data,
+  receipts: unwrapData(res),
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
 });

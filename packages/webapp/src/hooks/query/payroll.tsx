@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 export interface EmployeeValues {
   fullName: string;
@@ -49,7 +50,7 @@ export function useEmployees(query?: any, props?: any) {
   return useRequestQuery(
     [t.PAYROLL_EMPLOYEES, query],
     { method: 'get', url: 'payroll/employees', params: query },
-    { select: (res: any) => res.data.data ?? res.data, defaultData: [], ...props },
+    { select: (res: any) => unwrapData(res) ?? res.data, defaultData: [], ...props },
   );
 }
 
@@ -91,7 +92,7 @@ export function usePayrollRuns(query?: any, props?: any) {
   return useRequestQuery(
     [t.PAYROLL_RUNS, query],
     { method: 'get', url: 'payroll/runs', params: query },
-    { select: (res: any) => res.data.data ?? res.data, defaultData: [], ...props },
+    { select: (res: any) => unwrapData(res) ?? res.data, defaultData: [], ...props },
   );
 }
 
@@ -175,7 +176,7 @@ export function usePayrollTaxesSummary(year: number, props?: any) {
   return useRequestQuery(
     [t.PAYROLL_TAXES_SUMMARY, year],
     { method: 'get', url: 'payroll/taxes-summary', params: { year } },
-    { select: (res: any) => res.data.data ?? res.data, defaultData: [], ...props },
+    { select: (res: any) => unwrapData(res) ?? res.data, defaultData: [], ...props },
   );
 }
 

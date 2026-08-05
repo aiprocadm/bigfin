@@ -4,6 +4,7 @@ import { transformPagination } from '@/utils';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { unwrapData } from '@/utils/unwrapData';
 
 // Common invalidate queries.
 const commonInvalidateQueries = (queryClient) => {
@@ -76,7 +77,7 @@ export function useDeleteWarehouseTransfer(props) {
 }
 
 const transformWarehousesTransfer = (res) => ({
-  warehousesTransfers: res.data.data,
+  warehousesTransfers: unwrapData(res),
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter,
 });
@@ -113,7 +114,7 @@ export function useWarehouseTransfer(id, props, requestProps) {
     [t.WAREHOUSE_TRANSFER, id],
     { method: 'get', url: `warehouse-transfers/${id}`, ...requestProps },
     {
-      select: (res) => res.data.data,
+      select: (res) => unwrapData(res),
       defaultData: {},
       ...props,
     },

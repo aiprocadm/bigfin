@@ -26,3 +26,21 @@ export const formatShortDate = (date: string | null | undefined): string => {
     year: 'numeric',
   }).format(parsed);
 };
+
+/**
+ * «июль 2026 г.» — месяц периода: начисления зарплаты, налоги с ФОТ.
+ * Принимает и «2026-07», и полную дату.
+ */
+export const formatMonth = (value: string | null | undefined): string => {
+  if (!value) return '—';
+
+  const raw = String(value).slice(0, 10);
+  const iso = /^\d{4}-\d{2}$/.test(raw) ? `${raw}-01` : raw;
+  const parsed = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return String(value);
+
+  return new Intl.DateTimeFormat(uiLocale(), {
+    month: 'long',
+    year: 'numeric',
+  }).format(parsed);
+};

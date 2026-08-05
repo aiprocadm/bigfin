@@ -15,6 +15,7 @@ import { PayrollRunDialog } from './PayrollRunDialog';
 import { PayrollSettingsDialog } from './PayrollSettingsDialog';
 import { PayrollRunDetail } from './PayrollRunDetail';
 import { PayrollKpiTab } from './PayrollKpiTab';
+import { formatMonth } from '@/utils/formatShortDate';
 
 type TabKey = 'runs' | 'employees' | 'kpi';
 
@@ -140,16 +141,7 @@ export default function PayrollPage() {
               >
                 <div className="flex flex-col">
                   <span className="font-medium">
-                    {(() => {
-                      try {
-                        return new Intl.DateTimeFormat('ru-RU', {
-                          month: 'long',
-                          year: 'numeric',
-                        }).format(new Date(r.periodMonth));
-                      } catch {
-                        return r.periodMonth;
-                      }
-                    })()}
+                    {formatMonth(r.periodMonth)}
                   </span>
                   <span className="text-muted-foreground">
                     {intl.get(`payroll.status.${r.status}`)}
@@ -216,7 +208,7 @@ export default function PayrollPage() {
                   <tbody>
                     {taxRows.map((row) => (
                       <tr key={row.month} className="border-b last:border-0">
-                        <td className="px-4 py-2">{row.month}</td>
+                        <td className="px-4 py-2">{formatMonth(row.month)}</td>
                         <td className="px-4 py-2">{fmt(row.ndfl)}</td>
                         <td className="px-4 py-2">{fmt(row.contributions)}</td>
                         <td className="px-4 py-2">{fmt(row.total)}</td>

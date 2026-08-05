@@ -43,9 +43,12 @@ export class ZenmoneyImportService {
     const token = await this.settings.getToken();
     if (!token) throw new ServiceError('ZENMONEY_NOT_CONNECTED');
 
-    const transactions = await this.api.getTransactions(token);
+    // Продолжаем с прошлой метки: заново тянуть годы операций незачем.
+    const since = await this.settings.getServerTimestamp();
+    const diff = await this.api.getTransactions(token, since);
+    const transactions = diff.transactions;
 
-    return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+    const result = await this.uow.withTransaction(async (trx: Knex.Transaction) => {
       let imported = 0;
       let skipped = 0;
 
@@ -84,5 +87,12 @@ export class ZenmoneyImportService {
       }
       return { imported, skipped };
     });
+
+    // Метку двигаем только после успешной записи: если импорт упал,
+    // следующая попытка заберёт тот же кусок, а не пропустит его.
+    if (diff.serverTimestamp > 0) {
+      await this.settings.setServerTimestamp(diff.serverTimestamp);
+    }
+    return result;
   }
 }

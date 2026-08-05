@@ -3,6 +3,7 @@ import intl from 'react-intl-universal';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2 } from 'lucide-react';
 import { ManagementArticle } from './schemas';
+import { buildArticleSummary } from './articleSummary';
 
 interface ArticleTreeProps {
   nodes: ManagementArticle[];
@@ -28,9 +29,25 @@ export function ArticleTree({
           >
             <span className="flex items-center gap-2">
               <span className="font-medium">{node.name}</span>
-              <span className="text-xs text-muted-foreground">
-                {intl.get(`management_articles.kind.${node.kind}`) || node.kind}
-              </span>
+              {(() => {
+                const summary = buildArticleSummary(node as any);
+                return (
+                  <>
+                    <span className="text-xs text-muted-foreground">
+                      {summary.parts.join(' · ')}
+                    </span>
+                    <span
+                      className={
+                        summary.needsAccounts
+                          ? 'text-xs text-amber-600'
+                          : 'text-xs text-muted-foreground'
+                      }
+                    >
+                      {summary.accountsLabel}
+                    </span>
+                  </>
+                );
+              })()}
             </span>
             <span className="flex items-center gap-1">
               <Button

@@ -22,6 +22,7 @@ import {
   liabilityAccountTypeForTerm,
 } from '../constants';
 import { CreateCreditDto } from '../dtos/Credit.dto';
+import { insertMany } from '@/utils/insert-many';
 
 /**
  * Регистрирует кредит: создаёт счёт-обязательство, строит график платежей,
@@ -147,23 +148,25 @@ export class CreateCreditService {
         .findById(credit.id)
         .withGraphFetched('installments');
 
-      // Планируем операции в платёжном календаре.
-      await this.plannedOperationModel()
-        .query(trx)
-        .insert(
-          fresh.installments.map((inst: any) => ({
-            direction: 'outflow',
-            amount: inst.paymentAmount,
-            currencyCode,
-            plannedDate: inst.dueDate,
-            articleId: null,
-            accountId: dto.paymentAccountId,
-            status: 'planned',
-            sourceType: 'CreditInstallment',
-            sourceId: inst.id,
-            description: dto.name,
-          })) as any,
-        );
+      // Планируем операции в платёжном календаре. Пишем через knex: список
+      // строк Objection вставляет только в PostgreSQL/SQL Server, а у нас
+      // MySQL — кредит просто не создавался (500 на весь запрос).
+      await insertMany(
+        trx,
+        PlannedOperation.tableName,
+        fresh.installments.map((inst: any) => ({
+          direction: 'outflow',
+          amount: inst.paymentAmount,
+          currencyCode,
+          plannedDate: inst.dueDate,
+          articleId: null,
+          accountId: dto.paymentAccountId,
+          status: 'planned',
+          sourceType: 'CreditInstallment',
+          sourceId: inst.id,
+          description: dto.name,
+        })),
+      );
 
       return fresh;
     });

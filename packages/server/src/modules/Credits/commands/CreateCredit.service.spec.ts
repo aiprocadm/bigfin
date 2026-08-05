@@ -4,7 +4,22 @@ import { CreateCreditService } from './CreateCredit.service';
 // ─────────────────────────────────────────────────────────────────
 // Shared stubs
 // ─────────────────────────────────────────────────────────────────
-const uow = { withTransaction: (cb: any) => cb({}) };
+/**
+ * Транзакция — функция `trx(table)`: плановые операции пишутся напрямую через
+ * knex (Objection не умеет вставлять список строк на MySQL). Objection-запросы
+ * получают тот же объект и просто передают его в заглушки моделей.
+ */
+const plannedRows: any[][] = [];
+const makeTrx = () => {
+  const trx: any = jest.fn(() => ({
+    insert: (rows: any[]) => {
+      plannedRows.push(rows);
+      return Promise.resolve([]);
+    },
+  }));
+  return trx;
+};
+const uow = { withTransaction: (cb: any) => cb(makeTrx()) };
 const tenancyContext = {
   getTenantMetadata: () => Promise.resolve({ baseCurrency: 'RUB' }),
 };
@@ -20,8 +35,9 @@ interface MakeOpts {
 }
 
 const makeService = (opts: MakeOpts = {}) => {
+  // Сборщик плановых операций общий на модуль — чистим на каждый тест.
+  plannedRows.length = 0;
   const committedLedgers: any[] = [];
-  const insertedPlanned: any[][] = [];
   const createdAccounts: any[] = [];
   const createdArticles: any[] = [];
 
@@ -104,15 +120,8 @@ const makeService = (opts: MakeOpts = {}) => {
     }),
   });
 
-  // ── plannedOperationModel ─────────────────────────────────────
-  const plannedOperationModel = () => ({
-    query: () => ({
-      insert: (rows: any[]) => {
-        insertedPlanned.push(rows);
-        return Promise.resolve([]);
-      },
-    }),
-  });
+  // ── plannedOperationModel: нужен только как источник имени таблицы ──
+  const plannedOperationModel = () => ({ query: () => ({}) });
 
   // ── ledgerStorage ─────────────────────────────────────────────
   const ledgerStorage = {
@@ -136,7 +145,7 @@ const makeService = (opts: MakeOpts = {}) => {
   return {
     service,
     committedLedgers,
-    insertedPlanned,
+    insertedPlanned: plannedRows,
     createdAccounts,
     createdArticles,
     getInsertedCreditAttrs: () => insertedCreditAttrs,

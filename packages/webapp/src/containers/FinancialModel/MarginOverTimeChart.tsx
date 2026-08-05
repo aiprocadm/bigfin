@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
+import { formatMonthShort } from '@/utils/formatShortDate';
 
 export interface MarginPoint {
   month: string;
@@ -27,7 +28,7 @@ export function MarginOverTimeChart({ data }: { data: MarginPoint[] }) {
       <ResponsiveContainer>
         <LineChart data={points} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" fontSize={12} />
+          <XAxis dataKey="month" fontSize={12} tickFormatter={formatMonthShort} />
           <YAxis unit="%" fontSize={12} />
           <Tooltip formatter={(v: any) => `${v}%`} />
           <Line

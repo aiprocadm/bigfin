@@ -44,3 +44,18 @@ export const formatMonth = (value: string | null | undefined): string => {
     year: 'numeric',
   }).format(parsed);
 };
+
+/**
+ * «янв.» — только месяц, для подписей осей графика: там год повторять незачем,
+ * а «2026-01» читается плохо.
+ */
+export const formatMonthShort = (value: string | null | undefined): string => {
+  if (!value) return '';
+
+  const raw = String(value).slice(0, 10);
+  const iso = /^\d{4}-\d{2}$/.test(raw) ? `${raw}-01` : raw;
+  const parsed = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return String(value);
+
+  return new Intl.DateTimeFormat(uiLocale(), { month: 'short' }).format(parsed);
+};

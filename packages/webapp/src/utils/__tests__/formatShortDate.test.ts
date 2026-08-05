@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import intl from 'react-intl-universal';
-import { formatShortDate, formatMonth } from '../formatShortDate';
+import { formatShortDate, formatMonth, formatMonthShort } from '../formatShortDate';
 
 const withLocale = (locale: string) =>
   vi.spyOn(intl, 'getInitOptions').mockReturnValue({ currentLocale: locale } as any);
@@ -76,5 +76,31 @@ describe('месяц периода', () => {
     withLocale('ru');
 
     expect(formatMonth('не-месяц')).toBe('не-месяц');
+  });
+});
+
+describe('короткий месяц для оси графика', () => {
+  it('«2026-01» на оси — это «янв.»', () => {
+    withLocale('ru');
+
+    expect(formatMonthShort('2026-01')).toMatch(/янв/);
+  });
+
+  it('года на оси нет — он повторялся бы в каждой подписи', () => {
+    withLocale('ru');
+
+    expect(formatMonthShort('2026-01')).not.toContain('2026');
+  });
+
+  it('на английском остаётся английским', () => {
+    withLocale('en');
+
+    expect(formatMonthShort('2026-01')).toMatch(/Jan/);
+  });
+
+  it('пустое значение не рисует подпись', () => {
+    withLocale('ru');
+
+    expect(formatMonthShort(null)).toBe('');
   });
 });

@@ -43,6 +43,8 @@ import { DeleteDealStageService } from './commands/DeleteDealStage.service';
     EditDealStageService,
     DeleteDealStageService,
   ],
-  exports: [CreateDealService],
+  // EditDealService нужен CRM-синхронизации: правка сделки в CRM обновляет
+  // связанную сделку в Bigfin.
+  exports: [CreateDealService, EditDealService],
 })
 export class DealsModule {}

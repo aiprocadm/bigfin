@@ -44,12 +44,16 @@ const fakeConnector = (): CrmConnector => ({
 const makeService = (overrides: {
   contactMap?: Map<string, number>;
   dealExternalIds?: Set<string>;
+  /** Id связанной сделки — по нему проверяем обновление данными из CRM. */
+  linkedDealId?: number;
 }) => {
   const registry = { get: () => fakeConnector() } as any;
   const links = {
     getContactIdMap: jest.fn(async () => overrides.contactMap ?? new Map()),
     getDealExternalIds: jest.fn(async () => overrides.dealExternalIds ?? new Set()),
     record: jest.fn(async () => undefined),
+    // Связанная сделка ищется по внешнему идентификатору, чтобы её обновить.
+    getEntityId: jest.fn(async () => overrides.linkedDealId ?? 200),
   } as any;
   let nextCustomerId = 100;
   let nextDealId = 200;
@@ -59,6 +63,9 @@ const makeService = (overrides: {
   const createDeal = {
     create: jest.fn(async () => ({ id: ++nextDealId })),
   } as any;
+  // Обновление уже связанных сущностей: правка в CRM должна доезжать.
+  const editDeal = { edit: jest.fn(async () => ({})) } as any;
+  const editCustomer = { editCustomer: jest.fn(async () => ({})) } as any;
   const tenancyContext = {
     getTenant: async () => ({ metadata: { baseCurrency: 'RUB' } }),
   } as any;
@@ -68,9 +75,11 @@ const makeService = (overrides: {
     links,
     createCustomer,
     createDeal,
+    editDeal,
+    editCustomer,
     tenancyContext,
   );
-  return { service, links, createCustomer, createDeal };
+  return { service, links, createCustomer, createDeal, editDeal, editCustomer };
 };
 
 describe('CrmSyncService', () => {
@@ -168,6 +177,74 @@ describe('CrmSyncService', () => {
       expect(res.dealsImported).toBe(0);
       expect(res.dealsSkipped).toBe(1);
       expect(createDeal.create).not.toHaveBeenCalled();
+    });
+
+    it('связанная сделка обновляется данными из CRM, а не игнорируется', async () => {
+      const { service, editDeal } = makeService({
+        dealExternalIds: new Set(['d9']),
+        linkedDealId: 77,
+      });
+
+      await service.importCanonical('owncrm', {
+        deal: {
+          externalId: 'd9',
+          name: 'Поставка мебели (уточнено)',
+          amount: 460000,
+          contactExternalId: null,
+          closedAt: null,
+        },
+      });
+
+      // Поменяли сумму в CRM — это обязано доехать до Bigfin.
+      expect(editDeal.edit).toHaveBeenCalledWith(
+        77,
+        expect.objectContaining({
+          name: 'Поставка мебели (уточнено)',
+          costEstimate: 460000,
+        }),
+      );
+    });
+
+    it('пустые поля из CRM не затирают заполненное в Bigfin', async () => {
+      const { service, editDeal } = makeService({
+        dealExternalIds: new Set(['d9']),
+        linkedDealId: 77,
+      });
+
+      await service.importCanonical('owncrm', {
+        deal: {
+          externalId: 'd9',
+          name: 'Только имя',
+          amount: null,
+          contactExternalId: null,
+          closedAt: null,
+        },
+      });
+
+      const [, patch] = editDeal.edit.mock.calls[0];
+      expect(patch).toEqual({ name: 'Только имя' });
+    });
+
+    it('связанный контрагент тоже обновляется', async () => {
+      const { service, editCustomer } = makeService({
+        contactMap: new Map([['c9', 55]]),
+      });
+
+      await service.importCanonical('owncrm', {
+        contact: {
+          externalId: 'c9',
+          displayName: 'ИП Сидоров',
+          inn: '7707083893',
+          email: null,
+          phone: null,
+          companyName: null,
+        },
+      });
+
+      expect(editCustomer.editCustomer).toHaveBeenCalledWith(
+        55,
+        expect.objectContaining({ displayName: 'ИП Сидоров', inn: '7707083893' }),
+      );
     });
   });
 });

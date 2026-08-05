@@ -38,6 +38,19 @@ export class CrmSyncLinkService {
     return new Set(rows.map((r: any) => r.externalId));
   }
 
+  /** Id связанной сущности Bigfin — нужен, чтобы обновить её данными из CRM. */
+  public async getEntityId(
+    connectorKey: string,
+    externalId: string,
+    entityType: CrmLinkEntityType,
+  ): Promise<number | null> {
+    const row: any = await this.linkModel()
+      .query()
+      .findOne({ connectorKey, externalId, entityType });
+
+    return row?.entityId ?? null;
+  }
+
   /** Записывает связку «внешняя сущность → сущность Bigfin». */
   public async record(
     connectorKey: string,

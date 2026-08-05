@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import intl from 'react-intl-universal';
-import { formatShortDate } from '../formatShortDate';
+import { formatShortDate, formatMonth } from '../formatShortDate';
 
 const withLocale = (locale: string) =>
   vi.spyOn(intl, 'getInitOptions').mockReturnValue({ currentLocale: locale } as any);
@@ -41,5 +41,40 @@ describe('короткая дата', () => {
     withLocale('ru');
 
     expect(formatShortDate('не-дата')).toBe('не-дата');
+  });
+});
+
+describe('месяц периода', () => {
+  it('коротким видом «2026-07» — это июль 2026', () => {
+    withLocale('ru');
+
+    const text = formatMonth('2026-07');
+
+    expect(text).toContain('июль');
+    expect(text).toContain('2026');
+  });
+
+  it('полную дату тоже понимает', () => {
+    withLocale('ru');
+
+    expect(formatMonth('2026-07-01T00:00:00.000Z')).toContain('июль');
+  });
+
+  it('на английском остаётся английским', () => {
+    withLocale('en');
+
+    expect(formatMonth('2026-07')).toMatch(/July/);
+  });
+
+  it('пустое значение показывает прочерк', () => {
+    withLocale('ru');
+
+    expect(formatMonth(null)).toBe('—');
+  });
+
+  it('битую строку возвращает как есть', () => {
+    withLocale('ru');
+
+    expect(formatMonth('не-месяц')).toBe('не-месяц');
   });
 });

@@ -13,6 +13,7 @@ import { MarginOverTimeChart } from './MarginOverTimeChart';
 import { SegmentTable, ProductTable } from './SegmentTables';
 import { MarketingPanel } from './MarketingPanel';
 import { BreakEvenPanel } from './BreakEvenPanel';
+import { formatShortDate } from '@/utils/formatShortDate';
 
 const fmtMoney = (n: number | null | undefined) =>
   `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
@@ -73,7 +74,7 @@ export default function FinancialModelPage() {
           {intl.get('financial_model.page.title')}
         </h1>
         <span className="text-sm text-muted-foreground">
-          {fromDate} — {toDate}
+          {formatShortDate(fromDate)} — {formatShortDate(toDate)}
         </span>
       </div>
 

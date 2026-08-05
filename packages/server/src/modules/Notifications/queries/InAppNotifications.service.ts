@@ -8,6 +8,7 @@ import { Notification } from '../models/Notification.model';
 import { NotificationRead } from '../models/NotificationRead.model';
 import { FEED_WINDOW_DAYS } from '../constants';
 import { markReadFlags, NotificationRow } from '../utils/inAppRead';
+import { insertMany } from '@/utils/insert-many';
 
 @Injectable()
 export class InAppNotificationsService {
@@ -141,12 +142,13 @@ export class InAppNotificationsService {
       readAt: now,
     }));
 
-    // INSERT IGNORE: гонка с конкурентной отметкой не падает в 500.
-    await this.readModel()
-      .query()
-      .insert(toInsert as any)
-      .onConflict(['notificationId', 'userId'])
-      .ignore();
+    // Пишем через knex: список строк Objection вставляет только в
+    // PostgreSQL/SQL Server, а у нас MySQL — отметка «прочитать все» падала
+    // в 500. INSERT IGNORE: гонка с конкурентной отметкой безопасна.
+    await insertMany(this.readModel().knex(), NotificationRead.tableName, toInsert, {
+      onConflict: ['notificationId', 'userId'],
+      conflict: 'ignore',
+    });
 
     return { success: true };
   }

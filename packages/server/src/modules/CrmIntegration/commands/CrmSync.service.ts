@@ -6,6 +6,8 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { CreateCustomer } from '@/modules/Customers/commands/CreateCustomer.service';
 import { CreateDealService } from '@/modules/Deals/commands/CreateDeal.service';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { EditDealService } from '@/modules/Deals/commands/EditDeal.service';
+import { EditCustomer } from '@/modules/Customers/commands/EditCustomer.service';
 
 export const ERRORS = {
   CONNECTOR_NOT_FOUND: 'CRM_CONNECTOR_NOT_FOUND',
@@ -24,6 +26,8 @@ export class CrmSyncService {
     private readonly links: CrmSyncLinkService,
     private readonly createCustomer: CreateCustomer,
     private readonly createDeal: CreateDealService,
+    private readonly editDeal: EditDealService,
+    private readonly editCustomer: EditCustomer,
     private readonly tenancyContext: TenancyContext,
   ) {}
 
@@ -116,14 +120,32 @@ export class CrmSyncService {
     return result;
   }
 
-  /** Создаёт контрагента и связку, если его ещё нет. true=создан, false=пропущен. */
+  /**
+   * Заводит контрагента, а если он уже связан — обновляет его данными из CRM.
+   * Без обновления правка в CRM (сменили телефон, уточнили название) до
+   * Bigfin просто не доезжала. true=создан, false=обновлён либо пропущен.
+   */
   private async upsertContact(
     connectorKey: string,
     c: CrmContact,
     contactMap: Map<string, number>,
     baseCurrency: string | undefined,
   ): Promise<boolean> {
-    if (contactMap.has(c.externalId)) return false;
+    const linkedId = contactMap.get(c.externalId);
+    if (linkedId) {
+      await this.editCustomer.editCustomer(
+        linkedId,
+        // Пустые поля из CRM не затирают заполненное в Bigfin.
+        this.withoutEmpty({
+          displayName: c.displayName,
+          inn: c.inn,
+          email: c.email,
+          workPhone: c.phone,
+          companyName: c.companyName,
+        }) as any,
+      );
+      return false;
+    }
     const customer = await this.createCustomer.createCustomer({
       customerType: 'business',
       displayName: c.displayName,
@@ -138,14 +160,40 @@ export class CrmSyncService {
     return true;
   }
 
-  /** Создаёт сделку и связку, если её ещё нет. true=создана, false=пропущена. */
+  /**
+   * Заводит сделку, а если она уже связана — обновляет её данными из CRM:
+   * поменяли сумму или срок в CRM — это должно доехать до Bigfin.
+   * true=создана, false=обновлена либо пропущена.
+   */
   private async upsertDeal(
     connectorKey: string,
     d: CrmDeal,
     contactMap: Map<string, number>,
     dealExternalIds: Set<string>,
   ): Promise<boolean> {
-    if (dealExternalIds.has(d.externalId)) return false;
+    const contactId0 = d.contactExternalId
+      ? contactMap.get(d.contactExternalId) ?? null
+      : null;
+
+    if (dealExternalIds.has(d.externalId)) {
+      const linkedId = await this.links.getEntityId(
+        connectorKey,
+        d.externalId,
+        'deal',
+      );
+      if (linkedId) {
+        await this.editDeal.edit(
+          linkedId,
+          this.withoutEmpty({
+            name: d.name,
+            costEstimate: d.amount,
+            contactId: contactId0,
+            deadline: d.closedAt,
+          }) as any,
+        );
+      }
+      return false;
+    }
     const contactId = d.contactExternalId
       ? contactMap.get(d.contactExternalId) ?? null
       : null;
@@ -158,6 +206,20 @@ export class CrmSyncService {
     await this.links.record(connectorKey, d.externalId, 'deal', deal.id);
     dealExternalIds.add(d.externalId);
     return true;
+  }
+
+  /**
+   * Убирает пустые значения: CRM может не прислать поле, и это не повод
+   * стирать уже заполненное в Bigfin.
+   */
+  private withoutEmpty(
+    values: Record<string, unknown>,
+  ): Record<string, unknown> {
+    return Object.fromEntries(
+      Object.entries(values).filter(
+        ([, value]) => value !== null && value !== undefined && value !== '',
+      ),
+    );
   }
 
   /** Базовая валюта организации для создаваемых контрагентов. */

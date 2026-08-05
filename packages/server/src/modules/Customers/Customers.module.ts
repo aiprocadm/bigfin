@@ -55,6 +55,8 @@ import { CustomerWriteGLOpeningBalanceSubscriber } from './subscribers/CustomerG
     CustomerGLEntriesStorage,
     CustomerWriteGLOpeningBalanceSubscriber,
   ],
-  exports: [CreateCustomer],
+  // EditCustomer нужен CRM-синхронизации: правка контакта в CRM обновляет
+  // связанного контрагента в Bigfin.
+  exports: [CreateCustomer, EditCustomer],
 })
 export class CustomersModule {}

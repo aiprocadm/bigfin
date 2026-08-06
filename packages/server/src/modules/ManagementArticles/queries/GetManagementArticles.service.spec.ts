@@ -6,6 +6,17 @@ describe('GetManagementArticlesService', () => {
     { id: 2, name: 'Выручка', parentId: 1 },
   ];
 
+  /** Счётчик привязанных счетов идёт knex-запросом по связующей таблице. */
+  const knexCountStub = (rows: any[] = []) => () => {
+    const q: any = {
+      select: () => q,
+      count: () => q,
+      whereIn: () => q,
+      groupBy: () => Promise.resolve(rows),
+    };
+    return q;
+  };
+
   const makeBuilder = (rows: any[]) => {
     const builder: any = {
       where: () => builder,
@@ -19,7 +30,11 @@ describe('GetManagementArticlesService', () => {
   };
 
   const buildService = () => {
-    const articleModel = () => ({ query: () => makeBuilder(flat) });
+    // Счётчик привязанных счетов идёт отдельным запросом.
+    const articleModel = () => ({
+      query: () => makeBuilder(flat),
+      knex: () => knexCountStub(),
+    });
     return new GetManagementArticlesService(articleModel as any);
   };
 
@@ -54,7 +69,10 @@ describe('GetManagementArticlesService', () => {
         return Promise.resolve(out);
       },
     };
-    const articleModel = () => ({ query: () => builder });
+    const articleModel = () => ({
+      query: () => builder,
+      knex: () => knexCountStub(),
+    });
     return new GetManagementArticlesService(articleModel as any);
   };
 

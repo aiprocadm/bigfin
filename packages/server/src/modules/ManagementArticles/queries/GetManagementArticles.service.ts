@@ -34,15 +34,49 @@ export class GetManagementArticlesService {
         query.orderBy('sortOrder', 'asc');
       });
 
+    const rows = await this.withAccountsCount(articles);
+
     if (!asTree) {
-      return { data: articles };
+      return { data: rows };
     }
 
-    let tree = buildArticleTree(articles) as unknown as ManagementArticle[];
+    let tree = buildArticleTree(rows) as unknown as ManagementArticle[];
     if (filterDto.kind) {
       tree = tree.filter((root) => (root as any).kind === filterDto.kind);
     }
 
     return { data: tree };
+  }
+
+  /**
+   * Проставляет число привязанных счетов.
+   *
+   * Отдельным запросом, а не join'ом к основному: список статей маленький,
+   * зато поведение предсказуемое. Без этого числа в списке не видно, настроена
+   * статья или нет, — а пока счета не привязаны, «Факт» в план-факте бюджета
+   * и в финмодели остаётся нулевым и выглядит как поломка.
+   */
+  private async withAccountsCount(articles: any[]): Promise<any[]> {
+    if (!articles.length) return articles;
+
+    const ids = articles.map((a: any) => a.id);
+    // Считаем прямо по связующей таблице: запрос «от счетов» ссылаться на
+    // колонку статей не может — MySQL отвечает Unknown column.
+    const rows: any[] = await this.articleModel()
+      .knex()('management_article_accounts')
+      .select('articleId')
+      .count({ total: 'accountId' })
+      .whereIn('articleId', ids)
+      .groupBy('articleId');
+
+    const byArticle = new Map<number, number>(
+      rows.map((r: any) => [Number(r.articleId), Number(r.total) || 0]),
+    );
+    // Отдаём простые объекты: у модели Objection чужое поле не переживает
+    // сериализацию ответа и до экрана не доезжает.
+    return articles.map((article: any) => ({
+      ...(typeof article?.toJSON === 'function' ? article.toJSON() : article),
+      accountsCount: byArticle.get(Number(article.id)) ?? 0,
+    }));
   }
 }

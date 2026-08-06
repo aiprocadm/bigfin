@@ -3820,5 +3820,9 @@
   "moysklad.import.error": "Не удалось импортировать товары из МойСклад",
   "sales_tax_liability_summary_report": "Сводка по налогу с продаж",
   "reports_the_total_amount_of_sales_tax_collected": "Показывает, сколько налога с продаж собрано с клиентов.",
-  "taxes": "Налоги"
+  "taxes": "Налоги",
+  "management_articles.no_accounts": "счета не привязаны",
+  "management_articles.accounts_count": "счетов",
+  "management_articles.cost_behavior.fixed": "Постоянная",
+  "management_articles.cost_behavior.variable": "Переменная"
 }

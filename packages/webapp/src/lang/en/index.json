@@ -3820,5 +3820,9 @@
   "moysklad.import.error": "Could not import products from MoySklad",
   "sales_tax_liability_summary_report": "Sales Tax Liability Summary",
   "reports_the_total_amount_of_sales_tax_collected": "Reports the total amount of sales tax collected from customers",
-  "taxes": "Taxes"
+  "taxes": "Taxes",
+  "management_articles.no_accounts": "no accounts linked",
+  "management_articles.accounts_count": "accounts",
+  "management_articles.cost_behavior.fixed": "Fixed",
+  "management_articles.cost_behavior.variable": "Variable"
 }

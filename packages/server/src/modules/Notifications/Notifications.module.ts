@@ -12,6 +12,7 @@ import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/que
 import { NotificationsController } from './Notifications.controller';
 import { NotificationsApplication } from './Notifications.application';
 import { NotificationsSettingsService } from './NotificationsSettings.service';
+import { NotificationTextsService } from './NotificationTexts.service';
 import { CashGapEvaluatorService } from './evaluators/CashGapEvaluator.service';
 import { LowBalanceEvaluatorService } from './evaluators/LowBalanceEvaluator.service';
 import { OverdueEvaluatorService } from './evaluators/OverdueEvaluator.service';
@@ -55,6 +56,7 @@ import { NOTIFICATIONS_QUEUE, TELEGRAM_ENTRIES_QUEUE } from './constants';
   providers: [
     NotificationsApplication,
     NotificationsSettingsService,
+    NotificationTextsService,
     CashGapEvaluatorService,
     LowBalanceEvaluatorService,
     OverdueEvaluatorService,

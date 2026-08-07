@@ -18,6 +18,7 @@ import { Topbar } from '@/components/ui/Topbar';
 import { useAuthActions } from '@/hooks/state';
 import { useAuthenticatedAccount } from '@/hooks/query';
 import { firstLettersArgs } from '@/utils';
+import { NotificationBell } from '@/containers/Notifications/InApp/NotificationBell';
 
 export const ConnectedTopbar = () => {
   const history = useHistory();
@@ -57,6 +58,7 @@ export const ConnectedTopbar = () => {
           />
         </div>
       }
+      notificationsSlot={<NotificationBell />}
       quickActionsSlot={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

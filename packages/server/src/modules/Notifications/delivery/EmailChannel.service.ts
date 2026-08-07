@@ -1,11 +1,11 @@
 // © 2026 Bigfin
 import { Injectable } from '@nestjs/common';
-import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 import { MailTransporter } from '@/modules/Mail/MailTransporter.service';
 import { Mail } from '@/modules/Mail/Mail';
 import { DeliveryChannel } from './DeliveryChannel';
 import { Candidate } from '../utils/selectToFire';
 import { NotificationsSettingsService } from '../NotificationsSettings.service';
+import { NotificationTextsService } from '../NotificationTexts.service';
 import { resolveRecipient } from '../utils/resolveRecipient';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class EmailChannelService implements DeliveryChannel {
   readonly key = 'email';
 
   constructor(
-    private readonly orgI18n: OrganizationI18nService,
+    private readonly texts: NotificationTextsService,
     private readonly mailTransporter: MailTransporter,
     private readonly settings: NotificationsSettingsService,
   ) {}
@@ -28,21 +28,21 @@ export class EmailChannelService implements DeliveryChannel {
     const recipient = resolveRecipient(recipientEmail);
     if (!recipient) return;
 
-    const args = candidate.payload ?? {};
-    const subject = await this.orgI18n.translate(
-      `notifications.${candidate.eventType}.title`,
+    const rendered = await this.texts.render(
+      candidate.eventType,
+      candidate.payload,
     );
-    const body = await this.orgI18n.translate(
-      `notifications.${candidate.eventType}.body`,
-      { args },
-    );
-    const footer = await this.orgI18n.translate('notifications.email_footer');
+    if (!rendered) return;
 
     const mail = new Mail()
-      .setSubject(subject)
+      .setSubject(rendered.title)
       .setTo(recipient)
       .setView('mail/Notification.html')
-      .setData({ title: subject, body, footer } as any);
+      .setData({
+        title: rendered.title,
+        body: rendered.body,
+        footer: rendered.footer,
+      } as any);
 
     await this.mailTransporter.send(mail);
   }

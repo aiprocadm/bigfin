@@ -175,10 +175,12 @@ export default function NotificationsSettingsPage() {
 
   const isSubmitting = form.formState.isSubmitting;
 
-  // Re-sync when preferences load
+  // Re-sync when preferences load. keepDirtyValues: рефетч настроек (например,
+  // после подключения Telegram) не должен молча стирать то, что пользователь
+  // уже ввёл, но ещё не сохранил, — приёмка ㉒ поймала именно эту потерю.
   React.useEffect(() => {
     if (data) {
-      form.reset(buildDefaults(data));
+      form.reset(buildDefaults(data), { keepDirtyValues: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
@@ -214,9 +216,14 @@ export default function NotificationsSettingsPage() {
     try {
       await updatePreferences.mutateAsync({
         preferences,
-        recipientEmail: values.recipientEmail || undefined,
+        // Пустая строка — «очистить получателя»; undefined сервер трактует как
+        // «не трогать», из-за чего сохранённый email было не стереть.
+        recipientEmail: values.recipientEmail ?? '',
         cooldownHours: values.cooldownHours,
       });
+      // Сохранённое = серверное: сбрасываем dirty-флаги, чтобы последующий
+      // рефетч не оживлял старые значения через keepDirtyValues.
+      form.reset(values);
       toast.success(intl.get('notifications.toast.saved'));
     } catch {
       toast.error(intl.get('notifications.toast.error'));

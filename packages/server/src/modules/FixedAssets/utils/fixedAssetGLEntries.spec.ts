@@ -90,4 +90,27 @@ describe('getDisposalGLEntries', () => {
     const loss = entries.find((e) => e.accountId === 50);
     expect(loss.debit).toBe(400000);
   });
+
+  it('выручка без денежного счёта игнорируется — журнал сходится', () => {
+    // Приёмка ㉑: «Ликвидация» с введённой суммой продажи давала проводку
+    // с дебетом 65 000 против кредита 100 000 — деньги-призраки уменьшали
+    // убыток, никуда не поступая. Теперь proceeds без bankAccountId = 0.
+    const entries = getDisposalGLEntries({
+      assetId: 3,
+      date: '2026-06-30',
+      currencyCode: 'RUB',
+      cost: 100000,
+      accumulated: 0,
+      proceeds: 35000,
+      assetAccountId: 10,
+      accumulatedAccountId: 41,
+      disposalAccountId: 50,
+      bankAccountId: null,
+    });
+    expect(sum(entries, 'debit')).toBe(100000);
+    expect(sum(entries, 'credit')).toBe(100000);
+    const loss = entries.find((e) => e.accountId === 50);
+    expect(loss.debit).toBe(100000); // вся остаточная, без вычета «продажи»
+    expect(entries.some((e) => e.accountId === 1)).toBe(false);
+  });
 });

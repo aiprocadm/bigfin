@@ -813,6 +813,15 @@ export const SidebarMenu = [
     feature: Features.Credits,
   },
   // ---------------
+  // # Fixed assets (Основные средства)
+  // ---------------
+  {
+    text: <T id={'sidebar.fixed_assets'} />,
+    href: '/fixed-assets',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.FixedAssets,
+  },
+  // ---------------
   // # Financial model (Финмодель)
   // ---------------
   {

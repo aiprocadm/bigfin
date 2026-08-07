@@ -37,6 +37,17 @@ const fmtDate = (d: string | null | undefined) => {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+// «2026-04» → «апрель 2026 г.» — машинный период человеку не показываем.
+const fmtPeriod = (p: string | null | undefined) => {
+  if (!p) return '—';
+  const date = new Date(`${p}-01T00:00:00`);
+  if (Number.isNaN(date.getTime())) return p;
+  return new Intl.DateTimeFormat('ru-RU', {
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
+
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
 
@@ -81,12 +92,18 @@ function DisposeForm({
         id: assetId,
         values: {
           disposalType: values.disposalType,
-          proceeds: values.proceeds,
-          paymentAccountId: values.paymentAccountId,
+          // Сумма и счёт продажи существуют только у продажи: скрытое поле
+          // хранит введённое значение, и при «Ликвидации» его слать нельзя.
+          ...(values.disposalType === 'sale'
+            ? {
+                proceeds: values.proceeds,
+                paymentAccountId: values.paymentAccountId,
+              }
+            : {}),
           disposedAt: values.disposedAt,
         },
       });
-      toast.success(intl.get('fixed_assets.action.dispose'));
+      toast.success(intl.get('fixed_assets.dispose.done'));
       onDone();
     } catch {
       toast.error(intl.get('credits.toast.error'));
@@ -114,7 +131,13 @@ function DisposeForm({
                   <select
                     className={selectClassName}
                     value={field.value}
-                    onChange={(e) => field.onChange(e.target.value)}
+                    onChange={(e) => {
+                      field.onChange(e.target.value);
+                      if (e.target.value !== 'sale') {
+                        form.setValue('proceeds', undefined as any);
+                        form.setValue('paymentAccountId', undefined as any);
+                      }
+                    }}
                     name={field.name}
                     ref={field.ref as React.Ref<HTMLSelectElement>}
                   >
@@ -256,7 +279,7 @@ export function FixedAssetDetailCard({ assetId, onClose }: Props) {
   const entries: any[] = asset.schedule ?? asset.entries ?? [];
 
   const handleDelete = async () => {
-    if (!window.confirm(intl.get('fixed_assets.action.delete'))) return;
+    if (!window.confirm(intl.get('fixed_assets.delete.confirm'))) return;
     try {
       await deleteMutation.mutateAsync(assetId);
       toast.success(intl.get('fixed_assets.toast.deleted'));
@@ -273,7 +296,7 @@ export function FixedAssetDetailCard({ assetId, onClose }: Props) {
           <div>
             <CardTitle>{asset.name}</CardTitle>
             <p className="mt-1 text-sm text-muted-foreground">
-              {intl.get('fixed_assets.summary.net')}: {fmt(asset.netBookValue)}
+              {intl.get('fixed_assets.summary.net')}: {fmt(asset.netValue)}
             </p>
           </div>
           <div className="flex gap-2">
@@ -385,7 +408,7 @@ export function FixedAssetDetailCard({ assetId, onClose }: Props) {
                     (entry.status ?? '').toLowerCase() === 'posted';
                   return (
                     <tr key={entry.period ?? idx}>
-                      <td className="py-2 pr-3">{entry.period ?? '—'}</td>
+                      <td className="py-2 pr-3">{fmtPeriod(entry.period)}</td>
                       <td className="py-2 pr-3 text-right">
                         {fmt(entry.amount)}
                       </td>

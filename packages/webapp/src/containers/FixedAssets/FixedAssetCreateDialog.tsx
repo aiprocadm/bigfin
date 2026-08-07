@@ -19,13 +19,9 @@ import { useAccounts } from '@/hooks/query';
 import { useCreateFixedAsset } from '@/hooks/query/fixed-assets';
 import { getCreateFixedAssetSchema, CreateFixedAssetValues } from './schemas';
 
-// Fixed assets are typically non-current asset account types.
-// useAccounts does not expose a type-filter prop on the <select>, so we filter
-// client-side. The Credits template uses 'cash'/'bank'; here we use
-// 'fixed_asset' and 'non_current_asset' as likely type strings. If those types
-// are not present in the data the picker will show all accounts unfiltered
-// (we fall back to full list to avoid breaking the form).
-const ASSET_ACCOUNT_TYPES = ['fixed_asset', 'non_current_asset'];
+// Типы счетов — с дефисами, как в constants/accountTypes (сервер отвергает
+// счёт иного типа с ошибкой ASSET_ACCOUNT_NOT_FIXED).
+const ASSET_ACCOUNT_TYPES = ['fixed-asset', 'non-current-asset'];
 
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';

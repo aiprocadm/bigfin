@@ -83,8 +83,14 @@ export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
     credit: 0,
   };
 
+  // Выручка от выбытия существует только вместе с денежным счётом, куда она
+  // поступает: иначе gainLoss посчитал бы деньги-призраки, дебет разошёлся бы
+  // с кредитом, и журнал перестал бы сходиться (ликвидация с введённой суммой
+  // продажи — приёмка ㉑ поймала ровно этот случай).
+  const proceeds = i.bankAccountId ? i.proceeds : 0;
+
   const residual = round2(i.cost - i.accumulated);
-  const gainLoss = round2(i.proceeds - residual); // >0 прибыль, <0 убыток
+  const gainLoss = round2(proceeds - residual); // >0 прибыль, <0 убыток
   const entries: ILedgerEntry[] = [];
   let index = 1;
 
@@ -100,10 +106,10 @@ export const getDisposalGLEntries = (i: DisposalGLInput): ILedgerEntry[] => {
   }
 
   // Деньги от продажи — полная сумма поступления (Dr банк).
-  if (i.proceeds > 0 && i.bankAccountId) {
+  if (proceeds > 0 && i.bankAccountId) {
     entries.push({
       ...common,
-      debit: i.proceeds,
+      debit: proceeds,
       accountId: i.bankAccountId,
       accountNormal: AccountNormal.DEBIT,
       index: index++,

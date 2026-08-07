@@ -123,13 +123,26 @@ export class CreateFixedAssetService {
       .query(trx)
       .findOne({ name: DEPRECIATION_ARTICLE.name, kind: 'expense' });
     if (!article) {
+      // Родитель — корневая статья расходов («Расходы» из сида): статья в
+      // корне дерева не попадает в итог по расходам, и управленческий отчёт
+      // занижает их на всю амортизацию.
+      const expenseRoot: any = await this.articleModel()
+        .query(trx)
+        .findOne({ kind: 'expense', parentId: null })
+        .orderBy('sortOrder', 'asc');
       article = await this.articleModel()
         .query(trx)
-        .insertAndFetch({ ...DEPRECIATION_ARTICLE, parentId: null } as any);
+        .insertAndFetch({
+          ...DEPRECIATION_ARTICLE,
+          parentId: expenseRoot?.id ?? null,
+        } as any);
     }
+    // У связки статья↔счёт уникальность по СЧЁТУ: если пользователь уже
+    // привязал счёт амортизации к своей статье, уважаем его выбор — иначе
+    // insert упал бы об unique(account_id) и завалил бы создание ОС.
     const mapping = await this.articleAccountModel()
       .query(trx)
-      .findOne({ articleId: article.id, accountId });
+      .findOne({ accountId });
     if (!mapping) {
       await this.articleAccountModel()
         .query(trx)

@@ -51,7 +51,10 @@ export class DisposeFixedAssetService {
         TransactionsLockingGroup.Financial,
       );
 
-      const proceeds = Number(dto.proceeds ?? 0);
+      // Сумма продажи имеет смысл только при продаже: при ликвидации присланное
+      // значение игнорируется (форма могла сохранить его при переключении типа).
+      const proceeds =
+        dto.disposalType === 'sale' ? Number(dto.proceeds ?? 0) : 0;
       let bankAccountId: number | null = null;
       if (dto.disposalType === 'sale' && proceeds > 0) {
         const bank: any = await this.accountModel()

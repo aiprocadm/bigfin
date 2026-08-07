@@ -1,7 +1,15 @@
 // © 2026 Bigfin
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsIn, IsInt, IsNumber, IsString, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsIn,
+  IsInt,
+  IsNumber,
+  IsString,
+  Matches,
+  Min,
+} from 'class-validator';
 
 export class CreateFixedAssetDto {
   @IsString()
@@ -48,7 +56,13 @@ export class CreateFixedAssetDto {
 }
 
 export class AccrueMonthDto {
+  // Сравнение периодов строковое (YYYY-MM сортируется лексикографически),
+  // поэтому произвольная строка вроде 'abc' сравнилась бы больше любого
+  // месяца и разом начислила бы весь график — формат обязателен.
   @IsString()
+  @Matches(/^\d{4}-(0[1-9]|1[0-2])$/, {
+    message: 'period must be in YYYY-MM format',
+  })
   @ApiProperty({ example: '2026-04', description: 'Месяц начисления YYYY-MM' })
   period: string;
 }

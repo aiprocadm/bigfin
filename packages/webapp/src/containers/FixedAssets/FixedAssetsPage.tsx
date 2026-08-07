@@ -61,8 +61,8 @@ function AccrueDialog({ onClose }: { onClose: () => void }) {
   const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = async (values: AccrueFormValues) => {
-    // Convert YYYY-MM to YYYY-MM-01 ISO date for API
-    const period = `${values.period}-01`;
+    // Контракт API — месяц YYYY-MM (input type=month его и отдаёт).
+    const period = values.period.slice(0, 7);
     try {
       const result = await accrueMutation.mutateAsync({ period });
       const count: number = result?.data?.posted ?? result?.posted ?? 0;
@@ -162,7 +162,7 @@ export default function FixedAssetsPage() {
             {intl.get('fixed_assets.summary.gross')}
           </span>
           <span className="text-2xl font-semibold">
-            {fmt(summary?.grossValue)}
+            {fmt(summary?.totalCost)}
           </span>
         </div>
         <div className="flex flex-col gap-1 rounded-md border p-4">
@@ -170,7 +170,7 @@ export default function FixedAssetsPage() {
             {intl.get('fixed_assets.summary.accumulated')}
           </span>
           <span className="text-2xl font-semibold">
-            {fmt(summary?.accumulatedDepreciation)}
+            {fmt(summary?.totalAccumulated)}
           </span>
         </div>
         <div className="flex flex-col gap-1 rounded-md border p-4">
@@ -178,7 +178,7 @@ export default function FixedAssetsPage() {
             {intl.get('fixed_assets.summary.net')}
           </span>
           <span className="text-2xl font-semibold">
-            {fmt(summary?.netBookValue)}
+            {fmt(summary?.totalNet)}
           </span>
         </div>
       </div>
@@ -198,7 +198,7 @@ export default function FixedAssetsPage() {
       <div className="overflow-x-auto rounded-md border">
         {assetRows.length === 0 ? (
           <div className="p-6 text-center text-sm text-muted-foreground">
-            {intl.get('fixed_assets.page.title')}
+            {intl.get('fixed_assets.empty')}
           </div>
         ) : (
           <table className="w-full text-sm">
@@ -245,7 +245,7 @@ export default function FixedAssetsPage() {
                     {fmt(asset.accumulatedDepreciation)}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {fmt(asset.netBookValue)}
+                    {fmt(asset.netValue)}
                   </td>
                   <td className="px-4 py-3">
                     {fmtDate(asset.commissionedAt)}

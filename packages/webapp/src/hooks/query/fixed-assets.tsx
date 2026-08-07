@@ -13,11 +13,13 @@ import t from './types';
 // Types
 // ---------------------------------------------------------------------------
 
+// Имена полей — как их реально отдаёт сервер (GetFixedAssetsSummary):
+// раньше тут были выдуманные grossValue/netBookValue, и плитки всегда были 0 ₽.
 export interface FixedAssetsSummary {
   count: number;
-  grossValue: number;
-  accumulatedDepreciation: number;
-  netBookValue: number;
+  totalCost: number;
+  totalAccumulated: number;
+  totalNet: number;
 }
 
 export interface FixedAssetScheduleEntry {
@@ -32,13 +34,13 @@ export interface FixedAssetRow {
   category: string | null;
   cost: number;
   salvageValue: number;
-  lifeMonths: number;
+  serviceLifeMonths: number;
   commissionedAt: string;
   assetAccountId: number;
   accumulatedDepreciation: number;
-  netBookValue: number;
+  netValue: number;
   status: 'active' | 'disposed';
-  schedule?: FixedAssetScheduleEntry[];
+  entries?: FixedAssetScheduleEntry[];
 }
 
 export interface CreateFixedAssetValues {
@@ -53,7 +55,7 @@ export interface CreateFixedAssetValues {
 }
 
 export interface AccrueMonthValues {
-  period: string; // ISO date, e.g. "2026-06-01"
+  period: string; // Месяц YYYY-MM, например "2026-06"
 }
 
 export interface DisposeFixedAssetValues {
@@ -100,9 +102,9 @@ export function useFixedAssetsSummary(props?: any) {
       select: (res: any) => res.data?.data ?? res.data,
       defaultData: {
         count: 0,
-        grossValue: 0,
-        accumulatedDepreciation: 0,
-        netBookValue: 0,
+        totalCost: 0,
+        totalAccumulated: 0,
+        totalNet: 0,
       } as FixedAssetsSummary,
       ...props,
     },

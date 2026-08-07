@@ -3347,6 +3347,8 @@
   "modules.credits.desc": "Графики, тело и проценты",
   "modules.fixed_assets.label": "Основные средства",
   "modules.fixed_assets.desc": "Учёт и амортизация",
+  "modules.accrual_pnl.label": "Метод начисления",
+  "modules.accrual_pnl.desc": "Кассовый метод и метод начисления в отчёте о прибылях",
   "modules.payroll.label": "Зарплата",
   "modules.payroll.desc": "ФОТ, налоги, выплаты",
   "modules.vat_analysis.label": "Анализ НДС",

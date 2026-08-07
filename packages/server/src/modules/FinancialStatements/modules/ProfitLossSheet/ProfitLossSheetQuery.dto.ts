@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsDateString,
   IsEnum,
+  IsIn,
   IsOptional,
   IsString,
   ValidateNested,
@@ -16,10 +17,16 @@ import { parseBoolean } from '@/utils/parse-boolean';
 import { NumberFormatQueryDto } from '@/modules/BankingTransactions/dtos/NumberFormatQuery.dto';
 
 export class ProfitLossSheetQueryDto extends FinancialSheetBranchesQueryDto {
+  // Раньше basis не проверялся: опечатка вроде basis=cach молча считалась
+  // «по начислению». Теперь только два допустимых значения (как в ОСВ/Балансе).
   @IsString()
+  @IsIn(['cash', 'accrual'])
   @IsOptional()
-  @ApiProperty({ description: 'The basis for the profit and loss sheet' })
-  basis: string;
+  @ApiProperty({
+    description: 'The basis for the profit and loss sheet',
+    enum: ['cash', 'accrual'],
+  })
+  basis: 'cash' | 'accrual';
 
   @IsDateString()
   @IsOptional()

@@ -15,7 +15,6 @@ import { compose } from '@/utils';
 import {
   FinancialHeaderDrawer,
   FinancialHeaderSkeleton,
-  ReportAccountingBasisField,
   ReportBranchesField,
   ReportDateRangeFields,
   ReportEntitiesField,
@@ -187,7 +186,6 @@ function GeneralLedgerHeaderV2Root({
                 <ReportDateRangeFields />
                 <ReportFilterOptionField items={glFilterAccountsOptions} />
                 <GeneralLedgerAccountsField />
-                <ReportAccountingBasisField />
               </div>
             </TabsContent>
 

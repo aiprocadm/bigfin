@@ -6,6 +6,7 @@ import {
   Bell,
   Boxes,
   Building2,
+  Calculator,
   CalendarClock,
   ClipboardCheck,
   Coins,
@@ -46,7 +47,7 @@ const MODULE_GROUPS: { group: string; features: string[] }[] = [
     features: [
       'mgmt_articles', 'deals', 'cost_allocation', 'debts', 'payment_requests',
       'dividends', 'credits', 'fixed_assets', 'payroll', 'vat_analysis',
-      'financial_ratios', 'data_quality', 'ru_print_forms',
+      'financial_ratios', 'data_quality', 'ru_print_forms', 'accrual_pnl',
     ],
   },
   {
@@ -77,6 +78,7 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   ru_print_forms: Printer,
   financial_ratios: Gauge,
   data_quality: ShieldCheck,
+  accrual_pnl: Calculator,
   bank_api_sync: Landmark,
   acquiring: CreditCard,
   zenmoney_import: Download,

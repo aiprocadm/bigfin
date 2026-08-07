@@ -15,5 +15,6 @@
  * For ㉒-1 the operator simply sets `recipientEmail` in notification settings.
  */
 export function resolveRecipient(recipientEmail: string | null): string | null {
-  return recipientEmail ?? null;
+  // Пустая строка — «получатель очищен» (симметрично telegram-настройкам).
+  return recipientEmail || null;
 }

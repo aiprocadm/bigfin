@@ -8,6 +8,7 @@ import {
   IsInt,
   IsOptional,
   Min,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -39,7 +40,10 @@ export class UpdateNotificationPreferencesDto {
   @ApiProperty({ type: [PreferenceItemDto] })
   preferences: PreferenceItemDto[];
 
+  // Пустая строка — легальное значение «очистить получателя», IsEmail её
+  // не пропускает, поэтому проверяем только непустой ввод.
   @IsOptional()
+  @ValidateIf((o) => o.recipientEmail !== '')
   @IsEmail()
   @ApiPropertyOptional({ example: 'owner@org.ru' })
   recipientEmail?: string;

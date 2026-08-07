@@ -3215,6 +3215,7 @@
   "sidebar.credits": "Credits & loans",
   "sidebar.financial_model": "Financial model",
   "notifications.settings.title": "Notifications",
+  "notifications.settings.menu": "Notifications",
   "notifications.settings.section.events": "Alert events",
   "notifications.settings.section.delivery": "Delivery",
   "notifications.event.cash_gap.label": "Cash gap",

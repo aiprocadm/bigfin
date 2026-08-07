@@ -1,4 +1,5 @@
 import {
+  Bell,
   Blocks,
   Building2,
   Calculator,
@@ -73,6 +74,9 @@ export const PreferencesMenu: PreferencesMenuSection[] = [
   {
     titleId: 'preferences.sidebar.section.other',
     items: [
+      // Страница уведомлений живёт вне /preferences, но пункт в этом меню —
+      // единственный способ найти её без прямого URL (приёмка ㉒).
+      { labelId: 'notifications.settings.menu', href: '/settings/notifications', icon: Bell },
       { labelId: 'api_keys', href: '/preferences/api-keys', icon: KeyRound },
     ],
   },

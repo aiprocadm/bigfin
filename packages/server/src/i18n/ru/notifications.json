@@ -2,9 +2,11 @@
   "cash_gap.title": "Приближается кассовый разрыв",
   "cash_gap.body": "Ожидается нехватка средств на {amount} — {date} (через {days} дн.).",
   "low_balance.title": "Остаток на счёте ниже минимума",
-  "low_balance.body": "{count} счёт(ов) ниже установленного порога.",
+  "low_balance.body": "Ниже порога {minAmount}: {count} счёт(ов) — {names}.",
   "overdue.title": "Просроченные счета клиентов",
   "overdue.body": "Просрочено счетов: {count} на сумму {total}.",
   "email_footer": "Откройте Bigfin, чтобы посмотреть детали.",
-  "telegram": { "connected_message": "✅ Bigfin подключён. Уведомления будут приходить сюда." }
+  "telegram": {
+    "connected_message": "✅ Bigfin подключён. Уведомления будут приходить сюда."
+  }
 }

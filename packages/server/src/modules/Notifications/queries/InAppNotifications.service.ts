@@ -8,12 +8,14 @@ import { Notification } from '../models/Notification.model';
 import { NotificationRead } from '../models/NotificationRead.model';
 import { FEED_WINDOW_DAYS } from '../constants';
 import { markReadFlags, NotificationRow } from '../utils/inAppRead';
+import { NotificationTextsService } from '../NotificationTexts.service';
 import { insertMany } from '@/utils/insert-many';
 
 @Injectable()
 export class InAppNotificationsService {
   constructor(
     private readonly cls: ClsService,
+    private readonly texts: NotificationTextsService,
     @Inject(Notification.name)
     private readonly notifModel: TenantModelProxy<typeof Notification>,
     @Inject(NotificationRead.name)
@@ -50,14 +52,29 @@ export class InAppNotificationsService {
           .whereIn('notificationId', ids)
       : [];
 
-    const rows: NotificationRow[] = notifs.map((n) => ({
-      id: n.id,
-      eventType: n.eventType,
-      title: n.title,
-      body: n.body,
-      payload: n.payload,
-      firedAt: n.firedAt,
-    }));
+    // В БД title/body хранятся ключами перевода (`cash_gap.title`) — переводим
+    // при выдаче на языке организации, с теми же подстановками, что в email и
+    // telegram. Для событий без перевода (исторические строки) остаётся
+    // сохранённый текст.
+    const rows: NotificationRow[] = await Promise.all(
+      notifs.map(async (n) => {
+        let payload: Record<string, any> | null = null;
+        try {
+          payload = n.payload ? JSON.parse(n.payload) : null;
+        } catch {
+          payload = null;
+        }
+        const rendered = await this.texts.render(n.eventType, payload);
+        return {
+          id: n.id,
+          eventType: n.eventType,
+          title: rendered?.title ?? n.title,
+          body: rendered?.body ?? n.body,
+          payload: n.payload,
+          firedAt: n.firedAt,
+        };
+      }),
+    );
 
     return {
       notifications: markReadFlags(

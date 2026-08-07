@@ -1,17 +1,17 @@
 // © 2026 Bigfin
 import { Injectable } from '@nestjs/common';
-import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 import { DeliveryChannel } from './DeliveryChannel';
 import { TelegramApiService } from './TelegramApi.service';
 import { Candidate } from '../utils/selectToFire';
 import { NotificationsSettingsService } from '../NotificationsSettings.service';
+import { NotificationTextsService } from '../NotificationTexts.service';
 
 @Injectable()
 export class TelegramChannelService implements DeliveryChannel {
   readonly key = 'telegram';
 
   constructor(
-    private readonly orgI18n: OrganizationI18nService,
+    private readonly texts: NotificationTextsService,
     private readonly api: TelegramApiService,
     private readonly settings: NotificationsSettingsService,
   ) {}
@@ -25,17 +25,13 @@ export class TelegramChannelService implements DeliveryChannel {
     const { botToken, chatId } = await this.settings.getTelegram();
     if (!botToken || !chatId) return;
 
-    const args = candidate.payload ?? {};
-    const title = await this.orgI18n.translate(
-      `notifications.${candidate.eventType}.title`,
+    const rendered = await this.texts.render(
+      candidate.eventType,
+      candidate.payload,
     );
-    const body = await this.orgI18n.translate(
-      `notifications.${candidate.eventType}.body`,
-      { args },
-    );
-    const footer = await this.orgI18n.translate('notifications.email_footer');
+    if (!rendered) return;
 
-    const text = `${title}\n\n${body}\n\n${footer}`;
+    const text = `${rendered.title}\n\n${rendered.body}\n\n${rendered.footer}`;
     await this.api.sendMessage(botToken, chatId, text);
   }
 }

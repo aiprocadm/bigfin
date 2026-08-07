@@ -3347,6 +3347,8 @@
   "modules.credits.desc": "Schedules, principal and interest",
   "modules.fixed_assets.label": "Fixed assets",
   "modules.fixed_assets.desc": "Register and depreciation",
+  "modules.accrual_pnl.label": "Accrual basis",
+  "modules.accrual_pnl.desc": "Cash/accrual toggle in the P&L report",
   "modules.payroll.label": "Payroll",
   "modules.payroll.desc": "Wages, taxes, payouts",
   "modules.vat_analysis.label": "VAT analysis",

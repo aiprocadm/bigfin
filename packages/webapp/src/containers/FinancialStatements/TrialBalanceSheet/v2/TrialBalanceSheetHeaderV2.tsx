@@ -13,7 +13,6 @@ import { compose } from '@/utils';
 
 import {
   FinancialHeaderDrawer,
-  ReportAccountingBasisField,
   ReportBranchesField,
   ReportDateRangeFields,
   ReportFilterOptionField,
@@ -142,7 +141,6 @@ function TrialBalanceSheetHeaderV2Root({
               <div className="flex flex-col gap-4">
                 <ReportDateRangeFields />
                 <ReportFilterOptionField />
-                <ReportAccountingBasisField />
               </div>
             </TabsContent>
 

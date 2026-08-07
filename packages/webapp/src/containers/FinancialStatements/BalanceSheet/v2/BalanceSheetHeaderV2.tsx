@@ -13,7 +13,6 @@ import { compose } from '@/utils';
 
 import {
   FinancialHeaderDrawer,
-  ReportAccountingBasisField,
   ReportBranchesField,
   ReportCheckboxRow,
   ReportDateRangeFields,
@@ -282,7 +281,6 @@ function BalanceSheetHeaderV2Root({
                 <ReportDateRangeFields />
                 <ReportDisplayColumnsByField />
                 <ReportFilterOptionField />
-                <ReportAccountingBasisField />
               </div>
             </TabsContent>
 

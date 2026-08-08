@@ -39,6 +39,22 @@ export function useDataQualityDuplicates(
   );
 }
 
+/** Документы, у которых дебет не сошёлся с кредитом. */
+export function useDataQualityUnbalanced(
+  query: DataQualityPeriodQuery,
+  props?: any,
+) {
+  return useRequestQuery(
+    [t.DATA_QUALITY_UNBALANCED, query],
+    { method: 'get', url: 'data-quality/unbalanced-journals', params: query },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: { journals: [], totalJournals: 0, totalDifference: 0 },
+      ...props,
+    },
+  );
+}
+
 /** Monthly P&L vs cash-flow comparison. */
 export function useDataQualityPlCashflow(
   query: DataQualityPeriodQuery,

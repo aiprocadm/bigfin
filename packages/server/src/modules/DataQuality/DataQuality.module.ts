@@ -7,6 +7,7 @@ import { DataQualityApplication } from './DataQuality.application';
 import { GetUnmappedOperationsService } from './queries/GetUnmappedOperations.service';
 import { GetPossibleDuplicatesService } from './queries/GetPossibleDuplicates.service';
 import { GetPlCashflowComparisonService } from './queries/GetPlCashflowComparison.service';
+import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
 
 @Module({
   imports: [TenancyDatabaseModule, TenancyModule],
@@ -16,6 +17,7 @@ import { GetPlCashflowComparisonService } from './queries/GetPlCashflowCompariso
     GetUnmappedOperationsService,
     GetPossibleDuplicatesService,
     GetPlCashflowComparisonService,
+    GetUnbalancedJournalsService,
   ],
 })
 export class DataQualityModule {}

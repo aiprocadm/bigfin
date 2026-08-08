@@ -4,6 +4,7 @@ import { DataQualityQueryDto } from './dtos/DataQualityQuery.dto';
 import { GetUnmappedOperationsService } from './queries/GetUnmappedOperations.service';
 import { GetPossibleDuplicatesService } from './queries/GetPossibleDuplicates.service';
 import { GetPlCashflowComparisonService } from './queries/GetPlCashflowComparison.service';
+import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
 
 @Injectable()
 export class DataQualityApplication {
@@ -11,6 +12,7 @@ export class DataQualityApplication {
     private readonly getUnmappedOperationsService: GetUnmappedOperationsService,
     private readonly getPossibleDuplicatesService: GetPossibleDuplicatesService,
     private readonly getPlCashflowComparisonService: GetPlCashflowComparisonService,
+    private readonly getUnbalancedJournalsService: GetUnbalancedJournalsService,
   ) {}
 
   public getUnmappedOperations(query: DataQualityQueryDto) {
@@ -23,5 +25,9 @@ export class DataQualityApplication {
 
   public getPlCashflowComparison(query: DataQualityQueryDto) {
     return this.getPlCashflowComparisonService.getComparison(query);
+  }
+
+  public getUnbalancedJournals(query: DataQualityQueryDto) {
+    return this.getUnbalancedJournalsService.getUnbalancedJournals(query);
   }
 }

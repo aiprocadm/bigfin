@@ -105,6 +105,15 @@ export class CommandSaleReceiptDto {
   })
   branchId?: number;
 
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Whether tax is inclusive',
+    required: false,
+    example: false,
+  })
+  isInclusiveTax?: boolean;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SaleReceiptEntryDto)

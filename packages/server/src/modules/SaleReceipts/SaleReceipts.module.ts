@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BullModule } from '@nestjs/bullmq';
@@ -51,6 +52,9 @@ import { ValidateBulkDeleteSaleReceiptsService } from './ValidateBulkDeleteSaleR
   controllers: [SaleReceiptsController],
   imports: [
     ItemsModule,
+    // Налог позиций и налог документа считает общий сервис из TaxRates —
+    // тот же, что у счетов покупателям (Д1: НДС в чеках).
+    TaxRatesModule,
     ChromiumlyTenancyModule,
     TemplateInjectableModule,
     BranchesModule,

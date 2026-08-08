@@ -13,6 +13,7 @@ import { ItemEntry } from '@/modules/TransactionItemEntry/models/ItemEntry';
 import { formatDateFields } from '@/utils/format-date-fields';
 import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-index';
 import { SaleReceipt } from '../models/SaleReceipt';
+import { ItemEntriesTaxTransactions } from '@/modules/TaxRates/ItemEntriesTaxTransactions.service';
 import { Customer } from '@/modules/Customers/models/Customer';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import {
@@ -38,6 +39,7 @@ export class SaleReceiptDTOTransformer {
     private readonly validators: SaleReceiptValidators,
     private readonly receiptIncrement: SaleReceiptIncrement,
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
+    private readonly taxDTOTransformer: ItemEntriesTaxTransactions,
 
     @Inject(ItemEntry.name)
     private readonly itemEntryModel: TenantModelProxy<typeof ItemEntry>,
@@ -71,14 +73,24 @@ export class SaleReceiptDTOTransformer {
 
     const initialEntries = saleReceiptDTO.entries.map((entry) => ({
       reference_type: 'SaleReceipt',
+      // Признак «НДС в цене» задаётся документом и спускается в позиции —
+      // как у счетов покупателям.
+      isInclusiveTax: saleReceiptDTO.isInclusiveTax,
       ...entry,
     }));
     const asyncEntries = await composeAsync(
+      // Associate tax rate from tax id to entries.
+      this.taxDTOTransformer.assocTaxRateFromTaxIdToEntries,
+      // Associate tax rate id from tax code to entries.
+      this.taxDTOTransformer.assocTaxRateIdFromCodeToEntries,
       // Sets default cost and sell account to receipt items entries.
       this.itemsEntriesService.setItemsEntriesDefaultAccounts,
     )(initialEntries);
 
     const entries = R.compose(
+      // Remove tax code from entries.
+      R.map(R.omit(['taxCode'])),
+
       // Associate the default index for each item entry.
       assocItemEntriesDefaultIndex,
     )(asyncEntries);
@@ -109,6 +121,10 @@ export class SaleReceiptDTOTransformer {
       ),
     )(initialDTO);
 
-    return asyncDto;
+    // Налог документа = сумма налогов позиций (как у счетов). Без этого
+    // продажа за наличные не попадала в анализ НДС вовсе.
+    return R.compose(this.taxDTOTransformer.assocTaxAmountWithheldFromEntries)(
+      asyncDto,
+    );
   }
 }

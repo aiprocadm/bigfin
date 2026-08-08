@@ -10,6 +10,8 @@ export class SaleReceiptGL {
   private saleReceipt: SaleReceipt;
   private discountAccountId: number;
   private otherChargesAccountId: number;
+  /** Счёт начисленного НДС (пассив) — как у счетов покупателям. */
+  private taxPayableAccountId: number;
 
   /**
    * Constructor method.
@@ -34,6 +36,15 @@ export class SaleReceiptGL {
    */
   setOtherChargesAccountId(otherChargesAccountId: number) {
     this.otherChargesAccountId = otherChargesAccountId;
+    return this;
+  }
+
+  /**
+   * Sets the tax payable account id.
+   * @param {number} taxPayableAccountId - Tax payable account id.
+   */
+  setTaxPayableAccountId(taxPayableAccountId: number) {
+    this.taxPayableAccountId = taxPayableAccountId;
     return this;
   }
 
@@ -142,17 +153,58 @@ export class SaleReceiptGL {
    * Retrieves the income GL entries.
    * @returns {ILedgerEntry[]}
    */
+  /**
+   * Налоговая строка позиции: Кт «Налоги к уплате» на сумму НДС.
+   * @param {ItemEntry} entry - Item entry.
+   * @param {number} index - Index.
+   * @returns {ILedgerEntry}
+   */
+  private getReceiptTaxEntry = (
+    entry: ItemEntry,
+    index: number,
+  ): ILedgerEntry => {
+    const commonEntry = this.getIncomeGLCommonEntry();
+    const rate = this.saleReceipt.exchangeRate || 1;
+
+    return {
+      ...commonEntry,
+      credit: entry.taxAmount * rate,
+      accountId: this.taxPayableAccountId,
+      index: index + 1,
+      indexGroup: 30,
+      accountNormal: AccountNormal.CREDIT,
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
+    };
+  };
+
+  /**
+   * Retrieves the income GL entries.
+   * @returns {ILedgerEntry[]}
+   */
   public getIncomeGLEntries = (): ILedgerEntry[] => {
     const getItemEntry = this.getReceiptIncomeItemEntry;
 
     const creditEntries = this.saleReceipt.entries.map((e, index) =>
       getItemEntry(e, index),
     );
+    // Раньше налоговых строк у чека не было вовсе: продажа за наличные
+    // не попадала в анализ НДС, отчёт показывал ноль (Д1 карты v6).
+    const taxEntries = this.saleReceipt.entries
+      .filter((entry) => Number(entry.taxAmount) > 0)
+      .map((entry, index) => this.getReceiptTaxEntry(entry, index));
+
     const depositEntry = this.getReceiptDepositEntry();
     const discountEntry = this.getDiscountEntry();
     const adjustmentEntry = this.getAdjustmentEntry();
 
-    return [depositEntry, ...creditEntries, discountEntry, adjustmentEntry];
+    return [
+      depositEntry,
+      ...creditEntries,
+      ...taxEntries,
+      discountEntry,
+      adjustmentEntry,
+    ];
   };
 
   /**

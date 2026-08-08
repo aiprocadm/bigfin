@@ -6,13 +6,15 @@ import { Button } from '@/components/ui/button';
 import { UnmappedTab } from './UnmappedTab';
 import { DuplicatesTab } from './DuplicatesTab';
 import { PlCashflowTab } from './PlCashflowTab';
+import { UnbalancedTab } from './UnbalancedTab';
 
-type TabKey = 'unmapped' | 'duplicates' | 'pl_cashflow';
+type TabKey = 'unmapped' | 'duplicates' | 'pl_cashflow' | 'unbalanced';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'unmapped', label: 'data_quality.tab.unmapped' },
   { key: 'duplicates', label: 'data_quality.tab.duplicates' },
   { key: 'pl_cashflow', label: 'data_quality.tab.pl_cashflow' },
+  { key: 'unbalanced', label: 'data_quality.tab.unbalanced' },
 ];
 
 const YEARS_BACK = 5;
@@ -83,6 +85,9 @@ export default function DataQualityPage() {
       )}
       {tab === 'pl_cashflow' && (
         <PlCashflowTab fromDate={fromDate} toDate={toDate} />
+      )}
+      {tab === 'unbalanced' && (
+        <UnbalancedTab fromDate={fromDate} toDate={toDate} />
       )}
     </div>
   );

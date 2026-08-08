@@ -41,4 +41,12 @@ export class DataQualityController {
   getPlCashflowComparison(@Query() query: DataQualityQueryDto) {
     return this.application.getPlCashflowComparison(query);
   }
+
+  @Get('unbalanced-journals')
+  @ApiOperation({
+    summary: 'Documents whose journal does not balance (debit ≠ credit).',
+  })
+  getUnbalancedJournals(@Query() query: DataQualityQueryDto) {
+    return this.application.getUnbalancedJournals(query);
+  }
 }

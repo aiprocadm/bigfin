@@ -34,3 +34,6 @@ export const MAX_DUPLICATE_GROUPS = 100;
 
 /** Лимит последних операций на счёт в отчёте «операции без статьи». */
 export const MAX_OPERATIONS_PER_ACCOUNT = 20;
+
+/** Лимит документов в отчёте «несходящиеся проводки» (крупные первыми). */
+export const MAX_UNBALANCED_JOURNALS = 100;

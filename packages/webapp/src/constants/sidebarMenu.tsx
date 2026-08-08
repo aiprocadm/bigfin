@@ -804,6 +804,66 @@ export const SidebarMenu = [
     ],
   },
   // ---------------
+  // # Управление и планирование.
+  // Эти страницы существовали как маршруты, но не имели пункта меню — попасть
+  // на них можно было только вводом адреса вручную (приёмка ㉘ вскрыла целый
+  // пласт: 9 модулей были недостижимы кликом).
+  // ---------------
+  {
+    text: <T id={'sidebar.management_articles'} />,
+    href: '/management-articles',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.MgmtArticles,
+  },
+  {
+    text: <T id={'sidebar.payment_calendar'} />,
+    href: '/payment-calendar',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.PaymentCalendar,
+  },
+  {
+    text: <T id={'sidebar.budgets'} />,
+    href: '/budgets',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Budgets,
+  },
+  {
+    text: <T id={'sidebar.debts'} />,
+    href: '/debts',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Debts,
+  },
+  {
+    text: <T id={'sidebar.payment_requests'} />,
+    href: '/payment-requests',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.PaymentRequests,
+  },
+  {
+    text: <T id={'sidebar.deals'} />,
+    href: '/deals',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Projects,
+  },
+  {
+    text: <T id={'sidebar.cost_allocation'} />,
+    href: '/cost-allocation',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.CostAllocation,
+  },
+  {
+    text: <T id={'sidebar.payroll'} />,
+    href: '/payroll',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Payroll,
+  },
+  {
+    text: <T id={'sidebar.dividends'} />,
+    href: '/dividends',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.Dividends,
+  },
+  // ---------------
   // # Credits (Кредиты и займы)
   // ---------------
   {

@@ -4,6 +4,16 @@ export const Features = {
   Branches: 'branches',
   ManualJournal: 'manualJournal',
   Projects: 'deals', // оживляет селектор сделки в формах операций под флагом deals
+  // Флаги страниц, которые до приёмки не имели пункта меню: без записи здесь
+  // пункт в sidebarMenu завести нечем, поэтому страницы были недостижимы.
+  MgmtArticles: 'mgmt_articles', // ②b управленческие статьи
+  PaymentCalendar: 'payment_calendar', // ⑥ платёжный календарь
+  Budgets: 'budgets', // ⑤ бюджеты
+  Debts: 'debts', // ⑭ долги
+  PaymentRequests: 'payment_requests', // ㉔ заявки на оплату
+  CostAllocation: 'cost_allocation', // ⑦ распределение затрат
+  Payroll: 'payroll', // ⑧ зарплата
+  Dividends: 'dividends', // ⑲ дивиденды
   BankSyncing: 'BankSyncing',
   AccrualPnl: 'accrual_pnl', // тумблер «кассовый/начисление» в ОПиУ (sub-project 29)
   Credits: 'credits', // кредиты и займы (ОС/погашение через installments)

@@ -49,6 +49,16 @@ function UnmappedAccountRow({ account }: { account: any }) {
 
       {open && (
         <div className="bg-muted/30 flex flex-col gap-1 px-4 py-3">
+          {/* Сервер отдаёт последние ≤20 операций на счёт — без подписи
+              усечение выглядело как потеря данных. */}
+          {(account.operationsCount ?? 0) > operations.length && (
+            <div className="text-muted-foreground px-2 text-xs">
+              {intl.get('data_quality.unmapped.truncated', {
+                shown: operations.length,
+                total: account.operationsCount,
+              })}
+            </div>
+          )}
           {operations.map((op) => {
             const clickable = !!resolveReferenceDrawer(
               op.referenceType,
@@ -99,8 +109,10 @@ export function UnmappedTab({ fromDate, toDate }: Props) {
       </p>
       {accounts.length > 0 && (
         <div className="text-muted-foreground text-sm">
+          {/* Подпись говорит о счетах — totalCount сервера считает операции,
+              и «Счетов без статьи: 2» при одном счёте сбивал с толку. */}
           {intl.get('data_quality.unmapped.total', {
-            count: data?.totalCount ?? accounts.length,
+            count: accounts.length,
           })}
         </div>
       )}

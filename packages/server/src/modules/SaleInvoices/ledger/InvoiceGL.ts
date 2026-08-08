@@ -135,7 +135,9 @@ export class InvoiceGL {
 
     return {
       ...commonEntry,
-      credit: entry.taxAmount,
+      // По курсу документа, как и строка выручки рядом: без этого валютный
+      // счёт с налогом рвал журнал на разницу курса.
+      credit: entry.taxAmount * (this.saleInvoice.exchangeRate || 1),
       accountId: this.taxPayableAccountId,
       index: index + 1,
       indexGroup: 30,

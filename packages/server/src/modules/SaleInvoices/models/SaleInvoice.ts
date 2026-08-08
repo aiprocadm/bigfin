@@ -176,9 +176,18 @@ export class SaleInvoice extends TenantBaseModel {
    * @returns {number}
    */
   get discountAmount() {
+    // Скидка необязательна: без страховки процентная ветка считала
+    // subtotal * (undefined / 100) = NaN, и весь итог документа превращался
+    // в «не число». На объектах, собранных из DTO, это и происходило.
+    // ВНИМАНИЕ: defaultTo здесь из ramda — значение по умолчанию идёт ПЕРВЫМ
+    // аргументом (в lodash наоборот). Перепутанный порядок молча возвращает
+    // «умолчание» всегда.
+    const discount = defaultTo(0, this.discount);
+    const subtotal = defaultTo(0, this.subtotal);
+
     return this.discountType === DiscountType.Amount
-      ? this.discount
-      : this.subtotal * (this.discount / 100);
+      ? discount
+      : subtotal * (discount / 100);
   }
 
   /**
@@ -210,13 +219,26 @@ export class SaleInvoice extends TenantBaseModel {
    * @returns {number}
    */
   get total() {
-    const adjustmentAmount = defaultTo(this.adjustment, 0);
+    // Порядок аргументов ramda: defaultTo(умолчание, значение). Раньше здесь
+    // было defaultTo(this.adjustment, 0) — то есть «умолчание = корректировка,
+    // значение = 0», и корректировка документа МОЛЧА отбрасывалась всегда.
+    const adjustmentAmount = defaultTo(0, this.adjustment);
+    // Налог может быть не заполнен (документы без НДС) — без страховки
+    // сложение с null давало «не число» у большинства счетов.
+    const taxAmount = defaultTo(0, this.taxAmountWithheld);
+    const subtotal = defaultTo(0, this.subtotal);
 
+    // Условие было перевёрнуто: налог прибавлялся, КОГДА он уже включён в
+    // цену. При «НДС сверху» покупателю выставлялась сумма без налога, а
+    // журнал расходился ровно на налог (дебиторка 100 000 против кредита
+    // 100 000 выручки + 20 000 налога). Подытог включает налог только при
+    // «НДС в цене» (см. subtotalExludingTax), поэтому прибавлять его надо
+    // в противоположном случае.
     return R.compose(
       R.add(adjustmentAmount),
       R.subtract(R.__, this.discountAmount),
-      R.when(R.always(this.isInclusiveTax), R.add(this.taxAmountWithheld)),
-    )(this.subtotal);
+      R.when(R.always(!this.isInclusiveTax), R.add(taxAmount)),
+    )(subtotal);
   }
 
   /**
@@ -248,7 +270,14 @@ export class SaleInvoice extends TenantBaseModel {
    * @return {number}
    */
   get balanceAmount() {
-    return this.paymentAmount + this.writtenoffAmount + this.creditedAmount;
+    // Колонка «списано» заведена без значения по умолчанию: из базы приходит
+    // null (в арифметике это ноль), но у объекта, собранного в коде, поля
+    // может не быть вовсе — и тогда остаток к оплате стал бы «не числом».
+    return (
+      defaultTo(0, this.paymentAmount) +
+      defaultTo(0, this.writtenoffAmount) +
+      defaultTo(0, this.creditedAmount)
+    );
   }
 
   /**

@@ -20,6 +20,25 @@ export const TaxPayableAccount = {
   predefined: true,
 };
 
+/**
+ * НДС по приобретённым ценностям («входящий», к вычету).
+ *
+ * Отдельный счёт-актив: смешивать входящий налог с исходящим на одном
+ * пассивном счёте нельзя — они уменьшают друг друга только при расчёте с
+ * бюджетом, а в учёте это разные вещи (в российском плане счетов 19 и 68).
+ * Без этого счёта «НДС к вычету» в анализе НДС всегда оставался нулём.
+ */
+export const TaxReceivableAccount = {
+  name: 'НДС к вычету',
+  slug: 'tax-receivable',
+  accountType: 'other-current-asset',
+  code: '10198',
+  description: '',
+  active: true,
+  index: 1,
+  predefined: true,
+};
+
 export const UnearnedRevenueAccount = {
   name: 'Unearned Revenue',
   slug: 'unearned-revenue',

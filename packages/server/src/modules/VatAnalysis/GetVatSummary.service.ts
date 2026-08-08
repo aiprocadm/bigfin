@@ -2,12 +2,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { computeVatSummary, VatSummary } from './computeVatSummary';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
-import { ACCOUNT_TYPE } from '@/modules/Accounts/Accounts.constants';
+import {
+  ACCOUNT_TYPE,
+  TaxReceivableAccount,
+} from '@/modules/Accounts/Accounts.constants';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
+const TAX_RECEIVABLE_SLUG = TaxReceivableAccount.slug;
+
 /**
- * Собирает сводку по НДС (㉖) из движений ГЛ по счетам «НДС к уплате»
- * (`tax-payable`) за период: кредит = начислен с продаж, дебет = к вычету.
+ * Собирает сводку по НДС (㉖) за период из движений ГЛ:
+ * начисленный налог — кредит счёта «Налоги к уплате» (пассив),
+ * налог к вычету — дебет счёта «НДС к вычету» (актив).
  */
 @Injectable()
 export class GetVatSummaryService {
@@ -28,11 +34,22 @@ export class GetVatSummaryService {
     fromDate: string,
     toDate: string,
   ): Promise<VatSummary> {
+    // Начисленный НДС живёт на пассивном счёте «Налоги к уплате», а входящий
+    // (к вычету) — на отдельном активном счёте «НДС к вычету». Раньше модуль
+    // читал только первый и считал вычетом ЛЮБОЙ его дебет, включая уплату
+    // налога в бюджет: вычет всегда был нулём, а «к уплате» — завышен.
     const taxAccounts = await this.accountModel()
       .query()
-      .where('accountType', ACCOUNT_TYPE.TAX_PAYABLE);
+      .where('accountType', ACCOUNT_TYPE.TAX_PAYABLE)
+      .orWhere('slug', TAX_RECEIVABLE_SLUG);
 
     if (!taxAccounts.length) return computeVatSummary([]);
+
+    const receivableIds = new Set(
+      taxAccounts
+        .filter((a: any) => a.slug === TAX_RECEIVABLE_SLUG)
+        .map((a: any) => a.id),
+    );
 
     const ids = taxAccounts.map((a: any) => a.id);
     const nameById = new Map<number, string>(
@@ -49,12 +66,22 @@ export class GetVatSummaryService {
       .sum('credit as credit')
       .sum('debit as debit');
 
-    const rows = (sums as any[]).map((s) => ({
-      accountId: s.accountId,
-      accountName: nameById.get(s.accountId) ?? '',
-      credit: Number(s.credit) || 0,
-      debit: Number(s.debit) || 0,
-    }));
+    const rows = (sums as any[]).map((s) => {
+      const isReceivable = receivableIds.has(s.accountId);
+      const credit = Number(s.credit) || 0;
+      const debit = Number(s.debit) || 0;
+
+      return {
+        accountId: s.accountId,
+        accountName: nameById.get(s.accountId) ?? '',
+        // На счёте «НДС к вычету» вычет — это ДЕБЕТ (входящий налог), а на
+        // счёте «Налоги к уплате» начисление — КРЕДИТ. Дебет пассивного
+        // налогового счёта — это уплата налога в бюджет, а не вычет,
+        // поэтому вычетом он больше не считается.
+        credit: isReceivable ? 0 : credit,
+        debit: isReceivable ? debit : 0,
+      };
+    });
 
     return computeVatSummary(rows);
   }

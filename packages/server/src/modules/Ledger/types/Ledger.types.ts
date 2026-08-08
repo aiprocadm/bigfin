@@ -5,6 +5,10 @@ export interface ILedger {
   entries: ILedgerEntry[];
 
   getEntries(): ILedgerEntry[];
+  /** Разница дебета и кредита; ноль — двойная запись соблюдена. */
+  getDebitCreditDifference(): number;
+  /** Сходится ли журнал (с копеечным допуском). */
+  isBalanced(): boolean;
 
   filter(cb: (entry: ILedgerEntry) => boolean): ILedger;
 

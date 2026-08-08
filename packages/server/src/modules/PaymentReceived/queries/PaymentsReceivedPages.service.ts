@@ -30,7 +30,9 @@ export class PaymentsReceivedPagesService {
       entryType: 'invoice',
       invoiceId: invoice.id,
       invoiceNo: invoice.invoiceNo,
-      amount: invoice.balance,
+      // Сумма счёта — это ИТОГ с налогом, а не колонка balance (подытог):
+      // в форме оплаты рядом стоял остаток 120 000 и сумма счёта 100 000.
+      amount: invoice.total,
       dueAmount: invoice.dueAmount,
       paymentAmount: invoice.paymentAmount,
       totalPaymentAmount: invoice.paymentAmount,

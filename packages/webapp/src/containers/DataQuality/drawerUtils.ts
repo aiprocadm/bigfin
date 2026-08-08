@@ -31,6 +31,13 @@ export function resolveReferenceDrawer(
         name: DRAWERS.EXPENSE_DETAILS,
         payload: { expenseId: referenceId },
       };
+    // Обычные банковские приходы/расходы (BankTransactionGL) — самый частый
+    // тип у «операций без статьи»; без этого кейса они были некликабельны.
+    case 'CashflowTransaction':
+      return {
+        name: DRAWERS.CASHFLOW_TRNASACTION_DETAILS,
+        payload: { referenceId },
+      };
     // Manual journals write GL entries with referenceType 'Journal'
     // (see server ManualJournalGL); keep 'ManualJournal' as an alias.
     case 'Journal':

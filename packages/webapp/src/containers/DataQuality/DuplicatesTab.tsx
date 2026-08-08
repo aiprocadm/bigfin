@@ -114,6 +114,15 @@ export function DuplicatesTab({ fromDate, toDate }: Props) {
           />
         ))}
       </div>
+      {/* Сервер ограничивает выдачу первыми 100 группами. */}
+      {(data?.totalGroups ?? 0) > groups.length && (
+        <div className="text-muted-foreground text-xs">
+          {intl.get('data_quality.duplicates.truncated', {
+            shown: groups.length,
+            total: data?.totalGroups,
+          })}
+        </div>
+      )}
     </div>
   );
 }

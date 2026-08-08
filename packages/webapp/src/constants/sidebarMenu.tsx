@@ -885,6 +885,12 @@ export const SidebarMenu = [
     feature: Features.FinancialRatios,
   },
   {
+    text: <T id={'sidebar.data_quality'} />,
+    href: '/data-quality',
+    type: ISidebarMenuItemType.Link,
+    feature: Features.DataQuality,
+  },
+  {
     text: <T id={'sidebar.crm_integration'} />,
     href: '/crm-integration',
     type: ISidebarMenuItemType.Link,

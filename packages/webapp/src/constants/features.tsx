@@ -23,5 +23,6 @@ export const Features = {
   VatAnalysis: 'vat_analysis', // ㉖ анализ НДС
   RuPrintForms: 'ru_print_forms', // ②c печатные формы РФ (счёт на оплату и др.)
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
+  DataQuality: 'data_quality', // ㉗ качество данных (без статьи/дубли/ОПиУ↔ДДС)
   CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
 }

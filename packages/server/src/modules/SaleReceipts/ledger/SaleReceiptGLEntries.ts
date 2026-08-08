@@ -36,11 +36,15 @@ export class SaleReceiptGLEntries {
     // Find or create the other charges account.
     const otherChargesAccount =
       await this.accountRepository.findOrCreateOtherChargesAccount({}, trx);
+    // Счёт начисленного НДС — тот же, что у счетов покупателям.
+    const taxPayableAccount =
+      await this.accountRepository.findOrCreateTaxPayable({}, trx);
 
     // Retrieves the income ledger.
     const incomeLedger = new SaleReceiptGL(saleReceipt)
       .setDiscountAccountId(discountAccount.id)
       .setOtherChargesAccountId(otherChargesAccount.id)
+      .setTaxPayableAccountId(taxPayableAccount.id)
       .getIncomeLedger();
 
     // Commits the ledger entries to the storage.

@@ -36,6 +36,10 @@ const ExtendedModel = R.pipe(
 @InjectModelDefaultViews(SaleReceiptDefaultViews)
 export class SaleReceipt extends ExtendedModel {
   public amount!: number;
+  /** Налог документа = сумма налогов позиций (Д1: НДС в чеках). */
+  public taxAmountWithheld!: number;
+  /** «НДС в цене»: подытог уже включает налог. */
+  public isInclusiveTax!: boolean;
   public exchangeRate!: number;
   public currencyCode!: string;
   public depositAccountId!: number;
@@ -89,6 +93,7 @@ export class SaleReceipt extends ExtendedModel {
 
       'subtotal',
       'subtotalLocal',
+      'subtotalExcludingTax',
 
       'total',
       'totalLocal',
@@ -136,10 +141,27 @@ export class SaleReceipt extends ExtendedModel {
    * Discount amount.
    * @returns {number}
    */
-  get discountAmount() {
+  get discountAmount(): number {
+    // defaultTo здесь из lodash (значение первым): без страховки процентная
+    // ветка от незаполненной скидки давала «не число» и портила итог.
+    const discount = defaultTo(this.discount, 0);
+    const subtotal = defaultTo(this.subtotal, 0);
+
     return this.discountType === DiscountType.Amount
-      ? this.discount
-      : this.subtotal * (this.discount / 100);
+      ? discount
+      : subtotal * (discount / 100);
+  }
+
+  /**
+   * Сумма чека без налога. Подытог включает налог только при «НДС в цене» —
+   * как у счетов покупателям.
+   * @returns {number}
+   */
+  get subtotalExcludingTax(): number {
+    const subtotal = defaultTo(this.subtotal, 0);
+    const taxAmount = defaultTo(this.taxAmountWithheld, 0);
+
+    return this.isInclusiveTax ? subtotal - taxAmount : subtotal;
   }
 
   /**
@@ -164,8 +186,14 @@ export class SaleReceipt extends ExtendedModel {
    */
   get total(): number {
     const adjustmentAmount = defaultTo(this.adjustment, 0);
+    const subtotal = defaultTo(this.subtotal, 0);
+    // Налог прибавляется, когда он НЕ включён в цену (при «НДС в цене» он уже
+    // сидит в подытоге). Раньше чек про налог не знал вовсе: в кассу попадала
+    // сумма без НДС, а сам налог никуда не проводился.
+    const taxAmount = defaultTo(this.taxAmountWithheld, 0);
+    const taxAddon = this.isInclusiveTax ? 0 : taxAmount;
 
-    return this.subtotal - this.discountAmount + adjustmentAmount;
+    return subtotal - this.discountAmount + adjustmentAmount + taxAddon;
   }
 
   /**

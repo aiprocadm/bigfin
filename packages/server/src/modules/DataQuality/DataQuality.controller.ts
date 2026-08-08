@@ -1,15 +1,17 @@
 // © 2026 Bigfin
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { DataQualityApplication } from './DataQuality.application';
 import { DataQualityQueryDto } from './dtos/DataQualityQuery.dto';
 
 /**
  * Отчёт «Качество данных» — read-only, считается на лету. Чтение доступно
  * авторизованному пользователю (без отдельного CASL-subject, как Deals/Debts).
+ * Единственная операция записи — перепроведение — закрыта правом «управление».
  */
 @Controller('data-quality')
 @ApiTags('Data quality')
@@ -48,5 +50,15 @@ export class DataQualityController {
   })
   getUnbalancedJournals(@Query() query: DataQualityQueryDto) {
     return this.application.getUnbalancedJournals(query);
+  }
+
+  @Post('repost-vat-documents')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({
+    summary:
+      'Re-posts VAT documents of the period: recalculates document tax from its entries and rewrites GL entries.',
+  })
+  repostVatDocuments(@Query() query: DataQualityQueryDto) {
+    return this.application.repostVatDocuments(query);
   }
 }

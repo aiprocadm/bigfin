@@ -1,5 +1,7 @@
 // © 2026 Bigfin
+import { useMutation, useQueryClient, UseMutationOptions } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
+import useApiRequest from '../useRequest';
 import t from './types';
 
 export interface DataQualityPeriodQuery {
@@ -50,6 +52,35 @@ export function useDataQualityUnbalanced(
     {
       select: (res: any) => res.data?.data ?? res.data,
       defaultData: { journals: [], totalJournals: 0, totalDifference: 0 },
+      ...props,
+    },
+  );
+}
+
+/**
+ * Перепроведение документов с НДС за период.
+ *
+ * Операция меняет журнал, поэтому после неё сбрасываем кэш проверок качества
+ * данных и финансовых отчётов — иначе на экране останутся прежние цифры.
+ */
+export function useRepostVatDocuments(
+  props?: UseMutationOptions<any, any, DataQualityPeriodQuery>,
+) {
+  const client = useQueryClient();
+  const apiRequest: any = useApiRequest();
+
+  return useMutation<any, any, DataQualityPeriodQuery>(
+    (query) =>
+      apiRequest.post('data-quality/repost-vat-documents', {}, { params: query }),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.DATA_QUALITY_UNBALANCED);
+        client.invalidateQueries(t.DATA_QUALITY_DUPLICATES);
+        client.invalidateQueries(t.DATA_QUALITY_PL_CASHFLOW);
+        client.invalidateQueries(t.FINANCIAL_REPORT);
+        // Отчёт по НДС ходит по собственному ключу, без общего справочника.
+        client.invalidateQueries('vat_analysis');
+      },
       ...props,
     },
   );

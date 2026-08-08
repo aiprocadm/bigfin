@@ -5,6 +5,7 @@ import { GetUnmappedOperationsService } from './queries/GetUnmappedOperations.se
 import { GetPossibleDuplicatesService } from './queries/GetPossibleDuplicates.service';
 import { GetPlCashflowComparisonService } from './queries/GetPlCashflowComparison.service';
 import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
+import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service';
 
 @Injectable()
 export class DataQualityApplication {
@@ -13,6 +14,7 @@ export class DataQualityApplication {
     private readonly getPossibleDuplicatesService: GetPossibleDuplicatesService,
     private readonly getPlCashflowComparisonService: GetPlCashflowComparisonService,
     private readonly getUnbalancedJournalsService: GetUnbalancedJournalsService,
+    private readonly repostVatDocumentsService: RepostVatDocumentsService,
   ) {}
 
   public getUnmappedOperations(query: DataQualityQueryDto) {
@@ -29,5 +31,9 @@ export class DataQualityApplication {
 
   public getUnbalancedJournals(query: DataQualityQueryDto) {
     return this.getUnbalancedJournalsService.getUnbalancedJournals(query);
+  }
+
+  public repostVatDocuments(query: DataQualityQueryDto) {
+    return this.repostVatDocumentsService.repost(query);
   }
 }

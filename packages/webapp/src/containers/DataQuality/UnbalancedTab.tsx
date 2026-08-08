@@ -1,8 +1,13 @@
 // © 2026 Bigfin
 import React from 'react';
 import intl from 'react-intl-universal';
+import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useDrawerActions } from '@/hooks/state/dashboard';
-import { useDataQualityUnbalanced } from '@/hooks/query/dataQuality';
+import {
+  useDataQualityUnbalanced,
+  useRepostVatDocuments,
+} from '@/hooks/query/dataQuality';
 import { resolveReferenceDrawer } from './drawerUtils';
 import { fmt, fmtDate, refTypeLabel } from './utils';
 
@@ -22,12 +27,29 @@ export function UnbalancedTab({ fromDate, toDate }: Props) {
   const { data } = useDataQualityUnbalanced({ fromDate, toDate }, {});
   const { openDrawer } = useDrawerActions();
 
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [repostResult, setRepostResult] = React.useState<any>(null);
+  const [repostError, setRepostError] = React.useState(false);
+
+  const { mutateAsync: repost, isLoading: isReposting } =
+    useRepostVatDocuments();
+
   const journals: any[] = data?.journals ?? [];
   const total = data?.totalJournals ?? 0;
 
   const handleClick = (row: any) => {
     const target = resolveReferenceDrawer(row.referenceType, row.referenceId);
     if (target) openDrawer(target.name, target.payload);
+  };
+
+  const handleRepost = () => {
+    setConfirmOpen(false);
+    setRepostError(false);
+    setRepostResult(null);
+
+    repost({ fromDate, toDate })
+      .then((res: any) => setRepostResult(res?.data?.data ?? res?.data ?? {}))
+      .catch(() => setRepostError(true));
   };
 
   return (
@@ -38,6 +60,56 @@ export function UnbalancedTab({ fromDate, toDate }: Props) {
       <p className="text-muted-foreground text-sm">
         {intl.get('data_quality.unbalanced.hint')}
       </p>
+
+      <div className="bg-muted/40 flex flex-col gap-2 rounded-md border p-3">
+        <p className="text-muted-foreground text-sm">
+          {intl.get('data_quality.repost.hint')}
+        </p>
+        <div>
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={isReposting}
+            onClick={() => setConfirmOpen(true)}
+          >
+            {isReposting
+              ? intl.get('data_quality.repost.running')
+              : intl.get('data_quality.repost.button')}
+          </Button>
+        </div>
+        {repostResult && (
+          <div className="text-sm">
+            {repostResult.totalReposted > 0
+              ? intl.get('data_quality.repost.done', {
+                  reposted: repostResult.totalReposted,
+                  taxUpdated: repostResult.totalTaxUpdated ?? 0,
+                })
+              : intl.get('data_quality.repost.nothing')}
+            {repostResult.totalFailed > 0 && (
+              <span className="ml-1 text-red-600">
+                {intl.get('data_quality.repost.failed', {
+                  failed: repostResult.totalFailed,
+                })}
+              </span>
+            )}
+          </div>
+        )}
+        {repostError && (
+          <div className="text-sm text-red-600">
+            {intl.get('data_quality.repost.error')}
+          </div>
+        )}
+      </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={intl.get('data_quality.repost.confirm_title')}
+        description={intl.get('data_quality.repost.confirm_description')}
+        confirmLabel={intl.get('data_quality.repost.confirm_label')}
+        loading={isReposting}
+        onConfirm={handleRepost}
+        onCancel={() => setConfirmOpen(false)}
+      />
 
       {journals.length > 0 && (
         <div className="text-sm">

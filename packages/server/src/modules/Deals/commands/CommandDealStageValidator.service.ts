@@ -21,11 +21,18 @@ export class CommandDealStageValidatorService {
       status?: string;
       closedDate?: string;
     },
+    // При частичном изменении название можно не присылать («просто закрыть
+    // этап»), но если прислали — пустым оно быть не может.
+    options: { nameRequired?: boolean } = { nameRequired: true },
   ) {
     const deal = await this.dealModel().query().findById(dealId);
     if (!deal) throw new ServiceError(ERRORS.DEAL_NOT_FOUND);
 
-    if (!dto.name || !dto.name.trim()) {
+    const nameOmitted = dto.name === undefined;
+    if (
+      (options.nameRequired !== false || !nameOmitted) &&
+      (!dto.name || !dto.name.trim())
+    ) {
       throw new ServiceError(ERRORS.STAGE_NAME_REQUIRED);
     }
     // reject negatives and NaN (NaN >= 0 is false); guards direct calls bypassing DTO validation

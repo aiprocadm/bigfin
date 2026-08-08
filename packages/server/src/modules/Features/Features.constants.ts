@@ -4,7 +4,7 @@ import { Features } from '@/common/types/Features';
 /**
  * Пользовательские продуктовые модули, переключаемые на странице Настройки → Модули.
  * Технические/под-флаги (customers_list_v2, vendors_list_v2, interface_modes,
- * payroll_kpi, deal_stages, bank_statement_import, BankSyncing) намеренно НЕ включены —
+ * payroll_kpi, bank_statement_import, BankSyncing) намеренно НЕ включены —
  * их переключение пользователем может сломать экран.
  */
 export const MODULE_ALLOWLIST: string[] = [
@@ -17,6 +17,10 @@ export const MODULE_ALLOWLIST: string[] = [
   // Тумблер кассового метода в ОПиУ: включение лишь показывает селектор в
   // настройках отчёта, ничего не ломает — а другого способа включить его нет.
   Features.RU_PRINT_FORMS, Features.ACCRUAL_PNL,
+  // Поэтапное признание выручки по сделке: включение лишь показывает секцию
+  // «Этапы» внутри карточки сделки, ничего не ломает — а иначе владельцу
+  // нечем его включить, кроме прямого SQL.
+  Features.DEAL_STAGES,
   // Интеграции
   Features.BANK_API_SYNC, Features.ACQUIRING, Features.ZENMONEY_IMPORT, Features.ONEC_EXPORT, Features.TELEGRAM_QUICK_ENTRY, Features.ONEC_IMPORT,
   Features.MOYSKLAD, Features.MARKETPLACES, Features.CRM_INTEGRATION,

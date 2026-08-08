@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import * as moment from 'moment';
+
 export interface StageInput {
   plannedRevenue: number;
   plannedCost: number;
@@ -35,7 +37,10 @@ export function recognizeStagesByPeriod(
   const out: Record<string, StageAmounts> = {};
   for (const s of stages) {
     if (!isRecognized(s)) continue;
-    const period = String(s.closedDate).slice(0, 7);
+    // Драйвер MySQL отдаёт колонку типа DATE объектом Date, а не строкой:
+    // обрезание первых 7 символов давало «Mon Jul» вместо «2026-07», и все
+    // этапы с одинаковым днём недели схлопывались в одну кучу.
+    const period = moment(s.closedDate).format('YYYY-MM');
     const prev = out[period] ?? amounts(0, 0);
     out[period] = amounts(
       prev.revenue + Number(s.plannedRevenue || 0),

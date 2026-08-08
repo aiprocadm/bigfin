@@ -4,9 +4,12 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsIn, IsNumber, IsString, Min } from 'class-validator';
 
 class CommandDealStageDto {
+  // Необязательно в базе: при изменении этапа название можно не присылать
+  // (см. EditDealStageDto). Для создания оно обязательно — CreateDealStageDto.
   @IsString()
-  @ApiProperty({ example: 'Проект' })
-  name: string;
+  @IsOptional()
+  @ApiPropertyOptional({ example: 'Проект' })
+  name?: string;
 
   @ToNumber()
   @IsNumber()
@@ -39,5 +42,29 @@ class CommandDealStageDto {
   closedDate?: string;
 }
 
-export class CreateDealStageDto extends CommandDealStageDto {}
+/** При создании этапа название обязательно. */
+export class CreateDealStageDto extends CommandDealStageDto {
+  @IsString()
+  @ApiProperty({ example: 'Проект' })
+  name: string;
+}
+
+/**
+ * При изменении этапа название необязательно: «просто закрыть этап» — это
+ * PUT {status, closedDate} без остальных полей. Раньше такой запрос падал
+ * с 400, и частичное изменение через API было невозможно.
+ */
 export class EditDealStageDto extends CommandDealStageDto {}
+
+/** Период выборки этапов: даты обязаны быть датами (раньше не проверялись). */
+export class GetDealStagesQueryDto {
+  @IsDateString()
+  @IsOptional()
+  @ApiPropertyOptional({ example: '2026-01-01' })
+  fromDate?: string;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiPropertyOptional({ example: '2026-12-31' })
+  toDate?: string;
+}

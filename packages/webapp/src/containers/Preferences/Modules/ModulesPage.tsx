@@ -48,6 +48,7 @@ const MODULE_GROUPS: { group: string; features: string[] }[] = [
       'mgmt_articles', 'deals', 'cost_allocation', 'debts', 'payment_requests',
       'dividends', 'credits', 'fixed_assets', 'payroll', 'vat_analysis',
       'financial_ratios', 'data_quality', 'ru_print_forms', 'accrual_pnl',
+      'deal_stages',
     ],
   },
   {
@@ -79,6 +80,7 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   financial_ratios: Gauge,
   data_quality: ShieldCheck,
   accrual_pnl: Calculator,
+  deal_stages: ListTree,
   bank_api_sync: Landmark,
   acquiring: CreditCard,
   zenmoney_import: Download,

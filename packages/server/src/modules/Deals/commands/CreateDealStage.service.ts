@@ -20,8 +20,25 @@ export class CreateDealStageService {
   public async create(dealId: number, dto: CreateDealStageDto) {
     await this.validator.validate(dealId, dto as any);
 
-    return this.uow.withTransaction((trx: Knex.Transaction) =>
-      this.stageModel().query(trx).insertAndFetch({ ...(dto as any), dealId }),
-    );
+    return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      // Поля «порядок» в форме нет, а сортировка выдачи идёт по нему: без
+      // этого все этапы получали sortOrder = 0 и выстраивались произвольно.
+      // Новый этап встаёт в конец списка.
+      const sortOrder =
+        dto.sortOrder ?? (await this.nextSortOrder(dealId, trx));
+
+      return this.stageModel()
+        .query(trx)
+        .insertAndFetch({ ...(dto as any), sortOrder, dealId });
+    });
+  }
+
+  private async nextSortOrder(dealId: number, trx: Knex.Transaction) {
+    const last: any = await this.stageModel()
+      .query(trx)
+      .where('dealId', dealId)
+      .orderBy('sortOrder', 'desc')
+      .first();
+    return (Number(last?.sortOrder) || 0) + 1;
   }
 }

@@ -7,7 +7,11 @@ import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { DealStagesApplication } from './DealStages.application';
-import { CreateDealStageDto, EditDealStageDto } from './dtos/DealStage.dto';
+import {
+  CreateDealStageDto,
+  EditDealStageDto,
+  GetDealStagesQueryDto,
+} from './dtos/DealStage.dto';
 
 @Controller('deals/:dealId/stages')
 @ApiTags('Deals')
@@ -20,10 +24,12 @@ export class DealStagesController {
   @ApiOperation({ summary: 'List a deal\'s stages with recognition summary.' })
   list(
     @Param('dealId', ParseIntPipe) dealId: number,
-    @Query('fromDate') fromDate?: string,
-    @Query('toDate') toDate?: string,
+    @Query() query: GetDealStagesQueryDto,
   ) {
-    return this.application.list(dealId, { fromDate, toDate });
+    return this.application.list(dealId, {
+      fromDate: query.fromDate,
+      toDate: query.toDate,
+    });
   }
 
   @Post()

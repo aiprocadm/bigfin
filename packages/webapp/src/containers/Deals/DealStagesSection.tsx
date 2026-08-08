@@ -33,6 +33,11 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
     fact: { revenue: 0, costs: 0, profit: 0 },
   };
 
+  // «Факт 0 ₽» чаще означает не «сработали в ноль», а «к сделке не привязана
+  // ни одна операция» — молчаливый ноль вводил в заблуждение.
+  const factIsEmpty =
+    !summary.fact?.revenue && !summary.fact?.costs && !summary.fact?.profit;
+
   const onDelete = async (stageId: number) => {
     try {
       await del.mutateAsync(stageId);
@@ -53,17 +58,30 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
         <Button size="sm" onClick={openAdd}>{intl.get('deal_stages.action.add')}</Button>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 text-sm">
+        {/* Три строки сводки считались по-разному (прогресс — по выручке,
+            остальное — по прибыли), но подписи об этом молчали: «Прогресс 30 %»
+            рядом с «Признано 60 000 ₽» не сходились у пользователя в голове.
+            Теперь у каждого числа написано, выручка это или прибыль. */}
         <div className="flex items-center justify-between">
-          <span>{intl.get('deal_stages.progress')}</span>
+          <span>{intl.get('deal_stages.progress_by_revenue')}</span>
           <span className="font-medium">{pct(summary.progress)}</span>
         </div>
         <div className="text-muted-foreground flex justify-between">
           <span>{intl.get('deal_stages.recognized')}</span>
-          <span>{fmt(summary.recognized.profit)}</span>
+          <span>
+            {intl.get('deal_stages.metric.revenue')} {fmt(summary.recognized.revenue)}
+            {' · '}
+            {intl.get('deal_stages.metric.profit')} {fmt(summary.recognized.profit)}
+          </span>
         </div>
         <div className="text-muted-foreground flex justify-between">
-          <span>{intl.get('deal_stages.plan')} / {intl.get('deal_stages.fact')}</span>
-          <span>{fmt(summary.planned.profit)} / {fmt(summary.fact.profit)}</span>
+          <span>{intl.get('deal_stages.plan_fact_profit')}</span>
+          <span>
+            {fmt(summary.planned.profit)} /{' '}
+            {factIsEmpty
+              ? intl.get('deal_stages.fact_no_operations')
+              : fmt(summary.fact.profit)}
+          </span>
         </div>
 
         <div className="flex flex-col divide-y rounded-md border">
@@ -76,7 +94,13 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
                 <span className="font-medium">{s.name}</span>
                 <span className="text-muted-foreground">
                   {intl.get(`deal_stages.status.${s.status}`)}
-                  {s.closedDate ? ` · ${formatShortDate(s.closedDate)}` : ''} · {fmt(s.plannedRevenue)} → {fmt(s.plannedCost)}
+                  {s.closedDate ? ` · ${formatShortDate(s.closedDate)}` : ''}
+                  {' · '}
+                  {/* Раньше здесь была стрелка «150 000 ₽ → 90 000 ₽», и её
+                      читали как «план → факт», хотя это выручка и расходы. */}
+                  {intl.get('deal_stages.field.planned_revenue')}: {fmt(s.plannedRevenue)}
+                  {' · '}
+                  {intl.get('deal_stages.field.planned_cost')}: {fmt(s.plannedCost)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -97,7 +121,13 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
         </div>
 
         {showForm && (
+          // key по этапу: форма живёт рядом со списком и не блокирует его,
+          // поэтому переключение «Изменить»/«Закрыть этап» на другой этап
+          // обязано пересоздать форму. Без этого React переиспользовал узлы,
+          // в полях оставались суммы прежнего этапа — и сохранение записывало
+          // их в другой этап (приёмка ㉘ воспроизвела вживую).
           <DealStageDialog
+            key={editing?.id ?? 'new'}
             dealId={dealId}
             stage={editing}
             defaultStatus={defaultStatus}

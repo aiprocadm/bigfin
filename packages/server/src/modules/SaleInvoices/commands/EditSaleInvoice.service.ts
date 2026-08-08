@@ -95,8 +95,13 @@ export class EditSaleInvoice {
       );
     }
     // Validate the invoice amount is not smaller than the invoice payment amount.
+    // Сравнивать надо ИТОГ документа (с налогом), а не колонку balance —
+    // это подытог без налога, и счёт с «НДС сверху», оплаченный полностью,
+    // нельзя было отредактировать: 120 000 оплаты против 100 000 подытога.
+    const invoiceTotal = Object.assign(new SaleInvoice(), saleInvoiceObj).total;
+
     this.validators.validateInvoiceAmountBiggerPaymentAmount(
-      saleInvoiceObj.balance,
+      invoiceTotal,
       oldSaleInvoice.paymentAmount,
     );
     // Edit sale invoice transaction in UOW envirment.

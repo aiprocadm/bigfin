@@ -48,6 +48,11 @@ export class BillGLEntries {
     const taxPayableAccount =
       await this.accountRepository.findOrCreateTaxPayable({}, trx);
 
+    // Счёт входящего НДС: отдельный актив, а не тот же пассивный счёт, что
+    // у продаж (в российском учёте это 19 и 68).
+    const taxReceivableAccount =
+      await this.accountRepository.findOrCreateTaxReceivable({}, trx);
+
     // Find or create other expenses account.
     const otherExpensesAccount =
       await this.accountRepository.findOrCreateOtherExpensesAccount({}, trx);
@@ -60,6 +65,7 @@ export class BillGLEntries {
     const billLedger = new BillGL(bill)
       .setPayableAccountId(APAccount.id)
       .setTaxPayableAccountId(taxPayableAccount.id)
+      .setTaxReceivableAccountId(taxReceivableAccount.id)
       .setPurchaseDiscountAccountId(purchaseDiscountAccount.id)
       .setOtherExpensesAccountId(otherExpensesAccount.id)
       .getBillLedger();

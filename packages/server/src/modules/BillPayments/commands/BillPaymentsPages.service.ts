@@ -96,7 +96,8 @@ export class BillPaymentsPages {
       entryType: 'invoice',
       billId: bill.id,
       billNo: bill.billNumber,
-      amount: bill.amount,
+      // Итог с налогом вместо подытога — как у счетов покупателям.
+      amount: bill.total,
       dueAmount: bill.dueAmount,
       totalPaymentAmount: bill.paymentAmount,
       paymentAmount: bill.paymentAmount,

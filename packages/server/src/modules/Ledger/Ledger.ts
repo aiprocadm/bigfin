@@ -36,6 +36,29 @@ export class Ledger implements ILedger {
   }
 
   /**
+   * Разница дебета и кредита журнала. Ноль — двойная запись соблюдена.
+   */
+  public getDebitCreditDifference(): number {
+    return this.entries.reduce(
+      (sum, entry) =>
+        sum + (Number(entry.debit) || 0) - (Number(entry.credit) || 0),
+      0,
+    );
+  }
+
+  /**
+   * Сходится ли журнал.
+   *
+   * Допуск в половину копейки: суммы строк считаются на лету с полной
+   * точностью, а часть входных величин приходит из округлённых колонок
+   * (налог — два знака), поэтому «хвосты» вещественных чисел не должны
+   * считаться расхождением. Настоящие перекосы — это рубли, а не копейки.
+   */
+  public isBalanced(): boolean {
+    return Math.abs(this.getDebitCreditDifference()) < 0.005;
+  }
+
+  /**
    * Filters entries by th given contact id and returns a new ledger.
    * @param   {number} contactId
    * @returns {ILedger}

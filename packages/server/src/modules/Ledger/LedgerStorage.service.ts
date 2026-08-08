@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ILedger } from './types/Ledger.types';
 import { LedgerContactsBalanceStorage } from './LedgerContactStorage.service';
 import { LedegrAccountsStorage } from './LedgetAccountStorage.service';
@@ -10,6 +10,8 @@ import { TenantModelProxy } from '../System/models/TenantBaseModel';
 
 @Injectable()
 export class LedgerStorageService {
+  private readonly logger = new Logger(LedgerStorageService.name);
+
   /**
    * @param {LedgerContactsBalanceStorage} ledgerContactsBalance - Ledger contacts balance storage.
    * @param {LedegrAccountsStorage} ledgerAccountsBalance - Ledger accounts balance storage.
@@ -35,6 +37,13 @@ export class LedgerStorageService {
     ledger: ILedger,
     trx?: Knex.Transaction,
   ): Promise<void> => {
+    // Предохранитель двойной записи. Раньше журнал записывался молча, каким
+    // бы он ни был: перекос счёта с НДС (−20 000 ₽) и перекос списания ОС
+    // осели в Балансе никем не замеченными. Пока — предупреждение в журнал
+    // приложения, чтобы увидеть остатки исторических перекосов и не сломать
+    // перепроведение; после периода тишины предупреждение станет ошибкой.
+    this.warnIfUnbalanced(ledger);
+
     const tasks = [
       // Saves the ledger entries.
       this.ledgerEntriesService.saveEntries(ledger, trx),
@@ -47,6 +56,22 @@ export class LedgerStorageService {
     ];
     await Promise.all(tasks);
   };
+
+  /** Пишет предупреждение, если дебет не сходится с кредитом. */
+  private warnIfUnbalanced(ledger: ILedger): void {
+    const asLedger = ledger as Ledger;
+    if (typeof asLedger.isBalanced !== 'function' || asLedger.isBalanced()) {
+      return;
+    }
+    const first = asLedger.getEntries()[0];
+    this.logger.warn(
+      `Журнал не сходится на ${asLedger
+        .getDebitCreditDifference()
+        .toFixed(2)} — ${first?.transactionType ?? '?'} #${
+        first?.transactionId ?? '?'
+      }`,
+    );
+  }
 
   /**
    * Deletes the given ledger and revert balances.

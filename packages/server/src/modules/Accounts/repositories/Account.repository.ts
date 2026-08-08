@@ -13,6 +13,7 @@ import {
   PurchaseDiscountAccount,
   StripeClearingAccount,
   TaxPayableAccount,
+  TaxReceivableAccount,
   UnearnedRevenueAccount,
 } from '../Accounts.constants';
 
@@ -171,6 +172,26 @@ export class AccountRepository extends TenantRepository {
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
         ...TaxPayableAccount,
+        ...extraAttrs,
+      });
+    }
+    return result;
+  }
+
+  /**
+   * Счёт входящего НДС («к вычету»). Создаётся при первой закупке с налогом.
+   */
+  async findOrCreateTaxReceivable(
+    extraAttrs: Record<string, string> = {},
+    trx?: Knex.Transaction,
+  ) {
+    let result = await this.model
+      .query(trx)
+      .findOne({ slug: TaxReceivableAccount.slug, ...extraAttrs });
+
+    if (!result) {
+      result = await this.model.query(trx).insertAndFetch({
+        ...TaxReceivableAccount,
         ...extraAttrs,
       });
     }

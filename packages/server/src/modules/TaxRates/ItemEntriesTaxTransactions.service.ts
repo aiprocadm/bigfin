@@ -23,11 +23,19 @@ export class ItemEntriesTaxTransactions {
     const entries = model.entries.map((entry) =>
       this.itemEntryModel().fromJson(entry),
     );
-    const taxAmountWithheld = sumBy(entries, 'taxAmount');
+    // Устойчиво к позициям без налоговой ставки: у них taxAmount = NaN, и
+    // обычная сумма превращала налог всего документа в «не число» — тогда
+    // условие ниже не срабатывало, налог не записывался вовсе, а строки
+    // журнала по облагаемым позициям всё равно проводились. Смешанный счёт
+    // (одна позиция с НДС, другая без) из-за этого не сходился.
+    const taxAmountWithheld = sumBy(entries, (entry: any) =>
+      Number.isFinite(entry.taxAmount) ? entry.taxAmount : 0,
+    );
 
-    if (taxAmountWithheld) {
-      model.taxAmountWithheld = taxAmountWithheld;
-    }
+    // Присваиваем всегда: иначе снятие налога со всех позиций оставляло
+    // в документе прежнюю сумму налога.
+    model.taxAmountWithheld = taxAmountWithheld;
+
     return model;
   };
 

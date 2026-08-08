@@ -145,9 +145,18 @@ export class Bill extends TenantBaseModel {
    * @returns {number}
    */
   get discountAmount(): number {
+    // Та же страховка, что и у счёта покупателю: без скидки процентная
+    // ветка давала «не число» и портила итог документа.
+    // ВНИМАНИЕ: здесь defaultTo из lodash — проверяемое значение идёт ПЕРВЫМ
+    // (в соседней модели счёта покупателю тот же по имени помощник взят из
+    // ramda, где порядок обратный). Перепутать — значит молча всегда получать
+    // «умолчание».
+    const discount = defaultTo(this.discount, 0);
+    const subtotal = defaultTo(this.subtotal, 0);
+
     return this.discountType === DiscountType.Amount
-      ? this.discount
-      : this.subtotal * (this.discount / 100);
+      ? discount
+      : subtotal * (discount / 100);
   }
 
   /**
@@ -180,13 +189,19 @@ export class Bill extends TenantBaseModel {
    * @returns {number}
    */
   get total(): number {
+    // defaultTo из lodash: значение первым, умолчание вторым.
     const adjustmentAmount = defaultTo(this.adjustment, 0);
+    const taxAmount = defaultTo(this.taxAmountWithheld, 0);
+    const subtotal = defaultTo(this.subtotal, 0);
 
+    // Зеркально счёту покупателю: налог прибавляется, когда он НЕ включён
+    // в цену. Вместе с этой правкой включена налоговая проводка по счёту
+    // поставщика — иначе журнал закупки разошёлся бы на сумму налога.
     return R.compose(
       R.add(adjustmentAmount),
       R.subtract(R.__, this.discountAmount),
-      R.when(R.always(this.isInclusiveTax), R.add(this.taxAmountWithheld)),
-    )(this.subtotal);
+      R.when(R.always(!this.isInclusiveTax), R.add(taxAmount)),
+    )(subtotal);
   }
 
   /**

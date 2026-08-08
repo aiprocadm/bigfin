@@ -11,6 +11,8 @@ export class BillGL {
   private bill: Bill;
   private payableAccountId: number;
   private taxPayableAccountId: number;
+  /** Счёт входящего НДС («к вычету»), актив. */
+  private taxReceivableAccountId: number;
   private purchaseDiscountAccountId: number;
   private otherExpensesAccountId: number;
 
@@ -25,6 +27,11 @@ export class BillGL {
 
   setTaxPayableAccountId(taxPayableAccountId: number) {
     this.taxPayableAccountId = taxPayableAccountId;
+    return this;
+  }
+
+  setTaxReceivableAccountId(taxReceivableAccountId: number) {
+    this.taxReceivableAccountId = taxReceivableAccountId;
     return this;
   }
 
@@ -139,14 +146,17 @@ export class BillGL {
    */
   private getBillTaxEntry(entry: ItemEntry, index: number): ILedgerEntry {
     const commonJournalMeta = this.billCommonEntry;
+    const rate = this.bill.exchangeRate || 1;
 
     return {
       ...commonJournalMeta,
-      debit: entry.taxAmount,
+      // Входящий НДС — дебет счёта-актива «НДС к вычету» (в рублях по курсу
+      // документа, как и остальные строки).
+      debit: entry.taxAmount * rate,
       index,
       indexGroup: 30,
-      accountId: this.taxPayableAccountId,
-      accountNormal: AccountNormal.CREDIT,
+      accountId: this.taxReceivableAccountId,
+      accountNormal: AccountNormal.DEBIT,
       taxRateId: entry.taxRateId,
       taxRate: entry.taxRate,
     };
@@ -158,18 +168,10 @@ export class BillGL {
    * @param {number} taxPayableAccountId
    * @returns {ILedgerEntry[]}
    */
-  // private getBillTaxEntries = () => {
-  //   // Retrieves the non-zero tax entries.
-  //   const nonZeroTaxEntries = this.itemsEntriesService.getNonZeroEntries(
-  //     this.bill.entries,
-  //   );
-  //   const transformTaxEntry = this.getBillTaxEntry(
-  //     this.bill,
-  //     this.taxPayableAccountId,
-  //   );
-
-  //   return nonZeroTaxEntries.map(transformTaxEntry);
-  // };
+  private getBillTaxEntries = (): ILedgerEntry[] =>
+    this.bill.entries
+      .filter((entry) => Number(entry.taxAmount) > 0)
+      .map((entry, index) => this.getBillTaxEntry(entry, index + 1));
 
   /**
    * Retrieves the purchase discount GL entry.
@@ -221,10 +223,16 @@ export class BillGL {
       (landedCost, index) => this.getBillLandedCostEntry(landedCost, index),
     );
 
+    // Налоговые строки: раньше сборка была закомментирована, поэтому
+    // входящий НДС не попадал в учёт вовсе — «НДС к вычету» в анализе
+    // всегда был нулём, а «НДС к уплате» завышен на всю сумму вычета.
+    const taxEntries = this.getBillTaxEntries();
+
     // Allocate cost entries journal entries.
     return [
       payableEntry,
       ...itemsEntries,
+      ...taxEntries,
       ...landedCostEntries,
       this.purchaseDiscountEntry,
       this.adjustmentEntry,

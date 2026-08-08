@@ -90,8 +90,11 @@ export class EditBillService {
       oldBill,
     );
     // Validate bill total amount should be bigger than paid amount.
+    // Зеркально счёту покупателю: сравниваем итог с налогом, а не подытог.
+    const billTotal = Object.assign(new Bill(), billObj).total;
+
     this.validators.validateBillAmountBiggerPaidAmount(
-      billObj.amount,
+      billTotal,
       oldBill.paymentAmount,
     );
     // Validate landed cost entries that have allocated cost could not be deleted.

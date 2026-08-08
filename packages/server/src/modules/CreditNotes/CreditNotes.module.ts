@@ -1,4 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
+import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { CreateCreditNoteService } from './commands/CreateCreditNote.service';
 import { CommandCreditNoteDTOTransform } from './commands/CommandCreditNoteDTOTransform.service';
 import { EditCreditNoteService } from './commands/EditCreditNote.service';
@@ -40,6 +41,8 @@ import { ValidateBulkDeleteCreditNotesService } from './ValidateBulkDeleteCredit
 @Module({
   imports: [
     ItemsModule,
+    // Налог документа считает общий сервис из TaxRates (Д1: НДС в возвратах).
+    TaxRatesModule,
     BranchesModule,
     WarehousesModule,
     PdfTemplatesModule,

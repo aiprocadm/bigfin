@@ -23,6 +23,35 @@ describe('recognizeStagesByPeriod', () => {
     ]);
     expect(r).toEqual({});
   });
+
+  // Драйвер MySQL отдаёт колонку DATE объектом Date — именно так эта функция
+  // и вызывается в бою. Прежний срез строки давал ключ «Mon Jul» (приёмка ㉘).
+  it('группирует правильно, когда дата пришла объектом Date, а не строкой', () => {
+    const r = recognizeStagesByPeriod([
+      stage({
+        plannedRevenue: 150,
+        plannedCost: 90,
+        status: 'closed',
+        closedDate: new Date('2026-07-20T00:00:00'),
+      }),
+      stage({
+        plannedRevenue: 50,
+        plannedCost: 20,
+        status: 'closed',
+        closedDate: new Date('2026-07-28T00:00:00'),
+      }),
+    ]);
+    expect(Object.keys(r)).toEqual(['2026-07']);
+    expect(r['2026-07']).toEqual({ revenue: 200, costs: 110, profit: 90 });
+  });
+
+  it('не схлопывает разные годы с одинаковым месяцем', () => {
+    const r = recognizeStagesByPeriod([
+      stage({ plannedRevenue: 10, status: 'closed', closedDate: new Date('2025-07-20T00:00:00') }),
+      stage({ plannedRevenue: 20, status: 'closed', closedDate: new Date('2026-07-20T00:00:00') }),
+    ]);
+    expect(Object.keys(r).sort()).toEqual(['2025-07', '2026-07']);
+  });
 });
 
 describe('summarizeDealStages', () => {

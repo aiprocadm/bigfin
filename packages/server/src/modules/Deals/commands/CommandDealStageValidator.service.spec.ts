@@ -26,6 +26,24 @@ describe('CommandDealStageValidatorService', () => {
     await expect(v.validate(1, { name: '  ' } as any)).rejects.toMatchObject({ errorType: 'STAGE_NAME_REQUIRED' });
   });
 
+  // Частичное изменение этапа: «просто закрыть» приходит без названия и
+  // раньше падало с 400 (приёмка ㉘).
+  it('при nameRequired=false отсутствие названия допустимо', async () => {
+    const v = await build({ id: 1 });
+    await expect(
+      v.validate(1, { status: 'closed', closedDate: '2026-08-01' } as any, {
+        nameRequired: false,
+      }),
+    ).resolves.toBeUndefined();
+  });
+
+  it('но пустое название не проходит даже при частичном изменении', async () => {
+    const v = await build({ id: 1 });
+    await expect(
+      v.validate(1, { name: '   ' } as any, { nameRequired: false }),
+    ).rejects.toMatchObject({ errorType: 'STAGE_NAME_REQUIRED' });
+  });
+
   it('throws STAGE_NEGATIVE_AMOUNT for a negative planned amount', async () => {
     const v = await build({ id: 1 });
     await expect(v.validate(1, { name: 'X', plannedRevenue: -1 } as any)).rejects.toMatchObject({ errorType: 'STAGE_NEGATIVE_AMOUNT' });

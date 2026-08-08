@@ -24,7 +24,8 @@ export class EditDealStageService {
     if (!existing || existing.dealId !== dealId) {
       throw new ServiceError(ERRORS.STAGE_NOT_FOUND);
     }
-    await this.validator.validate(dealId, dto as any);
+    // Частичное изменение: неприсланное название означает «оставить как есть».
+    await this.validator.validate(dealId, dto as any, { nameRequired: false });
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       await this.stageModel().query(trx).findById(stageId).patch({ ...(dto as any) });

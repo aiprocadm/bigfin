@@ -53,10 +53,16 @@ export class CreditNoteGLEntries {
     const adjustmentAccount =
       await this.accountRepository.findOrCreateOtherChargesAccount({});
 
+    // Счёт начисленного НДС — тот же, что у счетов покупателям и чеков:
+    // возврат уменьшает ровно то, что было начислено при продаже.
+    const taxPayableAccount =
+      await this.accountRepository.findOrCreateTaxPayable({}, trx);
+
     const creditNoteLedger = new CreditNoteGL(creditNoteWithItems)
       .setARAccountId(ARAccount.id)
       .setDiscountAccountId(discountAccount.id)
       .setAdjustmentAccountId(adjustmentAccount.id)
+      .setTaxPayableAccountId(taxPayableAccount.id)
       .getCreditNoteLedger();
 
     // Saves the credit note GL entries.

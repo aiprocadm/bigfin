@@ -61,6 +61,10 @@ export class GetVatSummaryService {
       .whereIn('accountId', ids)
       .where('date', '>=', fromDate)
       .where('date', '<=', toDate)
+      // Только строки, порождённые документами со ставкой налога. Уплата
+      // налога в бюджет и прочие движения по налоговому счёту ставки не
+      // несут — и в сводку по НДС попадать не должны.
+      .whereNotNull('taxRateId')
       .groupBy('accountId')
       .select('accountId')
       .sum('credit as credit')
@@ -74,12 +78,14 @@ export class GetVatSummaryService {
       return {
         accountId: s.accountId,
         accountName: nameById.get(s.accountId) ?? '',
-        // На счёте «НДС к вычету» вычет — это ДЕБЕТ (входящий налог), а на
-        // счёте «Налоги к уплате» начисление — КРЕДИТ. Дебет пассивного
-        // налогового счёта — это уплата налога в бюджет, а не вычет,
-        // поэтому вычетом он больше не считается.
-        credit: isReceivable ? 0 : credit,
-        debit: isReceivable ? debit : 0,
+        // Считаем НЕТТО по каждому счёту:
+        // «Налоги к уплате» — начислено продажами (кредит) минус возвраты
+        // покупателям (дебет кредит-ноты);
+        // «НДС к вычету» — принято по закупкам (дебет) минус возвраты
+        // поставщикам (кредит).
+        // Уплата налога в бюджет сюда не попадает (у неё нет ставки).
+        credit: isReceivable ? 0 : Math.max(credit - debit, 0),
+        debit: isReceivable ? Math.max(debit - credit, 0) : 0,
       };
     });
 

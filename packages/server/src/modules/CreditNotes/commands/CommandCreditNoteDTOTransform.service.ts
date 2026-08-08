@@ -6,6 +6,7 @@ import * as R from 'ramda';
 import { ERRORS } from '../constants';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { ItemsEntriesService } from '@/modules/Items/ItemsEntries.service';
+import { ItemEntriesTaxTransactions } from '@/modules/TaxRates/ItemEntriesTaxTransactions.service';
 import { BranchTransactionDTOTransformer } from '@/modules/Branches/integrations/BranchTransactionDTOTransform';
 import { WarehouseTransactionDTOTransform } from '@/modules/Warehouses/Integrations/WarehouseTransactionDTOTransform';
 import { BrandingTemplateDTOTransformer } from '../../PdfTemplate/BrandingTemplateDTOTransformer';
@@ -34,6 +35,7 @@ export class CommandCreditNoteDTOTransform {
     private readonly warehouseDTOTransform: WarehouseTransactionDTOTransform,
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
     private readonly creditNoteAutoIncrement: CreditNoteAutoIncrementService,
+    private readonly taxDTOTransformer: ItemEntriesTaxTransactions,
   ) { }
 
   /**
@@ -50,16 +52,29 @@ export class CommandCreditNoteDTOTransform {
     const amount = this.itemsEntriesService.getTotalItemsEntries(
       creditNoteDTO.entries,
     );
-    const entries = R.compose(
-      // Associate the default index to each item entry.
-      assocItemEntriesDefaultIndex,
-
-      // Associate the reference type to credit note entries.
-      R.map((entry: CreditNoteEntryDto) => ({
+    const initialEntries = creditNoteDTO.entries.map(
+      (entry: CreditNoteEntryDto) => ({
         ...entry,
         referenceType: 'CreditNote',
-      })),
-    )(creditNoteDTO.entries);
+        // Признак «НДС в цене» задаётся документом и спускается в позиции.
+        isInclusiveTax: creditNoteDTO.isInclusiveTax,
+      }),
+    );
+    // Ставку налога надо подставить в позиции ДО расчёта налога документа:
+    // без этого шага у позиции нет ставки, налог считается нулём, и возврат
+    // не уменьшает начисленный НДС.
+    const entriesWithTax = await composeAsync(
+      this.taxDTOTransformer.assocTaxRateFromTaxIdToEntries,
+      this.taxDTOTransformer.assocTaxRateIdFromCodeToEntries,
+    )(initialEntries);
+
+    const entries = R.compose(
+      // Remove tax code from entries.
+      R.map(R.omit(['taxCode'])),
+
+      // Associate the default index to each item entry.
+      assocItemEntriesDefaultIndex,
+    )(entriesWithTax);
 
     // Retrieves the next credit note number.
     const autoNextNumber = this.creditNoteAutoIncrement.getNextCreditNumber();
@@ -97,7 +112,11 @@ export class CommandCreditNoteDTOTransform {
       ),
     )(initialDTO)) as CreditNote;
 
-    return asyncDto;
+    // Налог документа = сумма налогов позиций (как у счетов и чеков): без
+    // него возврат не уменьшал начисленный НДС.
+    return this.taxDTOTransformer.assocTaxAmountWithheldFromEntries(
+      asyncDto,
+    ) as CreditNote;
   };
 
   /**

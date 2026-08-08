@@ -22,6 +22,10 @@ import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttacha
 export class VendorCredit extends TenantBaseModel {
   vendorId: number;
   amount: number;
+  /** Налог документа = сумма налогов позиций (Д1: НДС в возвратах). */
+  taxAmountWithheld: number;
+  /** «НДС в цене»: подытог уже включает налог. */
+  isInclusiveTax: boolean;
   currencyCode: string;
 
   vendorCreditDate: Date;
@@ -85,10 +89,26 @@ export class VendorCredit extends TenantBaseModel {
    * Discount amount.
    * @returns {number}
    */
-  get discountAmount() {
+  get discountAmount(): number {
+    // Явный тип возврата обязателен: без него вывод типов у моделей с
+    // миксинами уходит в цикл (грабля срезов 1–2).
+    const discount = this.discount ?? 0;
+    const subtotal = this.subtotal ?? 0;
+
     return this.discountType === DiscountType.Amount
-      ? this.discount
-      : this.subtotal * (this.discount / 100);
+      ? discount
+      : subtotal * (discount / 100);
+  }
+
+  /**
+   * Сумма возврата без налога: подытог включает налог только при «НДС в цене».
+   * @returns {number}
+   */
+  get subtotalExcludingTax(): number {
+    const subtotal = this.subtotal ?? 0;
+    const taxAmount = this.taxAmountWithheld ?? 0;
+
+    return this.isInclusiveTax ? subtotal - taxAmount : subtotal;
   }
 
   /**
@@ -119,8 +139,15 @@ export class VendorCredit extends TenantBaseModel {
    * Vendor credit total.
    * @returns {number}
    */
-  get total() {
-    return this.subtotal - this.discountAmount + this.adjustment;
+  get total(): number {
+    const subtotal = this.subtotal ?? 0;
+    const adjustment = this.adjustment ?? 0;
+    // Налог прибавляется, когда он НЕ включён в цену: поставщик возвращает
+    // сумму вместе с налогом, который был принят к вычету при закупке.
+    const taxAmount = this.taxAmountWithheld ?? 0;
+    const taxAddon = this.isInclusiveTax ? 0 : taxAmount;
+
+    return subtotal - this.discountAmount + adjustment + taxAddon;
   }
 
   /**
@@ -226,6 +253,7 @@ export class VendorCredit extends TenantBaseModel {
 
       'creditsRemaining',
       'localAmount',
+      'subtotalExcludingTax',
 
       'discountAmount',
       'discountAmountLocal',

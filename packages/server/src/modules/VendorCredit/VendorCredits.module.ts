@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { CreateVendorCreditService } from './commands/CreateVendorCredit.service';
 import { DeleteVendorCreditService } from './commands/DeleteVendorCredit.service';
 import { EditVendorCreditService } from './commands/EditVendorCredit.service';
@@ -34,6 +35,8 @@ import { ValidateBulkDeleteVendorCreditsService } from './ValidateBulkDeleteVend
 @Module({
   imports: [
     ItemsModule,
+    // Налог документа считает общий сервис из TaxRates (Д1, срез 3).
+    TaxRatesModule,
     PdfTemplatesModule,
     ChromiumlyTenancyModule,
     TemplateInjectableModule,

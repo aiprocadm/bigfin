@@ -121,6 +121,15 @@ export class CommandVendorCreditDto {
   })
   entries: VendorCreditEntryDto[];
 
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Whether tax is inclusive',
+    required: false,
+    example: false,
+  })
+  isInclusiveTax?: boolean;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AttachmentDto)

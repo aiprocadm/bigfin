@@ -11,6 +11,8 @@ export interface FinancialRatios {
   debtToEquity: number | null;
   debtRatio: number | null;
   equityRatio: number | null;
+  /** Капитал отрицательный — показатели «на капитал» неприменимы. */
+  equityNegative: boolean;
 }
 
 export interface VerticalRow {
@@ -20,12 +22,32 @@ export interface VerticalRow {
   share: number | null;
 }
 
+export interface HorizontalRow {
+  key: string;
+  label: string;
+  current: number;
+  previous: number;
+  change: number;
+  changePct: number | null;
+}
+
+export interface FinancialRatiosMeta {
+  basis: 'accrual';
+  asOf: string;
+  fromDate: string;
+  toDate: string;
+  previousFromDate: string;
+  previousToDate: string;
+}
+
 export interface FinancialRatiosResult {
   ratios: FinancialRatios;
   vertical: VerticalRow[];
+  horizontal: HorizontalRow[];
+  meta: FinancialRatiosMeta;
 }
 
-/** Финансовые коэффициенты + вертикальный анализ ОПиУ за период. */
+/** Коэффициенты + вертикальный и горизонтальный анализ ОПиУ за период. */
 export function useFinancialRatios(
   fromDate: string,
   toDate: string,
@@ -40,7 +62,7 @@ export function useFinancialRatios(
     },
     {
       select: (res: any) => res.data?.data ?? res.data,
-      defaultData: { ratios: null, vertical: [] },
+      defaultData: { ratios: null, vertical: [], horizontal: [], meta: null },
       ...props,
     },
   );

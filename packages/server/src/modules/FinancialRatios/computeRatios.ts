@@ -35,6 +35,8 @@ export interface FinancialRatios {
   debtRatio: number | null;
   /** Коэффициент автономии (платёжеспособность) = капитал / активы. */
   equityRatio: number | null;
+  /** Капитал отрицательный: показатели «на капитал» неприменимы. */
+  equityNegative: boolean;
 }
 
 /** Безопасное деление: ноль/недопустимый знаменатель → null. */
@@ -44,18 +46,34 @@ const div = (numerator: number, denominator: number): number | null => {
   return Number.isFinite(r) ? r : null;
 };
 
-/** Считает набор коэффициентов из агрегатов Баланса/ОПиУ. */
-export const computeRatios = (input: RatioInputs): FinancialRatios => ({
-  roe: div(input.netIncome, input.equity),
-  roa: div(input.netIncome, input.totalAssets),
-  netMargin: div(input.netIncome, input.revenue),
-  currentRatio: div(input.currentAssets, input.currentLiabilities),
-  quickRatio: div(input.currentAssets - input.inventory, input.currentLiabilities),
-  workingCapital: input.currentAssets - input.currentLiabilities,
-  debtToEquity: div(input.totalLiabilities, input.equity),
-  debtRatio: div(input.totalLiabilities, input.totalAssets),
-  equityRatio: div(input.equity, input.totalAssets),
-});
+/**
+ * Считает набор коэффициентов из агрегатов Баланса/ОПиУ.
+ *
+ * Отрицательный капитал (накопленный убыток больше вложенного) обнуляет
+ * смысл всех коэффициентов «на капитал»: убыток −300 000, делённый на
+ * капитал −200 000, давал бодрые +150 % рентабельности там, где бизнес
+ * фактически проеден. Для таких показателей возвращаем null — «неприменимо».
+ */
+export const computeRatios = (input: RatioInputs): FinancialRatios => {
+  const equityUsable = input.equity > 0;
+
+  return {
+    roe: equityUsable ? div(input.netIncome, input.equity) : null,
+    roa: div(input.netIncome, input.totalAssets),
+    netMargin: div(input.netIncome, input.revenue),
+    currentRatio: div(input.currentAssets, input.currentLiabilities),
+    quickRatio: div(
+      input.currentAssets - input.inventory,
+      input.currentLiabilities,
+    ),
+    workingCapital: input.currentAssets - input.currentLiabilities,
+    debtToEquity: equityUsable ? div(input.totalLiabilities, input.equity) : null,
+    debtRatio: div(input.totalLiabilities, input.totalAssets),
+    equityRatio: equityUsable ? div(input.equity, input.totalAssets) : null,
+    /** Признак «капитал отрицательный» — чтобы страница объяснила прочерки. */
+    equityNegative: input.equity < 0,
+  };
+};
 
 /** Строка вертикального анализа ОПиУ: доля статьи от выручки. */
 export interface VerticalRow {

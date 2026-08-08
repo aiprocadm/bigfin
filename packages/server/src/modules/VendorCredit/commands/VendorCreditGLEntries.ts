@@ -45,10 +45,16 @@ export class VendorCreditGLEntries {
     const otherExpensesAccount =
       await this.accountRepository.findOrCreateOtherExpensesAccount({}, trx);
 
+    // Счёт входящего НДС — тот же, что у закупок: возврат уменьшает ровно
+    // то, что было принято к вычету.
+    const taxReceivableAccount =
+      await this.accountRepository.findOrCreateTaxReceivable({}, trx);
+
     const vendorCreditLedger = new VendorCreditGL(vendorCredit)
       .setAPAccountId(APAccount.id)
       .setPurchaseDiscountAccountId(purchaseDiscountAccount.id)
       .setOtherExpensesAccountId(otherExpensesAccount.id)
+      .setTaxReceivableAccountId(taxReceivableAccount.id)
       .getVendorCreditLedger();
 
     // Commits the ledger entries to the storage.

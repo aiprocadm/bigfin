@@ -8,6 +8,8 @@ export class VendorCreditGL {
   private APAccountId: number;
   private purchaseDiscountAccountId: number;
   private otherExpensesAccountId: number;
+  /** Счёт входящего НДС («к вычету»), актив — тот же, что у закупок. */
+  private taxReceivableAccountId: number;
 
   constructor(private vendorCredit: VendorCredit) {}
 
@@ -145,15 +147,62 @@ export class VendorCreditGL {
    * Retrieve the vendor credit GL entries.
    * @return {ILedgerEntry[]}
    */
+  /**
+   * Sets the tax receivable account id.
+   * @param {number} taxReceivableAccountId
+   * @returns {VendorCreditGL}
+   */
+  public setTaxReceivableAccountId(taxReceivableAccountId: number) {
+    this.taxReceivableAccountId = taxReceivableAccountId;
+    return this;
+  }
+
+  /**
+   * Налоговая строка возврата поставщику: Кт «НДС к вычету» — уменьшает
+   * входящий налог, принятый при закупке. Раньше налоговых строк не было
+   * вовсе, и вычет оставался завышенным после возврата товара.
+   * @param {ItemEntry} entry - Item entry.
+   * @param {number} index - Index.
+   * @returns {ILedgerEntry}
+   */
+  private getVendorCreditTaxEntry(
+    entry: ItemEntry,
+    index: number,
+  ): ILedgerEntry {
+    const commonEntry = this.vendorCreditGLCommonEntry;
+    const rate = this.vendorCredit.exchangeRate || 1;
+
+    return {
+      ...commonEntry,
+      credit: entry.taxAmount * rate,
+      accountId: this.taxReceivableAccountId,
+      index: index + 1,
+      indexGroup: 30,
+      accountNormal: AccountNormal.DEBIT,
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
+    };
+  }
+
   public getVendorCreditGLEntries(): ILedgerEntry[] {
     const payableEntry = this.vendorCreditPayableGLEntry;
     const itemsEntries = this.vendorCredit.entries.map((entry, index) =>
       this.getVendorCreditGLItemEntry(entry, index),
     );
+    const taxEntries = this.vendorCredit.entries
+      .filter((entry) => Number(entry.taxAmount) > 0)
+      .map((entry, index) => this.getVendorCreditTaxEntry(entry, index));
+
     const discountEntry = this.discountEntry;
     const adjustmentEntry = this.adjustmentEntry;
 
-    return [payableEntry, discountEntry, adjustmentEntry, ...itemsEntries];
+    return [
+      payableEntry,
+      discountEntry,
+      adjustmentEntry,
+      ...itemsEntries,
+      ...taxEntries,
+    ];
   }
 
   /**

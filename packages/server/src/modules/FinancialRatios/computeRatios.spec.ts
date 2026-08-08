@@ -47,6 +47,29 @@ describe('computeRatios', () => {
     expect(r.equityRatio).toBeNull();
     expect(r.workingCapital).toBe(500); // 500 - 0
   });
+
+  // Приёмка ㉕: убыток, делённый на отрицательный капитал, давал бодрые
+  // +150 % рентабельности там, где бизнес фактически проеден.
+  it('отрицательный капитал → показатели «на капитал» неприменимы', () => {
+    const r = computeRatios({
+      ...base,
+      equity: -200,
+      netIncome: -300,
+      totalLiabilities: 400,
+      totalAssets: 1000,
+    });
+    expect(r.roe).toBeNull();
+    expect(r.debtToEquity).toBeNull();
+    expect(r.equityRatio).toBeNull();
+    expect(r.equityNegative).toBe(true);
+    // Показатели «на активы» при этом продолжают считаться.
+    expect(r.roa).toBeCloseTo(-0.3);
+    expect(r.debtRatio).toBeCloseTo(0.4);
+  });
+
+  it('положительный капитал: признак отрицательного капитала выключен', () => {
+    expect(computeRatios(base).equityNegative).toBe(false);
+  });
 });
 
 describe('verticalAnalysis', () => {

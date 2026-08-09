@@ -6,6 +6,7 @@ const RATES: VatRateInfo[] = [
   { id: 6, name: 'НДС 10%', code: 'VAT_10', rate: 10 },
   { id: 7, name: 'НДС 0%', code: 'VAT_0', rate: 0 },
   { id: 8, name: 'Без НДС', code: 'VAT_NONE', rate: 0 },
+  { id: 9, name: 'НДС 20% невозмещаемый', code: 'VAT_20_NR', rate: 20 },
 ];
 
 describe('computeVatByRate', () => {
@@ -28,8 +29,38 @@ describe('computeVatByRate', () => {
         charged: 20000,
         purchaseBase: 0,
         deductible: 0,
+        nonDeductible: 0,
       },
     ]);
+  });
+
+  it('невозмещаемый налог считается отдельно от вычета', () => {
+    const result = computeVatByRate(
+      [
+        { taxRateId: 9, bucket: 'purchaseBase', credit: 0, debit: 80000 },
+        { taxRateId: 9, bucket: 'nonDeductibleTax', credit: 0, debit: 16000 },
+      ],
+      RATES,
+    );
+
+    expect(result[0]).toMatchObject({
+      code: 'VAT_20_NR',
+      purchaseBase: 80000,
+      deductible: 0,
+      nonDeductible: 16000,
+    });
+  });
+
+  it('возврат поставщику уменьшает и невозмещаемый налог', () => {
+    const result = computeVatByRate(
+      [
+        { taxRateId: 9, bucket: 'nonDeductibleTax', credit: 0, debit: 16000 },
+        { taxRateId: 9, bucket: 'nonDeductibleTax', credit: 6000, debit: 0 },
+      ],
+      RATES,
+    );
+
+    expect(result[0].nonDeductible).toBe(10000);
   });
 
   it('показывает продажу по ставке 0 % — у неё есть база, но нет налога', () => {

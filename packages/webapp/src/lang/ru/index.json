@@ -3549,6 +3549,8 @@
   "vat_analysis.charged": "НДС начислен (с продаж)",
   "vat_analysis.deductible": "НДС к вычету (с покупок)",
   "vat_analysis.payable": "НДС к уплате",
+  "vat_analysis.non_deductible": "НДС не к вычету (в стоимости)",
+  "vat_analysis.by_rate.non_deductible": "Не к вычету",
   "vat_analysis.by_rate.title": "По ставкам НДС",
   "vat_analysis.by_rate.hint": "Разбивка, которая нужна для декларации: по каждой ставке — налоговая база и сам налог. Ставка 0 % (например, экспорт) и операции без НДС показаны отдельными строками.",
   "vat_analysis.by_rate.rate": "Ставка",

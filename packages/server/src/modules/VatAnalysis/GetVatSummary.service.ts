@@ -17,6 +17,8 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
 const TAX_RECEIVABLE_SLUG = TaxReceivableAccount.slug;
 const INCOME_ROOT_TYPE = 'income';
+/** Группа, которой все сборщики проводок помечают строку налога. */
+const TAX_LINE_INDEX_GROUP = 30;
 
 /**
  * Собирает сводку по НДС (㉖) за период из движений ГЛ:
@@ -49,25 +51,36 @@ export class GetVatSummaryService {
 
     if (!accounts.length) return computeVatSummary([]);
 
-    // Каждому счёту — своё место в сводке. Налоговые счета дают сам налог,
-    // счета доходов — налоговую базу продаж, всё остальное (расходы, склад) —
-    // базу закупок.
-    const bucketByAccount = new Map<number, VatBucket>();
     const nameById = new Map<number, string>();
+    const accountById = new Map<number, any>();
 
     accounts.forEach((account: any) => {
       nameById.set(account.id, account.name);
-
-      if (account.accountType === ACCOUNT_TYPE.TAX_PAYABLE) {
-        bucketByAccount.set(account.id, 'chargedTax');
-      } else if (account.slug === TAX_RECEIVABLE_SLUG) {
-        bucketByAccount.set(account.id, 'deductibleTax');
-      } else if (account.accountRootType === INCOME_ROOT_TYPE) {
-        bucketByAccount.set(account.id, 'salesBase');
-      } else {
-        bucketByAccount.set(account.id, 'purchaseBase');
-      }
+      accountById.set(account.id, account);
     });
+
+    /**
+     * Куда отнести строку журнала. Налоговые строки узнаются по группе 30 —
+     * так их помечают все сборщики проводок. Это важно именно для
+     * невозмещаемого налога: он лежит на том же счёте, что и сама покупка,
+     * и по счёту его от базы не отличить.
+     */
+    const bucketOf = (accountId: number, indexGroup: number): VatBucket | null => {
+      const account = accountById.get(accountId);
+      if (!account) return null;
+
+      const isTaxLine = Number(indexGroup) === TAX_LINE_INDEX_GROUP;
+
+      if (isTaxLine) {
+        if (account.accountType === ACCOUNT_TYPE.TAX_PAYABLE) return 'chargedTax';
+        if (account.slug === TAX_RECEIVABLE_SLUG) return 'deductibleTax';
+        // Налоговая строка на счёте покупки — это невозмещаемый налог.
+        return 'nonDeductibleTax';
+      }
+      return account.accountRootType === INCOME_ROOT_TYPE
+        ? 'salesBase'
+        : 'purchaseBase';
+    };
 
     // Берём только строки, порождённые документами со ставкой налога. Уплата
     // налога в бюджет и прочие движения ставки не несут — и в сводку по НДС
@@ -77,8 +90,8 @@ export class GetVatSummaryService {
       .where('date', '>=', fromDate)
       .where('date', '<=', toDate)
       .whereNotNull('taxRateId')
-      .groupBy('accountId', 'taxRateId')
-      .select('accountId', 'taxRateId')
+      .groupBy('accountId', 'taxRateId', 'indexGroup')
+      .select('accountId', 'taxRateId', 'indexGroup')
       .sum('credit as credit')
       .sum('debit as debit');
 
@@ -90,24 +103,26 @@ export class GetVatSummaryService {
       rate: Number(r.rate) || 0,
     }));
 
-    const rateRows: VatRateLedgerRow[] = (sums as any[])
-      .filter((s) => bucketByAccount.has(s.accountId))
-      .map((s) => ({
-        taxRateId: s.taxRateId,
-        bucket: bucketByAccount.get(s.accountId) as VatBucket,
-        credit: Number(s.credit) || 0,
-        debit: Number(s.debit) || 0,
-      }));
+    const bucketed = (sums as any[])
+      .map((s) => ({ ...s, bucket: bucketOf(s.accountId, s.indexGroup) }))
+      .filter((s) => s.bucket !== null);
+
+    const rateRows: VatRateLedgerRow[] = bucketed.map((s) => ({
+      taxRateId: s.taxRateId,
+      bucket: s.bucket as VatBucket,
+      credit: Number(s.credit) || 0,
+      debit: Number(s.debit) || 0,
+    }));
 
     // Плитки «начислено / к вычету / к уплате» считаются по налоговым счетам:
     // «Налоги к уплате» — начислено продажами (кредит) минус возвраты
     // покупателям (дебет кредит-ноты); «НДС к вычету» — принято по закупкам
-    // (дебет) минус возвраты поставщикам (кредит).
+    // (дебет) минус возвраты поставщикам (кредит). Невозмещаемый налог сюда
+    // не попадает: он к уплате не относится, он просто расход.
     const taxByAccount = new Map<number, { credit: number; debit: number }>();
 
-    (sums as any[]).forEach((s) => {
-      const bucket = bucketByAccount.get(s.accountId);
-      if (bucket !== 'chargedTax' && bucket !== 'deductibleTax') return;
+    bucketed.forEach((s) => {
+      if (s.bucket !== 'chargedTax' && s.bucket !== 'deductibleTax') return;
 
       const current = taxByAccount.get(s.accountId) ?? { credit: 0, debit: 0 };
       current.credit += Number(s.credit) || 0;
@@ -115,10 +130,13 @@ export class GetVatSummaryService {
       taxByAccount.set(s.accountId, current);
     });
 
+    const receivableAccountIds = new Set(
+      bucketed.filter((s) => s.bucket === 'deductibleTax').map((s) => s.accountId),
+    );
+
     const accountRows = Array.from(taxByAccount.entries()).map(
       ([accountId, { credit, debit }]) => {
-        const isReceivable =
-          bucketByAccount.get(accountId) === 'deductibleTax';
+        const isReceivable = receivableAccountIds.has(accountId);
 
         return {
           accountId,
@@ -129,9 +147,12 @@ export class GetVatSummaryService {
       },
     );
 
+    const byRate = computeVatByRate(rateRows, rates);
+
     return {
       ...computeVatSummary(accountRows),
-      byRate: computeVatByRate(rateRows, rates),
+      byRate,
+      nonDeductible: byRate.reduce((sum, r) => sum + r.nonDeductible, 0),
     };
   }
 }

@@ -99,15 +99,24 @@ export class VendorCreditGL {
       index: index + 2,
       itemId: entry.itemId,
       // itemQuantity: entry.quantity,
-      accountId:
-        'inventory' === entry.item.type
-          ? entry.item.inventoryAccountId
-          : entry.costAccountId || entry.item.costAccountId,
+      accountId: this.getVendorCreditItemAccountId(entry),
       accountNormal: AccountNormal.DEBIT,
       // Возврат поставщику уменьшает базу закупок по своей ставке.
       taxRateId: entry.taxRateId,
       taxRate: entry.taxRate,
     };
+  }
+
+  /** Счёт, на который отнесена сама позиция закупки. */
+  private getVendorCreditItemAccountId(entry: ItemEntry): number {
+    return 'inventory' === entry.item.type
+      ? entry.item.inventoryAccountId
+      : entry.costAccountId || entry.item.costAccountId;
+  }
+
+  /** Принимается ли налог этой позиции к вычету. */
+  private isNonRecoverableEntry(entry: ItemEntry): boolean {
+    return Boolean((entry as any).tax?.isNonRecoverable);
   }
 
   /**
@@ -178,7 +187,12 @@ export class VendorCreditGL {
     return {
       ...commonEntry,
       credit: entry.taxAmount * rate,
-      accountId: this.taxReceivableAccountId,
+      // Если налог по этой ставке к вычету не принимался, то и возвращать его
+      // надо не из «НДС к вычету», а из стоимости покупки — туда, куда он был
+      // отнесён при закупке.
+      accountId: this.isNonRecoverableEntry(entry)
+        ? this.getVendorCreditItemAccountId(entry)
+        : this.taxReceivableAccountId,
       index: index + 1,
       indexGroup: 30,
       accountNormal: AccountNormal.DEBIT,

@@ -7,6 +7,7 @@ const accounts = [
   { id: 200, accountType: 'accounts-receivable' },
   { id: 300, accountType: 'income' },
   { id: 400, accountType: 'expense' },
+  { id: 500, accountType: 'tax-payable' },
 ];
 
 // Проводки периода: кассовый расход + неоплаченный счёт покупателю.
@@ -52,6 +53,65 @@ const buildRepository = (cashBasisActive: boolean) => {
   return { repository, builder };
 };
 
+/**
+ * Стенд для признания дохода по оплате: счёт выставлен раньше периода,
+ * а оплачен внутри него.
+ */
+const buildPaidInvoiceRepository = () => {
+  const repository = new ProfitLossSheetRepository() as any;
+
+  repository.accounts = accounts;
+  repository.query = { query: { branchesIds: [] } };
+  repository.isCashBasisActive = true;
+
+  // Проводки периода: только сам платёж — банк и дебиторка.
+  const paymentLegs = [
+    { referenceType: 'PaymentReceive', referenceId: 5, accountId: 100, transactionType: null, credit: 0, debit: 1200, date: '2026-03-05' },
+    { referenceType: 'PaymentReceive', referenceId: 5, accountId: 200, transactionType: null, credit: 1200, debit: 0, date: '2026-03-05' },
+  ];
+  // Проводки самого счёта: он выставлен в прошлом периоде, 1000 выручки
+  // и 200 налога.
+  const invoiceLegs = [
+    { referenceType: 'SaleInvoice', referenceId: 2, accountId: 200, credit: 0, debit: 1200, date: '2026-01-15' },
+    { referenceType: 'SaleInvoice', referenceId: 2, accountId: 300, credit: 1000, debit: 0, date: '2026-01-15' },
+    { referenceType: 'SaleInvoice', referenceId: 2, accountId: 500, credit: 200, debit: 0, date: '2026-01-15' },
+  ];
+
+  repository.accountTransactionModel = () => ({
+    query: () => {
+      const chain: any = {
+        onBuild: (callback: (query: any) => void) => {
+          callback({
+            sum: jest.fn(),
+            groupBy: jest.fn(),
+            select: jest.fn(),
+            modify: jest.fn(),
+            withGraphFetched: jest.fn(),
+          });
+          return Promise.resolve(paymentLegs);
+        },
+        where: () => chain,
+        whereIn: () => chain,
+        then: (resolve: (value: any) => void) => resolve(invoiceLegs),
+      };
+      return chain;
+    },
+  });
+  repository.paymentReceivedEntryModel = () => ({
+    query: () => ({
+      whereIn: () =>
+        Promise.resolve([
+          { paymentReceiveId: 5, invoiceId: 2, paymentAmount: 1200 },
+        ]),
+    }),
+  });
+  repository.billPaymentEntryModel = () => ({
+    query: () => ({ whereIn: () => Promise.resolve([]) }),
+  });
+
+  return repository;
+};
+
 describe('ProfitLossSheetRepository — cash/accrual basis', () => {
   it('кассовый режим: считает только кассовые источники, неоплаченный счёт исключён', async () => {
     const { repository } = buildRepository(true);
@@ -80,6 +140,31 @@ describe('ProfitLossSheetRepository — cash/accrual basis', () => {
     const expenseRow = rows.find((row: any) => row.accountId === 400);
     expect(expenseRow.date).toBe('2026-01');
     expect(expenseRow.debit).toBe(500);
+  });
+
+  it('кассовый режим: оплата счёта возвращает выручку, без налога', async () => {
+    // Счёт на 1200 (1000 выручки + 200 налога) выставлен в январе и оплачен
+    // в марте. Раньше платёж ходил только по банку и дебиторке — выручки в
+    // кассовом ОПиУ не появлялось вовсе.
+    const repository = buildPaidInvoiceRepository();
+    const rows = await repository.accountsTotal('2026-03-01', '2026-03-31');
+
+    const incomeRow = rows.find((row: any) => row.accountId === 300);
+    expect(incomeRow.credit).toBe(1000);
+    // Налог доходом не становится.
+    expect(rows.find((row: any) => row.accountId === 500)).toBeUndefined();
+  });
+
+  it('кассовый режим: признанная выручка попадает в месяц платежа', async () => {
+    const repository = buildPaidInvoiceRepository();
+    const rows = await repository.accountsDatePeriods(
+      '2026-03-01',
+      '2026-03-31',
+      'month',
+    );
+    const incomeRow = rows.find((row: any) => row.accountId === 300);
+
+    expect(incomeRow).toMatchObject({ date: '2026-03', credit: 1000 });
   });
 
   it('режим начисления: SQL-агрегация остаётся как сегодня и включает неоплаченный счёт', async () => {

@@ -81,15 +81,30 @@ export interface VerticalRow {
   label: string;
   amount: number;
   share: number | null;
+  /** 0 — раздел отчёта, 1 — статья внутри раздела. */
+  level?: number;
+  /** Ключ раздела, к которому относится статья. */
+  parentKey?: string | null;
+  /** Итоговая строка: её долю нельзя складывать с долями разделов. */
+  isTotal?: boolean;
 }
 
 /**
  * Вертикальный анализ ОПиУ: для каждой строки — доля от выручки.
+ * Разметка строки (раздел/статья/итог) переносится как есть — она нужна
+ * экрану, чтобы не показывать итоги вперемешку с обычными строками.
  * @param {Array} lines — строки ОПиУ {key,label,amount}.
  * @param {number} revenue — выручка (база 100%).
  */
 export const verticalAnalysis = (
-  lines: Array<{ key: string; label: string; amount: number }>,
+  lines: Array<{
+    key: string;
+    label: string;
+    amount: number;
+    level?: number;
+    parentKey?: string | null;
+    isTotal?: boolean;
+  }>,
   revenue: number,
 ): VerticalRow[] =>
   lines.map((l) => ({ ...l, share: div(l.amount, revenue) }));

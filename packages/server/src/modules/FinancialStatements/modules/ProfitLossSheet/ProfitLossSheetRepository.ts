@@ -22,6 +22,33 @@ import {
   totalCashLegsByAccount,
   periodsCashLegsByAccount,
 } from './ProfitLossSheetCashBasis';
+import {
+  buildDocumentPnlShape,
+  recognizeSettledPnlLegs,
+  Settlement,
+} from './recognizeSettledPnlLegs';
+import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentReceivedEntry';
+import { BillPaymentEntry } from '@/modules/BillPayments/models/BillPaymentEntry';
+
+/** Как документ-оплата связан с тем, что он гасит. */
+const SETTLEMENT_SOURCES = [
+  {
+    paymentReferenceType: 'PaymentReceive',
+    documentReferenceType: 'SaleInvoice',
+    /** Доход признаётся кредитом счетов выручки. */
+    direction: 'credit' as const,
+    settlementAccountTypes: ['accounts-receivable'],
+    pnlAccountTypes: ['income', 'other-income'],
+  },
+  {
+    paymentReferenceType: 'BillPayment',
+    documentReferenceType: 'Bill',
+    /** Расход признаётся дебетом счетов расходов. */
+    direction: 'debit' as const,
+    settlementAccountTypes: ['accounts-payable'],
+    pnlAccountTypes: ['expense', 'other-expense', 'cost-of-goods-sold'],
+  },
+];
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
@@ -32,6 +59,12 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
 
   @Inject(AccountTransaction.name)
   public accountTransactionModel: TenantModelProxy<typeof AccountTransaction>;
+
+  @Inject(PaymentReceivedEntry.name)
+  public paymentReceivedEntryModel: TenantModelProxy<typeof PaymentReceivedEntry>;
+
+  @Inject(BillPaymentEntry.name)
+  public billPaymentEntryModel: TenantModelProxy<typeof BillPaymentEntry>;
 
   @Inject(TenancyContext)
   public tenancyContext: TenancyContext;
@@ -415,9 +448,115 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
         .filter((account) => CASH_ACCOUNT_TYPES.includes(account.accountType))
         .map((account) => account.id),
     );
-    return filterCashSettledLegs(legs, (accountId) =>
+    const settledLegs = filterCashSettledLegs(legs, (accountId) =>
       cashAccountsIds.has(accountId),
     );
+    // Сами по себе проводки оплаты счёта ходят только по балансовым счетам
+    // («пришло на счёт» / «уменьшился долг»), поэтому выручки не приносят.
+    // Достраиваем её по факту платежа — иначе у тех, кто работает по счетам,
+    // кассовый ОПиУ показывает почти ноль дохода.
+    const recognized = await this.recognizeSettlementLegs(settledLegs);
+
+    return [...settledLegs, ...recognized];
+  };
+
+  /**
+   * Строит строки ОПиУ, признающие доход и расход по факту оплаты.
+   * @param {any[]} settledLegs — строки документов, коснувшихся денег.
+   */
+  private recognizeSettlementLegs = async (settledLegs) => {
+    const accountTypeById = new Map(
+      this.accounts.map((account) => [account.id, account.accountType]),
+    );
+    const isOfTypes = (types: string[]) => (accountId: number) =>
+      types.includes(accountTypeById.get(accountId));
+
+    const recognized = [];
+
+    for (const source of SETTLEMENT_SOURCES) {
+      const payments = settledLegs.filter(
+        (leg) => leg.referenceType === source.paymentReferenceType,
+      );
+      if (!payments.length) continue;
+
+      // Дата платежа берётся из его же строк журнала.
+      const paymentDates = new Map<number, any>();
+      payments.forEach((leg) => paymentDates.set(leg.referenceId, leg.date));
+
+      const settlements = await this.getSettlementsOf(
+        source,
+        [...paymentDates.keys()],
+        paymentDates,
+      );
+      if (!settlements.length) continue;
+
+      const documentIds = [
+        ...new Set(settlements.map((s) => s.documentReferenceId)),
+      ];
+      // Без фильтра по периоду: счёт мог быть выставлен в январе, а оплачен
+      // в марте — его строки нужны целиком.
+      const documentLegs = await this.accountTransactionModel()
+        .query()
+        .where('referenceType', source.documentReferenceType)
+        .whereIn('referenceId', documentIds);
+
+      const legsByDocument = new Map<number, any[]>();
+      documentLegs.forEach((leg) => {
+        const list = legsByDocument.get(leg.referenceId) ?? [];
+        list.push(leg);
+        legsByDocument.set(leg.referenceId, list);
+      });
+
+      const shapes = new Map();
+      legsByDocument.forEach((legs, documentId) => {
+        shapes.set(
+          `${source.documentReferenceType}:${documentId}`,
+          buildDocumentPnlShape(
+            legs,
+            isOfTypes(source.settlementAccountTypes),
+            isOfTypes(source.pnlAccountTypes),
+            source.direction,
+          ),
+        );
+      });
+      recognized.push(...recognizeSettledPnlLegs(settlements, shapes));
+    }
+    return recognized;
+  };
+
+  /**
+   * Достаёт разбивку платежей по оплаченным документам: из журнала её не
+   * узнать — там у платежа одна общая строка на весь долг.
+   */
+  private getSettlementsOf = async (
+    source: (typeof SETTLEMENT_SOURCES)[number],
+    paymentIds: number[],
+    paymentDates: Map<number, any>,
+  ): Promise<Settlement[]> => {
+    const isInvoicePayment = source.paymentReferenceType === 'PaymentReceive';
+
+    const entries = isInvoicePayment
+      ? await this.paymentReceivedEntryModel()
+          .query()
+          .whereIn('paymentReceiveId', paymentIds)
+      : await this.billPaymentEntryModel()
+          .query()
+          .whereIn('billPaymentId', paymentIds);
+
+    return entries.map((entry) => {
+      const paymentId = isInvoicePayment
+        ? entry.paymentReceiveId
+        : entry.billPaymentId;
+
+      return {
+        paymentReferenceType: source.paymentReferenceType,
+        paymentReferenceId: paymentId,
+        date: paymentDates.get(paymentId),
+        documentReferenceType: source.documentReferenceType,
+        documentReferenceId: isInvoicePayment ? entry.invoiceId : entry.billId,
+        amount: Number(entry.paymentAmount) || 0,
+      };
+    });
   };
 
   /**

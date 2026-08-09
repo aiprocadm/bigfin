@@ -5,6 +5,7 @@ import { useFeatureCan } from '@/hooks/state/feature';
 import {
   useVatSummary,
   VatByAccount,
+  VatByRate,
 } from '@/hooks/query/vatAnalysis';
 
 const yearStart = () => `${new Date().getFullYear()}-01-01`;
@@ -36,6 +37,7 @@ export default function VatAnalysisPage() {
   if (!featureCan('vat_analysis')) return null;
 
   const byAccount: VatByAccount[] = data?.byAccount ?? [];
+  const byRate: VatByRate[] = data?.byRate ?? [];
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -68,6 +70,54 @@ export default function VatAnalysisPage() {
           value={money(data?.payable ?? 0)}
           accent={(data?.payable ?? 0) < 0 ? 'text-green-700' : ''}
         />
+      </div>
+
+      <div className="rounded-md border p-4">
+        <h2 className="mb-1 font-medium">
+          {intl.get('vat_analysis.by_rate.title')}
+        </h2>
+        <p className="text-muted-foreground mb-2 text-sm">
+          {intl.get('vat_analysis.by_rate.hint')}
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
+            <thead>
+              <tr className="text-muted-foreground text-left">
+                <th className="py-1">{intl.get('vat_analysis.by_rate.rate')}</th>
+                <th className="py-1 text-right">
+                  {intl.get('vat_analysis.by_rate.sales_base')}
+                </th>
+                <th className="py-1 text-right">
+                  {intl.get('vat_analysis.by_rate.charged')}
+                </th>
+                <th className="py-1 text-right">
+                  {intl.get('vat_analysis.by_rate.purchase_base')}
+                </th>
+                <th className="py-1 text-right">
+                  {intl.get('vat_analysis.by_rate.deductible')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {byRate.length === 0 && (
+                <tr>
+                  <td className="text-muted-foreground py-2" colSpan={5}>
+                    {intl.get('vat_analysis.by_rate.empty')}
+                  </td>
+                </tr>
+              )}
+              {byRate.map((row) => (
+                <tr key={row.taxRateId} className="border-t">
+                  <td className="py-1">{row.name}</td>
+                  <td className="py-1 text-right">{money(row.salesBase)}</td>
+                  <td className="py-1 text-right">{money(row.charged)}</td>
+                  <td className="py-1 text-right">{money(row.purchaseBase)}</td>
+                  <td className="py-1 text-right">{money(row.deductible)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="rounded-md border p-4">

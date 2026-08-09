@@ -95,6 +95,11 @@ export class SaleReceiptGL {
         itemId: entry.itemId,
         // itemQuantity: entry.quantity,
         accountNormal: AccountNormal.CREDIT,
+        // Ставка на строке выручки — это налоговая база по ставке. Без неё
+        // продажи по ставке 0 % не видны в разбивке вовсе: налоговой строки
+        // у них нет. Счёт покупателю пишет ставку сюда с самого начала.
+        taxRateId: entry.taxRateId,
+        taxRate: entry.taxRate,
       };
     },
   );

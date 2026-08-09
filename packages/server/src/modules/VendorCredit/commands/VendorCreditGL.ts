@@ -104,6 +104,9 @@ export class VendorCreditGL {
           ? entry.item.inventoryAccountId
           : entry.costAccountId || entry.item.costAccountId,
       accountNormal: AccountNormal.DEBIT,
+      // Возврат поставщику уменьшает базу закупок по своей ставке.
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
     };
   }
 

@@ -123,6 +123,10 @@ export class CreditNoteGL {
       index: index + 2,
       itemId: entry.itemId,
       accountNormal: AccountNormal.CREDIT,
+      // Возврат уменьшает налоговую базу по своей ставке — поэтому ставка
+      // нужна и здесь, не только на налоговой строке.
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
     };
   }
 

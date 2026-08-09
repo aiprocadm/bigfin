@@ -8,11 +8,24 @@ export interface VatByAccount {
   deductible: number;
 }
 
+/** Строка разбивки по ставке налога — то, что нужно для декларации. */
+export interface VatByRate {
+  taxRateId: number;
+  name: string;
+  code: string;
+  rate: number;
+  salesBase: number;
+  charged: number;
+  purchaseBase: number;
+  deductible: number;
+}
+
 export interface VatSummary {
   charged: number;
   deductible: number;
   payable: number;
   byAccount: VatByAccount[];
+  byRate: VatByRate[];
 }
 
 /** Сводка по НДС за период (начислен / к вычету / к уплате). */
@@ -26,7 +39,13 @@ export function useVatSummary(fromDate: string, toDate: string, props?: any) {
     },
     {
       select: (res: any) => res.data?.data ?? res.data,
-      defaultData: { charged: 0, deductible: 0, payable: 0, byAccount: [] },
+      defaultData: {
+        charged: 0,
+        deductible: 0,
+        payable: 0,
+        byAccount: [],
+        byRate: [],
+      },
       ...props,
     },
   );

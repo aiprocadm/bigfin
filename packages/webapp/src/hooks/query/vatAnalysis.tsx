@@ -18,12 +18,15 @@ export interface VatByRate {
   charged: number;
   purchaseBase: number;
   deductible: number;
+  /** Входящий налог, который к вычету не принимается (лёг в стоимость). */
+  nonDeductible: number;
 }
 
 export interface VatSummary {
   charged: number;
   deductible: number;
   payable: number;
+  nonDeductible: number;
   byAccount: VatByAccount[];
   byRate: VatByRate[];
 }
@@ -43,6 +46,7 @@ export function useVatSummary(fromDate: string, toDate: string, props?: any) {
         charged: 0,
         deductible: 0,
         payable: 0,
+        nonDeductible: 0,
         byAccount: [],
         byRate: [],
       },

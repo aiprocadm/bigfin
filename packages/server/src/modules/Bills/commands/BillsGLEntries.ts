@@ -35,6 +35,9 @@ export class BillGLEntries {
       .query(trx)
       .findById(billId)
       .withGraphFetched('entries.item')
+      // Ставка нужна сборщику проводок: у невозмещаемой налог идёт не в
+      // «НДС к вычету», а в стоимость покупки.
+      .withGraphFetched('entries.tax')
       .withGraphFetched('entries.allocatedCostEntries')
       .withGraphFetched('locatedLandedCosts.allocateEntries');
 

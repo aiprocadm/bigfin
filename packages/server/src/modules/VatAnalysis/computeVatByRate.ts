@@ -20,6 +20,8 @@
 export type VatBucket =
   | 'chargedTax'
   | 'deductibleTax'
+  /** Входящий налог по невозмещаемой ставке — он лёг в стоимость покупки. */
+  | 'nonDeductibleTax'
   | 'salesBase'
   | 'purchaseBase';
 
@@ -53,6 +55,8 @@ export interface VatByRate {
   purchaseBase: number;
   /** Налог, принимаемый к вычету. */
   deductible: number;
+  /** Входящий налог, который к вычету НЕ принимается (лёг в стоимость). */
+  nonDeductible: number;
 }
 
 const positive = (value: number): number => (value > 0 ? value : 0);
@@ -82,6 +86,7 @@ export const computeVatByRate = (
       ({
         chargedTax: 0,
         deductibleTax: 0,
+        nonDeductibleTax: 0,
         salesBase: 0,
         purchaseBase: 0,
       } as Record<VatBucket, number>);
@@ -108,11 +113,16 @@ export const computeVatByRate = (
         charged: positive(sums.chargedTax),
         purchaseBase: positive(sums.purchaseBase),
         deductible: positive(sums.deductibleTax),
+        nonDeductible: positive(sums.nonDeductibleTax),
       };
     })
     .filter(
       (r) =>
-        r.salesBase > 0 || r.charged > 0 || r.purchaseBase > 0 || r.deductible > 0,
+        r.salesBase > 0 ||
+        r.charged > 0 ||
+        r.purchaseBase > 0 ||
+        r.deductible > 0 ||
+        r.nonDeductible > 0,
     )
     // От большей ставки к меньшей. У «0 %» и «без НДС» ставка одинаковая,
     // поэтому вторым ключом идёт код: облагаемая по нулю ставка выше, чем

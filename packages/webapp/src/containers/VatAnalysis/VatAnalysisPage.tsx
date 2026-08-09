@@ -62,13 +62,19 @@ export default function VatAnalysisPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
         <Card title={intl.get('vat_analysis.charged')} value={money(data?.charged ?? 0)} />
         <Card title={intl.get('vat_analysis.deductible')} value={money(data?.deductible ?? 0)} />
         <Card
           title={intl.get('vat_analysis.payable')}
           value={money(data?.payable ?? 0)}
           accent={(data?.payable ?? 0) < 0 ? 'text-green-700' : ''}
+        />
+        {/* Налог по невозмещаемым ставкам к уплате не относится — это расход,
+            поэтому он стоит отдельной плиткой, а не внутри «к вычету». */}
+        <Card
+          title={intl.get('vat_analysis.non_deductible')}
+          value={money(data?.nonDeductible ?? 0)}
         />
       </div>
 
@@ -96,12 +102,15 @@ export default function VatAnalysisPage() {
                 <th className="py-1 text-right">
                   {intl.get('vat_analysis.by_rate.deductible')}
                 </th>
+                <th className="py-1 text-right">
+                  {intl.get('vat_analysis.by_rate.non_deductible')}
+                </th>
               </tr>
             </thead>
             <tbody>
               {byRate.length === 0 && (
                 <tr>
-                  <td className="text-muted-foreground py-2" colSpan={5}>
+                  <td className="text-muted-foreground py-2" colSpan={6}>
                     {intl.get('vat_analysis.by_rate.empty')}
                   </td>
                 </tr>
@@ -113,6 +122,7 @@ export default function VatAnalysisPage() {
                   <td className="py-1 text-right">{money(row.charged)}</td>
                   <td className="py-1 text-right">{money(row.purchaseBase)}</td>
                   <td className="py-1 text-right">{money(row.deductible)}</td>
+                  <td className="py-1 text-right">{money(row.nonDeductible)}</td>
                 </tr>
               ))}
             </tbody>

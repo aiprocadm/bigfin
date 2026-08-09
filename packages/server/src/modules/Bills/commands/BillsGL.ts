@@ -86,10 +86,7 @@ export class BillGL {
     return {
       ...commonJournalMeta,
       debit: totalLocal + landedCostAmount,
-      accountId:
-        ['inventory'].indexOf(entry.item.type) !== -1
-          ? entry.item.inventoryAccountId
-          : entry.costAccountId,
+      accountId: this.getBillItemAccountId(entry),
       index: index + 1,
       indexGroup: 10,
       itemId: entry.itemId,
@@ -159,11 +156,29 @@ export class BillGL {
       debit: entry.taxAmount * rate,
       index,
       indexGroup: 30,
-      accountId: this.taxReceivableAccountId,
+      // Невозмещаемый налог к вычету не принимается: он ложится в стоимость
+      // покупки, на тот же счёт, что и сама позиция. Иначе «НДС к вычету»
+      // копил бы актив, который никогда не вернётся, а налог к уплате
+      // оказывался бы занижен.
+      accountId: this.isNonRecoverableEntry(entry)
+        ? this.getBillItemAccountId(entry)
+        : this.taxReceivableAccountId,
       accountNormal: AccountNormal.DEBIT,
       taxRateId: entry.taxRateId,
       taxRate: entry.taxRate,
     };
+  }
+
+  /** Счёт, на который относится сама позиция закупки. */
+  private getBillItemAccountId(entry: ItemEntry): number {
+    return ['inventory'].indexOf(entry.item.type) !== -1
+      ? entry.item.inventoryAccountId
+      : entry.costAccountId;
+  }
+
+  /** Принимается ли налог этой позиции к вычету. */
+  private isNonRecoverableEntry(entry: ItemEntry): boolean {
+    return Boolean((entry as any).tax?.isNonRecoverable);
   }
 
   /**

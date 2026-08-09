@@ -29,7 +29,10 @@ export class VendorCreditGLEntries {
     const vendorCredit = await this.vendorCreditModel()
       .query(trx)
       .findById(vendorCreditId)
-      .withGraphFetched('entries.item');
+      // Ставка нужна сборщику проводок: у невозмещаемой налог возвращается
+      // не из «НДС к вычету», а из стоимости покупки.
+      .withGraphFetched('entries.item')
+      .withGraphFetched('entries.tax');
 
     // Retrieve the payable account (A/P) account.
     const APAccount = await this.accountRepository.findOrCreateAccountsPayable(

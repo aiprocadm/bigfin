@@ -16,6 +16,13 @@ export class TaxRateModel extends BaseModel {
   description?: string;
 
   /**
+   * Налог по этой ставке к вычету НЕ принимается: он не уменьшает налог к
+   * уплате, а увеличивает стоимость покупки. Колонка в базе была с самого
+   * начала, галочка в форме тоже — а учёт признак игнорировал.
+   */
+  isNonRecoverable?: boolean;
+
+  /**
    * Table name
    */
   static get tableName() {

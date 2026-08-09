@@ -33,6 +33,8 @@ export interface VatSummary {
   byAccount: VatByAccount[];
   /** Разбивка по ставкам вместе с налоговой базой (для декларации). */
   byRate?: VatByRate[];
+  /** Входящий налог, который к вычету не принимается (лёг в стоимость). */
+  nonDeductible?: number;
 }
 
 /**

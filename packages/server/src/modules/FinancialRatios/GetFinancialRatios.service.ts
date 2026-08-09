@@ -9,6 +9,7 @@ import {
   HorizontalRow,
 } from './computeRatios';
 import { findNodeTotal } from './findNodeTotal';
+import { buildAnalysisLines } from './buildAnalysisLines';
 import { BalanceSheetInjectable } from '@/modules/FinancialStatements/modules/BalanceSheet/BalanceSheetInjectable';
 import { ProfitLossSheetService } from '@/modules/FinancialStatements/modules/ProfitLossSheet/ProfitLossSheetService';
 
@@ -126,13 +127,14 @@ export class GetFinancialRatiosService {
     };
   }
 
-  /** Верхнеуровневые разделы ОПиУ в виде строк {key,label,amount}. */
+  /**
+   * Строки ОПиУ для анализа: разделы вместе со своими статьями и отдельно
+   * помеченные итоговые строки. Раньше сюда шли только верхнеуровневые
+   * разделы — было видно «Расходы 40 %», но не видно, какая именно статья
+   * съедает выручку.
+   */
   private topLevelLines(plData: any[]) {
-    return (plData ?? []).map((n: any) => ({
-      key: n.id,
-      label: n.name,
-      amount: n?.total?.amount ?? 0,
-    }));
+    return buildAnalysisLines(plData as any);
   }
 
   /**

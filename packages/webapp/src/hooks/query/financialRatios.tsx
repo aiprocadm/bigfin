@@ -20,6 +20,11 @@ export interface VerticalRow {
   label: string;
   amount: number;
   share: number | null;
+  /** 0 — раздел отчёта, 1 — статья внутри раздела. */
+  level?: number;
+  parentKey?: string | null;
+  /** Итоговая строка: показывается отдельно от разделов и статей. */
+  isTotal?: boolean;
 }
 
 export interface HorizontalRow {

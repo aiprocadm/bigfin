@@ -80,6 +80,10 @@ export default function FinancialRatiosPage() {
 
   const r = data?.ratios;
   const vertical: VerticalRow[] = data?.vertical ?? [];
+  // Итоговые строки («Валовая прибыль», «Чистая прибыль») отделены от
+  // разделов и статей: их доли не складываются с остальными.
+  const verticalSections = vertical.filter((row) => !row.isTotal);
+  const verticalTotals = vertical.filter((row) => row.isTotal);
   const horizontal: HorizontalRow[] = data?.horizontal ?? [];
   const meta = data?.meta;
 
@@ -153,9 +157,12 @@ export default function FinancialRatiosPage() {
       )}
 
       <div className="rounded-md border p-4">
-        <h2 className="mb-2 font-medium">
+        <h2 className="mb-1 font-medium">
           {intl.get('financial_ratios.vertical.title')}
         </h2>
+        <p className="mb-2 text-xs text-muted-foreground">
+          {intl.get('financial_ratios.vertical.hint')}
+        </p>
         {vertical.length === 0 ? (
           <div className="text-sm text-muted-foreground">
             {intl.get('financial_ratios.empty')}
@@ -170,8 +177,35 @@ export default function FinancialRatiosPage() {
               </tr>
             </thead>
             <tbody>
-              {vertical.map((row) => (
-                <tr key={row.key} className="border-t">
+              {/* Сначала разделы со своими статьями, потом — итоговые строки.
+                  Раньше итоги стояли вперемешку с разделами, и доли выглядели
+                  так, будто их можно складывать. */}
+              {verticalSections.map((row) => (
+                <tr
+                  key={row.key}
+                  className={
+                    'border-t' + (row.level ? '' : ' font-medium')
+                  }
+                >
+                  <td className={'py-1' + (row.level ? ' pl-6' : '')}>
+                    {row.label}
+                  </td>
+                  <td className="py-1 text-right">{money(row.amount)}</td>
+                  <td className="py-1 text-right">{pct(row.share)}</td>
+                </tr>
+              ))}
+              {verticalTotals.length > 0 && (
+                <tr className="border-t-2">
+                  <td
+                    className="text-muted-foreground pt-3 pb-1 text-xs uppercase"
+                    colSpan={3}
+                  >
+                    {intl.get('financial_ratios.vertical.totals')}
+                  </td>
+                </tr>
+              )}
+              {verticalTotals.map((row) => (
+                <tr key={row.key} className="border-t font-medium">
                   <td className="py-1">{row.label}</td>
                   <td className="py-1 text-right">{money(row.amount)}</td>
                   <td className="py-1 text-right">{pct(row.share)}</td>

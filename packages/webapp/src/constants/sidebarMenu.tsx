@@ -815,157 +815,173 @@ export const SidebarMenu = [
     ],
   },
   // ---------------
-  // # Управление и планирование.
-  // Эти страницы существовали как маршруты, но не имели пункта меню — попасть
-  // на них можно было только вводом адреса вручную (приёмка ㉘ вскрыла целый
-  // пласт: 9 модулей были недостижимы кликом).
+  // # Сгруппированные разделы.
+  // Раньше здесь подряд шло больше двадцати самостоятельных пунктов —
+  // список читался как свалка, и найти нужный можно было только перебором.
+  // Пустая группа не показывается: если все модули раздела выключены,
+  // заголовок исчезает вместе с ними.
   // ---------------
   {
-    text: <T id={'sidebar.management_articles'} />,
-    href: '/management-articles',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.MgmtArticles,
+    text: <T id={'sidebar.group.planning'} />,
+    type: ISidebarMenuItemType.Group,
+    children: [
+      {
+        text: <T id={'sidebar.payment_calendar'} />,
+        href: '/payment-calendar',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.PaymentCalendar,
+      },
+      {
+        text: <T id={'sidebar.budgets'} />,
+        href: '/budgets',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Budgets,
+      },
+      {
+        text: <T id={'sidebar.payment_requests'} />,
+        href: '/payment-requests',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.PaymentRequests,
+      },
+      {
+        text: <T id={'sidebar.financial_model'} />,
+        href: '/financial-model',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.FinancialModel,
+      },
+    ],
   },
   {
-    text: <T id={'sidebar.payment_calendar'} />,
-    href: '/payment-calendar',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.PaymentCalendar,
+    text: <T id={'sidebar.group.management'} />,
+    type: ISidebarMenuItemType.Group,
+    children: [
+      {
+        text: <T id={'sidebar.management_articles'} />,
+        href: '/management-articles',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.MgmtArticles,
+      },
+      {
+        text: <T id={'sidebar.cost_allocation'} />,
+        href: '/cost-allocation',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.CostAllocation,
+      },
+      {
+        text: <T id={'sidebar.deals'} />,
+        href: '/deals',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Projects,
+      },
+      {
+        text: <T id={'sidebar.debts'} />,
+        href: '/debts',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Debts,
+      },
+      {
+        text: <T id={'sidebar.credits'} />,
+        href: '/credits',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Credits,
+      },
+      {
+        text: <T id={'sidebar.fixed_assets'} />,
+        href: '/fixed-assets',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.FixedAssets,
+      },
+      {
+        text: <T id={'sidebar.payroll'} />,
+        href: '/payroll',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Payroll,
+      },
+      {
+        text: <T id={'sidebar.dividends'} />,
+        href: '/dividends',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Dividends,
+      },
+    ],
   },
   {
-    text: <T id={'sidebar.budgets'} />,
-    href: '/budgets',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Budgets,
+    text: <T id={'sidebar.group.analysis'} />,
+    type: ISidebarMenuItemType.Group,
+    children: [
+      {
+        text: <T id={'sidebar.vat_analysis'} />,
+        href: '/vat-analysis',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.VatAnalysis,
+      },
+      {
+        text: <T id={'sidebar.financial_ratios'} />,
+        href: '/financial-ratios',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.FinancialRatios,
+      },
+      {
+        text: <T id={'sidebar.data_quality'} />,
+        href: '/data-quality',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.DataQuality,
+      },
+    ],
   },
   {
-    text: <T id={'sidebar.debts'} />,
-    href: '/debts',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Debts,
-  },
-  {
-    text: <T id={'sidebar.payment_requests'} />,
-    href: '/payment-requests',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.PaymentRequests,
-  },
-  {
-    text: <T id={'sidebar.deals'} />,
-    href: '/deals',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Projects,
-  },
-  {
-    text: <T id={'sidebar.cost_allocation'} />,
-    href: '/cost-allocation',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.CostAllocation,
-  },
-  {
-    text: <T id={'sidebar.payroll'} />,
-    href: '/payroll',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Payroll,
-  },
-  {
-    text: <T id={'sidebar.dividends'} />,
-    href: '/dividends',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Dividends,
-  },
-  // ---------------
-  // # Credits (Кредиты и займы)
-  // ---------------
-  {
-    text: <T id={'sidebar.credits'} />,
-    href: '/credits',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Credits,
-  },
-  // ---------------
-  // # Fixed assets (Основные средства)
-  // ---------------
-  {
-    text: <T id={'sidebar.fixed_assets'} />,
-    href: '/fixed-assets',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.FixedAssets,
-  },
-  // ---------------
-  // # Financial model (Финмодель)
-  // ---------------
-  {
-    text: <T id={'sidebar.financial_model'} />,
-    href: '/financial-model',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.FinancialModel,
-  },
-  {
-    text: <T id={'sidebar.moysklad'} />,
-    href: '/moysklad',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Moysklad,
-  },
-  {
-    text: <T id={'sidebar.marketplaces'} />,
-    href: '/marketplaces',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Marketplaces,
-  },
-  {
-    text: <T id={'sidebar.bank_api'} />,
-    href: '/bank-api-sync',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.BankApiSync,
-  },
-  {
-    text: <T id={'sidebar.onec_export'} />,
-    href: '/onec-export',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.OnecExport,
-  },
-  {
-    text: <T id={'sidebar.onec_import'} />,
-    href: '/onec-import',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.OnecImport,
-  },
-  {
-    text: <T id={'sidebar.acquiring'} />,
-    href: '/acquiring',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Acquiring,
-  },
-  {
-    text: <T id={'sidebar.zenmoney'} />,
-    href: '/zenmoney',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.Zenmoney,
-  },
-  {
-    text: <T id={'sidebar.vat_analysis'} />,
-    href: '/vat-analysis',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.VatAnalysis,
-  },
-  {
-    text: <T id={'sidebar.financial_ratios'} />,
-    href: '/financial-ratios',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.FinancialRatios,
-  },
-  {
-    text: <T id={'sidebar.data_quality'} />,
-    href: '/data-quality',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.DataQuality,
-  },
-  {
-    text: <T id={'sidebar.crm_integration'} />,
-    href: '/crm-integration',
-    type: ISidebarMenuItemType.Link,
-    feature: Features.CrmIntegration,
+    text: <T id={'sidebar.group.integrations'} />,
+    type: ISidebarMenuItemType.Group,
+    children: [
+      {
+        text: <T id={'sidebar.bank_api'} />,
+        href: '/bank-api-sync',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.BankApiSync,
+      },
+      {
+        text: <T id={'sidebar.acquiring'} />,
+        href: '/acquiring',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Acquiring,
+      },
+      {
+        text: <T id={'sidebar.moysklad'} />,
+        href: '/moysklad',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Moysklad,
+      },
+      {
+        text: <T id={'sidebar.marketplaces'} />,
+        href: '/marketplaces',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Marketplaces,
+      },
+      {
+        text: <T id={'sidebar.onec_import'} />,
+        href: '/onec-import',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.OnecImport,
+      },
+      {
+        text: <T id={'sidebar.onec_export'} />,
+        href: '/onec-export',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.OnecExport,
+      },
+      {
+        text: <T id={'sidebar.zenmoney'} />,
+        href: '/zenmoney',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.Zenmoney,
+      },
+      {
+        text: <T id={'sidebar.crm_integration'} />,
+        href: '/crm-integration',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.CrmIntegration,
+      },
+    ],
   },
   {
     text: <T id={'sidebar.system'} />,

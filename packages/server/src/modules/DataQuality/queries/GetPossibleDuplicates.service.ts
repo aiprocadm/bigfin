@@ -32,6 +32,16 @@ export class GetPossibleDuplicatesService {
     private readonly accountModel: TenantModelProxy<typeof Account>,
   ) {}
 
+  /**
+   * Ставит фильтр периода одинаково и на основной запрос, и на подзапрос
+   * отбора кандидатов: подзапрос — обычный knex, модификаторов модели у него
+   * нет, поэтому условия пишутся руками.
+   */
+  private applyPeriod(builder: any, query: DataQualityQueryDto) {
+    if (query.fromDate) builder.where('date', '>=', query.fromDate);
+    if (query.toDate) builder.where('date', '<=', query.toDate);
+  }
+
   public async getPossibleDuplicates(
     query: DataQualityQueryDto,
   ): Promise<PossibleDuplicatesResult> {
@@ -49,9 +59,27 @@ export class GetPossibleDuplicatesService {
           'transactionNumber',
           'referenceNumber',
         ]);
-        if (query.fromDate || query.toDate) {
-          qb.modify('filterDateRange', query.fromDate, query.toDate);
-        }
+        this.applyPeriod(qb, query);
+
+        // Отбор кандидатов делает база. Раньше в память тянулись ВСЕ проводки
+        // периода — на годе работы это десятки тысяч строк ради нескольких
+        // совпадений. Дублем может быть только строка, у которой есть хотя бы
+        // одна ровня: та же дата, счёт и та же пара сумм.
+        qb.whereIn(
+          ['date', 'accountId', 'credit', 'debit'],
+          (sub: any) => {
+            sub
+              .select('date', 'accountId', 'credit', 'debit')
+              .from('accounts_transactions')
+              .where((amounts: any) => {
+                amounts.where('credit', '<>', 0).orWhere('debit', '<>', 0);
+              })
+              .groupBy('date', 'accountId', 'credit', 'debit')
+              .havingRaw('COUNT(*) > 1');
+
+            this.applyPeriod(sub, query);
+          },
+        );
       });
 
     const { groups, totalGroups } = groupPossibleDuplicates(rows as any[]);

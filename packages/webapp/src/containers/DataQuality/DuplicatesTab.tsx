@@ -42,8 +42,11 @@ function DuplicateGroupRow({ group }: { group: any }) {
         </span>
         <span className="flex items-center gap-4">
           <span className="text-muted-foreground">
-            {intl.get('data_quality.operations_count', {
-              count: entries.length,
+            {/* Документов в находке и сколько их строк совпало: чем больше
+                совпавших строк, тем увереннее это один и тот же документ. */}
+            {intl.get('data_quality.duplicates.documents_count', {
+              documents: entries.length,
+              legs: group.matchedLegs ?? 1,
             })}
           </span>
           <span className="font-medium">{fmt(group.amount)}</span>
@@ -59,7 +62,7 @@ function DuplicateGroupRow({ group }: { group: any }) {
             );
             return (
               <div
-                key={entry.transactionId}
+                key={`${entry.referenceType}-${entry.referenceId}`}
                 className={
                   'flex items-center justify-between gap-3 rounded px-2 py-1.5 text-sm' +
                   (clickable ? ' cursor-pointer hover:bg-muted/60' : '')

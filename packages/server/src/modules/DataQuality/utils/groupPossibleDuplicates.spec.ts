@@ -28,7 +28,55 @@ describe('groupPossibleDuplicates', () => {
       amount: 1000,
       side: 'debit',
     });
-    expect(groups[0].entries.map((e) => e.transactionId)).toEqual([1, 2]);
+    expect(groups[0].entries.map((e) => e.referenceId)).toEqual([1, 2]);
+    expect(groups[0].matchedLegs).toBe(1);
+  });
+
+  it('задвоенный документ — ОДНА находка, а не по одной на каждую строку', () => {
+    // Счёт введён дважды: у каждого по три строки — долг, выручка, налог.
+    // Раньше это показывалось как три отдельные находки, и счётчик врал втрое.
+    const doubled = (referenceId: number, id: number) => [
+      row({ id, referenceId, accountId: 10, debit: 1200, credit: 0 }),
+      row({ id: id + 10, referenceId, accountId: 20, debit: 0, credit: 1000 }),
+      row({ id: id + 20, referenceId, accountId: 30, debit: 0, credit: 200 }),
+    ];
+    const { groups, totalGroups } = groupPossibleDuplicates([
+      ...doubled(1, 1).map((r) => ({ ...r, referenceType: 'SaleInvoice' })),
+      ...doubled(2, 2).map((r) => ({ ...r, referenceType: 'SaleInvoice' })),
+    ]);
+
+    expect(totalGroups).toBe(1);
+    expect(groups[0]).toMatchObject({
+      // Подписью служит самая крупная совпавшая строка.
+      amount: 1200,
+      accountId: 10,
+      side: 'debit',
+      matchedLegs: 3,
+    });
+    expect(groups[0].entries.map((e) => e.referenceId)).toEqual([1, 2]);
+  });
+
+  it('разные пары документов остаются разными находками', () => {
+    const { totalGroups } = groupPossibleDuplicates([
+      row({ id: 1, referenceId: 1, debit: 500 }),
+      row({ id: 2, referenceId: 2, debit: 500 }),
+      row({ id: 3, referenceId: 3, debit: 700 }),
+      row({ id: 4, referenceId: 4, debit: 700 }),
+    ]);
+
+    expect(totalGroups).toBe(2);
+  });
+
+  it('одна совпавшая строка — тоже находка, но слабее по числу строк', () => {
+    // Два разных документа случайно совпали одной суммой: показываем, но
+    // видно, что совпала всего одна строка.
+    const { groups } = groupPossibleDuplicates([
+      row({ id: 1, referenceType: 'Expense', referenceId: 1, debit: 300 }),
+      row({ id: 2, referenceType: 'Bill', referenceId: 9, debit: 300 }),
+    ]);
+
+    expect(groups[0].matchedLegs).toBe(1);
+    expect(groups[0].entries).toHaveLength(2);
   });
 
   it('две ноги одной проводки (один источник) — не дубль', () => {

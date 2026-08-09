@@ -18,27 +18,38 @@ export function InvoiceStatusBadgeV2({ invoice }: { invoice: InvoiceRow }) {
   if (invoice.is_fully_paid && invoice.is_delivered) {
     return <Badge variant="success">{intl.get('paid')}</Badge>;
   }
-  if (invoice.is_delivered && invoice.is_overdue) {
+  // Срок и частичная оплата показываются вместе — как у счетов поставщиков.
+  // Раньше ветка «срок через N дней» стояла раньше и обрывала проверку:
+  // счёт, оплаченный наполовину, выглядел в списке как неоплаченный вовсе,
+  // хотя в карточке честно значился долг.
+  if (invoice.is_delivered) {
     return (
-      <Badge variant="destructive">
-        {intl.get('overdue_by', { overdue: invoice.overdue_days })}
-      </Badge>
-    );
-  }
-  if (invoice.is_delivered && !invoice.is_overdue) {
-    return (
-      <Badge variant="secondary">
-        {intl.get('due_in', { due: invoice.remaining_days })}
-      </Badge>
-    );
-  }
-  if (invoice.is_partially_paid) {
-    return (
-      <Badge variant="secondary">
-        {intl.get('day_partially_paid', {
-          due: formattedAmount(invoice.due_amount, invoice.currency_code, undefined),
-        })}
-      </Badge>
+      <span className="flex flex-wrap items-center gap-1">
+        {invoice.is_overdue ? (
+          <Badge variant="destructive">
+            {intl.get('overdue_by', { overdue: invoice.overdue_days })}
+          </Badge>
+        ) : (
+          <Badge variant="secondary">
+            {intl.get('due_in', { due: invoice.remaining_days })}
+          </Badge>
+        )}
+        {invoice.is_partially_paid && (
+          <Badge variant="secondary">
+            {intl.get('day_partially_paid', {
+              // Сумма берётся уже отформатированной с сервера: местное
+              // форматирование печатает «RUB20 000,00» вместо «20 000,00 ₽».
+              due:
+                invoice.due_amount_formatted ??
+                formattedAmount(
+                  invoice.due_amount,
+                  invoice.currency_code,
+                  undefined,
+                ),
+            })}
+          </Badge>
+        )}
+      </span>
     );
   }
   return <Badge variant="outline">{intl.get('draft')}</Badge>;

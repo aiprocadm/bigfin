@@ -164,6 +164,26 @@ export class BillsController {
     return this.billsApplication.getBillPaymentTransactions(billId);
   }
 
+  // ВАЖНО: конкретные пути объявляются ДО параметрического `:id`, иначе
+  // Nest сопоставляет `/bills/due` с `:id` и отвечает ошибкой разбора числа —
+  // список счетов с долгом был недостижим вовсе.
+  @Get('due')
+  @RequirePermission(BillAction.View, AbilitySubject.Bill)
+  @ApiOperation({ summary: 'Retrieves the due bills.' })
+  @ApiQuery({
+    name: 'vendor_id',
+    required: false,
+    type: Number,
+    description: 'Filter due bills by vendor ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of due bills (optionally filtered by vendor).',
+  })
+  getDueBills(@Query('vendor_id') vendorId?: number) {
+    return this.billsApplication.getDueBills(vendorId);
+  }
+
   @Get(':id')
   @RequirePermission(BillAction.View, AbilitySubject.Bill)
   @ApiOperation({ summary: 'Retrieves the bill details.' })
@@ -195,22 +215,5 @@ export class BillsController {
   })
   openBill(@Param('id') billId: number) {
     return this.billsApplication.openBill(billId);
-  }
-
-  @Get('due')
-  @RequirePermission(BillAction.View, AbilitySubject.Bill)
-  @ApiOperation({ summary: 'Retrieves the due bills.' })
-  @ApiQuery({
-    name: 'vendor_id',
-    required: false,
-    type: Number,
-    description: 'Filter due bills by vendor ID.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of due bills (optionally filtered by vendor).',
-  })
-  getDueBills(@Query('vendor_id') vendorId?: number) {
-    return this.billsApplication.getDueBills(vendorId);
   }
 }

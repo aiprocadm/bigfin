@@ -135,11 +135,10 @@ export class GetPaymentCalendarForecastService {
       });
 
     return (invoices as any[]).map((inv: any) => {
-      const outstanding =
-        Number(inv.balance) -
-        Number(inv.paymentAmount || 0) -
-        Number(inv.writtenoffAmount || 0) -
-        Number(inv.creditedAmount || 0);
+      // Берём долг у самой модели: там итог с налогом, скидкой и
+      // корректировкой. Раньше сумма считалась здесь заново от подытога — и
+      // счёт с НДС, оплаченный без налога, попадал в календарь строкой «0 ₽».
+      const outstanding = Number(inv.dueAmount);
       return {
         date: moment(inv.dueDate).format('YYYY-MM-DD'),
         direction: 'inflow' as const,
@@ -169,10 +168,8 @@ export class GetPaymentCalendarForecastService {
       });
 
     return (bills as any[]).map((bill: any) => {
-      const outstanding =
-        Number(bill.amount) -
-        Number(bill.paymentAmount || 0) -
-        Number(bill.creditedAmount || 0);
+      // Тот же долг, что и в карточке счёта поставщика.
+      const outstanding = Number(bill.dueAmount);
       return {
         date: moment(bill.dueDate).format('YYYY-MM-DD'),
         direction: 'outflow' as const,

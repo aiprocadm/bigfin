@@ -11,6 +11,14 @@ import { DiscountType } from '@/common/types/Discount';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { ISearchRole } from '@/modules/DynamicListing/DynamicFilter/DynamicFilter.types';
 import { sanitizeSortDirection } from '@/modules/DynamicListing/DynamicFilter/sanitizeSortDirection';
+import {
+  dueAmountSql,
+  fullyPaidSql,
+  hasDueSql,
+  partiallyPaidSql,
+  PaymentAmountColumns,
+  unpaidSql,
+} from '@/common/utils/paymentStatusSql';
 import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
 import { TransactionPaymentServiceEntry } from '@/modules/PaymentServices/models/TransactionPaymentServiceEntry.model';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
@@ -19,6 +27,16 @@ import { InjectModelMeta } from '@/modules/Tenancy/TenancyModels/decorators/Inje
 import { SaleInvoiceMeta } from './SaleInvoice.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleInvoiceDefaultViews } from '../constants';
+
+/**
+ * Колонки, из которых складывается долг по счёту покупателю. Фильтры списка
+ * считают по ним ровно то же, что карточка документа: итог с налогом, скидкой
+ * и корректировкой минус оплата, списание и зачёт кредит-нот.
+ */
+const INVOICE_PAYMENT_COLUMNS: PaymentAmountColumns = {
+  subtotalColumn: 'BALANCE',
+  settledColumns: ['PAYMENT_AMOUNT', 'WRITTENOFF_AMOUNT', 'CREDITED_AMOUNT'],
+};
 
 @InjectAttachable()
 @ExportableModel()
@@ -360,14 +378,7 @@ export class SaleInvoice extends TenantBaseModel {
        * Filters the due invoices.
        */
       dueInvoices(query) {
-        query.where(
-          raw(`
-            COALESCE(BALANCE, 0) -
-            COALESCE(PAYMENT_AMOUNT, 0) -
-            COALESCE(WRITTENOFF_AMOUNT, 0) -
-            COALESCE(CREDITED_AMOUNT, 0) > 0
-        `),
-        );
+        query.where(raw(hasDueSql(INVOICE_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the invoices between the given date range.
@@ -411,7 +422,7 @@ export class SaleInvoice extends TenantBaseModel {
        * Filters the unpaid invoices.
        */
       unpaid(query) {
-        query.where(raw('PAYMENT_AMOUNT = 0'));
+        query.where(raw(unpaidSql(INVOICE_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the overdue invoices.
@@ -429,14 +440,13 @@ export class SaleInvoice extends TenantBaseModel {
        * Filters the partially invoices.
        */
       partiallyPaid(query) {
-        query.whereNot('payment_amount', 0);
-        query.whereNot(raw('`PAYMENT_AMOUNT` = `BALANCE`'));
+        query.where(raw(partiallyPaidSql(INVOICE_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the paid invoices.
        */
       paid(query) {
-        query.where(raw('PAYMENT_AMOUNT = BALANCE'));
+        query.where(raw(fullyPaidSql(INVOICE_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the sale invoices from the given date.
@@ -449,7 +459,7 @@ export class SaleInvoice extends TenantBaseModel {
        */
       sortByStatus(query, order) {
         const dir = sanitizeSortDirection(order);
-        query.orderByRaw(`PAYMENT_AMOUNT = BALANCE ${dir}`);
+        query.orderByRaw(`${fullyPaidSql(INVOICE_PAYMENT_COLUMNS)} ${dir}`);
       },
 
       /**
@@ -457,7 +467,7 @@ export class SaleInvoice extends TenantBaseModel {
        */
       sortByDueAmount(query, order) {
         const dir = sanitizeSortDirection(order);
-        query.orderByRaw(`BALANCE - PAYMENT_AMOUNT ${dir}`);
+        query.orderByRaw(`${dueAmountSql(INVOICE_PAYMENT_COLUMNS)} ${dir}`);
       },
 
       /**

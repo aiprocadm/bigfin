@@ -626,6 +626,17 @@ export const SidebarMenu = [
         type: ISidebarMenuItemType.Group,
         children: [
           {
+            // Каталог всех отчётов карточками. Страница существовала, но
+            // попасть на неё кликом было негде — только по прямой ссылке.
+            text: <T id={'sidebar.all_financial_reports'} />,
+            href: '/financial-reports',
+            type: ISidebarMenuItemType.Link,
+            permission: {
+              subject: AbilitySubject.Report,
+              ability: ReportsAction.READ_BALANCE_SHEET,
+            },
+          },
+          {
             text: <T id={'sidebar.balance_sheet'} />,
             href: '/financial-reports/balance-sheet',
             type: ISidebarMenuItemType.Link,

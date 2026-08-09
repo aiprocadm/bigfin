@@ -2704,6 +2704,7 @@
   "sidebar.transactions_locking": "Transactions Locking",
   "sidebar.make_journal_entry": "Make Journal Entry",
   "sidebar.reports": "Reports",
+  "sidebar.all_financial_reports": "All reports",
   "sidebar.balance_sheet": "Balance Sheet",
   "sidebar.trial_balance_sheet": "Trial Balance Sheet",
   "sidebar.journal": "Journal",

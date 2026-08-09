@@ -2704,6 +2704,7 @@
   "sidebar.transactions_locking": "Блокировка операций",
   "sidebar.make_journal_entry": "Создать проводку",
   "sidebar.reports": "Отчёты",
+  "sidebar.all_financial_reports": "Все отчёты",
   "sidebar.balance_sheet": "Баланс",
   "sidebar.trial_balance_sheet": "Оборотно-сальдовая ведомость",
   "sidebar.journal": "Журнал",

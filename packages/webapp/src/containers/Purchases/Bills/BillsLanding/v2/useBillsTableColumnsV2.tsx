@@ -39,7 +39,15 @@ function BillStatusBadgesV2({ bill }: { bill: BillRow }) {
         {bill.is_partially_paid && (
           <Badge variant="secondary">
             {intl.get('day_partially_paid', {
-              due: formattedAmount(bill.due_amount, bill.currency_code, undefined),
+              // Как и у счетов покупателям: сумма приходит с сервера уже
+              // с рублёвым знаком, местное форматирование даёт «RUB10 000,00».
+              due:
+                bill.formatted_due_amount ??
+                formattedAmount(
+                  bill.due_amount,
+                  bill.currency_code,
+                  undefined,
+                ),
             })}
           </Badge>
         )}

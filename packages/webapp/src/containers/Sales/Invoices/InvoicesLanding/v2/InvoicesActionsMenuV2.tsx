@@ -46,6 +46,8 @@ export interface InvoiceRow {
   due_date_formatted?: string;
   total_formatted?: string;
   due_amount?: number;
+  /** Долг, уже отформатированный сервером («20 000,00 ₽»). */
+  due_amount_formatted?: string;
   currency_code?: string;
   overdue_days?: number;
   remaining_days?: number;

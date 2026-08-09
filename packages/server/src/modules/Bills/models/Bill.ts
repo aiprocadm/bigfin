@@ -15,6 +15,23 @@ import { sanitizeSortDirection } from '@/modules/DynamicListing/DynamicFilter/sa
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { BillDefaultViews } from '../Bills.constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import {
+  fullyPaidSql,
+  hasDueSql,
+  partiallyPaidSql,
+  PaymentAmountColumns,
+  unpaidSql,
+} from '@/common/utils/paymentStatusSql';
+
+/**
+ * Колонки долга по счёту поставщика. Как и у счёта покупателю, фильтры списка
+ * считают итог с налогом, скидкой и корректировкой; гасят долг оплата и зачёт
+ * возвратов поставщику (списания у счетов поставщиков нет).
+ */
+const BILL_PAYMENT_COLUMNS: PaymentAmountColumns = {
+  subtotalColumn: 'AMOUNT',
+  settledColumns: ['PAYMENT_AMOUNT', 'CREDITED_AMOUNT'],
+};
 
 @InjectAttachable()
 @ExportableModel()
@@ -374,18 +391,13 @@ export class Bill extends TenantBaseModel {
        * Filters the unpaid bills.
        */
       unpaid(query) {
-        query.where('payment_amount', 0);
+        query.where(raw(unpaidSql(BILL_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the due bills.
        */
       dueBills(query) {
-        query.where(
-          raw(`COALESCE(AMOUNT, 0) -
-            COALESCE(PAYMENT_AMOUNT, 0) -
-            COALESCE(CREDITED_AMOUNT, 0) > 0
-          `),
-        );
+        query.where(raw(hasDueSql(BILL_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the overdue bills.
@@ -403,14 +415,13 @@ export class Bill extends TenantBaseModel {
        * Filters the partially paid bills.
        */
       partiallyPaid(query) {
-        query.whereNot('payment_amount', 0);
-        query.whereNot(raw('`PAYMENT_AMOUNT` = `AMOUNT`'));
+        query.where(raw(partiallyPaidSql(BILL_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the paid bills.
        */
       paid(query) {
-        query.where(raw('`PAYMENT_AMOUNT` = `AMOUNT`'));
+        query.where(raw(fullyPaidSql(BILL_PAYMENT_COLUMNS)));
       },
       /**
        * Filters the bills from the given date.
@@ -424,7 +435,7 @@ export class Bill extends TenantBaseModel {
        */
       sortByStatus(query, order) {
         const dir = sanitizeSortDirection(order);
-        query.orderByRaw(`PAYMENT_AMOUNT = AMOUNT ${dir}`);
+        query.orderByRaw(`${fullyPaidSql(BILL_PAYMENT_COLUMNS)} ${dir}`);
       },
 
       /**

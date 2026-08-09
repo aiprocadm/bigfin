@@ -44,6 +44,8 @@ export interface BillRow {
   vendor?: { display_name?: string };
   total_formatted: string;
   due_amount: number;
+  /** Долг, уже отформатированный сервером («10 000,00 ₽»). */
+  formatted_due_amount?: string;
   currency_code: string;
   is_open: boolean;
   is_fully_paid: boolean;

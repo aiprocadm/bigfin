@@ -94,6 +94,10 @@ export class BillGL {
       indexGroup: 10,
       itemId: entry.itemId,
       accountNormal: AccountNormal.DEBIT,
+      // Ставка на строке закупки — налоговая база по ставке (см. счёт
+      // покупателю, где это было с самого начала).
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
     };
   }
 

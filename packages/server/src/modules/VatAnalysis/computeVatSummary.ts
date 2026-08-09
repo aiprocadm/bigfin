@@ -4,6 +4,8 @@
  * дебет = НДС принят к вычету (с покупок), нетто = НДС к уплате.
  */
 
+import { VatByRate } from './computeVatByRate';
+
 /** Движение ГЛ по налоговому счёту за период. */
 export interface VatLedgerRow {
   accountId: number;
@@ -29,6 +31,8 @@ export interface VatSummary {
   /** НДС к уплате = начислен − к вычету (может быть < 0 = к возмещению). */
   payable: number;
   byAccount: VatByAccount[];
+  /** Разбивка по ставкам вместе с налоговой базой (для декларации). */
+  byRate?: VatByRate[];
 }
 
 /**

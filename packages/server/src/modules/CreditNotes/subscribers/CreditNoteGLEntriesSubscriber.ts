@@ -9,6 +9,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Injectable } from '@nestjs/common';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи журнала не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * проводки пишутся именно тут. С предохранителем двойной записи это дало
+ * бы худший из миров: документ сохранён, журнала у него нет, и никто об
+ * этом не знает. С `suppressErrors: false` ошибка доходит до команды,
+ * транзакция откатывается — документ не сохраняется вовсе.
+ */
 @Injectable()
 export class CreditNoteGLEntriesSubscriber {
   constructor(private readonly creditNoteGLEntries: CreditNoteGLEntries) {}
@@ -17,7 +26,7 @@ export class CreditNoteGLEntriesSubscriber {
    * Writes the GL entries once the credit note transaction created or open.
    * @param {ICreditNoteCreatedPayload|ICreditNoteOpenedPayload} payload -
    */
-  @OnEvent(events.creditNote.onCreated)
+  @OnEvent(events.creditNote.onCreated, { suppressErrors: false })
   public async writeGlEntriesOnceCreditNoteCreated({
     creditNote,
     trx,
@@ -35,7 +44,7 @@ export class CreditNoteGLEntriesSubscriber {
    * Writes the GL entries once the vendor credit transaction opened.
    * @param {ICreditNoteOpenedPayload} payload
    */
-  @OnEvent(events.creditNote.onOpened)
+  @OnEvent(events.creditNote.onOpened, { suppressErrors: false })
   public async writeGLEntriesOnceCreditNoteOpened({
     creditNote,
     trx,
@@ -49,7 +58,7 @@ export class CreditNoteGLEntriesSubscriber {
   /**
    * Reverts GL entries once credit note deleted.
    */
-  @OnEvent(events.creditNote.onDeleted)
+  @OnEvent(events.creditNote.onDeleted, { suppressErrors: false })
   public async revertGLEntriesOnceCreditNoteDeleted({
     oldCreditNote,
     creditNoteId,
@@ -65,7 +74,7 @@ export class CreditNoteGLEntriesSubscriber {
    * Edits vendor credit associated GL entries once the transaction edited.
    * @param {ICreditNoteEditedPayload} payload -
    */
-  @OnEvent(events.creditNote.onEdited)
+  @OnEvent(events.creditNote.onEdited, { suppressErrors: false })
   public async editVendorCreditGLEntriesOnceEdited({
     creditNote,
     trx,

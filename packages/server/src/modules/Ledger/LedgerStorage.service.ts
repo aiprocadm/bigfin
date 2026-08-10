@@ -7,6 +7,8 @@ import { LedgerEntriesStorageService } from './LedgerEntriesStorage.service';
 import { AccountTransaction } from '../Accounts/models/AccountTransaction.model';
 import { Ledger } from './Ledger';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
+import { ServiceError } from '../Items/ServiceError';
+import { ERRORS } from './Ledger.constants';
 
 @Injectable()
 export class LedgerStorageService {
@@ -39,10 +41,15 @@ export class LedgerStorageService {
   ): Promise<void> => {
     // Предохранитель двойной записи. Раньше журнал записывался молча, каким
     // бы он ни был: перекос счёта с НДС (−20 000 ₽) и перекос списания ОС
-    // осели в Балансе никем не замеченными. Пока — предупреждение в журнал
-    // приложения, чтобы увидеть остатки исторических перекосов и не сломать
-    // перепроведение; после периода тишины предупреждение станет ошибкой.
-    this.warnIfUnbalanced(ledger);
+    // осели в Балансе никем не замеченными.
+    //
+    // Теперь это ошибка, а не предупреждение. Важно понимать границу: проверка
+    // срабатывает только в момент ЗАПИСИ журнала и ничего не перепроверяет в
+    // уже сохранённых данных. Значит, сломать существующую организацию она не
+    // может — она лишь отказывается записать заведомо кривую проводку. Если
+    // такое случится при перепроведении, документ попадёт в отчёт как сбойный,
+    // а остальные перепроведутся (см. RepostVatDocumentsService).
+    this.assertBalanced(ledger);
 
     const tasks = [
       // Saves the ledger entries.
@@ -57,20 +64,33 @@ export class LedgerStorageService {
     await Promise.all(tasks);
   };
 
-  /** Пишет предупреждение, если дебет не сходится с кредитом. */
-  private warnIfUnbalanced(ledger: ILedger): void {
+  /**
+   * Не даёт записать журнал, у которого дебет не сошёлся с кредитом.
+   *
+   * Допуск — половина копейки: хвосты вещественных чисел проблемой не считаем,
+   * порог тот же, что у отчёта «Не сходится».
+   */
+  private assertBalanced(ledger: ILedger): void {
     const asLedger = ledger as Ledger;
     if (typeof asLedger.isBalanced !== 'function' || asLedger.isBalanced()) {
       return;
     }
     const first = asLedger.getEntries()[0];
-    this.logger.warn(
-      `Журнал не сходится на ${asLedger
-        .getDebitCreditDifference()
-        .toFixed(2)} — ${first?.transactionType ?? '?'} #${
-        first?.transactionId ?? '?'
-      }`,
-    );
+    const difference = asLedger.getDebitCreditDifference().toFixed(2);
+    const document = `${first?.transactionType ?? '?'} #${
+      first?.transactionId ?? '?'
+    }`;
+    const message = `Журнал не сходится на ${difference} — ${document}. Документ не записан: в двойной записи дебет обязан равняться кредиту.`;
+
+    // Пишем и в журнал приложения: в отличие от ответа пользователю, он
+    // сохраняет, какой именно документ и на сколько разошёлся.
+    this.logger.error(message);
+
+    throw new ServiceError(ERRORS.LEDGER_NOT_BALANCED, message, {
+      difference,
+      transactionType: first?.transactionType ?? null,
+      transactionId: first?.transactionId ?? null,
+    });
   }
 
   /**

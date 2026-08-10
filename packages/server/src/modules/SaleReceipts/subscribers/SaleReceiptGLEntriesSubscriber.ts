@@ -8,6 +8,15 @@ import { SaleReceiptGLEntries } from '../ledger/SaleReceiptGLEntries';
 import { OnEvent } from '@nestjs/event-emitter';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи журнала не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * проводки пишутся именно тут. С предохранителем двойной записи это дало
+ * бы худший из миров: документ сохранён, журнала у него нет, и никто об
+ * этом не знает. С `suppressErrors: false` ошибка доходит до команды,
+ * транзакция откатывается — документ не сохраняется вовсе.
+ */
 @Injectable()
 export class SaleReceiptGLEntriesSubscriber {
   constructor(private readonly saleReceiptGLEntries: SaleReceiptGLEntries) {}
@@ -16,8 +25,8 @@ export class SaleReceiptGLEntriesSubscriber {
    * Handles writing sale receipt income journal entries once created.
    * @param {ISaleReceiptCreatedPayload} payload -
    */
-  @OnEvent(events.saleReceipt.onCreated)
-  @OnEvent(events.saleReceipt.onClosed)
+  @OnEvent(events.saleReceipt.onCreated, { suppressErrors: false })
+  @OnEvent(events.saleReceipt.onClosed, { suppressErrors: false })
   public async handleWriteReceiptIncomeJournalEntrieOnCreate({
     saleReceiptId,
     saleReceipt,
@@ -34,7 +43,7 @@ export class SaleReceiptGLEntriesSubscriber {
    * Handles sale receipt revert jouranl entries once be deleted.
    * @param {ISaleReceiptEventDeletedPayload} payload -
    */
-  @OnEvent(events.saleReceipt.onDeleted)
+  @OnEvent(events.saleReceipt.onDeleted, { suppressErrors: false })
   public async handleRevertReceiptJournalEntriesOnDeleted({
     saleReceiptId,
     trx,
@@ -46,7 +55,7 @@ export class SaleReceiptGLEntriesSubscriber {
    * Handles writing sale receipt income journal entries once be edited.
    * @param {ISaleReceiptEditedPayload} payload -
    */
-  @OnEvent(events.saleReceipt.onEdited)
+  @OnEvent(events.saleReceipt.onEdited, { suppressErrors: false })
   public async handleWriteReceiptIncomeJournalEntrieOnEdited({
     saleReceipt,
     trx,

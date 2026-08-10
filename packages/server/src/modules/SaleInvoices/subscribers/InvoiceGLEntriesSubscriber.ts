@@ -8,6 +8,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { SaleInvoiceGLEntries } from '../ledger/InvoiceGLEntries';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи журнала не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * проводки пишутся именно тут. С предохранителем двойной записи это дало
+ * бы худший из миров: документ сохранён, журнала у него нет, и никто об
+ * этом не знает. С `suppressErrors: false` ошибка доходит до команды,
+ * транзакция откатывается — документ не сохраняется вовсе.
+ */
 @Injectable()
 export class InvoiceGLEntriesSubscriber {
   constructor(public readonly saleInvoiceGLEntries: SaleInvoiceGLEntries) { }
@@ -17,8 +26,8 @@ export class InvoiceGLEntriesSubscriber {
    * @param {ISaleInvoiceCreatedPayload} payload -
    * @returns {Promise<void>}
    */
-  @OnEvent(events.saleInvoice.onCreated)
-  @OnEvent(events.saleInvoice.onDelivered)
+  @OnEvent(events.saleInvoice.onCreated, { suppressErrors: false })
+  @OnEvent(events.saleInvoice.onDelivered, { suppressErrors: false })
   public async handleWriteJournalEntriesOnInvoiceCreated({
     saleInvoiceId,
     saleInvoice,
@@ -35,7 +44,7 @@ export class InvoiceGLEntriesSubscriber {
    * @param {ISaleInvoiceEditedPayload} payload -
    * @returns {Promise<void>}
    */
-  @OnEvent(events.saleInvoice.onEdited)
+  @OnEvent(events.saleInvoice.onEdited, { suppressErrors: false })
   public async handleRewriteJournalEntriesOnceInvoiceEdit({
     saleInvoice,
     trx,
@@ -54,7 +63,7 @@ export class InvoiceGLEntriesSubscriber {
    * @param {ISaleInvoiceDeletePayload} payload -
    * @returns {Promise<void>}
    */
-  @OnEvent(events.saleInvoice.onDeleted)
+  @OnEvent(events.saleInvoice.onDeleted, { suppressErrors: false })
   public async handleRevertingInvoiceJournalEntriesOnDelete({
     saleInvoiceId,
     trx,

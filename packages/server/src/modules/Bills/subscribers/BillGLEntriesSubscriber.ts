@@ -9,6 +9,15 @@ import { BillGLEntries } from '../commands/BillsGLEntries';
 import { events } from '@/common/events/events';
 import { OnEvent } from '@nestjs/event-emitter';
 
+/**
+ * Ошибки записи журнала не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * проводки пишутся именно тут. С предохранителем двойной записи это дало
+ * бы худший из миров: документ сохранён, журнала у него нет, и никто об
+ * этом не знает. С `suppressErrors: false` ошибка доходит до команды,
+ * транзакция откатывается — документ не сохраняется вовсе.
+ */
 @Injectable()
 export class BillGLEntriesSubscriber {
   /**
@@ -20,8 +29,8 @@ export class BillGLEntriesSubscriber {
    * Handles writing journal entries once bill created.
    * @param {IBillCreatedPayload} payload -
    */
-  @OnEvent(events.bill.onCreated)
-  @OnEvent(events.bill.onOpened)
+  @OnEvent(events.bill.onCreated, { suppressErrors: false })
+  @OnEvent(events.bill.onOpened, { suppressErrors: false })
   public async handlerWriteJournalEntriesOnCreate({
     bill,
     trx,
@@ -35,7 +44,7 @@ export class BillGLEntriesSubscriber {
    * Handles the overwriting journal entries once bill edited.
    * @param {IBillEditedPayload} payload -
    */
-  @OnEvent(events.bill.onEdited)
+  @OnEvent(events.bill.onEdited, { suppressErrors: false })
   public async handleOverwriteJournalEntriesOnEdit({
     bill,
     trx,
@@ -49,7 +58,7 @@ export class BillGLEntriesSubscriber {
    * Handles revert journal entries on bill deleted.
    * @param {IBIllEventDeletedPayload} payload -
    */
-  @OnEvent(events.bill.onDeleted)
+  @OnEvent(events.bill.onDeleted, { suppressErrors: false })
   public async handlerDeleteJournalEntries({
     oldBill,
     trx,

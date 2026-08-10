@@ -8,6 +8,15 @@ import {
 import { events } from '@/common/events/events';
 import { CustomerGLEntriesStorage } from '../CustomerGLEntriesStorage';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class CustomerWriteGLOpeningBalanceSubscriber {
   constructor(private readonly customerGLEntries: CustomerGLEntriesStorage) { }
@@ -15,7 +24,7 @@ export class CustomerWriteGLOpeningBalanceSubscriber {
   /**
    * Handles the writing opening balance journal entries once the customer created.
    */
-  @OnEvent(events.customers.onCreated)
+  @OnEvent(events.customers.onCreated, { suppressErrors: false })
   public async handleWriteOpenBalanceEntries({
     customer,
     trx,
@@ -32,7 +41,7 @@ export class CustomerWriteGLOpeningBalanceSubscriber {
   /**
    * Handles the deleting opening balance journal entries once the customer deleted.
    */
-  @OnEvent(events.customers.onDeleted)
+  @OnEvent(events.customers.onDeleted, { suppressErrors: false })
   public async handleRevertOpeningBalanceEntries({
     customerId,
     trx,
@@ -43,7 +52,7 @@ export class CustomerWriteGLOpeningBalanceSubscriber {
   /**
    * Handles the rewrite opening balance entries once opening balance changed.
    */
-  @OnEvent(events.customers.onOpeningBalanceChanged)
+  @OnEvent(events.customers.onOpeningBalanceChanged, { suppressErrors: false })
   public async handleRewriteOpeningEntriesOnChanged({
     customer,
     trx,

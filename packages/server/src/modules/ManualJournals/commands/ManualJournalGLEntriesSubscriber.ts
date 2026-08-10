@@ -10,6 +10,15 @@ import { ManualJournalGLEntries } from './ManualJournalGLEntries';
 import { AutoIncrementManualJournal } from './AutoIncrementManualJournal.service';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class ManualJournalWriteGLSubscriber {
   /**
@@ -26,7 +35,7 @@ export class ManualJournalWriteGLSubscriber {
    * @param {IManualJournalEventCreatedPayload} payload -
    * @returns {Promise<void>}
    */
-  @OnEvent(events.manualJournals.onCreated)
+  @OnEvent(events.manualJournals.onCreated, { suppressErrors: false })
   public async handleWriteJournalEntriesOnCreated({
     manualJournal,
     trx,
@@ -45,7 +54,7 @@ export class ManualJournalWriteGLSubscriber {
    * @param {IManualJournalEventCreatedPayload} payload -
    * @return {Promise<void>}
    */
-  @OnEvent(events.manualJournals.onCreated)
+  @OnEvent(events.manualJournals.onCreated, { suppressErrors: false })
   public async handleJournalNumberIncrement({}: IManualJournalEventCreatedPayload) {
     await this.manualJournalAutoIncrement.incrementNextJournalNumber();
   }
@@ -55,7 +64,7 @@ export class ManualJournalWriteGLSubscriber {
    * @param {IManualJournalEventEditedPayload}
    * @return {Promise<void>}
    */
-  @OnEvent(events.manualJournals.onEdited)
+  @OnEvent(events.manualJournals.onEdited, { suppressErrors: false })
   public async handleRewriteJournalEntriesOnEdited({
     manualJournal,
     oldManualJournal,
@@ -74,7 +83,7 @@ export class ManualJournalWriteGLSubscriber {
    * @param {IManualJournalEventPublishedPayload} payload -
    * @return {Promise<void>}
    */
-  @OnEvent(events.manualJournals.onPublished)
+  @OnEvent(events.manualJournals.onPublished, { suppressErrors: false })
   public async handleWriteJournalEntriesOnPublished({
     manualJournal,
     trx,
@@ -89,7 +98,7 @@ export class ManualJournalWriteGLSubscriber {
    * Handle manual journal deleted event.
    * @param {IManualJournalEventDeletedPayload} payload -
    */
-  @OnEvent(events.manualJournals.onDeleted)
+  @OnEvent(events.manualJournals.onDeleted, { suppressErrors: false })
   public async handleRevertJournalEntries({
     manualJournalId,
     trx,

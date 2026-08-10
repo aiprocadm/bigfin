@@ -8,6 +8,15 @@ import {
   IVendorOpeningBalanceEditedPayload,
 } from '../types/Vendors.types';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class VendorsWriteGLOpeningSubscriber {
   constructor(
@@ -18,7 +27,7 @@ export class VendorsWriteGLOpeningSubscriber {
    * Writes the open balance journal entries once the vendor created.
    * @param {IVendorEventCreatedPayload} payload -
    */
-  @OnEvent(events.vendors.onCreated)
+  @OnEvent(events.vendors.onCreated, { suppressErrors: false })
   public async handleWriteOpeningBalanceEntries({
     vendor,
     trx,
@@ -36,7 +45,7 @@ export class VendorsWriteGLOpeningSubscriber {
    * Revert the opening balance journal entries once the vendor deleted.
    * @param {IVendorEventDeletedPayload} payload -
    */
-  @OnEvent(events.vendors.onDeleted)
+  @OnEvent(events.vendors.onDeleted, { suppressErrors: false })
   public async handleRevertOpeningBalanceEntries({
     vendorId,
     trx,
@@ -51,7 +60,7 @@ export class VendorsWriteGLOpeningSubscriber {
    * Handles the rewrite opening balance entries once opening balance changed.
    * @param {IVendorOpeningBalanceEditedPayload} payload -
    */
-  @OnEvent(events.vendors.onOpeningBalanceChanged)
+  @OnEvent(events.vendors.onOpeningBalanceChanged, { suppressErrors: false })
   public async handleRewriteOpeningEntriesOnChanged({
     vendor,
     trx,

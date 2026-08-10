@@ -8,6 +8,15 @@ import {
   ICommandCashflowDeletedPayload,
 } from '../types/BankingTransactions.types';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class BankingTransactionGLEntriesSubscriber {
   /**
@@ -23,7 +32,7 @@ export class BankingTransactionGLEntriesSubscriber {
    * Writes the journal entries once the cashflow transaction create.
    * @param {ICommandCashflowCreatedPayload} payload -
    */
-  @OnEvent(events.cashflow.onTransactionCreated)
+  @OnEvent(events.cashflow.onTransactionCreated, { suppressErrors: false })
   public async writeJournalEntriesOnceTransactionCreated({
     cashflowTransaction,
     trx,
@@ -41,7 +50,7 @@ export class BankingTransactionGLEntriesSubscriber {
    * Increment the cashflow transaction number once the transaction created.
    * @param {ICommandCashflowCreatedPayload} payload -
    */
-  @OnEvent(events.cashflow.onTransactionCreated)
+  @OnEvent(events.cashflow.onTransactionCreated, { suppressErrors: false })
   public async incrementTransactionNumberOnceTransactionCreated({}: ICommandCashflowCreatedPayload) {
     this.cashflowTransactionAutoIncrement.incrementNextTransactionNumber();
   }
@@ -50,7 +59,7 @@ export class BankingTransactionGLEntriesSubscriber {
    * Deletes the GL entries once the cashflow transaction deleted.
    * @param {ICommandCashflowDeletedPayload} payload -
    */
-  @OnEvent(events.cashflow.onTransactionDeleted)
+  @OnEvent(events.cashflow.onTransactionDeleted, { suppressErrors: false })
   public async revertGLEntriesOnceTransactionDeleted({
     cashflowTransactionId,
     trx,

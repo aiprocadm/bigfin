@@ -8,6 +8,15 @@ import {
 import { IInventoryAdjustmentEventCreatedPayload } from '../types/InventoryAdjustments.types';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class InventoryAdjustmentsGLSubscriber {
   constructor(
@@ -18,8 +27,8 @@ export class InventoryAdjustmentsGLSubscriber {
    * Handles writing increment inventory adjustment GL entries.
    * @param {IInventoryAdjustmentEventCreatedPayload} payload - 
    */
-  @OnEvent(events.inventoryAdjustment.onQuickCreated)
-  @OnEvent(events.inventoryAdjustment.onPublished)
+  @OnEvent(events.inventoryAdjustment.onQuickCreated, { suppressErrors: false })
+  @OnEvent(events.inventoryAdjustment.onPublished, { suppressErrors: false })
   async handleGLEntriesOnceIncrementAdjustmentCreated({
     inventoryAdjustmentId,
     inventoryAdjustment,
@@ -43,7 +52,7 @@ export class InventoryAdjustmentsGLSubscriber {
    * Reverts the inventory adjustment GL entries once the transaction deleted.
    * @param {IInventoryAdjustmentDeletingPayload} payload -
    */
-  @OnEvent(events.inventoryAdjustment.onDeleting)
+  @OnEvent(events.inventoryAdjustment.onDeleting, { suppressErrors: false })
   async revertAdjustmentGLEntriesOnceDeleted({
     inventoryAdjustment,
     trx,
@@ -63,7 +72,7 @@ export class InventoryAdjustmentsGLSubscriber {
    * @param {IInventoryAdjustmentEventPublishedPayload} payload
    * @param {IInventoryAdjustmentEventCreatedPayload} payload -
    */
-  @OnEvent(events.inventoryAdjustment.onPublished)
+  @OnEvent(events.inventoryAdjustment.onPublished, { suppressErrors: false })
   async handleWriteInventoryTransactionsOncePublished({
     inventoryAdjustmentId,
     trx,

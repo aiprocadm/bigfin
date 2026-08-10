@@ -8,6 +8,15 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class BillPaymentGLEntriesSubscriber {
   constructor(
@@ -17,7 +26,7 @@ export class BillPaymentGLEntriesSubscriber {
   /**
    * Handle bill payment writing journal entries once created.
    */
-  @OnEvent(events.billPayment.onCreated)
+  @OnEvent(events.billPayment.onCreated, { suppressErrors: false })
   async handleWriteJournalEntries({
     billPayment,
     trx,
@@ -33,7 +42,7 @@ export class BillPaymentGLEntriesSubscriber {
   /**
    * Handle bill payment re-writing journal entries once the payment transaction be edited.
    */
-  @OnEvent(events.billPayment.onEdited)
+  @OnEvent(events.billPayment.onEdited, { suppressErrors: false })
   async handleRewriteJournalEntriesOncePaymentEdited({
     billPayment,
     trx,
@@ -47,7 +56,7 @@ export class BillPaymentGLEntriesSubscriber {
   /**
    * Reverts journal entries once bill payment deleted.
    */
-  @OnEvent(events.billPayment.onDeleted)
+  @OnEvent(events.billPayment.onDeleted, { suppressErrors: false })
   async handleRevertJournalEntries({
     billPaymentId,
     trx,

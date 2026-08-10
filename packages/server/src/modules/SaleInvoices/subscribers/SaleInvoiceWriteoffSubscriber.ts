@@ -7,6 +7,15 @@ import {
 import { SaleInvoiceWriteoffGLStorage } from '../commands/writeoff/SaleInvoiceWriteoffGLStorage';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи проводок не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий, а
+ * журнал пишется именно тут. Без этого сбой записи выглядит как успешная
+ * операция: документ сохранён, проводок нет, пользователь не знает.
+ * С `suppressErrors: false` ошибка доходит до команды и транзакция
+ * откатывается целиком.
+ */
 @Injectable()
 export class SaleInvoiceWriteoffSubscriber {
   constructor(private readonly writeGLStorage: SaleInvoiceWriteoffGLStorage) {}
@@ -15,7 +24,7 @@ export class SaleInvoiceWriteoffSubscriber {
    * Write the written-off sale invoice journal entries.
    * @param {ISaleInvoiceWriteoffCreatePayload}
    */
-  @OnEvent(events.saleInvoice.onWrittenoff)
+  @OnEvent(events.saleInvoice.onWrittenoff, { suppressErrors: false })
   public async writeJournalEntriesOnceWriteoffCreate({
     saleInvoice,
     trx,
@@ -27,7 +36,7 @@ export class SaleInvoiceWriteoffSubscriber {
    * Reverts the written-of sale invoice jounral entries.
    * @param {ISaleInvoiceWrittenOffCanceledPayload}
    */
-  @OnEvent(events.saleInvoice.onWrittenoffCanceled)
+  @OnEvent(events.saleInvoice.onWrittenoffCanceled, { suppressErrors: false })
   public async revertJournalEntriesOnce({
     saleInvoice,
     trx,

@@ -17,6 +17,9 @@ import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { FinancialModelApplication } from './FinancialModel.application';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 import {
   FinancialOverviewQueryDto,
   CreateMarketingChannelDto,
@@ -29,7 +32,8 @@ import {
 @Controller('financial-model')
 @ApiTags('FinancialModel')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.FINANCIAL_MODEL)
 export class FinancialModelController {
   constructor(private readonly application: FinancialModelApplication) {}
 

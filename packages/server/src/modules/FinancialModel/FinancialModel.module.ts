@@ -12,9 +12,10 @@ import { GetMarketingMetricsService } from './queries/GetMarketingMetrics.servic
 import { GetBreakEvenService } from './queries/GetBreakEven.service';
 import { MarketingDataService } from './commands/MarketingData.service';
 import { CostBehaviorService } from './commands/CostBehavior.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule],
   controllers: [FinancialModelController],
   providers: [
     FinancialModelApplication,

@@ -12,9 +12,10 @@ import { GetBudgetsService } from './queries/GetBudgets.service';
 import { GetBudgetService } from './queries/GetBudget.service';
 import { ArticlesCashflowRollupService } from './queries/ArticlesCashflowRollup.service';
 import { GetBudgetPlanFactService } from './queries/GetBudgetPlanFact.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, ManagementArticlesModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, ManagementArticlesModule],
   controllers: [BudgetsController],
   providers: [
     BudgetsApplication,

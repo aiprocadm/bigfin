@@ -13,9 +13,10 @@ import { GetCostAllocationRulesService } from './queries/GetCostAllocationRules.
 import { GetDealAllocationService } from './queries/GetDealAllocation.service';
 import { AllocationPoolService } from './queries/AllocationPool.service';
 import { DealsRevenueService } from './queries/DealsRevenue.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule],
   controllers: [CostAllocationController],
   providers: [
     CostAllocationApplication,

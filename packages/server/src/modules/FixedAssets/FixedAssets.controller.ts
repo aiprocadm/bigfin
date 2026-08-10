@@ -15,6 +15,9 @@ import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { FixedAssetsApplication } from './FixedAssets.application';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 import {
   AccrueMonthDto,
   CreateFixedAssetDto,
@@ -24,7 +27,8 @@ import {
 @Controller('fixed-assets')
 @ApiTags('Fixed Assets')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.FIXED_ASSETS)
 export class FixedAssetsController {
   constructor(private readonly application: FixedAssetsApplication) {}
 

@@ -9,12 +9,16 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { DebtsApplication } from './Debts.application';
 import { GetDebtsOverviewQueryDto } from './dtos/GetDebtsOverviewQuery.dto';
 import { GetContactDebtsQueryDto } from './dtos/GetContactDebtsQuery.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 import {
   CreateRepaymentPlanDto,
   EditRepaymentPlanDto,
@@ -23,6 +27,8 @@ import {
 @Controller('debts')
 @ApiTags('Debts')
 @ApiCommonHeaders()
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.DEBTS)
 export class DebtsController {
   constructor(private readonly application: DebtsApplication) {}
 

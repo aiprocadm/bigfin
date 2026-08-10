@@ -11,9 +11,10 @@ import { CreatePaymentRequestService } from './commands/CreatePaymentRequest.ser
 import { ApprovePaymentRequestService } from './commands/ApprovePaymentRequest.service';
 import { RejectPaymentRequestService } from './commands/RejectPaymentRequest.service';
 import { CancelPaymentRequestService } from './commands/CancelPaymentRequest.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule],
   controllers: [PaymentRequestsController],
   providers: [
     PaymentRequestsApplication,

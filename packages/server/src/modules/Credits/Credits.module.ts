@@ -12,9 +12,10 @@ import { MarkInstallmentPaidService } from './commands/MarkInstallmentPaid.servi
 import { GetCreditsService } from './queries/GetCredits.service';
 import { GetCreditDetailService } from './queries/GetCreditDetail.service';
 import { GetCreditsSummaryService } from './queries/GetCreditsSummary.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule, LedgerModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule, LedgerModule],
   controllers: [CreditsController],
   providers: [
     CreditsApplication,

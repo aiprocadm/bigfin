@@ -16,6 +16,9 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { DividendsApplication } from './Dividends.application';
 import { CreateDividendPayoutDto } from './dtos/DividendPayout.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 /**
  * Вывод средств собственнику: сводка «доступно/безопасно/выведено» и
@@ -25,7 +28,8 @@ import { CreateDividendPayoutDto } from './dtos/DividendPayout.dto';
 @Controller('dividends')
 @ApiTags('Dividends')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.DIVIDENDS)
 export class DividendsController {
   constructor(private readonly application: DividendsApplication) {}
 

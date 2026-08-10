@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
@@ -19,10 +20,15 @@ import {
 } from './dtos/PlannedOperation.dto';
 import { GetPlannedOperationsQueryDto } from './dtos/GetPlannedOperationsQuery.dto';
 import { GetPaymentCalendarQueryDto } from './dtos/GetPaymentCalendarQuery.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 @Controller('payment-calendar')
 @ApiTags('Payment Calendar')
 @ApiCommonHeaders()
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.PAYMENT_CALENDAR)
 export class PaymentCalendarController {
   constructor(
     private readonly application: PaymentCalendarApplication,

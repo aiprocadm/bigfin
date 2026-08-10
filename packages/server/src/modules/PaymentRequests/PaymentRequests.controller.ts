@@ -17,11 +17,15 @@ import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PaymentRequestsApplication } from './PaymentRequests.application';
 import { CreatePaymentRequestDto } from './dtos/PaymentRequest.dto';
 import { GetPaymentRequestsQueryDto } from './dtos/GetPaymentRequestsQuery.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 @Controller('payment-requests')
 @ApiTags('Payment Requests')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.PAYMENT_REQUESTS)
 export class PaymentRequestsController {
   constructor(private readonly application: PaymentRequestsApplication) {}
 

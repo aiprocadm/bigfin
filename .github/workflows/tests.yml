@@ -1,0 +1,71 @@
+# Быстрые проверки: юнит-тесты сервера и фронта плюс парность переводов.
+#
+# Зачем отдельный процесс. В репозитории есть проверка типов и E2E, но
+# юнит-тесты не гонял НИКТО — а именно в них живут машинные сторожа проекта:
+# недостижимые страницы, ручки, перекрытые параметрическим маршрутом, форматы
+# дат, стражи модулей за флагом, сходимость журнала, ошибки подписчиков
+# журнала и склада. Без этого процесса они срабатывают только у того, кто
+# вручную запустил тесты у себя.
+#
+# Процесс намеренно лёгкий: ни базы, ни браузера. Тяжёлый E2E живёт отдельно
+# и запускается вручную.
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/tests.yml'
+  pull_request:
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/tests.yml'
+
+defaults:
+  run:
+    shell: 'bash'
+
+jobs:
+  unit:
+    name: Юнит-тесты и парность переводов
+    runs-on: ubuntu-latest
+    # Локально всё вместе идёт около полуминуты; запас — на установку
+    # зависимостей. Если процесс упирается в потолок, это само по себе повод
+    # разобраться, а не ждать часами.
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Server unit tests
+        run: pnpm --filter @bigfin/server test
+
+      - name: Webapp unit tests
+        run: pnpm --filter @bigfin/webapp test:run
+
+      - name: Переводы en↔ru парные
+        run: node packages/webapp/scripts/lang-check.js

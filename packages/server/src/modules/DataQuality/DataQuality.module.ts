@@ -4,6 +4,7 @@ import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.mod
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 import { LedgerModule } from '@/modules/Ledger/Ledger.module';
 import { AccountsModule } from '@/modules/Accounts/Accounts.module';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 import { SaleInvoiceGLEntries } from '@/modules/SaleInvoices/ledger/InvoiceGLEntries';
 import { BillGLEntries } from '@/modules/Bills/commands/BillsGLEntries';
 import { SaleReceiptGLEntries } from '@/modules/SaleReceipts/ledger/SaleReceiptGLEntries';
@@ -22,7 +23,14 @@ import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service
   // документа. Сами GL-сервисы объявлены здесь напрямую, а не через импорт
   // пяти модулей документов: им нужны только журнал, план счетов и модель,
   // а импорт целых модулей притащил бы очереди и подписчики без пользы.
-  imports: [TenancyDatabaseModule, TenancyModule, LedgerModule, AccountsModule],
+  imports: [
+    TenancyDatabaseModule,
+    TenancyModule,
+    LedgerModule,
+    AccountsModule,
+    // Модуль за флагом: контроллер обязан отвечать 403, когда он выключен.
+    FeaturesModule,
+  ],
   controllers: [DataQualityController],
   providers: [
     DataQualityApplication,

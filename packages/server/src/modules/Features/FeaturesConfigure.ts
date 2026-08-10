@@ -27,8 +27,16 @@ export class FeaturesConfigure {
         defaultValue: this.configService.get('bankfeed.enabled') ?? false,
       },
       {
+        // Единственный модуль, включённый по умолчанию.
+        //
+        // Статьи учёта — это справочник, на котором стоят план-факт бюджета и
+        // финмодель. Организация получает девять статей уже при создании, но
+        // раздел был спрятан за флагом: пользователь включал бюджеты, видел
+        // всюду нули и решал, что продукт сломан.
+        //
+        // Включение ничего не меняет в учёте — это справочник и страница.
         name: Features.MGMT_ARTICLES,
-        defaultValue: false,
+        defaultValue: true,
       },
       {
         name: Features.PAYMENT_CALENDAR,

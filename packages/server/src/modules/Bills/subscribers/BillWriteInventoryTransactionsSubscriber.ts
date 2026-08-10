@@ -9,6 +9,15 @@ import { BillInventoryTransactions } from '../commands/BillInventoryTransactions
 import { events } from '@/common/events/events';
 import { OnEvent } from '@nestjs/event-emitter';
 
+/**
+ * Ошибки записи складских движений не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий. Для
+ * склада это значит: документ сохранён, а остатки не изменились — и никто
+ * об этом не знает. Движения пишутся в транзакции самого документа,
+ * поэтому с `suppressErrors: false` ошибка откатывает документ целиком:
+ * лучше отказать в продаже, чем продать и потерять списание со склада.
+ */
 @Injectable()
 export class BillWriteInventoryTransactionsSubscriber {
   constructor(private readonly billsInventory: BillInventoryTransactions) {}
@@ -17,8 +26,8 @@ export class BillWriteInventoryTransactionsSubscriber {
    * Handles writing the inventory transactions once bill created.
    * @param {IBillCreatedPayload | IBillOpenedPayload} payload -
    */
-  @OnEvent(events.bill.onCreated)
-  @OnEvent(events.bill.onOpened)
+  @OnEvent(events.bill.onCreated, { suppressErrors: false })
+  @OnEvent(events.bill.onOpened, { suppressErrors: false })
   public async handleWritingInventoryTransactions({
     bill,
     trx,
@@ -33,7 +42,7 @@ export class BillWriteInventoryTransactionsSubscriber {
    * Handles the overwriting the inventory transactions once bill edited.
    * @param {IBillEditedPayload} payload -
    */
-  @OnEvent(events.bill.onEdited)
+  @OnEvent(events.bill.onEdited, { suppressErrors: false })
   public async handleOverwritingInventoryTransactions({
     bill,
     trx,
@@ -48,7 +57,7 @@ export class BillWriteInventoryTransactionsSubscriber {
    * Handles the reverting the inventory transactions once the bill deleted.
    * @param {IBIllEventDeletedPayload} payload -
    */
-  @OnEvent(events.bill.onDeleted)
+  @OnEvent(events.bill.onDeleted, { suppressErrors: false })
   public async handleRevertInventoryTransactions({
     billId,
     trx,

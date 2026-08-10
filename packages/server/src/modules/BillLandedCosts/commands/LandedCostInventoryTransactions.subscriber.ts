@@ -7,6 +7,15 @@ import {
 import { events } from '@/common/events/events';
 import { LandedCostInventoryTransactions } from './LandedCostInventoryTransactions.service';
 
+/**
+ * Ошибки записи складских движений не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий. Для
+ * склада это значит: документ сохранён, а остатки не изменились — и никто
+ * об этом не знает. Движения пишутся в транзакции самого документа,
+ * поэтому с `suppressErrors: false` ошибка откатывает документ целиком:
+ * лучше отказать в продаже, чем продать и потерять списание со склада.
+ */
 @Injectable()
 export class LandedCostInventoryTransactionsSubscriber {
   constructor(
@@ -17,7 +26,7 @@ export class LandedCostInventoryTransactionsSubscriber {
    * Writes inventory transactions of the landed cost transaction once created.
    * @param {IAllocatedLandedCostCreatedPayload} payload -
    */
-  @OnEvent(events.billLandedCost.onCreated)
+  @OnEvent(events.billLandedCost.onCreated, { suppressErrors: false })
   async writeInventoryTransactionsOnceCreated({
     billLandedCost,
     trx,
@@ -35,7 +44,7 @@ export class LandedCostInventoryTransactionsSubscriber {
    * Reverts inventory transactions of the landed cost transaction once deleted.
    * @param {IAllocatedLandedCostDeletedPayload} payload -
    */
-  @OnEvent(events.billLandedCost.onDeleted)
+  @OnEvent(events.billLandedCost.onDeleted, { suppressErrors: false })
   async revertInventoryTransactionsOnceDeleted({
     oldBillLandedCost,
     trx,

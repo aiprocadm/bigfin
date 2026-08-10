@@ -10,6 +10,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { events } from '@/common/events/events';
 import { Injectable } from '@nestjs/common';
 
+/**
+ * Ошибки записи складских движений не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий. Для
+ * склада это значит: документ сохранён, а остатки не изменились — и никто
+ * об этом не знает. Движения пишутся в транзакции самого документа,
+ * поэтому с `suppressErrors: false` ошибка откатывает документ целиком:
+ * лучше отказать в продаже, чем продать и потерять списание со склада.
+ */
 @Injectable()
 export class WarehouseTransferInventoryTransactionsSubscriber {
   constructor(
@@ -20,7 +29,7 @@ export class WarehouseTransferInventoryTransactionsSubscriber {
    * Writes inventory transactions once warehouse transfer created.
    * @param {IInventoryTransactionsCreatedPayload} -
    */
-  @OnEvent(events.warehouseTransfer.onCreated)
+  @OnEvent(events.warehouseTransfer.onCreated, { suppressErrors: false })
   async writeInventoryTransactionsOnWarehouseTransferCreated({
     warehouseTransfer,
     trx,
@@ -49,7 +58,7 @@ export class WarehouseTransferInventoryTransactionsSubscriber {
    * Rewrite inventory transactions once warehouse transfer edited.
    * @param {IWarehouseTransferEditedPayload} -
    */
-  @OnEvent(events.warehouseTransfer.onEdited)
+  @OnEvent(events.warehouseTransfer.onEdited, { suppressErrors: false })
   async rewriteInventoryTransactionsOnWarehouseTransferEdited({
     warehouseTransfer,
     trx,
@@ -78,7 +87,7 @@ export class WarehouseTransferInventoryTransactionsSubscriber {
    * Reverts inventory transactions once warehouse transfer deleted.
    * @parma {IWarehouseTransferDeletedPayload} -
    */
-  @OnEvent(events.warehouseTransfer.onDeleted)
+  @OnEvent(events.warehouseTransfer.onDeleted, { suppressErrors: false })
   async revertInventoryTransactionsOnWarehouseTransferDeleted({
     oldWarehouseTransfer,
     trx,
@@ -93,7 +102,7 @@ export class WarehouseTransferInventoryTransactionsSubscriber {
    * Write inventory transactions of warehouse transfer once the transfer initiated.
    * @param {IWarehouseTransferInitiatedPayload}
    */
-  @OnEvent(events.warehouseTransfer.onInitiated)
+  @OnEvent(events.warehouseTransfer.onInitiated, { suppressErrors: false })
   async writeInventoryTransactionsOnTransferInitiated({
     trx,
     warehouseTransfer,
@@ -109,7 +118,7 @@ export class WarehouseTransferInventoryTransactionsSubscriber {
    * Write inventory transactions of warehouse transfer once the transfer completed.
    * @param {IWarehouseTransferTransferredPayload}
    */
-  @OnEvent(events.warehouseTransfer.onTransferred)
+  @OnEvent(events.warehouseTransfer.onTransferred, { suppressErrors: false })
   async writeInventoryTransactionsOnTransferred({
     trx,
     warehouseTransfer,

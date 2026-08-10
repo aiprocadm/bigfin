@@ -8,6 +8,15 @@ import { InventoryAdjustmentInventoryTransactions } from './InventoryAdjustmentI
 import { events } from '@/common/events/events';
 import { OnEvent } from '@nestjs/event-emitter';
 
+/**
+ * Ошибки записи складских движений не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий. Для
+ * склада это значит: документ сохранён, а остатки не изменились — и никто
+ * об этом не знает. Движения пишутся в транзакции самого документа,
+ * поэтому с `suppressErrors: false` ошибка откатывает документ целиком:
+ * лучше отказать в продаже, чем продать и потерять списание со склада.
+ */
 @Injectable()
 export class InventoryAdjustmentInventoryTransactionsSubscriber {
   constructor(
@@ -19,7 +28,7 @@ export class InventoryAdjustmentInventoryTransactionsSubscriber {
    * @param {IInventoryAdjustmentEventPublishedPayload} payload
    * @param {IInventoryAdjustmentEventCreatedPayload} payload -
    */
-  @OnEvent(events.inventoryAdjustment.onQuickCreated)
+  @OnEvent(events.inventoryAdjustment.onQuickCreated, { suppressErrors: false })
   public async handleWriteInventoryTransactionsOncePublished({
     inventoryAdjustment,
     trx,
@@ -37,7 +46,7 @@ export class InventoryAdjustmentInventoryTransactionsSubscriber {
    * Handles reverting invetory transactions once the inventory adjustment deleted.
    * @param {IInventoryAdjustmentEventDeletedPayload} payload -
    */
-  @OnEvent(events.inventoryAdjustment.onDeleted)
+  @OnEvent(events.inventoryAdjustment.onDeleted, { suppressErrors: false })
   public async handleRevertInventoryTransactionsOnceDeleted({
     inventoryAdjustmentId,
     oldInventoryAdjustment,

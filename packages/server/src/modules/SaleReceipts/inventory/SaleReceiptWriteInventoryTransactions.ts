@@ -8,6 +8,15 @@ import { Injectable } from '@nestjs/common';
 import { events } from '@/common/events/events';
 import { SaleReceiptInventoryTransactions } from './SaleReceiptInventoryTransactions';
 
+/**
+ * Ошибки записи складских движений не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий. Для
+ * склада это значит: документ сохранён, а остатки не изменились — и никто
+ * об этом не знает. Движения пишутся в транзакции самого документа,
+ * поэтому с `suppressErrors: false` ошибка откатывает документ целиком:
+ * лучше отказать в продаже, чем продать и потерять списание со склада.
+ */
 @Injectable()
 export class SaleReceiptInventoryTransactionsSubscriber {
   constructor(
@@ -18,7 +27,7 @@ export class SaleReceiptInventoryTransactionsSubscriber {
    * Handles the writing inventory transactions once the receipt created.
    * @param {ISaleReceiptCreatedPayload} payload -
    */
-  @OnEvent(events.saleReceipt.onCreated)
+  @OnEvent(events.saleReceipt.onCreated, { suppressErrors: false })
   public async handleWritingInventoryTransactions({
     saleReceipt,
     trx,
@@ -37,7 +46,7 @@ export class SaleReceiptInventoryTransactionsSubscriber {
    * Rewriting the inventory transactions once the sale invoice be edited.
    * @param {ISaleReceiptEditedPayload} payload -
    */
-  @OnEvent(events.saleReceipt.onEdited)
+  @OnEvent(events.saleReceipt.onEdited, { suppressErrors: false })
   public async handleRewritingInventoryTransactions({
     saleReceipt,
     trx,
@@ -56,7 +65,7 @@ export class SaleReceiptInventoryTransactionsSubscriber {
    * Handles deleting the inventory transactions once the receipt deleted.
    * @param {ISaleReceiptEventDeletedPayload} payload -
    */
-  @OnEvent(events.saleReceipt.onDeleted)
+  @OnEvent(events.saleReceipt.onDeleted, { suppressErrors: false })
   public async handleDeletingInventoryTransactions({
     saleReceiptId,
     trx,

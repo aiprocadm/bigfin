@@ -26,9 +26,10 @@ import { CommandKpiTargetValidatorService } from './commands/CommandKpiTargetVal
 import { CreateKpiTargetService } from './commands/CreateKpiTarget.service';
 import { EditKpiTargetService } from './commands/EditKpiTarget.service';
 import { DeleteKpiTargetService } from './commands/DeleteKpiTarget.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule],
   controllers: [PayrollController],
   providers: [
     PayrollApplication,

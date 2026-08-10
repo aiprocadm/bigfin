@@ -10,9 +10,10 @@ import { EditPlannedOperationService } from './commands/EditPlannedOperation.ser
 import { DeletePlannedOperationService } from './commands/DeletePlannedOperation.service';
 import { GetPlannedOperationsService } from './queries/GetPlannedOperations.service';
 import { GetPaymentCalendarForecastService } from './queries/GetPaymentCalendarForecast.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule, ExchangeRatesModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule, ExchangeRatesModule],
   controllers: [PaymentCalendarController],
   providers: [
     PaymentCalendarApplication,

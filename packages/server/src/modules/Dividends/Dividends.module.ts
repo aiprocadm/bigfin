@@ -9,9 +9,10 @@ import { GetDividendsSummaryService } from './queries/GetDividendsSummary.servic
 import { GetDividendPayoutsService } from './queries/GetDividendPayouts.service';
 import { CreateDividendPayoutService } from './commands/CreateDividendPayout.service';
 import { DeleteDividendPayoutService } from './commands/DeleteDividendPayout.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule, LedgerModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule, LedgerModule],
   controllers: [DividendsController],
   providers: [
     DividendsApplication,

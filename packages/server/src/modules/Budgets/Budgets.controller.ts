@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
@@ -15,10 +16,15 @@ import { BudgetsApplication } from './Budgets.application';
 import { CreateBudgetDto, EditBudgetDto } from './dtos/Budget.dto';
 import { UpsertBudgetLinesDto } from './dtos/UpsertBudgetLines.dto';
 import { GetBudgetPlanFactQueryDto } from './dtos/GetBudgetPlanFactQuery.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 @Controller('budgets')
 @ApiTags('Budgets')
 @ApiCommonHeaders()
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.BUDGETS)
 export class BudgetsController {
   constructor(private readonly application: BudgetsApplication) {}
 

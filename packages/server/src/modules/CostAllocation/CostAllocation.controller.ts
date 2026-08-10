@@ -19,11 +19,15 @@ import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { CostAllocationApplication } from './CostAllocation.application';
 import { CreateCostAllocationRuleDto, EditCostAllocationRuleDto } from './dtos/CostAllocationRule.dto';
 import { GetRulesQueryDto } from './dtos/GetRulesQuery.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 @Controller('cost-allocation-rules')
 @ApiTags('Cost Allocation')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.COST_ALLOCATION)
 export class CostAllocationController {
   constructor(private readonly application: CostAllocationApplication) {}
 

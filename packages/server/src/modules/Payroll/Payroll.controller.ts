@@ -21,6 +21,9 @@ import { CreateEmployeeDto, EditEmployeeDto } from './dtos/Employee.dto';
 import { CreatePayrollRunDto, EditPayrollRunDto } from './dtos/PayrollRun.dto';
 import { GetPayrollRunsQueryDto } from './dtos/GetPayrollRunsQuery.dto';
 import { GetPayrollTaxesSummaryQueryDto } from './dtos/GetPayrollTaxesSummaryQuery.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 import {
   CreateKpiTargetDto,
   EditKpiTargetDto,
@@ -31,7 +34,8 @@ import {
 @Controller('payroll')
 @ApiTags('Payroll')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.PAYROLL)
 export class PayrollController {
   constructor(private readonly application: PayrollApplication) {}
 

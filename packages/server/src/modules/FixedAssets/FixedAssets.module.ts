@@ -13,9 +13,10 @@ import { DeleteFixedAssetService } from './commands/DeleteFixedAsset.service';
 import { GetFixedAssetsService } from './queries/GetFixedAssets.service';
 import { GetFixedAssetDetailService } from './queries/GetFixedAssetDetail.service';
 import { GetFixedAssetsSummaryService } from './queries/GetFixedAssetsSummary.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [
+  imports: [FeaturesModule, 
     TenancyDatabaseModule,
     TenancyModule,
     LedgerModule,

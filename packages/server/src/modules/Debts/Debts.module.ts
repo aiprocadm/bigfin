@@ -14,9 +14,10 @@ import { CreateRepaymentPlanService } from './commands/CreateRepaymentPlan.servi
 import { EditRepaymentPlanService } from './commands/EditRepaymentPlan.service';
 import { DeleteRepaymentPlanService } from './commands/DeleteRepaymentPlan.service';
 import { MarkInstallmentPaidService } from './commands/MarkInstallmentPaid.service';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule, SaleInvoicesModule],
+  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule, SaleInvoicesModule],
   controllers: [DebtsController],
   providers: [
     DebtsApplication,

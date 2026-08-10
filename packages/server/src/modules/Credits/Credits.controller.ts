@@ -17,11 +17,15 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { CreditsApplication } from './Credits.application';
 import { CreateCreditDto, EditCreditDto } from './dtos/Credit.dto';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 @Controller('credits')
 @ApiTags('Credits')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.CREDITS)
 export class CreditsController {
   constructor(private readonly application: CreditsApplication) {}
 

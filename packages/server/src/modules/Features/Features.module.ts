@@ -4,6 +4,7 @@ import { FeaturesManager } from './FeaturesManager';
 import { FeaturesSettingsDriver } from './FeaturesSettingsDriver';
 import { FeaturesConfigure } from './FeaturesConfigure';
 import { FeaturesController } from './Features.controller';
+import { FeatureGuard } from './Feature.guard';
 
 @Module({
   controllers: [FeaturesController],
@@ -11,8 +12,11 @@ import { FeaturesController } from './Features.controller';
     FeaturesManager,
     FeaturesSettingsDriver,
     FeaturesConfigureManager,
-    FeaturesConfigure
+    FeaturesConfigure,
+    FeatureGuard,
   ],
-  exports: [FeaturesManager],
+  // Страж модулей отдаётся наружу: контроллеры модулей за флагом вешают его
+  // на себя одной строкой вместо проверки в каждой ручке.
+  exports: [FeaturesManager, FeatureGuard],
 })
 export class FeaturesModule {}

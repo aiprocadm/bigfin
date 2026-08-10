@@ -8,6 +8,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Injectable } from '@nestjs/common';
 import { events } from '@/common/events/events';
 
+/**
+ * Ошибки записи складских движений не глушим.
+ *
+ * Nest по умолчанию проглатывает исключения обработчиков событий. Для
+ * склада это значит: документ сохранён, а остатки не изменились — и никто
+ * об этом не знает. Движения пишутся в транзакции самого документа,
+ * поэтому с `suppressErrors: false` ошибка откатывает документ целиком:
+ * лучше отказать в продаже, чем продать и потерять списание со склада.
+ */
 @Injectable()
 export class VendorCreditInventoryTransactionsSubscriber {
   constructor(
@@ -17,8 +26,8 @@ export class VendorCreditInventoryTransactionsSubscriber {
    * Writes inventory transactions once vendor created created.
    * @param {IVendorCreditCreatedPayload} payload -
    */
-  @OnEvent(events.vendorCredit.onCreated)
-  @OnEvent(events.vendorCredit.onOpened)
+  @OnEvent(events.vendorCredit.onCreated, { suppressErrors: false })
+  @OnEvent(events.vendorCredit.onOpened, { suppressErrors: false })
   public async writeInventoryTransactionsOnceCreated({
     vendorCredit,
     trx,
@@ -36,7 +45,7 @@ export class VendorCreditInventoryTransactionsSubscriber {
    * Rewrites inventory transactions once vendor credit edited.
    * @param {IVendorCreditEditedPayload} payload -
    */
-  @OnEvent(events.vendorCredit.onEdited)
+  @OnEvent(events.vendorCredit.onEdited, { suppressErrors: false })
   public async rewriteInventroyTransactionsOnceEdited({
     oldVendorCredit,
     vendorCredit,
@@ -56,7 +65,7 @@ export class VendorCreditInventoryTransactionsSubscriber {
    * Reverts inventory transactions once vendor credit deleted.
    * @param {IVendorCreditDeletedPayload} payload -
    */
-  @OnEvent(events.vendorCredit.onDeleted)
+  @OnEvent(events.vendorCredit.onDeleted, { suppressErrors: false })
   public async revertInventoryTransactionsOnceDeleted({
     vendorCreditId,
     trx,

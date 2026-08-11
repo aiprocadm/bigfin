@@ -7,15 +7,21 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { UsersApplication } from './Users.application';
 import { EditUserDto } from './dtos/EditUser.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { OwnerGuard } from '@/modules/Roles/Owner.guard';
+import { RequireOwner } from '@/modules/Roles/RequireOwner.decorator';
 
+// Состав участников и их роли меняет только владелец. Читать список коллег
+// может любой участник — это не граница доступа, а обычные данные.
 @Controller('users')
 @ApiTags('Users')
 @ApiCommonHeaders()
+@UseGuards(OwnerGuard)
 export class UsersController {
   constructor(private readonly usersApplication: UsersApplication) {}
 
@@ -23,6 +29,7 @@ export class UsersController {
    * Edit details of the given user.
    */
   @Put(':id')
+  @RequireOwner()
   @ApiOperation({ summary: 'Edit details of the given user.' })
   @ApiResponse({
     status: 200,
@@ -47,6 +54,7 @@ export class UsersController {
    * Soft deleting the given user.
    */
   @Delete(':id')
+  @RequireOwner()
   @ApiOperation({ summary: 'Soft deleting the given user.' })
   @ApiResponse({
     status: 200,
@@ -97,6 +105,7 @@ export class UsersController {
    * Activate the given user.
    */
   @Put(':id/activate')
+  @RequireOwner()
   @ApiOperation({ summary: 'Activate the given user.' })
   @ApiResponse({
     status: 200,
@@ -118,6 +127,7 @@ export class UsersController {
    * Inactivate the given user.
    */
   @Put(':id/inactivate')
+  @RequireOwner()
   @ApiOperation({ summary: 'Inactivate the given user.' })
   @ApiResponse({
     status: 200,

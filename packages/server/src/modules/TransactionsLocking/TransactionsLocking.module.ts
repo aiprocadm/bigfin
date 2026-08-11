@@ -11,9 +11,11 @@ import { SalesTransactionLockingGuardSubscriber } from './subscribers/SalesTrans
 import { QueryTransactionsLocking } from './queries/QueryTransactionsLocking';
 import { TransactionsLockingController } from './TransactionsLocking.controller';
 import { SettingsModule } from '../Settings/Settings.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 @Module({
-  imports: [SettingsModule],
+  // RolesModule — ради стражей прав на закрытии периода.
+  imports: [SettingsModule, RolesModule],
   providers: [
     TransactionsLockingService,
     FinancialTransactionLocking,

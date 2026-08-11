@@ -8,6 +8,7 @@ import {
   Body,
   HttpStatus,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateRoleDto, EditRoleDto } from './dtos/Role.dto';
 import { RolesApplication } from './Roles.application';
@@ -22,11 +23,17 @@ import {
 } from '@nestjs/swagger';
 import { RoleResponseDto } from './dtos/RoleResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { OwnerGuard } from './Owner.guard';
+import { RequireOwner } from './RequireOwner.decorator';
 
 @ApiTags('Roles')
 @Controller('roles')
 @ApiExtraModels(RoleResponseDto)
 @ApiCommonHeaders()
+// Роли описывают границы доступа, поэтому менять их может только владелец.
+// Без этого участник с урезанной ролью создавал себе роль с любыми правами.
+@UseGuards(OwnerGuard)
+@RequireOwner()
 export class RolesController {
   constructor(private readonly rolesApp: RolesApplication) { }
 

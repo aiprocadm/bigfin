@@ -5,7 +5,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Put, Get, Body, Param } from '@nestjs/common';
+import { Controller, Put, Get, Body, Param, UseGuards } from '@nestjs/common';
 import { TransactionsLockingService } from './commands/CommandTransactionsLockingService';
 import { TransactionsLockingGroup } from './types/TransactionsLocking.types';
 import { ITransactionLockingPartiallyDTO } from './types/TransactionsLocking.types';
@@ -16,11 +16,22 @@ import {
 } from './dtos/TransactionsLocking.dto';
 import { TransactionLockingResponseDto } from './dtos/TransactionLockingResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { AccountAction } from '@/modules/Accounts/Accounts.types';
 
+// Закрытый период запрещает править документы ВСЕМ участникам, включая
+// владельца, — поэтому закрывать и открывать его может лишь тот, кому дана
+// возможность «блокировка периода». Она в схеме прав была, но ручка её не
+// спрашивала: участник с урезанной ролью останавливал работу организации.
+// Чтение оставлено открытым: видеть, что период закрыт, полезно каждому.
 @Controller('transactions-locking')
 @ApiTags('Transactions Locking')
 @ApiExtraModels(TransactionLockingResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class TransactionsLockingController {
   constructor(
     private readonly transactionsLockingService: TransactionsLockingService,
@@ -28,6 +39,10 @@ export class TransactionsLockingController {
   ) {}
 
   @Put('lock')
+  @RequirePermission(
+    AccountAction.TransactionsLocking,
+    AbilitySubject.Account,
+  )
   @ApiOperation({
     summary: 'Lock all transactions for a module or all modules',
   })
@@ -54,6 +69,10 @@ export class TransactionsLockingController {
   }
 
   @Put('cancel-lock')
+  @RequirePermission(
+    AccountAction.TransactionsLocking,
+    AbilitySubject.Account,
+  )
   @ApiOperation({
     summary: 'Cancel all transactions locking for a module or all modules',
   })
@@ -79,6 +98,10 @@ export class TransactionsLockingController {
   }
 
   @Put('unlock-partial')
+  @RequirePermission(
+    AccountAction.TransactionsLocking,
+    AbilitySubject.Account,
+  )
   @ApiOperation({
     summary:
       'Partial unlock all transactions locking for a module or all modules',
@@ -106,6 +129,10 @@ export class TransactionsLockingController {
   }
 
   @Put('cancel-unlock-partial')
+  @RequirePermission(
+    AccountAction.TransactionsLocking,
+    AbilitySubject.Account,
+  )
   @ApiOperation({
     summary:
       'Cancel partial unlocking all transactions locking for a module or all modules',

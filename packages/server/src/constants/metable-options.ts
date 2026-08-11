@@ -1,4 +1,22 @@
 import { chain, mapKeys } from 'lodash';
+import { Features } from '@/common/types/Features';
+
+/**
+ * Типы для настроек-переключателей модулей.
+ *
+ * Значения настроек лежат в базе строками. Тип из этого справочника —
+ * единственное, что превращает строку «0» обратно в «нет»: без него выключенный
+ * переключатель возвращается строкой, а непустая строка в JavaScript истинна,
+ * и выключенный модуль ведёт себя как включённый.
+ *
+ * Список строится из самого перечня возможностей, чтобы новый модуль нельзя
+ * было добавить в обход справочника.
+ */
+const getFeaturesSettingsSchema = () =>
+  Object.values(Features).reduce(
+    (result, feature) => ({ ...result, [feature]: { type: 'boolean' } }),
+    {} as Record<string, { type: string }>,
+  );
 
 const getTransactionsLockingSettingsSchema = (modules: string[]) => {
   const moduleSchema = {
@@ -254,11 +272,15 @@ export const SettingsOptions = {
     ]),
   },
   features: {
+    // Исторические имена: в коде таких возможностей уже нет (они называются
+    // `warehouses` и `branches`). Оставлены, чтобы не трогать данные старых
+    // организаций, где эти строки могли сохраниться.
     'multi-warehouses': {
       type: 'boolean',
     },
     'multi-branches': {
       type: 'boolean',
     },
+    ...getFeaturesSettingsSchema(),
   },
 };

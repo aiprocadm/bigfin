@@ -29,6 +29,7 @@ import { AttachmentUploadPipeline } from "./S3UploadPipeline";
 import { MULTER_MODULE_OPTIONS } from "@/common/constants/files.constants";
 import { ConfigService } from "@nestjs/config";
 import { S3Client } from "@aws-sdk/client-s3";
+import { RolesModule } from '../Roles/Roles.module';
 
 const models = [
   RegisterTenancyModel(DocumentModel),
@@ -36,7 +37,9 @@ const models = [
 ];
 
 @Module({
-  imports: [S3Module, ...models],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,S3Module, ...models],
   exports: [...models, GetAttachmentPresignedUrl],
   controllers: [AttachmentsController],
   providers: [

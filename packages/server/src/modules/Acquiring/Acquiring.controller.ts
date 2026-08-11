@@ -13,6 +13,8 @@ import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 
 class ConnectYookassaDto {
   @IsString()
@@ -26,7 +28,9 @@ class ConnectYookassaDto {
 
 @Controller('acquiring')
 @ApiTags('acquiring')
-@UseGuards(FeatureGuard)
+// Право на этих ручках было объявлено, но исполнять его было некому:
+// без стража пометка ничего не значит и запрос проходит.
+@UseGuards(AuthorizationGuard, PermissionGuard, FeatureGuard)
 @RequireFeature(Features.ACQUIRING)
 export class AcquiringController {
   constructor(private readonly app: AcquiringApplication) {}

@@ -5,6 +5,7 @@ import { ImportCommerceMlService } from './commands/ImportCommerceMl.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 import { ItemsModule } from '@/modules/Items/Items.module';
 import { CustomersModule } from '@/modules/Customers/Customers.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ⑩ Импорт из 1С: справочники CommerceML 2 (товары, контрагенты) →
@@ -12,7 +13,9 @@ import { CustomersModule } from '@/modules/Customers/Customers.module';
  * За флагом `onec_import`. Модели — глобальные tenant-провайдеры.
  */
 @Module({
-  imports: [FeaturesModule, ItemsModule, CustomersModule],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,FeaturesModule, ItemsModule, CustomersModule],
   controllers: [OnecImportController],
   providers: [ImportCommerceMlService],
 })

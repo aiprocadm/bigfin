@@ -8,13 +8,16 @@ import { ZenmoneyImportService } from './ZenmoneyImport.service';
 import { BankingCategorizeModule } from '../BankingCategorize/BankingCategorize.module';
 import { BankingTransactionsModule } from '../BankingTransactions/BankingTransactions.module';
 import { FeaturesModule } from '../Features/Features.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ⑨b Импорт Дзенмани: операции личных финансов → конвейер «Разбор» ⑨
  * (переиспущает `CreateUncategorizedTransactionService`). Флаг `zenmoney_import`.
  */
 @Module({
-  imports: [BankingCategorizeModule, BankingTransactionsModule, FeaturesModule],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,BankingCategorizeModule, BankingTransactionsModule, FeaturesModule],
   controllers: [ZenmoneyImportController],
   providers: [
     ZenmoneyImportApplication,

@@ -20,6 +20,7 @@ import { Bitrix24ApiService } from './connectors/bitrix24/Bitrix24Api.service';
 import { Bitrix24Connector } from './connectors/bitrix24/Bitrix24Connector';
 import { AmoCrmApiService } from './connectors/amocrm/AmoCrmApi.service';
 import { AmoCrmConnector } from './connectors/amocrm/AmoCrmConnector';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * CRM-интеграция: абстракция `CrmConnector` + коннекторы Битрикс24 (⑯a) и amoCRM (⑯b).
@@ -27,6 +28,8 @@ import { AmoCrmConnector } from './connectors/amocrm/AmoCrmConnector';
  */
 @Module({
   imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,
     TenancyDatabaseModule,
     TenancyModule,
     FeaturesModule,

@@ -30,15 +30,32 @@ export const STAFF_PERMISSION_SUBJECTS = [
 /** Действия — ровно так, как их спрашивает код. */
 export const STAFF_PERMISSION_ABILITIES = ['Create', 'Delete', 'View', 'Edit'];
 
-export const staffRolePermissions = () =>
-  STAFF_PERMISSION_SUBJECTS.flatMap((subject) =>
+/**
+ * Просмотр вложений — отдельной строкой.
+ *
+ * Прикреплять файлы к документу сотрудник может и без права (у загрузки его
+ * нет), а вот открыть прикреплённое — уже по праву. Без этой строки он
+ * приложил бы договор к счёту и не смог бы его потом открыть.
+ *
+ * Удаление вложений сотруднику НЕ даётся: убрать чужой файл — действие
+ * тяжелее повседневного, оно остаётся за владельцем.
+ */
+const STAFF_ATTACHMENT_PERMISSION = {
+  subject: 'Attachment',
+  ability: 'View',
+};
+
+export const staffRolePermissions = () => [
+  ...STAFF_PERMISSION_SUBJECTS.flatMap((subject) =>
     STAFF_PERMISSION_ABILITIES.map((ability) => ({
       roleId: STAFF_ROLE_ID,
       subject,
       ability,
       value: true,
     })),
-  );
+  ),
+  { roleId: STAFF_ROLE_ID, ...STAFF_ATTACHMENT_PERMISSION, value: true },
+];
 
 export default class SeedRolesAndPermissions extends TenantSeeder {
   /**

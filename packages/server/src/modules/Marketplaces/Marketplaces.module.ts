@@ -8,6 +8,7 @@ import { WildberriesConnector } from './connectors/wildberries/WildberriesConnec
 import { OzonApiService } from './connectors/ozon/OzonApi.service';
 import { OzonConnector } from './connectors/ozon/OzonConnector';
 import { FeaturesModule } from '@/modules/Features/Features.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ⑱ Маркетплейсы (Wildberries / Ozon). MVP — Wildberries + read-only финансовая
@@ -15,7 +16,9 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
  * Ozon — второй коннектор на ту же абстракцию `MarketplaceConnector`.
  */
 @Module({
-  imports: [FeaturesModule],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,FeaturesModule],
   controllers: [MarketplacesController],
   providers: [
     MarketplacesApplication,

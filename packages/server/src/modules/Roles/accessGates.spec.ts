@@ -28,24 +28,13 @@ const MUST_BE_GUARDED: Record<string, 'owner' | 'permission'> = {
 /**
  * Мнимая защита: право объявлено, стража нет — запрос проходит.
  *
- * Найдено этим же тестом при заведении. Все девять — из шага П1 карты v8
- * (сплошная разметка прав), поэтому закрываются там, а не здесь: подключение
- * стража меняет поведение ручки и требует живой пробы за сотрудника.
+ * Найдено этим же тестом при заведении: девять контроллеров. Все закрыты
+ * (шаг П6 карты v8), список пуст и должен таким остаться.
  *
  * Список может только сокращаться. Новый контроллер в него добавлять нельзя:
  * ставя пометку права, ставьте и стража.
  */
-const PERMISSION_MARK_WITHOUT_GUARD: string[] = [
-  'Acquiring/Acquiring.controller.ts',
-  'Attachments/Attachments.controller.ts',
-  'BankApiSync/BankApiSync.controller.ts',
-  'CrmIntegration/CrmIntegration.controller.ts',
-  'Marketplaces/Marketplaces.controller.ts',
-  'MoySklad/MoySklad.controller.ts',
-  'OnecImport/OnecImport.controller.ts',
-  'RuPrintForms/RuPrintForms.controller.ts',
-  'ZenmoneyImport/ZenmoneyImport.controller.ts',
-];
+const PERMISSION_MARK_WITHOUT_GUARD: string[] = [];
 
 const controllerFiles = (dir: string): string[] =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

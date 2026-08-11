@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { BankApiSyncApplication } from './BankApiSync.application';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 /**
  * Учётные данные банка: у Тинькофф — токен, у Альфы — OAuth-приложение.
@@ -49,6 +59,8 @@ class ImportStatementDto {
 
 @Controller('bank-api-sync')
 @ApiTags('bank-api-sync')
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.BANK_API_SYNC)
 export class BankApiSyncController {
   constructor(private readonly app: BankApiSyncApplication) {}
 

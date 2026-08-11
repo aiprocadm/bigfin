@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ZenmoneyImportApplication } from './ZenmoneyImport.application';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 class ConnectZenmoneyDto {
   @IsString()
@@ -21,6 +30,8 @@ class ImportZenmoneyDto {
 
 @Controller('zenmoney')
 @ApiTags('zenmoney')
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.ZENMONEY_IMPORT)
 export class ZenmoneyImportController {
   constructor(private readonly app: ZenmoneyImportApplication) {}
 

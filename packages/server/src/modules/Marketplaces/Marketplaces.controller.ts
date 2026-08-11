@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { MarketplacesApplication } from './Marketplaces.application';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 class ConnectWbDto {
   @IsString()
@@ -23,6 +33,8 @@ class ConnectOzonDto {
 
 @Controller('marketplaces')
 @ApiTags('marketplaces')
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.MARKETPLACES)
 export class MarketplacesController {
   constructor(private readonly app: MarketplacesApplication) {}
 

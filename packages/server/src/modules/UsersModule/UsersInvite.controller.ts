@@ -1,10 +1,17 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersApplication } from './Users.application';
 import { SendInviteUserDto, BulkSendInviteUserDto } from './dtos/InviteUser.dto';
+import { OwnerGuard } from '@/modules/Roles/Owner.guard';
+import { RequireOwner } from '@/modules/Roles/RequireOwner.decorator';
 
+// Приглашение — это выдача доступа к данным организации, поэтому зовёт только
+// владелец. Приглашение с ролью «Администратор» иначе позволяло бы любому
+// участнику завести себе второй, полноправный вход.
 @Controller('invite')
 @ApiTags('Users')
+@UseGuards(OwnerGuard)
+@RequireOwner()
 export class UsersInviteController {
   constructor(private readonly usersApplication: UsersApplication) {}
 

@@ -12,6 +12,7 @@ import { RolesApplication } from './Roles.application';
 import { RolePermissionsSchema } from './queries/RolePermissionsSchema';
 import { AuthorizationGuard } from './Authorization.guard';
 import { PermissionGuard } from './Permission.guard';
+import { OwnerGuard } from './Owner.guard';
 
 const models = [
   RegisterTenancyModel(Role),
@@ -30,8 +31,9 @@ const models = [
     RolePermissionsSchema,
     AuthorizationGuard,
     PermissionGuard,
+    OwnerGuard,
   ],
   controllers: [RolesController],
-  exports: [...models, AuthorizationGuard, PermissionGuard],
+  exports: [...models, AuthorizationGuard, PermissionGuard, OwnerGuard],
 })
 export class RolesModule {}

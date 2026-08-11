@@ -10,6 +10,7 @@ import { ImportBankStatementService } from './commands/ImportBankStatement.servi
 import { BankingCategorizeModule } from '../BankingCategorize/BankingCategorize.module';
 import { BankingTransactionsModule } from '../BankingTransactions/BankingTransactions.module';
 import { FeaturesModule } from '../Features/Features.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ⑨c Банковские API (волна 1: Тинькофф, Альфа-Банк). Импорт выписки по API
@@ -17,7 +18,9 @@ import { FeaturesModule } from '../Features/Features.module';
  * За флагом `bank_api_sync`. Новый банк = коннектор в реестре.
  */
 @Module({
-  imports: [BankingCategorizeModule, BankingTransactionsModule, FeaturesModule],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,BankingCategorizeModule, BankingTransactionsModule, FeaturesModule],
   controllers: [BankApiSyncController],
   providers: [
     BankApiSyncApplication,

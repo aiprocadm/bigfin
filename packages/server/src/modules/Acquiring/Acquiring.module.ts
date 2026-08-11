@@ -5,6 +5,7 @@ import { AcquiringApplication } from './Acquiring.application';
 import { AcquiringSettingsService } from './AcquiringSettings.service';
 import { YookassaApiService } from './connectors/yookassa/YookassaApi.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ⑨d Эквайринг и платёжные системы. MVP — YooKassa + read-only сводка
@@ -12,7 +13,9 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
  * CRM/маркетплейсы (§4.11): другие эквайеры — реализации на ту же абстракцию.
  */
 @Module({
-  imports: [FeaturesModule],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,FeaturesModule],
   controllers: [AcquiringController],
   providers: [AcquiringApplication, AcquiringSettingsService, YookassaApiService],
 })

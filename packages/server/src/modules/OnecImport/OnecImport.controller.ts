@@ -6,6 +6,7 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,8 @@ import {
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
 import { Features } from '@/common/types/Features';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 
 const xmlUpload = () =>
   FileInterceptor('file', {
@@ -29,6 +32,9 @@ const xmlUpload = () =>
 
 @Controller('onec-import')
 @ApiTags('onec-import')
+// Право на этих ручках было объявлено, но исполнять его было некому:
+// без стража пометка ничего не значит и запрос проходит.
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class OnecImportController {
   constructor(
     private readonly importService: ImportCommerceMlService,

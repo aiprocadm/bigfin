@@ -13,6 +13,8 @@ import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 
 /**
  * Учётные данные банка: у Тинькофф — токен, у Альфы — OAuth-приложение.
@@ -59,7 +61,9 @@ class ImportStatementDto {
 
 @Controller('bank-api-sync')
 @ApiTags('bank-api-sync')
-@UseGuards(FeatureGuard)
+// Право на этих ручках было объявлено, но исполнять его было некому:
+// без стража пометка ничего не значит и запрос проходит.
+@UseGuards(AuthorizationGuard, PermissionGuard, FeatureGuard)
 @RequireFeature(Features.BANK_API_SYNC)
 export class BankApiSyncController {
   constructor(private readonly app: BankApiSyncApplication) {}

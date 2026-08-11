@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetRuPaymentInvoicePdf } from './queries/GetRuPaymentInvoicePdf.service';
@@ -21,6 +22,8 @@ import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { SaleInvoiceAction } from '@/modules/SaleInvoices/SaleInvoice.types';
 import { AcceptType } from '@/constants/accept-type';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 
 /** Общие ответы Swagger для всех печатных форм. */
 const FORM_API_RESPONSES = [
@@ -58,6 +61,9 @@ export const buildPdfContentDisposition = (filename: string): string => {
  */
 @Controller('ru-print-forms')
 @ApiTags('ru-print-forms')
+// Право на этих ручках было объявлено, но исполнять его было некому:
+// без стража пометка ничего не значит и запрос проходит.
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class RuPrintFormsController {
   constructor(
     private readonly getRuPaymentInvoicePdfService: GetRuPaymentInvoicePdf,

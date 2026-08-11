@@ -10,6 +10,7 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 import { ChromiumlyTenancyModule } from '@/modules/ChromiumlyTenancy/ChromiumlyTenancy.module';
 import { SaleInvoicesModule } from '@/modules/SaleInvoices/SaleInvoices.module';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ②c Печатные формы РФ: счёт на оплату, акт, УПД, ТОРГ-12, счёт-фактура.
@@ -17,6 +18,8 @@ import { SaleInvoicesModule } from '@/modules/SaleInvoices/SaleInvoices.module';
  */
 @Module({
   imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,
     FeaturesModule,
     TenancyModule,
     ChromiumlyTenancyModule,

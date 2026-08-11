@@ -1,12 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CrmIntegrationApplication } from './CrmIntegration.application';
 import { ConnectBitrix24Dto } from './dtos/ConnectBitrix24.dto';
 import { ConnectAmocrmDto } from './dtos/ConnectAmocrm.dto';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 
 @Controller('crm')
 @ApiTags('crm')
+// Право на этих ручках было объявлено, но исполнять его было некому:
+// без стража пометка ничего не значит и запрос проходит.
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class CrmIntegrationController {
   constructor(private readonly app: CrmIntegrationApplication) {}
 

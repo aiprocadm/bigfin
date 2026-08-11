@@ -20,6 +20,7 @@ import {
   UnauthorizedException,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import {
   LinkAttachmentDto,
@@ -34,10 +35,15 @@ import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { AttachmentAction } from './Attachments.types';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 
 @ApiTags('Attachments')
 @Controller('/attachments')
 @ApiCommonHeaders()
+// Право на этих ручках было объявлено, но исполнять его было некому:
+// без стража пометка ничего не значит и запрос проходит.
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class AttachmentsController {
   /**
    * @param {AttachmentsApplication} attachmentsApplication - Attachments application.

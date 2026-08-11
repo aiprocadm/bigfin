@@ -7,6 +7,7 @@ import { MoyskladApiService } from './MoyskladApi.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 import { ItemsModule } from '@/modules/Items/Items.module';
 import { ImportMoyskladProductsService } from './commands/ImportMoyskladProducts.service';
+import { RolesModule } from '../Roles/Roles.module';
 
 /**
  * ㉛ Интеграция МойСклад: pull-превью товаров и продаж плюс импорт справочника
@@ -14,7 +15,9 @@ import { ImportMoyskladProductsService } from './commands/ImportMoyskladProducts
  * Идемпотентность импорта — таблица `moysklad_import_links`.
  */
 @Module({
-  imports: [FeaturesModule, ItemsModule],
+  imports: [
+    // Ради стражей прав на контроллере.
+    RolesModule,FeaturesModule, ItemsModule],
   controllers: [MoySkladController],
   providers: [
     MoySkladApplication,

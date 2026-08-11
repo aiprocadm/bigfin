@@ -9,6 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { SettingsStore } from '../Settings/SettingsStore';
 import { SETTINGS_PROVIDER } from '../Settings/Settings.types';
 import { SettingsApplicationService } from '../Settings/SettingsApplication.service';
+import { toBoolean } from '@/common/utils/toBoolean';
 
 @Injectable()
 export class TransactionsLockingRepository {
@@ -92,10 +93,16 @@ export class TransactionsLockingRepository {
     const group = `transactions-locking`;
     const settingsStore = await this.settingsStore();
 
-    const isEnabled = settingsStore.get({
-      group,
-      key: `${lockingGroup}.active`,
-    });
+    // Признак приводим к настоящему «да/нет». Настройки хранятся строками, и
+    // отменённая блокировка возвращалась строкой «0» — а непустая строка в
+    // JavaScript истинна. Сторож делает `if (!isEnabled)`, поэтому отменённая
+    // блокировка продолжала запрещать правку документов: снять её было нельзя.
+    const isEnabled = toBoolean(
+      settingsStore.get({
+        group,
+        key: `${lockingGroup}.active`,
+      }),
+    );
     const lockFromDate = settingsStore.get({
       group,
       key: `${lockingGroup}.lock_from_date`,

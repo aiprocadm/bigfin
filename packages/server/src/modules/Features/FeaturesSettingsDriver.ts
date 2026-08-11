@@ -4,23 +4,7 @@ import { SETTINGS_PROVIDER } from '../Settings/Settings.types';
 import { SettingsStore } from '../Settings/SettingsStore';
 import { IFeatureAllItem } from '@/common/types/Features';
 import { FeaturesConfigure } from './FeaturesConfigure';
-
-/**
- * Приводит хранимое значение флага к «да/нет».
- *
- * Из базы настройка приходит строкой: «0» и «false» означают «выключено», но
- * в JavaScript обе строки истинны. Всё остальное трактуем обычным образом.
- */
-export const toBoolean = (value: unknown): boolean => {
-  if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase();
-    if (normalized === '' || normalized === '0' || normalized === 'false') {
-      return false;
-    }
-    return true;
-  }
-  return Boolean(value);
-};
+import { toBoolean } from '@/common/utils/toBoolean';
 
 @Injectable()
 export class FeaturesSettingsDriver {

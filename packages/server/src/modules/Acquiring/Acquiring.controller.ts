@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { AcquiringApplication } from './Acquiring.application';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 class ConnectYookassaDto {
   @IsString()
@@ -16,6 +26,8 @@ class ConnectYookassaDto {
 
 @Controller('acquiring')
 @ApiTags('acquiring')
+@UseGuards(FeatureGuard)
+@RequireFeature(Features.ACQUIRING)
 export class AcquiringController {
   constructor(private readonly app: AcquiringApplication) {}
 

@@ -1,5 +1,5 @@
 // © 2026 Bigfin
-import { toBoolean } from './FeaturesSettingsDriver';
+import { toBoolean } from './toBoolean';
 
 /**
  * Настройки хранятся строками. Модуль, который включали, а потом выключили,
@@ -9,7 +9,7 @@ import { toBoolean } from './FeaturesSettingsDriver';
  * правильно, потому что отдавал настоящее `false` из умолчаний, — поэтому
  * дефект и прятался.
  */
-describe('toBoolean — признак модуля из настроек', () => {
+describe('toBoolean — признак «включено» из настроек', () => {
   it('строка «0» — это выключено', () => {
     expect(toBoolean('0')).toBe(false);
   });

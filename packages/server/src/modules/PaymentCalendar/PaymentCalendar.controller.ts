@@ -23,11 +23,20 @@ import { GetPaymentCalendarQueryDto } from './dtos/GetPaymentCalendarQuery.dto';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { CashflowAction } from '@/modules/BankingTransactions/types/BankingTransactions.types';
 
+/**
+ * Плановая операция — это будущее движение денег, поэтому предмет тот же, что
+ * у банковских операций.
+ */
 @Controller('payment-calendar')
 @ApiTags('Payment Calendar')
 @ApiCommonHeaders()
-@UseGuards(FeatureGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
 @RequireFeature(Features.PAYMENT_CALENDAR)
 export class PaymentCalendarController {
   constructor(
@@ -49,12 +58,14 @@ export class PaymentCalendarController {
   }
 
   @Post('planned-operations')
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
   @ApiOperation({ summary: 'Create a planned operation.' })
   createPlannedOperation(@Body() dto: CreatePlannedOperationDto) {
     return this.application.createPlannedOperation(dto);
   }
 
   @Put('planned-operations/:id')
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
   @ApiOperation({ summary: 'Edit a planned operation.' })
   editPlannedOperation(
     @Param('id', ParseIntPipe) id: number,
@@ -64,6 +75,7 @@ export class PaymentCalendarController {
   }
 
   @Delete('planned-operations/:id')
+  @RequirePermission(CashflowAction.Delete, AbilitySubject.Cashflow)
   @ApiOperation({ summary: 'Delete a planned operation.' })
   deletePlannedOperation(@Param('id', ParseIntPipe) id: number) {
     return this.application.deletePlannedOperation(id);

@@ -12,7 +12,14 @@ import {
   EditDealStageDto,
   GetDealStagesQueryDto,
 } from './dtos/DealStage.dto';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { SaleEstimateAction } from '@/modules/SaleEstimates/types/SaleEstimates.types';
 
+/**
+ * Этапы живут внутри своей сделки, поэтому любая правка этапов — это правка
+ * сделки, и право одно и то же.
+ */
 @Controller('deals/:dealId/stages')
 @ApiTags('Deals')
 @ApiCommonHeaders()
@@ -33,12 +40,14 @@ export class DealStagesController {
   }
 
   @Post()
+  @RequirePermission(SaleEstimateAction.Edit, AbilitySubject.SaleEstimate)
   @ApiOperation({ summary: 'Add a stage to a deal.' })
   create(@Param('dealId', ParseIntPipe) dealId: number, @Body() dto: CreateDealStageDto) {
     return this.application.create(dealId, dto);
   }
 
   @Put(':stageId')
+  @RequirePermission(SaleEstimateAction.Edit, AbilitySubject.SaleEstimate)
   @ApiOperation({ summary: 'Edit a deal stage.' })
   edit(
     @Param('dealId', ParseIntPipe) dealId: number,
@@ -49,6 +58,7 @@ export class DealStagesController {
   }
 
   @Delete(':stageId')
+  @RequirePermission(SaleEstimateAction.Edit, AbilitySubject.SaleEstimate)
   @ApiOperation({ summary: 'Delete a deal stage.' })
   remove(
     @Param('dealId', ParseIntPipe) dealId: number,

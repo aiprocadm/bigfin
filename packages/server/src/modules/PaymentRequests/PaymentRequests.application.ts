@@ -40,7 +40,7 @@ export class PaymentRequestsApplication {
     return this.rejectService.reject(id);
   }
 
-  public cancelPaymentRequest(id: number) {
-    return this.cancelService.cancel(id);
+  public cancelPaymentRequest(id: number, canManageAll = false) {
+    return this.cancelService.cancel(id, canManageAll);
   }
 }

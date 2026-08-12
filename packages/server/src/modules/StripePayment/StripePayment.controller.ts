@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Injectable, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Injectable,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { StripePaymentApplication } from './StripePaymentApplication';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetStripeConnectLinkResponseDto } from './dtos/GetStripeConnectLinkResponse.dto';
@@ -8,9 +15,17 @@ import { CreateStripeAccountLinkResponseDto } from './dtos/CreateStripeAccountLi
 import { CreateStripeAccountResponseDto } from './dtos/CreateStripeAccountResponse.dto';
 import { CreateStripeAccountSessionBodyDto } from './dtos/CreateStripeAccountSessionBody.dto';
 import { CreateStripeAccountSessionResponseDto } from './dtos/CreateStripeAccountSessionResponse.dto';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 
+/**
+ * Подключение эквайринга — та же природа, что у остальных интеграций
+ * (шаг П6): внешняя система, которая начинает принимать деньги организации.
+ */
 @Controller('/stripe')
 @ApiTags('stripe')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class StripeIntegrationController {
   constructor(private readonly stripePaymentApp: StripePaymentApplication) {}
 
@@ -37,6 +52,7 @@ export class StripeIntegrationController {
    * Exchanges the given Stripe authorization code to Stripe user id and access token.
    */
   @Post('/callback')
+  @RequirePermission('manage', 'all')
   @ApiOperation({
     summary: 'Exchange Stripe OAuth code',
     description:
@@ -57,6 +73,7 @@ export class StripeIntegrationController {
    * Creates a new Stripe account.
    */
   @Post('/account')
+  @RequirePermission('manage', 'all')
   @ApiOperation({
     summary: 'Create Stripe account',
     description: 'Creates a new Stripe Connect account',
@@ -75,6 +92,7 @@ export class StripeIntegrationController {
    * Creates a Stripe account session for the Connect embedded component.
    */
   @Post('/account_session')
+  @RequirePermission('manage', 'all')
   @ApiOperation({
     summary: 'Create Stripe account session',
     description:
@@ -99,6 +117,7 @@ export class StripeIntegrationController {
    * Creates a new Stripe account link for onboarding.
    */
   @Post('/account_link')
+  @RequirePermission('manage', 'all')
   @ApiOperation({
     summary: 'Create Stripe account link',
     description: 'Creates a Stripe Connect account link for onboarding',

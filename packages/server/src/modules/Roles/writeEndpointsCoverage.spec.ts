@@ -56,6 +56,15 @@ const OPEN_BY_DESIGN: string[] = [
   'CrmIntegration/CrmWebhooks.controller.ts#inbound',
   'StripePayment/StripePaymentWebhooks.controller.ts#handleWebhook',
   'Subscription/SubscriptionsLemonWebhook.controller.ts#lemonWebhooks',
+
+  // Оплата счёта по ссылке — поток для ПОКУПАТЕЛЯ, а не для участника
+  // организации: он открывает ссылку, видит счёт и платит. Право внутри
+  // организации тут неприменимо.
+  //
+  // ⚠️ Замечание владельцу: сейчас ручка всё же лежит за входом (не помечена
+  // публичной), то есть покупатель ею воспользоваться не сможет. Это вопрос к
+  // замыслу потока, а не к правам — оставлено как есть.
+  'PaymentLinks/PaymentLinks.controller.ts#createInvoicePaymentLinkCheckoutSession',
 ];
 
 /**
@@ -65,29 +74,7 @@ const OPEN_BY_DESIGN: string[] = [
  * дойдём». Он может только сокращаться: разметили ручку — убрали строку.
  * Добавлять сюда новое нельзя, для этого есть проверка ниже.
  */
-const NOT_YET_MARKED: string[] = [
-  // Вложения: у загрузки права нет намеренно (приложить файл к своему
-  // документу — часть работы с документом), а привязка и отвязка ждут
-  // решения, каким правом их мерить.
-  'Attachments/Attachments.controller.ts#uploadAttachment',
-  'Attachments/Attachments.controller.ts#linkDocument',
-  'Attachments/Attachments.controller.ts#unlinkDocument',
-
-  // Приём платежей и подписка на сам продукт: тут нужно отдельное решение —
-  // платит владелец, а ссылка на оплату счёта живёт наружу, для покупателя.
-  'PaymentLinks/PaymentLinks.controller.ts#createInvoicePaymentLinkCheckoutSession',
-  'PaymentServices/PaymentServices.controller.ts#updatePaymentMethod',
-  'PaymentServices/PaymentServices.controller.ts#deletePaymentMethod',
-  'StripePayment/StripePayment.controller.ts#exchangeOAuth',
-  'StripePayment/StripePayment.controller.ts#createAccount',
-  'StripePayment/StripePayment.controller.ts#createAccountSession',
-  'StripePayment/StripePayment.controller.ts#createAccountLink',
-  'Subscription/Subscriptions.controller.ts#getCheckoutUrl',
-  'Subscription/Subscriptions.controller.ts#cancelSubscription',
-  'Subscription/Subscriptions.controller.ts#resumeSubscription',
-  'Subscription/Subscriptions.controller.ts#changeSubscriptionPlan',
-
-];
+const NOT_YET_MARKED: string[] = [];
 
 /**
  * Проверка есть, но живёт не в пометке права.
@@ -156,9 +143,10 @@ describe('каждая ручка записи спрашивает права �
     expect(stale).toEqual([]);
   });
 
-  it('долг разметки виден числом и может только сокращаться', () => {
-    // Число меняется вместе с осознанной работой: разметили группу —
-    // уменьшили. Увеличить его без правки этого теста нельзя.
-    expect(NOT_YET_MARKED).toHaveLength(14);
+  it('долга разметки не осталось', () => {
+    // Шаг П1 пройден целиком: у каждой записывающей ручки либо пометка права,
+    // либо запись в одном из двух списков с причиной. Список долга пуст и
+    // должен таким остаться — новая ручка без пометки красит сборку.
+    expect(NOT_YET_MARKED).toEqual([]);
   });
 });

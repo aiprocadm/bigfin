@@ -59,6 +59,7 @@ export class AttachmentsController {
    * Uploads the attachments to S3 and store the file metadata to DB.
    */
   @Post()
+  @RequirePermission(AttachmentAction.Create, AbilitySubject.Attachment)
   @HttpCode(200)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
@@ -136,6 +137,7 @@ export class AttachmentsController {
    * Links the given document key.
    */
   @Post('/:id/link')
+  @RequirePermission(AttachmentAction.Create, AbilitySubject.Attachment)
   @ApiOperation({ summary: 'Link attachment to a model' })
   @ApiParam({ name: 'id', description: 'Attachment ID' })
   @ApiBody({ type: LinkAttachmentDto })
@@ -163,6 +165,8 @@ export class AttachmentsController {
    * Links the given document key.
    */
   @Post('/:id/unlink')
+  // Отвязать файл от документа — это его убрать, поэтому право на удаление.
+  @RequirePermission(AttachmentAction.Delete, AbilitySubject.Attachment)
   @ApiOperation({ summary: 'Unlink attachment from a model' })
   @ApiParam({ name: 'id', description: 'Attachment ID' })
   @ApiBody({ type: UnlinkAttachmentDto })

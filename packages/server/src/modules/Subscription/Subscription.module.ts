@@ -22,11 +22,13 @@ import { NewSubscriptionService } from './commands/NewSubscription.service';
 import { GetSubscriptionsService } from './queries/GetSubscriptions.service';
 import { GetLemonSqueezyCheckoutService } from './queries/GetLemonSqueezyCheckout.service';
 import { PlanSubscriptionRepository } from './repositories/PlanSubscription.repository';
+import { RolesModule } from '../Roles/Roles.module';
 
 const models = [InjectSystemModel(Plan), InjectSystemModel(PlanSubscription)];
 
 @Module({
-  imports: [SocketModule],
+  // RolesModule — ради стража «только владелец» на управлении подпиской.
+  imports: [SocketModule, RolesModule],
   providers: [
     ...models,
     TenancyContext,

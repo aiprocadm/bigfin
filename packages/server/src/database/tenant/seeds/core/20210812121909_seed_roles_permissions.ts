@@ -46,6 +46,17 @@ const STAFF_ATTACHMENT_PERMISSION = {
 };
 
 /**
+ * Приложить файл к своему документу — повседневная работа: договор к счёту,
+ * акт к закупке. Права на это в схеме не было вовсе, поэтому файл прикладывал
+ * кто угодно; теперь оно есть, и роль его получает. Отвязывать и удалять
+ * чужие файлы сотруднику по-прежнему нельзя.
+ */
+const STAFF_ATTACHMENT_CREATE_PERMISSION = {
+  subject: 'Attachment',
+  ability: 'Create',
+};
+
+/**
  * Справочники — мягкий вариант (§5 вопрос 10 карты v8).
  *
  * Живая проба показала, что без этих строк роль нерабочая в интерфейсе:
@@ -72,6 +83,7 @@ export const staffRolePermissions = () => [
     })),
   ),
   { roleId: STAFF_ROLE_ID, ...STAFF_ATTACHMENT_PERMISSION, value: true },
+  { roleId: STAFF_ROLE_ID, ...STAFF_ATTACHMENT_CREATE_PERMISSION, value: true },
   ...STAFF_CATALOG_SUBJECTS.flatMap((subject) =>
     STAFF_CATALOG_ABILITIES.map((ability) => ({
       roleId: STAFF_ROLE_ID,

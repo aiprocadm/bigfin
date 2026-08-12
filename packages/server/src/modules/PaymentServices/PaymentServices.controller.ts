@@ -6,13 +6,22 @@ import {
   Param,
   Body,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PaymentServicesApplication } from './PaymentServicesApplication';
 import { EditPaymentMethodDTO } from './types';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 
+/**
+ * Способы оплаты счетов — настройка приёма денег снаружи, поэтому право то же,
+ * что у подключения эквайринга.
+ */
 @ApiTags('Payment Services')
 @Controller('payment-services')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class PaymentServicesController {
   constructor(
     private readonly paymentServicesApp: PaymentServicesApplication,
@@ -43,6 +52,7 @@ export class PaymentServicesController {
   }
 
   @Post('/:paymentMethodId')
+  @RequirePermission('manage', 'all')
   @HttpCode(200)
   async updatePaymentMethod(
     @Param('paymentMethodId') paymentMethodId: number,
@@ -59,6 +69,7 @@ export class PaymentServicesController {
   }
 
   @Delete('/:paymentMethodId')
+  @RequirePermission('manage', 'all')
   @HttpCode(200)
   async deletePaymentMethod(@Param('paymentMethodId') paymentMethodId: number) {
     await this.paymentServicesApp.deletePaymentMethod(paymentMethodId);

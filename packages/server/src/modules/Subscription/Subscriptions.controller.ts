@@ -7,13 +7,25 @@ import {
   Res,
   Next,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { SubscriptionApplication } from './SubscriptionApplication';
+import { OwnerGuard } from '@/modules/Roles/Owner.guard';
+import { RequireOwner } from '@/modules/Roles/RequireOwner.decorator';
 
+/**
+ * Подписка на сам продукт — это деньги владельца организации: сменить тариф,
+ * отменить или возобновить подписку может только он. Право внутри организации
+ * тут не подходит — по той же причине, что и у ролей с составом участников.
+ *
+ * Чтение состояния подписки остаётся открытым: его показывает интерфейс всем,
+ * кто работает в организации.
+ */
 @Controller('subscription')
 @ApiTags('Subscriptions')
+@UseGuards(OwnerGuard)
 export class SubscriptionsController {
   constructor(private readonly subscriptionApp: SubscriptionApplication) {}
 
@@ -31,6 +43,7 @@ export class SubscriptionsController {
   }
 
   @Post('lemon/checkout_url')
+  @RequireOwner()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get LemonSqueezy checkout URL' })
   @ApiBody({
@@ -57,6 +70,7 @@ export class SubscriptionsController {
   }
 
   @Post('cancel')
+  @RequireOwner()
   @ApiOperation({ summary: 'Cancel the current organization subscription' })
   @ApiResponse({
     status: 200,
@@ -73,6 +87,7 @@ export class SubscriptionsController {
   }
 
   @Post('resume')
+  @RequireOwner()
   @HttpCode(200)
   @ApiOperation({ summary: 'Resume the current organization subscription' })
   @ApiResponse({
@@ -90,6 +105,7 @@ export class SubscriptionsController {
   }
 
   @Post('change')
+  @RequireOwner()
   @ApiOperation({
     summary: 'Change the subscription plan of the current organization',
   })

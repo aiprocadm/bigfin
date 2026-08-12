@@ -8,20 +8,32 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PdfTemplateApplication } from './PdfTemplate.application';
 import { ICreateInvoicePdfTemplateDTO, IEditPdfTemplateDTO } from './types';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
+/**
+ * Шаблон печати задаёт вид документов, которые уходят покупателю, — это
+ * настройка организации, а не повседневная работа с документом.
+ */
 @Controller('pdf-templates')
 @ApiTags('Pdf Templates')
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class PdfTemplatesController {
   constructor(
     private readonly pdfTemplateApplication: PdfTemplateApplication,
   ) {}
 
   @Post()
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Create a new PDF template.' })
   @ApiResponse({
     status: 200,
@@ -40,6 +52,7 @@ export class PdfTemplatesController {
   }
 
   @Delete(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Delete the given PDF template.' })
   @ApiResponse({
     status: 200,
@@ -83,6 +96,7 @@ export class PdfTemplatesController {
   }
 
   @Put(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Edit the given PDF template.' })
   @ApiResponse({
     status: 200,
@@ -97,6 +111,7 @@ export class PdfTemplatesController {
   }
 
   @Put(':id/assign-default')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Assign the given PDF template as default.' })
   @ApiResponse({
     status: 200,

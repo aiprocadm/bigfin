@@ -16,6 +16,7 @@ import {
   Body,
   HttpCode,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { BuildOrganizationService } from './commands/BuildOrganization.service';
@@ -38,6 +39,11 @@ import {
 import { GetCurrentOrganizationResponseDto } from './dtos/GetCurrentOrganizationResponse.dto';
 import { OrganizationBuildJobResponseDto } from './dtos/OrganizationBuildJobResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 @ApiTags('Organization')
 @Controller('organization')
@@ -128,6 +134,10 @@ export class OrganizationController {
   }
 
   @Put()
+  // Страж вешается на саму ручку, а не на контроллер: рядом лежит создание
+  // организации, и в тот момент прав ещё нет — спрашивать их не у чего.
+  @UseGuards(AuthorizationGuard, PermissionGuard)
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @HttpCode(200)
   @ApiOperation({ summary: 'Update organization information' })
   @ApiBody({ type: UpdateOrganizationDto })

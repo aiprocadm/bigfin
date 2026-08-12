@@ -110,6 +110,8 @@ export class SaleInvoicesController {
   }
 
   @Post(':id/mail')
+  // Письмо уходит покупателю от имени организации — это не чтение.
+  @RequirePermission(SaleInvoiceAction.Edit, AbilitySubject.SaleInvoice)
   @HttpCode(200)
   @ApiOperation({ summary: 'Send the sale invoice mail.' })
   @ApiResponse({

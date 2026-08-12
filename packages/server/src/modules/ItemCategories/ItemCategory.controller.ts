@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ItemCategoryApplication } from './ItemCategory.application';
 import { GetItemCategoriesResponse } from './ItemCategory.interfaces';
@@ -25,17 +26,24 @@ import {
 import { GetItemCategoriesQueryDto } from './dtos/GetItemCategoriesQuery.dto';
 import { ItemCategoryResponseDto } from './dtos/ItemCategoryResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ItemAction } from '@/interfaces/Item';
 
 @Controller('item-categories')
 @ApiTags('Item Categories')
 @ApiExtraModels(ItemCategoryResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class ItemCategoryController {
   constructor(
     private readonly itemCategoryApplication: ItemCategoryApplication,
   ) {}
 
   @Post()
+  @RequirePermission(ItemAction.CREATE, AbilitySubject.Item)
   @ApiOperation({ summary: 'Create a new item category.' })
   async createItemCategory(@Body() itemCategoryDTO: CreateItemCategoryDto) {
     return this.itemCategoryApplication.createItemCategory(itemCategoryDTO);
@@ -58,6 +66,7 @@ export class ItemCategoryController {
   }
 
   @Put(':id')
+  @RequirePermission(ItemAction.EDIT, AbilitySubject.Item)
   @ApiOperation({ summary: 'Edit the given item category.' })
   async editItemCategory(
     @Param('id', ParseIntPipe) id: number,
@@ -78,6 +87,7 @@ export class ItemCategoryController {
   }
 
   @Delete(':id')
+  @RequirePermission(ItemAction.DELETE, AbilitySubject.Item)
   @ApiOperation({ summary: 'Delete the given item category.' })
   async deleteItemCategory(@Param('id', ParseIntPipe) id: number) {
     return this.itemCategoryApplication.deleteItemCategory(id);

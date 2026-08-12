@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiExtraModels,
@@ -25,17 +26,29 @@ import {
 import { GetManagementArticlesQueryDto } from './dtos/GetManagementArticlesQuery.dto';
 import { ManagementArticleResponseDto } from './dtos/ManagementArticleResponse.dto';
 import { ArticlesRollupQueryDto } from './dtos/ArticlesRollupQuery.dto';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { AccountAction } from '@/interfaces/Account';
 
+/**
+ * Статьи учёта — это разрезы, по которым собираются отчёты всей организации:
+ * добавили статью — изменился состав ОПиУ и ДДС у всех. Поэтому право взято
+ * то же, что у счетов учёта, а не «повседневное» право справочника.
+ */
 @Controller('management-articles')
 @ApiTags('Management Articles')
 @ApiExtraModels(ManagementArticleResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class ManagementArticlesController {
   constructor(
     private readonly application: ManagementArticlesApplication,
   ) {}
 
   @Post()
+  @RequirePermission(AccountAction.CREATE, AbilitySubject.Account)
   @ApiOperation({ summary: 'Create a new management article.' })
   createManagementArticle(@Body() dto: CreateManagementArticleDto) {
     return this.application.createManagementArticle(dto);
@@ -62,6 +75,7 @@ export class ManagementArticlesController {
   }
 
   @Put(':id')
+  @RequirePermission(AccountAction.EDIT, AbilitySubject.Account)
   @ApiOperation({ summary: 'Edit the given management article.' })
   editManagementArticle(
     @Param('id', ParseIntPipe) id: number,
@@ -82,6 +96,7 @@ export class ManagementArticlesController {
   }
 
   @Delete(':id')
+  @RequirePermission(AccountAction.DELETE, AbilitySubject.Account)
   @ApiOperation({ summary: 'Delete the given management article.' })
   deleteManagementArticle(@Param('id', ParseIntPipe) id: number) {
     return this.application.deleteManagementArticle(id);

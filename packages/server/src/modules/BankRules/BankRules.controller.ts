@@ -13,21 +13,29 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { BankRulesApplication } from './BankRulesApplication';
 import { CreateBankRuleDto } from './dtos/BankRule.dto';
 import { EditBankRuleDto } from './dtos/BankRule.dto';
 import { BankRuleResponseDto } from './dtos/BankRuleResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 @Controller('banking/rules')
 @ApiTags('Bank Rules')
 @ApiExtraModels(BankRuleResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class BankRulesController {
   constructor(private readonly bankRulesApplication: BankRulesApplication) {}
 
   @Post()
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Create a new bank rule.' })
   @ApiResponse({
     status: 201,
@@ -43,6 +51,7 @@ export class BankRulesController {
   }
 
   @Put(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Edit the given bank rule.' })
   async editBankRule(
     @Param('id') ruleId: number,
@@ -52,6 +61,7 @@ export class BankRulesController {
   }
 
   @Delete(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Delete the given bank rule.' })
   @ApiResponse({
     status: 200,

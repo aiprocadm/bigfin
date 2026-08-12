@@ -1,11 +1,17 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { BankAccountsApplication } from './BankAccountsApplication.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BankAccountsQueryDto } from './dtos/BankAccountsQuery.dto';
 import { BankAccountResponseDto } from './dtos/BankAccountResponse.dto';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { AccountAction } from '@/interfaces/Account';
 
 @Controller('banking/accounts')
 @ApiTags('Bank Accounts')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class BankAccountsController {
   constructor(private bankAccountsApplication: BankAccountsApplication) { }
 
@@ -27,6 +33,7 @@ export class BankAccountsController {
   }
 
   @Post(':id/disconnect')
+  @RequirePermission(AccountAction.EDIT, AbilitySubject.Account)
   @ApiOperation({
     summary: 'Disconnect the bank connection of the given bank account.',
   })
@@ -43,6 +50,7 @@ export class BankAccountsController {
   }
 
   @Post(':id/refresh')
+  @RequirePermission(AccountAction.EDIT, AbilitySubject.Account)
   @ApiOperation({
     summary: 'Refresh the bank account transactions.',
   })
@@ -59,6 +67,7 @@ export class BankAccountsController {
   }
 
   @Post(':id/pause')
+  @RequirePermission(AccountAction.EDIT, AbilitySubject.Account)
   @ApiOperation({
     summary: 'Pause transactions syncing of the given bank account.',
   })
@@ -75,6 +84,7 @@ export class BankAccountsController {
   }
 
   @Post(':id/resume')
+  @RequirePermission(AccountAction.EDIT, AbilitySubject.Account)
   @ApiOperation({
     summary: 'Resume transactions syncing of the given bank account.',
   })

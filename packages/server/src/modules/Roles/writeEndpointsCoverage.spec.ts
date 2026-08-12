@@ -97,16 +97,6 @@ const NOT_YET_MARKED: string[] = [
   'Deals/DealStages.controller.ts#edit',
   'Deals/DealStages.controller.ts#remove',
 
-  // Настройки и обслуживание организации.
-  'Import/Import.controller.ts#fileUpload',
-  'Import/Import.controller.ts#mapping',
-  'Import/Import.controller.ts#import',
-  'Organization/Organization.controller.ts#updateOrganization',
-  'PdfTemplate/PdfTemplates.controller.ts#createPdfTemplate',
-  'PdfTemplate/PdfTemplates.controller.ts#editPdfTemplate',
-  'PdfTemplate/PdfTemplates.controller.ts#deletePdfTemplate',
-  'PdfTemplate/PdfTemplates.controller.ts#assignPdfTemplateAsDefault',
-
   // Приём платежей и подписка на сам продукт: тут нужно отдельное решение —
   // платит владелец, а ссылка на оплату счёта живёт наружу, для покупателя.
   'PaymentLinks/PaymentLinks.controller.ts#createInvoicePaymentLinkCheckoutSession',
@@ -121,12 +111,26 @@ const NOT_YET_MARKED: string[] = [
   'Subscription/Subscriptions.controller.ts#resumeSubscription',
   'Subscription/Subscriptions.controller.ts#changeSubscriptionPlan',
 
-  // Рабочие пространства — часть, доставшаяся от исходной кодовой базы.
+];
+
+/**
+ * Проверка есть, но живёт не в пометке права.
+ *
+ * Рабочие пространства — это сами организации пользователя, и мерить их
+ * правами ВНУТРИ организации неверно: удаление организации в набор её прав не
+ * входит. Службы сверяют системное членство: владелец этой организации или
+ * нет. Отдельный тест (`adminAccessGates.spec.ts`) следит, чтобы эта сверка
+ * не пропала.
+ */
+const GUARDED_ELSEWHERE: string[] = [
+  // Своя новая организация: человек заводит её себе, спрашивать не у кого.
   'ee/Workspaces/Workspaces.controller.ts#createWorkspace',
+  // Свой выбор организации по умолчанию.
+  'ee/Workspaces/Workspaces.controller.ts#setDefaultWorkspace',
+  // Служба требует роль «владелец» в системном членстве.
   'ee/Workspaces/Workspaces.controller.ts#deleteWorkspace',
   'ee/Workspaces/Workspaces.controller.ts#inactivateWorkspace',
   'ee/Workspaces/Workspaces.controller.ts#activateWorkspace',
-  'ee/Workspaces/Workspaces.controller.ts#setDefaultWorkspace',
 ];
 
 const controllerFiles = (dir: string): string[] =>
@@ -148,7 +152,7 @@ describe('каждая ручка записи спрашивает права �
   const endpoints = allEndpoints();
   const open = endpoints.filter((endpoint) => !endpoint.guarded);
   const openKeys = open.map(endpointKey);
-  const known = [...OPEN_BY_DESIGN, ...NOT_YET_MARKED];
+  const known = [...OPEN_BY_DESIGN, ...GUARDED_ELSEWHERE, ...NOT_YET_MARKED];
 
   it('ручки записи найдены', () => {
     // Если обходчик сломается, он найдёт ноль ручек и «всё будет хорошо».
@@ -171,6 +175,6 @@ describe('каждая ручка записи спрашивает права �
   it('долг разметки виден числом и может только сокращаться', () => {
     // Число меняется вместе с осознанной работой: разметили группу —
     // уменьшили. Увеличить его без правки этого теста нельзя.
-    expect(NOT_YET_MARKED).toHaveLength(47);
+    expect(NOT_YET_MARKED).toHaveLength(34);
   });
 });

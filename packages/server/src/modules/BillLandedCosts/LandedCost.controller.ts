@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AllocateBillLandedCostDto } from './dtos/AllocateBillLandedCost.dto';
@@ -15,10 +16,20 @@ import { RevertAllocatedLandedCost } from './commands/RevertAllocatedLandedCost.
 import { LandedCostTranasctions } from './commands/LandedCostTransactions.service';
 import { LandedCostTransactionsQueryDto } from './dtos/LandedCostTransactionsQuery.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { BillAction } from '@/modules/Bills/Bills.types';
 
+/**
+ * Дополнительные расходы закупки меняют стоимость самой закупки, поэтому
+ * право берётся у счёта поставщика: кто ведёт закупку, тот и распределяет.
+ */
 @ApiTags('Landed Cost')
 @Controller('landed-cost')
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class BillAllocateLandedCostController {
   constructor(
     private allocateLandedCost: AllocateLandedCostService,
@@ -43,6 +54,7 @@ export class BillAllocateLandedCostController {
   }
 
   @Post('/bills/:billId/allocate')
+  @RequirePermission(BillAction.Edit, AbilitySubject.Bill)
   @ApiOperation({ summary: 'Allocate landed cost to bill items' })
   @ApiResponse({
     status: 201,
@@ -63,6 +75,7 @@ export class BillAllocateLandedCostController {
   }
 
   @Delete('/:allocatedLandedCostId')
+  @RequirePermission(BillAction.Edit, AbilitySubject.Bill)
   @ApiOperation({ summary: 'Delete allocated landed cost' })
   @ApiResponse({
     status: 200,

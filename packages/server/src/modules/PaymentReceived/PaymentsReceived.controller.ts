@@ -57,6 +57,8 @@ export class PaymentReceivesController {
   constructor(private paymentReceivesApplication: PaymentReceivesApplication) { }
 
   @Post(':id/mail')
+  // Письмо уходит покупателю от имени организации — это не чтение.
+  @RequirePermission(PaymentReceiveAction.Edit, AbilitySubject.PaymentReceive)
   @HttpCode(200)
   @ApiResponse({
     status: 200,

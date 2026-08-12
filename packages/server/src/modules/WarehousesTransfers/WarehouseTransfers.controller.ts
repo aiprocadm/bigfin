@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
   Inject,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiExtraModels,
@@ -26,11 +27,17 @@ import { GetWarehouseTransfersQueryDto } from '../Warehouses/dtos/GetWarehouseTr
 import { WarehouseTransferResponseDto } from './dtos/WarehouseTransferResponse.dto';
 import { PaginatedResponseDto } from '@/common/dtos/PaginatedResults.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { InventoryAdjustmentAction } from '@/modules/InventoryAdjutments/types/InventoryAdjustments.types';
 
 @Controller('warehouse-transfers')
 @ApiTags('Warehouse Transfers')
 @ApiExtraModels(WarehouseTransferResponseDto, PaginatedResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class WarehouseTransfersController {
   /**
    * @param {WarehouseTransferApplication} warehouseTransferApplication - Warehouse transfer application.
@@ -44,6 +51,10 @@ export class WarehouseTransfersController {
    * Creates a new warehouse transfer transaction.
    */
   @Post()
+  @RequirePermission(
+    InventoryAdjustmentAction.CREATE,
+    AbilitySubject.InventoryAdjustment,
+  )
   @ApiOperation({ summary: 'Create a new warehouse transfer transaction.' })
   @ApiResponse({
     status: 200,
@@ -69,6 +80,10 @@ export class WarehouseTransfersController {
    * Edits warehouse transfer transaction.
    */
   @Post(':id')
+  @RequirePermission(
+    InventoryAdjustmentAction.EDIT,
+    AbilitySubject.InventoryAdjustment,
+  )
   @ApiOperation({ summary: 'Edit the given warehouse transfer transaction.' })
   @ApiResponse({
     status: 200,
@@ -95,6 +110,10 @@ export class WarehouseTransfersController {
    * Initiates the warehouse transfer.
    */
   @Put(':id/initiate')
+  @RequirePermission(
+    InventoryAdjustmentAction.EDIT,
+    AbilitySubject.InventoryAdjustment,
+  )
   @ApiOperation({ summary: 'Initiate the given warehouse transfer.' })
   @ApiResponse({
     status: 200,
@@ -113,6 +132,10 @@ export class WarehouseTransfersController {
    * Marks the given warehouse transfer as transferred.
    */
   @Put(':id/transferred')
+  @RequirePermission(
+    InventoryAdjustmentAction.EDIT,
+    AbilitySubject.InventoryAdjustment,
+  )
   @ApiOperation({
     summary: 'Mark the given warehouse transfer as transferred.',
   })
@@ -190,6 +213,10 @@ export class WarehouseTransfersController {
    * Deletes the given warehouse transfer transaction.
    */
   @Delete(':id')
+  @RequirePermission(
+    InventoryAdjustmentAction.DELETE,
+    AbilitySubject.InventoryAdjustment,
+  )
   @ApiOperation({ summary: 'Delete the given warehouse transfer transaction.' })
   @ApiResponse({
     status: 200,

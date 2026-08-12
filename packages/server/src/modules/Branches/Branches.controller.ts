@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { BranchesApplication } from './BranchesApplication.service';
 import { CreateBranchDto, EditBranchDto } from './dtos/Branch.dto';
@@ -18,11 +19,17 @@ import {
 } from '@nestjs/swagger';
 import { BranchResponseDto } from './dtos/BranchResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 @Controller('branches')
 @ApiTags('Branches')
 @ApiExtraModels(BranchResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class BranchesController {
   constructor(private readonly branchesApplication: BranchesApplication) {}
 
@@ -57,6 +64,7 @@ export class BranchesController {
   }
 
   @Post()
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Create a new branch.' })
   @ApiResponse({
     status: 200,
@@ -71,6 +79,7 @@ export class BranchesController {
   }
 
   @Put(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Edit the given branch.' })
   @ApiResponse({
     status: 200,
@@ -85,6 +94,7 @@ export class BranchesController {
   }
 
   @Delete(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Delete the given branch.' })
   @ApiResponse({
     status: 200,
@@ -96,6 +106,7 @@ export class BranchesController {
   }
 
   @Post('activate')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Activate the branches feature.' })
   @ApiResponse({
     status: 200,
@@ -111,6 +122,7 @@ export class BranchesController {
   }
 
   @Put(':id/mark-as-primary')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Mark the given branch as primary.' })
   @ApiResponse({
     status: 200,

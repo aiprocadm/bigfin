@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { WarehousesApplication } from './WarehousesApplication.service';
 import {
@@ -18,21 +19,29 @@ import {
 import { CreateWarehouseDto, EditWarehouseDto } from './dtos/Warehouse.dto';
 import { WarehouseResponseDto } from './dtos/WarehouseResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 @Controller('warehouses')
 @ApiTags('Warehouses')
 @ApiExtraModels(WarehouseResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class WarehousesController {
   constructor(private warehousesApplication: WarehousesApplication) {}
 
   @Post()
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Create a warehouse' })
   createWarehouse(@Body() createWarehouseDTO: CreateWarehouseDto) {
     return this.warehousesApplication.createWarehouse(createWarehouseDTO);
   }
 
   @Put(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   editWarehouse(
     @Param('id') warehouseId: string,
     @Body() editWarehouseDTO: EditWarehouseDto,
@@ -44,6 +53,7 @@ export class WarehousesController {
   }
 
   @Delete(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Delete a warehouse' })
   deleteWarehouse(@Param('id') warehouseId: string) {
     return this.warehousesApplication.deleteWarehouse(Number(warehouseId));
@@ -75,12 +85,14 @@ export class WarehousesController {
   }
 
   @Post('activate')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Activate a warehouse' })
   activateWarehouses() {
     return this.warehousesApplication.activateWarehouses();
   }
 
   @Put(':id/mark-primary')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Mark a warehouse as primary' })
   markWarehousePrimary(@Param('id') warehouseId: string) {
     return this.warehousesApplication.markWarehousePrimary(Number(warehouseId));

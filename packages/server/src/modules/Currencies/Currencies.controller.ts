@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,15 +26,22 @@ import { CreateCurrencyDto } from './dtos/CreateCurrency.dto';
 import { EditCurrencyDto } from './dtos/EditCurrency.dto';
 import { CurrencyResponseDto } from './dtos/CurrencyResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 @ApiTags('Currencies')
 @Controller('/currencies')
 @ApiExtraModels(CurrencyResponseDto)
 @ApiCommonHeaders()
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class CurrenciesController {
   constructor(private readonly currenciesApp: CurrenciesApplication) {}
 
   @Post()
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Create a new currency' })
   @ApiBody({ type: CreateCurrencyDto })
   @ApiCreatedResponse({
@@ -48,6 +56,7 @@ export class CurrenciesController {
   }
 
   @Put(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Edit an existing currency' })
   @ApiParam({ name: 'id', type: Number, description: 'Currency ID' })
   @ApiBody({ type: EditCurrencyDto })
@@ -64,6 +73,7 @@ export class CurrenciesController {
   }
 
   @Delete(':code')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Delete a currency by code' })
   @ApiParam({ name: 'code', type: String, description: 'Currency code' })
   @ApiOkResponse({ description: 'The currency has been successfully deleted.' })

@@ -15,14 +15,12 @@
   "payments_made": "Payments made",
   "preferences": "Preferences",
   "mutate_system_preferences": "Mutate the system preferences.",
-
   "items": "Items",
   "view": "View",
   "create": "Create",
   "edit": "Edit",
   "delete": "Delete",
   "transactions_locking": "Ability to transactions locking.",
-
   "balance_sheet_report": "Balance sheet.",
   "profit_loss_sheet": "Profit/loss sheet",
   "journal": "Journal",
@@ -37,5 +35,7 @@
   "customers_summary_balance_report": "Customers summary balance",
   "vendors_summary_balance_report": "Vendors summary balance",
   "inventory_valuation_summary": "Inventory valuation summary",
-  "inventory_items_details": "Inventory items details"
+  "inventory_items_details": "Inventory items details",
+  "trial_balance_sheet": "Trial balance sheet",
+  "sales_tax_liability_summary": "Sales tax liability summary"
 }

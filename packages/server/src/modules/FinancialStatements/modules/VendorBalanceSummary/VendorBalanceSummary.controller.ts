@@ -1,4 +1,6 @@
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import { IVendorBalanceSummaryQuery } from './VendorBalanceSummary.types';
 import { VendorBalanceSummaryApplication } from './VendorBalanceSummaryApplication';
 import { Response } from 'express';
@@ -17,17 +19,24 @@ import {
   VendorBalanceSummaryTableResponseDto,
 } from './VendorBalanceSummaryResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('/reports/vendor-balance-summary')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(VendorBalanceSummaryResponseDto, VendorBalanceSummaryTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class VendorBalanceSummaryController {
   constructor(
     private readonly vendorBalanceSummaryApp: VendorBalanceSummaryApplication,
   ) {}
 
   @Get()
+  @RequirePermission(ReportsAction.READ_VENDORS_SUMMARY_BALANCE, AbilitySubject.Report)
   @ApiOperation({ summary: 'Get vendor balance summary' })
   @ApiResponse({
     status: 200,

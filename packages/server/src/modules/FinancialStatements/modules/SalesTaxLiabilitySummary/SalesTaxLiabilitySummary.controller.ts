@@ -7,7 +7,9 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AcceptType } from '@/constants/accept-type';
 import { SalesTaxLiabilitySummaryApplication } from './SalesTaxLiabilitySummaryApplication';
 import { SalesTaxLiabilitySummaryQueryDto } from './dtos/SalesTaxLiabilityQuery.dto';
@@ -16,17 +18,24 @@ import {
   SalesTaxLiabilitySummaryTableResponseDto,
 } from './SalesTaxLiabilitySummaryResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('/reports/sales-tax-liability-summary')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(SalesTaxLiabilitySummaryResponseDto, SalesTaxLiabilitySummaryTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class SalesTaxLiabilitySummaryController {
   constructor(
     private readonly salesTaxLiabilitySummaryApp: SalesTaxLiabilitySummaryApplication,
   ) {}
 
   @Get()
+  @RequirePermission(ReportsAction.READ_SALES_TAX_LIABILITY_SUMMARY, AbilitySubject.Report)
   @ApiResponse({
     status: 200,
     description: 'Sales tax liability summary report',

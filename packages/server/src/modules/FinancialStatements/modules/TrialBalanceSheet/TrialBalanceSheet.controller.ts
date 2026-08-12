@@ -1,4 +1,6 @@
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiExtraModels,
   ApiOperation,
@@ -18,17 +20,24 @@ import {
   TrialBalanceSheetTableResponseDto,
 } from './TrialBalanceSheetResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('reports/trial-balance-sheet')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(TrialBalanceSheetResponseDto, TrialBalanceSheetTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class TrialBalanceSheetController {
   constructor(
     private readonly trialBalanceSheetApp: TrialBalanceSheetApplication,
   ) {}
 
   @Get()
+  @RequirePermission(ReportsAction.READ_TRIAL_BALANCE_SHEET, AbilitySubject.Report)
   @ApiOperation({ summary: 'Get trial balance sheet' })
   @ApiResponse({
     status: 200,

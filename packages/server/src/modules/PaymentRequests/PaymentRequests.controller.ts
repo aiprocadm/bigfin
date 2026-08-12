@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -65,9 +66,14 @@ export class PaymentRequestsController {
 
   @Post(':id/cancel')
   @ApiOperation({
-    summary: 'Cancel a payment request (also cancels its planned outflow).',
+    summary:
+      'Cancel a payment request (author or admin; also cancels its planned outflow).',
   })
-  cancel(@Param('id', ParseIntPipe) id: number) {
-    return this.application.cancelPaymentRequest(id);
+  cancel(@Param('id', ParseIntPipe) id: number, @Req() request: any) {
+    // Отменяет автор заявки — или тот, кто заявки одобряет. Права здесь
+    // недостаточно: важно, чья это заявка, а не что человеку доверено вообще.
+    const canManageAll = request?.ability?.can('manage', 'all') ?? false;
+
+    return this.application.cancelPaymentRequest(id, canManageAll);
   }
 }

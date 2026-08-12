@@ -73,30 +73,6 @@ const NOT_YET_MARKED: string[] = [
   'Attachments/Attachments.controller.ts#linkDocument',
   'Attachments/Attachments.controller.ts#unlinkDocument',
 
-  // Планирование и долги: своего предмета в схеме прав нет, нужно решение.
-  'Budgets/Budgets.controller.ts#create',
-  'Budgets/Budgets.controller.ts#edit',
-  'Budgets/Budgets.controller.ts#upsertLines',
-  'Budgets/Budgets.controller.ts#delete',
-  'Debts/Debts.controller.ts#remind',
-  'Debts/Debts.controller.ts#createRepaymentPlan',
-  'Debts/Debts.controller.ts#editRepaymentPlan',
-  'Debts/Debts.controller.ts#deleteRepaymentPlan',
-  'Debts/Debts.controller.ts#markInstallmentPaid',
-  'PaymentCalendar/PaymentCalendar.controller.ts#createPlannedOperation',
-  'PaymentCalendar/PaymentCalendar.controller.ts#editPlannedOperation',
-  'PaymentCalendar/PaymentCalendar.controller.ts#deletePlannedOperation',
-  'PaymentRequests/PaymentRequests.controller.ts#create',
-  'PaymentRequests/PaymentRequests.controller.ts#cancel',
-
-  // Сделки и их этапы.
-  'Deals/Deals.controller.ts#create',
-  'Deals/Deals.controller.ts#edit',
-  'Deals/Deals.controller.ts#remove',
-  'Deals/DealStages.controller.ts#create',
-  'Deals/DealStages.controller.ts#edit',
-  'Deals/DealStages.controller.ts#remove',
-
   // Приём платежей и подписка на сам продукт: тут нужно отдельное решение —
   // платит владелец, а ссылка на оплату счёта живёт наружу, для покупателя.
   'PaymentLinks/PaymentLinks.controller.ts#createInvoicePaymentLinkCheckoutSession',
@@ -123,6 +99,14 @@ const NOT_YET_MARKED: string[] = [
  * не пропала.
  */
 const GUARDED_ELSEWHERE: string[] = [
+  // Заявку на оплату подаёт любой участник — в этом смысл модуля: сотрудник
+  // просит оплатить счёт, а решение принимает администратор (одобрение и
+  // отказ уже требуют полных прав).
+  'PaymentRequests/PaymentRequests.controller.ts#create',
+  // Отменяет заявку её автор — или тот, кто заявки одобряет. Правом такое не
+  // описать: важно, ЧЬЯ это заявка, поэтому проверка живёт в самой службе.
+  'PaymentRequests/PaymentRequests.controller.ts#cancel',
+
   // Своя новая организация: человек заводит её себе, спрашивать не у кого.
   'ee/Workspaces/Workspaces.controller.ts#createWorkspace',
   // Свой выбор организации по умолчанию.
@@ -175,6 +159,6 @@ describe('каждая ручка записи спрашивает права �
   it('долг разметки виден числом и может только сокращаться', () => {
     // Число меняется вместе с осознанной работой: разметили группу —
     // уменьшили. Увеличить его без правки этого теста нельзя.
-    expect(NOT_YET_MARKED).toHaveLength(34);
+    expect(NOT_YET_MARKED).toHaveLength(14);
   });
 });

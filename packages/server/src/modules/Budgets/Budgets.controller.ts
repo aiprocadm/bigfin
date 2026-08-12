@@ -19,11 +19,20 @@ import { GetBudgetPlanFactQueryDto } from './dtos/GetBudgetPlanFactQuery.dto';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
+/**
+ * Бюджет — план всей организации: по нему считается план-факт у всех, кто
+ * смотрит отчёты. Поэтому право то же, что у настроек.
+ */
 @Controller('budgets')
 @ApiTags('Budgets')
 @ApiCommonHeaders()
-@UseGuards(FeatureGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
 @RequireFeature(Features.BUDGETS)
 export class BudgetsController {
   constructor(private readonly application: BudgetsApplication) {}
@@ -50,18 +59,21 @@ export class BudgetsController {
   }
 
   @Post()
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Create a budget.' })
   create(@Body() dto: CreateBudgetDto) {
     return this.application.createBudget(dto);
   }
 
   @Put(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Edit a budget.' })
   edit(@Param('id', ParseIntPipe) id: number, @Body() dto: EditBudgetDto) {
     return this.application.editBudget(id, dto);
   }
 
   @Put(':id/lines')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Upsert budget grid cells.' })
   upsertLines(
     @Param('id', ParseIntPipe) id: number,
@@ -71,6 +83,7 @@ export class BudgetsController {
   }
 
   @Delete(':id')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
   @ApiOperation({ summary: 'Delete a budget.' })
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.application.deleteBudget(id);

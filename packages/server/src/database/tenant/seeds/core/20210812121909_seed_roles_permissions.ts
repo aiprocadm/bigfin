@@ -73,6 +73,25 @@ export const STAFF_CATALOG_SUBJECTS = ['Customer', 'Vendor', 'Item'];
 
 export const STAFF_CATALOG_ABILITIES = ['View', 'Create', 'Edit'];
 
+/**
+ * Отчёты, которые видит роль «Сотрудник» (шаг В1 карты v9).
+ *
+ * Ему оставлены отчёты ПО КОНТРАГЕНТАМ: с кем сколько наработали и кто сколько
+ * должен — это продолжение его повседневной работы со счетами и оплатами.
+ *
+ * Общая финансовая картина организации — Баланс, ОПиУ, движение денег, главная
+ * книга, журнал, оборотно-сальдовая ведомость, продажи и закупки по позициям,
+ * склад и налог — остаётся администратору. До этой правки половина отчётов не
+ * спрашивала прав вовсе, и сотрудник видел в том числе оборотно-сальдовую
+ * ведомость по всем счетам организации.
+ */
+export const STAFF_REPORT_ABILITIES = [
+  'read-customers-transactions',
+  'read-vendors-transactions',
+  'read-customers-summary-balance',
+  'read-vendors-summary-balance',
+];
+
 export const staffRolePermissions = () => [
   ...STAFF_PERMISSION_SUBJECTS.flatMap((subject) =>
     STAFF_PERMISSION_ABILITIES.map((ability) => ({
@@ -92,6 +111,12 @@ export const staffRolePermissions = () => [
       value: true,
     })),
   ),
+  ...STAFF_REPORT_ABILITIES.map((ability) => ({
+    roleId: STAFF_ROLE_ID,
+    subject: 'Report',
+    ability,
+    value: true,
+  })),
 ];
 
 export default class SeedRolesAndPermissions extends TenantSeeder {

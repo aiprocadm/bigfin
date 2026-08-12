@@ -1,6 +1,8 @@
 import { Response } from 'express';
 import { ApiExtraModels, ApiOperation, ApiTags, ApiResponse, ApiProduces, getSchemaPath } from '@nestjs/swagger';
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import { InventoryItemDetailsApplication } from './InventoryItemDetailsApplication';
 import { AcceptType } from '@/constants/accept-type';
 import { InventoryItemDetailsQueryDto } from './InventoryItemDetailsQuery.dto';
@@ -9,17 +11,24 @@ import {
   InventoryItemDetailsTableResponseDto,
 } from './InventoryItemDetailsResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('reports/inventory-item-details')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(InventoryItemDetailsResponseDto, InventoryItemDetailsTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class InventoryItemDetailsController {
   constructor(
     private readonly inventoryItemDetailsApp: InventoryItemDetailsApplication,
   ) {}
 
   @Get('/')
+  @RequirePermission(ReportsAction.READ_INVENTORY_ITEM_DETAILS, AbilitySubject.Report)
   @ApiOperation({ summary: 'Get inventory item details' })
   @ApiResponse({
     status: 200,

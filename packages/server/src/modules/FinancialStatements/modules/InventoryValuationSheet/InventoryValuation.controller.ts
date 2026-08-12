@@ -7,7 +7,9 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import { InventoryValuationSheetApplication } from './InventoryValuationSheetApplication';
 import { InventoryValuationQueryDto } from './InventoryValuationQuery.dto';
 import { AcceptType } from '@/constants/accept-type';
@@ -16,17 +18,24 @@ import {
   InventoryValuationTableResponseDto,
 } from './InventoryValuationResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('reports/inventory-valuation')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(InventoryValuationResponseDto, InventoryValuationTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class InventoryValuationController {
   constructor(
     private readonly inventoryValuationApp: InventoryValuationSheetApplication,
   ) {}
 
   @Get()
+  @RequirePermission(ReportsAction.READ_INVENTORY_VALUATION_SUMMARY, AbilitySubject.Report)
   @ApiOperation({ summary: 'Retrieves the inventory valuation sheet' })
   @ApiResponse({
     status: 200,

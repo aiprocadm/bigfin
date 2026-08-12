@@ -7,7 +7,9 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import { CustomerBalanceSummaryApplication } from './CustomerBalanceSummaryApplication';
 import { CustomerBalanceSummaryQueryDto } from './CustomerBalanceSummaryQuery.dto';
 import { AcceptType } from '@/constants/accept-type';
@@ -16,17 +18,24 @@ import {
   CustomerBalanceSummaryTableResponseDto,
 } from './CustomerBalanceSummaryResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('/reports/customer-balance-summary')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(CustomerBalanceSummaryResponseDto, CustomerBalanceSummaryTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class CustomerBalanceSummaryController {
   constructor(
     private readonly customerBalanceSummaryApp: CustomerBalanceSummaryApplication,
   ) {}
 
   @Get()
+  @RequirePermission(ReportsAction.READ_CUSTOMERS_SUMMARY_BALANCE, AbilitySubject.Report)
   @ApiResponse({
     status: 200,
     description: 'Customer balance summary report',

@@ -102,6 +102,24 @@ describe('засеянные права роли «Сотрудник»', () => 
     });
   });
 
+  it('сотрудник видит отчёты по контрагентам, но не общую картину', () => {
+    const ability = abilityFromSeed();
+
+    // С кем сколько наработали и кто сколько должен — продолжение работы со
+    // счетами и оплатами.
+    expect(ability.can('read-customers-transactions', 'Report')).toBe(true);
+    expect(ability.can('read-vendors-transactions', 'Report')).toBe(true);
+    expect(ability.can('read-customers-summary-balance', 'Report')).toBe(true);
+    expect(ability.can('read-vendors-summary-balance', 'Report')).toBe(true);
+
+    // Общая финансовая картина организации — администратору.
+    expect(ability.can('read-balance-sheet', 'Report')).toBe(false);
+    expect(ability.can('read-profit-loss', 'Report')).toBe(false);
+    expect(ability.can('read-trial-balance-sheet', 'Report')).toBe(false);
+    expect(ability.can('read-journal', 'Report')).toBe(false);
+    expect(ability.can('read-general-ledger', 'Report')).toBe(false);
+  });
+
   it('чужого сотруднику по-прежнему нельзя', () => {
     const ability = abilityFromSeed();
 
@@ -114,8 +132,9 @@ describe('засеянные права роли «Сотрудник»', () => 
 
   it('состав роли не изменился незаметно', () => {
     // Шесть предметов документов по четыре действия, просмотр и создание
-    // вложений и три справочника по три действия (без удаления). Если состав
-    // меняют осознанно — меняется и это число.
-    expect(staffRolePermissions()).toHaveLength(35);
+    // вложений, три справочника по три действия (без удаления) и четыре
+    // отчёта по контрагентам. Если состав меняют осознанно — меняется и это
+    // число.
+    expect(staffRolePermissions()).toHaveLength(39);
   });
 });

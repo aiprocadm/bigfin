@@ -295,6 +295,16 @@ export const AbilitySchema: ISubjectAbilitiesSchema[] = [
         key: ReportsAction.READ_INVENTORY_ITEM_DETAILS,
         label: 'ability.inventory_items_details',
       },
+      // Эти два отчёта спрашивались кодом, но в схеме их не было: право
+      // требовать было нечем, поэтому отчёты стояли открытыми (шаг В1 карты v9).
+      {
+        key: ReportsAction.READ_TRIAL_BALANCE_SHEET,
+        label: 'ability.trial_balance_sheet',
+      },
+      {
+        key: ReportsAction.READ_SALES_TAX_LIABILITY_SUMMARY,
+        label: 'ability.sales_tax_liability_summary',
+      },
     ],
   },
   {

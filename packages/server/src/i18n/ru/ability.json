@@ -15,14 +15,12 @@
   "payments_made": "Платежи поставщикам",
   "preferences": "Настройки",
   "mutate_system_preferences": "Изменение системных настроек.",
-
   "items": "Позиции",
   "view": "Просмотр",
   "create": "Создание",
   "edit": "Редактирование",
   "delete": "Удаление",
   "transactions_locking": "Право блокировать операции.",
-
   "balance_sheet_report": "Баланс.",
   "profit_loss_sheet": "Отчёт о прибылях и убытках",
   "journal": "Журнал",
@@ -37,5 +35,7 @@
   "customers_summary_balance_report": "Сводка по балансам клиентов",
   "vendors_summary_balance_report": "Сводка по балансам поставщиков",
   "inventory_valuation_summary": "Сводка по оценке склада",
-  "inventory_items_details": "Детали складских позиций"
+  "inventory_items_details": "Детали складских позиций",
+  "trial_balance_sheet": "Оборотно-сальдовая ведомость",
+  "sales_tax_liability_summary": "Налог с продаж"
 }

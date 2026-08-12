@@ -1,5 +1,7 @@
 import { Response } from 'express';
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res,
+  UseGuards,
+} from '@nestjs/common';
 import { PurchasesByItemsApplication } from './PurchasesByItemsApplication';
 import { AcceptType } from '@/constants/accept-type';
 import { ApiExtraModels, ApiOperation, ApiResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
@@ -9,17 +11,24 @@ import {
   PurchasesByItemsTableResponseDto,
 } from './PurchasesByItemsResponse.dto';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { ReportsAction } from '../../types/Report.types';
 
 @Controller('/reports/purchases-by-items')
 @ApiTags('Reports')
 @ApiCommonHeaders()
 @ApiExtraModels(PurchasesByItemsResponseDto, PurchasesByItemsTableResponseDto)
+@UseGuards(AuthorizationGuard, PermissionGuard)
 export class PurchasesByItemReportController {
   constructor(
     private readonly purchasesByItemsApp: PurchasesByItemsApplication,
   ) {}
 
   @Get()
+  @RequirePermission(ReportsAction.READ_PURCHASES_BY_ITEMS, AbilitySubject.Report)
   @ApiResponse({
     status: 200,
     description: 'Purchases by items report',

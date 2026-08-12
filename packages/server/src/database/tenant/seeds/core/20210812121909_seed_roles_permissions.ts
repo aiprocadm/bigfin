@@ -45,6 +45,23 @@ const STAFF_ATTACHMENT_PERMISSION = {
   ability: 'View',
 };
 
+/**
+ * Справочники — мягкий вариант (§5 вопрос 10 карты v8).
+ *
+ * Живая проба показала, что без этих строк роль нерабочая в интерфейсе:
+ * списки покупателей, поставщиков и товаров закрыты правами, а у роли их не
+ * было ни одного. Сотрудник, которому доверено выписывать счета, не видел ни
+ * одного контрагента и не мог выбрать позицию — то есть не мог сделать ровно
+ * то, ради чего роль существует.
+ *
+ * Завести контрагента прямо при выписке счёта — повседневная работа, поэтому
+ * даются просмотр, создание и правка. **Удаление не даётся**: убрать карточку
+ * с историей документов — действие тяжелее повседневного.
+ */
+export const STAFF_CATALOG_SUBJECTS = ['Customer', 'Vendor', 'Item'];
+
+export const STAFF_CATALOG_ABILITIES = ['View', 'Create', 'Edit'];
+
 export const staffRolePermissions = () => [
   ...STAFF_PERMISSION_SUBJECTS.flatMap((subject) =>
     STAFF_PERMISSION_ABILITIES.map((ability) => ({
@@ -55,6 +72,14 @@ export const staffRolePermissions = () => [
     })),
   ),
   { roleId: STAFF_ROLE_ID, ...STAFF_ATTACHMENT_PERMISSION, value: true },
+  ...STAFF_CATALOG_SUBJECTS.flatMap((subject) =>
+    STAFF_CATALOG_ABILITIES.map((ability) => ({
+      roleId: STAFF_ROLE_ID,
+      subject,
+      ability,
+      value: true,
+    })),
+  ),
 ];
 
 export default class SeedRolesAndPermissions extends TenantSeeder {

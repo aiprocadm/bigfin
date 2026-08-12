@@ -79,6 +79,22 @@ describe('границы доступа исполняются, а не толь
     ).toEqual([]);
   });
 
+  it('пометка «любое из прав» всегда идёт со своим стражем', () => {
+    // Тот же класс мнимой защиты, что и у обычной пометки: право объявлено,
+    // исполнять некому.
+    const empty = files
+      .filter((file) => {
+        const text = fs.readFileSync(file, 'utf8');
+        return (
+          text.includes('@RequireAnyPermission(') &&
+          !text.includes('PermissionGuard')
+        );
+      })
+      .map((f) => path.relative(MODULES_DIR, f).split(path.sep).join('/'));
+
+    expect(empty).toEqual([]);
+  });
+
   it('список мнимой защиты не разросся и не выдуман', () => {
     const empty = files
       .filter((file) => {

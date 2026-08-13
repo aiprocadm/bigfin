@@ -46,9 +46,12 @@ import { BulkDeleteSaleEstimatesService } from './BulkDeleteSaleEstimates.servic
 import { ValidateBulkDeleteSaleEstimatesService } from './ValidateBulkDeleteSaleEstimates.service';
 import { SendSaleEstimateMailProcess } from './processes/SendSaleEstimateMail.process';
 import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
+import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed.module';
 
 @Module({
   imports: [
+    // Падение письма после всех попыток попадает в ленту (Ф1).
+    NotifyMailFailedModule,
     TenancyDatabaseModule,
     DynamicListModule,
     MailNotificationModule,

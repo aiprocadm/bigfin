@@ -44,6 +44,7 @@ import { GetPaymentReceivedMailState } from './queries/GetPaymentReceivedMailSta
 import { BulkDeletePaymentReceivedService } from './BulkDeletePaymentReceived.service';
 import { ValidateBulkDeletePaymentReceivedService } from './ValidateBulkDeletePaymentReceived.service';
 import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
+import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed.module';
 
 @Module({
   controllers: [PaymentReceivesController],
@@ -86,6 +87,8 @@ import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
     PaymentReceivedValidators,
   ],
   imports: [
+    // Падение письма после всех попыток попадает в ленту (Ф1).
+    NotifyMailFailedModule,
     ChromiumlyTenancyModule,
     TemplateInjectableModule,
     BranchesModule,

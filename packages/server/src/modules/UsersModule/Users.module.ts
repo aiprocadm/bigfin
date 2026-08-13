@@ -30,11 +30,14 @@ import { SendBulkInvitesService } from './commands/SendBulkInvites.service';
 import { MailModule } from '../Mail/Mail.module';
 import { RolesModule } from '../Roles/Roles.module';
 import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
+import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed.module';
 
 const models = [InjectSystemModel(UserInvite)];
 
 @Module({
   imports: [
+    // Падение письма после всех попыток попадает в ленту (Ф1).
+    NotifyMailFailedModule,
     TenancyModule,
     MailModule,
     // Ради стража «только владелец» на изменении состава участников.

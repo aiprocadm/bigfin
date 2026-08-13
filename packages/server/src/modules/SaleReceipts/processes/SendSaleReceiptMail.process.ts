@@ -4,6 +4,7 @@ import { Scope } from '@nestjs/common';
 import { SendSaleReceiptMailQueue, SendSaleReceiptMailJob } from '../constants';
 import { SaleReceiptMailNotification } from '../commands/SaleReceiptMailNotification';
 import { ClsService, UseCls } from 'nestjs-cls';
+import { NotifyMailFailedService } from '@/modules/Notifications/commands/NotifyMailFailed.service';
 
 @Processor({
   name: SendSaleReceiptMailQueue,
@@ -13,6 +14,7 @@ export class SendSaleReceiptMailProcess extends WorkerHost {
   constructor(
     private readonly saleReceiptMailNotification: SaleReceiptMailNotification,
     private readonly clsService: ClsService,
+    private readonly notifyMailFailed: NotifyMailFailedService,
   ) {
     super();
   }
@@ -32,6 +34,13 @@ export class SendSaleReceiptMailProcess extends WorkerHost {
       );
     } catch (error) {
       console.error('Failed to process receipt mail job:', error);
+      // Последняя попытка — падение обязано попасть в ленту (шаг Ф1),
+      // а не остаться в консоли сервера, которую никто не читает.
+      await this.notifyMailFailed.notifyIfFinal(job, {
+        documentType: 'SaleReceipt',
+        documentId: saleReceiptId,
+        reason: (error as Error)?.message ?? String(error),
+      });
       throw error;
     }
   }

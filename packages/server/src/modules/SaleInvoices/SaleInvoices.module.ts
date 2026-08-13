@@ -64,6 +64,7 @@ import { SaleInvoicesImportable } from './commands/SaleInvoicesImportable';
 import { PaymentLinksModule } from '../PaymentLinks/PaymentLinks.module';
 import { BulkDeleteSaleInvoicesService } from './BulkDeleteSaleInvoices.service';
 import { ValidateBulkDeleteSaleInvoicesService } from './ValidateBulkDeleteSaleInvoices.service';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
 
 @Module({
   imports: [
@@ -82,7 +83,11 @@ import { ValidateBulkDeleteSaleInvoicesService } from './ValidateBulkDeleteSaleI
     forwardRef(() => InventoryCostModule),
     forwardRef(() => PaymentLinksModule),
     DynamicListModule,
-    BullModule.registerQueue({ name: SendSaleInvoiceQueue }),
+    BullModule.registerQueue({
+      name: SendSaleInvoiceQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
     BullBoardModule.forFeature({
       name: SendSaleInvoiceQueue,
       adapter: BullMQAdapter,

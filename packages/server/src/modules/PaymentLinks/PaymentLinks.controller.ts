@@ -7,10 +7,18 @@ import {
   GetInvoicePaymentLinkResponseWrapperDto,
 } from './dtos/GetInvoicePaymentLinkResponse.dto';
 import { CreateStripeCheckoutSessionResponseDto } from './dtos/CreateStripeCheckoutSessionResponse.dto';
+import { PublicRoute } from '../Auth/guards/jwt.guard';
 
+/**
+ * Поток для ПОКУПАТЕЛЯ снаружи (шаг В4 карты v9): он открывает ссылку без
+ * входа в систему, видит счёт и платит. Организация ищется не по заголовку,
+ * а по самой ссылке — непересчитываемому идентификатору, который выдал
+ * владелец счёта. Правом внутри организации этот поток не меряется.
+ */
 @Controller('payment-links')
 @ApiTags('Payment Links')
 @ApiCommonHeaders()
+@PublicRoute()
 export class PaymentLinksController {
   constructor(private readonly paymentLinkApp: PaymentLinksApplication) {}
 

@@ -30,32 +30,35 @@ export class AuthMailSubscriber {
   /**
    * @param {IAuthSignedUpEventPayload | ISignUpConfigmResendedEventPayload} payload
    */
-  @OnEvent(events.auth.signUp)
-  @OnEvent(events.auth.signUpConfirmResended)
+  // suppressErrors: false обязателен — иначе Nest глушит ошибку обработчика,
+  // и проброс ниже не доходит до клиента (тот же класс, что чинился у
+  // подписчиков журнала в #206).
+  @OnEvent(events.auth.signUp, { suppressErrors: false })
+  @OnEvent(events.auth.signUpConfirmResended, { suppressErrors: false })
   async handleSignupSendVerificationMail(
     payload: IAuthSignedUpEventPayload | ISignUpConfigmResendedEventPayload,
   ) {
-    try {
-      await this.sendSignupVerificationMailQueue.add(
-        SendSignupVerificationMailJob,
-        {
-          email: payload.user.email,
-          fullName: payload.user.firstName,
-          token: payload.user.verifyToken,
-        } as SendSignupVerificationMailJobPayload,
-        {
-          delay: 0,
-        },
-      );
-    } catch (error) {
-      console.log(error);
-    }
+    // Сбой постановки в очередь НЕ глотаем (шаг Ф3 карты v10): иначе человек
+    // получает «успех» и ждёт письмо подтверждения, которое никогда не
+    // придёт, — не зная, что надо нажать «отправить повторно». Честная
+    // ошибка здесь лучше тихой потери.
+    await this.sendSignupVerificationMailQueue.add(
+      SendSignupVerificationMailJob,
+      {
+        email: payload.user.email,
+        fullName: payload.user.firstName,
+        token: payload.user.verifyToken,
+      } as SendSignupVerificationMailJobPayload,
+      {
+        delay: 0,
+      },
+    );
   }
 
   /**
    * @param {IAuthSendedResetPassword} payload
    */
-  @OnEvent(events.auth.sendResetPassword)
+  @OnEvent(events.auth.sendResetPassword, { suppressErrors: false })
   async handleSendResetPasswordMail(payload: IAuthSendedResetPassword) {
     await this.sendResetPasswordMailQueue.add(
       SendResetPasswordMailJob,

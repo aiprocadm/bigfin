@@ -5,11 +5,13 @@ import {
   Param,
   Patch,
   ParseIntPipe,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { GetContactsAutoCompleteQuery } from './dtos/GetContactsAutoCompleteQuery.dto';
 import { GetAutoCompleteContactsService } from './queries/GetAutoCompleteContacts.service';
+import { allowedContactServices } from './utils/allowedContactServices';
 import { GetContactService } from './queries/GetContact.service';
 import { ActivateContactService } from './commands/ActivateContact.service';
 import { InactivateContactService } from './commands/InactivateContact.service';
@@ -54,8 +56,18 @@ export class ContactsController {
   @Get('auto-complete')
   @RequireAnyPermission(...CONTACT_VIEW)
   @ApiOperation({ summary: 'Get the auto-complete contacts' })
-  getAutoComplete(@Query() query: GetContactsAutoCompleteQuery) {
-    return this.getAutoCompleteService.autocompleteContacts(query);
+  getAutoComplete(
+    @Query() query: GetContactsAutoCompleteQuery,
+    @Req() request: any,
+  ) {
+    // Пометка выше пускает при любом из двух прав, а выдача сужается до
+    // доверенной стороны: «только поставщики» не видят покупателей.
+    const allowedServices = allowedContactServices(request.ability);
+
+    return this.getAutoCompleteService.autocompleteContacts(
+      query,
+      allowedServices,
+    );
   }
 
   @Get(':id')

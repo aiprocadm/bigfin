@@ -63,6 +63,14 @@ export class SaleReceiptMailNotification {
     saleReceiptId: number,
     messageOptions: SaleReceiptMailOptsDTO,
   ) {
+    // Падаем «не найдено» ДО постановки в очередь: иначе клиент получает
+    // 200 «отправлено», а письмо молча не уходит — чек загружался только
+    // внутри джобы, где ошибку уже никто не видит.
+    await this.saleReceiptModel()
+      .query()
+      .findById(saleReceiptId)
+      .throwIfNotFound();
+
     const tenant = await this.tenancyContext.getTenant();
     const user = await this.tenancyContext.getSystemUser();
 

@@ -60,6 +60,14 @@ export class SendSaleEstimateMail {
     saleEstimateId: number,
     messageOptions: SaleEstimateMailOptionsDTO,
   ): Promise<void> {
+    // Падаем «не найдено» ДО постановки в очередь: иначе клиент получает
+    // 200 «отправлено», а письмо молча не уходит — смета загружалась только
+    // внутри джобы, где ошибку уже никто не видит.
+    await this.saleEstimateModel()
+      .query()
+      .findById(saleEstimateId)
+      .throwIfNotFound();
+
     const tenant = await this.tenancyContext.getTenant();
     const user = await this.tenancyContext.getSystemUser();
 

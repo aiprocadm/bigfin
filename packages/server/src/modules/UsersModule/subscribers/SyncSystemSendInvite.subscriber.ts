@@ -89,6 +89,21 @@ export class SyncSystemSendInviteSubscriber {
       userId: user.systemUserId,
       token: inviteToken,
     });
+    // Без этого события письмо не уходит вовсе: почтовый подписчик слушает
+    // только `sendInviteTenantSynced`, и переотправка молча заканчивалась
+    // новым токеном без письма. Письмо идёт от имени того, кто переотправил.
+    const invitingUser = await this.tenantUserModel()
+      .query()
+      .findOne('systemUserId', authorizedUser.id);
+
+    await this.eventEmitter.emitAsync(
+      events.inviteUser.sendInviteTenantSynced,
+      {
+        invite,
+        user,
+        invitingUser,
+      } as IUserInviteTenantSyncedEventPayload,
+    );
   }
 
   /**

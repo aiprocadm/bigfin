@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { SaleInvoicePdf } from '../queries/SaleInvoicePdf.service';
@@ -16,6 +16,8 @@ import { Mail } from '@/modules/Mail/Mail';
 import { MailTransporter } from '@/modules/Mail/MailTransporter.service';
 import { SendSaleInvoiceMailJob, SendSaleInvoiceQueue } from '../constants';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { SaleInvoice } from '../models/SaleInvoice';
+import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
 @Injectable()
 export class SendSaleInvoiceMail {
@@ -32,6 +34,9 @@ export class SendSaleInvoiceMail {
     private readonly mailTransporter: MailTransporter,
     private readonly tenancyContect: TenancyContext,
 
+    @Inject(SaleInvoice.name)
+    private readonly saleInvoiceModel: TenantModelProxy<typeof SaleInvoice>,
+
     @InjectQueue(SendSaleInvoiceQueue) private readonly sendInvoiceQueue: Queue,
   ) { }
 
@@ -44,6 +49,15 @@ export class SendSaleInvoiceMail {
     saleInvoiceId: number,
     messageOptions: SendInvoiceMailDTO,
   ) {
+    // Падаем «не найдено» ДО постановки в очередь: иначе клиент получает
+    // 200 «отправлено», а письмо молча не уходит — счёт загружался только
+    // внутри джобы, где ошибку уже никто не видит. Через эту же команду
+    // шлётся напоминание о долге.
+    await this.saleInvoiceModel()
+      .query()
+      .findById(saleInvoiceId)
+      .throwIfNotFound();
+
     const tenant = await this.tenancyContect.getTenant();
     const user = await this.tenancyContect.getSystemUser();
 

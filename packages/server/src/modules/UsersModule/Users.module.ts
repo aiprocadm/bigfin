@@ -29,6 +29,7 @@ import { SendInviteUsersMailMessage } from './commands/SendInviteUsersMailMessag
 import { SendBulkInvitesService } from './commands/SendBulkInvites.service';
 import { MailModule } from '../Mail/Mail.module';
 import { RolesModule } from '../Roles/Roles.module';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
 
 const models = [InjectSystemModel(UserInvite)];
 
@@ -38,7 +39,11 @@ const models = [InjectSystemModel(UserInvite)];
     MailModule,
     // Ради стража «только владелец» на изменении состава участников.
     RolesModule,
-    BullModule.registerQueue({ name: SendInviteUserMailQueue }),
+    BullModule.registerQueue({
+      name: SendInviteUserMailQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
     BullBoardModule.forFeature({
       name: SendInviteUserMailQueue,
       adapter: BullMQAdapter,

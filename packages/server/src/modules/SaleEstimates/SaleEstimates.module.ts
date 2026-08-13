@@ -45,6 +45,7 @@ import { SaleEstimateAutoIncrementSubscriber } from './subscribers/SaleEstimateA
 import { BulkDeleteSaleEstimatesService } from './BulkDeleteSaleEstimates.service';
 import { ValidateBulkDeleteSaleEstimatesService } from './ValidateBulkDeleteSaleEstimates.service';
 import { SendSaleEstimateMailProcess } from './processes/SendSaleEstimateMail.process';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
 
 @Module({
   imports: [
@@ -55,7 +56,11 @@ import { SendSaleEstimateMailProcess } from './processes/SendSaleEstimateMail.pr
     ChromiumlyTenancyModule,
     TemplateInjectableModule,
     PdfTemplatesModule,
-    BullModule.registerQueue({ name: SendSaleEstimateMailQueue }),
+    BullModule.registerQueue({
+      name: SendSaleEstimateMailQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
     BullBoardModule.forFeature({
       name: SendSaleEstimateMailQueue,
       adapter: BullMQAdapter,

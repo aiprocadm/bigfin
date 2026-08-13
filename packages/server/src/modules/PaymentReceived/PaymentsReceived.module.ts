@@ -43,6 +43,7 @@ import { GetPaymentReceivedMailTemplate } from './queries/GetPaymentReceivedMail
 import { GetPaymentReceivedMailState } from './queries/GetPaymentReceivedMailState.service';
 import { BulkDeletePaymentReceivedService } from './BulkDeletePaymentReceived.service';
 import { ValidateBulkDeletePaymentReceivedService } from './ValidateBulkDeletePaymentReceived.service';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
 
 @Module({
   controllers: [PaymentReceivesController],
@@ -96,7 +97,11 @@ import { ValidateBulkDeletePaymentReceivedService } from './ValidateBulkDeletePa
     MailNotificationModule,
     DynamicListModule,
     MailModule,
-    BullModule.registerQueue({ name: SEND_PAYMENT_RECEIVED_MAIL_QUEUE }),
+    BullModule.registerQueue({
+      name: SEND_PAYMENT_RECEIVED_MAIL_QUEUE,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
     BullBoardModule.forFeature({
       name: SEND_PAYMENT_RECEIVED_MAIL_QUEUE,
       adapter: BullMQAdapter,

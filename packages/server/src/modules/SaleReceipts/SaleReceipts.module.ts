@@ -47,6 +47,7 @@ import { SaleReceiptCostGLEntriesSubscriber } from './subscribers/SaleReceiptCos
 import { SaleReceiptCostGLEntries } from './SaleReceiptCostGLEntries';
 import { BulkDeleteSaleReceiptsService } from './BulkDeleteSaleReceipts.service';
 import { ValidateBulkDeleteSaleReceiptsService } from './ValidateBulkDeleteSaleReceipts.service';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
 
 @Module({
   controllers: [SaleReceiptsController],
@@ -67,7 +68,11 @@ import { ValidateBulkDeleteSaleReceiptsService } from './ValidateBulkDeleteSaleR
     DynamicListModule,
     MailModule,
     MailNotificationModule,
-    BullModule.registerQueue({ name: SendSaleReceiptMailQueue }),
+    BullModule.registerQueue({
+      name: SendSaleReceiptMailQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
     BullBoardModule.forFeature({
       name: SendSaleReceiptMailQueue,
       adapter: BullMQAdapter,

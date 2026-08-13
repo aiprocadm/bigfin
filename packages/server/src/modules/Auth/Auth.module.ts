@@ -44,6 +44,7 @@ import { AuthApiKeysController } from './AuthApiKeys.controllers';
 import { AuthApiKeyAuthorizeService } from './commands/AuthApiKeyAuthorization.service';
 import { GenerateApiKey } from './commands/GenerateApiKey.service';
 import { GetApiKeysService } from './queries/GetApiKeys.service';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
 
 const models = [
   InjectSystemModel(PasswordReset),
@@ -67,8 +68,16 @@ const models = [
     TenantDBManagerModule,
     TwoFactorModule,
     TenancyModule,
-    BullModule.registerQueue({ name: SendResetPasswordMailQueue }),
-    BullModule.registerQueue({ name: SendSignupVerificationMailQueue }),
+    BullModule.registerQueue({
+      name: SendResetPasswordMailQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
+    BullModule.registerQueue({
+      name: SendSignupVerificationMailQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
     BullBoardModule.forFeature({
       name: SendResetPasswordMailQueue,
       adapter: BullMQAdapter,

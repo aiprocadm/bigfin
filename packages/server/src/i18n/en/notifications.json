@@ -8,5 +8,7 @@
   "email_footer": "Open Bigfin to see details.",
   "telegram": {
     "connected_message": "✅ Bigfin connected. Notifications will arrive here."
-  }
+  },
+  "mail_failed.title": "Email was not sent",
+  "mail_failed.body": "The email could not be delivered after several attempts. Reason: {reason}. Check the mail settings and resend it from the document."
 }

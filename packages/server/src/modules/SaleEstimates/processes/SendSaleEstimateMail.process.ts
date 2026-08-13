@@ -7,6 +7,7 @@ import {
 } from '../types/SaleEstimates.types';
 import { SendSaleEstimateMail } from '../commands/SendSaleEstimateMail';
 import { ClsService, UseCls } from 'nestjs-cls';
+import { NotifyMailFailedService } from '@/modules/Notifications/commands/NotifyMailFailed.service';
 
 @Processor({
   name: SendSaleEstimateMailQueue,
@@ -16,6 +17,7 @@ export class SendSaleEstimateMailProcess extends WorkerHost {
   constructor(
     private readonly sendEstimateMailService: SendSaleEstimateMail,
     private readonly clsService: ClsService,
+    private readonly notifyMailFailed: NotifyMailFailedService,
   ) {
     super();
   }
@@ -31,6 +33,13 @@ export class SendSaleEstimateMailProcess extends WorkerHost {
       await this.sendEstimateMailService.sendMail(saleEstimateId, messageOptions);
     } catch (error) {
       console.error('Failed to process estimate mail job:', error);
+      // Последняя попытка — падение обязано попасть в ленту (шаг Ф1),
+      // а не остаться в консоли сервера, которую никто не читает.
+      await this.notifyMailFailed.notifyIfFinal(job, {
+        documentType: 'SaleEstimate',
+        documentId: saleEstimateId,
+        reason: (error as Error)?.message ?? String(error),
+      });
       throw error;
     }
   }

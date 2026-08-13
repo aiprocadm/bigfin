@@ -5,6 +5,7 @@ import { SendSaleInvoiceMail } from '../commands/SendSaleInvoiceMail';
 import { Scope } from '@nestjs/common';
 import { ClsService, UseCls } from 'nestjs-cls';
 import { SendSaleInvoiceMailJobPayload } from '../SaleInvoice.types';
+import { NotifyMailFailedService } from '@/modules/Notifications/commands/NotifyMailFailed.service';
 
 @Processor({
   name: SendSaleInvoiceQueue,
@@ -14,6 +15,7 @@ export class SendSaleInvoiceMailProcessor extends WorkerHost {
   constructor(
     private readonly sendSaleInvoiceMail: SendSaleInvoiceMail,
     private readonly clsService: ClsService,
+    private readonly notifyMailFailed: NotifyMailFailedService,
   ) {
     super();
   }
@@ -30,6 +32,13 @@ export class SendSaleInvoiceMailProcessor extends WorkerHost {
       await this.sendSaleInvoiceMail.sendMail(saleInvoiceId, messageOptions);
     } catch (error) {
       console.error('Failed to process invoice mail job:', error);
+      // Последняя попытка — падение обязано попасть в ленту (шаг Ф1),
+      // а не остаться в консоли сервера, которую никто не читает.
+      await this.notifyMailFailed.notifyIfFinal(job, {
+        documentType: 'SaleInvoice',
+        documentId: saleInvoiceId,
+        reason: (error as Error)?.message ?? String(error),
+      });
       throw error;
     }
   }

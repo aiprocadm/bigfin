@@ -65,9 +65,12 @@ import { PaymentLinksModule } from '../PaymentLinks/PaymentLinks.module';
 import { BulkDeleteSaleInvoicesService } from './BulkDeleteSaleInvoices.service';
 import { ValidateBulkDeleteSaleInvoicesService } from './ValidateBulkDeleteSaleInvoices.service';
 import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
+import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed.module';
 
 @Module({
   imports: [
+    // Падение письма после всех попыток попадает в ленту (Ф1).
+    NotifyMailFailedModule,
     TenancyDatabaseModule,
     PdfTemplatesModule,
     AutoIncrementOrdersModule,

@@ -8,6 +8,7 @@ import {
 } from '../constants';
 import { SendPaymentReceiveMailNotification } from '../commands/PaymentReceivedMailNotification';
 import { SendPaymentReceivedMailPayload } from '../types/PaymentReceived.types';
+import { NotifyMailFailedService } from '@/modules/Notifications/commands/NotifyMailFailed.service';
 
 @Processor({
   name: SEND_PAYMENT_RECEIVED_MAIL_QUEUE,
@@ -17,6 +18,7 @@ export class SendPaymentReceivedMailProcessor extends WorkerHost {
   constructor(
     private readonly sendPaymentReceivedMail: SendPaymentReceiveMailNotification,
     private readonly clsService: ClsService,
+    private readonly notifyMailFailed: NotifyMailFailedService,
   ) {
     super();
   }
@@ -36,6 +38,13 @@ export class SendPaymentReceivedMailProcessor extends WorkerHost {
       );
     } catch (error) {
       console.error('Failed to process payment received mail job:', error);
+      // Последняя попытка — падение обязано попасть в ленту (шаг Ф1),
+      // а не остаться в консоли сервера, которую никто не читает.
+      await this.notifyMailFailed.notifyIfFinal(job, {
+        documentType: 'PaymentReceive',
+        documentId: paymentReceivedId,
+        reason: (error as Error)?.message ?? String(error),
+      });
       throw error;
     }
   }

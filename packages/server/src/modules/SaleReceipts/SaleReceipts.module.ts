@@ -48,10 +48,13 @@ import { SaleReceiptCostGLEntries } from './SaleReceiptCostGLEntries';
 import { BulkDeleteSaleReceiptsService } from './BulkDeleteSaleReceipts.service';
 import { ValidateBulkDeleteSaleReceiptsService } from './ValidateBulkDeleteSaleReceipts.service';
 import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
+import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed.module';
 
 @Module({
   controllers: [SaleReceiptsController],
   imports: [
+    // Падение письма после всех попыток попадает в ленту (Ф1).
+    NotifyMailFailedModule,
     ItemsModule,
     // Налог позиций и налог документа считает общий сервис из TaxRates —
     // тот же, что у счетов покупателям (Д1: НДС в чеках).

@@ -8,6 +8,7 @@ import {
 } from '../Users.constants';
 import { SendInviteUserMailJobPayload } from '../Users.types';
 import { SendInviteUsersMailMessage } from '../commands/SendInviteUsersMailMessage.service';
+import { NotifyMailFailedService } from '@/modules/Notifications/commands/NotifyMailFailed.service';
 
 @Processor({
   name: SendInviteUserMailQueue,
@@ -17,6 +18,7 @@ export class SendInviteUserMailProcessor extends WorkerHost {
   constructor(
     private readonly sendInviteUsersMailService: SendInviteUsersMailMessage,
     private readonly clsService: ClsService,
+    private readonly notifyMailFailed: NotifyMailFailedService,
   ) {
     super();
   }
@@ -32,6 +34,13 @@ export class SendInviteUserMailProcessor extends WorkerHost {
       await this.sendInviteUsersMailService.sendInviteMail(fromUser, invite);
     } catch (error) {
       console.error('Failed to process invite user mail job:', error);
+      // Последняя попытка — падение обязано попасть в ленту (шаг Ф1),
+      // а не остаться в консоли сервера, которую никто не читает.
+      await this.notifyMailFailed.notifyIfFinal(job, {
+        documentType: 'UserInvite',
+        documentId: invite?.id ?? 0,
+        reason: (error as Error)?.message ?? String(error),
+      });
       throw error;
     }
   }

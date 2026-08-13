@@ -13,11 +13,20 @@ export class GetAutoCompleteContactsService {
 
   /**
    * Retrieve auto-complete contacts list.
-   * @param {number} tenantId -
-   * @param {IContactsAutoCompleteFilter} contactsFilter -
+   * @param {GetContactsAutoCompleteQuery} queryDto -
+   * @param {string[]} allowedServices - Доверенные роли стороны контрагентов
+   * ('customer' / 'vendor'): выдача сужается до них, чтобы роль «только
+   * поставщики» не видела покупателей с их долгами.
    * @return {IContactAutoCompleteItem}
    */
-  async autocompleteContacts(queryDto: GetContactsAutoCompleteQuery) {
+  async autocompleteContacts(
+    queryDto: GetContactsAutoCompleteQuery,
+    allowedServices: string[],
+  ) {
+    // Пометка права на ручке гарантирует хотя бы одну сторону; пустой список
+    // возможен только у выдуманной роли — отвечаем пусто, а не «всем подряд».
+    if (!allowedServices.length) return [];
+
     const _queryDto = {
       filterRoles: [],
       sortOrder: 'asc',
@@ -29,6 +38,8 @@ export class GetAutoCompleteContactsService {
     const contacts = await this.contactModel()
       .query()
       .onBuild((builder) => {
+        builder.whereIn('contactService', allowedServices);
+
         if (_queryDto.keyword) {
           builder.where('display_name', 'LIKE', `%${_queryDto.keyword}%`);
         }

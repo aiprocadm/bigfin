@@ -1,11 +1,13 @@
 import { StripePaymentService } from '../StripePayment/StripePaymentService';
 import { Inject, Injectable } from '@nestjs/common';
+import { ClsService } from 'nestjs-cls';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { SaleInvoice } from '../SaleInvoices/models/SaleInvoice';
 import { PaymentLink } from './models/PaymentLink';
 import { StripeInvoiceCheckoutSessionPOJO } from '../StripePayment/StripePayment.types';
 import { ModelObject } from 'objection';
 import { ConfigService } from '@nestjs/config';
+import { TenantModel } from '../System/models/TenantModel';
 
 const origin = 'http://localhost';
 
@@ -20,6 +22,11 @@ export class CreateInvoiceCheckoutSession {
 
     @Inject(PaymentLink.name)
     private readonly paymentLinkModel: typeof PaymentLink,
+
+    @Inject(TenantModel.name)
+    private readonly systemTenantModel: typeof TenantModel,
+
+    private readonly clsService: ClsService,
   ) {}
 
   /**
@@ -36,6 +43,15 @@ export class CreateInvoiceCheckoutSession {
       .findOne('linkId', publicPaymentLinkId)
       .where('resourceType', 'SaleInvoice')
       .throwIfNotFound();
+
+    // Ручка публичная: заголовка организации у покупателя нет, поэтому
+    // тенантное подключение настраивается из самой ссылки — ДО первого
+    // обращения к тенантной модели.
+    const tenant = await this.systemTenantModel
+      .query()
+      .findById(paymentLink.tenantId);
+
+    this.clsService.set('organizationId', tenant.organizationId);
 
     // Retrieves the invoice from associated payment link.
     const invoice = await this.saleInvoiceModel()

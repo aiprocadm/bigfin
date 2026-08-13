@@ -37,3 +37,6 @@ export const MAX_OPERATIONS_PER_ACCOUNT = 20;
 
 /** Лимит документов в отчёте «несходящиеся проводки» (крупные первыми). */
 export const MAX_UNBALANCED_JOURNALS = 100;
+
+/** Сводка «не отправленные письма»: строк в выдаче (усечение объявляется). */
+export const MAX_FAILED_MAILS = 50;

@@ -41,6 +41,19 @@ export function useDataQualityDuplicates(
   );
 }
 
+/** Письма, которые не удалось доставить за последнюю неделю (шаг Ф4). */
+export function useDataQualityFailedMails(props?: any) {
+  return useRequestQuery(
+    [t.DATA_QUALITY_FAILED_MAILS],
+    { method: 'get', url: 'data-quality/failed-mails' },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: { count: 0, items: [], truncated: false },
+      ...props,
+    },
+  );
+}
+
 /** Документы, у которых дебет не сошёлся с кредитом. */
 export function useDataQualityUnbalanced(
   query: DataQualityPeriodQuery,

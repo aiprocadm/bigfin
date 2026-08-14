@@ -16,6 +16,7 @@ import { GetUnmappedOperationsService } from './queries/GetUnmappedOperations.se
 import { GetPossibleDuplicatesService } from './queries/GetPossibleDuplicates.service';
 import { GetPlCashflowComparisonService } from './queries/GetPlCashflowComparison.service';
 import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
+import { GetFailedMailsService } from './queries/GetFailedMails.service';
 import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service';
 
 @Module({
@@ -38,6 +39,7 @@ import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service
     GetPossibleDuplicatesService,
     GetPlCashflowComparisonService,
     GetUnbalancedJournalsService,
+    GetFailedMailsService,
     RepostVatDocumentsService,
     SaleInvoiceGLEntries,
     BillGLEntries,

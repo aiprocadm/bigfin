@@ -3906,5 +3906,14 @@
   "management_articles.no_accounts": "счета не привязаны",
   "management_articles.accounts_count": "счетов",
   "management_articles.cost_behavior.fixed": "Постоянная",
-  "management_articles.cost_behavior.variable": "Переменная"
+  "management_articles.cost_behavior.variable": "Переменная",
+  "data_quality.tab.failed_mails": "Письма не отправлены",
+  "data_quality.failed_mails.title": "Письма, которые не удалось доставить",
+  "data_quality.failed_mails.description": "Окончательные сбои доставки за последние 7 дней. Каждый виден и в ленте уведомлений; проверьте настройки почты и отправьте письмо заново из карточки документа.",
+  "data_quality.failed_mails.empty": "За последние 7 дней все письма доставлены.",
+  "data_quality.failed_mails.count": "Не доставлено за 7 дней: {count}",
+  "data_quality.failed_mails.when": "Когда",
+  "data_quality.failed_mails.document": "Документ",
+  "data_quality.failed_mails.reason": "Причина",
+  "data_quality.failed_mails.truncated": "Показаны только самые свежие записи."
 }

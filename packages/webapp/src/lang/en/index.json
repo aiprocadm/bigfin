@@ -3906,5 +3906,14 @@
   "management_articles.no_accounts": "no accounts linked",
   "management_articles.accounts_count": "accounts",
   "management_articles.cost_behavior.fixed": "Fixed",
-  "management_articles.cost_behavior.variable": "Variable"
+  "management_articles.cost_behavior.variable": "Variable",
+  "data_quality.tab.failed_mails": "Undelivered emails",
+  "data_quality.failed_mails.title": "Emails that were not delivered",
+  "data_quality.failed_mails.description": "Final delivery failures for the last 7 days. Each one also appears in the notification feed; check the mail settings and resend from the document.",
+  "data_quality.failed_mails.empty": "All emails were delivered during the last 7 days.",
+  "data_quality.failed_mails.count": "Undelivered in 7 days: {count}",
+  "data_quality.failed_mails.when": "When",
+  "data_quality.failed_mails.document": "Document",
+  "data_quality.failed_mails.reason": "Reason",
+  "data_quality.failed_mails.truncated": "Only the most recent entries are shown."
 }

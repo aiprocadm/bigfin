@@ -83,6 +83,15 @@ export class DataQualityController {
     return this.application.getUnbalancedJournals(query);
   }
 
+  @Get('failed-mails')
+  @ApiOperation({
+    summary: 'Mails that finally failed to deliver during the last 7 days.',
+  })
+  async getFailedMails() {
+    await this.assertEnabled();
+    return this.application.getFailedMails();
+  }
+
   @Post('repost-vat-documents')
   @RequirePermission('manage', 'all')
   @ApiOperation({

@@ -1,6 +1,8 @@
 import { ClsService } from 'nestjs-cls';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { events } from '@/common/events/events';
 import { SystemUser } from '@/modules/System/models/SystemUser';
 import { TenantModel } from '@/modules/System/models/TenantModel';
 import { UserTenant } from '@/modules/System/models/UserTenant.model';
@@ -27,7 +29,29 @@ export class AuthSigninService {
 
     private readonly jwtService: JwtService,
     private readonly clsService: ClsService,
+    private readonly eventEmitter: EventEmitter2,
   ) { }
+
+  /**
+   * Отмечает успешный вход в журнале действий (Ж3 карты v11).
+   *
+   * Вход — системное действие, но пользователь входит в конкретную организацию
+   * (её вернул `resolveSigninTenant`). Чтобы тенантный журнал записал строку в
+   * нужную организацию, устанавливаем её контекст и поднимаем событие. Сбой
+   * записи журнала намеренно не роняет вход — он важнее записи о нём.
+   */
+  async recordSuccessfulSignin(
+    user: SystemUser,
+    tenant: TenantModel,
+  ): Promise<void> {
+    try {
+      this.clsService.set('organizationId', tenant.organizationId);
+      this.clsService.set('userId', user.id);
+      await this.eventEmitter.emitAsync(events.auth.signIn, { user, tenant });
+    } catch {
+      // намеренно проглатываем: журнал не должен мешать входу
+    }
+  }
 
   /**
    * Validates the given email and password.

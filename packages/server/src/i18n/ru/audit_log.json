@@ -28,8 +28,14 @@
   "subject.Role": "Роль",
   "subject.Warehouse": "Склад",
   "subject.Branch": "Филиал",
+  "subject.TeamMember": "Участник",
+  "subject.Invitation": "Приглашение",
 
   "action.created": "Создано",
+  "action.invited": "Приглашён",
+  "action.reinvited": "Приглашение переотправлено",
+  "action.invite_accepted": "Приглашение принято",
+  "action.deactivated": "Заблокировано",
   "action.edited": "Изменено",
   "action.deleted": "Удалено",
   "action.opened": "Открыто",
@@ -112,5 +118,10 @@
   "metadata.plaid_plain": "Синхронизация Plaid",
   "metadata.bank_with_payee": "{payee}: {amount} {currencyCode}",
   "metadata.bank": "{amount} {currencyCode}",
-  "metadata.bank_plain": "Банковская операция"
+  "metadata.bank_plain": "Банковская операция",
+  "metadata.team_member_with_email": "{name} ({email})",
+  "metadata.team_member": "{name}",
+  "metadata.team_member_plain": "Участник",
+  "metadata.invitation": "Приглашение: {email}",
+  "metadata.invitation_plain": "Приглашение"
 }

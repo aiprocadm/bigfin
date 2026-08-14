@@ -60,6 +60,8 @@ export class AuthController {
         errors: [{ type: 'ORGANIZATION.INACTIVE' }],
       });
     }
+    // Ж3: отмечаем успешный вход в журнале действий выбранной организации.
+    await this.authSignin.recordSuccessfulSignin(user, tenant);
     return {
       accessToken: this.authSignin.signToken(user),
       organizationId: tenant.organizationId,

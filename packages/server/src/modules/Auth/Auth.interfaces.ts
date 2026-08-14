@@ -76,3 +76,9 @@ export interface IAuthSignUpVerifiedEventPayload {
 export interface ISignUpConfigmResendedEventPayload {
   user: SystemUser;
 }
+
+/** Событие успешного входа (Ж3 карты v11) — журнал действий. */
+export interface IAuthSignInSuccessPayload {
+  user: SystemUser;
+  tenant: TenantModel;
+}

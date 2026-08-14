@@ -256,6 +256,19 @@ export function formatMetadataSummary(
       }
       return t('audit_log.metadata.invitation_plain');
     },
+    Session: (m) => {
+      if (m.name && m.email) {
+        return t('audit_log.metadata.session_with_email', {
+          args: { name: String(m.name), email: String(m.email) },
+        });
+      }
+      if (m.email) {
+        return t('audit_log.metadata.session', {
+          args: { email: String(m.email) },
+        });
+      }
+      return t('audit_log.metadata.session_plain');
+    },
     Organization: (m) => {
       // Запись смены базовой валюты — у неё своя, особо заметная строка.
       if (m.baseCurrency) {

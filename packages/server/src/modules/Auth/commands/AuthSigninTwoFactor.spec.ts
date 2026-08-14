@@ -32,6 +32,7 @@ function makeService(foundUser: any = user) {
       {} as any,
       jwtService,
       clsService,
+      { emitAsync: jest.fn() } as any,
     ),
     jwtService,
   };

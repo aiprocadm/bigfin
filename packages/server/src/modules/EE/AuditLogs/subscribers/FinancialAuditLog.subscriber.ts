@@ -125,6 +125,7 @@ import {
   IOrganizationUpdatedPayload,
   IOrganizationBaseCurrencyChangedPayload,
 } from '@/modules/Organization/Organization.types';
+import { IAuthSignInSuccessPayload } from '@/modules/Auth/Auth.interfaces';
 import {
   ITaxRateCreatedPayload,
   ITaxRateEditedPayload,
@@ -1305,6 +1306,15 @@ export class FinancialAuditLogSubscriber {
   }: IOrganizationBaseCurrencyChangedPayload) {
     await this.writeAccessLog('base_currency_changed', AbilitySubject.Organization, null, {
       baseCurrency: (organizationDTO as any)?.baseCurrency,
+    });
+  }
+
+  // --- Вход в систему (Ж3 карты v11) ---
+  @OnEvent(events.auth.signIn)
+  async onUserSignedIn({ user }: IAuthSignInSuccessPayload) {
+    await this.writeAccessLog('signed_in', AbilitySubject.Session, (user as any)?.id ?? null, {
+      email: (user as any)?.email,
+      name: `${(user as any)?.firstName ?? ''} ${(user as any)?.lastName ?? ''}`.trim(),
     });
   }
 }

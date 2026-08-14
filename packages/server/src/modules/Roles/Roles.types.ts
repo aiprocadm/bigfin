@@ -68,6 +68,7 @@ export enum AbilitySubject {
   Attachment = 'Attachment',
   TeamMember = 'TeamMember',
   Invitation = 'Invitation',
+  Organization = 'Organization',
 }
 
 export interface IRoleCreatedPayload {

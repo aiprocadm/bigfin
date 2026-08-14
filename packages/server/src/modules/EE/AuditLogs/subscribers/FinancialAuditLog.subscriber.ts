@@ -122,6 +122,10 @@ import {
   IAcceptInviteEventPayload,
 } from '@/modules/UsersModule/Users.types';
 import {
+  IOrganizationUpdatedPayload,
+  IOrganizationBaseCurrencyChangedPayload,
+} from '@/modules/Organization/Organization.types';
+import {
   ITaxRateCreatedPayload,
   ITaxRateEditedPayload,
   ITaxRateDeletedPayload,
@@ -1254,6 +1258,53 @@ export class FinancialAuditLogSubscriber {
     await this.writeAccessLog('deleted', AbilitySubject.TeamMember, tenantUser?.id ?? null, {
       email: tenantUser?.email,
       name: `${tenantUser?.firstName ?? ''} ${tenantUser?.lastName ?? ''}`.trim(),
+    });
+  }
+
+  // --- Реквизиты организации (Ж2 карты v11) ---
+  // Базовая валюта исключена из общего списка: у её смены — отдельная, особо
+  // заметная запись (это перестроение остатков, а не просто правка реквизита).
+  private static readonly ORG_CURRENCY_FIELD = 'baseCurrency';
+
+  private orgChangedFields(
+    dto: Record<string, unknown> | undefined,
+    old: Record<string, unknown> | null | undefined,
+  ): string[] {
+    const next = dto ?? {};
+    const prev = old ?? {};
+    const isSame = (a: unknown, b: unknown) =>
+      a === b || JSON.stringify(a) === JSON.stringify(b);
+    return Object.keys(next).filter(
+      (key) =>
+        next[key] !== undefined &&
+        key !== FinancialAuditLogSubscriber.ORG_CURRENCY_FIELD &&
+        !isSame(next[key], prev[key]),
+    );
+  }
+
+  @OnEvent(events.organization.updated)
+  async onOrganizationUpdated({
+    organizationDTO,
+    oldMetadata,
+  }: IOrganizationUpdatedPayload) {
+    const fields = this.orgChangedFields(
+      organizationDTO as Record<string, unknown>,
+      oldMetadata,
+    );
+    // Изменений по существу нет (или сменилась только валюта — у неё своя запись).
+    if (fields.length === 0) return;
+    await this.writeAccessLog('edited', AbilitySubject.Organization, null, {
+      name: (organizationDTO as any)?.name ?? (oldMetadata as any)?.name,
+      fields,
+    });
+  }
+
+  @OnEvent(events.organization.baseCurrencyUpdated)
+  async onOrganizationBaseCurrencyChanged({
+    organizationDTO,
+  }: IOrganizationBaseCurrencyChangedPayload) {
+    await this.writeAccessLog('base_currency_changed', AbilitySubject.Organization, null, {
+      baseCurrency: (organizationDTO as any)?.baseCurrency,
     });
   }
 }

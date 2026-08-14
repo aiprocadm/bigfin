@@ -256,6 +256,28 @@ export function formatMetadataSummary(
       }
       return t('audit_log.metadata.invitation_plain');
     },
+    Organization: (m) => {
+      // Запись смены базовой валюты — у неё своя, особо заметная строка.
+      if (m.baseCurrency) {
+        return t('audit_log.metadata.org_base_currency', {
+          args: { baseCurrency: String(m.baseCurrency) },
+        });
+      }
+      const rawFields = Array.isArray(m.fields) ? (m.fields as unknown[]) : [];
+      const labels = rawFields
+        .map((f) => t(`audit_log.org_field.${String(f)}`))
+        .join(', ');
+      const name = m.name ? String(m.name) : '';
+      if (name && labels) {
+        return t('audit_log.metadata.org_edited_named', {
+          args: { name, fields: labels },
+        });
+      }
+      if (labels) {
+        return t('audit_log.metadata.org_edited', { args: { fields: labels } });
+      }
+      return t('audit_log.metadata.org_plain');
+    },
     TaxRate: (m) => {
       if (m.name) {
         return m.rate !== undefined

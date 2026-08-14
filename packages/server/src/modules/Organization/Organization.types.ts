@@ -1,6 +1,9 @@
 import { TenantJobPayload } from '@/interfaces/Tenant';
 import { SystemUser } from '../System/models/SystemUser';
-import { BuildOrganizationDto } from './dtos/Organization.dto';
+import {
+  BuildOrganizationDto,
+  UpdateOrganizationDto,
+} from './dtos/Organization.dto';
 import { LegalForm, TaxRegime } from '../RussianLegalAttributes/constants';
 
 export interface IOrganizationSetupDTO {
@@ -77,4 +80,15 @@ export interface BuildOrganizationResult {
   delay: number;
   processedOn: number;
   jobId: string;
+}
+
+/** Событие «реквизиты организации изменены» (Ж2 карты v11). */
+export interface IOrganizationUpdatedPayload {
+  organizationDTO: UpdateOrganizationDto;
+  oldMetadata: Record<string, any> | null | undefined;
+}
+
+/** Событие «базовая валюта организации изменена». */
+export interface IOrganizationBaseCurrencyChangedPayload {
+  organizationDTO: UpdateOrganizationDto;
 }

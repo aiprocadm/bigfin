@@ -42,6 +42,7 @@ export const events = {
 
     seeded: 'onOrganizationSeeded',
 
+    updated: 'onOrganizationUpdated',
     baseCurrencyUpdated: 'onOrganizationBaseCurrencyUpdated',
   },
 

@@ -34,9 +34,25 @@ export class UpdateOrganizationService {
         tenant.metadata?.baseCurrency,
       );
     }
+    // Снимок реквизитов ДО сохранения — журнал сравнит, что реально изменилось.
+    const oldMetadata = tenant.metadata;
+
     await this.tenantRepository.saveMetadata(tenant.id, organizationDTO);
 
-    if (organizationDTO.baseCurrency !== tenant.metadata?.baseCurrency) {
+    // Triggers `onOrganizationUpdated` event (Ж2: запись в журнал действий).
+    await this.eventEmitter.emitAsync(events.organization.updated, {
+      organizationDTO,
+      oldMetadata,
+    });
+
+    // ВАЖНО: валюту меняем только если её ДЕЙСТВИТЕЛЬНО прислали и она другая.
+    // Без первой проверки правка любого реквизита (когда baseCurrency не задан)
+    // давала `undefined !== 'RUB'` → ложное событие и лишнее перестроение валюты
+    // всех счетов организации (`UPDATE accounts SET currency_code = …`).
+    if (
+      organizationDTO.baseCurrency &&
+      organizationDTO.baseCurrency !== tenant.metadata?.baseCurrency
+    ) {
       // Triggers `onOrganizationBaseCurrencyUpdated` event.
       await this.eventEmitter.emitAsync(
         events.organization.baseCurrencyUpdated,

@@ -28,8 +28,14 @@
   "subject.Role": "Role",
   "subject.Warehouse": "Warehouse",
   "subject.Branch": "Branch",
+  "subject.TeamMember": "Team member",
+  "subject.Invitation": "Invitation",
 
   "action.created": "Created",
+  "action.invited": "Invited",
+  "action.reinvited": "Invitation resent",
+  "action.invite_accepted": "Invitation accepted",
+  "action.deactivated": "Deactivated",
   "action.edited": "Edited",
   "action.deleted": "Deleted",
   "action.opened": "Opened",
@@ -112,5 +118,10 @@
   "metadata.plaid_plain": "Plaid Sync",
   "metadata.bank_with_payee": "{payee}: {amount} {currencyCode}",
   "metadata.bank": "{amount} {currencyCode}",
-  "metadata.bank_plain": "Bank Transaction"
+  "metadata.bank_plain": "Bank Transaction",
+  "metadata.team_member_with_email": "{name} ({email})",
+  "metadata.team_member": "{name}",
+  "metadata.team_member_plain": "Team member",
+  "metadata.invitation": "Invitation: {email}",
+  "metadata.invitation_plain": "Invitation"
 }

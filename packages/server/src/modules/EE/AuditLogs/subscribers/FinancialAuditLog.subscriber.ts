@@ -113,6 +113,15 @@ import {
   IRoleDeletedPayload,
 } from '@/modules/Roles/Roles.types';
 import {
+  ITenantUserEditedPayload,
+  ITenantUserActivatedPayload,
+  ITenantUserInactivatedPayload,
+  ITenantUserDeletedPayload,
+  IUserInvitedEventPayload,
+  IUserInviteResendEventPayload,
+  IAcceptInviteEventPayload,
+} from '@/modules/UsersModule/Users.types';
+import {
   ITaxRateCreatedPayload,
   ITaxRateEditedPayload,
   ITaxRateDeletedPayload,
@@ -1175,6 +1184,76 @@ export class FinancialAuditLogSubscriber {
       payee: uncategorizedTransaction?.payee,
       description: uncategorizedTransaction?.description,
       accountId: uncategorizedTransaction?.accountId,
+    });
+  }
+
+  // --- Участники и приглашения (Ж1 карты v11) ---
+  // Эти действия происходят вне транзакции денежного документа, поэтому пишем
+  // без trx и НЕ роняем действие, если журнал недоступен: приглашение важнее
+  // записи о нём. Личность исполнителя журнал берёт сам из контекста запроса.
+  private async writeAccessLog(
+    action: string,
+    subject: string,
+    subjectId: number | null,
+    metadata: Record<string, unknown>,
+  ) {
+    try {
+      await this.auditLog.record({ action, subject, subjectId, metadata });
+    } catch {
+      // намеренно проглатываем: сбой журнала не должен отменять само действие
+    }
+  }
+
+  @OnEvent(events.inviteUser.sendInvite)
+  async onTeamMemberInvited({ user }: IUserInvitedEventPayload) {
+    await this.writeAccessLog('invited', AbilitySubject.Invitation, user?.id ?? null, {
+      email: user?.email,
+    });
+  }
+
+  @OnEvent(events.inviteUser.resendInvite)
+  async onTeamMemberReinvited({ user }: IUserInviteResendEventPayload) {
+    await this.writeAccessLog('reinvited', AbilitySubject.Invitation, user?.id ?? null, {
+      email: user?.email,
+    });
+  }
+
+  @OnEvent(events.inviteUser.acceptInvite)
+  async onTeamMemberInviteAccepted({ user }: IAcceptInviteEventPayload) {
+    await this.writeAccessLog('invite_accepted', AbilitySubject.Invitation, user?.id ?? null, {
+      email: user?.email,
+    });
+  }
+
+  @OnEvent(events.tenantUser.onEdited)
+  async onTeamMemberEdited({ tenantUser }: ITenantUserEditedPayload) {
+    await this.writeAccessLog('edited', AbilitySubject.TeamMember, tenantUser?.id ?? null, {
+      email: tenantUser?.email,
+      name: `${tenantUser?.firstName ?? ''} ${tenantUser?.lastName ?? ''}`.trim(),
+    });
+  }
+
+  @OnEvent(events.tenantUser.onActivated)
+  async onTeamMemberActivated({ tenantUser }: ITenantUserActivatedPayload) {
+    await this.writeAccessLog('activated', AbilitySubject.TeamMember, tenantUser?.id ?? null, {
+      email: tenantUser?.email,
+      name: `${tenantUser?.firstName ?? ''} ${tenantUser?.lastName ?? ''}`.trim(),
+    });
+  }
+
+  @OnEvent(events.tenantUser.onInactivated)
+  async onTeamMemberDeactivated({ tenantUser }: ITenantUserInactivatedPayload) {
+    await this.writeAccessLog('deactivated', AbilitySubject.TeamMember, tenantUser?.id ?? null, {
+      email: tenantUser?.email,
+      name: `${tenantUser?.firstName ?? ''} ${tenantUser?.lastName ?? ''}`.trim(),
+    });
+  }
+
+  @OnEvent(events.tenantUser.onDeleted)
+  async onTeamMemberDeleted({ tenantUser }: ITenantUserDeletedPayload) {
+    await this.writeAccessLog('deleted', AbilitySubject.TeamMember, tenantUser?.id ?? null, {
+      email: tenantUser?.email,
+      name: `${tenantUser?.firstName ?? ''} ${tenantUser?.lastName ?? ''}`.trim(),
     });
   }
 }

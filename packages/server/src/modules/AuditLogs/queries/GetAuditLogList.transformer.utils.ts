@@ -235,6 +235,27 @@ export function formatMetadataSummary(
       }
       return t('audit_log.metadata.role_plain');
     },
+    TeamMember: (m) => {
+      if (m.name && m.email) {
+        return t('audit_log.metadata.team_member_with_email', {
+          args: { name: String(m.name), email: String(m.email) },
+        });
+      }
+      if (m.name) {
+        return t('audit_log.metadata.team_member', {
+          args: { name: String(m.name) },
+        });
+      }
+      return t('audit_log.metadata.team_member_plain');
+    },
+    Invitation: (m) => {
+      if (m.email) {
+        return t('audit_log.metadata.invitation', {
+          args: { email: String(m.email) },
+        });
+      }
+      return t('audit_log.metadata.invitation_plain');
+    },
     TaxRate: (m) => {
       if (m.name) {
         return m.rate !== undefined

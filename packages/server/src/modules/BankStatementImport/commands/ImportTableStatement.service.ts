@@ -76,11 +76,12 @@ export class ImportTableStatementService {
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       let imported = 0;
-      let skipped = 0;
+      // Честный итог (И1 карты v12): дубли и нераспознанные строки — раздельно.
+      let duplicates = 0;
 
       for (const row of parsed.rows) {
         if (await this.exists(accountId, row.externalId, trx)) {
-          skipped += 1;
+          duplicates += 1;
           continue;
         }
         await this.createUncategorized.create(
@@ -99,7 +100,14 @@ export class ImportTableStatementService {
         );
         imported += 1;
       }
-      return { imported, skipped };
+      const unparsed = parsed.skipped ?? 0;
+      return {
+        imported,
+        duplicates,
+        noDirection: 0,
+        unparsed,
+        skipped: duplicates + unparsed,
+      };
     });
   }
 

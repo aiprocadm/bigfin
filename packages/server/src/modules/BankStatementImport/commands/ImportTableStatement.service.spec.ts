@@ -70,7 +70,13 @@ describe('ImportTableStatementService.import', () => {
 
     const result = await service.import(7, 'RUB', SAMPLE, 'v.csv');
 
-    expect(result).toMatchObject({ imported: 2, skipped: 0 });
+    expect(result).toMatchObject({
+      imported: 2,
+      skipped: 0,
+      duplicates: 0,
+      noDirection: 0,
+      unparsed: 0,
+    });
     const amounts = createUncategorized.create.mock.calls.map(
       (c: any[]) => c[0].amount,
     );
@@ -91,7 +97,13 @@ describe('ImportTableStatementService.import', () => {
 
     const again = await deps.service.import(7, 'RUB', SAMPLE, 'v.csv');
 
-    expect(again).toMatchObject({ imported: 0, skipped: 2 });
+    expect(again).toMatchObject({
+      imported: 0,
+      skipped: 2,
+      duplicates: 2,
+      noDirection: 0,
+      unparsed: 0,
+    });
     expect(deps.createUncategorized.create).toHaveBeenCalledTimes(2);
   });
 

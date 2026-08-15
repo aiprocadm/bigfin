@@ -159,8 +159,14 @@ describe('Import1CStatementService', () => {
     const buf = Buffer.from('﻿' + FIXTURE_WITH_UNKNOWN, 'utf8');
     const result = await service.import(42, '40702810400000012345', 'RUB', buf);
 
-    // doc 200 → unknown → skipped; doc 201 → in → imported
-    expect(result).toEqual({ imported: 1, skipped: 1 });
+    // doc 200 → unknown → noDirection; doc 201 → in → imported
+    expect(result).toEqual({
+      imported: 1,
+      skipped: 1,
+      duplicates: 0,
+      noDirection: 1,
+      unparsed: 0,
+    });
     expect(createService.create).toHaveBeenCalledTimes(1);
   });
 
@@ -184,8 +190,14 @@ describe('Import1CStatementService', () => {
     const buf = Buffer.from('﻿' + FIXTURE_TEXT, 'utf8');
     const result = await service.import(42, '40702810400000012345', 'RUB', buf);
 
-    // doc 101 → skipped (exists); doc 102 → imported
-    expect(result).toEqual({ imported: 1, skipped: 1 });
+    // doc 101 → duplicate (exists); doc 102 → imported
+    expect(result).toEqual({
+      imported: 1,
+      skipped: 1,
+      duplicates: 1,
+      noDirection: 0,
+      unparsed: 0,
+    });
     expect(createService.create).toHaveBeenCalledTimes(1);
   });
 
@@ -229,7 +241,13 @@ describe('Import1CStatementService', () => {
   it('(d) возвращает { imported: 2, skipped: 0 } для двух новых документов', async () => {
     const buf = Buffer.from('﻿' + FIXTURE_TEXT, 'utf8');
     const result = await service.import(42, '40702810400000012345', 'RUB', buf);
-    expect(result).toEqual({ imported: 2, skipped: 0 });
+    expect(result).toEqual({
+      imported: 2,
+      skipped: 0,
+      duplicates: 0,
+      noDirection: 0,
+      unparsed: 0,
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -244,7 +262,13 @@ describe('Import1CStatementService', () => {
     });
     const buf = Buffer.from('﻿' + FIXTURE_TEXT, 'utf8');
     const result = await service.import(42, '40702810400000012345', 'RUB', buf);
-    expect(result).toEqual({ imported: 0, skipped: 2 });
+    expect(result).toEqual({
+      imported: 0,
+      skipped: 2,
+      duplicates: 2,
+      noDirection: 0,
+      unparsed: 0,
+    });
     expect(createService.create).not.toHaveBeenCalled();
   });
 });

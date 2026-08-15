@@ -46,13 +46,15 @@ export class Import1CStatementService {
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       let imported = 0;
-      let skipped = 0;
+      // Честный итог: раздельно по причинам (И1 карты v12).
+      let duplicates = 0;
+      let noDirection = 0;
 
       for (const doc of parsed.documents) {
         const resolved = resolveDirection(doc, ourAccount);
 
         if (resolved.direction === 'unknown') {
-          skipped++;
+          noDirection++;
           continue;
         }
 
@@ -62,7 +64,7 @@ export class Import1CStatementService {
           .findOne({ accountId, externalId });
 
         if (exists) {
-          skipped++;
+          duplicates++;
           continue;
         }
 
@@ -90,7 +92,13 @@ export class Import1CStatementService {
         imported++;
       }
 
-      return { imported, skipped };
+      return {
+        imported,
+        duplicates,
+        noDirection,
+        unparsed: 0,
+        skipped: duplicates + noDirection,
+      };
     });
   }
 }

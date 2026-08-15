@@ -48,12 +48,19 @@ export function TableStatementUpload({ accountId, onImported }) {
 
     importTable({ accountId, file })
       .then((data) => {
+        const hasSkipped = (data.skipped ?? 0) > 0;
+        const nothingImported = (data.imported ?? 0) === 0 && hasSkipped;
         AppToaster.show({
-          message: intl.get('bank_import.result', {
-            imported: data.imported,
-            skipped: data.skipped,
-          }),
-          intent: Intent.SUCCESS,
+          message: hasSkipped
+            ? intl.get('bank_import.result_detail', {
+                imported: data.imported,
+                skipped: data.skipped,
+                duplicates: data.duplicates ?? 0,
+                noDirection: data.noDirection ?? 0,
+                unparsed: data.unparsed ?? 0,
+              })
+            : intl.get('bank_import.result_ok', { imported: data.imported }),
+          intent: nothingImported ? Intent.WARNING : Intent.SUCCESS,
         });
         onImported();
       })

@@ -45,18 +45,17 @@ function TaxRateDeleteAlert({
         });
         closeDrawer(DRAWERS.TAX_RATE_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          AppToaster.show({
-            message: intl.get('something_wentwrong'),
-            intent: Intent.DANGER,
-          });
-        },
-      )
+      .catch((error) => {
+        const type = error?.response?.data?.errors?.[0]?.type;
+        AppToaster.show({
+          message: intl.get(
+            type === 'TAX_RATE_IN_USE'
+              ? 'tax_rates.alert.in_use'
+              : 'something_wentwrong',
+          ),
+          intent: Intent.DANGER,
+        });
+      })
       .finally(() => {
         closeAlert(name);
       });

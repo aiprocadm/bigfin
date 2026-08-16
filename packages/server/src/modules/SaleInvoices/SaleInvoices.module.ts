@@ -3,6 +3,7 @@ import { TenancyContext } from '../Tenancy/TenancyContext.service';
 import { TenancyDatabaseModule } from '../Tenancy/TenancyDB/TenancyDB.module';
 import { TransformerInjectable } from '../Transformer/TransformerInjectable.service';
 import { CreateSaleInvoice } from './commands/CreateSaleInvoice.service';
+import { DuplicateSaleInvoiceService } from './commands/DuplicateSaleInvoice.service';
 import { DeleteSaleInvoice } from './commands/DeleteSaleInvoice.service';
 import { DeliverSaleInvoice } from './commands/DeliverSaleInvoice.service';
 import { EditSaleInvoice } from './commands/EditSaleInvoice.service';
@@ -99,6 +100,7 @@ import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed
   controllers: [SaleInvoicesController],
   providers: [
     CreateSaleInvoice,
+    DuplicateSaleInvoiceService,
     EditSaleInvoice,
     DeleteSaleInvoice,
     GetSaleInvoicesPayable,

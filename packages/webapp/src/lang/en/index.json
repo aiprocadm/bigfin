@@ -2161,6 +2161,8 @@
   "journal_entries.amount_displayed_base_currency": "Amount is displayed in your base currency",
   "inventory_adjustment.column.product": "Product",
   "invoice.convert_to_credit_note": "Convert to Credit Note",
+  "invoice.duplicate": "Duplicate",
+  "invoice.duplicated": "A draft copy of the invoice has been created.",
   "bill.convert_to_credit_note": "Convert to Vendor Credit",
   "bill.allocate_landed_coast": "Allocate Landed Cost",
   "overdue": "Overdue",

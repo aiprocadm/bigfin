@@ -213,6 +213,24 @@ export function useInvoices(query, props) {
 }
 
 /**
+ * Дублирует счёт в черновик-копию (О2 карты v13).
+ */
+export function useDuplicateInvoice(props?) {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation<any, any, number>(
+    (invoiceId) => apiRequest.post(`sale-invoices/${invoiceId}/duplicate`),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(queryClient);
+      },
+      ...props,
+    },
+  );
+}
+
+/**
  * Marks the sale invoice as delivered.
  */
 export function useDeliverInvoice(props) {

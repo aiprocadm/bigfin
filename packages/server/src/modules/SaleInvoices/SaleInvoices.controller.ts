@@ -109,6 +109,14 @@ export class SaleInvoicesController {
     return this.saleInvoiceApplication.createSaleInvoice(saleInvoiceDTO);
   }
 
+  @Post(':id/duplicate')
+  @RequirePermission(SaleInvoiceAction.Create, AbilitySubject.SaleInvoice)
+  @ApiOperation({ summary: 'Duplicate a sale invoice into a draft copy.' })
+  @ApiResponse({ status: 201, description: 'Draft copy created successfully' })
+  duplicateSaleInvoice(@Param('id', ParseIntPipe) id: number) {
+    return this.saleInvoiceApplication.duplicateSaleInvoice(id);
+  }
+
   @Post(':id/mail')
   // Письмо уходит покупателю от имени организации — это не чтение.
   @RequirePermission(SaleInvoiceAction.Edit, AbilitySubject.SaleInvoice)

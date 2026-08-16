@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import * as XLSX from 'xlsx';
+import { makeExternalIdDeduper } from './statementHelpers';
 
 /**
  * Разбор банковской выписки, выгруженной таблицей (⑨a): `.csv`, `.xlsx`, `.xls`.
@@ -204,6 +205,8 @@ export function parseTableStatement(
   let skipped = 0;
   let sawNegative = false;
   let sawOperationType = false;
+  // Разводит совпадающие ключи внутри файла (И1 срез 2 карты v12).
+  const dedupeKey = makeExternalIdDeduper();
 
   for (let i = headerIndex + 1; i < table.length; i += 1) {
     const row = table[i] ?? [];
@@ -247,7 +250,7 @@ export function parseTableStatement(
       payeeInn: textOrNull(row, columns.inn),
       referenceNo: docNumber,
       description,
-      externalId: `table:${fingerprint}`,
+      externalId: dedupeKey(`table:${fingerprint}`),
     });
   }
 

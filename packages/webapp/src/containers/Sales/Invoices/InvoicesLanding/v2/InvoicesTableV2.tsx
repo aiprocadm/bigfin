@@ -1,7 +1,10 @@
 import { useCallback } from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
+import { Intent } from '@blueprintjs/core';
 import { FileText } from 'lucide-react';
+import { AppToaster } from '@/components';
+import { useDuplicateInvoice } from '@/hooks/query/invoices';
 
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
@@ -55,6 +58,28 @@ function InvoicesTableV2Root({
   openDrawer,
 }: any) {
   const history = useHistory();
+  const { mutateAsync: duplicateInvoice } = useDuplicateInvoice();
+
+  const handleDuplicate = useCallback(
+    (row: InvoiceRow) => {
+      duplicateInvoice(row.id)
+        .then((res: any) => {
+          const newId = res?.data?.id ?? res?.id;
+          AppToaster.show({
+            message: intl.get('invoice.duplicated'),
+            intent: Intent.SUCCESS,
+          });
+          if (newId) history.push(`/invoices/${newId}/edit`);
+        })
+        .catch(() => {
+          AppToaster.show({
+            message: intl.get('something_wentwrong'),
+            intent: Intent.DANGER,
+          });
+        });
+    },
+    [duplicateInvoice, history],
+  );
 
   const {
     isEmptyStatus,
@@ -68,6 +93,7 @@ function InvoicesTableV2Root({
     onViewDetails: (row) =>
       openDrawer(DRAWERS.INVOICE_DETAILS, { invoiceId: row.id }),
     onEdit: (row) => history.push(`/invoices/${row.id}/edit`),
+    onDuplicate: handleDuplicate,
     onConvertToCreditNote: (row) =>
       history.push(`/credit-notes/new?from_invoice_id=${row.id}`, {
         invoiceId: row.id,

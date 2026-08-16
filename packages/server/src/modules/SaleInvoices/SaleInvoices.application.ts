@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSaleInvoice } from './commands/CreateSaleInvoice.service';
+import { DuplicateSaleInvoiceService } from './commands/DuplicateSaleInvoice.service';
 import { DeleteSaleInvoice } from './commands/DeleteSaleInvoice.service';
 import { GetSaleInvoice } from './queries/GetSaleInvoice.service';
 import { EditSaleInvoice } from './commands/EditSaleInvoice.service';
@@ -45,6 +46,7 @@ export class SaleInvoiceApplication {
     private generateShareLinkService: GenerateShareLink,
     private bulkDeleteSaleInvoicesService: BulkDeleteSaleInvoicesService,
     private validateBulkDeleteSaleInvoicesService: ValidateBulkDeleteSaleInvoicesService,
+    private duplicateSaleInvoiceService: DuplicateSaleInvoiceService,
   ) { }
 
   /**
@@ -54,6 +56,14 @@ export class SaleInvoiceApplication {
    */
   public createSaleInvoice(saleInvoiceDTO: CreateSaleInvoiceDto) {
     return this.createSaleInvoiceService.createSaleInvoice(saleInvoiceDTO);
+  }
+
+  /**
+   * Дублирует счёт в черновик-копию (О2 карты v13).
+   * @param {number} saleInvoiceId
+   */
+  public duplicateSaleInvoice(saleInvoiceId: number) {
+    return this.duplicateSaleInvoiceService.duplicate(saleInvoiceId);
   }
 
   /**

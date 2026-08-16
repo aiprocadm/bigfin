@@ -2161,6 +2161,8 @@
   "journal_entries.amount_displayed_base_currency": "Сумма показана в вашей базовой валюте",
   "inventory_adjustment.column.product": "Товар",
   "invoice.convert_to_credit_note": "Преобразовать в кредит-ноту",
+  "invoice.duplicate": "Дублировать",
+  "invoice.duplicated": "Создан черновик-копия счёта.",
   "bill.convert_to_credit_note": "Преобразовать в возврат поставщику",
   "bill.allocate_landed_coast": "Распределить накладные расходы",
   "overdue": "Просрочено",

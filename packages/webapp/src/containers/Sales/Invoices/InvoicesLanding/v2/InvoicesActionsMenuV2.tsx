@@ -1,6 +1,7 @@
 import intl from 'react-intl-universal';
 import {
   Banknote,
+  Copy,
   Eye,
   FileMinus,
   Mail,
@@ -29,6 +30,7 @@ import {
 export interface InvoiceRowActions {
   onViewDetails: (row: InvoiceRow) => void;
   onEdit: (row: InvoiceRow) => void;
+  onDuplicate: (row: InvoiceRow) => void;
   onConvertToCreditNote: (row: InvoiceRow) => void;
   onMarkAsDelivered: (row: InvoiceRow) => void;
   onAddPayment: (row: InvoiceRow) => void;
@@ -91,6 +93,10 @@ export function InvoicesActionsMenuV2({
           <DropdownMenuItem onClick={() => actions.onEdit(row)}>
             <Pencil className="mr-2 h-4 w-4" aria-hidden />
             {intl.get('edit_invoice')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => actions.onDuplicate(row)}>
+            <Copy className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('invoice.duplicate')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => actions.onConvertToCreditNote(row)}>
             <FileMinus className="mr-2 h-4 w-4" aria-hidden />

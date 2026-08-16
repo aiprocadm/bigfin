@@ -1,5 +1,7 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { Intent } from '@blueprintjs/core';
+import { AppToaster } from '@/components';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
@@ -32,7 +34,18 @@ export default function ManagementArticlesPage() {
   };
   const onDelete = (article: ManagementArticle) => {
     if (window.confirm(intl.get('management_articles.delete_confirm'))) {
-      deleteMutation.mutate(article.id);
+      deleteMutation.mutate(article.id, {
+        onError: (err: any) => {
+          const type = err?.response?.data?.errors?.[0]?.type;
+          const key =
+            type === 'ARTICLE_IN_USE'
+              ? 'management_articles.error_in_use'
+              : type === 'ARTICLE_HAS_CHILDREN'
+                ? 'management_articles.error_has_children'
+                : 'something_wentwrong';
+          AppToaster.show({ message: intl.get(key), intent: Intent.DANGER });
+        },
+      });
     }
   };
 

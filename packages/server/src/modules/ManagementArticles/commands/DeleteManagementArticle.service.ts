@@ -6,6 +6,18 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ManagementArticle } from '../models/ManagementArticle.model';
 import { ERRORS } from '../constants';
 
+/**
+ * Таблицы, которые ссылаются на статью учёта. Если хоть в одной есть строка с
+ * этим articleId — статью удалять нельзя (иначе ссылка осиротеет). При
+ * появлении нового потребителя статьи его таблицу нужно добавить сюда.
+ */
+const ARTICLE_CONSUMERS: Array<[table: string, column: string]> = [
+  ['management_article_accounts', 'article_id'],
+  ['planned_operations', 'article_id'],
+  ['budget_lines', 'article_id'],
+  ['payment_requests', 'article_id'],
+];
+
 @Injectable()
 export class DeleteManagementArticleService {
   constructor(
@@ -36,6 +48,13 @@ export class DeleteManagementArticleService {
     }
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      // Нельзя удалить используемую статью — иначе её ссылки осиротеют.
+      for (const [table, column] of ARTICLE_CONSUMERS) {
+        const used = await trx(table).where(column, articleId).first();
+        if (used) {
+          throw new ServiceError(ERRORS.ARTICLE_IN_USE);
+        }
+      }
       await this.articleModel().query(trx).deleteById(articleId);
     });
   }

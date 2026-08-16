@@ -475,12 +475,15 @@ export class Bill extends TenantBaseModel {
       },
 
       dueBillsFromDate(query, asDate = moment().format('YYYY-MM-DD')) {
+        // О1 (v13): в кредиторку — только проведённые счета поставщиков.
+        query.modify('opened');
         query.modify('dueBills');
         query.modify('notOverdue');
         query.modify('fromDate', asDate);
       },
 
       overdueBillsFromDate(query, asDate = moment().format('YYYY-MM-DD')) {
+        query.modify('opened');
         query.modify('dueBills');
         query.modify('overdue', asDate);
         query.modify('fromDate', asDate);

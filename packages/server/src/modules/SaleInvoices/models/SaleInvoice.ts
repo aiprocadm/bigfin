@@ -523,12 +523,15 @@ export class SaleInvoice extends TenantBaseModel {
       },
 
       dueInvoicesFromDate(query, asDate = moment().format('YYYY-MM-DD')) {
+        // О1 (v13): в дебиторку — только проведённые счета, черновики не долг.
+        query.modify('delivered');
         query.modify('dueInvoices');
         query.modify('notOverdue', asDate);
         query.modify('fromDate', asDate);
       },
 
       overdueInvoicesFromDate(query, asDate = moment().format('YYYY-MM-DD')) {
+        query.modify('delivered');
         query.modify('dueInvoices');
         query.modify('overdue', asDate);
         query.modify('fromDate', asDate);

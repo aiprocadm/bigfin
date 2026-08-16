@@ -28,10 +28,13 @@ export class TransactionsLockingGuard {
     if (!isEnabled) return false;
 
     const inLockingDate = moment(transactionDate).isSameOrBefore(lockToDate);
+    // Окно разблокировки — диапазон [unlockFromDate, unlockToDate]; внутри него
+    // правки разрешены даже при закрытом периоде. Верхняя граница — unlockToDate
+    // (раньше по ошибке сравнивалась с unlockFromDate, и окно схлопывалось в точку).
     const inUnlockDate =
       unlockFromDate && unlockToDate
         ? moment(transactionDate).isSameOrAfter(unlockFromDate) &&
-        moment(transactionDate).isSameOrBefore(unlockFromDate)
+        moment(transactionDate).isSameOrBefore(unlockToDate)
         : false;
 
     // Retruns true in case the transaction date between locking date

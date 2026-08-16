@@ -16,6 +16,11 @@ import {
   ICommandCashflowCreatingPayload,
   ICommandCashflowDeletingPayload,
 } from '@/modules/BankingTransactions/types/BankingTransactions.types';
+import {
+  IInventoryAdjustmentCreatingPayload,
+  IInventoryAdjustmentDeletingPayload,
+  IInventoryAdjustmentPublishingPayload,
+} from '@/modules/InventoryAdjutments/types/InventoryAdjustments.types';
 import { events } from '@/common/events/events';
 
 @Injectable()
@@ -213,49 +218,51 @@ export class FinancialTransactionLockingGuardSubscriber {
    */
 
   /**
-   * Transactions locking guard on inventory adjustment creating.
-   * @param {IInventoryAdjustmentCreatingPayload} payload -
+   * Transactions locking guard on inventory adjustment creating (И3 карты v12).
+   * Складская корректировка порождает GL-проводки, поэтому её тоже нельзя
+   * провести задним числом в закрытый период. Восстановлено под актуальную
+   * сигнатуру `transactionLockingGuard(date)` (раньше блок был отключён со
+   * старой сигнатурой `(tenantId, date)`).
+   * @param {IInventoryAdjustmentCreatingPayload} payload
    */
-  // @OnEvent(events.inventoryAdjustment.onQuickCreating)
-  // public async transactionsLockingGuardOnInventoryAdjCreating({
-  //   tenantId,
-  //   quickAdjustmentDTO,
-  // }: IInventoryAdjustmentCreatingPayload) {
-  //   // Can't locking if the new adjustment is not published yet.
-  //   if (!quickAdjustmentDTO.publish) return;
+  @OnEvent(events.inventoryAdjustment.onQuickCreating, { suppressErrors: false })
+  public async transactionsLockingGuardOnInventoryAdjCreating({
+    quickAdjustmentDTO,
+  }: IInventoryAdjustmentCreatingPayload) {
+    // Черновик (не проведён) остатки не двигает — замок его не касается.
+    if (!quickAdjustmentDTO.publish) return;
 
-  //   await this.financialTransactionsLocking.transactionLockingGuard(
-  //     tenantId,
-  //     quickAdjustmentDTO.date
-  //   );
-  // }
+    await this.financialTransactionsLocking.transactionLockingGuard(
+      quickAdjustmentDTO.date,
+    );
+  }
 
-  // /**
-  //  * Transaction locking guard on inventory adjustment deleting.
-  //  * @param {IInventoryAdjustmentDeletingPayload} payload
-  //  */
-  // @OnEvent(events.inventoryAdjustment.onDeleting)
-  // public async transactionsLockingGuardOnInventoryAdjDeleting({
-  //   oldInventoryAdjustment,
-  // }: IInventoryAdjustmentDeletingPayload) {
-  //   // Can't locking if the adjustment is published yet.
-  //   if (!oldInventoryAdjustment.isPublished) return;
+  /**
+   * Transaction locking guard on inventory adjustment deleting.
+   * @param {IInventoryAdjustmentDeletingPayload} payload
+   */
+  @OnEvent(events.inventoryAdjustment.onDeleting, { suppressErrors: false })
+  public async transactionsLockingGuardOnInventoryAdjDeleting({
+    inventoryAdjustment,
+  }: IInventoryAdjustmentDeletingPayload) {
+    // Удаление трогает остатки только у проведённой корректировки.
+    if (!inventoryAdjustment.isPublished) return;
 
-  //   await this.financialTransactionsLocking.transactionLockingGuard(
-  //     oldInventoryAdjustment.date
-  //   );
-  // }
+    await this.financialTransactionsLocking.transactionLockingGuard(
+      inventoryAdjustment.date,
+    );
+  }
 
-  // /**
-  //  * Transaction locking guard on inventory adjustment publishing.
-  //  * @param {IInventoryAdjustmentPublishingPayload} payload
-  //  */
-  // @OnEvent(events.inventoryAdjustment.onPublishing)
-  // public async transactionsLockingGuardOnInventoryAdjPublishing({
-  //   oldInventoryAdjustment,
-  // }: IInventoryAdjustmentPublishingPayload) {
-  //   await this.financialTransactionsLocking.transactionLockingGuard(
-  //     oldInventoryAdjustment.date
-  //   );
-  // }
+  /**
+   * Transaction locking guard on inventory adjustment publishing.
+   * @param {IInventoryAdjustmentPublishingPayload} payload
+   */
+  @OnEvent(events.inventoryAdjustment.onPublishing, { suppressErrors: false })
+  public async transactionsLockingGuardOnInventoryAdjPublishing({
+    oldInventoryAdjustment,
+  }: IInventoryAdjustmentPublishingPayload) {
+    await this.financialTransactionsLocking.transactionLockingGuard(
+      oldInventoryAdjustment.date,
+    );
+  }
 }

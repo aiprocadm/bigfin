@@ -6,7 +6,11 @@ import { UncategorizedBankTransaction } from '@/modules/BankingTransactions/mode
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { decodeStatementBuffer } from '../utils/decodeStatement';
 import { parse1CStatement } from '../utils/parse1CStatement';
-import { resolveDirection, buildExternalId } from '../utils/statementHelpers';
+import {
+  resolveDirection,
+  buildExternalId,
+  makeExternalIdDeduper,
+} from '../utils/statementHelpers';
 import { Import1CResult } from '../dtos/Import1CResult.dto';
 
 @Injectable()
@@ -49,6 +53,9 @@ export class Import1CStatementService {
       // Честный итог: раздельно по причинам (И1 карты v12).
       let duplicates = 0;
       let noDirection = 0;
+      // Разводит совпадающие ключи внутри файла, чтобы две разные операции с
+      // одинаковыми номером/датой/суммой не схлопнулись в дубль (И1 срез 2).
+      const dedupeKey = makeExternalIdDeduper();
 
       for (const doc of parsed.documents) {
         const resolved = resolveDirection(doc, ourAccount);
@@ -58,7 +65,7 @@ export class Import1CStatementService {
           continue;
         }
 
-        const externalId = buildExternalId(doc);
+        const externalId = dedupeKey(buildExternalId(doc));
         const exists = await this.uncategorizedModel()
           .query(trx)
           .findOne({ accountId, externalId });

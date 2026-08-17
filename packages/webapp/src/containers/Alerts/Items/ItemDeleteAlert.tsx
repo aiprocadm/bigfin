@@ -12,6 +12,7 @@ import { handleDeleteErrors } from '@/containers/Items/utils';
 import { withItemsActions } from '@/containers/Items/withItemsActions';
 import { useDeleteItem } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface ItemDeleteAlertProps {
   name: string;
@@ -85,6 +86,8 @@ function ItemDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

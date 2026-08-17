@@ -68,6 +68,7 @@ import { ToJsonInterceptor } from '@/common/interceptors/to-json.interceptor';
 import { ValidationPipe } from '@/common/pipes/ClassValidation.pipe';
 import { ServiceErrorFilter } from '@/common/filters/service-error.filter';
 import { ModelHasRelationsFilter } from '@/common/filters/model-has-relations.filter';
+import { ForeignKeyViolationFilter } from '@/common/filters/foreign-key-violation.filter';
 import { ChromiumlyTenancyModule } from '../ChromiumlyTenancy/ChromiumlyTenancy.module';
 import { CustomersModule } from '../Customers/Customers.module';
 import { VendorsModule } from '../Vendors/Vendors.module';
@@ -359,6 +360,10 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     {
       provide: APP_FILTER,
       useClass: ModelHasRelationsFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ForeignKeyViolationFilter,
     },
     AppService,
   ],

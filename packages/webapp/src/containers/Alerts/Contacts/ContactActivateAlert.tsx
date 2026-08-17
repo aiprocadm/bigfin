@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useActivateContact } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface ContactActivateAlertProps {
   name: string;
@@ -58,7 +59,7 @@ function ContactActivateAlertRoot({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

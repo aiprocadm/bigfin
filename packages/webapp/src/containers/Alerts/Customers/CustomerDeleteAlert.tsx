@@ -11,6 +11,7 @@ import { transformErrors } from '@/containers/Customers/utils';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteCustomer } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface CustomerDeleteAlertProps {
   name: string;
@@ -76,6 +77,8 @@ function CustomerDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           transformErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

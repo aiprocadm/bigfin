@@ -21,4 +21,19 @@ export const API_ERROR_KEYS: Record<string, string> = {
   ARTICLE_IN_USE: 'management_articles.error_in_use',
   ARTICLE_HAS_CHILDREN: 'management_articles.error_has_children',
   TAX_RATE_IN_USE: 'tax_rates.alert.in_use',
+  // Пользователи и валюты
+  CANNOT_DELETE_LAST_USER: 'cannot_delete_the_last_user_in_the_system',
+  'CANNOT.TOGGLE.ACTIVATE.AUTHORIZED.USER':
+    'cannot_toggle_activate_authorized_user',
+  CANNOT_DELETE_BASE_CURRENCY: 'cannot_delete_the_base_currency',
+  // Документы
+  SALE_ESTIMATE_CONVERTED_TO_INVOICE:
+    'estimate.delete.error.estimate_converted_to_invoice',
+  CANNOT_DELETE_TRANSACTION_CONVERTED_FROM_UNCATEGORIZED:
+    'cashflow.error.cannot_delete_transaction_converted_from_uncategorized',
+  CANNOT_DELETE_TRANSACTION_MATCHED:
+    'invoices.error.cannot_delete_transaction_matched_with_bank',
+  // Общие коды ядра: страж deleteIfNoRelations и фильтр внешних ключей
+  MODEL_HAS_RELATIONS: 'error.has_relations',
+  FOREIGN_KEY_VIOLATION: 'error.broken_reference',
 };

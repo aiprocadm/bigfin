@@ -11,6 +11,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteAccount } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface AccountDeleteAlertProps {
   name: string;
@@ -77,6 +78,8 @@ function AccountDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
         closeAlert(name);
       });

@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteExpense } from '@/hooks/query';
 import { compose } from '@/utils';
 import { handleDeleteErrors } from './_utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface ExpenseDeleteAlertProps {
   name: string;
@@ -72,6 +73,8 @@ function ExpenseDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

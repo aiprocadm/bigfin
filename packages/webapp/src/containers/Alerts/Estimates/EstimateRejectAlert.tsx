@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useRejectEstimate } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface EstimateRejectAlertProps {
   name: string;
@@ -58,7 +59,7 @@ function EstimateRejectAlertRoot({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

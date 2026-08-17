@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useCloseReceipt } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface ReceiptCloseAlertProps {
   name: string;
@@ -58,7 +59,7 @@ function ReceiptCloseAlertRoot({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

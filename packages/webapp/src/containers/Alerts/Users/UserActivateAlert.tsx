@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useActivateUser } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface UserActivateAlertProps {
   name: string;
@@ -59,7 +60,8 @@ function UserActivateAlertRoot({
         });
         closeAlert(name);
       })
-      .catch(() => {
+      .catch((error) => {
+        showApiError(error);
         closeAlert(name);
       });
   };

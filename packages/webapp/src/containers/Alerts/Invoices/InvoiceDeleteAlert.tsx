@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { handleDeleteErrors } from '@/containers/Sales/Invoices/InvoicesLanding/components';
 import { useDeleteInvoice } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface InvoiceDeleteAlertProps {
   name: string;
@@ -76,6 +77,8 @@ function InvoiceDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

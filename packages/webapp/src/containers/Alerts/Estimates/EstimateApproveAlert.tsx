@@ -9,6 +9,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useApproveEstimate } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface EstimateApproveAlertProps {
   name: string;
@@ -61,7 +62,7 @@ function EstimateApproveAlertRoot({
         });
         queryClient.invalidateQueries('estimates-table');
       })
-      .catch(() => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

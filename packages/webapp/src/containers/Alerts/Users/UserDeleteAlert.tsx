@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useDeleteUser } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface UserDeleteAlertProps {
   name: string;
@@ -63,13 +64,7 @@ function UserDeleteAlertRoot({
         closeAlert(name);
       })
       .catch((error: ApiErrorResponse) => {
-        const errors = error.response?.data?.errors;
-        if (errors?.find((e) => e.type === 'CANNOT_DELETE_LAST_USER')) {
-          AppToaster.show({
-            message: intl.get('cannot_delete_the_last_user_in_the_system'),
-            intent: Intent.DANGER,
-          });
-        }
+        showApiError(error);
         closeAlert(name);
       });
   };

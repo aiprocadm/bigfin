@@ -10,6 +10,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteEstimate } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface EstimateDeleteAlertProps {
   name: string;
@@ -71,19 +72,7 @@ function EstimateDeleteAlertRoot({
         });
         closeDrawer(DRAWERS.ESTIMATE_DETAILS);
       })
-      .catch((error: ApiErrorResponse) => {
-        const errors = error.response?.data?.errors;
-        if (
-          errors?.find((e) => e.type === 'SALE_ESTIMATE_CONVERTED_TO_INVOICE')
-        ) {
-          AppToaster.show({
-            intent: Intent.DANGER,
-            message: intl.get(
-              'estimate.delete.error.estimate_converted_to_invoice',
-            ),
-          });
-        }
-      })
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

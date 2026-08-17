@@ -9,6 +9,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { handleDeleteErrors } from '@/containers/Preferences/Warehouses/utils';
 import { useDeleteWarehouse } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface WarehouseDeleteAlertProps {
   name: string;
@@ -68,6 +69,8 @@ function WarehouseDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

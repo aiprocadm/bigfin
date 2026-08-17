@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useDeleteLandedCost } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface BillLocatedLandedCostDeleteAlertProps {
   name: string;
@@ -59,7 +60,8 @@ function BillLocatedLandedCostDeleteAlertRoot({
         });
         closeAlert(name);
       })
-      .catch(() => {
+      .catch((error) => {
+        showApiError(error);
         closeAlert(name);
       });
   };

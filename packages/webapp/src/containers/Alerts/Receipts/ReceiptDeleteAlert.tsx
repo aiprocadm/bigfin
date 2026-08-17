@@ -10,6 +10,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteReceipt } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface ReceiptDeleteAlertProps {
   name: string;
@@ -66,7 +67,7 @@ function ReceiptDeleteAlertRoot({
         });
         closeDrawer(DRAWERS.RECEIPT_DETAILS);
       })
-      .catch(() => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

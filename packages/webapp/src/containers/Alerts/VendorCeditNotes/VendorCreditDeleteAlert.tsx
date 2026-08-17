@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { handleDeleteErrors } from '@/containers/Purchases/CreditNotes/CreditNotesLanding/utils';
 import { useDeleteVendorCredit } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface VendorCreditDeleteAlertProps {
   name: string;
@@ -69,6 +70,8 @@ function VendorCreditDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BillsApplication } from './Bills.application';
 import { CreateBill } from './commands/CreateBill.service';
+import { DuplicateBillService } from './commands/DuplicateBill.service';
 import { DeleteBill } from './commands/DeleteBill.service';
 import { GetBill } from './queries/GetBill';
 import { BillDTOTransformer } from './commands/BillDTOTransformer.service';
@@ -49,6 +50,7 @@ import { ValidateBulkDeleteBillsService } from './ValidateBulkDeleteBills.servic
     ItemEntriesTaxTransactions,
     BranchesSettingsService,
     CreateBill,
+    DuplicateBillService,
     EditBillService,
     GetDueBills,
     OpenBillService,

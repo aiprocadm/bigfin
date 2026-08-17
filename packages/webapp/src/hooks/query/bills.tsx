@@ -62,6 +62,24 @@ export function useCreateBill(props) {
 }
 
 /**
+ * Дублирует расход в черновик-копию (О2 карты v13).
+ */
+export function useDuplicateBill(props?) {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation<any, any, number>(
+    (billId) => apiRequest.post(`bills/${billId}/duplicate`),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(queryClient);
+      },
+      ...props,
+    },
+  );
+}
+
+/**
  * Edits the given sale invoice.
  */
 export function useEditBill(props) {

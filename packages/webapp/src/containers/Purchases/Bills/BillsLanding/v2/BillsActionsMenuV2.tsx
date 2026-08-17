@@ -3,6 +3,7 @@ import {
   ArrowRightLeft,
   Banknote,
   Check,
+  Copy,
   Eye,
   MoreHorizontal,
   Pencil,
@@ -28,6 +29,7 @@ import {
 export interface BillRowActions {
   onViewDetails: (row: BillRow) => void;
   onEdit: (row: BillRow) => void;
+  onDuplicate: (row: BillRow) => void;
   onConvert: (row: BillRow) => void;
   onOpen: (row: BillRow) => void;
   onQuickPayment: (row: BillRow) => void;
@@ -87,6 +89,10 @@ export function BillsActionsMenuV2({
           <DropdownMenuItem onClick={() => actions.onEdit(row)}>
             <Pencil className="mr-2 h-4 w-4" aria-hidden />
             {intl.get('edit_bill')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => actions.onDuplicate(row)}>
+            <Copy className="mr-2 h-4 w-4" aria-hidden />
+            {intl.get('bill.duplicate')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => actions.onConvert(row)}>
             <ArrowRightLeft className="mr-2 h-4 w-4" aria-hidden />

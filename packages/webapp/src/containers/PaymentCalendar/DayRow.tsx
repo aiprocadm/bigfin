@@ -1,12 +1,21 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { ForecastDay } from './mapForecast';
+import { FilePlus2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ForecastDay, ForecastLine } from './mapForecast';
 import { formatDay, isWeekend } from './formatDay';
 
 const money = (amount: number): string =>
   `${amount.toLocaleString('ru-RU')} ₽`;
 
-export function DayRow({ day }: { day: ForecastDay }) {
+export function DayRow({
+  day,
+  onMaterialize,
+}: {
+  day: ForecastDay;
+  /** Записать плановую строку в учёт (О3): строка + дата вхождения. */
+  onMaterialize?: (line: ForecastLine, date: string) => void;
+}) {
   const negative = day.balance < 0;
   const weekend = isWeekend(day.date);
 
@@ -33,9 +42,20 @@ export function DayRow({ day }: { day: ForecastDay }) {
           }`}
         >
           <span>{line.label}</span>
-          <span>
+          <span className="flex items-center gap-2">
             {line.direction === 'inflow' ? '+' : '−'}
             {money(line.amount)}
+            {line.plannedOperationId != null && onMaterialize && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-muted-foreground"
+                onClick={() => onMaterialize(line, day.date)}
+              >
+                <FilePlus2 className="mr-1 h-3.5 w-3.5" aria-hidden />
+                {intl.get('payment_calendar.materialize')}
+              </Button>
+            )}
           </span>
         </div>
       ))}

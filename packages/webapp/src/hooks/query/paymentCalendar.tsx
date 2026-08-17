@@ -95,6 +95,33 @@ export function useEditPlannedOperation(
   );
 }
 
+/**
+ * Материализует план в реальную денежную операцию (О3 карты v13).
+ */
+export function useMaterializePlannedOperation(
+  props?: UseMutationOptions<any, any, { id: number; date?: string }>,
+) {
+  const client = useQueryClient();
+  const apiRequest: any = useApiRequest();
+
+  return useMutation<any, any, { id: number; date?: string }>(
+    ({ id, date }) =>
+      apiRequest.post(
+        `payment-calendar/planned-operations/${id}/materialize`,
+        date ? { date } : {},
+      ),
+    {
+      onSuccess: () => {
+        commonInvalidate(client);
+        // Появилась настоящая операция — обновляем деньги и остатки счетов.
+        client.invalidateQueries(t.CASH_FLOW_TRANSACTIONS);
+        client.invalidateQueries(t.ACCOUNTS);
+      },
+      ...props,
+    },
+  );
+}
+
 /** Delete a planned operation. */
 export function useDeletePlannedOperation(
   props?: UseMutationOptions<any, any, number | string>,

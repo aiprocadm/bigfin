@@ -1,14 +1,30 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
+import { Intent } from '@blueprintjs/core';
+import { AppToaster } from '@/components';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
-import { usePaymentCalendar } from '@/hooks/query/paymentCalendar';
+import {
+  usePaymentCalendar,
+  useMaterializePlannedOperation,
+} from '@/hooks/query/paymentCalendar';
 import { useAccounts } from '@/hooks/query/accounts';
 import { DayRow } from './DayRow';
+import type { ForecastLine } from './mapForecast';
 import { PlannedOperationDialog } from './PlannedOperationDialog';
 import { PlannedOperation } from './schemas';
+
+// Деловые ошибки материализации → понятный текст (О3 карты v13).
+const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
+  PLAN_HAS_NO_ACCOUNT: 'payment_calendar.materialize_error.no_account',
+  PLAN_HAS_NO_ARTICLE: 'payment_calendar.materialize_error.no_article',
+  ARTICLE_HAS_NO_SUITABLE_ACCOUNT:
+    'payment_calendar.materialize_error.article_no_account',
+  ARTICLE_ACCOUNT_AMBIGUOUS:
+    'payment_calendar.materialize_error.article_ambiguous',
+};
 
 interface AccountRow {
   id: number;
@@ -37,6 +53,31 @@ export default function PaymentCalendarPage() {
     .format('YYYY-MM-DD');
 
   const { data: accounts } = useAccounts({}, {});
+  const { mutateAsync: materializeOperation } =
+    useMaterializePlannedOperation();
+
+  const handleMaterialize = React.useCallback(
+    (line: ForecastLine, date: string) => {
+      if (line.plannedOperationId == null) return;
+      materializeOperation({ id: line.plannedOperationId, date })
+        .then(() => {
+          AppToaster.show({
+            message: intl.get('payment_calendar.materialized'),
+            intent: Intent.SUCCESS,
+          });
+        })
+        .catch((error: any) => {
+          const type = error?.response?.data?.errors?.[0]?.type;
+          AppToaster.show({
+            message: intl.get(
+              MATERIALIZE_ERROR_KEYS[type] ?? 'something_wentwrong',
+            ),
+            intent: Intent.DANGER,
+          });
+        });
+    },
+    [materializeOperation],
+  );
   const { data } = usePaymentCalendar(
     {
       fromDate,
@@ -134,7 +175,7 @@ export default function PaymentCalendarPage() {
       )}
       <div className="flex flex-col">
         {days.map((day: any) => (
-          <DayRow key={day.date} day={day} />
+          <DayRow key={day.date} day={day} onMaterialize={handleMaterialize} />
         ))}
       </div>
     </div>

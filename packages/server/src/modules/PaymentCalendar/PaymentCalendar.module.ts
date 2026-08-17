@@ -8,12 +8,20 @@ import { CommandPlannedOperationValidatorService } from './commands/CommandPlann
 import { CreatePlannedOperationService } from './commands/CreatePlannedOperation.service';
 import { EditPlannedOperationService } from './commands/EditPlannedOperation.service';
 import { DeletePlannedOperationService } from './commands/DeletePlannedOperation.service';
+import { MaterializePlannedOperationService } from './commands/MaterializePlannedOperation.service';
+import { BankingTransactionsModule } from '@/modules/BankingTransactions/BankingTransactions.module';
 import { GetPlannedOperationsService } from './queries/GetPlannedOperations.service';
 import { GetPaymentCalendarForecastService } from './queries/GetPaymentCalendarForecast.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
-  imports: [FeaturesModule, TenancyDatabaseModule, TenancyModule, ExchangeRatesModule],
+  imports: [
+    FeaturesModule,
+    TenancyDatabaseModule,
+    TenancyModule,
+    ExchangeRatesModule,
+    BankingTransactionsModule,
+  ],
   controllers: [PaymentCalendarController],
   providers: [
     PaymentCalendarApplication,
@@ -21,6 +29,7 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     CreatePlannedOperationService,
     EditPlannedOperationService,
     DeletePlannedOperationService,
+    MaterializePlannedOperationService,
     GetPlannedOperationsService,
     GetPaymentCalendarForecastService,
   ],

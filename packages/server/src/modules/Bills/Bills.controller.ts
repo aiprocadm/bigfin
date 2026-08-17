@@ -89,6 +89,20 @@ export class BillsController {
     return this.billsApplication.createBill(billDTO);
   }
 
+  @Post(':id/duplicate')
+  @RequirePermission(BillAction.Create, AbilitySubject.Bill)
+  @ApiOperation({ summary: 'Duplicate a bill into a draft copy.' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    type: Number,
+    description: 'The bill id',
+  })
+  @ApiResponse({ status: 201, description: 'Draft copy created successfully' })
+  duplicateBill(@Param('id') billId: number) {
+    return this.billsApplication.duplicateBill(billId);
+  }
+
   @Put(':id')
   @RequirePermission(BillAction.Edit, AbilitySubject.Bill)
   @ApiOperation({ summary: 'Edit the given bill.' })

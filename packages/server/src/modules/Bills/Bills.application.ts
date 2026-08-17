@@ -1,4 +1,5 @@
 import { CreateBill } from './commands/CreateBill.service';
+import { DuplicateBillService } from './commands/DuplicateBill.service';
 import { EditBillService } from './commands/EditBill.service';
 import { GetBill } from './queries/GetBill';
 import { DeleteBill } from './commands/DeleteBill.service';
@@ -28,6 +29,7 @@ export class BillsApplication {
     private getBillPaymentTransactionsService: GetBillPaymentTransactionsService,
     private bulkDeleteBillsService: BulkDeleteBillsService,
     private validateBulkDeleteBillsService: ValidateBulkDeleteBillsService,
+    private duplicateBillService: DuplicateBillService,
   ) { }
 
   /**
@@ -37,6 +39,14 @@ export class BillsApplication {
    */
   public createBill(billDTO: CreateBillDto) {
     return this.createBillService.createBill(billDTO);
+  }
+
+  /**
+   * Дублирует расход в черновик-копию (О2 карты v13).
+   * @param {number} billId
+   */
+  public duplicateBill(billId: number) {
+    return this.duplicateBillService.duplicate(billId);
   }
 
   /**

@@ -37,6 +37,9 @@ export class DuplicateSaleInvoiceService {
       branchId: src.branchId,
       projectId: src.projectId,
       isInclusiveTax: src.isInclusiveTax,
+      discount: src.discount,
+      discountType: src.discountType,
+      adjustment: src.adjustment,
       entries: (src.entries ?? []).map((entry: any) => ({
         index: entry.index,
         itemId: entry.itemId,

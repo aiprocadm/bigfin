@@ -1,7 +1,10 @@
 import { useCallback } from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
+import { Intent } from '@blueprintjs/core';
 import { ReceiptText } from 'lucide-react';
+import { AppToaster } from '@/components';
+import { useDuplicateBill } from '@/hooks/query/bills';
 
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
@@ -55,6 +58,28 @@ function BillsTableV2Root({
   openDrawer,
 }: any) {
   const history = useHistory();
+  const { mutateAsync: duplicateBill } = useDuplicateBill();
+
+  const handleDuplicate = useCallback(
+    (row: BillRow) => {
+      duplicateBill(row.id)
+        .then((res: any) => {
+          const newId = res?.data?.id ?? res?.id;
+          AppToaster.show({
+            message: intl.get('bill.duplicated'),
+            intent: Intent.SUCCESS,
+          });
+          if (newId) history.push(`/bills/${newId}/edit`);
+        })
+        .catch(() => {
+          AppToaster.show({
+            message: intl.get('something_wentwrong'),
+            intent: Intent.DANGER,
+          });
+        });
+    },
+    [duplicateBill, history],
+  );
 
   const { isEmptyStatus, bills, pagination, isBillsLoading, isBillsFetching } =
     useBillsListContext() as any;
@@ -63,6 +88,7 @@ function BillsTableV2Root({
     onViewDetails: (row) =>
       openDrawer(DRAWERS.BILL_DETAILS, { billId: row.id }),
     onEdit: (row) => history.push(`/bills/${row.id}/edit`),
+    onDuplicate: handleDuplicate,
     onConvert: (row) =>
       history.push(`/vendor-credits/new?from_bill_id=${row.id}`, {
         billId: row.id,

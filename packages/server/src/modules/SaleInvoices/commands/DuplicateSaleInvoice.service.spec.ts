@@ -18,6 +18,9 @@ describe('DuplicateSaleInvoiceService', () => {
     exchangeRate: 1,
     branchId: 3,
     isInclusiveTax: false,
+    discount: 5,
+    discountType: 'amount',
+    adjustment: -100,
     entries: [
       {
         id: 55,
@@ -69,6 +72,16 @@ describe('DuplicateSaleInvoiceService', () => {
       warehouseId: undefined,
     });
     expect((dto.entries[0] as any).id).toBeUndefined();
+  });
+
+  it('копирует скидку и корректировку уровня документа', async () => {
+    const { service, createSaleInvoice } = build();
+    await service.duplicate(7);
+
+    const dto = createSaleInvoice.mock.calls[0][0];
+    expect(dto.discount).toBe(5);
+    expect(dto.discountType).toBe('amount');
+    expect(dto.adjustment).toBe(-100);
   });
 
   it('возвращает созданный счёт', async () => {

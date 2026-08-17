@@ -10,6 +10,8 @@ export interface ForecastLine {
   amount: number;
   label: string;
   source: string;
+  /** Только у плановых строк — для кнопки «Записать в учёт» (О3). */
+  plannedOperationId?: number;
 }
 
 export interface ForecastDay {
@@ -43,6 +45,8 @@ const mapLine = (raw: any): ForecastLine => ({
   amount: num(raw?.amount),
   label: raw?.label ?? '',
   source: raw?.source ?? '',
+  plannedOperationId:
+    raw?.planned_operation_id ?? raw?.plannedOperationId ?? undefined,
 });
 
 const mapDay = (raw: any): ForecastDay => ({

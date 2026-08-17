@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlannedOperationService } from './commands/CreatePlannedOperation.service';
 import { EditPlannedOperationService } from './commands/EditPlannedOperation.service';
 import { DeletePlannedOperationService } from './commands/DeletePlannedOperation.service';
+import { MaterializePlannedOperationService } from './commands/MaterializePlannedOperation.service';
 import { GetPlannedOperationsService } from './queries/GetPlannedOperations.service';
 import { GetPaymentCalendarForecastService } from './queries/GetPaymentCalendarForecast.service';
 import {
   CreatePlannedOperationDto,
   EditPlannedOperationDto,
+  MaterializePlannedOperationDto,
 } from './dtos/PlannedOperation.dto';
 import { GetPlannedOperationsQueryDto } from './dtos/GetPlannedOperationsQuery.dto';
 import { GetPaymentCalendarQueryDto } from './dtos/GetPaymentCalendarQuery.dto';
@@ -17,6 +19,7 @@ export class PaymentCalendarApplication {
     private readonly createOperationService: CreatePlannedOperationService,
     private readonly editOperationService: EditPlannedOperationService,
     private readonly deleteOperationService: DeletePlannedOperationService,
+    private readonly materializeOperationService: MaterializePlannedOperationService,
     private readonly getOperationsService: GetPlannedOperationsService,
     private readonly forecastService: GetPaymentCalendarForecastService,
   ) {}
@@ -31,6 +34,16 @@ export class PaymentCalendarApplication {
 
   public deletePlannedOperation(id: number) {
     return this.deleteOperationService.delete(id);
+  }
+
+  /**
+   * Материализует план в реальную денежную операцию (О3 карты v13).
+   */
+  public materializePlannedOperation(
+    id: number,
+    dto?: MaterializePlannedOperationDto,
+  ) {
+    return this.materializeOperationService.materialize(id, dto);
   }
 
   public getPlannedOperations(filter: GetPlannedOperationsQueryDto) {

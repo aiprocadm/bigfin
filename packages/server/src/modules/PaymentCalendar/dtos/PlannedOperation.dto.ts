@@ -117,4 +117,18 @@ class CommandPlannedOperationDto {
 
 export class CreatePlannedOperationDto extends CommandPlannedOperationDto {}
 export class EditPlannedOperationDto extends CommandPlannedOperationDto {}
+
+/**
+ * Материализация плана в реальную операцию (О3 карты v13).
+ */
+export class MaterializePlannedOperationDto {
+  @IsDateString()
+  @IsOptional()
+  @ApiPropertyOptional({
+    example: '2026-09-01',
+    description:
+      'Occurrence date to materialize (defaults to the planned date)',
+  })
+  date?: string;
+}
 export { RecurrenceDto };

@@ -232,6 +232,7 @@ export class GetPaymentCalendarForecastService {
             op.description ||
             (op.recurrence ? 'Повтор' : 'Плановая операция'),
           source: op.recurrence ? 'recurring' : 'manual',
+          plannedOperationId: op.id,
         });
       });
     }

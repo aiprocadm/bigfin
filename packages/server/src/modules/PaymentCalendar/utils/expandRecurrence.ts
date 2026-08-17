@@ -23,6 +23,34 @@ const UNIT: Record<
  * The occurrence day follows the anchor day (monthly clamps short months).
  * @returns {string[]} ISO dates (YYYY-MM-DD), ascending.
  */
+/**
+ * Первое вхождение повторения СТРОГО ПОСЛЕ даты `afterDate` (О3 карты v13).
+ * Шагает от якоря тем же шагом, что и {@link expandRecurrence}, поэтому даты
+ * совпадают с прогнозом (включая прижатие дня в коротких месяцах).
+ * @returns {string | null} ISO-дата или null, если повторение исчерпано.
+ */
+export function nextOccurrenceAfter(
+  rule: RecurrenceRule,
+  anchorDate: string,
+  afterDate: string,
+): string | null {
+  const unit = UNIT[rule.frequency];
+  const interval = Math.max(1, Number(rule.interval) || 1);
+  const after = moment(afterDate);
+
+  let cursor = moment(anchorDate);
+  let guard = 0;
+  do {
+    cursor = cursor.clone().add(interval, unit);
+    guard += 1;
+  } while (cursor.isSameOrBefore(after, 'day') && guard < 10000);
+
+  if (rule.endDate && cursor.isAfter(moment(rule.endDate), 'day')) {
+    return null;
+  }
+  return cursor.format('YYYY-MM-DD');
+}
+
 export function expandRecurrence(
   rule: RecurrenceRule,
   anchorDate: string,

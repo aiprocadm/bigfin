@@ -17,6 +17,7 @@ import { PaymentCalendarApplication } from './PaymentCalendar.application';
 import {
   CreatePlannedOperationDto,
   EditPlannedOperationDto,
+  MaterializePlannedOperationDto,
 } from './dtos/PlannedOperation.dto';
 import { GetPlannedOperationsQueryDto } from './dtos/GetPlannedOperationsQuery.dto';
 import { GetPaymentCalendarQueryDto } from './dtos/GetPaymentCalendarQuery.dto';
@@ -62,6 +63,19 @@ export class PaymentCalendarController {
   @ApiOperation({ summary: 'Create a planned operation.' })
   createPlannedOperation(@Body() dto: CreatePlannedOperationDto) {
     return this.application.createPlannedOperation(dto);
+  }
+
+  @Post('planned-operations/:id/materialize')
+  // Создаёт настоящую денежную операцию — то же право, что и ручное создание.
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
+  @ApiOperation({
+    summary: 'Materialize a planned operation into a real cashflow transaction.',
+  })
+  materializePlannedOperation(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: MaterializePlannedOperationDto,
+  ) {
+    return this.application.materializePlannedOperation(id, dto);
   }
 
   @Put('planned-operations/:id')

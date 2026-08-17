@@ -4,6 +4,8 @@ export interface ForecastLine {
   amount: number; // в базовой валюте
   label: string;
   source: 'invoice' | 'bill' | 'manual' | 'recurring';
+  // Только у плановых строк — для кнопки «Записать в учёт» (О3 карты v13).
+  plannedOperationId?: number;
 }
 
 /** Чистые суммы за день (вход для бегущего остатка). */

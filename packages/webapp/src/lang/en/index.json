@@ -1594,6 +1594,8 @@
   "all_rights_reserved": "© {pre}-{current} All Rights Reserved.",
   "congrats_your_account_has_been_created_and_invited": "Congrats! Your account has been created and invited successfully to <strong>{organization_name} </strong> organization.",
   "something_went_wrong": "Something went wrong!",
+  "error.network": "No connection to the server. Check your internet connection and try again.",
+  "error.forbidden": "You do not have permission for this action.",
   "blog": "Blog",
   "support": "Support",
   "community": "Community",

@@ -10,7 +10,7 @@ import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withAccountsTableActions } from '@/containers/Accounts/withAccountsTableActions';
 import { compose } from '@/utils';
-import { handleDeleteErrors } from '@/containers/Accounts/utils';
+import { showApiError } from '@/utils/showApiError';
 
 function AccountBulkDeleteDialog({
   dialogName,
@@ -47,9 +47,7 @@ function AccountBulkDeleteDialog({
         setAccountsSelectedRows([]);
         closeDialog(dialogName);
       })
-      .catch((errors) => {
-        handleDeleteErrors(errors);
-      });
+      .catch(showApiError);
   };
 
   return (

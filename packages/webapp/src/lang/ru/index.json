@@ -1594,6 +1594,8 @@
   "all_rights_reserved": "© {pre}-{current} Все права защищены.",
   "congrats_your_account_has_been_created_and_invited": "Поздравляем! Ваш аккаунт создан и приглашён в организацию <strong>{organization_name} </strong>.",
   "something_went_wrong": "Что-то пошло не так!",
+  "error.network": "Нет связи с сервером. Проверьте подключение и повторите попытку.",
+  "error.forbidden": "Недостаточно прав для этого действия.",
   "blog": "Блог",
   "support": "Поддержка",
   "community": "Сообщество",

@@ -10,6 +10,7 @@ import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withExpensesActions } from '@/containers/Expenses/ExpensesLanding/withExpensesActions';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 function ExpenseBulkDeleteDialog({
   dialogName,
@@ -47,12 +48,7 @@ function ExpenseBulkDeleteDialog({
         setExpensesSelectedRows([]);
         closeDialog(dialogName);
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   return (

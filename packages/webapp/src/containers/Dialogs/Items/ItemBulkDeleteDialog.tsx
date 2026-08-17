@@ -10,6 +10,7 @@ import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withItemsActions } from '@/containers/Items/withItemsActions';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 function ItemBulkDeleteDialog({
   dialogName,
@@ -46,12 +47,7 @@ function ItemBulkDeleteDialog({
         setItemsSelectedRows([]);
         closeDialog(dialogName);
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   return (

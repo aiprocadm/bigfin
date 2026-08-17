@@ -12,6 +12,7 @@ import { AppToaster } from '@/components';
 import BulkDeleteDialogContent from '@/containers/Dialogs/components/BulkDeleteDialogContent';
 
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Invoice bulk delete dialog.
@@ -52,12 +53,7 @@ function InvoiceBulkDeleteDialog({
         resetInvoicesSelectedRows();
         closeDialog(dialogName);
       })
-      .catch((errors) => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   return (

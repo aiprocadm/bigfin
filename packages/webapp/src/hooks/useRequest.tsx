@@ -7,6 +7,9 @@ import {
   useSetGlobalErrors,
   useAuthToken,
 } from './state';
+import intl from 'react-intl-universal';
+import { Intent } from '@blueprintjs/core';
+import { AppToaster } from '@/components/AppToaster';
 import { getCookie, normalizeApiPath } from '../utils';
 import {
   withCamelAliases,
@@ -60,6 +63,17 @@ export default function useApiRequest() {
         return response;
       },
       (error) => {
+        // Обрыв сети: ответа нет вовсе — раньше деструктуризация ниже падала
+        // TypeError, и пользователь не видел ничего. Показываем «нет связи»
+        // один раз здесь и помечаем ошибку, чтобы showApiError не дублировал.
+        if (!error.response) {
+          AppToaster.show({
+            message: intl.get('error.network'),
+            intent: Intent.DANGER,
+          });
+          error.isNetworkError = true;
+          return Promise.reject(error);
+        }
         const { status, data } = error.response;
 
         if (status >= 500) {
@@ -76,20 +90,22 @@ export default function useApiRequest() {
           setGlobalErrors({ too_many_requests: true });
         }
         if (status === 400) {
-          const lockedError = data.errors.find(
+          // 400 не обязан нести errors[] (например, сырой ответ прокси).
+          const businessErrors = data.errors ?? [];
+          const lockedError = businessErrors.find(
             (error) => error.type === 'TRANSACTIONS_DATE_LOCKED',
           );
           if (lockedError) {
             setGlobalErrors({ transactionsLocked: { ...lockedError.payload } });
           }
           if (
-            data.errors.find(
+            businessErrors.find(
               (e) => e.type === 'ORGANIZATION.SUBSCRIPTION.INACTIVE',
             )
           ) {
             setGlobalErrors({ subscriptionInactive: true });
           }
-          if (data.errors.find((e) => e.type === 'USER_INACTIVE')) {
+          if (businessErrors.find((e) => e.type === 'USER_INACTIVE')) {
             setGlobalErrors({ userInactive: true });
             setLogout();
           }

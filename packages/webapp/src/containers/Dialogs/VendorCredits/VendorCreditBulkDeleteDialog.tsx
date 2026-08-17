@@ -10,6 +10,7 @@ import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withVendorsCreditNotesActions } from '@/containers/Purchases/CreditNotes/CreditNotesLanding/withVendorsCreditNotesActions';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 function VendorCreditBulkDeleteDialog({
   dialogName,
@@ -49,12 +50,7 @@ function VendorCreditBulkDeleteDialog({
         setVendorsCreditNoteSelectedRows([]);
         closeDialog(dialogName);
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   return (

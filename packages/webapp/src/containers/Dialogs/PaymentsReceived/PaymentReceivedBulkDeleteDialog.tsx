@@ -10,6 +10,7 @@ import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withPaymentsReceivedActions } from '@/containers/Sales/PaymentsReceived/PaymentsLanding/withPaymentsReceivedActions';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 function PaymentReceivedBulkDeleteDialog({
   dialogName,
@@ -49,12 +50,7 @@ function PaymentReceivedBulkDeleteDialog({
         setPaymentReceivesSelectedRows([]);
         closeDialog(dialogName);
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   return (

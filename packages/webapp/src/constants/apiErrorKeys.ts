@@ -46,4 +46,6 @@ export const API_ERROR_KEYS: Record<string, string> = {
   // Общие коды ядра: страж deleteIfNoRelations и фильтр внешних ключей
   MODEL_HAS_RELATIONS: 'error.has_relations',
   FOREIGN_KEY_VIOLATION: 'error.broken_reference',
+  // Мультивалюта (С4 карты v14)
+  EXCHANGE_RATE_REQUIRED: 'error.exchange_rate_required',
 };

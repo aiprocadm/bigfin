@@ -11,6 +11,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsPositive,
   IsString,
   Min,
   ValidateNested,
@@ -107,7 +108,8 @@ class CommandSaleInvoiceDto {
   @IsOptional()
   @ToNumber()
   @IsNumber()
-  @Min(0)
+  // Был @Min(0) — ноль проходил и молча глушился «|| 1» в журнале (С4 v14).
+  @IsPositive()
   @ApiProperty({
     description: 'Exchange rate',
     required: false,

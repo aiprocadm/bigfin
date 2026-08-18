@@ -8,6 +8,7 @@ import { Expense } from '../models/Expense.model';
 import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-index';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { CreateExpenseDto, EditExpenseDto } from '../dtos/Expense.dto';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 
 @Injectable()
 export class ExpenseDTOTransformer {
@@ -90,6 +91,12 @@ export class ExpenseDTOTransformer {
     const initialDTO = await this.expenseDTOToModel(expenseDTO);
     const tenant = await this.tenancyContext.getTenant(true);
 
+    // Чужая валюта требует настоящего курса (С4 карты v14).
+    assertValidExchangeRate({
+      currencyCode: expenseDTO.currencyCode || tenant?.metadata?.baseCurrency,
+      baseCurrency: tenant?.metadata?.baseCurrency,
+      exchangeRate: expenseDTO.exchangeRate,
+    });
     return {
       ...initialDTO,
       currencyCode: expenseDTO.currencyCode || tenant?.metadata?.baseCurrency,

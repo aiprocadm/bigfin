@@ -21,10 +21,12 @@ import { BillPaymentsExportable } from './queries/BillPaymentsExportable';
 import { BillPaymentsImportable } from './commands/BillPaymentsImportable';
 import { GetBillPaymentsService } from './queries/GetBillPayments.service';
 import { DynamicListModule } from '../DynamicListing/DynamicList.module';
+import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { BillPaymentsPages } from './commands/BillPaymentsPages.service';
 
 @Module({
-  imports: [LedgerModule, AccountsModule, DynamicListModule],
+  // TenancyModule — ради TenancyContext в трансформере (валидация курса, С4 v14).
+  imports: [LedgerModule, AccountsModule, DynamicListModule, TenancyModule],
   providers: [
     BillPaymentsApplication,
     CreateBillPaymentService,

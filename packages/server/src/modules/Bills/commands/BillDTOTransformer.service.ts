@@ -15,6 +15,7 @@ import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-ind
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CreateBillDto } from '../dtos/Bill.dto';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 
 @Injectable()
 export class BillDTOTransformer {
@@ -71,6 +72,15 @@ export class BillDTOTransformer {
 
     // Retrieve the authorized user.
     const authorizedUser = await this.tenancyContext.getSystemUser();
+
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы документ по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: vendor.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: billDTO.exchangeRate,
+    });
 
     // Bill number from DTO or frprom auto-increment.
     const billNumber = billDTO.billNumber || oldBill?.billNumber;

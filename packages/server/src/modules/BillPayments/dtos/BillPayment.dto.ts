@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -68,6 +69,7 @@ export class CommandBillPaymentDTO {
   paymentDate: Date | string;
 
   @IsNumber()
+  @IsPositive()
   @IsOptional()
   @ApiProperty({
     description: 'The exchange rate of the bill payment',

@@ -54,6 +54,7 @@ import {
   parseFormNumber,
   type MoneyInFormValues,
 } from './MoneyIn.zod';
+import { showApiError } from '@/utils/showApiError';
 
 // ---------------------------------------------------------------------------
 // Типы данных и локальные касты легаси-хуков (сами хуки без типов).
@@ -407,11 +408,8 @@ function MoneyInFormInner({
         intent: Intent.SUCCESS,
       });
       onClose();
-    } catch {
-      AppToaster.show({
-        message: intl.get('something_went_wrong'),
-        intent: Intent.DANGER,
-      });
+    } catch (error) {
+      showApiError(error);
     }
   };
 

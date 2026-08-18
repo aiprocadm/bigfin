@@ -12,6 +12,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useUncategorizeTransaction } from '@/hooks/query';
 import { compose } from '@/utils';
 import { DRAWERS } from '@/constants/drawers';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Project delete alert.
@@ -48,18 +49,7 @@ function UncategorizeTransactionAlert({
         closeAlert(name);
         closeDrawer(DRAWERS.CASHFLOW_TRNASACTION_DETAILS);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          AppToaster.show({
-            message: intl.get('something_wentwrong'),
-            intent: Intent.DANGER,
-          });
-        },
-      );
+      .catch(showApiError);
   };
 
   return (

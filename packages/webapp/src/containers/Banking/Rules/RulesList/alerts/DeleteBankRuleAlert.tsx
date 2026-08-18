@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 
 import { useDeleteBankRule } from '@/hooks/query/bank-rules';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Project delete alert.
@@ -45,18 +46,7 @@ function BankRuleDeleteAlert({
         });
         closeAlert(name);
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {
-          AppToaster.show({
-            message: intl.get('something_wentwrong'),
-            intent: Intent.DANGER,
-          });
-        },
-      );
+      .catch(showApiError);
   };
 
   return (

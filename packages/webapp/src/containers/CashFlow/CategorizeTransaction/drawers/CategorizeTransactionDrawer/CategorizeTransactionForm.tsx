@@ -15,6 +15,7 @@ import { withBankingActions } from '@/containers/CashFlow/withBankingActions';
 import { AppToaster } from '@/components';
 import { useCategorizeTransactionTabsBoot } from '@/containers/CashFlow/CategorizeTransactionAside/CategorizeTransactionTabsBoot';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Categorize cashflow transaction form dialog content.
@@ -47,7 +48,7 @@ function CategorizeTransactionFormRoot({
       .catch((err) => {
         setSubmitting(false);
         if (
-          err.response.data?.errors?.some(
+          err.response?.data?.errors?.some(
             (e) => e.type === 'BRANCH_ID_REQUIRED',
           )
         ) {
@@ -55,10 +56,7 @@ function CategorizeTransactionFormRoot({
             branchId: 'The branch is required.',
           });
         } else {
-          AppToaster.show({
-            message: intl.get('something_went_wrong'),
-            intent: Intent.DANGER,
-          });
+          showApiError(err);
         }
       });
   };

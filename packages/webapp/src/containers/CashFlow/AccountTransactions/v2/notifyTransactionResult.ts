@@ -1,6 +1,7 @@
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { AppToaster } from '@/components';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Обёртка для мутаций банковских таблиц вкладки «без категории» (D-redesign, слайс 4).
@@ -24,10 +25,5 @@ export function notifyTransactionResult(
         intent: Intent.SUCCESS,
       });
     })
-    .catch(() => {
-      AppToaster.show({
-        message: intl.get('something_went_wrong'),
-        intent: Intent.DANGER,
-      });
-    });
+    .catch(showApiError);
 }

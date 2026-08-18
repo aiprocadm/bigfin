@@ -29,6 +29,7 @@ import {
 } from '../../withBankingActions';
 import styles from './RecognizedTransactionsTable.module.scss';
 import { BankAccountDataTable } from '../components/BankAccountDataTable';
+import { showApiError } from '@/utils/showApiError';
 
 interface RecognizedTransactionsTableProps extends WithBankingActionsProps {}
 
@@ -69,12 +70,7 @@ function RecognizedTransactionsTableRoot({
           message: intl.get('cashflow.notify.transaction_excluded'),
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          intent: Intent.DANGER,
-          message: intl.get('something_wentwrong'),
-        });
-      });
+      .catch(showApiError);
   };
 
   // Handles categorize button click.

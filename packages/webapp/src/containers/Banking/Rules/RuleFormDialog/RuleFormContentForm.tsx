@@ -36,6 +36,7 @@ import {
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
 import { getAddMoneyInOptions, getAddMoneyOutOptions } from '@/constants';
+import { showApiError } from '@/utils/showApiError';
 
 // Retrieves the add money in button options.
 const MoneyInOptions = getAddMoneyInOptions();
@@ -74,10 +75,7 @@ function RuleFormContentFormRoot({
     };
     const handleError = (error) => {
       setSubmitting(false);
-      AppToaster.show({
-        intent: Intent.DANGER,
-        message: intl.get('something_went_wrong'),
-      });
+      showApiError(error);
     };
     if (isEditMode) {
       editBankRule({ id: bankRuleId, value: _values })

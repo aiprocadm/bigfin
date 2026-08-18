@@ -29,6 +29,7 @@ import { useUncategorizeTransaction } from '@/hooks/query';
 import { handleCashFlowTransactionType } from './utils';
 
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Account transactions data table.
@@ -84,12 +85,7 @@ function AccountTransactionsDataTable({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_wentwrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
   // Handle uncategorize transaction.
   const handleUncategorizeTransaction = (transaction) => {
@@ -100,12 +96,7 @@ function AccountTransactionsDataTable({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_wentwrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   // Handle selected rows change.

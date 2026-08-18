@@ -3,6 +3,7 @@ import * as xlsx from 'xlsx';
 import * as R from 'ramda';
 import { get } from 'lodash';
 import { sanitizeResourceName } from '../Import/_utils';
+import { resourceToModelName } from '@/modules/Resource/_utils';
 import { Errors, ExportFormat } from './common';
 import { flatDataCollections, getDataAccessor } from './utils';
 import { ExportPdf } from './ExportPdf';
@@ -101,7 +102,7 @@ export class ExportResourceService {
    * @param {Array<Record<string, any>>} data - The original data to be transformed.
    * @returns {Array<Record<string, any>>} - The transformed data.
    */
-  private transformExportedData(
+  public transformExportedData(
     resource: string,
     data: Array<Record<string, any>>,
   ): Array<Record<string, any>> {
@@ -119,8 +120,10 @@ export class ExportResourceService {
    * @param {string} resource - The name of the resource.
    * @returns A promise that resolves to the exportable data.
    */
-  private async getExportableData(resource: string) {
-    const exportable = getExportableService(resource);
+  public async getExportableData(resource: string) {
+    // Через resourceToModelName — реестр хранит ИМЕНА КЛАССОВ моделей,
+    // а они не всегда совпадают с ресурсом (TaxRateModel, С3 карты v14).
+    const exportable = getExportableService(resourceToModelName(resource));
     const contextId = ContextIdFactory.create();
     const exportableInstance = await this.moduleRef.resolve(
       exportable,
@@ -135,7 +138,7 @@ export class ExportResourceService {
    * @param {IModelMeta} resourceMeta - The metadata of the resource.
    * @returns An array of exportable columns.
    */
-  private getExportableColumns(resourceColumns: any) {
+  public getExportableColumns(resourceColumns: any) {
     const processColumns = (
       columns: { [key: string]: IModelMetaColumn },
       parent = '',

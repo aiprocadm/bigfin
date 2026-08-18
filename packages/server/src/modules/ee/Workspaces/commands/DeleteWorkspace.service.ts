@@ -3,6 +3,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { UserTenant } from '@/modules/System/models/UserTenant.model';
 import { TenantModel } from '@/modules/System/models/TenantModel';
+import { PlanSubscription } from '@/modules/Subscription/models/PlanSubscription';
+import { TenantMetadata } from '@/modules/System/models/TenantMetadataModel';
 import { TenantDBManager } from '@/modules/TenantDBManager/TenantDBManager';
 import { events } from '@/common/events/events';
 import { WorkspacesError } from '../Workspaces.constants';
@@ -17,6 +19,12 @@ export class DeleteWorkspaceService {
     private readonly tenantModel: typeof TenantModel,
     private readonly tenantDBManager: TenantDBManager,
     private readonly eventEmitter: EventEmitter2,
+
+    @Inject(PlanSubscription.name)
+    private readonly planSubscriptionModel: typeof PlanSubscription,
+
+    @Inject(TenantMetadata.name)
+    private readonly tenantMetadataModel: typeof TenantMetadata,
   ) {}
 
   /**
@@ -40,6 +48,18 @@ export class DeleteWorkspaceService {
     }
     // Drop the physical tenant database if it exists.
     await this.tenantDBManager.dropDatabaseIfExists();
+
+    // Сироты системной базы (С3 карты v14): строка подписки держит удаление
+    // тенанта по FK без каскада (организация зависала «удаляется»), а у
+    // tenants_metadata FK нет вовсе — оставалась навсегда.
+    await this.planSubscriptionModel
+      .query()
+      .delete()
+      .where({ tenantId: tenant.id });
+    await this.tenantMetadataModel
+      .query()
+      .delete()
+      .where({ tenantId: tenant.id });
 
     // Delete the tenant row — cascades to user_tenants via FK.
     await this.tenantModel.query().deleteById(tenant.id);

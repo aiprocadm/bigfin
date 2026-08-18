@@ -148,6 +148,13 @@ export const getPreferenceRoutes = () => [
     exact: true,
   },
   {
+    path: `${BASE_URL}/export-data`,
+    component: lazy(
+      () => import('@/containers/Preferences/ExportData/ExportDataPage'),
+    ),
+    exact: true,
+  },
+  {
     path: `${BASE_URL}/`,
     component: lazy(() => import('../containers/Preferences/DefaultRoute')),
     exact: true,

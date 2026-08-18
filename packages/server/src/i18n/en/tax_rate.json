@@ -1,0 +1,9 @@
+{
+  "label": {
+    "name": "Name",
+    "code": "Code",
+    "rate": "Rate, %",
+    "description": "Description",
+    "active": "Active"
+  }
+}

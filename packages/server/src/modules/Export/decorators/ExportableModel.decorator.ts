@@ -35,3 +35,10 @@ export function getExportableModelMeta(modelName: string): boolean | undefined {
 export function getExportableService(modelName: string) {
   return exportableService.get(modelName);
 }
+
+/**
+ * Имена всех зарегистрированных экспортируемых ресурсов (С3 карты v14).
+ */
+export function getExportableServiceNames(): string[] {
+  return Array.from(exportableService.keys());
+}

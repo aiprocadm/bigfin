@@ -28,10 +28,6 @@ export default function CustomersEmptyStatus() {
             >
               <T id={'new_customer'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

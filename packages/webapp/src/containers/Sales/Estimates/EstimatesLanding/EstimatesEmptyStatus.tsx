@@ -28,9 +28,6 @@ export default function EstimatesEmptyStatus() {
             >
               <T id={'new_sale_estimate'} />
             </Button>
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

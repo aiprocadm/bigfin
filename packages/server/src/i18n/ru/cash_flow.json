@@ -1,0 +1,13 @@
+{
+  "label": {
+    "date": "Дата",
+    "transaction_number": "Номер операции",
+    "reference_no": "Основание",
+    "transaction_type": "Тип операции",
+    "amount": "Сумма",
+    "currency_code": "Валюта",
+    "cashflow_account": "Денежный счёт",
+    "credit_account": "Счёт-корреспондент",
+    "description": "Описание"
+  }
+}

@@ -116,6 +116,10 @@ function AccountTransactionsActionsBar({
   const handleImportBtnClick = () => {
     history.push(`/cashflow-accounts/${accountId}/import`);
   };
+  // Кнопка «Экспорт» была мёртвой — без обработчика (С2 карты v14).
+  const handleExportBtnClick = () => {
+    openDialog(DialogsName.Export, { resource: 'bank_transaction' });
+  };
   // Handle bank rules click.
   const handleBankRulesClick = () => {
     history.push(`/bank-rules?accountId=${accountId}`);
@@ -248,6 +252,7 @@ function AccountTransactionsActionsBar({
             className={Classes.MINIMAL}
             icon={<Icon icon="file-export-16" iconSize={16} />}
             text={<T id={'export'} />}
+            onClick={handleExportBtnClick}
           />
           <Button
             className={Classes.MINIMAL}
@@ -308,6 +313,7 @@ function AccountTransactionsActionsBar({
                 <MenuItem
                   icon={<Icon icon="file-export-16" iconSize={16} />}
                   text={<T id={'export'} />}
+                  onClick={handleExportBtnClick}
                 />
                 <MenuItem
                   icon={<Icon icon="file-import-16" iconSize={16} />}

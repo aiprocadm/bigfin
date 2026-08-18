@@ -23,7 +23,9 @@ export function useLatestExchangeRate(
     () =>
       apiRequest
         .http({
-          url: `/api/exchange_rates/latest`,
+          // Был `exchange_rates` (подчёркивание) — сервер отвечает только на
+          // `exchange-rates`, запрос всегда падал 404 (С2 карты v14).
+          url: `/api/exchange-rates/latest`,
           method: 'get',
           params: {
             to_currency: toCurrency,

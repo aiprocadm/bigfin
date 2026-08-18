@@ -34,9 +34,6 @@ function ProjectsEmptyStatus({
             >
               <T id="projects.empty_status.action" />
             </Button>
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </React.Fragment>
       }

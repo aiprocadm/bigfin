@@ -15,4 +15,5 @@ export const ExportResources = [
   { value: 'bill_payment', text: 'Bill Payments' },
   { value: 'vendor_credit', text: 'Vendor Credits' },
   { value: 'tax_rate', text: 'Tax Rate' },
+  { value: 'bank_transaction', text: 'Bank Transactions' },
 ];

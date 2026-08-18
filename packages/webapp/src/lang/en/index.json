@@ -1596,6 +1596,8 @@
   "something_went_wrong": "Something went wrong!",
   "error.network": "No connection to the server. Check your internet connection and try again.",
   "error.forbidden": "You do not have permission for this action.",
+  "error.has_relations": "The record cannot be deleted — other data refers to it.",
+  "error.broken_reference": "The action refers to a record that no longer exists. Refresh the page and try again.",
   "blog": "Blog",
   "support": "Support",
   "community": "Community",

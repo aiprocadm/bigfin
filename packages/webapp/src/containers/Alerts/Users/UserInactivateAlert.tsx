@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useInactivateUser } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface UserInactivateAlertProps {
   name: string;
@@ -65,17 +66,7 @@ function UserInactivateAlertRoot({
         closeAlert(name);
       })
       .catch((error: ApiErrorResponse) => {
-        const errors = error.response?.data?.errors;
-        if (
-          errors?.find(
-            (e) => e.type === 'CANNOT.TOGGLE.ACTIVATE.AUTHORIZED.USER',
-          )
-        ) {
-          AppToaster.show({
-            message: intl.get('cannot_toggle_activate_authorized_user'),
-            intent: Intent.DANGER,
-          });
-        }
+        showApiError(error);
         closeAlert(name);
       });
   };

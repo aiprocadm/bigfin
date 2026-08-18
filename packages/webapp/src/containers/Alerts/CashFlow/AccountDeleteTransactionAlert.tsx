@@ -10,6 +10,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteCashflowTransaction } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface AccountDeleteTransactionAlertProps {
   name: string;
@@ -70,32 +71,7 @@ function AccountDeleteTransactionAlertRoot({
         });
         closeDrawer(DRAWERS.CASHFLOW_TRNASACTION_DETAILS);
       })
-      .catch((error: ApiErrorResponse) => {
-        const errors = error.response?.data?.errors;
-        if (
-          errors?.find(
-            (e) =>
-              e.type ===
-              'CANNOT_DELETE_TRANSACTION_CONVERTED_FROM_UNCATEGORIZED',
-          )
-        ) {
-          AppToaster.show({
-            message: intl.get(
-              'cashflow.error.cannot_delete_transaction_converted_from_uncategorized',
-            ),
-            intent: Intent.DANGER,
-          });
-        } else if (
-          errors?.find((e) => e.type === 'CANNOT_DELETE_TRANSACTION_MATCHED')
-        ) {
-          AppToaster.show({
-            message: intl.get(
-              'invoices.error.cannot_delete_transaction_matched_with_bank',
-            ),
-            intent: Intent.DANGER,
-          });
-        }
-      })
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useOpenBill } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface BillOpenAlertProps {
   name: string;
@@ -57,7 +58,8 @@ function BillOpenAlertRoot({
         });
         closeAlert(name);
       })
-      .catch(() => {
+      .catch((error) => {
+        showApiError(error);
         closeAlert(name);
       });
   };

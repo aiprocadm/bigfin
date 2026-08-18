@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { handleDeleteErrors } from '@/containers/Sales/CreditNotes/CreditNotesLanding/utils';
 import { useDeleteCreditNote } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface CreditNoteDeleteAlertProps {
   name: string;
@@ -70,6 +71,8 @@ function CreditNoteDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

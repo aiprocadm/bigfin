@@ -12,6 +12,7 @@ import { useDeletePaymentReceive } from '@/hooks/query';
 import { compose } from '@/utils';
 
 import { handleDeleteErrors } from './_utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface PaymentReceivedDeleteAlertProps {
   name: string;
@@ -78,6 +79,8 @@ function PaymentReceivedDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

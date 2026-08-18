@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useBulkInactivateAccounts } from '@/hooks/query/accounts';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface AccountBulkInactivateAlertProps {
   name: string;
@@ -58,12 +59,7 @@ function AccountBulkInactivateAlertRoot({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      })
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

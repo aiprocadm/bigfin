@@ -9,6 +9,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { transformErrors } from '@/containers/Customers/utils';
 import { useBulkDeleteCustomers } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface CustomerBulkDeleteAlertProps {
   name: string;
@@ -68,6 +69,8 @@ function CustomerBulkDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           transformErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

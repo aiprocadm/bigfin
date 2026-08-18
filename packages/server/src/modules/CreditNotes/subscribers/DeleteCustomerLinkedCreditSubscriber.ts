@@ -19,7 +19,9 @@ export class DeleteCustomerLinkedCreditSubscriber {
    * Validate vendor has no associated credit transaction once the vendor deleting.
    * @param {IVendorEventDeletingPayload} payload -
    */
-  @OnEvent(events.customers.onDeleting)
+  // Без suppressErrors:false Nest глушил отказ валидации (грабля v7) —
+  // удаление шло дальше и падало голым 500 по внешнему ключу.
+  @OnEvent(events.customers.onDeleting, { suppressErrors: false })
   public async validateCustomerHasNoLinkedCreditsOnDeleting({
     customerId,
   }: ICustomerDeletingPayload) {

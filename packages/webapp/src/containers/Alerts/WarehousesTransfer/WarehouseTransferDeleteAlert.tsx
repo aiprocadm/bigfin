@@ -10,6 +10,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeleteWarehouseTransfer } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface WarehouseTransferDeleteAlertProps {
   name: string;
@@ -65,7 +66,7 @@ function WarehouseTransferDeleteAlertRoot({
         });
         closeDrawer(DRAWERS.WAREHOUSE_TRANSFER_DETAILS);
       })
-      .catch(() => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

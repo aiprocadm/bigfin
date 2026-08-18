@@ -12,6 +12,7 @@ import { useDeleteJournal } from '@/hooks/query';
 import { compose } from '@/utils';
 
 import { handleDeleteErrors } from './_utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface JournalDeleteAlertProps {
   name: string;
@@ -84,6 +85,8 @@ function JournalDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
         closeAlert(name);
       });

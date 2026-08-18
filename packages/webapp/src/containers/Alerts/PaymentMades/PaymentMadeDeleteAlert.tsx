@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDeletePaymentMade } from '@/hooks/query';
 import { compose } from '@/utils';
 import { handleDeleteErrors } from './_utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface PaymentMadeDeleteAlertProps {
   name: string;
@@ -75,6 +76,8 @@ function PaymentMadeDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

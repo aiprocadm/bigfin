@@ -11,6 +11,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Item category bulk delete alerts.
@@ -46,7 +47,7 @@ function ItemCategoryBulkDeleteAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((errors) => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
         setLoading(false);

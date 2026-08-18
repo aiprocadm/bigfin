@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useDeleteCurrency } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface CurrencyDeleteAlertProps {
   name: string;
@@ -65,13 +66,7 @@ function CurrencyDeleteAlertRoot({
         closeAlert(name);
       })
       .catch((error: ApiErrorResponse) => {
-        const errors = error.response?.data?.errors;
-        if (errors?.find((e) => e.type === 'CANNOT_DELETE_BASE_CURRENCY')) {
-          AppToaster.show({
-            intent: Intent.DANGER,
-            message: intl.get('cannot_delete_the_base_currency'),
-          });
-        }
+        showApiError(error);
         closeAlert(name);
       });
   };

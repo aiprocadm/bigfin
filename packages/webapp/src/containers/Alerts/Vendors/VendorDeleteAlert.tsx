@@ -11,6 +11,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { transformErrors } from '@/containers/Vendors/utils';
 import { useDeleteVendor } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface VendorDeleteAlertProps {
   name: string;
@@ -76,6 +77,8 @@ function VendorDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           transformErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

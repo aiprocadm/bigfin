@@ -9,6 +9,7 @@ import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect'
 import { handleDeleteErrors } from '@/containers/Preferences/Branches/utils';
 import { useDeleteBranch } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface BranchDeleteAlertProps {
   name: string;
@@ -68,6 +69,8 @@ function BranchDeleteAlertRoot({
         const errors = error.response?.data?.errors;
         if (errors) {
           handleDeleteErrors(errors);
+        } else {
+          showApiError(error);
         }
       })
       .finally(() => {

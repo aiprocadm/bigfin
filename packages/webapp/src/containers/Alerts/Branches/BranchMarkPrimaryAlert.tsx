@@ -8,6 +8,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { useMarkBranchAsPrimary } from '@/hooks/query';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 interface BranchMarkPrimaryAlertProps {
   name: string;
@@ -58,7 +59,8 @@ function BranchMarkPrimaryAlertRoot({
         });
         closeAlert(name);
       })
-      .catch(() => {
+      .catch((error) => {
+        showApiError(error);
         closeAlert(name);
       });
   };

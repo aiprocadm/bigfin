@@ -8,6 +8,8 @@ import {
   useProjectTimeEntry,
 } from '../../hooks';
 import { DialogContent } from '@/components';
+import { useFeatureCan } from '@/hooks/state';
+import { Features } from '@/constants/features';
 
 const ProjecctTimeEntryFormContext = React.createContext();
 
@@ -44,10 +46,14 @@ function ProjectTimeEntryFormProvider({
     });
 
   // Fetch project list data table or list
+  // Список берётся с ручки сделок, закрытой флагом: без проверки диалог
+  // покажет ложное «нет прав» (М2 карты v15).
+  const { featureCan } = useFeatureCan();
+  const isProjectsFeatureCan = featureCan(Features.Projects);
   const {
     data: { projects },
     isLoading: isProjectsLoading,
-  } = useProjects();
+  } = useProjects({}, { enabled: !!isProjectsFeatureCan });
 
   const isNewMode = !timesheetId;
 

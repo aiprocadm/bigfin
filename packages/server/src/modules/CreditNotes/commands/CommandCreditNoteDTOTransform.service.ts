@@ -14,6 +14,8 @@ import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-ind
 import { formatDateFields } from '@/utils/format-date-fields';
 import { CreditNoteAutoIncrementService } from './CreditNoteAutoIncrement.service';
 import { CreditNote } from '../models/CreditNote';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 import {
   CreateCreditNoteDto,
   CreditNoteEntryDto,
@@ -36,6 +38,7 @@ export class CommandCreditNoteDTOTransform {
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
     private readonly creditNoteAutoIncrement: CreditNoteAutoIncrementService,
     private readonly taxDTOTransformer: ItemEntriesTaxTransactions,
+    private readonly tenancyContext: TenancyContext,
   ) { }
 
   /**
@@ -85,6 +88,14 @@ export class CommandCreditNoteDTOTransform {
       oldCreditNote?.creditNoteNumber ||
       autoNextNumber;
 
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы кредит-ноту по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: customerCurrencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: creditNoteDTO.exchangeRate,
+    });
     const initialDTO = {
       ...formatDateFields(
         omit(creditNoteDTO, ['open', 'attachments']),

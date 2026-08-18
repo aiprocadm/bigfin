@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { omit, sumBy } from 'lodash';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 import * as R from 'ramda';
 import * as moment from 'moment';
 import '../../../utils/moment-mysql';
@@ -65,6 +66,15 @@ export class CommandSaleInvoiceDTOTransformer {
 
     // Retrieve the authorized user.
     const authorizedUser = await this.tenancyContext.getSystemUser();
+
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы документ по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: customer.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: saleInvoiceDTO.exchangeRate,
+    });
 
     // Invoice number.
     const invoiceNo =

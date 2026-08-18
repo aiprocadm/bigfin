@@ -12,6 +12,7 @@ import { ItemsModule } from '../Items/Items.module';
 import { TemplateInjectableModule } from '../TemplateInjectable/TemplateInjectable.module';
 import { AutoIncrementOrdersModule } from '../AutoIncrementOrders/AutoIncrementOrders.module';
 import { ChromiumlyTenancyModule } from '../ChromiumlyTenancy/ChromiumlyTenancy.module';
+import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
 import { BranchesModule } from '../Branches/Branches.module';
 import { WarehousesModule } from '../Warehouses/Warehouses.module';
@@ -47,6 +48,8 @@ import { ValidateBulkDeleteVendorCreditsService } from './ValidateBulkDeleteVend
     AccountsModule,
     DynamicListModule,
     InventoryCostModule,
+    // TenancyContext для трансформера (валидация курса, С4 v14).
+    TenancyModule,
   ],
   providers: [
     CreateVendorCreditService,

@@ -10,11 +10,14 @@ import {
   CreateBillPaymentDto,
   EditBillPaymentDto,
 } from '../dtos/BillPayment.dto';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 
 @Injectable()
 export class CommandBillPaymentDTOTransformer {
   constructor(
     private readonly branchDTOTransform: BranchTransactionDTOTransformer,
+    private readonly tenancyContext: TenancyContext,
   ) {}
 
   /**
@@ -31,6 +34,15 @@ export class CommandBillPaymentDTOTransformer {
   ): Promise<BillPayment> {
     const amount =
       billPaymentDTO.amount ?? sumBy(billPaymentDTO.entries, 'paymentAmount');
+
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы оплату по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: vendor.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: billPaymentDTO.exchangeRate,
+    });
 
     // Associate the default index to each item entry.
     const entries = R.compose(

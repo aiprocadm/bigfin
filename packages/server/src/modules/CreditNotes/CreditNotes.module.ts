@@ -15,6 +15,7 @@ import { BranchesModule } from '../Branches/Branches.module';
 import { WarehousesModule } from '../Warehouses/Warehouses.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
 import { ChromiumlyTenancyModule } from '../ChromiumlyTenancy/ChromiumlyTenancy.module';
+import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { TemplateInjectableModule } from '../TemplateInjectable/TemplateInjectable.module';
 import { GetCreditNoteService } from './queries/GetCreditNote.service';
 import { CreditNoteBrandingTemplate } from './queries/CreditNoteBrandingTemplate.service';
@@ -53,6 +54,8 @@ import { ValidateBulkDeleteCreditNotesService } from './ValidateBulkDeleteCredit
     AccountsModule,
     DynamicListModule,
     InventoryCostModule,
+    // TenancyContext для трансформера (валидация курса, С4 v14).
+    TenancyModule,
     forwardRef(() => CreditNoteRefundsModule),
     forwardRef(() => CreditNotesApplyInvoiceModule)
   ],

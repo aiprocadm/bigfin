@@ -13,6 +13,8 @@ import { formatDateFields } from '@/utils/format-date-fields';
 import { VendorCreditAutoIncrementService } from './VendorCreditAutoIncrement.service';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { Injectable } from '@nestjs/common';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 import {
   CreateVendorCreditDto,
   EditVendorCreditDto,
@@ -33,6 +35,7 @@ export class VendorCreditDTOTransformService {
     private warehouseDTOTransform: WarehouseTransactionDTOTransform,
     private vendorCreditAutoIncrement: VendorCreditAutoIncrementService,
     private taxDTOTransformer: ItemEntriesTaxTransactions,
+    private tenancyContext: TenancyContext,
   ) { }
 
   /**
@@ -85,6 +88,14 @@ export class VendorCreditDTOTransformService {
       oldVendorCredit?.vendorCreditNumber ||
       autoNextNumber;
 
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы возврат по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: vendorCurrencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: vendorCreditDTO.exchangeRate,
+    });
     const initialDTO = {
       ...formatDateFields(
         omit(vendorCreditDTO, ['open', 'attachments']),

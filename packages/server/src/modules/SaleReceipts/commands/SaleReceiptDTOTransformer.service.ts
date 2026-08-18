@@ -16,6 +16,8 @@ import { SaleReceipt } from '../models/SaleReceipt';
 import { ItemEntriesTaxTransactions } from '@/modules/TaxRates/ItemEntriesTaxTransactions.service';
 import { Customer } from '@/modules/Customers/models/Customer';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 import {
   CreateSaleReceiptDto,
   EditSaleReceiptDto,
@@ -43,6 +45,7 @@ export class SaleReceiptDTOTransformer {
 
     @Inject(ItemEntry.name)
     private readonly itemEntryModel: TenantModelProxy<typeof ItemEntry>,
+    private readonly tenancyContext: TenancyContext,
   ) {}
 
   /**
@@ -95,6 +98,14 @@ export class SaleReceiptDTOTransformer {
       assocItemEntriesDefaultIndex,
     )(asyncEntries);
 
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы чек по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: paymentCustomer.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: saleReceiptDTO.exchangeRate,
+    });
     const initialDTO = {
       amount,
       ...formatDateFields(

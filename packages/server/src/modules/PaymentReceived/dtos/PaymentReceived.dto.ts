@@ -5,6 +5,7 @@ import {
   IsDateString,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsArray,
   IsNotEmpty,
   IsInt,
@@ -66,6 +67,7 @@ export class CommandPaymentReceivedDto {
   @IsOptional()
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @ApiProperty({
     description: 'The exchange rate of the payment received',
     example: 1,

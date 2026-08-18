@@ -1598,6 +1598,7 @@
   "error.forbidden": "You do not have permission for this action.",
   "error.has_relations": "The record cannot be deleted — other data refers to it.",
   "error.broken_reference": "The action refers to a record that no longer exists. Refresh the page and try again.",
+  "error.exchange_rate_required": "The document is in a foreign currency — specify an exchange rate above zero.",
   "blog": "Blog",
   "support": "Support",
   "community": "Community",

@@ -15,6 +15,8 @@ import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-ind
 import { Customer } from '@/modules/Customers/models/Customer';
 import { formatDateFields } from '@/utils/format-date-fields';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 
 @Injectable()
 export class PaymentReceiveDTOTransformer {
@@ -23,6 +25,7 @@ export class PaymentReceiveDTOTransformer {
     private readonly increments: PaymentReceivedIncrement,
     private readonly branchDTOTransform: BranchTransactionDTOTransformer,
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
+    private readonly tenancyContext: TenancyContext,
 
     @Inject(PaymentReceived.name)
     private readonly paymentReceivedModel: TenantModelProxy<
@@ -55,6 +58,15 @@ export class PaymentReceiveDTOTransformer {
       autoNextNumber;
 
     this.validators.validatePaymentNoRequire(paymentReceiveNo);
+
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы оплату по курсу 1 (С4 карты v14).
+    const tenantMetadata = await this.tenancyContext.getTenantMetadata();
+    assertValidExchangeRate({
+      currencyCode: customer.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: paymentReceiveDTO.exchangeRate,
+    });
 
     const entries = R.compose(
       // Associate the default index to each item entry line.

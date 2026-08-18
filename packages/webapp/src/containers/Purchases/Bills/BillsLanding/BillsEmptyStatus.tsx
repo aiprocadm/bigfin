@@ -29,10 +29,6 @@ export default function BillsEmptyStatus() {
             >
               <T id={'new_bill'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

@@ -25,10 +25,6 @@ export default function CreditNotesEmptyStatus() {
             >
               <T id={'credit_note.label.new_credit_note'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

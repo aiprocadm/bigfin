@@ -4,6 +4,7 @@ import { UncategorizedBankTransaction } from './models/UncategorizedBankTransact
 import { BankTransactionLine } from './models/BankTransactionLine';
 import { BankTransaction } from './models/BankTransaction';
 import { BankTransactionAutoIncrement } from './commands/BankTransactionAutoIncrement.service';
+import { BankTransactionsExportable } from './commands/BankTransactionsExportable';
 import { BankingTransactionGLEntriesSubscriber } from './subscribers/CashflowTransactionSubscriber';
 import { DecrementUncategorizedTransactionOnCategorizeSubscriber } from './subscribers/DecrementUncategorizedTransactionOnCategorize';
 import { DeleteCashflowTransactionOnUncategorizeSubscriber } from './subscribers/DeleteCashflowTransactionOnUncategorize';
@@ -59,6 +60,7 @@ const models = [
     BankingPendingTransactionsController,
   ],
   providers: [
+    BankTransactionsExportable,
     BankTransactionAutoIncrement,
     BankTransactionGLEntriesService,
     ValidateDeleteBankAccountTransactions,

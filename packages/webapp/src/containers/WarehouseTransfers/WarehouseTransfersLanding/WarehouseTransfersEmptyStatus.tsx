@@ -26,9 +26,6 @@ export default function WarehouseTransfersEmptyStatus() {
           >
             <T id={'warehouse_transfer.action.new_warehouse_transfer'} />
           </Button>
-          <Button intent={Intent.NONE} large={true}>
-            <T id={'learn_more'} />
-          </Button>
         </>
       }
     />

@@ -29,10 +29,6 @@ export default function ReceiptsEmptyStatus() {
             >
               <T id={'new_receipt'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

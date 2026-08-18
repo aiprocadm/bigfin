@@ -28,10 +28,6 @@ export default function ItemsEmptyStatus() {
             >
               <T id={'new_item'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

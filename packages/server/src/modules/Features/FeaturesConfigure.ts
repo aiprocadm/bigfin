@@ -107,8 +107,12 @@ export class FeaturesConfigure {
         defaultValue: false,
       },
       {
+        // Вопрос 16 карты v14: мастер настройки спрашивал режим, а ответ
+        // игнорировался — фича была выключена. Организации без выбранного
+        // режима получают «Бизнес» (упрощённый); вернуть бухгалтерские
+        // экраны можно в «Настройки → Режим интерфейса».
         name: Features.INTERFACE_MODES,
-        defaultValue: false,
+        defaultValue: true,
       },
       {
         name: Features.FINANCIAL_MODEL,

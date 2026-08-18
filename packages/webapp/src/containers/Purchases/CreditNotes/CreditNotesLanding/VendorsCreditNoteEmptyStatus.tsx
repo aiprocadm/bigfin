@@ -25,10 +25,6 @@ export default function VendorsCreditNoteEmptyStatus() {
             >
               <T id={'vendor_credits.label.new_vendor_credit'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

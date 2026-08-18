@@ -1,0 +1,13 @@
+{
+  "label": {
+    "date": "Date",
+    "transaction_number": "Transaction number",
+    "reference_no": "Reference No.",
+    "transaction_type": "Transaction type",
+    "amount": "Amount",
+    "currency_code": "Currency",
+    "cashflow_account": "Cash account",
+    "credit_account": "Category account",
+    "description": "Description"
+  }
+}

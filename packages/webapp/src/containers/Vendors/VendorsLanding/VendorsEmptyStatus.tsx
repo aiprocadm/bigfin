@@ -29,10 +29,6 @@ export default function VendorsEmptyStatus() {
             >
               <T id={'new_vendor'} />
             </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
           </Can>
         </>
       }

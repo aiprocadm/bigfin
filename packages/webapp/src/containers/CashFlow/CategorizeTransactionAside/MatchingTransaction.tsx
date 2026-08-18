@@ -30,6 +30,7 @@ import { withBanking } from '../withBanking';
 import { MatchingReconcileTransactionForm } from './MatchingReconcileTransactionAside/MatchingReconcileTransactionForm';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 import styles from './CategorizeTransactionAside.module.scss';
+import { showApiError } from '@/utils/showApiError';
 
 const initialValues = {
   matched: {},
@@ -86,10 +87,7 @@ function MatchingBankTransactionRoot({
           setSubmitting(false);
           return;
         }
-        AppToaster.show({
-          intent: Intent.DANGER,
-          message: intl.get('something_wentwrong'),
-        });
+        showApiError(err);
         setSubmitting(false);
       });
   };

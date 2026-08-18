@@ -8,6 +8,7 @@ import { AppToaster, FFormGroup, FInputGroup } from '@/components';
 import { useDisconnectBankAccount } from '@/hooks/query/bank-rules';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
+import { showApiError } from '@/utils/showApiError';
 
 interface DisconnectFormValues {
   label: string;
@@ -57,10 +58,7 @@ function DisconnectBankAccountDialogContent({
       })
       .catch((error) => {
         setSubmitting(false);
-        AppToaster.show({
-          message: intl.get('something_wentwrong'),
-          intent: Intent.DANGER,
-        });
+        showApiError(error);
       });
   };
 

@@ -33,6 +33,7 @@ import { MatchingReconcileFormSchema } from './MatchingReconcileTransactionForm.
 import { initialValues, transformToReq } from './_utils';
 import { withBanking } from '../../withBanking';
 import { Features } from '@/constants';
+import { showApiError } from '@/utils/showApiError';
 
 interface MatchingReconcileTransactionFormProps {
   onSubmitSuccess?: (values: any) => void;
@@ -81,7 +82,7 @@ function MatchingReconcileTransactionFormRoot({
       .catch((error) => {
         setSubmitting(false);
         if (
-          error.response.data?.errors?.find(
+          error.response?.data?.errors?.find(
             (e) => e.type === 'BRANCH_ID_REQUIRED',
           )
         ) {
@@ -89,10 +90,7 @@ function MatchingReconcileTransactionFormRoot({
             branchId: intl.get('cash_flow.matching.branch_required'),
           });
         } else {
-          AppToaster.show({
-            message: intl.get('something_wentwrong'),
-            intent: Intent.DANGER,
-          });
+          showApiError(error);
         }
       });
   };

@@ -9,6 +9,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 
 import { useResumeFeedsBankAccount } from '@/hooks/query/bank-accounts';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Resume bank account feeds alert. 
@@ -40,7 +41,7 @@ function ResumeFeedsBankAccountAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

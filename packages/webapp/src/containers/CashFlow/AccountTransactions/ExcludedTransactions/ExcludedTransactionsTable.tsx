@@ -24,6 +24,7 @@ import {
   WithBankingActionsProps,
   withBankingActions,
 } from '../../withBankingActions';
+import { showApiError } from '@/utils/showApiError';
 
 interface ExcludeTransactionsTableProps extends WithBankingActionsProps {}
 
@@ -63,12 +64,7 @@ function ExcludedTransactionsTableRoot({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {
-        AppToaster.show({
-          message: intl.get('something_wentwrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   // Handle selected rows change.

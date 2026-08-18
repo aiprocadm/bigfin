@@ -52,6 +52,7 @@ import {
 
 import { DialogsName } from '@/constants/dialogs';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 function AccountTransactionsActionsBar({
   // #withDialogActions
@@ -135,12 +136,7 @@ function AccountTransactionsActionsBar({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('errors.something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
   // Handle the refresh button click.
   const handleRefreshBtnClick = () => {
@@ -168,12 +164,7 @@ function AccountTransactionsActionsBar({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('errors.something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   // Handles the unexclude categorized button click.
@@ -187,12 +178,7 @@ function AccountTransactionsActionsBar({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {
-        AppToaster.show({
-          message: intl.get('errors.something_went_wrong'),
-          intent: Intent.DANGER,
-        });
-      });
+      .catch(showApiError);
   };
 
   // Handle multi select transactions for categorization or matching.

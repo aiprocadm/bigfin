@@ -27,6 +27,16 @@ export const API_ERROR_KEYS: Record<string, string> = {
     'cannot_toggle_activate_authorized_user',
   CANNOT_DELETE_BASE_CURRENCY: 'cannot_delete_the_base_currency',
   // Документы
+  INVOICE_HAS_ASSOCIATED_PAYMENT_ENTRIES: 'the_invoice_cannot_be_deleted',
+  INVOICE_AMOUNT_SMALLER_THAN_PAYMENT_AMOUNT: 'the_payment_amount_that_received',
+  SALE_INVOICE_HAS_APPLIED_TO_CREDIT_NOTES:
+    'invoices.error.you_couldn_t_delete_sale_invoice_that_has_reconciled',
+  BILL_HAS_ASSOCIATED_PAYMENT_ENTRIES:
+    'cannot_delete_bill_that_has_payment_transactions',
+  BILL_HAS_ASSOCIATED_LANDED_COSTS:
+    'cannot_delete_bill_that_has_associated_landed_cost_transactions',
+  BILL_HAS_APPLIED_TO_VENDOR_CREDIT:
+    'bills.error.you_couldn_t_delete_bill_has_reconciled_with_vendor_credit',
   SALE_ESTIMATE_CONVERTED_TO_INVOICE:
     'estimate.delete.error.estimate_converted_to_invoice',
   CANNOT_DELETE_TRANSACTION_CONVERTED_FROM_UNCATEGORIZED:

@@ -30,6 +30,7 @@ import {
   type CategorizeTransactionFormValues,
 } from './categorizeTransaction.schema';
 import { CategorizeTransactionSubFields } from './CategorizeTransactionSubFields';
+import { showApiError } from '@/utils/showApiError';
 
 function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any) {
   const { uncategorizedTransactionIds } = useCategorizeTransactionTabsBoot();
@@ -95,7 +96,7 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
       if (branchRequired) {
         form.setError('branchId', { message: intl.get('branch') });
       } else {
-        AppToaster.show({ message: intl.get('something_went_wrong'), intent: Intent.DANGER });
+        showApiError(err);
       }
     }
   };

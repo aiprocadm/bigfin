@@ -9,6 +9,7 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 
 import { usePauseFeedsBankAccount } from '@/hooks/query/bank-accounts';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Pause feeds of the bank account alert.
@@ -39,7 +40,7 @@ function PauseFeedsBankAccountAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {})
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });

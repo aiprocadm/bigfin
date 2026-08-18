@@ -26,6 +26,7 @@ import { useAccountTransactionsContext } from '../AccountTransactionsProvider';
 
 import { compose } from '@/utils';
 import styles from './AccountTransactionsUncategorizedTable.module.scss';
+import { showApiError } from '@/utils/showApiError';
 
 /**
  * Account transactions data table.
@@ -89,12 +90,7 @@ function AccountTransactionsDataTable({
           message: intl.get('cashflow.notify.transaction_excluded'),
         });
       })
-      .catch(() => {
-        AppToaster.show({
-          intent: Intent.DANGER,
-          message: intl.get('something_wentwrong'),
-        });
-      });
+      .catch(showApiError);
   };
 
   return (

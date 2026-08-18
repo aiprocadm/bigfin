@@ -392,7 +392,11 @@ $dashboard-views-bar-height: 44px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-width: 850px;
+    // 850px — только для десктопа: на телефоне блокировала мобильный каркас
+    // (М1 карты v15).
+    @media (min-width: 769px) {
+      min-width: 850px;
+    }
 
     .sidebar--mini-sidebar + & {
       margin-left: 50px;
@@ -630,7 +634,9 @@ $dashboard-views-bar-height: 44px;
   filter: blur(0);
   opacity: 1;
   top: 20vh;
-  left: calc(50% - 250px);
+  // На десктопе положение прежнее; на телефоне окно не шире экрана и не
+  // уезжает за край (М1 карты v15).
+  left: max(1rem, calc(50% - 250px));
   z-index: 21;
   border-radius: 3px;
   box-shadow:
@@ -638,7 +644,7 @@ $dashboard-views-bar-height: 44px;
     0 4px 8px rgba(16, 22, 26, 0.2),
     0 18px 46px 6px rgba(16, 22, 26, 0.2);
   background-color: #fff;
-  width: 600px;
+  width: min(600px, calc(100vw - 2rem));
 
   .bp4-input {
     padding-left: 40px !important;

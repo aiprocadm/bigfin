@@ -4,4 +4,9 @@ exports.up = (knex) => {
   });
 };
 
-exports.down = (knex) => {};
+// Откат был пустым — миграцию нельзя было отменить (М3 карты v15).
+exports.down = (knex) => {
+  return knex.schema.table('accounts', (table) => {
+    table.dropColumn('seeded_at');
+  });
+};

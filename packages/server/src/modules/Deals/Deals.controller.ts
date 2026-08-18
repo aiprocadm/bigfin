@@ -21,6 +21,9 @@ import { GetDealsQueryDto } from './dtos/GetDealsQuery.dto';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { SaleEstimateAction } from '@/modules/SaleEstimates/types/SaleEstimates.types';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 /**
  * Сделка — преддоговорная работа, которая превращается в смету и счёт, поэтому
@@ -30,7 +33,8 @@ import { SaleEstimateAction } from '@/modules/SaleEstimates/types/SaleEstimates.
 @Controller('deals')
 @ApiTags('Deals')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.DEALS)
 export class DealsController {
   constructor(private readonly application: DealsApplication) {}
 

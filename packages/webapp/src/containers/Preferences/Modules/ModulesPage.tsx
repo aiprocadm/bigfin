@@ -13,6 +13,8 @@ import {
   Contact,
   CreditCard,
   Download,
+  FileInput,
+  FileSpreadsheet,
   Gauge,
   Handshake,
   Landmark,
@@ -22,9 +24,11 @@ import {
   Percent,
   Printer,
   Scale,
+  Send,
   ShieldCheck,
   ShoppingCart,
   Split,
+  Target,
   TrendingUp,
   Upload,
   Users,
@@ -46,15 +50,16 @@ const MODULE_GROUPS: { group: string; features: string[] }[] = [
     group: 'accounting',
     features: [
       'mgmt_articles', 'deals', 'cost_allocation', 'debts', 'payment_requests',
-      'dividends', 'credits', 'fixed_assets', 'payroll', 'vat_analysis',
-      'financial_ratios', 'data_quality', 'ru_print_forms', 'accrual_pnl',
-      'deal_stages',
+      'dividends', 'credits', 'fixed_assets', 'payroll', 'payroll_kpi',
+      'vat_analysis', 'financial_ratios', 'data_quality', 'ru_print_forms',
+      'accrual_pnl', 'deal_stages',
     ],
   },
   {
     group: 'integrations',
     features: [
-      'bank_api_sync', 'acquiring', 'zenmoney_import', 'onec_export',
+      'bank_api_sync', 'bank_statement_import', 'acquiring', 'zenmoney_import',
+      'onec_export', 'telegram_quick_entry', 'onec_import',
       'moysklad', 'marketplaces', 'crm_integration',
     ],
   },
@@ -75,6 +80,7 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   credits: Banknote,
   fixed_assets: Boxes,
   payroll: Users,
+  payroll_kpi: Target,
   vat_analysis: Percent,
   ru_print_forms: Printer,
   financial_ratios: Gauge,
@@ -82,15 +88,28 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   accrual_pnl: Calculator,
   deal_stages: ListTree,
   bank_api_sync: Landmark,
+  bank_statement_import: FileSpreadsheet,
   acquiring: CreditCard,
   zenmoney_import: Download,
   onec_export: Upload,
+  telegram_quick_entry: Send,
+  onec_import: FileInput,
   moysklad: Package,
   marketplaces: ShoppingCart,
   crm_integration: Contact,
   branches: Building2,
   warehouses: Warehouse,
   notifications: Bell,
+};
+
+/**
+ * Модули, которые живут внутри другого модуля: «KPI и премии» — вкладка
+ * раздела «Зарплата». Включать ребёнка при выключенном родителе бессмысленно
+ * (вкладки всё равно не будет) и вредно: страницы, завязанные на дочерний
+ * флаг, начнут получать отказ от закрытой родительской ручки.
+ */
+const MODULE_PARENT: Record<string, string> = {
+  payroll_kpi: 'payroll',
 };
 
 interface ModulesPageProps {
@@ -150,6 +169,11 @@ function ModulesPage({ changePreferencesPageTitle }: ModulesPageProps) {
             <CardContent className="pt-0">
               {features.map((feature, index) => {
                 const Icon = MODULE_ICONS[feature];
+                const parent = MODULE_PARENT[feature];
+                const checked = featureCan(feature);
+                // Выключить ребёнка можно всегда — иначе он застрянет
+                // включённым, если родителя погасили раньше.
+                const blocked = Boolean(parent) && !featureCan(parent) && !checked;
                 return (
                   <div
                     key={feature}
@@ -170,10 +194,17 @@ function ModulesPage({ changePreferencesPageTitle }: ModulesPageProps) {
                       <div className="text-sm text-text-secondary">
                         {intl.get(`modules.${feature}.desc`)}
                       </div>
+                      {blocked && (
+                        <div className="mt-1 text-sm text-text-muted">
+                          {intl.get('preferences.modules.needs_parent', {
+                            parent: intl.get(`modules.${parent}.label`),
+                          })}
+                        </div>
+                      )}
                     </div>
                     <Switch
-                      checked={featureCan(feature)}
-                      disabled={busy}
+                      checked={checked}
+                      disabled={busy || blocked}
                       onCheckedChange={(next) => handleToggle(feature, next)}
                       aria-label={intl.get(`modules.${feature}.label`)}
                     />

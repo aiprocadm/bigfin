@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ExportController } from './Export.controller';
 import { ExportResourceService } from './ExportService';
+import { ExportAllService } from './ExportAllService';
 import { ExportPdf } from './ExportPdf';
 import { ExportAls } from './ExportAls';
 import { ExportApplication } from './ExportApplication';
@@ -23,6 +24,7 @@ const models = [RegisterTenancyModel(ImportModel)];
     AccountsModule
   ],
   providers: [
+    ExportAllService,
     ExportResourceService,
     ExportPdf,
     ExportAls,

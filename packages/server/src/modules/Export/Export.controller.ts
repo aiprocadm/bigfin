@@ -4,12 +4,35 @@ import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
 import { AcceptType } from '@/constants/accept-type';
 import { ExportQuery } from './dtos/ExportQuery.dto';
 import { ExportResourceService } from './ExportService';
+import { ExportAllService } from './ExportAllService';
 import { convertAcceptFormatToFormat } from './Export.utils';
 
 @Controller('/export')
 @ApiTags('Export')
 export class ExportController {
-  constructor(private readonly exportResourceApp: ExportResourceService) {}
+  constructor(
+    private readonly exportResourceApp: ExportResourceService,
+    private readonly exportAllService: ExportAllService,
+  ) {}
+
+  // Конкретный маршрут объявлен ДО общего @Get() c query-ресурсом.
+  @Get('all')
+  @ApiOperation({
+    summary: 'Exports all exportable resources as one xlsx workbook.',
+  })
+  async exportAll(@Res({ passthrough: true }) res: Response) {
+    const data = await this.exportAllService.exportAll();
+
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=bigfin-export.xlsx',
+    );
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.send(data);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Retrieves exported the given resource.' })

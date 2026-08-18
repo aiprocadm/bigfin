@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Coins,
   CreditCard,
+  Download,
   FileMinus,
   FileText,
   KeyRound,
@@ -44,6 +45,7 @@ export const PreferencesMenu: PreferencesMenuSection[] = [
       { labelId: 'branding', href: '/preferences/branding', icon: Palette },
       { labelId: 'users', href: '/preferences/users', icon: Users },
       { labelId: 'preferences.security.menu', href: '/preferences/security', icon: ShieldCheck },
+      { labelId: 'export_data.menu', href: '/preferences/export-data', icon: Download },
     ],
   },
   {

@@ -4,8 +4,13 @@ import { SaleReceiptApplication } from '../SaleReceiptApplication.service';
 import { EXPORT_SIZE_LIMIT } from '@/modules/Export/constants';
 import { GetSaleReceiptsQueryDto } from '../dtos/GetSaleReceiptsQuery.dto';
 import { ISortOrder } from '@/modules/DynamicListing/DynamicFilter/DynamicFilter.types';
+import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
+import { SaleReceipt } from '../models/SaleReceipt';
 
 @Injectable()
+// Без регистрации экспорт чеков отвечал 500 — единственный Exportable без
+// пометки (С3 карты v14, вскрыто «выгрузить всё»).
+@ExportableService({ name: SaleReceipt.name })
 export class SaleReceiptsExportable extends Exportable {
   constructor(private readonly saleReceiptsApp: SaleReceiptApplication) {
     super();

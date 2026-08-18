@@ -14,7 +14,10 @@ export class TaxRatesExportable extends Exportable {
   /**
    * Retrieves the accounts data to exportable sheet.
    */
-  public exportable() {
-    return this.taxRatesApplication.getTaxRates();
+  public async exportable() {
+    // Приложение отдаёт { data: [...] }, а экспорту нужен сам список —
+    // с обёрткой выгрузка падала «data.map is not a function» (С3 карты v14).
+    const { data } = await this.taxRatesApplication.getTaxRates();
+    return data;
   }
 }

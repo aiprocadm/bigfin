@@ -4,6 +4,12 @@ import { useAuthMetadata } from '@/hooks/query';
 import { Spinner } from '@blueprintjs/core';
 import styled from 'styled-components';
 
+export interface AuthMetaBootValue {
+  isAuthMetaLoading: boolean;
+  /** Владелец закрыл регистрацию: форму показывать нельзя. */
+  signupDisabled: boolean;
+}
+
 const AuthMetaBootContext = createContext();
 
 /**
@@ -12,9 +18,12 @@ const AuthMetaBootContext = createContext();
 function AuthMetaBootProvider({ ...props }) {
   const { isLoading: isAuthMetaLoading, data: authMeta } = useAuthMetadata();
 
+  // Сервер отдаёт поля ПЛОСКО: `{ "signup_disabled": false }`. Лишняя
+  // ступенька `meta` делала поле мёртвым — закрытая регистрация никак не
+  // отражалась на экране (М4 карты v15).
   const state = {
     isAuthMetaLoading,
-    signupDisabled: authMeta?.meta?.signup_disabled,
+    signupDisabled: Boolean(authMeta?.signup_disabled),
   };
 
   if (isAuthMetaLoading) {
@@ -27,7 +36,18 @@ function AuthMetaBootProvider({ ...props }) {
   return <AuthMetaBootContext.Provider value={state} {...props} />;
 }
 
-const useAuthMetaBoot = () => React.useContext(AuthMetaBootContext);
+/**
+ * Значения по умолчанию нужны, когда страницу рисуют вне провайдера
+ * (например в тестах): без них разбор значения роняет весь экран.
+ */
+const EMPTY_AUTH_META: AuthMetaBootValue = {
+  isAuthMetaLoading: false,
+  signupDisabled: false,
+};
+
+const useAuthMetaBoot = (): AuthMetaBootValue =>
+  (React.useContext(AuthMetaBootContext) as AuthMetaBootValue) ??
+  EMPTY_AUTH_META;
 
 export { AuthMetaBootContext, AuthMetaBootProvider, useAuthMetaBoot };
 

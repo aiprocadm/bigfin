@@ -2,12 +2,16 @@
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
-import { EmptyStatus, Can, FormattedMessage as T } from '@/components';
+import { EmptyStatus, Can } from '@/components';
 import { AbilitySubject, BankRuleAction } from '@/constants/abilityOption';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
 import styles from './BankRulesLandingEmptyState.module.scss';
 
+/**
+ * Пустой экран банковских правил. Раньше здесь был английский текст и кнопка
+ * «Подробнее», которая никуда не вела (М4 карты v15).
+ */
 function BankRulesLandingEmptyStateRoot({
   // #withDialogAction
   openDialog,
@@ -20,27 +24,18 @@ function BankRulesLandingEmptyStateRoot({
     <EmptyStatus
       title={intl.get('banking.rules.empty_state.title')}
       description={
-        <p>
-          Bank rules will run automatically to categorize the incoming bank
-          transactions under the conditions you set up.
-        </p>
+        <p>{intl.get('banking.rules.empty_state.description')}</p>
       }
       action={
-        <>
-          <Can I={BankRuleAction.Create} a={AbilitySubject.BankRule}>
-            <Button
-              intent={Intent.PRIMARY}
-              large={true}
-              onClick={handleNewBtnClick}
-            >
-              New Bank Rule
-            </Button>
-
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
-          </Can>
-        </>
+        <Can I={BankRuleAction.Create} a={AbilitySubject.BankRule}>
+          <Button
+            intent={Intent.PRIMARY}
+            large={true}
+            onClick={handleNewBtnClick}
+          >
+            {intl.get('banking.rules.empty_state.new_button')}
+          </Button>
+        </Can>
       }
       classNames={{ root: styles.root }}
     />

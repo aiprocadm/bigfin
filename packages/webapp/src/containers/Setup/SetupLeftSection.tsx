@@ -29,7 +29,10 @@ function SetupLeftSectionFooter() {
   const footerLinks = getFooterLinks();
 
   const { data: authMeta } = useAuthMetadata();
-  const demoUrl = authMeta?.meta?.one_click_demo?.demo_url;
+  // Сервер отдаёт поля плоско и `one_click_demo` не шлёт вовсе (вопрос 21
+  // владельцу — демо-режим). Читаем по фактическому имени, чтобы кнопка
+  // появилась сразу, как только поле появится на сервере (М4 карты v15).
+  const demoUrl = authMeta?.one_click_demo?.demo_url;
 
   const handleDemoBtnClick = () => {
     window.open(demoUrl);
@@ -78,7 +81,9 @@ function SetupLeftSectionHeader() {
 
       <div className={'content__organization'}>
         <span className="signout">
-          <a onClick={onClickLogout} href="#">
+          {/* Была ссылка на «#»: она меняла адрес в строке браузера и
+              прыгала наверх. Выход — действие, а не переход (М4 карты v15). */}
+          <a role="button" tabIndex={0} onClick={onClickLogout}>
             <T id={'sign_out'} />
           </a>
         </span>

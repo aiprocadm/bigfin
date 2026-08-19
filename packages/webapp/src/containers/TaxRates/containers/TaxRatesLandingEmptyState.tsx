@@ -1,42 +1,37 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
 import * as R from 'ramda';
-import { EmptyStatus, Can, FormattedMessage as T } from '@/components';
+import { EmptyStatus, Can } from '@/components';
 import { SaleInvoiceAction, AbilitySubject } from '@/constants/abilityOption';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
 
+/**
+ * Пустой экран налоговых ставок. Раньше здесь был английский текст и кнопка
+ * «Подробнее», которая никуда не вела (М4 карты v15).
+ */
 function TaxRatesLandingEmptyStateRoot({
   // #withDialogAction
   openDialog,
 }) {
   return (
     <EmptyStatus
-      title={"The organization doesn't have taxes, yet!"}
-      description={
-        <p>
-          Setup the organization taxes to start tracking taxes on sales
-          transactions.
-        </p>
-      }
+      title={intl.get('tax_rates.empty_state.title')}
+      description={<p>{intl.get('tax_rates.empty_state.description')}</p>}
       action={
-        <>
-          <Can I={SaleInvoiceAction.Create} a={AbilitySubject.Invoice}>
-            <Button
-              intent={Intent.PRIMARY}
-              large={true}
-              onClick={() => {
-                openDialog(DialogsName.TaxRateForm);
-              }}
-            >
-              New tax rate
-            </Button>
-            <Button intent={Intent.NONE} large={true}>
-              <T id={'learn_more'} />
-            </Button>
-          </Can>
-        </>
+        <Can I={SaleInvoiceAction.Create} a={AbilitySubject.Invoice}>
+          <Button
+            intent={Intent.PRIMARY}
+            large={true}
+            onClick={() => {
+              openDialog(DialogsName.TaxRateForm);
+            }}
+          >
+            {intl.get('tax_rates.empty_state.new_button')}
+          </Button>
+        </Can>
       }
     />
   );

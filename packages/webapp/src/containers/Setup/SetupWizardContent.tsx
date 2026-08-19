@@ -4,7 +4,6 @@ import intl from 'react-intl-universal';
 import { x } from '@xstyled/emotion';
 import { css } from '@emotion/css';
 
-import SetupSubscription from './SetupSubscription/SetupSubscription';
 import SetupOrganizationPage from './SetupOrganizationPage';
 import SetupInitializingForm from './SetupInitializingForm';
 import SetupCongratsPage from './SetupCongratsPage';
@@ -20,7 +19,11 @@ const itemsClassName = css`
 `;
 
 /**
- * Setup wizard content.
+ * Экраны мастера первичной настройки.
+ *
+ * Шага «Подписка» здесь больше нет: он открывался первым у каждого нового
+ * пользователя и показывал долларовые тарифы и оплату чужого сервиса
+ * (М4 карты v15). Сам экран из кода не удалён — только не показывается.
  */
 export default function SetupWizardContent({
   stepIndex,
@@ -34,10 +37,6 @@ export default function SetupWizardContent({
           items: itemsClassName,
         }}
       >
-        <Stepper.Step label={intl.get('setup.wizard.step.subscription')}>
-          <SetupSubscription />
-        </Stepper.Step>
-
         <Stepper.Step label={intl.get('setup.wizard.step.organization')}>
           <SetupOrganizationPage id="organization" />
         </Stepper.Step>

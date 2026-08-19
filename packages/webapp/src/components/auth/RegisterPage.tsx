@@ -25,6 +25,8 @@ import { Toaster } from '@/components/ui/sonner';
 // inferred as `void`, so we narrow them here at the call site.
 import { useAuthLogin, useAuthRegister } from '@/hooks/query/authentication';
 
+import { useAuthMetaBoot } from '@/containers/Authentication/AuthMetaBoot';
+
 import { registerSchema, type RegisterInput } from './schemas';
 
 type LoginVars = { email: string; password: string };
@@ -51,6 +53,7 @@ const splitName = (raw: string): { first_name: string; last_name: string } => {
 };
 
 export const RegisterPage = () => {
+  const { signupDisabled } = useAuthMetaBoot();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const { mutateAsync: register } = useAuthRegister({}) as unknown as AuthMutation<RegisterVars>;
@@ -94,6 +97,27 @@ export const RegisterPage = () => {
     }
   };
 
+  // Регистрация может быть закрыта владельцем. Раньше страница всё равно
+  // показывала форму: человек заполнял её целиком и только потом получал
+  // отказ (М4 карты v15).
+  if (signupDisabled) {
+    return (
+      <AuthLayout>
+        <div className="flex flex-col gap-4">
+          <h1 className="text-3xl font-semibold text-text-primary">
+            Регистрация закрыта
+          </h1>
+          <p className="text-text-secondary">
+            Новые аккаунты сейчас не создаются. Если вас пригласили в
+            организацию — откройте ссылку из приглашения.
+          </p>
+          <p className="text-sm text-text-secondary">
+            Уже есть аккаунт? <Link to="/auth/login">Войдите</Link>
+          </p>
+        </div>
+      </AuthLayout>
+    );
+  }
   return (
     <AuthLayout>
       <Toaster />

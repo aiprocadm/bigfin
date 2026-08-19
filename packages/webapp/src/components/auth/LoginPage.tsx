@@ -29,6 +29,8 @@ import {
   useAuthSigninTwoFactor,
 } from '@/hooks/query/authentication';
 
+import { useAuthMetaBoot } from '@/containers/Authentication/AuthMetaBoot';
+
 import {
   loginSchema,
   twoFactorCodeSchema,
@@ -44,6 +46,7 @@ type SigninResponse = {
 };
 
 export const LoginPage = () => {
+  const { signupDisabled } = useAuthMetaBoot();
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   // Полу-токен второго шага: не null — показываем форму кода 2FA.
@@ -359,10 +362,14 @@ export const LoginPage = () => {
               Войти через Google (скоро)
             </Button>
 
-            <p className="mt-2 text-center text-sm text-text-secondary">
-              Нет аккаунта?{' '}
-              <Link to="/auth/register">Зарегистрируйтесь</Link>
-            </p>
+            {/* Когда регистрация закрыта, звать на неё — обман: человек
+                уйдёт по ссылке и упрётся в «закрыто» (М4 карты v15). */}
+            {!signupDisabled && (
+              <p className="mt-2 text-center text-sm text-text-secondary">
+                Нет аккаунта?{' '}
+                <Link to="/auth/register">Зарегистрируйтесь</Link>
+              </p>
+            )}
           </form>
         </Form>
       </div>

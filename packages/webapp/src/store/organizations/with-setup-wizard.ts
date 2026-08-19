@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { connect } from 'react-redux';
+import { resolveSetupStep } from './resolveSetupStep';
 
 export const withSetupWizard = (mapState) => {
   const mapStateToProps = (state, props) => {
@@ -12,21 +13,20 @@ export const withSetupWizard = (mapState) => {
 
     const condits = {
       isCongratsStep: isOrganizationSetupCompleted,
-      isSubscriptionStep: !isSubscriptionActive,
       isInitializingStep: isOrganizationBuildRunning,
       isOrganizationStep: !isOrganizationReady && !isOrganizationBuildRunning,
     };
-    const scenarios = [
-      { condition: condits.isSubscriptionStep, step: 'subscription' },
-      { condition: condits.isOrganizationStep, step: 'organization' },
-      { condition: condits.isInitializingStep, step: 'initializing' },
-      { condition: condits.isCongratsStep, step: 'congrats' },
-    ];
-    const setupStep = scenarios.find((scenario) => scenario.condition);
+    // Список шагов вынесен отдельно и покрыт тестами: раньше первым стоял
+    // шаг «Подписка», и мастер открывался им у КАЖДОГО нового пользователя
+    // (подписки у новичка нет никогда) — М4 карты v15.
     const mapped = {
       ...condits,
-      setupStepId: setupStep?.step,
-      setupStepIndex: scenarios.indexOf(setupStep),
+      ...resolveSetupStep({
+        isSubscriptionActive,
+        isOrganizationReady,
+        isOrganizationBuildRunning,
+        isOrganizationSetupCompleted,
+      }),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

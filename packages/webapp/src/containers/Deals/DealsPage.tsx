@@ -30,14 +30,21 @@ export default function DealsPage() {
   const [showForm, setShowForm] = React.useState(false);
   const [openDeal, setOpenDeal] = React.useState<any | null>(null);
 
-  const canKpi = featureCan('payroll_kpi');
+  const canDeals = featureCan('deals');
+  // Сотрудников отдаёт «Зарплата»: без неё запрос вернёт 403, и пользователь
+  // увидит на «Сделках» ложное «нет прав» (М2 карты v15).
+  const canKpi = featureCan('payroll_kpi') && featureCan('payroll');
 
-  const { data: deals } = useDeals(status ? { status } : {}, {});
-  const { data: summary } = useDealsSummary({}, {});
+  // Запросы стоят выше раннего return: без `enabled` они уходят на сервер и
+  // при выключенном модуле, а он теперь честно отвечает 403.
+  const { data: deals } = useDeals(status ? { status } : {}, {
+    enabled: canDeals,
+  });
+  const { data: summary } = useDealsSummary({}, { enabled: canDeals });
   const { data: employees } = useEmployees({}, { enabled: canKpi });
   const del = useDeleteDeal({});
 
-  if (!featureCan('deals')) return null;
+  if (!canDeals) return null;
 
   const managerNameById = new Map<number, string>(
     ((employees as any[]) ?? []).map((e: any) => [e.id, e.fullName]),

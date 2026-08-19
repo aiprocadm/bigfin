@@ -15,6 +15,9 @@ import {
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { SaleEstimateAction } from '@/modules/SaleEstimates/types/SaleEstimates.types';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 
 /**
  * Этапы живут внутри своей сделки, поэтому любая правка этапов — это правка
@@ -23,7 +26,8 @@ import { SaleEstimateAction } from '@/modules/SaleEstimates/types/SaleEstimates.
 @Controller('deals/:dealId/stages')
 @ApiTags('Deals')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
+@RequireFeature(Features.DEAL_STAGES)
 export class DealStagesController {
   constructor(private readonly application: DealStagesApplication) {}
 

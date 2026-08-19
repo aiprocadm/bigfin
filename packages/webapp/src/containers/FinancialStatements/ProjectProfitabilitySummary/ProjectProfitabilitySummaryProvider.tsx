@@ -4,6 +4,8 @@ import React, { createContext, useMemo, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useProjectProfitabilitySummary } from './hooks';
 import { useProjects } from '@/containers/Projects/hooks';
+import { useFeatureCan } from '@/hooks/state';
+import { Features } from '@/constants/features';
 import { transformFilterFormToQuery } from '../common';
 
 const ProjectProfitabilitySummaryContext = createContext();
@@ -21,10 +23,14 @@ function ProjectProfitabilitySummaryProvider({ filter, ...props }) {
   } = useProjectProfitabilitySummary(query, { keepPreviousData: true });
 
   // Fetch project list.
+  // «Проекты» — прежнее имя сделок, и список берётся с той же закрытой флагом
+  // ручки: без проверки отчёт покажет ложное «нет прав» (М2 карты v15).
+  const { featureCan } = useFeatureCan();
+  const isProjectsFeatureCan = featureCan(Features.Projects);
   const {
     data: { projects },
     isLoading: isProjectsLoading,
-  } = useProjects();
+  } = useProjects({}, { enabled: !!isProjectsFeatureCan });
 
   const provider = {
     projectProfitabilitySummary,

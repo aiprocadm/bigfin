@@ -79,12 +79,14 @@ export class PayrollController {
 
   // ---- KPI targets ----
   @Get('kpi/targets')
+  @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @ApiOperation({ summary: 'List manager KPI targets (optionally by year).' })
   getKpiTargets(@Query() query: GetKpiTargetsQueryDto) {
     return this.application.getKpiTargets(query.year);
   }
 
   @Post('kpi/targets')
+  @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @RequirePermission('manage', 'all')
   @ApiOperation({ summary: 'Create a monthly KPI target for a manager (admin only).' })
   createKpiTarget(@Body() dto: CreateKpiTargetDto) {
@@ -92,6 +94,7 @@ export class PayrollController {
   }
 
   @Put('kpi/targets/:id')
+  @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @RequirePermission('manage', 'all')
   @ApiOperation({ summary: 'Edit a KPI target (admin only).' })
   editKpiTarget(
@@ -102,6 +105,7 @@ export class PayrollController {
   }
 
   @Delete('kpi/targets/:id')
+  @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @RequirePermission('manage', 'all')
   @ApiOperation({ summary: 'Delete a KPI target (admin only).' })
   deleteKpiTarget(@Param('id', ParseIntPipe) id: number) {
@@ -109,6 +113,7 @@ export class PayrollController {
   }
 
   @Get('kpi/summary')
+  @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @ApiOperation({ summary: 'Monthly KPI plan/fact/bonus summary by manager.' })
   getKpiSummary(@Query() query: GetKpiSummaryQueryDto) {
     return this.application.getKpiSummary(query.month);

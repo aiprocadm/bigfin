@@ -4,6 +4,8 @@ import { isEmpty } from 'lodash';
 import { useResourceViews, useResourceMeta } from '@/hooks/query';
 import { DashboardInsider } from '@/components';
 import { useProjects } from '../../hooks';
+import { useFeatureCan } from '@/hooks/state';
+import { Features } from '@/constants/features';
 
 const ProjectsListContext = React.createContext();
 
@@ -17,11 +19,18 @@ function ProjectsListProvider({ query, tableStateChanged, ...props }) {
     useResourceViews('projects');
 
   // Fetch accounts list according to the given custom view id.
+  // Список берётся с ручки сделок, закрытой флагом: без проверки страница
+  // покажет ложное «нет прав» (М2 карты v15).
+  const { featureCan } = useFeatureCan();
+  const isProjectsFeatureCan = featureCan(Features.Projects);
   const {
     data: { projects },
     isFetching: isProjectsFetching,
     isLoading: isProjectsLoading,
-  } = useProjects(query, { keepPreviousData: true });
+  } = useProjects(query, {
+    keepPreviousData: true,
+    enabled: !!isProjectsFeatureCan,
+  });
 
   // Detarmines the datatable empty status.
   const isEmptyStatus =

@@ -59,4 +59,7 @@ export const API_ERROR_KEYS: Record<string, string> = {
   // Потолок строк тяжёлых отчётов (М3 карты v15): молча резать нельзя,
   // поэтому сервер отказывает и просит сузить период.
   REPORT_ROWS_LIMIT_EXCEEDED: 'error.report_rows_limit_exceeded',
+  // Потолок строк выгрузки (М3 срез 4 карты v15): раньше стояла
+  // «бесконечность», и большой раздел выгружался молча не целиком.
+  EXPORT_ROWS_LIMIT_EXCEEDED: 'error.export_rows_limit_exceeded',
 };

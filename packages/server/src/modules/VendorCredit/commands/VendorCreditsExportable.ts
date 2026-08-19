@@ -4,6 +4,7 @@ import { Exportable } from '@/modules/Export/Exportable';
 import { IVendorCreditsQueryDTO } from '../types/VendorCredit.types';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { VendorCredit } from '../models/VendorCredit';
+import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
 
 @Injectable()
 @ExportableService({ name: VendorCredit.name })
@@ -27,7 +28,7 @@ export class VendorCreditsExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: 12000,
+      pageSize: EXPORT_ROWS_LIMIT + 1,
       filterQuery,
     } as IVendorCreditsQueryDTO;
 

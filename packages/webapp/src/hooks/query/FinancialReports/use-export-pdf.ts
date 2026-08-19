@@ -4,6 +4,7 @@ import useApiRequest from '@/hooks/useRequest';
 import { AxiosError } from 'axios';
 import { useMutation } from 'react-query';
 import { asyncToastProgress } from '@/utils/async-toast-progress';
+import { showApiError } from '@/utils/showApiError';
 
 interface ResourceExportValues {
   resource: string;
@@ -53,6 +54,11 @@ export const useDownloadExportPdf = () => {
         .then((res) => {
           downloadFile(res.data, `${values.resource}.pdf`);
           return res;
+        })
+        .catch((error) => {
+          // Без этого отказ сервера уходил в пустоту: ни сообщения, ни следа
+          // (М3 срез 4 карты v15).
+          showApiError(error);
         })
         .finally(() => {
           stopProgress();

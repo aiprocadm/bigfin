@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Exportable } from '@/modules/Export/Exportable';
-import { EXPORT_SIZE_LIMIT } from '@/modules/Export/constants';
+import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { BankTransaction } from '../models/BankTransaction';
@@ -29,6 +29,6 @@ export class BankTransactionsExportable extends Exportable {
       .query()
       .withGraphFetched('[cashflowAccount, creditAccount]')
       .orderBy('date', 'desc')
-      .limit(EXPORT_SIZE_LIMIT);
+      .limit(EXPORT_ROWS_LIMIT + 1);
   }
 }

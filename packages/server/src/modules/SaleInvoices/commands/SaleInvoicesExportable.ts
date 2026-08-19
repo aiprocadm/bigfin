@@ -2,7 +2,7 @@ import { Exportable } from '@/modules/Export/Exportable';
 import { Injectable } from '@nestjs/common';
 import { SaleInvoiceApplication } from '../SaleInvoices.application';
 import { ISalesInvoicesFilter } from '../SaleInvoice.types';
-import { EXPORT_SIZE_LIMIT } from '@/modules/Export/constants';
+import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { SaleInvoice } from '../models/SaleInvoice';
 
@@ -28,7 +28,7 @@ export class SaleInvoicesExportable extends Exportable{
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_SIZE_LIMIT,
+      pageSize: EXPORT_ROWS_LIMIT + 1,
       filterQuery,
     } as ISalesInvoicesFilter;
 

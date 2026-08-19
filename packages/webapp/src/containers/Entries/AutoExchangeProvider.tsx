@@ -1,5 +1,9 @@
 import React from 'react';
+import intl from 'react-intl-universal';
+import { Intent } from '@blueprintjs/core';
 import { useLatestExchangeRate } from '@/hooks/query';
+import { AppToaster } from '@/components/AppToaster';
+import { showApiError } from '@/utils/showApiError';
 
 interface AutoExchangeRateProviderProps {
   children: React.ReactNode;
@@ -8,6 +12,7 @@ interface AutoExchangeRateProviderProps {
 interface AutoExchangeRateProviderValue {
   autoExRateCurrency: string;
   isAutoExchangeRateLoading: boolean;
+  isAutoExchangeRateStale: boolean;
 }
 
 const AutoExchangeRateContext = React.createContext(
@@ -28,13 +33,33 @@ function AutoExchangeRateProvider({ children }: AutoExchangeRateProviderProps) {
         staleTime: 0,
         cacheTime: 0,
         retry: 0,
+        // Раньше отказ службы курсов проглатывался молча: поле курса просто
+        // оставалось пустым, и человек не понимал, почему (М3 карты v15).
+        onError: (error: unknown) =>
+          showApiError(error, {}, 'error.ex_rate_failed'),
       },
     );
+
+  // Курс из последнего успешного ответа — рабочий, но человек должен знать,
+  // что он не сегодняшний, иначе документ уйдёт по вчерашней цене молча.
+  // Ответ сервера приходит в snake_case (общий перехватчик), поэтому поле
+  // называется `is_stale`, а не `isStale`.
+  const isAutoExchangeRateStale = Boolean(autoExchangeRate?.is_stale);
+
+  React.useEffect(() => {
+    if (isAutoExchangeRateStale) {
+      AppToaster.show({
+        message: intl.get('exchange_rate.stale_notice'),
+        intent: Intent.WARNING,
+      });
+    }
+  }, [isAutoExchangeRateStale, autoExchangeRate?.exchange_rate]);
 
   const value = {
     autoExRateCurrency,
     setAutoExRateCurrency,
     isAutoExchangeRateLoading,
+    isAutoExchangeRateStale,
     autoExchangeRate,
   };
 

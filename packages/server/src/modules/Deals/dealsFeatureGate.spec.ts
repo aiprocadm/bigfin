@@ -15,11 +15,19 @@ describe('модуль «Сделки» проверяет флаг на сер�
   const guardsOf = (target: any): any[] =>
     Reflect.getMetadata('__guards__', target) ?? [];
 
-  it.each([
-    ['Deals', DealsController, Features.DEALS],
-    ['DealStages', DealStagesController, Features.DEAL_STAGES],
-  ])('%s помечен своим флагом', (_label, controller, feature) => {
-    expect(Reflect.getMetadata(REQUIRED_FEATURE_KEY, controller)).toBe(feature);
+  it('«Сделки» помечены своим флагом', () => {
+    expect(Reflect.getMetadata(REQUIRED_FEATURE_KEY, DealsController)).toBe(
+      Features.DEALS,
+    );
+  });
+
+  it('«Этапы сделки» требуют и свой флаг, и родительский', () => {
+    // Приёмка v15 нашла: при выключенных «Сделках» ручка этапов отвечала
+    // 200. Этапы без сделок бессмысленны — тот же случай, что «KPI без
+    // Зарплаты» в М2.
+    expect(
+      Reflect.getMetadata(REQUIRED_FEATURE_KEY, DealStagesController),
+    ).toEqual([Features.DEALS, Features.DEAL_STAGES]);
   });
 
   it.each([

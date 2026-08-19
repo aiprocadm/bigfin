@@ -27,7 +27,9 @@ import { Features } from '@/common/types/Features';
 @ApiTags('Deals')
 @ApiCommonHeaders()
 @UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
-@RequireFeature(Features.DEAL_STAGES)
+// Этапы без сделок бессмысленны: требуем и родительский флаг, иначе при
+// выключенных «Сделках» ручка этапов оставалась открытой (приёмка v15).
+@RequireFeature(Features.DEALS, Features.DEAL_STAGES)
 export class DealStagesController {
   constructor(private readonly application: DealStagesApplication) {}
 

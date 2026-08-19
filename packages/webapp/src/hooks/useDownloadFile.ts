@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import useApiRequest from './useRequest';
+import { showApiError } from '@/utils/showApiError';
 
 interface IArgs {
   url: string;
@@ -15,20 +16,26 @@ interface IArgs {
 export const useDownloadFile = (args: IArgs) => {
   const apiRequest = useApiRequest();
 
-  const mutation = useMutation<void, AxiosError, IArgs>(() =>
-    apiRequest
-      .get(args.url, {
-        responseType: 'blob',
-        onDownloadProgress: (ev) => {
-          args.onDownloadProgress &&
-            args.onDownloadProgress(Math.round((ev.loaded * 100) / ev.total));
-        },
-        ...args.config,
-      })
-      .then((res) => {
-        downloadFile(res.data, args.filename, args.mime);
-        return res;
-      }),
+  const mutation = useMutation<void, AxiosError, IArgs>(
+    () =>
+      apiRequest
+        .get(args.url, {
+          responseType: 'blob',
+          onDownloadProgress: (ev) => {
+            args.onDownloadProgress &&
+              args.onDownloadProgress(Math.round((ev.loaded * 100) / ev.total));
+          },
+          ...args.config,
+        })
+        .then((res) => {
+          downloadFile(res.data, args.filename, args.mime);
+          return res;
+        }),
+    {
+      // Без этого отказ сервера тонул: прогресс-тост висел, а причина
+      // (например «сузьте период») не доходила (М3 карты v15).
+      onError: (error: unknown) => showApiError(error),
+    },
   );
   return { ...mutation };
 };

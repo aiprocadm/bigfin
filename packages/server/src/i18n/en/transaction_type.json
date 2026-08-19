@@ -21,5 +21,11 @@
   "refund_credit_note": "Refund Credit Note",
   "refund_vendor_credit": "Refund Vendor Credit",
   "landed_cost": "Landed Cost",
-  "payment_made": "Payment made"
+  "payment_made": "Payment made",
+  "warehouse_transfer": "Warehouse transfer",
+  "dividend_payout": "Dividend payout",
+  "credit_disbursement": "Loan disbursement",
+  "credit_installment_payment": "Loan installment payment",
+  "fixed_asset_depreciation": "Fixed asset depreciation",
+  "fixed_asset_disposal": "Fixed asset disposal"
 }

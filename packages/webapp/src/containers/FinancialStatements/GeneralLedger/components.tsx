@@ -42,7 +42,9 @@ export function GeneralLedgerSheetAlerts() {
     return null;
   }
   // Can't continue if the cost compute job is not running.
-  if (!generalLedger.meta.is_cost_compute_running) {
+  // Отчёта может не быть вовсе (сервер отказал) — тогда молчим:
+  // причина уже показана сообщением.
+  if (!generalLedger?.meta?.is_cost_compute_running) {
     return null;
   }
   return (

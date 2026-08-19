@@ -143,5 +143,13 @@ export const TransactionTypes = {
   RefundCreditNote: 'transaction_type.refund_credit_note',
   RefundVendorCredit: 'transaction_type.refund_vendor_credit',
   LandedCost: 'transaction_type.landed_cost',
+  WarehouseTransfer: 'transaction_type.warehouse_transfer',
+  // Модули дописали, а названия завести забыли — из-за этого Главная книга и
+  // Журнал отвечали 500 на любом периоде с такими проводками (М3 карты v15).
+  DividendPayout: 'transaction_type.dividend_payout',
+  CreditDisbursement: 'transaction_type.credit_disbursement',
+  CreditInstallmentPayment: 'transaction_type.credit_installment_payment',
+  FixedAssetDepreciation: 'transaction_type.fixed_asset_depreciation',
+  FixedAssetDisposal: 'transaction_type.fixed_asset_disposal',
   CashflowTransaction: CashflowTransactionTypes,
 };

@@ -73,13 +73,15 @@ interface JournalTableProps {
  * Журнал — движок ReportSheet + ReportTable (виртуализация: записей тысячи).
  */
 export function JournalTable({ companyName }: JournalTableProps) {
-  const {
-    journalSheet: { table, meta },
-  } = useTypedJournalContext();
+  const { journalSheet } = useTypedJournalContext();
+  // Пустой отчёт — это отказ сервера, а не поломка кода: разбираем со
+  // значением по умолчанию, иначе экран падает вместо сообщения.
+  const table = journalSheet?.table;
+  const meta = journalSheet?.meta;
 
   const columns = useMemo(
-    () => flattenServerColumns(table.columns ?? []),
-    [table.columns],
+    () => flattenServerColumns(table?.columns ?? []),
+    [table?.columns],
   );
 
   return (
@@ -91,7 +93,7 @@ export function JournalTable({ companyName }: JournalTableProps) {
     >
       <ReportTable
         columns={columns}
-        rows={table.rows ?? []}
+        rows={table?.rows ?? []}
         virtualized
         isFinalRow={() => false}
         emptyText={intl.get(

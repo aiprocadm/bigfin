@@ -55,7 +55,9 @@ export function JournalSheetAlerts() {
     return null;
   }
   // Can't continue if the cost compute job is running.
-  if (!journalSheet.meta.is_cost_compute_running) {
+  // Отчёта может не быть вовсе (сервер отказал) — тогда молчим:
+  // причина уже показана сообщением.
+  if (!journalSheet?.meta?.is_cost_compute_running) {
     return null;
   }
   return (

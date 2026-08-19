@@ -79,13 +79,15 @@ interface GeneralLedgerTableProps {
 export default function GeneralLedgerTable({
   companyName,
 }: GeneralLedgerTableProps) {
-  const {
-    generalLedger: { table, meta },
-  } = useTypedGeneralLedgerContext();
+  const { generalLedger } = useTypedGeneralLedgerContext();
+  // Пустой отчёт — это отказ сервера, а не поломка кода: разбираем со
+  // значением по умолчанию, иначе экран падает вместо сообщения.
+  const table = generalLedger?.table;
+  const meta = generalLedger?.meta;
 
   const columns = useMemo(
-    () => flattenServerColumns(table.columns ?? []),
-    [table.columns],
+    () => flattenServerColumns(table?.columns ?? []),
+    [table?.columns],
   );
 
   return (
@@ -97,7 +99,7 @@ export default function GeneralLedgerTable({
     >
       <ReportTable
         columns={columns}
-        rows={table.rows ?? []}
+        rows={table?.rows ?? []}
         virtualized
         defaultExpandedDepth={1}
         isFinalRow={() => false}

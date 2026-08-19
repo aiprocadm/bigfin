@@ -107,9 +107,14 @@ export const getTransactionTypeLabel = (
   const _referenceType = upperFirst(camelCase(referenceType));
   const _transactionType = upperFirst(camelCase(transactionType));
 
-  return isObject(TransactionTypes[_referenceType])
+  const label = isObject(TransactionTypes[_referenceType])
     ? TransactionTypes[_referenceType][_transactionType]
-    : TransactionTypes[_referenceType] || null;
+    : TransactionTypes[_referenceType];
+
+  // Раньше здесь возвращался null, и перевод по пустому ключу ронял Главную
+  // книгу и Журнал целиком. Новый модуль без названия теперь показывает свой
+  // технический тип — некрасиво, но отчёт открывается (М3 карты v15).
+  return label || _referenceType || '';
 };
 
 /**

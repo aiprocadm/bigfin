@@ -13,6 +13,7 @@ import { transformToMap } from '@/utils/transform-to-key';
 import { Ledger } from '@/modules/Ledger/Ledger';
 import { TenantModel } from '@/modules/System/models/TenantModel';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { assertReportRowsWithinLimit } from '../../common/reportRowsLimit';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class GeneralLedgerRepository {
@@ -105,25 +106,48 @@ export class GeneralLedgerRepository {
   }
 
   /**
+   * Отбор проводок отчёта — один и тот же для подсчёта и для выборки,
+   * иначе потолок считался бы не по тем строкам, что попадут в книгу.
+   */
+  private applyTransactionsFilter(query: any) {
+    query.modify('filterDateRange', this.filter.fromDate, this.filter.toDate);
+
+    if (!isEmpty(this.filter.branchesIds)) {
+      query.modify('filterByBranches', this.filter.branchesIds);
+    }
+    if (this.filter.accountsIds?.length > 0) {
+      query.whereIn('accountId', this.accountNodesIncludeTransactions);
+    }
+  }
+
+  /**
+   * Считает строки ДО выборки: иначе предохранитель бесполезен — память уже
+   * съедена (М3 срез 3 карты v15).
+   */
+  private async assertTransactionsWithinLimit() {
+    const result: any = await this.accountTransactionModel()
+      .query()
+      .onBuild((query) => {
+        this.applyTransactionsFilter(query);
+        query.count({ rowsCount: '*' });
+      });
+    const row = Array.isArray(result) ? result[0] : result;
+    const rowsCount = Number(row?.rowsCount ?? row?.count ?? 0);
+
+    assertReportRowsWithinLimit(rowsCount);
+  }
+
+  /**
    * Initialize the G/L transactions from/to the given date.
    */
   public async initTransactions() {
+    await this.assertTransactionsWithinLimit();
+
     this.transactions = await this.accountTransactionModel()
       .query()
       .onBuild((query) => {
-        query.modify(
-          'filterDateRange',
-          this.filter.fromDate,
-          this.filter.toDate,
-        );
-        if (!isEmpty(this.filter.branchesIds)) {
-          query.modify('filterByBranches', this.filter.branchesIds);
-        }
+        this.applyTransactionsFilter(query);
         query.orderBy('date', 'ASC');
-
-        if (this.filter.accountsIds?.length > 0) {
-          query.whereIn('accountId', this.accountNodesIncludeTransactions);
-        }
         query.withGraphFetched('account');
       });
     // Transform array transactions to journal collection.

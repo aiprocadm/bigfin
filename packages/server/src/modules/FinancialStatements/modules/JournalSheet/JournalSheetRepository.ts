@@ -7,6 +7,7 @@ import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { transformToMap } from '@/utils/transform-to-key';
 import { Inject } from '@nestjs/common';
 import { ModelObject } from 'objection';
+import { assertReportRowsWithinLimit } from '../../common/reportRowsLimit';
 
 export class JournalSheetRepository {
   @Inject(TenancyContext)
@@ -85,33 +86,56 @@ export class JournalSheetRepository {
   }
 
   /**
+   * Отбор проводок журнала — один и тот же для подсчёта и для выборки,
+   * иначе потолок считался бы не по тем строкам, что попадут в журнал.
+   */
+  private applyTransactionsFilter(query: any) {
+    if (this.filter.fromRange || this.filter.toRange) {
+      query.modify(
+        'filterAmountRange',
+        this.filter.fromRange,
+        this.filter.toRange,
+      );
+    }
+    query.modify('filterDateRange', this.filter.fromDate, this.filter.toDate);
+
+    if (this.filter.transactionType) {
+      query.where('reference_type', this.filter.transactionType);
+    }
+    if (this.filter.transactionType && this.filter.transactionId) {
+      query.where('reference_id', this.filter.transactionId);
+    }
+  }
+
+  /**
+   * Считает строки ДО выборки: иначе предохранитель бесполезен — память уже
+   * съедена (М3 срез 3 карты v15).
+   */
+  private async assertTransactionsWithinLimit() {
+    const result: any = await this.accountTransaction()
+      .query()
+      .onBuild((query) => {
+        this.applyTransactionsFilter(query);
+        query.count({ rowsCount: '*' });
+      });
+    const row = Array.isArray(result) ? result[0] : result;
+    const rowsCount = Number(row?.rowsCount ?? row?.count ?? 0);
+
+    assertReportRowsWithinLimit(rowsCount);
+  }
+
+  /**
    * Initialize account transactions.
    */
   async initAccountTransactions() {
+    await this.assertTransactionsWithinLimit();
+
     // Retrieve all journal transactions based on the given query.
     const transactions = await this.accountTransaction()
       .query()
       .onBuild((query) => {
-        if (this.filter.fromRange || this.filter.toRange) {
-          query.modify(
-            'filterAmountRange',
-            this.filter.fromRange,
-            this.filter.toRange,
-          );
-        }
-        query.modify(
-          'filterDateRange',
-          this.filter.fromDate,
-          this.filter.toDate,
-        );
+        this.applyTransactionsFilter(query);
         query.orderBy(['date', 'createdAt', 'indexGroup', 'index']);
-
-        if (this.filter.transactionType) {
-          query.where('reference_type', this.filter.transactionType);
-        }
-        if (this.filter.transactionType && this.filter.transactionId) {
-          query.where('reference_id', this.filter.transactionId);
-        }
         query.withGraphFetched('account');
       });
     this.accountTransactions = transactions;

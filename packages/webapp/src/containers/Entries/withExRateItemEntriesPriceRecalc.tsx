@@ -2,6 +2,7 @@
 import { useFormikContext } from 'formik';
 import { useUpdateEntriesOnExchangeRateChange } from './useUpdateEntriesOnExchangeRateChange';
 import { useAutoExRateContext } from './AutoExchangeProvider';
+import { pickSyncedExRate } from './pickSyncedExRate';
 import { useCallback, useEffect } from 'react';
 import { useCurrentOrganization } from '@/hooks/state';
 
@@ -105,10 +106,16 @@ export const useSyncExRateToForm = ({ onSynced }: UseSyncExRateToFormProps) => {
   // Sync the fetched real-time exchanage rate to the form.
   useEffect(() => {
     if (!isAutoExchangeRateLoading && autoExRateCurrency) {
-      // Sets a default ex. rate to 1 in case the exchange rate service wasn't configured.
-      // or returned an error from the server-side.
-      const exchangeRate = autoExchangeRate?.exchange_rate || 1;
+      // Раньше здесь стояла единица «на случай, если служба курсов не
+      // настроена или ответила ошибкой» — и счёт в валюте молча считался
+      // один к одному с рублём. Курса нет — поле остаётся человеку, а
+      // сообщение об этом уже показано (М3 карты v15).
+      const exchangeRate = pickSyncedExRate(autoExchangeRate?.exchange_rate);
 
+      if (exchangeRate === null) {
+        onSynced?.();
+        return;
+      }
       setFieldValue('exchange_rate', exchangeRate + '');
       setFieldValue(
         'entries',

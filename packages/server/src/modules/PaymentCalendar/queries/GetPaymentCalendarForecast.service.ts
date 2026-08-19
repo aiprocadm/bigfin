@@ -253,7 +253,10 @@ export class GetPaymentCalendarForecastService {
       fromCurrency,
       toCurrency: baseCurrency,
     } as any);
-    return Math.round(amount * Number(exchangeRate || 1) * 1000) / 1000;
+    // Без «|| 1»: служба курсов теперь либо возвращает курс больше нуля,
+    // либо отказывает. Подстановка единицы молча считала бы валютную
+    // операцию один к одному и завышала прогноз (М3 карты v15).
+    return Math.round(amount * Number(exchangeRate) * 1000) / 1000;
   }
 
   private withinRange(date: string, from: string, to: string): string[] {

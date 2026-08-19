@@ -59,12 +59,15 @@ class CommandBranchDto {
   country?: string;
 
   @ApiPropertyOptional({
+    name: 'phone_number',
     description: 'Branch phone number',
     example: '+1-555-123-4567',
   })
   @IsOptional()
   @IsString()
-  phone_number?: string;
+  // Поле в camelCase намеренно: входящее тело запроса переименовывает общий
+  // перехватчик. Со snake_case телефон филиала молча пропадал (М3 карты v15).
+  phoneNumber?: string;
 
   @ApiPropertyOptional({
     description: 'Branch email',

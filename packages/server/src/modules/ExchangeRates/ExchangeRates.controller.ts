@@ -13,18 +13,22 @@ import {
   ApiResponse,
   ApiQuery,
 } from '@nestjs/swagger';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ExchangeRateApplication } from './ExchangeRates.application';
 import { ExchangeRateLatestQueryDto } from './dtos/ExchangeRateLatestQuery.dto';
 import { ExchangeRateLatestResponseDto } from './dtos/ExchangeRateLatestResponse.dto';
 
 interface RequestWithTenantId extends Request {
-  tenantId: number;
+  tenantId?: number;
 }
 
 @Controller('exchange-rates')
 @ApiTags('Exchange Rates')
 export class ExchangeRatesController {
-  constructor(private readonly exchangeRateApp: ExchangeRateApplication) {}
+  constructor(
+    private readonly exchangeRateApp: ExchangeRateApplication,
+    private readonly tenancyContext: TenancyContext,
+  ) {}
 
   @Get('/latest')
   @UsePipes(
@@ -62,11 +66,15 @@ export class ExchangeRatesController {
     @Query() query: ExchangeRateLatestQueryDto,
     @Req() req: RequestWithTenantId,
   ): Promise<ExchangeRateLatestResponseDto> {
-    const tenantId = req.tenantId;
+    // Организация берётся из контекста запроса, как во всех остальных
+    // контроллерах: поле `req.tenantId` в Bigfin никто не заполняет, из-за
+    // чего этот запрос всегда падал с 500 (М3 карты v15).
+    const metadata: any = await this.tenancyContext.getTenantMetadata();
+    const tenantId = metadata?.tenantId ?? req.tenantId;
 
     const exchangeRate = await this.exchangeRateApp.latest(tenantId, {
-      fromCurrency: query.from_currency,
-      toCurrency: query.to_currency,
+      fromCurrency: query.fromCurrency,
+      toCurrency: query.toCurrency,
     });
     return exchangeRate;
   }

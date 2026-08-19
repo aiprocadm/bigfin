@@ -6,6 +6,9 @@ import {
 } from './types';
 import { ServiceError } from '@/modules/Items/ServiceError';
 
+/** Ждать ответа службы курсов дольше нет смысла: экран уже «висит». */
+const REQUEST_TIMEOUT_MS = 10000;
+
 export class OpenExchangeRate implements IExchangeRateService {
   private appId: string;
 
@@ -28,13 +31,26 @@ export class OpenExchangeRate implements IExchangeRateService {
 
     try {
       const result = await Axios.get(OPEN_EXCHANGE_RATE_LATEST_URL, {
+        // Без таймаута недоступная служба держала запрос бесконечно, а
+        // календарь ходит сюда на каждую валютную операцию (М3 карты v15).
+        timeout: REQUEST_TIMEOUT_MS,
         params: {
           app_id: this.appId,
           base: baseCurrency,
           symbols: toCurrency,
         },
       });
-      return result.data.rates[toCurrency] || (1 as number);
+      const rate = result.data?.rates?.[toCurrency];
+
+      // Раньше здесь стояло «|| 1»: отсутствующий курс превращался в единицу
+      // и документ в чужой валюте молча считался один к одному.
+      if (typeof rate !== 'number' || !(rate > 0)) {
+        throw new ServiceError(
+          EchangeRateErrors.EX_RATE_NOT_FOUND,
+          'Курс запрошенной валюты не получен.',
+        );
+      }
+      return rate;
     } catch (error) {
       this.handleLatestErrors(error);
     }
@@ -79,7 +95,21 @@ export class OpenExchangeRate implements IExchangeRateService {
         EchangeRateErrors.EX_RATE_INVALID_BASE_CURRENCY,
         'The given base currency is invalid.'
       );
+    } else if (error.response?.status === 429) {
+      throw new ServiceError(
+        EchangeRateErrors.EX_RATE_LIMIT_EXCEEDED,
+        'Превышен лимит запросов к службе курсов.',
+      );
     }
-    throw error;
+    // Своя деловая ошибка (например «курса нет») уходит как есть; всё
+    // остальное — сеть, таймаут, ошибка на их стороне — одним понятным кодом,
+    // иначе наружу летит сырая сетевая ошибка и превращается в 500.
+    if (error instanceof ServiceError) {
+      throw error;
+    }
+    throw new ServiceError(
+      EchangeRateErrors.EX_RATE_SERVICE_UNAVAILABLE,
+      'Служба курсов валют не ответила.',
+    );
   }
 }

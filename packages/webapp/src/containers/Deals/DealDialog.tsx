@@ -41,7 +41,9 @@ const STATUS_OPTIONS = ['in_progress', 'completed', 'cancelled'];
 export function DealDialog({ deal, onDone, onCancel }: Props) {
   const isEdit = !!deal?.id;
   const { featureCan } = useFeatureCan();
-  const canKpi = featureCan('payroll_kpi');
+  // Список сотрудников закрыт флагом «Зарплата» — без него 403 и ложное
+  // «нет прав» прямо в диалоге сделки (М2 карты v15).
+  const canKpi = featureCan('payroll_kpi') && featureCan('payroll');
   const createMutation = useCreateDeal({});
   const editMutation = useEditDeal({});
   const { data: customersData } = useCustomers({}, {});

@@ -23,16 +23,18 @@ export class FeatureGuard implements CanActivate {
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const feature = this.reflector.getAllAndOverride<string | undefined>(
-      REQUIRED_FEATURE_KEY,
-      [context.getHandler(), context.getClass()],
-    );
-    if (!feature) return true;
+    const required = this.reflector.getAllAndOverride<
+      string | string[] | undefined
+    >(REQUIRED_FEATURE_KEY, [context.getHandler(), context.getClass()]);
+    if (!required) return true;
 
-    const accessible = await this.featuresManager.accessible(feature);
+    // Ручка может жить за несколькими флагами сразу (под-модуль + родитель).
+    for (const feature of Array.isArray(required) ? required : [required]) {
+      const accessible = await this.featuresManager.accessible(feature);
 
-    if (!accessible) {
-      throw new ForbiddenException(`Модуль «${feature}» выключен`);
+      if (!accessible) {
+        throw new ForbiddenException(`Модуль «${feature}» выключен`);
+      }
     }
     return true;
   }

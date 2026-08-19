@@ -21,5 +21,11 @@ export const REQUIRED_FEATURE_KEY = 'requiredFeature';
  * export class BudgetsController { ... }
  * ```
  */
-export const RequireFeature = (feature: Features) =>
-  SetMetadata(REQUIRED_FEATURE_KEY, feature);
+export const RequireFeature = (...features: Features[]) =>
+  // Один флаг храним как есть, несколько — списком: пометка на ручке
+  // ПЕРЕКРЫВАЕТ пометку класса, поэтому под-модуль обязан назвать и свой
+  // флаг, и родительский, иначе откроется при выключенном родителе.
+  SetMetadata(
+    REQUIRED_FEATURE_KEY,
+    features.length === 1 ? features[0] : features,
+  );

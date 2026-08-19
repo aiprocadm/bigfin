@@ -5,6 +5,9 @@ import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { FeatureGuard } from '@/modules/Features/Feature.guard';
+import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
+import { Features } from '@/common/types/Features';
 import { NotificationsApplication } from './Notifications.application';
 import { UpdateNotificationPreferencesDto } from './dtos/NotificationPreferences.dto';
 import { ConnectTelegramDto } from './dtos/ConnectTelegram.dto';
@@ -12,7 +15,7 @@ import { ConnectTelegramDto } from './dtos/ConnectTelegram.dto';
 @Controller('notifications')
 @ApiTags('Notifications')
 @ApiCommonHeaders()
-@UseGuards(AuthorizationGuard, PermissionGuard)
+@UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
 export class NotificationsController {
   constructor(private readonly app: NotificationsApplication) {}
 
@@ -44,6 +47,9 @@ export class NotificationsController {
   }
 
   @Post('telegram/entries/pull')
+  // Тумблер модуля обязан что-то значить: фоновый разбор флаг спрашивал, а
+  // ручной запуск шёл мимо — выключенный модуль продолжал работать по кнопке.
+  @RequireFeature(Features.TELEGRAM_QUICK_ENTRY)
   @RequirePermission('manage', 'all')
   @ApiOperation({
     summary: 'Pull new Telegram messages and record them as operations (admin only).',

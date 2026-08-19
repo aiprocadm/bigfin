@@ -2,6 +2,7 @@
 import { Module } from '@nestjs/common';
 import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.module';
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
+import { FeaturesModule } from '@/modules/Features/Features.module';
 import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { CostAllocationModule } from '@/modules/CostAllocation/CostAllocation.module';
 import { DealsController } from './Deals.controller';
@@ -23,7 +24,15 @@ import { EditDealStageService } from './commands/EditDealStage.service';
 import { DeleteDealStageService } from './commands/DeleteDealStage.service';
 
 @Module({
-  imports: [TenancyDatabaseModule, TenancyModule, CostAllocationModule],
+  // FeaturesModule — ради FeatureGuard на контроллерах: без него приложение
+  // не поднимется вовсе («Nest can't resolve dependencies»), а тесты этого
+  // не видят (М2 карты v15).
+  imports: [
+    FeaturesModule,
+    TenancyDatabaseModule,
+    TenancyModule,
+    CostAllocationModule,
+  ],
   controllers: [DealsController, DealStagesController],
   providers: [
     DealsApplication,

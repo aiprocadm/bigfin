@@ -14,6 +14,7 @@ import { ResourceService } from '../Resource/ResourceService';
 import { getExportableService } from './decorators/ExportableModel.decorator';
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { I18nService } from 'nestjs-i18n';
+import { assertExportRowsWithinLimit } from './exportRowsLimit';
 
 @Injectable()
 export class ExportResourceService {
@@ -53,6 +54,11 @@ export class ExportResourceService {
     this.validateResourceMeta(resourceMeta);
 
     const data = await this.getExportableData(resource);
+
+    // Данные не теряются молча: не помещается — говорим прямо, ещё до сборки
+    // книги, иначе память съедена зря (М3 срез 4 карты v15).
+    assertExportRowsWithinLimit(data?.length ?? 0, resourceName);
+
     const transformed = this.transformExportedData(resource, data);
 
     // Returns the csv, xlsx format.

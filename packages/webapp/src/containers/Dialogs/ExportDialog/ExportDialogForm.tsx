@@ -12,6 +12,7 @@ import { AppToaster } from '@/components';
 import { Intent } from '@blueprintjs/core';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
+import { showApiError } from '@/utils/showApiError';
 
 // Default initial form values.
 const defaultInitialValues = {
@@ -45,12 +46,11 @@ function ExportDialogFormRoot({
         setSubmitting(false);
         closeDialog(DialogsName.Export);
       })
-      .catch(() => {
+      .catch((error) => {
         setSubmitting(false);
-        AppToaster.show({
-          intent: Intent.DANGER,
-          message: intl.get('something_went_wrong'),
-        });
+        // Раньше здесь стоял общий текст «что-то пошло не так», и причина
+        // отказа (например «сузьте отбор») терялась (М3 карты v15).
+        showApiError(error);
       });
   };
 

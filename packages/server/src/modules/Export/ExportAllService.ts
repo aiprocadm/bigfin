@@ -6,6 +6,11 @@ import { ExportAls } from './ExportAls';
 import { ResourceService } from '@/modules/Resource/ResourceService';
 import { getExportableServiceNames } from './decorators/ExportableModel.decorator';
 import { getDataAccessor } from './utils';
+import {
+  EXPORT_ROWS_LIMIT,
+  ExportErrors,
+  isExportOverLimit,
+} from './exportRowsLimit';
 
 /**
  * «Выгрузить всё» — одна xlsx-книга, лист на каждый экспортируемый ресурс
@@ -35,23 +40,37 @@ export class ExportAllService {
 
   private async exportAllRun(resourceNames: string[]): Promise<Buffer> {
     const workbook = xlsx.utils.book_new();
-    const skipped: string[] = [];
+    // Раньше в листе было только имя раздела: по нему не отличить
+    // «сломалось» от «не поместилось» (М3 срез 4 карты v15).
+    const skipped: Array<{ resource: string; reason: string }> = [];
 
     for (const resource of resourceNames) {
       try {
         const meta: any = this.resourceService.getResourceMeta(resource);
         if (!meta?.exportable || !meta?.columns) {
-          skipped.push(resource);
+          skipped.push({ resource, reason: 'Not exportable' });
           continue;
         }
         const columns = this.exportService.getExportableColumns(
           this.resourceService.getResourceColumns(resource),
         );
         const data = await this.exportService.getExportableData(resource);
+
+        // Один большой раздел не должен ронять всю книгу — пропускаем его и
+        // пишем причину. Считаем ДО разворота строк документа: разворот из
+        // ста тысяч записей сделал бы миллион (М3 срез 4 карты v15).
+        if (isExportOverLimit(data?.length ?? 0)) {
+          skipped.push({ resource, reason: this.tooManyRowsReason() });
+          continue;
+        }
         const transformed = this.exportService.transformExportedData(
           resource,
           data,
         );
+        if (isExportOverLimit(transformed?.length ?? 0)) {
+          skipped.push({ resource, reason: this.tooManyRowsReason() });
+          continue;
+        }
         const rows = transformed.map((item: any) =>
           columns.map((col: any) => get(item, getDataAccessor(col))),
         );
@@ -64,17 +83,33 @@ export class ExportAllService {
           this.sheetName(resource),
         );
       } catch (error) {
-        skipped.push(resource);
+        skipped.push({ resource, reason: this.skipReason(error) });
       }
     }
     if (skipped.length > 0) {
       const sheet = xlsx.utils.aoa_to_sheet([
-        ['Resource'],
-        ...skipped.map((name) => [name]),
+        ['Resource', 'Reason'],
+        ...skipped.map((item) => [item.resource, item.reason]),
       ]);
       xlsx.utils.book_append_sheet(workbook, sheet, 'Skipped');
     }
     return xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+  }
+
+  /**
+   * Почему раздел не попал в книгу. Объём — не поломка, поэтому у него свой
+   * текст с числами: человек должен понимать, что делать.
+   */
+  private skipReason(error: any): string {
+    if (error?.errorType === ExportErrors.EXPORT_ROWS_LIMIT_EXCEEDED) {
+      return this.tooManyRowsReason();
+    }
+    return error?.message || 'Export failed';
+  }
+
+  /** Текст причины «не поместилось»: с числом, иначе он бесполезен. */
+  private tooManyRowsReason(): string {
+    return `Too many rows (over ${EXPORT_ROWS_LIMIT}) — narrow the filter or export separately`;
   }
 
   /**

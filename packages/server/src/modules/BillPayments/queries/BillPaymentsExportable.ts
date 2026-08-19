@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BillPaymentsApplication } from '../BillPaymentsApplication.service';
 import { Exportable } from '@/modules/Export/Exportable';
-import { EXPORT_SIZE_LIMIT } from '@/modules/Export/constants';
+import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { BillPayment } from '../models/BillPayment';
 
@@ -27,7 +27,7 @@ export class BillPaymentsExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_SIZE_LIMIT,
+      pageSize: EXPORT_ROWS_LIMIT + 1,
       filterQuery,
     } as any;
 

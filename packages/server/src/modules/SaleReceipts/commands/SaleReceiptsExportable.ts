@@ -1,7 +1,7 @@
 import { Exportable } from '@/modules/Export/Exportable';
 import { Injectable } from '@nestjs/common';
 import { SaleReceiptApplication } from '../SaleReceiptApplication.service';
-import { EXPORT_SIZE_LIMIT } from '@/modules/Export/constants';
+import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
 import { GetSaleReceiptsQueryDto } from '../dtos/GetSaleReceiptsQuery.dto';
 import { ISortOrder } from '@/modules/DynamicListing/DynamicFilter/DynamicFilter.types';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
@@ -30,7 +30,7 @@ export class SaleReceiptsExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_SIZE_LIMIT,
+      pageSize: EXPORT_ROWS_LIMIT + 1,
       filterQuery,
     } as GetSaleReceiptsQueryDto;
 

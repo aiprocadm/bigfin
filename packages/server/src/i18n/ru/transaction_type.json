@@ -21,5 +21,11 @@
   "refund_credit_note": "Возврат по кредит-ноте",
   "refund_vendor_credit": "Получение денег по возврату поставщику",
   "landed_cost": "Накладные расходы",
-  "payment_made": "Платёж поставщику"
+  "payment_made": "Платёж поставщику",
+  "warehouse_transfer": "Перемещение между складами",
+  "dividend_payout": "Выплата дивидендов",
+  "credit_disbursement": "Выдача займа",
+  "credit_installment_payment": "Платёж по займу",
+  "fixed_asset_depreciation": "Амортизация основного средства",
+  "fixed_asset_disposal": "Выбытие основного средства"
 }

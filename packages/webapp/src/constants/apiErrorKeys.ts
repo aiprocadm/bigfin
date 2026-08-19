@@ -56,4 +56,7 @@ export const API_ERROR_KEYS: Record<string, string> = {
   EX_RATE_SERVICE_API_KEY_REQUIRED: 'error.ex_rate_service_not_configured',
   EX_RATE_SERVICE_NOT_ALLOWED: 'error.ex_rate_service_not_allowed',
   EX_RATE_INVALID_BASE_CURRENCY: 'error.ex_rate_invalid_base_currency',
+  // Потолок строк тяжёлых отчётов (М3 карты v15): молча резать нельзя,
+  // поэтому сервер отказывает и просит сузить период.
+  REPORT_ROWS_LIMIT_EXCEEDED: 'error.report_rows_limit_exceeded',
 };

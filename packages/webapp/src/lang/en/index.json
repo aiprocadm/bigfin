@@ -1605,6 +1605,7 @@
   "error.ex_rate_service_not_configured": "Automatic exchange rates are not connected. Enter the rate manually or contact support.",
   "error.ex_rate_service_not_allowed": "The exchange rate service does not provide a rate for this currency pair. Enter the rate manually.",
   "error.ex_rate_invalid_base_currency": "The organization base currency is not supported for automatic rates. Check it in the settings.",
+  "error.report_rows_limit_exceeded": "The report has {rowsCount} rows, which is over the {limit} limit. Narrow the period or pick fewer accounts.",
   "error.ex_rate_failed": "Could not get the currency rate. Enter the rate manually.",
   "exchange_rate.stale_notice": "The rate service is unavailable — the last known rate was used. Check it before saving.",
   "blog": "Blog",

@@ -2,6 +2,7 @@
 import React from 'react';
 import useApiRequest from './useRequest';
 import { normalizeApiPath } from '../utils';
+import { showApiError } from '@/utils/showApiError';
 
 export const useRequestPdf = (httpProps) => {
   const apiRequest = useApiRequest();
@@ -52,6 +53,14 @@ export const useRequestPdf = (httpProps) => {
         setIsLoaded(true);
         setResponse(response);
         setFilename(_filename);
+      })
+      .catch((error) => {
+        // Раньше отказ сервера оставлял предпросмотр крутиться вечно:
+        // ошибка не ловилась вовсе (М3 карты v15).
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+        showApiError(error);
       });
 
     // Освобождаем blob-URL при размонтировании, иначе память браузера течёт

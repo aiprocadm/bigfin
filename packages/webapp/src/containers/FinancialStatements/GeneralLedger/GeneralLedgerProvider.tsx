@@ -4,6 +4,7 @@ import React, { createContext, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useGeneralLedgerSheet } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
+import { showApiError } from '@/utils/showApiError';
 
 const GeneralLedgerContext = createContext();
 
@@ -21,7 +22,12 @@ function GeneralLedgerProvider({ query, ...props }) {
     isFetching,
     isLoading,
     refetch,
-  } = useGeneralLedgerSheet(httpQuery, { keepPreviousData: true });
+  } = useGeneralLedgerSheet(httpQuery, {
+    keepPreviousData: true,
+    // Отчёт может честно отказать («сузьте период»). Без этого причина
+    // не доходила до человека вовсе — экран падал в общую заглушку.
+    onError: (error: unknown) => showApiError(error),
+  });
 
   const provider = {
     generalLedger,

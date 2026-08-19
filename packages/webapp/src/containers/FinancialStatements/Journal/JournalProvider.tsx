@@ -3,6 +3,7 @@ import React, { createContext, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useJournalSheet } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
+import { showApiError } from '@/utils/showApiError';
 
 const JournalSheetContext = createContext();
 
@@ -20,7 +21,12 @@ function JournalSheetProvider({ query, ...props }) {
     isFetching,
     isLoading,
     refetch,
-  } = useJournalSheet(httpQuery, { keepPreviousData: true });
+  } = useJournalSheet(httpQuery, {
+    keepPreviousData: true,
+    // Отчёт может честно отказать («сузьте период»). Без этого причина
+    // не доходила до человека вовсе — экран падал в общую заглушку.
+    onError: (error: unknown) => showApiError(error),
+  });
 
   const provider = {
     journalSheet,

@@ -4,6 +4,7 @@ import { Box } from '@/components';
 
 import { CustomerFormBasicSection } from './CustomerFormBasicSection';
 import { CustomerFormFinancialSection } from './CustomerFormFinancialSection';
+import { ContactRequisitesSection } from '@/containers/Contacts/ContactRequisitesSection';
 import { CustomerBillingAddress } from './CustomerBillingAddress';
 import { CustomerShippingAddress } from './CustomerShippingAddress';
 import { CustomerFormNotesSection } from './CustomerFormNotesSection';
@@ -19,6 +20,9 @@ export function CustomerFormSections() {
       <Divider className={customerFormSectionDividerClass} />
 
       <CustomerFormFinancialSection />
+      <Divider className={customerFormSectionDividerClass} />
+
+      <ContactRequisitesSection />
       <Divider className={customerFormSectionDividerClass} />
 
       <CustomerBillingAddress />

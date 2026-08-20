@@ -1805,6 +1805,8 @@
   "requisites.bank_bik": "БИК",
   "requisites.bank_account": "Расчётный счёт",
   "requisites.bank_correspondent_account": "Корреспондентский счёт",
+  "requisites.legal_form.individual": "Физлицо (без статуса ИП)",
+  "requisites.contact_bank.hint": "Банковские реквизиты контрагента печатаются в его документах.",
   "requisites.bank.hint": "Эти четыре поля печатаются в счёте на оплату. Без них покупатель не сможет по нему заплатить.",
   "preferences.combobox.search": "Поиск…",
   "preferences.combobox.empty": "Ничего не найдено",

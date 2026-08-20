@@ -1805,6 +1805,8 @@
   "requisites.bank_bik": "BIK",
   "requisites.bank_account": "Bank account",
   "requisites.bank_correspondent_account": "Correspondent account",
+  "requisites.legal_form.individual": "Individual (no business status)",
+  "requisites.contact_bank.hint": "The counterparty's bank details are printed on their documents.",
   "requisites.bank.hint": "These four fields are printed on the payment invoice. Without them the customer cannot pay it.",
   "preferences.combobox.search": "Search…",
   "preferences.combobox.empty": "Nothing found",

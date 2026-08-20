@@ -5,6 +5,7 @@ import { Box } from '@/components';
 
 import { VendorFormBasicSection } from './VendorFormBasicSection';
 import { VendorFormFinancialSection } from './VendorFormFinancialSection';
+import { ContactRequisitesSection } from '@/containers/Contacts/ContactRequisitesSection';
 import { VendorBillingAddress } from './VendorBillingAddress';
 import { VendorShippingAddress } from './VendorShippingAddress';
 import { VendorFormNotesSection } from './VendorFormNotesSection';
@@ -20,6 +21,9 @@ export function VendorFormSections() {
       <Divider className={vendorFormSectionDividerClass} />
 
       <VendorFormFinancialSection />
+      <Divider className={vendorFormSectionDividerClass} />
+
+      <ContactRequisitesSection />
       <Divider className={vendorFormSectionDividerClass} />
 
       <VendorBillingAddress />

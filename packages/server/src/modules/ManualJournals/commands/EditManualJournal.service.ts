@@ -13,6 +13,7 @@ import { events } from '@/common/events/events';
 import { ManualJournal } from '../models/ManualJournal';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { EditManualJournalDto } from '../dtos/ManualJournal.dto';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class EditManualJournal {
@@ -23,6 +24,8 @@ export class EditManualJournal {
 
     @Inject(ManualJournal.name)
     private manualJournalModel: TenantModelProxy<typeof ManualJournal>,
+
+    private tenancyContext: TenancyContext,
   ) {}
 
   /**
@@ -53,6 +56,14 @@ export class EditManualJournal {
     // Validate accounts with contact type from the given config.
     await this.validator.dynamicValidateAccountsWithContactType(
       manualJournalDTO.entries,
+    );
+    // Валюта и курс проводки (Р1 срез 3): при правке эта проверка не
+    // вызывалась вовсе, и валютную проводку можно было завести в два шага.
+    const tenantMeta = await this.tenancyContext.getTenantMetadata();
+
+    await this.validator.validateJournalCurrency(
+      manualJournalDTO,
+      tenantMeta?.baseCurrency,
     );
   };
 

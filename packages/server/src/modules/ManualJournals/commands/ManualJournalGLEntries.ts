@@ -4,17 +4,20 @@ import { LedgerStorageService } from '@/modules/Ledger/LedgerStorage.service';
 import { ManualJournal } from '../models/ManualJournal';
 import { ManualJournalGL } from './ManualJournalGL';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class ManualJournalGLEntries {
   /**
    * @param {typeof ManualJournal} manualJournalModel - The manual journal model.
    * @param {LedgerStorageService} ledgerStorage - The ledger storage service.
+   * @param {TenancyContext} tenancyContext - The tenancy context.
    */
   constructor(
     @Inject(ManualJournal.name)
     private readonly manualJournalModel: TenantModelProxy<typeof ManualJournal>,
     private readonly ledgerStorage: LedgerStorageService,
+    private readonly tenancyContext: TenancyContext,
   ) {}
 
   /**
@@ -32,8 +35,12 @@ export class ManualJournalGLEntries {
       .findById(manualJournalId)
       .withGraphFetched('entries.account');
 
+    const tenantMeta = await this.tenancyContext.getTenantMetadata();
+
     // Retrieves the ledger entries of the given manual journal.
-    const ledger = new ManualJournalGL(manualJournal).getManualJournalGLedger();
+    const ledger = new ManualJournalGL(manualJournal)
+      .setBaseCurrencyCode(tenantMeta?.baseCurrency)
+      .getManualJournalGLedger();
 
     // Commits the given ledger on the storage.
     await this.ledgerStorage.commit(ledger, trx);

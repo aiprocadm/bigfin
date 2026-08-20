@@ -2,12 +2,54 @@ import { Ledger } from '@/modules/Ledger/Ledger';
 import { ManualJournal } from '../models/ManualJournal';
 import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { ManualJournalEntry } from '../models/ManualJournalEntry';
+import { ServiceError } from '@/modules/Items/ServiceError';
+import { EXCHANGE_RATE_ERRORS } from '@/common/validators/assertValidExchangeRate';
 
 export class ManualJournalGL {
   manualJournal: ManualJournal;
+  baseCurrencyCode: string;
 
   constructor(manualJournal: ManualJournal) {
     this.manualJournal = manualJournal;
+  }
+
+  /**
+   * Sets the base currency code of the organization.
+   * @param {string} baseCurrencyCode - The base currency code.
+   * @returns {ManualJournalGL}
+   */
+  public setBaseCurrencyCode(baseCurrencyCode: string): ManualJournalGL {
+    this.baseCurrencyCode = baseCurrencyCode;
+
+    return this;
+  }
+
+  /**
+   * Курс, по которому суммы проводки переводятся в базовую валюту (Р1 срез 3).
+   *
+   * Раньше суммы уходили в журнал как есть: 1000 USD при курсе 80 ложились
+   * рядом с рублями как 1000 — занижение в 80 раз, и дебет с кредитом при
+   * этом сходились, так что ошибка была бесшумной.
+   *
+   * Для проводки в базовой валюте курс не нужен — там честная единица.
+   * Для валютной пустой курс не подменяется единицей, а падает: молчаливое
+   * «один к одному» и есть та самая ошибка.
+   */
+  private get exchangeRate(): number {
+    const rate = Number(this.manualJournal.exchangeRate);
+
+    if (Number.isFinite(rate) && rate > 0) {
+      return rate;
+    }
+    const isForeign =
+      !!this.manualJournal.currencyCode &&
+      !!this.baseCurrencyCode &&
+      this.manualJournal.currencyCode !== this.baseCurrencyCode;
+
+    if (isForeign) {
+      throw new ServiceError(EXCHANGE_RATE_ERRORS.EXCHANGE_RATE_REQUIRED);
+    }
+    return 1;
   }
 
   /**
@@ -51,11 +93,12 @@ export class ManualJournalGL {
    */
   public getManualJournalEntry(entry: ManualJournalEntry): ILedgerEntry {
     const commonEntry = this.manualJournalCommonEntry;
+    const exchangeRate = this.exchangeRate;
 
     return {
       ...commonEntry,
-      debit: entry.debit,
-      credit: entry.credit,
+      debit: entry.debit * exchangeRate,
+      credit: entry.credit * exchangeRate,
       accountId: entry.accountId,
 
       contactId: entry.contactId,

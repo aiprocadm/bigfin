@@ -149,3 +149,56 @@ describe('ручная проводка — счета и номер', () => {
     });
   });
 });
+
+/**
+ * Р1 срез 3 (карта v16). Проверка валюты стояла только на создании и только
+ * про счета: курс не требовался вовсе, а правка обходила и её.
+ */
+describe('ручная проводка — валюта и курс', () => {
+  const usdDto: any = {
+    currencyCode: 'USD',
+    entries: [entry({ accountId: 1, debit: 1000 }), entry({ accountId: 2, credit: 1000 })],
+  };
+
+  it('не пропускает валютную проводку без курса', async () => {
+    const v = validators([{ id: 1, currencyCode: 'RUB' }, { id: 2, currencyCode: 'RUB' }]);
+
+    await expect(v.validateJournalCurrency(usdDto, 'RUB')).rejects.toMatchObject({
+      errorType: 'EXCHANGE_RATE_REQUIRED',
+    });
+  });
+
+  it('не пропускает валютную проводку с нулевым курсом', async () => {
+    const v = validators([{ id: 1, currencyCode: 'RUB' }, { id: 2, currencyCode: 'RUB' }]);
+
+    await expect(
+      v.validateJournalCurrency({ ...usdDto, exchangeRate: 0 }, 'RUB'),
+    ).rejects.toMatchObject({ errorType: 'EXCHANGE_RATE_REQUIRED' });
+  });
+
+  it('пропускает валютную проводку с настоящим курсом', async () => {
+    const v = validators([{ id: 1, currencyCode: 'RUB' }, { id: 2, currencyCode: 'RUB' }]);
+
+    await expect(
+      v.validateJournalCurrency({ ...usdDto, exchangeRate: 80 }, 'RUB'),
+    ).resolves.toBeUndefined();
+  });
+
+  it('проводке в базовой валюте курс не нужен', async () => {
+    const v = validators([{ id: 1, currencyCode: 'RUB' }, { id: 2, currencyCode: 'RUB' }]);
+
+    await expect(
+      v.validateJournalCurrency({ ...usdDto, currencyCode: 'RUB' }, 'RUB'),
+    ).resolves.toBeUndefined();
+  });
+
+  it('по-прежнему не пускает счёт в третьей валюте', async () => {
+    const v = validators([{ id: 1, currencyCode: 'RUB' }, { id: 2, currencyCode: 'EUR' }]);
+
+    await expect(
+      v.validateJournalCurrency({ ...usdDto, exchangeRate: 80 }, 'RUB'),
+    ).rejects.toMatchObject({
+      errorType: ERRORS.COULD_NOT_ASSIGN_DIFFERENT_CURRENCY_TO_ACCOUNTS,
+    });
+  });
+});

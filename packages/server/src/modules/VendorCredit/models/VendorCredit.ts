@@ -13,12 +13,14 @@ import { sanitizeSortDirection } from '@/modules/DynamicListing/DynamicFilter/sa
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { VendorCreditDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(VendorCreditMeta)
 @InjectModelDefaultViews(VendorCreditDefaultViews)
+@PreventMutateBaseCurrency()
 export class VendorCredit extends TenantBaseModel {
   vendorId: number;
   amount: number;
@@ -413,11 +415,4 @@ export class VendorCredit extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   * @returns {boolean}
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

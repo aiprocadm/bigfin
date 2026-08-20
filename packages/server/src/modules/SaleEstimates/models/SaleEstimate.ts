@@ -14,12 +14,14 @@ import { DiscountType } from '@/common/types/Discount';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleEstimateDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(SaleEstimateMeta)
 @InjectModelDefaultViews(SaleEstimateDefaultViews)
+@PreventMutateBaseCurrency()
 export class SaleEstimate extends TenantBaseModel {
   exchangeRate!: number;
   amount!: number;
@@ -390,10 +392,4 @@ export class SaleEstimate extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

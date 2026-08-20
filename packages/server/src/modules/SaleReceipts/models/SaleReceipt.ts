@@ -21,6 +21,7 @@ import { SaleReceiptMeta } from './SaleReceipt.meta';
 import { sanitizeSortDirection } from '@/modules/DynamicListing/DynamicFilter/sanitizeSortDirection';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleReceiptDefaultViews } from '../constants';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 const ExtendedModel = R.pipe(
   CustomViewBaseModelMixin,
@@ -34,6 +35,7 @@ const ExtendedModel = R.pipe(
 @ImportableModel()
 @InjectModelMeta(SaleReceiptMeta)
 @InjectModelDefaultViews(SaleReceiptDefaultViews)
+@PreventMutateBaseCurrency()
 export class SaleReceipt extends ExtendedModel {
   public amount!: number;
   /** Налог документа = сумма налогов позиций (Д1: НДС в чеках). */
@@ -419,10 +421,4 @@ export class SaleReceipt extends ExtendedModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

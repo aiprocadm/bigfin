@@ -11,9 +11,18 @@ import { RefundVendorCreditGLEntries } from './commands/RefundVendorCreditGLEntr
 import { RefundVendorCreditGLEntriesSubscriber } from './subscribers/RefundVendorCreditGLEntriesSubscriber';
 import { LedgerModule } from '../Ledger/Ledger.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
+import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 
 @Module({
-  imports: [WarehousesModule, BranchesModule, LedgerModule, AccountsModule],
+  imports: [
+    // Нужен TenancyContext: без него Nest не соберёт зависимости
+    // и сервер не стартует (грабля С4).
+    TenancyModule,
+    WarehousesModule,
+    BranchesModule,
+    LedgerModule,
+    AccountsModule,
+  ],
   providers: [
     GetRefundVendorCreditService,
     GetRefundVendorCreditsService,

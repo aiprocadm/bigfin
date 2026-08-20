@@ -16,6 +16,8 @@ import { Customer } from '@/modules/Customers/models/Customer';
 import { ISaleEstimateDTO } from '../types/SaleEstimates.types';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CommandSaleEstimateDto } from '../dtos/SaleEstimate.dto';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class SaleEstimateDTOTransformer {
@@ -28,6 +30,7 @@ export class SaleEstimateDTOTransformer {
     private readonly warehouseDTOTransform: WarehouseTransactionDTOTransform,
     private readonly estimateIncrement: SaleEstimateIncrement,
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
+    private readonly tenancyContext: TenancyContext,
   ) {}
 
   /**
@@ -64,6 +67,17 @@ export class SaleEstimateDTOTransformer {
       // Associate default index to item entries.
       assocItemEntriesDefaultIndex,
     )(estimateDTO.entries);
+
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы смету по курсу 1 (Р1 срез 2 карты v16).
+    const tenantMetadata: any =
+      await this.tenancyContext.getTenantMetadata();
+
+    assertValidExchangeRate({
+      currencyCode: paymentCustomer.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: estimateDTO.exchangeRate,
+    });
 
     const initialDTO = {
       amount,

@@ -23,6 +23,9 @@ export function isValidOgrnAny(value: string): boolean {
 @ValidatorConstraint({ name: 'isValidOgrnAny', async: false })
 export class OgrnAnyConstraint implements ValidatorConstraintInterface {
   validate(value: any): boolean {
+    // Незаполненное поле — это не ошибка (как у ИНН, КПП, БИК и счетов).
+    if (value === null || value === undefined || value === '') return true;
+
     return isValidOgrnAny(value);
   }
 

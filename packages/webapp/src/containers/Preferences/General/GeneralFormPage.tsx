@@ -27,6 +27,16 @@ const defaultValues: GeneralFormValues = {
   date_format: '',
   timezone: '',
   address: {},
+  // Реквизиты организации (Р2 срез 1 карты v16).
+  legal_form: '',
+  tax_regime: '',
+  inn: '',
+  kpp: '',
+  ogrn: '',
+  bank_name: '',
+  bank_bik: '',
+  bank_account: '',
+  bank_correspondent_account: '',
 };
 
 interface GeneralFormPageProps {

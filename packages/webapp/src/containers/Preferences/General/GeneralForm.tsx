@@ -29,7 +29,34 @@ import {
   languageOptions,
   timezoneOptions,
 } from './options';
+import {
+  ORGANIZATION_LEGAL_FORMS,
+  TAX_REGIMES,
+  withLabels,
+} from './requisitesOptions';
 import type { GeneralFormValues } from './General.zod';
+
+/**
+ * Текстовые реквизиты. Банковская четвёрка идёт последней и с подсказкой:
+ * именно она печатается в счёте на оплату, и без неё платить не по чему.
+ */
+const REQUISITE_TEXT_FIELDS = [
+  { name: 'inn', labelKey: 'requisites.inn', hintKey: 'requisites.inn.hint' },
+  { name: 'kpp', labelKey: 'requisites.kpp', hintKey: 'requisites.kpp.hint' },
+  { name: 'ogrn', labelKey: 'requisites.ogrn', hintKey: 'requisites.ogrn.hint' },
+  { name: 'bank_name', labelKey: 'requisites.bank_name', hintKey: null },
+  { name: 'bank_bik', labelKey: 'requisites.bank_bik', hintKey: null },
+  {
+    name: 'bank_account',
+    labelKey: 'requisites.bank_account',
+    hintKey: null,
+  },
+  {
+    name: 'bank_correspondent_account',
+    labelKey: 'requisites.bank_correspondent_account',
+    hintKey: 'requisites.bank.hint',
+  },
+] as const;
 
 const ADDRESS_FIELDS = [
   { name: 'address1', placeholderKey: 'preferences.general.address_1' },
@@ -68,6 +95,11 @@ export default function GeneralForm() {
     () => dateFormatOptions(dateFormats),
     [dateFormats],
   );
+  const legalForms = React.useMemo(
+    () => withLabels(ORGANIZATION_LEGAL_FORMS),
+    [],
+  );
+  const taxRegimes = React.useMemo(() => withLabels(TAX_REGIMES), []);
 
   return (
     <div className="flex flex-col gap-8">
@@ -98,6 +130,15 @@ export default function GeneralForm() {
               <FormControl>
                 <Input {...field} value={field.value ?? ''} />
               </FormControl>
+              {/*
+                Ловушка из карты v16: поле подписано «ИНН организации», но это
+                колонка `tax_number`, которую не читает ни одна печатная форма.
+                Пока судьба поля не решена (вопрос 29), хотя бы говорим прямо,
+                где настоящий ИНН — иначе рядом стоят два поля с одним именем.
+              */}
+              <FormDescription>
+                {intl.get('preferences.general.tax_number.hint')}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -137,6 +178,89 @@ export default function GeneralForm() {
             </FormItem>
           )}
         />
+      </Section>
+
+      {/*
+        Реквизиты (Р2 срез 1 карты v16). Девять колонок давно есть в базе, и
+        сервер их принимает и проверяет — а полей в интерфейсе не было ни
+        одного. Из-за этого в счёте на оплату пустыми уходили банк, БИК,
+        расчётный и корреспондентский счёт: по такому счёту физически нельзя
+        заплатить, а счёт-фактура без ИНН/КПП недействительна для вычета НДС.
+      */}
+      <Section title={intl.get('preferences.general.section.requisites')}>
+        <FormField
+          control={form.control}
+          name="legal_form"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{intl.get('requisites.legal_form')}</FormLabel>
+              <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={intl.get('requisites.legal_form.select')}
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {legalForms.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tax_regime"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{intl.get('requisites.tax_regime')}</FormLabel>
+              <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={intl.get('requisites.tax_regime.select')}
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {taxRegimes.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {REQUISITE_TEXT_FIELDS.map(({ name, labelKey, hintKey }) => (
+          <FormField
+            key={name}
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{intl.get(labelKey)}</FormLabel>
+                <FormControl>
+                  <Input {...field} value={field.value ?? ''} />
+                </FormControl>
+                {hintKey ? (
+                  <FormDescription>{intl.get(hintKey)}</FormDescription>
+                ) : null}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
       </Section>
 
       <Section title={intl.get('preferences.general.section.address')}>

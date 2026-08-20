@@ -1183,22 +1183,10 @@ export const getDashboardRoutes = () => [
     ),
     pageTitle: intl.get('sidebar.transactions_locaking'),
   },
-  {
-    path: '/projects/:id/details',
-    component: lazy(
-      () => import('@/containers/Projects/containers/ProjectDetails'),
-    ),
-    sidebarExpand: false,
-    backLink: true,
-  },
-  {
-    path: '/projects',
-    component: lazy(
-      () =>
-        import('@/containers/Projects/containers/ProjectsLanding/ProjectsList'),
-    ),
-    pageTitle: intl.get('sidebar.projects'),
-  },
+  // Раздела «Проекты» в маршрутах больше нет (Р3 карты v16, вопрос 31):
+  // страница разваливалась по прямой ссылке — серверных ручек projects/* не
+  // существует ни одной, его место в Bigfin занимают «Сделки». Файлы страниц
+  // не удалены — их удаление отдельное решение владельца.
   {
     path: '/tax-rates/import',
     component: lazy(

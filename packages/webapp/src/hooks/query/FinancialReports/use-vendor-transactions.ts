@@ -61,7 +61,10 @@ export const useVendorsTransactionsCsvExport = (query, args) => {
  */
 export function useTransactionsByVendorsPdf(query = {}) {
   return useRequestPdf({
-    url: `financial_statements/transactions-by-vendors`,
+    // Хук бил в несуществующий `financial_statements/…`, а сервер отвечает
+    // на `/reports/…` (как у соседнего отчёта по клиентам) — PDF отчёта
+    // «Транзакции по поставщикам» не работал вообще (Р3 карты v16).
+    url: '/reports/transactions-by-vendors',
     params: query,
   });
 }

@@ -14,6 +14,8 @@ import { CreditNote } from '@/modules/CreditNotes/models/CreditNote';
 import { events } from '@/common/events/events';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CreditNoteRefundDto } from '../dto/CreditNoteRefund.dto';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class CreateRefundCreditNoteService {
@@ -26,6 +28,7 @@ export class CreateRefundCreditNoteService {
    * @param {TenantModelProxy<typeof CreditNote>} creditNoteModel - The credit note model.
    */
   constructor(
+    private readonly tenancyContext: TenancyContext,
     private uow: UnitOfWork,
     private eventPublisher: EventEmitter2,
     private commandCreditNoteDTOTransform: CommandCreditNoteDTOTransform,
@@ -79,6 +82,17 @@ export class CreateRefundCreditNoteService {
         creditNote,
         newCreditNoteDTO,
       } as IRefundCreditNoteCreatingPayload);
+
+      // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+      // провёл бы документ по курсу 1 (Р1 срез 2 карты v16).
+      const tenantMetadata: any =
+        await this.tenancyContext.getTenantMetadata();
+
+      assertValidExchangeRate({
+        currencyCode: creditNote.currencyCode,
+        baseCurrency: tenantMetadata?.baseCurrency,
+        exchangeRate: newCreditNoteDTO.exchangeRate,
+      });
 
       // Stores the refund credit note graph to the storage layer.
       const refundCreditNote = await this.refundCreditNoteModel()

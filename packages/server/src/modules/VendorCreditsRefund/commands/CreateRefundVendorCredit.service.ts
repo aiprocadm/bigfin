@@ -18,6 +18,8 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { ERRORS } from '../constants';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { RefundVendorCreditDto } from '../dtos/RefundVendorCredit.dto';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class CreateRefundVendorCredit {
@@ -30,6 +32,7 @@ export class CreateRefundVendorCredit {
    * @param {TenantModelProxy<typeof VendorCredit>} vendorCreditModel - Vendor credit model.
    */
   constructor(
+    private readonly tenancyContext: TenancyContext,
     private readonly uow: UnitOfWork,
     private readonly eventPublisher: EventEmitter2,
     private readonly branchDTOTransform: BranchTransactionDTOTransformer,
@@ -124,6 +127,17 @@ export class CreateRefundVendorCredit {
     vendorCredit: VendorCredit,
     vendorCreditDTO: RefundVendorCreditDto,
   ) => {
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы возврат по курсу 1 (Р1 срез 2 карты v16).
+    const tenantMetadata: any =
+      await this.tenancyContext.getTenantMetadata();
+
+    assertValidExchangeRate({
+      currencyCode: vendorCredit.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: vendorCreditDTO.exchangeRate,
+    });
+
     const initialDTO = {
       vendorCreditId: vendorCredit.id,
       ...vendorCreditDTO,

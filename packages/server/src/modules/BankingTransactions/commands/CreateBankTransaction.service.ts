@@ -19,6 +19,8 @@ import {
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CreateBankTransactionDto } from '../dtos/CreateBankTransaction.dto';
 import { formatDateFields } from '@/utils/format-date-fields';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class CreateBankTransactionService {
@@ -34,6 +36,8 @@ export class CreateBankTransactionService {
 
     @Inject(Account.name)
     private accountModel: TenantModelProxy<typeof Account>,
+
+    private readonly tenancyContext: TenancyContext,
   ) {}
 
   /**
@@ -88,6 +92,18 @@ export class CreateBankTransactionService {
     // Retrieve the transaction number.
     const transactionNumber =
       newCashflowTransactionDTO.transactionNumber || autoNextNumber;
+
+    // Чужая валюта требует настоящего курса — иначе «|| 1» ниже молча
+    // провёл бы операцию по курсу 1 (Р1 срез 2 карты v16). Сюда же
+    // приходит разбор банковской выписки — он строит этот же запрос.
+    const tenantMetadata: any =
+      await this.tenancyContext.getTenantMetadata();
+
+    assertValidExchangeRate({
+      currencyCode: cashflowAccount.currencyCode,
+      baseCurrency: tenantMetadata?.baseCurrency,
+      exchangeRate: fromDTO?.exchangeRate,
+    });
 
     const initialDTO = {
       amount,

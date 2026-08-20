@@ -12,9 +12,17 @@ import { RefundCreditNoteGLEntries } from './commands/RefundCreditNoteGLEntries'
 import { RefundCreditNoteGLEntriesSubscriber } from '../CreditNotes/subscribers/RefundCreditNoteGLEntriesSubscriber';
 import { LedgerModule } from '../Ledger/Ledger.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
+import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 
 @Module({
-  imports: [forwardRef(() => CreditNotesModule), LedgerModule, AccountsModule],
+  imports: [
+    // Нужен TenancyContext: без него Nest не соберёт зависимости
+    // и сервер не стартует (грабля С4).
+    TenancyModule,
+    forwardRef(() => CreditNotesModule),
+    LedgerModule,
+    AccountsModule,
+  ],
   providers: [
     CreateRefundCreditNoteService,
     DeleteRefundCreditNoteService,

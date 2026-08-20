@@ -140,4 +140,21 @@ describe('transformToRuUpdProps', () => {
     );
     expect(props.currencyLine).toBe('USD');
   });
+
+  /**
+   * Р2 срез 4 (карта v16). `addressTextFormatted` организации приходит с
+   * разметкой (`<strong>Название</strong><br />…`) — УПД клал её в PDF как
+   * есть, и теги уезжали на бумагу. Функция очистки лежала рядом
+   * (`buildOrganizationAddress`) и в УПД не вызывалась — счёт-фактура ею
+   * уже пользовалась.
+   */
+  it('адрес продавца с HTML-разметкой чистится до текста без названия', () => {
+    const props = transformToRuUpdProps(invoiceWithVat, {
+      ...metadata,
+      addressTextFormatted:
+        '<strong>ООО «Ромашка»</strong><br />г. Москва<br />ул. Ленина, д. 1',
+    });
+
+    expect(props.sellerAddress).toBe('г. Москва, ул. Ленина, д. 1');
+  });
 });

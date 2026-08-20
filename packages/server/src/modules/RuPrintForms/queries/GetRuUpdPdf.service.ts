@@ -10,6 +10,7 @@ import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { formatDateRu } from '../utils/amountToWordsRu';
 import {
   buildContactAddress,
+  buildOrganizationAddress,
   joinRequisites,
   mapInvoiceToRuVatLines,
 } from '../utils/ruFormMapping';
@@ -88,7 +89,9 @@ export const transformToRuUpdProps = (
     documentDate: formatDateRu(invoice.invoiceDate),
 
     sellerName: metadata?.name ?? '',
-    sellerAddress: metadata?.addressTextFormatted ?? '',
+    // `addressTextFormatted` приходит с разметкой (<strong>…</strong><br/>) —
+    // без очистки теги уезжали прямо в PDF (Р2 срез 4 карты v16).
+    sellerAddress: buildOrganizationAddress(metadata),
     sellerInnKpp: joinRequisites([metadata?.inn, metadata?.kpp]).replace(
       ', ',
       ' / ',

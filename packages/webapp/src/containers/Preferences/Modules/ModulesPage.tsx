@@ -110,6 +110,9 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
  */
 const MODULE_PARENT: Record<string, string> = {
   payroll_kpi: 'payroll',
+  // Этапы без сделок бессмысленны: приёмка v15 нашла, что ручка этапов
+  // отвечала 200 при выключенных «Сделках».
+  deal_stages: 'deals',
 };
 
 interface ModulesPageProps {

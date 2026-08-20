@@ -22,6 +22,7 @@ import {
   PaymentAmountColumns,
   unpaidSql,
 } from '@/common/utils/paymentStatusSql';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 /**
  * Колонки долга по счёту поставщика. Как и у счёта покупателю, фильтры списка
@@ -37,6 +38,7 @@ const BILL_PAYMENT_COLUMNS: PaymentAmountColumns = {
 @ExportableModel()
 @InjectModelMeta(BillMeta)
 @InjectModelDefaultViews(BillDefaultViews)
+@PreventMutateBaseCurrency()
 export class Bill extends TenantBaseModel {
   public amount: number;
   public paymentAmount: number;
@@ -681,10 +683,4 @@ export class Bill extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

@@ -5,8 +5,10 @@ import { isEmpty, castArray } from 'lodash';
 import { BaseModel } from '@/models/Model';
 import { Account } from './Account.model';
 import { getTransactionTypeLabel } from '@/modules/BankingTransactions/utils';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 // import { getTransactionTypeLabel } from '@/utils/transactions-types';
 
+@PreventMutateBaseCurrency()
 export class AccountTransaction extends BaseModel {
   public readonly referenceType: string;
   public readonly referenceId: number;
@@ -260,10 +262,4 @@ export class AccountTransaction extends BaseModel {
     };
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

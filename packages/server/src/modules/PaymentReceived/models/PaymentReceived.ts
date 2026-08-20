@@ -9,12 +9,14 @@ import { PaymentReceivedMeta } from './PaymentReceived.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { PaymentReceivedDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(PaymentReceivedMeta)
 @InjectModelDefaultViews(PaymentReceivedDefaultViews)
+@PreventMutateBaseCurrency()
 export class PaymentReceived extends TenantBaseModel {
   customerId: number;
   paymentDate: string;
@@ -192,10 +194,4 @@ export class PaymentReceived extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

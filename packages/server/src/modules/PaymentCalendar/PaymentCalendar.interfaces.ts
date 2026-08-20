@@ -37,6 +37,12 @@ export interface ForecastResult {
 /** Полный ответ прогноза календаря. */
 export interface PaymentCalendarResponse {
   baseCurrency: string;
+  /**
+   * Сколько строк не удалось пересчитать в базовую валюту: у документа в
+   * валюте не записан курс. Молча считать их один к одному нельзя —
+   * прогноз завышался (Р1 карты v16).
+   */
+  unconvertedCount: number;
   openingBalance: number;
   fromDate: string;
   toDate: string;

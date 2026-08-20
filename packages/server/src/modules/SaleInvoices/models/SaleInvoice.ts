@@ -27,6 +27,7 @@ import { InjectModelMeta } from '@/modules/Tenancy/TenancyModels/decorators/Inje
 import { SaleInvoiceMeta } from './SaleInvoice.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleInvoiceDefaultViews } from '../constants';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 /**
  * Колонки, из которых складывается долг по счёту покупателю. Фильтры списка
@@ -42,6 +43,7 @@ const INVOICE_PAYMENT_COLUMNS: PaymentAmountColumns = {
 @ExportableModel()
 @InjectModelMeta(SaleInvoiceMeta)
 @InjectModelDefaultViews(SaleInvoiceDefaultViews)
+@PreventMutateBaseCurrency()
 export class SaleInvoice extends TenantBaseModel {
   public taxAmountWithheld: number;
   public balance: number;
@@ -797,10 +799,4 @@ export class SaleInvoice extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

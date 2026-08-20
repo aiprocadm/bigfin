@@ -10,12 +10,14 @@ import { ExpenseMeta } from './Expense.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { ExpenseDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(ExpenseMeta)
 @InjectModelDefaultViews(ExpenseDefaultViews)
+@PreventMutateBaseCurrency()
 export class Expense extends TenantBaseModel {
   totalAmount!: number;
   currencyCode!: string;
@@ -297,10 +299,4 @@ export class Expense extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

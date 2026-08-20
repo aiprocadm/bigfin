@@ -3,9 +3,10 @@ import { lazy } from 'react';
 import intl from 'react-intl-universal';
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
 
-const SUBSCRIPTION_TYPE = {
-  MAIN: 'main',
-};
+// Флага subscriptionActive в маршрутах больше нет (Р3 карты v16):
+// он жил в ~130 строках, и его не читал никто — наследство биллинга
+// зарубежного предшественника. Сторож в navigationReachability.spec.ts
+// не даст ему вернуться.
 export const getDashboardRoutes = () => [
   // Accounts.
   {
@@ -21,7 +22,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+a',
     pageTitle: intl.get('accounts_chart'),
     defaultSearchResource: RESOURCES_TYPES.ACCOUNT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Accounting.
   {
@@ -36,7 +36,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.MANUAL_JOURNAL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/manual-journals/:id/edit`,
@@ -49,7 +48,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.MANUAL_JOURNAL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/manual-journals/import`,
@@ -60,7 +58,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('manual_journals_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.MANUAL_JOURNAL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/manual-journals`,
@@ -72,7 +69,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+m',
     pageTitle: intl.get('manual_journals'),
     defaultSearchResource: RESOURCES_TYPES.MANUAL_JOURNAL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/item/categories/import`,
@@ -81,7 +77,6 @@ export const getDashboardRoutes = () => [
     ),
     backLink: true,
     pageTitle: intl.get('item_categories_import'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.ITEM,
   },
   {
@@ -92,7 +87,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('categories'),
     pageTitle: intl.get('categories_list'),
     defaultSearchResource: RESOURCES_TYPES.ITEM,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Items.
   {
@@ -100,7 +94,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Items/ItemsImportPage')),
     backLink: true,
     pageTitle: intl.get('items_import'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
   },
 
@@ -112,7 +105,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('edit_item'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.ITEM,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/items/new?duplicate=/:id`,
@@ -121,7 +113,6 @@ export const getDashboardRoutes = () => [
     }),
     breadcrumb: intl.get('duplicate_item'),
     defaultSearchResource: RESOURCES_TYPES.ITEM,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/items/new`,
@@ -132,7 +123,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('new_item'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.ITEM,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/items`,
@@ -141,7 +131,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+w',
     pageTitle: intl.get('items_list'),
     defaultSearchResource: RESOURCES_TYPES.ITEM,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Inventory adjustments.
@@ -153,7 +142,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('inventory_adjustments'),
     pageTitle: intl.get('inventory_adjustment_list'),
     defaultSearchResource: RESOURCES_TYPES.ITEM,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Warehouse Transfer.
@@ -193,7 +181,6 @@ export const getDashboardRoutes = () => [
     ),
     pageTitle: intl.get('warehouse_transfer.label.warehouse_transfer_list'),
     // defaultSearchResource: RESOURCES_TYPES.ITEM,
-    // subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Financial Reports.
@@ -210,7 +197,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.INVENTORY_ADJUSTMENT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/balance-sheet`,
@@ -224,7 +210,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('balance_sheet'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/trial-balance-sheet`,
@@ -240,7 +225,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('trial_balance_sheet'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/profit-loss-sheet`,
@@ -256,7 +240,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('profit_loss_sheet'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/financial-reports/receivable-aging-summary',
@@ -271,7 +254,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('receivable_aging_summary'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/financial-reports/payable-aging-summary',
@@ -286,7 +268,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('payable_aging_summary'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/journal-sheet`,
@@ -299,7 +280,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('journal_sheet'),
     sidebarExpand: false,
     backLink: true,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/purchases-by-items`,
@@ -314,7 +294,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('purchases_by_items'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/sales-by-items`,
@@ -329,7 +308,6 @@ export const getDashboardRoutes = () => [
     ),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/inventory-valuation`,
@@ -344,7 +322,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('inventory_valuation'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/customers-balance-summary`,
@@ -359,7 +336,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('customers_balance_summary'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/vendors-balance-summary`,
@@ -374,7 +350,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('vendors_balance_summary'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/transactions-by-customers`,
@@ -391,7 +366,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('customers_transactions'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/transactions-by-vendors`,
@@ -408,7 +382,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('vendors_transactions'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/cash-flow`,
@@ -423,7 +396,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('cash_flow_statement'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/inventory-item-details`,
@@ -438,7 +410,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('inventory_item_details'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/project-profitability-summary`,
@@ -452,7 +423,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('project_profitability_summary'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/financial-reports/sales-tax-liability-summary',
@@ -466,7 +436,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('sales_tax_liability_summary'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/financial-reports/audit-log`,
@@ -477,7 +446,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('audit_log_report'),
     backLink: true,
     sidebarExpand: false,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/financial-reports',
@@ -486,7 +454,6 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('financial_reports'),
     pageTitle: intl.get('all_financial_reports'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Expenses.
   {
@@ -497,7 +464,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('expenses_import'),
     sidebarExpand: false,
     backLink: true,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/expenses/new`,
@@ -509,7 +475,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('new_expense'),
     sidebarExpand: false,
     backLink: true,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/expenses/:id/edit`,
@@ -520,7 +485,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('edit_expense'),
     sidebarExpand: false,
     backLink: true,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/expenses`,
@@ -530,7 +494,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('expenses_list'),
     pageTitle: intl.get('expenses_list'),
     hotkey: 'shift+x',
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Customers
   {
@@ -538,7 +501,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Customers/CustomersImport')),
     backLink: true,
     pageTitle: intl.get('customers_import'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
   },
   {
@@ -551,7 +513,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('edit_customer'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/customers/new`,
@@ -564,7 +525,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('new_customer'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/customers`,
@@ -578,7 +538,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+c',
     pageTitle: intl.get('customers_list'),
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/customers/contact_duplicate=/:id`,
@@ -590,7 +549,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('new_customer'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Vendors
@@ -599,7 +557,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Vendors/VendorsImport')),
     backLink: true,
     pageTitle: intl.get('vendors_import'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
   },
   {
@@ -612,7 +569,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('edit_vendor'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/vendors/new`,
@@ -625,7 +581,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('new_vendor'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/vendors`,
@@ -636,7 +591,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+v',
     pageTitle: intl.get('vendors_list'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/vendors/contact_duplicate=/:id`,
@@ -648,7 +602,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('new_vendor'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Estimates
@@ -662,7 +615,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('estimates_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.ESTIMATE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/estimates/:id/edit`,
@@ -676,7 +628,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.ESTIMATE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/invoices/new?from_estimate_id=/:id`,
@@ -690,7 +641,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.INVOICE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/estimates/new`,
@@ -705,7 +655,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.ESTIMATE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/estimates`,
@@ -718,7 +667,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+e',
     pageTitle: intl.get('estimates_list'),
     defaultSearchResource: RESOURCES_TYPES.ESTIMATE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Invoices.
@@ -730,7 +678,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('invoices_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.INVOICE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/invoices/:id/edit`,
@@ -743,7 +690,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.INVOICE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/invoices/new`,
@@ -757,7 +703,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.INVOICE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/invoices`,
@@ -768,7 +713,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+i',
     pageTitle: intl.get('invoices_list'),
     defaultSearchResource: RESOURCES_TYPES.INVOICE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Sales Receipts.
   {
@@ -781,7 +725,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('receipts_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.RECEIPT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/receipts/:id/edit`,
@@ -794,7 +737,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.RECEIPT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/receipts/new`,
@@ -808,7 +750,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.RECEIPT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/receipts`,
@@ -819,7 +760,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+r',
     pageTitle: intl.get('receipts_list'),
     defaultSearchResource: RESOURCES_TYPES.RECEIPT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Sales Credit notes.
@@ -833,7 +773,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('credit_notes_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/credit-notes/:id/edit`,
@@ -849,7 +788,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/credit-notes/new/?from_invoice_id=/:id`,
@@ -865,7 +803,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     pageTitle: intl.get('credit_note.label.new_credit_note'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/credit-notes/new',
@@ -881,7 +818,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     pageTitle: intl.get('credit_note.label.new_credit_note'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/credit-notes',
@@ -894,7 +830,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('credit_note.label_create_note_list'),
     pageTitle: intl.get('credit_note.label_create_note_list'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Payment receives
   {
@@ -907,7 +842,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('payments_received_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_RECEIVE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/payments-received/:id/edit`,
@@ -923,7 +857,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_RECEIVE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/payment-received/new`,
@@ -939,7 +872,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_RECEIVE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/payments-received`,
@@ -952,7 +884,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('payments_received_list'),
     pageTitle: intl.get('payments_received_list'),
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_RECEIVE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Bills
@@ -964,7 +895,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('bills_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.BILL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/bills/:id/edit`,
@@ -977,7 +907,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.BILL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/bills/new`,
@@ -991,7 +920,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.BILL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/bills`,
@@ -1002,7 +930,6 @@ export const getDashboardRoutes = () => [
     hotkey: 'shift+b',
     pageTitle: intl.get('bills_list'),
     defaultSearchResource: RESOURCES_TYPES.BILL,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   //  Purchases Credit note.
   {
@@ -1015,7 +942,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('vendor_credits_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/vendor-credits/:id/edit`,
@@ -1031,7 +957,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/vendor-credits/new/?from_bill_id=/:id',
@@ -1047,7 +972,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('vendor_credits.label.new_vendor_credit'),
     pageTitle: intl.get('vendor_credits.label.new_vendor_credit'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/vendor-credits/new',
@@ -1063,7 +987,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('vendor_credits.label.new_vendor_credit'),
     pageTitle: intl.get('vendor_credits.label.new_vendor_credit'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/vendor-credits',
@@ -1076,7 +999,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('vendor_credits.lable_vendor_credit_list'),
     pageTitle: intl.get('vendor_credits.lable_vendor_credit_list'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 
   // Payment modes.
@@ -1090,7 +1012,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('bills_payments_import'),
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_MADE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/payments-made/:id/edit`,
@@ -1106,7 +1027,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_MADE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/payments-made/new`,
@@ -1122,7 +1042,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_MADE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: `/payments-made`,
@@ -1135,7 +1054,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('payments_made_list'),
     pageTitle: intl.get('payments_made_list'),
     defaultSearchResource: RESOURCES_TYPES.PAYMENT_MADE,
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Cash flow
   {
@@ -1149,7 +1067,6 @@ export const getDashboardRoutes = () => [
     sidebarExpand: false,
     backLink: true,
     pageTitle: intl.get('banking.label_account_transcations'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.ACCOUNT,
   },
   {
@@ -1163,7 +1080,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     pageTitle: intl.get('bank_transactions_import'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.ACCOUNT,
   },
   {
@@ -1173,7 +1089,6 @@ export const getDashboardRoutes = () => [
         import('@/containers/CashFlow/CashFlowAccounts/CashFlowAccountsList'),
     ),
     pageTitle: intl.get('siebar.banking.bank_accounts'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
     defaultSearchResource: RESOURCES_TYPES.ACCOUNT,
   },
   {
@@ -1205,7 +1120,6 @@ export const getDashboardRoutes = () => [
       () => import('@/containers/TaxRates/containers/TaxRatesImport'),
     ),
     pageTitle: intl.get('tax_rates'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
     path: '/tax-rates',
@@ -1213,7 +1127,6 @@ export const getDashboardRoutes = () => [
       () => import('@/containers/TaxRates/pages/TaxRatesLanding'),
     ),
     pageTitle: intl.get('tax_rates'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Bank Rules
   {
@@ -1223,7 +1136,6 @@ export const getDashboardRoutes = () => [
     ),
     pageTitle: intl.get('bank_rules'),
     breadcrumb: intl.get('bank_rules'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Management Articles
   {
@@ -1233,7 +1145,6 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('management_articles.page_title'),
     pageTitle: intl.get('management_articles.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Payment Calendar
   {
@@ -1243,7 +1154,6 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('payment_calendar.page_title'),
     pageTitle: intl.get('payment_calendar.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Budgets
   {
@@ -1251,7 +1161,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Budgets/BudgetsPage')),
     breadcrumb: intl.get('budgets.page_title'),
     pageTitle: intl.get('budgets.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Debts (Долги)
   {
@@ -1259,7 +1168,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Debts/DebtsPage')),
     breadcrumb: intl.get('debts.title'),
     pageTitle: intl.get('debts.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Payment Requests (Заявки на оплату)
   {
@@ -1269,7 +1177,6 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('payment_requests.page_title'),
     pageTitle: intl.get('payment_requests.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Deals (Сделки)
   {
@@ -1277,7 +1184,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Deals/DealsPage')),
     breadcrumb: intl.get('deals.page_title'),
     pageTitle: intl.get('deals.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Cost Allocation (Распределение расходов)
   {
@@ -1285,7 +1191,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/CostAllocation/CostAllocationPage')),
     breadcrumb: intl.get('cost_allocation.page.title'),
     pageTitle: intl.get('cost_allocation.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Payroll (Зарплата)
   {
@@ -1293,7 +1198,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Payroll/PayrollPage')),
     breadcrumb: intl.get('payroll.page_title'),
     pageTitle: intl.get('payroll.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Data quality (Качество данных)
   {
@@ -1301,7 +1205,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/DataQuality/DataQualityPage')),
     breadcrumb: intl.get('data_quality.page_title'),
     pageTitle: intl.get('data_quality.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Dividends (Вывод средств собственнику)
   {
@@ -1309,7 +1212,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Dividends/DividendsPage')),
     breadcrumb: intl.get('dividends.page_title'),
     pageTitle: intl.get('dividends.page_title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Credits (Кредиты и займы)
   {
@@ -1317,7 +1219,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Credits/CreditsPage')),
     breadcrumb: intl.get('credits.page.title'),
     pageTitle: intl.get('credits.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Financial model (Финмодель)
   {
@@ -1325,7 +1226,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/FinancialModel/FinancialModelPage')),
     breadcrumb: intl.get('financial_model.page.title'),
     pageTitle: intl.get('financial_model.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // MoySklad integration (㉛)
   {
@@ -1333,7 +1233,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/MoySklad/MoySkladPage')),
     breadcrumb: intl.get('moysklad.page.title'),
     pageTitle: intl.get('moysklad.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Marketplaces (⑱ WB/Ozon)
   {
@@ -1341,7 +1240,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Marketplaces/MarketplacesPage')),
     breadcrumb: intl.get('marketplaces.page.title'),
     pageTitle: intl.get('marketplaces.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Bank API sync (⑨c Тинькофф/Альфа)
   {
@@ -1349,7 +1247,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/BankApiSync/BankApiSyncPage')),
     breadcrumb: intl.get('bank_api.page.title'),
     pageTitle: intl.get('bank_api.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // 1C export (⑩ выгрузка)
   {
@@ -1357,7 +1254,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/OnecExport/OnecExportPage')),
     breadcrumb: intl.get('onec_export.page.title'),
     pageTitle: intl.get('onec_export.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // 1C import (⑩ импорт справочников CommerceML)
   {
@@ -1365,7 +1261,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/OnecImport/OnecImportPage')),
     breadcrumb: intl.get('onec_import.page.title'),
     pageTitle: intl.get('onec_import.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Acquiring (⑨d YooKassa)
   {
@@ -1373,7 +1268,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Acquiring/AcquiringPage')),
     breadcrumb: intl.get('acquiring.page.title'),
     pageTitle: intl.get('acquiring.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Zenmoney import (⑨b Дзенмани)
   {
@@ -1381,7 +1275,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Zenmoney/ZenmoneyPage')),
     breadcrumb: intl.get('zenmoney.page.title'),
     pageTitle: intl.get('zenmoney.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // VAT analysis (㉖ Анализ НДС)
   {
@@ -1389,7 +1282,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/VatAnalysis/VatAnalysisPage')),
     breadcrumb: intl.get('vat_analysis.page.title'),
     pageTitle: intl.get('vat_analysis.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Financial ratios (㉕ Показатели)
   {
@@ -1397,7 +1289,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/FinancialRatios/FinancialRatiosPage')),
     breadcrumb: intl.get('financial_ratios.page.title'),
     pageTitle: intl.get('financial_ratios.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // CRM-интеграция (⑯a Битрикс24)
   {
@@ -1405,7 +1296,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/CrmIntegration/CrmIntegrationPage')),
     breadcrumb: intl.get('crm_integration.page.title'),
     pageTitle: intl.get('crm_integration.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Fixed Assets (Основные средства и амортизация)
   {
@@ -1413,7 +1303,6 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/FixedAssets/FixedAssetsPage')),
     breadcrumb: intl.get('fixed_assets.page.title'),
     pageTitle: intl.get('fixed_assets.page.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Notifications (Уведомления — настройки)
   {
@@ -1426,13 +1315,11 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('notifications.settings.title'),
     pageTitle: intl.get('notifications.settings.title'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Homepage
   {
     path: `/`,
     component: lazy(() => import('@/containers/Homepage/Homepage')),
     breadcrumb: intl.get('homepage'),
-    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
 ];

@@ -36,6 +36,17 @@ describe('навигация: у каждого модуля есть пункт
     expect(unreachable).toEqual([]);
   });
 
+  it('мёртвого флага subscriptionActive больше нет в маршрутах (Р3 карты v16)', () => {
+    // Флаг жил в ~130 строках таблицы маршрутов, и его НЕ ЧИТАЛ НИКТО —
+    // наследство биллинга зарубежного предшественника. Новые маршруты не
+    // должны его копировать по образцу соседей.
+    const withFlag = getDashboardRoutes().filter(
+      (route: any) => 'subscriptionActive' in route,
+    );
+
+    expect(withFlag.map((route: any) => route.path)).toEqual([]);
+  });
+
   it('в списке исключений нет лишнего: все они всё ещё существуют', () => {
     // Иначе исключение переживёт саму страницу и тихо ослабит проверку.
     const stale = [...UNLINKED_MODULE_ROUTES].filter(

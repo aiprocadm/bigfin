@@ -9,6 +9,7 @@ import {
   IsString,
   Matches,
   Validate,
+  ValidateIf,
 } from 'class-validator';
 import { MONTHS } from '../Organization/constants';
 import { ACCEPTED_LOCALES, DATE_FORMATS, INTERFACE_MODES } from '../Organization.constants';
@@ -208,16 +209,23 @@ export class UpdateOrganizationDto {
   // Flow: this DTO → UpdateOrganizationService.execute → tenantRepository.saveMetadata
   // → TenantMetadata.patch({ tenantId, ...metadata }). Columns added in PR #20.
 
+  // Пустая строка = «не выбрано». Форма «Настройки → Общие» шлёт все свои
+  // поля разом, и незаполненный список приходил пустой строкой: `@IsEnum`
+  // отвечал 400, и вместе с ним переставал сохраняться ВЕСЬ экран, включая
+  // название организации. Текстовые реквизиты пустую строку принимали всегда
+  // (см. их constraints), теперь так же ведут себя и оба списка.
   @IsOptional()
+  @ValidateIf((o) => o.legalForm !== '')
   @IsEnum(LegalForm)
   @ApiPropertyOptional({
-    description: 'Russian legal form (OOO/IP/NPD/AO; INDIVIDUAL is for contacts only)',
+    description: 'Russian legal form (OOO/IP/NPD/AO; INDIVIDUAL is for contacts only). Empty string means "not set".',
     enum: LegalForm,
     example: LegalForm.OOO,
   })
   legalForm?: LegalForm;
 
   @IsOptional()
+  @ValidateIf((o) => o.taxRegime !== '')
   @IsEnum(TaxRegime)
   @ApiPropertyOptional({
     description: 'Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)',

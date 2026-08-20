@@ -18,6 +18,9 @@ import { GetPlCashflowComparisonService } from './queries/GetPlCashflowCompariso
 import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
 import { GetFailedMailsService } from './queries/GetFailedMails.service';
 import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service';
+import { GetCrookedCurrencyJournalsService } from './queries/GetCrookedCurrencyJournals.service';
+import { RepostCrookedCurrencyJournalsService } from './commands/RepostCrookedCurrencyJournals.service';
+import { ManualJournalGLEntries } from '@/modules/ManualJournals/commands/ManualJournalGLEntries';
 
 @Module({
   // Записи журнала перепроводим тем же кодом, что и обычное сохранение
@@ -41,6 +44,9 @@ import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service
     GetUnbalancedJournalsService,
     GetFailedMailsService,
     RepostVatDocumentsService,
+    GetCrookedCurrencyJournalsService,
+    RepostCrookedCurrencyJournalsService,
+    ManualJournalGLEntries,
     SaleInvoiceGLEntries,
     BillGLEntries,
     SaleReceiptGLEntries,

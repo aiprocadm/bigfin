@@ -119,3 +119,63 @@ describe('GetPaymentCalendarForecastService', () => {
     expect(day?.lines[0]).toMatchObject({ direction: 'inflow', amount: 20000 });
   });
 });
+
+/**
+ * Р1 срез 1 (карта v16): валютный счёт без курса раньше молча считался один
+ * к одному с рублём и завышал прогноз.
+ */
+describe('валютный документ без курса в прогнозе', () => {
+  const buildService = (invoices: any[]) => {
+    const invoicesModel = () => ({ query: () => makeQuery(invoices) });
+    const emptyBills = () => ({ query: () => makeQuery([]) });
+
+    return new GetPaymentCalendarForecastService(
+      invoicesModel as any,
+      emptyBills as any,
+      accountModel as any,
+      operationModel as any,
+      tenancyContext as any,
+      exchangeRates as any,
+    );
+  };
+
+  const usdInvoice = (exchangeRate: any) =>
+    SaleInvoice.fromJson({
+      id: 7,
+      dueDate: '2026-06-10',
+      balance: 1000,
+      amount: 1000,
+      paymentAmount: 0,
+      writtenoffAmount: 0,
+      creditedAmount: 0,
+      currencyCode: 'USD',
+      exchangeRate,
+    });
+
+  it('курс есть — сумма пересчитана по нему', async () => {
+    const service = buildService([usdInvoice(90)]);
+
+    const res = await service.getForecast(1, {
+      fromDate: '2026-06-01',
+      toDate: '2026-06-30',
+    } as any);
+    const day = res.days.find((d) => d.date === '2026-06-10');
+
+    expect(day?.inflow).toBe(90000);
+    expect(res.unconvertedCount).toBe(0);
+  });
+
+  it('курса нет — строка НЕ попадает в прогноз и честно сосчитана', async () => {
+    const service = buildService([usdInvoice(null)]);
+
+    const res = await service.getForecast(1, {
+      fromDate: '2026-06-01',
+      toDate: '2026-06-30',
+    } as any);
+    const day = res.days.find((d) => d.date === '2026-06-10');
+
+    // Раньше здесь было 1000 — доллар считался рублём.
+    expect(day?.inflow).toBe(0);
+    expect(res.unconvertedCount).toBe(1);
+  });
+});

@@ -10,12 +10,14 @@ import { ImportableModel } from '@/modules/Import/decorators/Import.decorator';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { ManualJournalDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(ManualJournalMeta)
 @InjectModelDefaultViews(ManualJournalDefaultViews)
+@PreventMutateBaseCurrency()
 export class ManualJournal extends TenantBaseModel {
   date: Date;
   journalNumber: string;
@@ -200,10 +202,4 @@ export class ManualJournal extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

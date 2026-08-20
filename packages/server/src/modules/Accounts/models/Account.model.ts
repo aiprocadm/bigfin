@@ -16,11 +16,13 @@ import { InjectModelMeta } from '@/modules/Tenancy/TenancyModels/decorators/Inje
 import { ImportableModel } from '@/modules/Import/decorators/Import.decorator';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { AccountDefaultViews } from '../constants';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(AccountMeta)
 @InjectModelDefaultViews(AccountDefaultViews)
+@PreventMutateBaseCurrency()
 export class Account extends TenantBaseModel {
   public name!: string;
   public slug!: string;
@@ -435,10 +437,4 @@ export class Account extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

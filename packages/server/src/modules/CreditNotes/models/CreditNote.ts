@@ -13,12 +13,14 @@ import { sanitizeSortDirection } from '@/modules/DynamicListing/DynamicFilter/sa
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { CreditNoteDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
 @InjectModelMeta(CreditNoteMeta)
 @InjectModelDefaultViews(CreditNoteDefaultViews)
+@PreventMutateBaseCurrency()
 export class CreditNote extends TenantBaseModel {
   public amount: number;
   /** Налог документа = сумма налогов позиций (Д1: НДС в кредит-нотах). */
@@ -455,11 +457,4 @@ export class CreditNote extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   * @returns {boolean}
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

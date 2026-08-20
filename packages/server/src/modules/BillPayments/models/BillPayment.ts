@@ -10,12 +10,14 @@ import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { BillPaymentDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
+import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 
 @InjectAttachable()
 @ImportableModel()
 @ExportableModel()
 @InjectModelMeta(BillPaymentMeta)
 @InjectModelDefaultViews(BillPaymentDefaultViews)
+@PreventMutateBaseCurrency()
 export class BillPayment extends TenantBaseModel {
   vendorId: number;
   amount: number;
@@ -170,10 +172,4 @@ export class BillPayment extends TenantBaseModel {
     ];
   }
 
-  /**
-   * Prevents mutate base currency since the model is not empty.
-   */
-  static get preventMutateBaseCurrency() {
-    return true;
-  }
 }

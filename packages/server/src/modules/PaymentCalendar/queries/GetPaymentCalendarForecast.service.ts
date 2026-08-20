@@ -16,6 +16,7 @@ import {
 } from '../PaymentCalendar.interfaces';
 import { computeRunningBalance } from '../utils/computeRunningBalance';
 import { expandRecurrence } from '../utils/expandRecurrence';
+import { resolveDocumentExchangeRate } from '../utils/resolveDocumentExchangeRate';
 import { CASH_ACCOUNT_TYPES } from '../constants';
 
 @Injectable()
@@ -51,6 +52,10 @@ export class GetPaymentCalendarForecastService {
     const metadata: any = await this.tenancyContext.getTenantMetadata();
     const baseCurrency = metadata?.baseCurrency;
 
+    // Строки, которые нечем пересчитать в базовую валюту. Считаем их и
+    // говорим человеку — молчаливая единица завышала прогноз (Р1 карты v16).
+    const unconverted = { count: 0 };
+
     const openingBalance = await this.getOpeningBalance(
       tenantId,
       baseCurrency,
@@ -60,10 +65,14 @@ export class GetPaymentCalendarForecastService {
     const lines: Array<{ date: string } & ForecastLine> = [];
 
     if (query.direction !== 'outflow') {
-      lines.push(...(await this.collectInvoiceInflows(query)));
+      lines.push(
+        ...(await this.collectInvoiceInflows(query, baseCurrency, unconverted)),
+      );
     }
     if (query.direction !== 'inflow') {
-      lines.push(...(await this.collectBillOutflows(query)));
+      lines.push(
+        ...(await this.collectBillOutflows(query, baseCurrency, unconverted)),
+      );
     }
     lines.push(
       ...(await this.collectPlannedLines(tenantId, baseCurrency, query)),
@@ -79,6 +88,7 @@ export class GetPaymentCalendarForecastService {
 
     return {
       baseCurrency,
+      unconvertedCount: unconverted.count,
       openingBalance,
       fromDate,
       toDate,
@@ -121,6 +131,8 @@ export class GetPaymentCalendarForecastService {
    */
   private async collectInvoiceInflows(
     query: GetPaymentCalendarQueryDto,
+    baseCurrency: string,
+    unconverted: { count: number },
   ): Promise<Array<{ date: string } & ForecastLine>> {
     const invoices = await this.saleInvoiceModel()
       .query()
@@ -134,20 +146,30 @@ export class GetPaymentCalendarForecastService {
         }
       });
 
-    return (invoices as any[]).map((inv: any) => {
-      // Берём долг у самой модели: там итог с налогом, скидкой и
-      // корректировкой. Раньше сумма считалась здесь заново от подытога — и
-      // счёт с НДС, оплаченный без налога, попадал в календарь строкой «0 ₽».
-      const outstanding = Number(inv.dueAmount);
-      return {
-        date: moment(inv.dueDate).format('YYYY-MM-DD'),
-        direction: 'inflow' as const,
-        amount:
-          Math.round(outstanding * Number(inv.exchangeRate || 1) * 1000) / 1000,
-        label: `Счёт №${inv.invoiceNo ?? inv.id}`,
-        source: 'invoice' as const,
-      };
-    });
+    return (invoices as any[])
+      .map((inv: any) => {
+        // Берём долг у самой модели: там итог с налогом, скидкой и
+        // корректировкой. Раньше сумма считалась здесь заново от подытога — и
+        // счёт с НДС, оплаченный без налога, попадал в календарь строкой «0 ₽».
+        const outstanding = Number(inv.dueAmount);
+        const rate = resolveDocumentExchangeRate(
+          inv.currencyCode,
+          baseCurrency,
+          inv.exchangeRate,
+        );
+        if (rate === null) {
+          unconverted.count += 1;
+          return null;
+        }
+        return {
+          date: moment(inv.dueDate).format('YYYY-MM-DD'),
+          direction: 'inflow' as const,
+          amount: Math.round(outstanding * rate * 1000) / 1000,
+          label: `Счёт №${inv.invoiceNo ?? inv.id}`,
+          source: 'invoice' as const,
+        };
+      })
+      .filter(Boolean) as Array<{ date: string } & ForecastLine>;
   }
 
   /**
@@ -155,6 +177,8 @@ export class GetPaymentCalendarForecastService {
    */
   private async collectBillOutflows(
     query: GetPaymentCalendarQueryDto,
+    baseCurrency: string,
+    unconverted: { count: number },
   ): Promise<Array<{ date: string } & ForecastLine>> {
     const bills = await this.billModel()
       .query()
@@ -167,19 +191,28 @@ export class GetPaymentCalendarForecastService {
         }
       });
 
-    return (bills as any[]).map((bill: any) => {
-      // Тот же долг, что и в карточке счёта поставщика.
-      const outstanding = Number(bill.dueAmount);
-      return {
-        date: moment(bill.dueDate).format('YYYY-MM-DD'),
-        direction: 'outflow' as const,
-        amount:
-          Math.round(outstanding * Number(bill.exchangeRate || 1) * 1000) /
-          1000,
-        label: `Счёт поставщика №${bill.billNumber ?? bill.id}`,
-        source: 'bill' as const,
-      };
-    });
+    return (bills as any[])
+      .map((bill: any) => {
+        // Тот же долг, что и в карточке счёта поставщика.
+        const outstanding = Number(bill.dueAmount);
+        const rate = resolveDocumentExchangeRate(
+          bill.currencyCode,
+          baseCurrency,
+          bill.exchangeRate,
+        );
+        if (rate === null) {
+          unconverted.count += 1;
+          return null;
+        }
+        return {
+          date: moment(bill.dueDate).format('YYYY-MM-DD'),
+          direction: 'outflow' as const,
+          amount: Math.round(outstanding * rate * 1000) / 1000,
+          label: `Счёт поставщика №${bill.billNumber ?? bill.id}`,
+          source: 'bill' as const,
+        };
+      })
+      .filter(Boolean) as Array<{ date: string } & ForecastLine>;
   }
 
   /**

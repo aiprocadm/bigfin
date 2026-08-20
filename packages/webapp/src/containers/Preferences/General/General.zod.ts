@@ -37,7 +37,10 @@ const optionalOneOf = (values: readonly string[]) =>
 
 export const generalSchema = z.object({
   name: required(intl.get('organization_name_')),
-  tax_number: z.string().optional().default(''),
+  // Поля-ловушки tax_number здесь больше нет (Р2 срез 2): оно было подписано
+  // «ИНН организации», но колонку не читает ни одна печатная форма.
+  // Настоящий ИНН — в секции «Реквизиты». Колонка в базе не тронута; форма
+  // просто не шлёт это поле, и сохранённые значения остаются как были.
   industry: z.string().optional().default(''),
   location: z.string().optional().default(''),
   base_currency: required(intl.get('base_currency_')),

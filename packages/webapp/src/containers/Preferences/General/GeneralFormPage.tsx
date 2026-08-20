@@ -18,7 +18,6 @@ import { compose, transformToForm } from '@/utils';
 
 const defaultValues: GeneralFormValues = {
   name: '',
-  tax_number: '',
   industry: '',
   location: '',
   base_currency: '',

@@ -121,29 +121,13 @@ export default function GeneralForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="tax_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{intl.get('organization_tax_number')}</FormLabel>
-              <FormControl>
-                <Input {...field} value={field.value ?? ''} />
-              </FormControl>
-              {/*
-                Ловушка из карты v16: поле подписано «ИНН организации», но это
-                колонка `tax_number`, которую не читает ни одна печатная форма.
-                Пока судьба поля не решена (вопрос 29), хотя бы говорим прямо,
-                где настоящий ИНН — иначе рядом стоят два поля с одним именем.
-              */}
-              <FormDescription>
-                {intl.get('preferences.general.tax_number.hint')}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        {/*
+          Поля «ИНН организации» (колонка tax_number) здесь больше нет
+          (Р2 срез 2 карты v16): его не читала ни одна печатная форма —
+          человек вводил ИНН, видел его сохранённым и был уверен, что всё
+          заполнил. Настоящий ИНН — ниже, в секции «Реквизиты». Колонка в
+          базе цела; форма просто не шлёт это поле.
+        */}
         <FormField
           control={form.control}
           name="industry"

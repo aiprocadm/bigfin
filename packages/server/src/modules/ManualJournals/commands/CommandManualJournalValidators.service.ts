@@ -11,6 +11,7 @@ import {
   EditManualJournalDto,
   ManualJournalEntryDto,
 } from '../dtos/ManualJournal.dto';
+import { assertValidExchangeRate } from '@/common/validators/assertValidExchangeRate';
 
 @Injectable()
 export class CommandManualJournalValidators {
@@ -272,6 +273,31 @@ export class CommandManualJournalValidators {
   ): ManualJournal[] {
     return manualJournals.filter((expense) => expense.publishedAt);
   }
+
+  /**
+   * Валюта проводки целиком: курс обязателен, если валюта не базовая, и
+   * счета строк должны быть либо в базовой валюте, либо в валюте проводки.
+   *
+   * Р1 срез 3 (карта v16). Раньше проверялись только счета и только при
+   * создании: правка валютной проводки обходила даже её, а курс не требовался
+   * нигде — при этом суммы всё равно уходили в журнал без умножения.
+   * @param {CreateManualJournalDto | EditManualJournalDto} manualJournalDTO
+   * @param {string} baseCurrency - Базовая валюта организации.
+   */
+  public validateJournalCurrency = async (
+    manualJournalDTO: CreateManualJournalDto | EditManualJournalDto,
+    baseCurrency: string,
+  ) => {
+    assertValidExchangeRate({
+      currencyCode: manualJournalDTO.currencyCode,
+      baseCurrency,
+      exchangeRate: manualJournalDTO.exchangeRate,
+    });
+    await this.validateJournalCurrencyWithAccountsCurrency(
+      manualJournalDTO,
+      baseCurrency,
+    );
+  };
 
   /**
    *

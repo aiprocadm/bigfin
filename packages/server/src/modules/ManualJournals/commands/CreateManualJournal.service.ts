@@ -60,6 +60,9 @@ export class CreateManualJournalService {
       assocItemEntriesDefaultIndex,
     )(manualJournalDTO.entries);
 
+    const baseCurrency = tenant?.metadata?.baseCurrency;
+    const currencyCode = manualJournalDTO.currencyCode || baseCurrency;
+
     const initialDTO = {
       ...omit(manualJournalDTO, ['publish', 'attachments']),
       ...(manualJournalDTO.publish
@@ -67,9 +70,12 @@ export class CreateManualJournalService {
         : {}),
       amount,
       date,
-      currencyCode:
-        manualJournalDTO.currencyCode || tenant?.metadata?.baseCurrency,
-      exchangeRate: manualJournalDTO.exchangeRate || 1,
+      currencyCode,
+      // Р1 срез 3: молчаливой единицы больше нет. Валютной проводке курс
+      // обязателен (проверено в `authorize`), проводке в базовой валюте
+      // единица положена по существу, а не «на всякий случай».
+      exchangeRate:
+        currencyCode !== baseCurrency ? manualJournalDTO.exchangeRate : 1,
       journalNumber,
       entries,
       userId: authorizedUser.id,
@@ -112,8 +118,9 @@ export class CreateManualJournalService {
     await this.validator.dynamicValidateAccountsWithContactType(
       manualJournalDTO.entries,
     );
-    // Validates the accounts currency with journal currency.
-    await this.validator.validateJournalCurrencyWithAccountsCurrency(
+    // Валюта проводки: курс обязателен для валютной, счета — в базовой
+    // валюте или в валюте проводки (Р1 срез 3 карты v16).
+    await this.validator.validateJournalCurrency(
       manualJournalDTO,
       tenant.metadata.baseCurrency,
     );

@@ -14,6 +14,11 @@ import { ContactAddressDto } from './ContactAddress.dto';
 import { InnConstraint } from '@/modules/RussianLegalAttributes/validators/inn.validator';
 import { KppConstraint } from '@/modules/RussianLegalAttributes/validators/kpp.validator';
 import { OgrnAnyConstraint } from '@/modules/RussianLegalAttributes/validators/ogrnAny.validator';
+import { BikConstraint } from '@/modules/RussianLegalAttributes/validators/bik.validator';
+import {
+  BankAccountConstraint,
+  CorrespondentAccountConstraint,
+} from '@/modules/RussianLegalAttributes/validators/account.validator';
 
 export class CreateCustomerDto extends ContactAddressDto {
   @ApiProperty({
@@ -225,6 +230,7 @@ export class CreateCustomerDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(9)
+  @Validate(BikConstraint)
   bankBik?: string;
 
   @ApiProperty({
@@ -235,6 +241,7 @@ export class CreateCustomerDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
+  @Validate(BankAccountConstraint)
   bankAccount?: string;
 
   @ApiProperty({
@@ -245,5 +252,6 @@ export class CreateCustomerDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
+  @Validate(CorrespondentAccountConstraint)
   bankCorrespondentAccount?: string;
 }

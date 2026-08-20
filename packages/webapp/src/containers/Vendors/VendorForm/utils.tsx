@@ -6,8 +6,13 @@ import { first } from 'lodash';
 
 import { useVendorFormContext } from './VendorFormProvider';
 import { useCurrentOrganization } from '@/hooks/state';
+import { contactRequisitesInitialValues } from '@/containers/Contacts/contactRequisites.schema';
 
 export const defaultInitialValues = {
+  // Реквизиты контрагента (Р2 срез 3 карты v16). Ключи обязаны быть здесь:
+  // transformToForm берёт из ответа сервера только перечисленные поля.
+  ...contactRequisitesInitialValues,
+
   salutation: '',
   first_name: '',
   last_name: '',

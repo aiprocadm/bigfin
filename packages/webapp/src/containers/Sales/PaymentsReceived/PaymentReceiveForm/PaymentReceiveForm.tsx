@@ -37,6 +37,7 @@ import {
   getExceededAmountFromValues,
 } from './utils';
 import { PaymentReceiveSyncIncrementSettingsToForm } from './components';
+import { resolveDefaultDepositAccount } from './depositAccountPrefill';
 import { PageForm } from '@/components/PageForm';
 
 /**
@@ -68,6 +69,7 @@ function PaymentReceiveFormRoot({
     createPaymentReceiveMutate,
     isExcessConfirmed,
     paymentReceivedState,
+    accounts,
   } = usePaymentReceiveFormContext();
 
   // Payment receive number.
@@ -86,7 +88,12 @@ function PaymentReceiveFormRoot({
           ...(paymentReceiveAutoIncrement && {
             payment_receive_no: nextPaymentNumber,
           }),
-          deposit_account_id: defaultTo(preferredDepositAccount, ''),
+          // Счёт зачисления: настройка, а без неё — единственный подходящий
+          // счёт (Р4 карты v16; поле обязательно, а префила не было вовсе).
+          deposit_account_id: resolveDefaultDepositAccount(
+            accounts,
+            preferredDepositAccount,
+          ),
           currency_code: base_currency,
           pdf_template_id: paymentReceivedState?.defaultTemplateId,
         }),

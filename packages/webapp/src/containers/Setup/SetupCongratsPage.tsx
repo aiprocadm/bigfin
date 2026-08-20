@@ -23,6 +23,14 @@ function SetupCongratsPage({ setOrganizationSetupCompleted }) {
     window.location.reload();
   };
 
+  // У новой организации включены только базовые модули (2 из 36), и раньше
+  // мастер об этом молчал — четыре группы меню просто отсутствовали, а
+  // ссылки на страницу включения модулей не было нигде (Р4 карты v16).
+  const handleModulesBtnClick = () => {
+    setIsReloading(true);
+    window.location.assign('/preferences/modules');
+  };
+
   return (
     <x.div
       w={'500px'}
@@ -51,6 +59,15 @@ function SetupCongratsPage({ setOrganizationSetupCompleted }) {
           <T id={'setup.congrats.description'} />
         </x.p>
 
+        <x.p
+          fontSize={'14px'}
+          opacity={0.75}
+          mb={'14px'}
+          color={isDarkMode ? 'rgba(255, 255, 255, 0.6)' : undefined}
+        >
+          <T id={'setup.congrats.modules_hint'} />
+        </x.p>
+
         <x.div
           className={css`
             .bp4-button {
@@ -69,6 +86,9 @@ function SetupCongratsPage({ setOrganizationSetupCompleted }) {
             onClick={handleBtnClick}
           >
             <T id={'setup.congrats.go_to_dashboard'} />
+          </Button>{' '}
+          <Button disabled={isReloading} onClick={handleModulesBtnClick}>
+            <T id={'setup.congrats.open_modules'} />
           </Button>
         </x.div>
       </x.div>

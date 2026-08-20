@@ -37,6 +37,14 @@ export const transformErrors = (errors, { setFieldError }) => {
       intl.get('payment_received_number_required'),
     );
   }
+  // Счёт сохранён черновиком, без «доставить» — оплатить его нельзя
+  // (Р4 карты v16: раньше код уходил без человеческого объяснения).
+  if (getError('INVOICES_NOT_DELIVERED_YET')) {
+    AppToaster.show({
+      message: intl.get('payment_receive.error.invoices_not_delivered_yet'),
+      intent: Intent.DANGER,
+    });
+  }
   if (getError('INVALID_PAYMENT_AMOUNT')) {
     setFieldError(
       'payment_amount',

@@ -1,3 +1,4 @@
+import FirstStepsSection from './FirstStepsSection';
 import AccountsReceivableSection from './AccountsReceivableSection';
 import AccountsPayableSection from './AccountsPayableSection';
 import FinancialAccountingSection from './FinancialAccountingSection';
@@ -9,6 +10,7 @@ import ProductsServicesSection from './ProductsServicesSection';
 function HomepageContent() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 p-6">
+      <FirstStepsSection />
       <AccountsReceivableSection />
       <AccountsPayableSection />
       <FinancialAccountingSection />

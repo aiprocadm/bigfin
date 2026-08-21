@@ -3,7 +3,6 @@ import { generalSchema } from './General.zod';
 
 const valid = {
   name: 'ООО Ромашка',
-  tax_number: '',
   industry: '',
   location: 'RU',
   base_currency: 'RUB',
@@ -37,15 +36,21 @@ describe('generalSchema', () => {
     }
   });
 
-  it('tax_number/industry/location необязательны', () => {
+  it('industry/location необязательны', () => {
     expect(
       generalSchema.safeParse({
         ...valid,
-        tax_number: '',
         industry: '',
         location: '',
       }).success,
     ).toBe(true);
+  });
+
+  it('поля-ловушки tax_number больше нет в схеме (Р2 срез 2)', () => {
+    // Поле было подписано «ИНН организации», но колонку tax_number не читает
+    // ни одна печатная форма: человек вводил ИНН, видел его сохранённым и
+    // был уверен, что всё заполнил. Настоящий ИНН — в секции «Реквизиты».
+    expect('tax_number' in generalSchema.shape).toBe(false);
   });
 });
 

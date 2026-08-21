@@ -198,6 +198,39 @@ describe('isInvoiceFacturaRedaction2026', () => {
     expect(props.sellerInnKpp).toBe('500100732259');
   });
 
+  /**
+   * Р2 срез 4 (карта v16). Блок подписи ИП включался ТОЛЬКО по длине ИНН
+   * (12 знаков). Юр. форма организации (появилась в Р2 срезе 1) — прямой
+   * признак: ИП с выбранной формой, но ещё не заполненным ИНН получал
+   * бланк с двумя подписями ООО («Руководитель» и «Главный бухгалтер»).
+   */
+  it('юр. форма ИП включает блок ИП даже без заполненного ИНН', () => {
+    const props = transformToRuInvoiceFacturaProps(invoice, {
+      name: 'ИП Иванов И. И.',
+      legalForm: 'IP',
+    });
+
+    expect(props.isSoleProprietor).toBe(true);
+  });
+
+  it('самозанятый (НПД) — тоже одна подпись, а не «руководитель и главбух»', () => {
+    const props = transformToRuInvoiceFacturaProps(invoice, {
+      name: 'Иванов И. И.',
+      legalForm: 'NPD',
+    });
+
+    expect(props.isSoleProprietor).toBe(true);
+  });
+
+  it('юр. форма ООО не включает блок ИП', () => {
+    const props = transformToRuInvoiceFacturaProps(invoice, {
+      ...metadata,
+      legalForm: 'OOO',
+    });
+
+    expect(props.isSoleProprietor).toBe(false);
+  });
+
   it('нерублёвая валюта — код валюты вместо рубля', () => {
     const props = transformToRuInvoiceFacturaProps(
       { ...invoice, currencyCode: 'USD' },

@@ -1,8 +1,12 @@
 // @ts-nocheck
 import * as Yup from 'yup';
 import intl from 'react-intl-universal';
+import { contactRequisitesSchemaFields } from '@/containers/Contacts/contactRequisites.schema';
 
 const Schema = Yup.object().shape({
+  // Реквизиты контрагента (Р2 срез 3 карты v16).
+  ...contactRequisitesSchemaFields(),
+
   customer_type: Yup.string()
     .required()
     .trim()

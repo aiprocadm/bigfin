@@ -196,10 +196,16 @@ export function PaymentPortal() {
             )}
         </Stack>
 
+        {/*
+          Страница ПУБЛИЧНАЯ — её видит контрагент клиента. Здесь стояло чужое
+          юрлицо «Bigfin Technology, Inc.» и «© 2024 … All rights reserved»
+          от зарубежного предшественника (Р3 карты v16). Платёж разрешают
+          продавцу — организации из ссылки, а не платформе.
+        */}
         <Text className={clsx(Classes.TEXT_MUTED, styles.buyNote)}>
-          By confirming your payment, you allow Bigfin Technology, Inc. to
-          charge you for this payment and save your payment information in
-          accordance with their terms.
+          {intl.get('payment_portal.disclaimer', {
+            organization: sharableLinkMeta?.organization?.name ?? '',
+          })}
         </Text>
       </Stack>
 
@@ -211,9 +217,10 @@ export function PaymentPortal() {
         ></Box>
 
         <Stack spacing={0} className={styles.footerText}>
-          © 2024 Bigfin Technology, Inc.
-          <br />
-          All rights reserved.
+          {intl.get('payment_portal.footer.copyright', {
+            year: new Date().getFullYear(),
+            organization: sharableLinkMeta?.organization?.name ?? '',
+          })}
         </Stack>
       </Stack>
     </Box>

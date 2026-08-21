@@ -208,6 +208,15 @@ export const transformErrors = (errors, { setFieldError }) => {
       intl.get('payment_received.field.error.payment_receive_no_required'),
     );
   }
+  // Счёт есть, а оплатить его нельзя: он сохранён черновиком, без
+  // «доставить». Раньше сервер отвечал кодом INVOICES_NOT_DELIVERED_YET без
+  // человеческого объяснения (Р4 карты v16).
+  if (getError('INVOICES_NOT_DELIVERED_YET')) {
+    AppToaster.show({
+      message: intl.get('payment_receive.error.invoices_not_delivered_yet'),
+      intent: Intent.DANGER,
+    });
+  }
   if (getError('PAYMENT_ACCOUNT_CURRENCY_INVALID')) {
     AppToaster.show({
       message: intl.get(

@@ -14,7 +14,12 @@ export function FSelect({ ...props }) {
       className={clsx({ 'is-selected': !!text }, props.className)}
     />
   );
-  return <FormikSelect input={input} fill={true} {...props} />;
+  // Пока список не загрузился (или запрос упал), items бывает undefined —
+  // а FormikSelect зовёт items.find и роняет всю страницу белым экраном
+  // (так падала форма «Поступление оплаты», Р4 карты v16).
+  return (
+    <FormikSelect input={input} fill={true} {...props} items={props.items ?? []} />
+  );
 }
 
 export const SelectButton = styled(Button)`

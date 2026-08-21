@@ -28,7 +28,12 @@ export const BrandingThemeSelectButton = (props: ButtonProps) => {
 export const convertBrandingTemplatesToOptions = (
   brandingTemplates: Array<any>,
 ) => {
-  return brandingTemplates?.map(
-    (template) => ({ text: template.template_name, value: template.id } || []),
+  // Пока шаблоны не загрузились (или запрос упал), здесь был undefined —
+  // и FSelect падал на items.find, роняя всю форму белым экраном.
+  return (
+    brandingTemplates?.map((template) => ({
+      text: template.template_name,
+      value: template.id,
+    })) ?? []
   );
 };

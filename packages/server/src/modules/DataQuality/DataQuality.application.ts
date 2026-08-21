@@ -7,6 +7,8 @@ import { GetPlCashflowComparisonService } from './queries/GetPlCashflowCompariso
 import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
 import { GetFailedMailsService } from './queries/GetFailedMails.service';
 import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service';
+import { GetCrookedCurrencyJournalsService } from './queries/GetCrookedCurrencyJournals.service';
+import { RepostCrookedCurrencyJournalsService } from './commands/RepostCrookedCurrencyJournals.service';
 
 @Injectable()
 export class DataQualityApplication {
@@ -17,6 +19,8 @@ export class DataQualityApplication {
     private readonly getUnbalancedJournalsService: GetUnbalancedJournalsService,
     private readonly getFailedMailsService: GetFailedMailsService,
     private readonly repostVatDocumentsService: RepostVatDocumentsService,
+    private readonly getCrookedCurrencyJournalsService: GetCrookedCurrencyJournalsService,
+    private readonly repostCrookedCurrencyJournalsService: RepostCrookedCurrencyJournalsService,
   ) {}
 
   public getUnmappedOperations(query: DataQualityQueryDto) {
@@ -41,5 +45,15 @@ export class DataQualityApplication {
 
   public repostVatDocuments(query: DataQualityQueryDto) {
     return this.repostVatDocumentsService.repost(query);
+  }
+
+  public getCrookedCurrencyJournals(query: DataQualityQueryDto) {
+    return this.getCrookedCurrencyJournalsService.getCrookedCurrencyJournals(
+      query,
+    );
+  }
+
+  public repostCrookedCurrencyJournals(query: DataQualityQueryDto) {
+    return this.repostCrookedCurrencyJournalsService.repost(query);
   }
 }

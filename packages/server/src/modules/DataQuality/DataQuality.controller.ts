@@ -92,6 +92,27 @@ export class DataQualityController {
     return this.application.getFailedMails();
   }
 
+  @Get('crooked-currency-journals')
+  @ApiOperation({
+    summary:
+      'Manual journals in foreign currency posted 1:1 without the exchange rate.',
+  })
+  async getCrookedCurrencyJournals(@Query() query: DataQualityQueryDto) {
+    await this.assertEnabled();
+    return this.application.getCrookedCurrencyJournals(query);
+  }
+
+  @Post('repost-crooked-currency-journals')
+  @RequirePermission('manage', 'all')
+  @ApiOperation({
+    summary:
+      'Re-posts crooked currency manual journals: rewrites GL entries with the exchange rate applied.',
+  })
+  async repostCrookedCurrencyJournals(@Query() query: DataQualityQueryDto) {
+    await this.assertEnabled();
+    return this.application.repostCrookedCurrencyJournals(query);
+  }
+
   @Post('repost-vat-documents')
   @RequirePermission('manage', 'all')
   @ApiOperation({

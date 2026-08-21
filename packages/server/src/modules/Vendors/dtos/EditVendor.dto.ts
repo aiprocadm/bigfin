@@ -1,7 +1,21 @@
 import { ContactAddressDto } from '@/modules/Customers/dtos/ContactAddress.dto';
-import { IsEmail, IsString, IsBoolean, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsBoolean,
+  MaxLength,
+  Validate,
+} from 'class-validator';
 import { IsOptional } from '@/common/decorators/Validators';
 import { ApiProperty } from '@nestjs/swagger';
+import { InnConstraint } from '@/modules/RussianLegalAttributes/validators/inn.validator';
+import { KppConstraint } from '@/modules/RussianLegalAttributes/validators/kpp.validator';
+import { OgrnAnyConstraint } from '@/modules/RussianLegalAttributes/validators/ogrnAny.validator';
+import { BikConstraint } from '@/modules/RussianLegalAttributes/validators/bik.validator';
+import {
+  BankAccountConstraint,
+  CorrespondentAccountConstraint,
+} from '@/modules/RussianLegalAttributes/validators/account.validator';
 
 export class EditVendorDto extends ContactAddressDto {
   @ApiProperty({ required: false, description: 'Vendor salutation' })
@@ -82,6 +96,7 @@ export class EditVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(12)
+  @Validate(InnConstraint)
   inn?: string;
 
   @ApiProperty({
@@ -92,6 +107,7 @@ export class EditVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(9)
+  @Validate(KppConstraint)
   kpp?: string;
 
   @ApiProperty({
@@ -102,6 +118,7 @@ export class EditVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(15)
+  @Validate(OgrnAnyConstraint)
   ogrn?: string;
 
   @ApiProperty({ required: false, description: 'Bank name' })
@@ -118,6 +135,7 @@ export class EditVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(9)
+  @Validate(BikConstraint)
   bankBik?: string;
 
   @ApiProperty({
@@ -128,6 +146,7 @@ export class EditVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
+  @Validate(BankAccountConstraint)
   bankAccount?: string;
 
   @ApiProperty({
@@ -138,6 +157,7 @@ export class EditVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
+  @Validate(CorrespondentAccountConstraint)
   bankCorrespondentAccount?: string;
 }
 

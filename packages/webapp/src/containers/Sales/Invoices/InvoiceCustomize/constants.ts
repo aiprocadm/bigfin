@@ -1,3 +1,5 @@
+import intl from 'react-intl-universal';
+
 export const MANAGE_LINK_URL = '/preferences/payment-methods';
 
 export const initialValues = {
@@ -14,125 +16,127 @@ export const initialValues = {
 
   // Top details.
   showInvoiceNumber: true,
-  invoiceNumberLabel: 'Invoice number',
+  invoiceNumberLabel: 'Счёт №',
 
   // Issue date
   showDateIssue: true,
-  dateIssueLabel: 'Date of Issue',
+  dateIssueLabel: 'Дата выставления',
 
   // Due date.
   showDueDate: true,
-  dueDateLabel: 'Due Date',
+  dueDateLabel: 'Оплатить до',
 
   // Addresses
   showCustomerAddress: true,
   showCompanyAddress: true,
-  billedToLabel: 'Billed To',
+  billedToLabel: 'Плательщик',
 
   // Entries
-  itemNameLabel: 'Item',
-  itemDescriptionLabel: 'Description',
-  itemRateLabel: 'Rate',
-  itemTotalLabel: 'Total',
+  itemNameLabel: 'Позиция',
+  itemDescriptionLabel: 'Описание',
+  itemRateLabel: 'Цена',
+  itemTotalLabel: 'Сумма',
 
   // Totals
   showSubtotal: true,
-  subtotalLabel: 'Subtotal',
+  subtotalLabel: 'Подытог',
 
   // Discount
   showDiscount: true,
-  discountLabel: 'Discount',
+  discountLabel: 'Скидка',
 
   showTaxes: true,
 
   showTotal: true,
-  totalLabel: 'Total',
+  totalLabel: 'Итого',
 
-  paymentMadeLabel: 'Payment Made',
+  paymentMadeLabel: 'Оплачено',
   showPaymentMade: true,
 
   // Due amount
-  dueAmountLabel: 'Due Amount',
+  dueAmountLabel: 'К оплате',
   showDueAmount: true,
 
   // Footer paragraphs.
-  termsConditionsLabel: 'Terms & Conditions',
+  termsConditionsLabel: 'Условия',
   showTermsConditions: true,
 
   // Statement
-  statementLabel: 'Statement',
+  statementLabel: 'Примечание',
   showStatement: true,
 };
 
-export const fieldsGroups = [
+// Подписи вкладок редактора считаются при вызове: словарь к моменту
+// импорта модуля ещё не загружен (К3 карты v17).
+export const getFieldsGroups = () => [
   {
-    label: 'Header',
+    label: intl.get('branding.editor.header'),
     fields: [
       {
         labelKey: 'invoiceNumberLabel',
         enableKey: 'showInvoiceNumber',
-        label: 'Invoice No.',
+        label: intl.get('branding.editor.invoice_no'),
       },
       {
         labelKey: 'dateIssueLabel',
         enableKey: 'showDateIssue',
-        label: 'Issue Date',
+        label: intl.get('branding.editor.issue_date'),
       },
       {
         labelKey: 'dueDateLabel',
         enableKey: 'showDueDate',
-        label: 'Due Date',
+        label: intl.get('branding.editor.due_date'),
       },
       {
         enableKey: 'showCustomerAddress',
         labelKey: 'billedToLabel',
-        label: 'Bill To',
+        label: intl.get('branding.editor.bill_to'),
       },
       {
         enableKey: 'showCompanyAddress',
-        label: 'Billed From',
+        label: intl.get('branding.editor.billed_from'),
       },
     ],
   },
   {
-    label: 'Totals',
+    label: intl.get('branding.editor.totals'),
     fields: [
       {
         labelKey: 'subtotalLabel',
         enableKey: 'showSubtotal',
-        label: 'Subtotal',
+        label: intl.get('branding.editor.subtotal'),
       },
       {
         labelKey: 'discountLabel',
         enableKey: 'showDiscount',
-        label: 'Discount',
+        label: intl.get('branding.editor.discount'),
       },
-      { enableKey: 'showTaxes', label: 'Taxes' },
-      { labelKey: 'totalLabel', enableKey: 'showTotal', label: 'Total' },
+      { enableKey: 'showTaxes', label: intl.get('branding.editor.taxes') },
+      { labelKey: 'totalLabel', enableKey: 'showTotal', label: intl.get('branding.editor.total') },
       {
         labelKey: 'paymentMadeLabel',
         enableKey: 'showPaymentMade',
-        label: 'Payment Made',
+        label: intl.get('branding.editor.payment_made'),
       },
       {
         labelKey: 'dueAmountLabel',
         enableKey: 'showDueAmount',
-        label: 'Due Amount',
+        label: intl.get('branding.editor.due_amount'),
       },
     ],
   },
   {
-    label: 'Footer',
+    label: intl.get('branding.editor.footer'),
     fields: [
       {
         labelKey: 'termsConditionsLabel',
         enableKey: 'showTermsConditions',
-        label: 'Terms & Conditions',
+        label: intl.get('branding.editor.terms'),
       },
       {
         labelKey: 'statementLabel',
         enableKey: 'showStatement',
-        label: 'Statement',
+        label: intl.get('branding.editor.statement'),
         labelPlaceholder: 'Statement',
       },
     ],

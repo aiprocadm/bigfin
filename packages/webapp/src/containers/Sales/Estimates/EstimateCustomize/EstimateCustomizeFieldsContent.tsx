@@ -3,7 +3,7 @@ import intl from 'react-intl-universal';
 import { FInputGroup, FSwitch, Group, Stack } from '@/components';
 import { CLASSES } from '@/constants';
 import { Classes } from '@blueprintjs/core';
-import { fieldsGroups } from './constants';
+import { getFieldsGroups } from './constants';
 
 export function EstimateCustomizeContentFields() {
   return (
@@ -17,7 +17,7 @@ export function EstimateCustomizeContentFields() {
       </Stack>
 
       <Stack>
-        {fieldsGroups.map((group) => (
+        {getFieldsGroups().map((group) => (
           <>
             <h4 className={CLASSES.TEXT_MUTED} style={{ fontWeight: 600 }}>
               {group.label}

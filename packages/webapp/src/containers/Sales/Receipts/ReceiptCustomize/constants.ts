@@ -1,3 +1,5 @@
+import intl from 'react-intl-universal';
+
 export const initialValues = {
   templateName: '',
 
@@ -12,90 +14,92 @@ export const initialValues = {
 
   // Receipt Number
   showReceiptNumber: true,
-  receiptNumberLabel: 'Receipt number',
+  receiptNumberLabel: 'Чек №',
 
   // Receipt Date
   showReceiptDate: true,
-  receiptDateLabel: 'Date of Issue',
+  receiptDateLabel: 'Дата выставления',
 
   // Customer address
   showCustomerAddress: true,
 
   // Company address
   showCompanyAddress: true,
-  billedToLabel: 'Billed To',
+  billedToLabel: 'Плательщик',
 
   // Entries
-  itemNameLabel: 'Item',
-  itemDescriptionLabel: 'Description',
-  itemRateLabel: 'Rate',
-  itemTotalLabel: 'Total',
+  itemNameLabel: 'Позиция',
+  itemDescriptionLabel: 'Описание',
+  itemRateLabel: 'Цена',
+  itemTotalLabel: 'Сумма',
 
   // Subtotal
   showSubtotal: true,
-  subtotalLabel: 'Subtotal',
+  subtotalLabel: 'Подытог',
 
   // Total
   showTotal: true,
-  totalLabel: 'Total',
+  totalLabel: 'Итого',
 
   // Terms & Conditions
-  termsConditionsLabel: 'Terms & Conditions',
+  termsConditionsLabel: 'Условия',
   showTermsConditions: true,
 
   // Customer Note
-  customerNoteLabel: 'Customer Note',
+  customerNoteLabel: 'Примечание для клиента',
   showCustomerNote: true,
 };
 
-export const fieldsGroups = [
+// Подписи вкладок редактора считаются при вызове: словарь к моменту
+// импорта модуля ещё не загружен (К3 карты v17).
+export const getFieldsGroups = () => [
   {
-    label: 'Header',
+    label: intl.get('branding.editor.header'),
     fields: [
       {
         labelKey: 'receiptNumberLabel',
         enableKey: 'showReceiptNumber',
-        label: 'Receipt Number',
+        label: intl.get('branding.editor.receipt_no'),
       },
       {
         labelKey: 'receiptDateLabel',
         enableKey: 'showReceiptDate',
-        label: 'Receipt Date',
+        label: intl.get('branding.editor.receipt_date'),
       },
       {
         enableKey: 'showCustomerAddress',
         labelKey: 'billedToLabel',
-        label: 'Bill To',
+        label: intl.get('branding.editor.bill_to'),
       },
       {
         enableKey: 'showCompanyAddress',
-        label: 'Billed From',
+        label: intl.get('branding.editor.billed_from'),
       },
     ],
   },
   {
-    label: 'Totals',
+    label: intl.get('branding.editor.totals'),
     fields: [
       {
         labelKey: 'subtotalLabel',
         enableKey: 'showSubtotal',
-        label: 'Subtotal',
+        label: intl.get('branding.editor.subtotal'),
       },
-      { labelKey: 'totalLabel', enableKey: 'showTotal', label: 'Total' },
+      { labelKey: 'totalLabel', enableKey: 'showTotal', label: intl.get('branding.editor.total') },
     ],
   },
   {
-    label: 'Statements',
+    label: intl.get('branding.editor.statements'),
     fields: [
       {
         enableKey: 'showCustomerNote',
         labelKey: 'customerNoteLabel',
-        label: 'Customer Note',
+        label: intl.get('branding.editor.customer_note'),
       },
       {
         enableKey: 'showTermsConditions',
         labelKey: 'termsConditionsLabel',
-        label: 'Terms & Conditions',
+        label: intl.get('branding.editor.terms'),
       },
     ],
   },

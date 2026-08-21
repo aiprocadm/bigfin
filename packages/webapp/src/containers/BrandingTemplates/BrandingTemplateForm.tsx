@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import {
@@ -96,7 +97,7 @@ export function BrandingTemplateForm<
         // Adds the attachment key to the values after finishing upload.
         _values['companyLogoKey'] = uploadedAttachmentRes?.key;
       } catch {
-        handleError('An error occurred while uploading company logo.');
+        handleError(intl.get('branding.templates.error.upload_logo'));
         setIsLoading(false);
         return;
       }
@@ -115,18 +116,18 @@ export function BrandingTemplateForm<
 
       try {
         await editPdfTemplate({ templateId, values: reqValues });
-        handleSuccess('PDF template updated successfully!');
+        handleSuccess(intl.get('branding.templates.updated'));
       } catch {
-        handleError('An error occurred while updating the PDF template.');
+        handleError(intl.get('branding.templates.error.update'));
       }
     } else {
       setSubmitting(true);
 
       try {
         await createPdfTemplate(reqValues);
-        handleSuccess('PDF template created successfully!');
+        handleSuccess(intl.get('branding.templates.created'));
       } catch {
-        handleError('An error occurred while creating the PDF template.');
+        handleError(intl.get('branding.templates.error.create'));
       }
     }
   };
@@ -134,13 +135,17 @@ export function BrandingTemplateForm<
   return (
     <ElementCustomize<T, Y>
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={getValidationSchema()}
       onSubmit={handleFormSubmit}
       {...props}
     />
   );
 }
 
-export const validationSchema = Yup.object().shape({
-  templateName: Yup.string().required('Template Name is required'),
-});
+// Схема строится при вызове: словарь к моменту импорта модуля ещё не загружен.
+export const getValidationSchema = () =>
+  Yup.object().shape({
+    templateName: Yup.string().required(
+      intl.get('branding.templates.validation.name_required'),
+    ),
+  });

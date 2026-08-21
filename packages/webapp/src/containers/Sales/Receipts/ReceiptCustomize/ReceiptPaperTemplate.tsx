@@ -87,7 +87,7 @@ export function ReceiptPaperTemplate({
   companyLogoUri,
 
   // # Company name
-  companyName = 'Bigfin Technology, Inc.',
+  companyName = 'ООО «Ромашка»',
 
   // # Address
   showCustomerAddress = true,
@@ -96,22 +96,22 @@ export function ReceiptPaperTemplate({
   showCompanyAddress = true,
   companyAddress = DefaultPdfTemplateAddressBilledFrom,
 
-  billedToLabel = 'Billed To',
+  billedToLabel = 'Плательщик',
 
-  total = '$1000.00',
-  totalLabel = 'Total',
+  total = '1000,00 ₽',
+  totalLabel = 'Итого',
   showTotal = true,
 
-  subtotal = '1000/00',
-  subtotalLabel = 'Subtotal',
+  subtotal = '1000,00',
+  subtotalLabel = 'Подытог',
   showSubtotal = true,
 
   showCustomerNote = true,
-  customerNoteLabel = 'Customer Note',
+  customerNoteLabel = 'Примечание для клиента',
   customerNote = DefaultPdfTemplateStatement,
 
   showTermsConditions = true,
-  termsConditionsLabel = 'Terms & Conditions',
+  termsConditionsLabel = 'Условия',
   termsConditions = DefaultPdfTemplateTerms,
 
   lines = [
@@ -120,25 +120,25 @@ export function ReceiptPaperTemplate({
       description: DefaultPdfTemplateItemDescription,
       rate: '1',
       quantity: '1000',
-      total: '$1000.00',
+      total: '1000,00 ₽',
     },
   ],
 
   // Receipt Number
   showReceiptNumber = true,
-  receiptNumberLabel = 'Receipt Number',
-  receiptNumebr = '346D3D40-0001',
+  receiptNumberLabel = 'Чек №',
+  receiptNumebr = '2026-0001',
 
   // Receipt Date
-  receiptDate = 'September 3, 2024',
+  receiptDate = '03.09.2026',
   showReceiptDate = true,
-  receiptDateLabel = 'Receipt Date',
+  receiptDateLabel = 'Дата чека',
 
   // Entries
-  lineItemLabel = 'Item',
-  lineQuantityLabel = 'Qty',
-  lineRateLabel = 'Rate',
-  lineTotalLabel = 'Total',
+  lineItemLabel = 'Позиция',
+  lineQuantityLabel = 'Кол-во',
+  lineRateLabel = 'Цена',
+  lineTotalLabel = 'Сумма',
 }: ReceiptPaperTemplateProps) {
   return (
     <PaperTemplate primaryColor={primaryColor} secondaryColor={secondaryColor}>

@@ -20,11 +20,10 @@ export function ReceiptCustomizeGeneralField() {
     <Stack style={{ padding: 20, flex: '1 1 auto' }}>
       <Stack spacing={0}>
         <h2 style={{ fontSize: 16, marginBottom: 10, fontWeight: 600 }}>
-          General Branding
+          {intl.get('branding.general.title')}
         </h2>
         <p className={Classes.TEXT_MUTED}>
-          Set your company logo and branding colors to be automatically applied
-          to your receipts.
+          {intl.get('branding.general.description.receipt')}
         </p>
       </Stack>
 

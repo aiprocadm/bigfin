@@ -65,7 +65,7 @@ export function PaymentReceivedPaperTemplate({
   companyLogoUri,
 
   // # Company name
-  companyName = 'Bigfin Technology, Inc.',
+  companyName = 'ООО «Ромашка»',
 
   // # Customer address
   showCustomerAddress = true,
@@ -75,30 +75,30 @@ export function PaymentReceivedPaperTemplate({
   showCompanyAddress = true,
   companyAddress = DefaultPdfTemplateAddressBilledFrom,
 
-  billedToLabel = 'Billed To',
+  billedToLabel = 'Плательщик',
 
-  total = '$1000.00',
-  totalLabel = 'Total',
+  total = '1000,00 ₽',
+  totalLabel = 'Итого',
   showTotal = true,
 
-  subtotal = '1000/00',
-  subtotalLabel = 'Subtotal',
+  subtotal = '1000,00',
+  subtotalLabel = 'Подытог',
   showSubtotal = true,
 
   lines = [
     {
       invoiceNumber: 'INV-00001',
-      invoiceAmount: '$1000.00',
-      paidAmount: '$1000.00',
+      invoiceAmount: '1000,00 ₽',
+      paidAmount: '1000,00 ₽',
     },
   ],
   showPaymentReceivedNumber = true,
-  paymentReceivedNumberLabel = 'Payment Number',
-  paymentReceivedNumebr = '346D3D40-0001',
+  paymentReceivedNumberLabel = 'Поступление №',
+  paymentReceivedNumebr = '2026-0001',
 
-  paymentReceivedDate = 'September 3, 2024',
+  paymentReceivedDate = '03.09.2026',
   showPaymentReceivedDate = true,
-  paymentReceivedDateLabel = 'Payment Date',
+  paymentReceivedDateLabel = 'Дата платежа',
 }: PaymentReceivedPaperTemplateProps) {
   return (
     <PaperTemplate primaryColor={primaryColor} secondaryColor={secondaryColor}>

@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { Button, ButtonProps } from '@blueprintjs/core';
 import styled from 'styled-components';
 import { FFormGroup, Icon } from '@/components';
@@ -17,7 +18,7 @@ export const BrandingThemeFormGroup = styled(FFormGroup)`
 export const BrandingThemeSelectButton = (props: ButtonProps) => {
   return (
     <Button
-      text={props?.text || 'Brand Theme'}
+      text={props?.text || intl.get('branding.templates.brand_theme')}
       rightIcon={<Icon icon="arrow-drop-up-16" iconSize={20} />}
       minimal
       {...props}

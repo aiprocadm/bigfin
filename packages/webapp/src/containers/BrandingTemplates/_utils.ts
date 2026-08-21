@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { omit } from 'lodash';
 import * as R from 'ramda';
 import {
@@ -81,11 +82,11 @@ export const getCustomizeDrawerNameFromResource = (resource: string) => {
 
 export const getButtonLabelFromResource = (resource: string) => {
   const pairs = {
-    SaleInvoice: 'Create Invoice Branding',
-    SaleEstimate: 'Create Estimate Branding',
-    SaleReceipt: 'Create Receipt Branding',
-    CreditNote: 'Create Credit Note Branding',
-    PaymentReceive: 'Create Payment Branding',
+    SaleInvoice: intl.get('branding.templates.create.invoice'),
+    SaleEstimate: intl.get('branding.templates.create.estimate'),
+    SaleReceipt: intl.get('branding.templates.create.receipt'),
+    CreditNote: intl.get('branding.templates.create.credit_note'),
+    PaymentReceive: intl.get('branding.templates.create.payment_received'),
   };
-  return R.prop(resource, pairs) || 'Create Branding Template';
+  return R.prop(resource, pairs) || intl.get('branding.templates.create.default');
 };

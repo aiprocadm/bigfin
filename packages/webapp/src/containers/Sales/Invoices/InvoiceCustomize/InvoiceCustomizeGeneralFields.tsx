@@ -27,11 +27,10 @@ export function InvoiceCustomizeGeneralField() {
     <Stack style={{ padding: 20, flex: '1 1 auto' }}>
       <Stack spacing={0}>
         <h2 style={{ fontSize: 16, marginBottom: 10, fontWeight: 600 }}>
-          General Branding
+          {intl.get('branding.general.title')}
         </h2>
         <p className={Classes.TEXT_MUTED}>
-          Set your company logo and branding colors to be automatically applied
-          to your invoices.
+          {intl.get('branding.general.description.invoice')}
         </p>
       </Stack>
 
@@ -120,7 +119,7 @@ function InvoiceCustomizePaymentManage() {
         to={MANAGE_LINK_URL}
         onClick={handleLinkClick}
       >
-        Manage
+        {intl.get('branding.general.manage')}
       </Link>
     </Group>
   );

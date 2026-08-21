@@ -106,22 +106,22 @@ export function InvoicePaperTemplate({
   primaryColor,
   secondaryColor,
 
-  companyName = 'Bigfin Technology, Inc.',
+  companyName = 'ООО «Ромашка»',
 
   showCompanyLogo = true,
   companyLogoUri = '',
 
-  dueDate = 'September 3, 2024',
-  dueDateLabel = 'Date due',
+  dueDate = '03.09.2026',
+  dueDateLabel = 'Оплатить до',
   showDueDate = true,
 
-  dateIssue = 'September 3, 2024',
-  dateIssueLabel = 'Date of issue',
+  dateIssue = '03.09.2026',
+  dateIssueLabel = 'Дата выставления',
   showDateIssue = true,
 
   // dateIssue,
-  invoiceNumberLabel = 'Invoice number',
-  invoiceNumber = '346D3D40-0001',
+  invoiceNumberLabel = 'Счёт №',
+  invoiceNumber = '2026-0001',
   showInvoiceNumber = true,
 
   // Address
@@ -131,19 +131,19 @@ export function InvoicePaperTemplate({
   showCompanyAddress = true,
   companyAddress = DefaultPdfTemplateAddressBilledFrom,
 
-  billedToLabel = 'Billed To',
+  billedToLabel = 'Плательщик',
 
   // Entries
-  lineItemLabel = 'Item',
-  lineQuantityLabel = 'Qty',
-  lineRateLabel = 'Rate',
-  lineTotalLabel = 'Total',
+  lineItemLabel = 'Позиция',
+  lineQuantityLabel = 'Кол-во',
+  lineRateLabel = 'Цена',
+  lineTotalLabel = 'Сумма',
 
-  totalLabel = 'Total',
-  subtotalLabel = 'Subtotal',
-  discountLabel = 'Discount',
-  paymentMadeLabel = 'Payment Made',
-  balanceDueLabel = 'Balance Due',
+  totalLabel = 'Итого',
+  subtotalLabel = 'Подытог',
+  discountLabel = 'Скидка',
+  paymentMadeLabel = 'Оплачено',
+  balanceDueLabel = 'К оплате',
 
   // Totals
   showTotal = true,
@@ -154,14 +154,14 @@ export function InvoicePaperTemplate({
   showDueAmount = true,
   showBalanceDue = true,
 
-  total = '$662.75',
-  subtotal = '630.00',
-  discount = '0.00',
-  paymentMade = '100.00',
-  balanceDue = '$562.75',
+  total = '662,75 ₽',
+  subtotal = '630,00',
+  discount = '0,00',
+  paymentMade = '100,00',
+  balanceDue = '562,75 ₽',
 
   // Footer paragraphs.
-  termsConditionsLabel = 'Terms & Conditions',
+  termsConditionsLabel = 'Условия',
   showTermsConditions = true,
   termsConditions = DefaultPdfTemplateTerms,
 
@@ -171,15 +171,15 @@ export function InvoicePaperTemplate({
       description: DefaultPdfTemplateItemDescription,
       rate: '1',
       quantity: '1000',
-      total: '$1000.00',
+      total: '1000,00 ₽',
     },
   ],
   taxes = [
-    { label: 'Sample Tax1 (4.70%)', amount: '11.75' },
-    { label: 'Sample Tax2 (7.00%)', amount: '21.74' },
+    { label: 'Налог 4,70%', amount: '11,75' },
+    { label: 'Налог 7,00%', amount: '21,74' },
   ],
 
-  statementLabel = 'Statement',
+  statementLabel = 'Примечание',
   showStatement = true,
   statement = DefaultPdfTemplateStatement,
   ...props

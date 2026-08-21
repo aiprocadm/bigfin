@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import {
   Button,
@@ -220,7 +221,7 @@ function EstimateActionsBar({
             <Menu>
               <MenuItem
                 onClick={handleCustomizeBtnClick}
-                text={'Customize Templates'}
+                text={intl.get('customize_templates')}
               />
             </Menu>
           }

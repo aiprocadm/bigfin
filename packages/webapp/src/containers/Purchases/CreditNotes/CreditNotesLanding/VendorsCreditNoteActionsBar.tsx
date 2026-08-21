@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { isEmpty } from 'lodash';
@@ -206,7 +207,7 @@ function VendorsCreditNoteActionsBar({
             <Menu>
               <MenuItem
                 onClick={handleCustomizeBtnClick}
-                text={'Customize Credit Note'}
+                text={intl.get('customize_templates')}
               />
             </Menu>
           }

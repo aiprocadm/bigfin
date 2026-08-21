@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -163,7 +164,7 @@ function InvoiceDetailActionsBar({
         </Can>
         <Can I={SaleInvoiceAction.View} a={AbilitySubject.Invoice}>
           <Button
-            text={'Send Mail'}
+            text={intl.get('send_mail')}
             icon={<Icon icon="envelope" />}
             onClick={handleMailInvoice}
             className={Classes.MINIMAL}

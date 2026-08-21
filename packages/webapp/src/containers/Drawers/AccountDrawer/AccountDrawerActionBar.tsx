@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import {
   Button,
@@ -104,7 +105,7 @@ function AccountDrawerActionBar({
             <NavbarDivider />
             <Button
               className={CLASSES.MINIMAL}
-              text={'Activate'}
+              text={intl.get('activate')}
               intent={Intent.SUCCESS}
               onClick={handleActivateBtnClick}
             />
@@ -124,7 +125,7 @@ function AccountDrawerActionBar({
                 <Menu>
                   <MenuItem
                     onClick={handleInactivateBtnClick}
-                    text={'Inactivate'}
+                    text={intl.get('inactivate')}
                   />
                 </Menu>
               }

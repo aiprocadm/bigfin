@@ -16,11 +16,11 @@ const codeAccessor = (taxRate) => {
 const statusAccessor = (taxRate) => {
   return taxRate.active ? (
     <Tag round={false} intent={Intent.SUCCESS}>
-      Active
+      {intl.get('active')}
     </Tag>
   ) : (
     <Tag round={false} intent={Intent.NONE}>
-      Inactive
+      {intl.get('inactive')}
     </Tag>
   );
 };
@@ -50,28 +50,28 @@ const DescriptionAccessor = (taxRate) => {
 export const useTaxRatesTableColumns = () => {
   return [
     {
-      Header: 'Name',
+      Header: intl.get('tax_rates.label.name'),
       accessor: nameAccessor,
       width: 60,
     },
     {
-      Header: 'Code',
+      Header: intl.get('code'),
       accessor: codeAccessor,
       width: 40,
     },
     {
-      Header: 'Rate',
+      Header: intl.get('tax_rates.label.rate'),
       accessor: 'rate_formatted',
       align: Align.Right,
       width: 30,
     },
     {
-      Header: 'Description',
+      Header: intl.get('description'),
       accessor: DescriptionAccessor,
       width: 100,
     },
     {
-      Header: 'Status',
+      Header: intl.get('status'),
       accessor: statusAccessor,
       width: 30,
       align: Align.Right,

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import * as R from 'ramda';
 import { omit } from 'lodash';
@@ -23,7 +24,7 @@ export const transformApiErrors = (errors) => {
   const fields = {};
 
   if (errors.find((e) => e.type === 'TAX_CODE_NOT_UNIQUE')) {
-    fields.code = 'The tax rate is not unique.';
+    fields.code = intl.get('tax_rates.error.not_unique');
   }
   return fields;
 };

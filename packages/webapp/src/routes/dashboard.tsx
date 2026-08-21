@@ -411,19 +411,11 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
   },
-  {
-    path: `/financial-reports/project-profitability-summary`,
-    component: lazy(
-      () =>
-        import(
-          '@/containers/FinancialStatements/ProjectProfitabilitySummary/ProjectProfitabilitySummary'
-        ),
-    ),
-    breadcrumb: intl.get('project_profitability_summary'),
-    pageTitle: intl.get('project_profitability_summary'),
-    backLink: true,
-    sidebarExpand: false,
-  },
+  // Отчёта «Прибыльность проектов» в маршрутах больше нет (К2 карты v17):
+  // хвост закрытого раздела «Проекты» (вопрос 31) — серверной ручки не
+  // существует, хук бил в несуществующий адрес, а прямая ссылка открывала
+  // битый экран. Файлы страницы не удалены — их удаление отдельное решение.
+
   {
     path: '/financial-reports/sales-tax-liability-summary',
     component: lazy(

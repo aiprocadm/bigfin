@@ -1786,6 +1786,7 @@
   "setup.organization.description": "Tell the system a little bit about your organization.",
   "setup.organization.note_you_can_change_your_preferences": "Note: You can change your preferences later in dashboard, if needed.",
   "setup.congrats.modules_hint": "Only the basic modules are enabled for now. Sales, purchases, inventory and reports can be switched on at the Modules page — any time, one by one.",
+  "setup.congrats.fill_requisites": "Fill in legal details",
   "setup.congrats.open_modules": "Choose modules",
   "setup.congrats.title": "Congrats! You are ready to go",
   "setup.congrats.description": "Congrats, Your organization is set up successfully. you can start working once go to dashboard.",

@@ -1786,6 +1786,7 @@
   "setup.organization.description": "Расскажите системе чуть-чуть о вашей организации.",
   "setup.organization.note_you_can_change_your_preferences": "Примечание: настройки можно поменять позже в дашборде.",
   "setup.congrats.modules_hint": "Сейчас включены только базовые модули. Продажи, закупки, склад и отчёты включаются на странице «Модули» — в любой момент, по одному.",
+  "setup.congrats.fill_requisites": "Заполнить реквизиты",
   "setup.congrats.open_modules": "Выбрать модули",
   "setup.congrats.title": "Поздравляем! Всё готово",
   "setup.congrats.description": "Поздравляем, ваша организация настроена. Можете приступать к работе — перейдите в дашборд.",

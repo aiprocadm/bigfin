@@ -31,6 +31,13 @@ function SetupCongratsPage({ setOrganizationSetupCompleted }) {
     window.location.assign('/preferences/modules');
   };
 
+  // Мастер не спрашивает ни ИНН, ни банк — а без реквизитов счёт на оплату
+  // печатается негодным. Ведём человека в секцию «Реквизиты» (К2 карты v17).
+  const handleRequisitesBtnClick = () => {
+    setIsReloading(true);
+    window.location.assign('/preferences/general');
+  };
+
   return (
     <x.div
       w={'500px'}
@@ -89,6 +96,9 @@ function SetupCongratsPage({ setOrganizationSetupCompleted }) {
           </Button>{' '}
           <Button disabled={isReloading} onClick={handleModulesBtnClick}>
             <T id={'setup.congrats.open_modules'} />
+          </Button>{' '}
+          <Button disabled={isReloading} onClick={handleRequisitesBtnClick}>
+            <T id={'setup.congrats.fill_requisites'} />
           </Button>
         </x.div>
       </x.div>

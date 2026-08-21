@@ -1,4 +1,5 @@
 import { Text, Classes, Button, Intent, ButtonProps } from '@blueprintjs/core';
+import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { css } from '@emotion/css';
 import { lighten } from 'polished';
@@ -78,45 +79,45 @@ export function InvoicePaymentPage({
 
   // # Subtotal
   subtotal,
-  subtotalLabel = 'Subtotal',
+  subtotalLabel = intl.get('payment_portal.totals.subtotal'),
 
   // # Total
   total,
-  totalLabel = 'Total',
+  totalLabel = intl.get('payment_portal.totals.total'),
 
   // # Due date
   dueDate,
 
   // # Paid amount
   paidAmount,
-  paidAmountLabel = 'Paid Amount (-)',
+  paidAmountLabel = intl.get('payment_portal.totals.paid_amount'),
 
   // # Invoice number
   invoiceNumber,
-  invoiceNumberLabel = 'Invoice #',
+  invoiceNumberLabel = intl.get('payment_portal.invoice_no'),
 
   // # Download invoice button
-  downloadInvoiceBtnLabel = 'Download Invoice',
+  downloadInvoiceBtnLabel = intl.get('payment_portal.download_invoice'),
   downloadInvoiceButtonProps,
 
   // # View invoice button
-  viewInvoiceLabel = 'View Invoice',
+  viewInvoiceLabel = intl.get('payment_portal.view_invoice'),
   viewInvoiceButtonProps,
 
   // # Due amount
   dueAmount,
-  dueAmountLabel = 'Due Amount',
+  dueAmountLabel = intl.get('payment_portal.totals.due_amount'),
 
   // # Pay button
   showPayButton = true,
-  payButtonLabel = 'Pay {total}',
+  payButtonLabel = intl.get('payment_portal.pay_button', { total }),
   payInvoiceButtonProps,
 
   // # Buy note
-  buyNote = 'By confirming your payment, you allow Bigfin Technology, Inc. to charge you for this payment and save your payment information in accordance with their terms.',
+  buyNote = intl.get('payment_portal.disclaimer', { organization: organizationName ?? '' }),
 
   // # Copyright
-  copyrightText = `© 2024 Bigfin Technology, Inc. <br /> All rights reserved.`,
+  copyrightText = intl.get('payment_portal.footer.copyright', { year: new Date().getFullYear(), organization: organizationName ?? '' }),
   classNames,
 }: PaymentPageProps) {
   return (
@@ -137,11 +138,11 @@ export function InvoicePaymentPage({
 
           <Stack spacing={6}>
             <h1 className={clsx(styles.bigTitle, classNames?.bigTitle)}>
-              {organizationName} Sent an Invoice for {total}
+              {intl.get('payment_portal.sent_invoice_for', { organization: organizationName ?? '', total })}
             </h1>
             <Group spacing={10}>
               <Text className={clsx(Classes.TEXT_MUTED, styles.invoiceDueDate)}>
-                Invoice due {dueDate}{' '}
+                {intl.get('payment_portal.invoice_due', { dueDate })}{' '}
               </Text>
             </Group>
           </Stack>

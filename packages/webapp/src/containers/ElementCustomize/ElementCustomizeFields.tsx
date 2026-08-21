@@ -68,7 +68,7 @@ function ElementCustomizeFooterActionsRoot({ closeDrawer }) {
         loading={isSubmitting}
         type={'submit'}
       >
-        Save
+        {intl.get('save')}
       </Button>
       <Button onClick={handleCancelBtnClick}>{intl.get('cancel')}</Button>
     </Group>

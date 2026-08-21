@@ -153,7 +153,13 @@ export const transformToRuInvoiceFacturaProps = (
     totalVatAmount: mapped.totalVatText,
     totalAmountInclVat: mapped.totalInclVatText,
 
-    isSoleProprietor: isSoleProprietorInn(metadata?.inn),
+    // Юр. форма — прямой признак (Р2 срез 4): ИП с выбранной формой, но не
+    // заполненным ИНН получал бланк с подписями «Руководитель» и «Главбух».
+    // Длина ИНН остаётся запасным признаком для организаций без юр. формы.
+    isSoleProprietor:
+      metadata?.legalForm === 'IP' ||
+      metadata?.legalForm === 'NPD' ||
+      isSoleProprietorInn(metadata?.inn),
     soleProprietorOgrn: metadata?.ogrn ?? '',
   };
 };

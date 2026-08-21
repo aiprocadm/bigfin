@@ -71,6 +71,57 @@ export function useDataQualityUnbalanced(
 }
 
 /**
+ * «Валютные проводки без курса»: ручные проводки, чей журнал лёг один к
+ * одному с валютой (вопрос 28 карты v16 — накопились до починки умножения).
+ */
+export function useDataQualityCrookedJournals(
+  query: DataQualityPeriodQuery,
+  props?: any,
+) {
+  return useRequestQuery(
+    [t.DATA_QUALITY_CROOKED_CURRENCY, query],
+    {
+      method: 'get',
+      url: 'data-quality/crooked-currency-journals',
+      params: query,
+    },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: { journals: [], totalJournals: 0, totalDifference: 0 },
+      ...props,
+    },
+  );
+}
+
+/**
+ * Перепроведение кривых валютных проводок — по явной кнопке; журнал
+ * переписывается тем же кодом, что и при обычном сохранении.
+ */
+export function useRepostCrookedJournals(
+  props?: UseMutationOptions<any, any, DataQualityPeriodQuery>,
+) {
+  const client = useQueryClient();
+  const apiRequest: any = useApiRequest();
+
+  return useMutation<any, any, DataQualityPeriodQuery>(
+    (query) =>
+      apiRequest.post(
+        'data-quality/repost-crooked-currency-journals',
+        {},
+        { params: query },
+      ),
+    {
+      onSuccess: () => {
+        client.invalidateQueries(t.DATA_QUALITY_CROOKED_CURRENCY);
+        client.invalidateQueries(t.DATA_QUALITY_UNBALANCED);
+        client.invalidateQueries(t.FINANCIAL_REPORT);
+      },
+      ...props,
+    },
+  );
+}
+
+/**
  * Перепроведение документов с НДС за период.
  *
  * Операция меняет журнал, поэтому после неё сбрасываем кэш проверок качества

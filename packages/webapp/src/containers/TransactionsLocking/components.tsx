@@ -92,12 +92,18 @@ export const TransactionLockingItemSkeleton = ({ }) => {
         </TransLockingIcon>
 
         <TransLockingContent>
+          {/*
+            Текст скелетона задаёт только ширину серой плашки, но при медленной
+            загрузке или сбое стилей он ВИДЕН. Здесь жила латинская рыба
+            «Lorem ipsum…» с зарубежных времён (Р3 карты v16) — теперь текст
+            честный и переведённый.
+          */}
           <TransLockingItemTitle className={Classes.SKELETON}>
-            XXXX
+            {intl.get('transactions_locking.skeleton.title')}
           </TransLockingItemTitle>
 
           <TransLockingItemDesc className={Classes.SKELETON}>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            {intl.get('transactions_locking.skeleton.desc')}
           </TransLockingItemDesc>
         </TransLockingContent>
       </TransLockingInner>

@@ -10,9 +10,18 @@ import {
   IsString,
   MaxLength,
   ValidateIf,
+  Validate,
 } from 'class-validator';
 import { ContactAddressDto } from '@/modules/Customers/dtos/ContactAddress.dto';
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
+import { InnConstraint } from '@/modules/RussianLegalAttributes/validators/inn.validator';
+import { KppConstraint } from '@/modules/RussianLegalAttributes/validators/kpp.validator';
+import { OgrnAnyConstraint } from '@/modules/RussianLegalAttributes/validators/ogrnAny.validator';
+import { BikConstraint } from '@/modules/RussianLegalAttributes/validators/bik.validator';
+import {
+  BankAccountConstraint,
+  CorrespondentAccountConstraint,
+} from '@/modules/RussianLegalAttributes/validators/account.validator';
 
 export class CreateVendorDto extends ContactAddressDto {
   @ApiProperty({ required: false, description: 'Vendor opening balance' })
@@ -133,6 +142,7 @@ export class CreateVendorDto extends ContactAddressDto {
   })
   @IsOptional()
   @IsString()
+  @Validate(InnConstraint)
   inn?: string;
 
   // Российские юр.реквизиты контрагента (②a/②c).
@@ -150,6 +160,7 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(9)
+  @Validate(KppConstraint)
   kpp?: string;
 
   @ApiProperty({
@@ -160,6 +171,7 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(15)
+  @Validate(OgrnAnyConstraint)
   ogrn?: string;
 
   @ApiProperty({ required: false, description: 'Bank name' })
@@ -176,6 +188,7 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(9)
+  @Validate(BikConstraint)
   bankBik?: string;
 
   @ApiProperty({
@@ -186,6 +199,7 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
+  @Validate(BankAccountConstraint)
   bankAccount?: string;
 
   @ApiProperty({
@@ -196,6 +210,7 @@ export class CreateVendorDto extends ContactAddressDto {
   @IsOptional()
   @IsString()
   @MaxLength(20)
+  @Validate(CorrespondentAccountConstraint)
   bankCorrespondentAccount?: string;
 }
 

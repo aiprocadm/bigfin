@@ -7,6 +7,7 @@ import { UnmappedTab } from './UnmappedTab';
 import { DuplicatesTab } from './DuplicatesTab';
 import { PlCashflowTab } from './PlCashflowTab';
 import { UnbalancedTab } from './UnbalancedTab';
+import { CrookedCurrencyTab } from './CrookedCurrencyTab';
 import { FailedMailsTab } from './FailedMailsTab';
 
 type TabKey =
@@ -14,6 +15,7 @@ type TabKey =
   | 'duplicates'
   | 'pl_cashflow'
   | 'unbalanced'
+  | 'crooked_currency'
   | 'failed_mails';
 
 const TABS: { key: TabKey; label: string }[] = [
@@ -21,6 +23,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'duplicates', label: 'data_quality.tab.duplicates' },
   { key: 'pl_cashflow', label: 'data_quality.tab.pl_cashflow' },
   { key: 'unbalanced', label: 'data_quality.tab.unbalanced' },
+  { key: 'crooked_currency', label: 'data_quality.tab.crooked_currency' },
   { key: 'failed_mails', label: 'data_quality.tab.failed_mails' },
 ];
 
@@ -95,6 +98,9 @@ export default function DataQualityPage() {
       )}
       {tab === 'unbalanced' && (
         <UnbalancedTab fromDate={fromDate} toDate={toDate} />
+      )}
+      {tab === 'crooked_currency' && (
+        <CrookedCurrencyTab fromDate={fromDate} toDate={toDate} />
       )}
       {/* Сводка всегда за 7 дней — годовой фильтр к ней не относится. */}
       {tab === 'failed_mails' && <FailedMailsTab />}

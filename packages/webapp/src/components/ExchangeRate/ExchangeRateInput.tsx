@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState } from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { useFormikContext } from 'formik';
 import {
@@ -121,7 +122,7 @@ export function ExchangeRateInputGroup({
           onClick={handleRecalcConfirmBtn}
           small
         >
-          Calculate
+          {intl.get('exchange_rate.recalculate')}
         </Button>
         <Button
           className={Classes.POPOVER_DISMISS}
@@ -130,7 +131,7 @@ export function ExchangeRateInputGroup({
           small
           minimal
         >
-          Cancel
+          {intl.get('cancel')}
         </Button>
       </div>
     </PopoverContent>

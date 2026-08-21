@@ -81,12 +81,16 @@ export function PaymentPortal() {
 
           <Stack spacing={6}>
             <h1 className={styles.bigTitle}>
-              {sharableLinkMeta?.organization?.name} Sent an Invoice for{' '}
-              {sharableLinkMeta?.totalFormatted}
+              {intl.get('payment_portal.sent_invoice_for', {
+                organization: sharableLinkMeta?.organization?.name ?? '',
+                total: sharableLinkMeta?.totalFormatted ?? '',
+              })}
             </h1>
             <Group spacing={10}>
               <Text className={clsx(Classes.TEXT_MUTED, styles.invoiceDueDate)}>
-                Invoice due {sharableLinkMeta?.dueDateFormatted}{' '}
+                {intl.get('payment_portal.invoice_due', {
+                  dueDate: sharableLinkMeta?.dueDateFormatted ?? '',
+                })}{' '}
               </Text>
             </Group>
           </Stack>
@@ -106,7 +110,7 @@ export function PaymentPortal() {
           </Stack>
 
           <h2 className={styles.invoiceNumber}>
-            Invoice {sharableLinkMeta?.invoiceNo}
+            {intl.get('payment_portal.invoice_no')} {sharableLinkMeta?.invoiceNo}
           </h2>
 
           <Stack spacing={0} className={styles.totals}>
@@ -158,14 +162,14 @@ export function PaymentPortal() {
             onClick={handleInvoiceDownloadBtnClick}
             loading={isInvoiceGenerating}
           >
-            Download Invoice
+            {intl.get('payment_portal.download_invoice')}
           </Button>
 
           <Button
             onClick={handleInvoicePreviewBtnClick}
             className={clsx(styles.footerButton, styles.viewInvoiceButton)}
           >
-            View Invoice
+            {intl.get('payment_portal.view_invoice')}
           </Button>
 
           {sharableLinkMeta?.isReceivable &&
@@ -191,7 +195,9 @@ export function PaymentPortal() {
                 loading={isStripeCheckoutLoading}
                 onClick={handlePayButtonClick}
               >
-                Pay {sharableLinkMeta?.totalFormatted}
+                {intl.get('payment_portal.pay_button', {
+                  total: sharableLinkMeta?.totalFormatted ?? '',
+                })}
               </Button>
             )}
         </Stack>

@@ -1,25 +1,30 @@
+/**
+ * Примеры-заполнители для превью печатных шаблонов (К3 карты v17).
+ *
+ * Раньше здесь жили делавэрский адрес и телефон +1 от зарубежного
+ * предшественника — их видел каждый, кто открывал пустую форму счёта или
+ * настройку брендирования. Это только примеры для превью: в настоящий
+ * документ подставляются данные организации и контрагента.
+ */
 export const DefaultPdfTemplateTerms =
-  'All services provided are non-refundable. For any disputes, please contact us within 7 days of receiving this invoice.';
+  'Оплата счёта означает согласие с условиями поставки. По вопросам к счёту свяжитесь с нами в течение 7 дней с даты получения.';
 
 export const DefaultPdfTemplateStatement =
-  'Thank you for your business. We look forward to working with you again!';
+  'Спасибо за сотрудничество! Будем рады работать с вами снова.';
 
-export const DefaultPdfTemplateItemName = 'Web development';
+export const DefaultPdfTemplateItemName = 'Разработка сайта';
 
 export const DefaultPdfTemplateItemDescription =
-  'Website development with content and SEO optimization';
+  'Разработка сайта с наполнением и поисковой оптимизацией';
 
-export const DefaultPdfTemplateAddressBilledTo = `Bigfin Technology, Inc.<br />
-131 Continental Dr, <br />
-Suite 305, <br />
-Newark, Delaware 19713, <br />
-United States,<br />
-+1 762-339-5634
+export const DefaultPdfTemplateAddressBilledTo = `ООО «Ромашка»<br />
+101000, г. Москва, <br />
+ул. Ленина, д. 1, офис 5, <br />
++7 (495) 000-00-00
 `;
 
-export const DefaultPdfTemplateAddressBilledFrom = `131 Continental Dr Suite 305 Newark, <br />
-Delaware 19713,<br />
-United States, <br />
-+1 762-339-5634, <br />
-ahmed@bigfin.app
+export const DefaultPdfTemplateAddressBilledFrom = `101000, г. Москва, <br />
+ул. Ленина, д. 1, офис 5, <br />
++7 (495) 000-00-00, <br />
+info@bigfin.app
 `;

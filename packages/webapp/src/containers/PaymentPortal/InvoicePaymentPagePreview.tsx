@@ -8,13 +8,13 @@ export function InvoicePaymentPagePreview(
 ) {
   return (
     <InvoicePaymentPage
-      paidAmount={'$1,000.00'}
-      dueDate={'20 Sep 2024'}
-      total={'$1,000.00'}
-      subtotal={'$1,000.00'}
-      dueAmount={'$1,000.00'}
-      customerName={'Ahmed Bouhuolia'}
-      organizationName={'Bigfin Technology, Inc.'}
+      paidAmount={'100 000,00 ₽'}
+      dueDate={'20.09.2026'}
+      total={'100 000,00 ₽'}
+      subtotal={'100 000,00 ₽'}
+      dueAmount={'100 000,00 ₽'}
+      customerName={'Иван Петров'}
+      organizationName={'ООО «Ромашка»'}
       invoiceNumber={'INV-000001'}
       companyLogoUri={' '}
       organizationAddress={' '}

@@ -362,6 +362,19 @@ entry.debit`, сравните с `InvoiceGL.ts:108`, где `* exchangeRate` е
    `/projects` рендерит обычную оболочку без развалин. Мёртвый
    `Drawers/components.tsx` с `info@bigfin.ly` не тронут (никем не
    импортируется) — кандидат на удаление отдельным решением.
+   **Кусок 3 ✅ Сделано (уборка подписок):** из таблицы маршрутов удалены
+   113 строк флага `subscriptionActive` (его не читал НИКТО) вместе с
+   константой; сторож в `navigationReachability.spec.ts` не даст флагу
+   вернуться. Удалены три неиспользуемых гарда `EnsureSubscription*`. Из
+   хуков удалены два мёртвых с несуществующими адресами:
+   `usePaymentByVoucher` (`subscription/license/payment` — ручки нет) и
+   `useOrganizationSubscriptions` (`subscriptions` — сервер отвечает на
+   `subscription`, без «s»). Живой кусок — `useGetLemonSqueezyCheckout` и
+   бесплатная подписка при регистрации — не тронут. **Живьём:** /invoices,
+   /items, /warehouses-transfers открываются; /manual-journals штатно
+   закрыт режимом интерфейса «предприниматель» (гард
+   `useAccountantOnlyRouteGuard`, поведение существовало и до уборки).
+
 
 4. **Р4 — первые шаги.**
    **Чек-лист ✅ Сделан (вопрос 23, состав — пять отметок из карты).**

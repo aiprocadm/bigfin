@@ -1,48 +1,11 @@
 // @ts-nocheck
-import { useEffect } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { useRequestQuery } from '../useQueryRequest';
+import { useMutation } from 'react-query';
 import useApiRequest from '../useRequest';
-import { useSetSubscriptions } from '../state/subscriptions';
-import T from './types';
 
-/**
- * Subscription payment via voucher.
- */
-export const usePaymentByVoucher = (props) => {
-  const apiRequest = useApiRequest();
-  const queryClient = useQueryClient();
-
-  return useMutation(
-    (values) => apiRequest.post('subscription/license/payment', values),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(T.SUBSCRIPTIONS);
-        queryClient.invalidateQueries(T.ORGANIZATION_CURRENT);
-        queryClient.invalidateQueries(T.ORGANIZATIONS);
-      },
-      ...props,
-    },
-  );
-};
-
-/**
- * Fetches the organization subscriptions.
- */
-export const useOrganizationSubscriptions = (props) => {
-  const setSubscriptions = useSetSubscriptions();
-
-  const state = useRequestQuery(
-    [T.SUBSCRIPTIONS],
-    { method: 'get', url: 'subscriptions' },
-    { ...props },
-  );
-  useEffect(() => {
-    if (state.isSuccess) {
-      setSubscriptions(state.data);
-    }
-  }, [state.isSuccess, state.data, setSubscriptions]);
-};
+// Двух мёртвых хуков здесь больше нет (Р3 карты v16): usePaymentByVoucher
+// бил в `subscription/license/payment`, а useOrganizationSubscriptions — в
+// `subscriptions` (сервер отвечает на `subscription`, без «s»). Оба адреса
+// не существовали, оба хука никто не импортировал.
 
 /**
  * Fetches the checkout url of the Lemon Squeezy.

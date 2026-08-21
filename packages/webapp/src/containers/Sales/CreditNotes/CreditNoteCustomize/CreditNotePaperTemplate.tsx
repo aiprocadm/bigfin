@@ -86,7 +86,7 @@ export function CreditNotePaperTemplate({
   showCompanyLogo = true,
   companyLogoUri = '',
 
-  companyName = 'Bigfin Technology, Inc.',
+  companyName = 'ООО «Ромашка»',
 
   // Address
   showCustomerAddress = true,
@@ -95,27 +95,27 @@ export function CreditNotePaperTemplate({
   showCompanyAddress = true,
   companyAddress = DefaultPdfTemplateAddressBilledFrom,
 
-  billedToLabel = 'Billed To',
+  billedToLabel = 'Плательщик',
 
   // Total
-  total = '$1000.00',
-  totalLabel = 'Total',
+  total = '1000,00 ₽',
+  totalLabel = 'Итого',
   showTotal = true,
 
   // Subtotal
-  subtotal = '1000/00',
-  subtotalLabel = 'Subtotal',
+  subtotal = '1000,00',
+  subtotalLabel = 'Подытог',
   showSubtotal = true,
 
   // Customer note
   showCustomerNote = true,
   customerNote = DefaultPdfTemplateStatement,
-  customerNoteLabel = 'Customer Note',
+  customerNoteLabel = 'Примечание для клиента',
 
   // Terms & conditions
   showTermsConditions = true,
   termsConditions = DefaultPdfTemplateTerms,
-  termsConditionsLabel = 'Terms & Conditions',
+  termsConditionsLabel = 'Условия',
 
   lines = [
     {
@@ -123,24 +123,24 @@ export function CreditNotePaperTemplate({
       description: DefaultPdfTemplateItemDescription,
       rate: '1',
       quantity: '1000',
-      total: '$1000.00',
+      total: '1000,00 ₽',
     },
   ],
   // Credit note number.
   showCreditNoteNumber = true,
-  creditNoteNumberLabel = 'Credit Note Number',
-  creditNoteNumebr = '346D3D40-0001',
+  creditNoteNumberLabel = 'Кредит-нота №',
+  creditNoteNumebr = '2026-0001',
 
   // Credit note date.
-  creditNoteDate = 'September 3, 2024',
+  creditNoteDate = '03.09.2026',
   showCreditNoteDate = true,
-  creditNoteDateLabel = 'Credit Note Date',
+  creditNoteDateLabel = 'Дата выставления',
 
   // Entries
-  lineItemLabel = 'Item',
-  lineQuantityLabel = 'Qty',
-  lineRateLabel = 'Rate',
-  lineTotalLabel = 'Total',
+  lineItemLabel = 'Позиция',
+  lineQuantityLabel = 'Кол-во',
+  lineRateLabel = 'Цена',
+  lineTotalLabel = 'Сумма',
 }: CreditNotePaperTemplateProps) {
   return (
     <PaperTemplate primaryColor={primaryColor} secondaryColor={secondaryColor}>

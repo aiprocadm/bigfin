@@ -8,7 +8,7 @@ import {
 import { InvoiceCustomizeGeneralField } from './InvoiceCustomizeGeneralFields';
 import { InvoiceCustomizeContentFields } from './InvoiceCutomizeContentFields';
 import { InvoiceCustomizeFormValues, InvoiceCustomizeState } from './types';
-import { InvoiceCustomizeSchema } from './InvoiceCustomizeForm.schema';
+import { getInvoiceCustomizeSchema } from './InvoiceCustomizeForm.schema';
 import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
 import { useDrawerActions } from '@/hooks/state';
 import { BrandingTemplateForm } from '@/containers/BrandingTemplates/BrandingTemplateForm';
@@ -51,7 +51,7 @@ export function InvoiceCustomizeContent() {
     <BrandingTemplateForm<InvoiceCustomizeFormValues, InvoiceCustomizeState>
       templateId={templateId}
       defaultValues={initialValues}
-      validationSchema={InvoiceCustomizeSchema}
+      validationSchema={getInvoiceCustomizeSchema()}
       onSuccess={handleSuccess}
       resource={'SaleInvoice'}
     >

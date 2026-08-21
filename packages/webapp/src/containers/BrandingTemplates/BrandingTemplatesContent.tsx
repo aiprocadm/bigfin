@@ -37,7 +37,7 @@ const BrandingTemplateHeader = R.compose(withDrawerActions)(
     return (
       <Group>
         <Button intent={Intent.PRIMARY} onClick={handleCreateBtnClick}>
-          Create Invoice Branding
+          {intl.get('branding.templates.create.invoice')}
         </Button>
       </Group>
     );

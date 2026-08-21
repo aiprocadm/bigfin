@@ -97,27 +97,27 @@ export function EstimatePaperTemplate({
   // # Customer address
   customerAddress = DefaultPdfTemplateAddressBilledTo,
   showCustomerAddress = true,
-  billedToLabel = 'Billed To',
+  billedToLabel = 'Плательщик',
 
   // # Total
-  total = '$1000.00',
-  totalLabel = 'Total',
+  total = '1000,00 ₽',
+  totalLabel = 'Итого',
   showTotal = true,
 
   // # Subtotal
-  subtotal = '1000/00',
-  subtotalLabel = 'Subtotal',
+  subtotal = '1000,00',
+  subtotalLabel = 'Подытог',
   showSubtotal = true,
 
   // # Customer Note
   showCustomerNote = true,
   customerNote = DefaultPdfTemplateStatement,
-  customerNoteLabel = 'Customer Note',
+  customerNoteLabel = 'Примечание для клиента',
 
   // # Terms & Conditions
   showTermsConditions = true,
   termsConditions = DefaultPdfTemplateTerms,
-  termsConditionsLabel = 'Terms & Conditions',
+  termsConditionsLabel = 'Условия',
 
   lines = [
     {
@@ -125,30 +125,30 @@ export function EstimatePaperTemplate({
       description: DefaultPdfTemplateItemDescription,
       rate: '1',
       quantity: '1000',
-      total: '$1000.00',
+      total: '1000,00 ₽',
     },
   ],
 
   // Estimate number
   showEstimateNumber = true,
-  estimateNumberLabel = 'Estimate Number',
-  estimateNumebr = '346D3D40-0001',
+  estimateNumberLabel = 'Смета №',
+  estimateNumebr = '2026-0001',
 
   // Estimate date
-  estimateDate = 'September 3, 2024',
+  estimateDate = '03.09.2026',
   showEstimateDate = true,
-  estimateDateLabel = 'Estimate Date',
+  estimateDateLabel = 'Дата выставления',
 
   // Expiration date
-  expirationDateLabel = 'Expiration Date',
+  expirationDateLabel = 'Действует до',
   showExpirationDate = true,
-  expirationDate = 'September 3, 2024',
+  expirationDate = '03.09.2026',
 
   // Entries
-  lineItemLabel = 'Item',
-  lineQuantityLabel = 'Qty',
-  lineRateLabel = 'Rate',
-  lineTotalLabel = 'Total',
+  lineItemLabel = 'Позиция',
+  lineQuantityLabel = 'Кол-во',
+  lineRateLabel = 'Цена',
+  lineTotalLabel = 'Сумма',
 
 }: EstimatePaperTemplateProps) {
   return (

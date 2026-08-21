@@ -157,7 +157,7 @@ export default function PaymentReceiveFormFloatingActions() {
           content={
             <Menu>
               <MenuItem
-                text={'Customize Templates'}
+                text={intl.get('customize_templates')}
                 onClick={handleCustomizeBtnClick}
               />
             </Menu>

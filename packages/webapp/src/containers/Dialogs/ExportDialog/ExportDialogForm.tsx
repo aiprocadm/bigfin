@@ -4,7 +4,7 @@ import intl from 'react-intl-universal';
 
 import { compose, transformToForm } from '@/utils';
 
-import { ExportDialogFormSchema } from './ExportDialogForm.schema';
+import { getExportDialogFormSchema } from './ExportDialogForm.schema';
 import { ExportDialogFormContent } from './ExportDialogFormContent';
 import { useResourceExport } from '@/hooks/query/FinancialReports/use-export';
 import { ExportFormInitialValues } from './type';
@@ -66,7 +66,7 @@ function ExportDialogFormRoot({
   };
   return (
     <Formik
-      validationSchema={ExportDialogFormSchema}
+      validationSchema={getExportDialogFormSchema()}
       initialValues={initialFormValues}
       onSubmit={handleFormSubmit}
     >

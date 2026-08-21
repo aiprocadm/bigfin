@@ -72,7 +72,7 @@ function ReceiptSendMailFooter() {
           style={{ minWidth: '85px' }}
           type="submit"
         >
-          Send Mail
+          {intl.get('send_mail')}
         </Button>
       </Group>
     </Group>

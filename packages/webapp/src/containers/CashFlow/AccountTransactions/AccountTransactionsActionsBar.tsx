@@ -333,7 +333,7 @@ function AccountTransactionsActionsBar({
         {!isEmpty(uncategorizedTransationsIdsSelected) && (
           <Button
             icon={<Icon icon="disable" iconSize={16} />}
-            text={'Exclude'}
+            text={intl.get('exclude')}
             onClick={handleExcludeUncategorizedBtnClick}
             className={Classes.MINIMAL}
             intent={Intent.DANGER}
@@ -343,7 +343,7 @@ function AccountTransactionsActionsBar({
         {!isEmpty(excludedTransactionsIdsSelected) && (
           <Button
             icon={<Icon icon="disable" iconSize={16} />}
-            text={'Unexclude'}
+            text={intl.get('banking.action.unexclude')}
             onClick={handleUnexcludeUncategorizedBtnClick}
             className={Classes.MINIMAL}
             intent={Intent.DANGER}
@@ -352,7 +352,7 @@ function AccountTransactionsActionsBar({
         )}
         {!isEmpty(categorizedTransactionsSelected) && (
           <Button
-            text={'Uncategorize'}
+            text={intl.get('uncategorize')}
             onClick={handleUncategorizeCategorizedBulkBtnClick}
             intent={Intent.DANGER}
             minimal
@@ -387,14 +387,14 @@ function AccountTransactionsActionsBar({
           content={
             <Menu>
               <If condition={isSyncingOwner && isFeedsActive}>
-                <MenuItem onClick={handleBankUpdateClick} text={'Update'} />
+                <MenuItem onClick={handleBankUpdateClick} text={intl.get('banking.action.update')} />
                 <MenuDivider />
               </If>
 
               <If condition={isSyncingOwner && isFeedsActive && !isFeedsPaused}>
                 <MenuItem
                   onClick={handlePauseFeedsSyncing}
-                  text={'Pause bank feeds'}
+                  text={intl.get('banking.action.pause_feeds')}
                 />
                 <MenuDivider />
               </If>
@@ -402,7 +402,7 @@ function AccountTransactionsActionsBar({
               <If condition={isSyncingOwner && isFeedsActive && isFeedsPaused}>
                 <MenuItem
                   onClick={handleResumeFeedsSyncing}
-                  text={'Resume bank feeds'}
+                  text={intl.get('banking.action.resume_feeds')}
                 />
                 <MenuDivider />
               </If>

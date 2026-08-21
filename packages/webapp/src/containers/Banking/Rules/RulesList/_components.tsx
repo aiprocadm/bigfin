@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import { Can, Icon } from '@/components';
 import { AbilitySubject, BankRuleAction } from '@/constants/abilityOption';
@@ -18,14 +19,14 @@ export function BankRulesTableActionsMenu({
       <Can I={BankRuleAction.Edit} a={AbilitySubject.BankRule}>
         <MenuItem
           icon={<Icon icon="pen-18" />}
-          text={'Edit Rule'}
+          text={intl.get('banking.rules.edit')}
           onClick={safeCallback(onEdit, original)}
         />
       </Can>
       <Can I={BankRuleAction.Delete} a={AbilitySubject.BankRule}>
         <MenuDivider />
         <MenuItem
-          text={'Delete Rule'}
+          text={intl.get('banking.rules.delete')}
           intent={Intent.DANGER}
           onClick={safeCallback(onDelete, original)}
           icon={<Icon icon="trash-16" iconSize={16} />}

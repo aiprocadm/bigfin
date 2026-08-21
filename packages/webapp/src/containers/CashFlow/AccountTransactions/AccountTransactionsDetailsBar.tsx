@@ -77,7 +77,7 @@ function AccountBankBalanceItem() {
 
   return (
     <AccountBalanceItemWrap>
-      Balance in Bank Account
+      {intl.get('cash_flow_transaction.balance_in_bank')}
       <AccountBalanceAmount>
         {currentAccount.bank_balance_formatted}
       </AccountBalanceAmount>
@@ -92,7 +92,9 @@ function AccountNumberItem() {
 
   return (
     <AccountBalanceItemWrap>
-      Account Number: xxx{currentAccount.account_mask}
+      {intl.get('cash_flow_transaction.account_number_mask', {
+        mask: currentAccount.account_mask,
+      })}
     </AccountBalanceItemWrap>
   );
 }

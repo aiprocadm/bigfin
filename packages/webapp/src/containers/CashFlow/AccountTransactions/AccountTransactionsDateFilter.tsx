@@ -19,16 +19,18 @@ const defaultValues = {
   toDate: '',
 };
 
-const validationSchema = Yup.object().shape({
-  fromDate: Yup.date()
-    .nullable()
-    .required('From Date is required')
-    .max(Yup.ref('toDate'), 'From Date cannot be after To Date'),
-  toDate: Yup.date()
-    .nullable()
-    .required('To Date is required')
-    .min(Yup.ref('fromDate'), 'To Date cannot be before From Date'),
-});
+// Схема строится при вызове: словарь к моменту импорта модуля ещё не загружен.
+const getValidationSchema = () =>
+  Yup.object().shape({
+    fromDate: Yup.date()
+      .nullable()
+      .required(intl.get('banking.date_filter.from_required'))
+      .max(Yup.ref('toDate'), intl.get('banking.date_filter.from_after_to')),
+    toDate: Yup.date()
+      .nullable()
+      .required(intl.get('banking.date_filter.to_required'))
+      .min(Yup.ref('fromDate'), intl.get('banking.date_filter.to_before_from')),
+  });
 
 interface AccountTransactionsDateFilterFormValues {
   period: string;
@@ -58,7 +60,7 @@ export function AccountTransactionsDateFilterForm({
     <Formik
       initialValues={formInitialValues}
       onSubmit={handleSubmit}
-      validationSchema={validationSchema}
+      validationSchema={getValidationSchema()}
     >
       <Form>
         <Stack spacing={15}>
@@ -77,7 +79,7 @@ export function AccountTransactionsDateFilterForm({
                 parseDate={(str) => new Date(str)}
                 inputProps={{
                   fill: true,
-                  placeholder: 'MM/DD/YYY',
+                  placeholder: intl.get('date_period.placeholder'),
                   leftElement: <Icon icon={'date-range'} />,
                 }}
               />
@@ -95,7 +97,7 @@ export function AccountTransactionsDateFilterForm({
                 parseDate={(str) => new Date(str)}
                 inputProps={{
                   fill: true,
-                  placeholder: 'MM/DD/YYY',
+                  placeholder: intl.get('date_period.placeholder'),
                   leftElement: <Icon icon={'date-range'} />,
                 }}
               />
@@ -130,7 +132,7 @@ function AccountTransactionsDateFilterFooter() {
         onClick={handleFilterBtnClick}
         style={{ minWidth: 75 }}
       >
-        Filter
+        {intl.get('filter')}
       </Button>
 
       <Button
@@ -139,7 +141,7 @@ function AccountTransactionsDateFilterFooter() {
         onClick={handleClearBtnClick}
         minimal
       >
-        Clear
+        {intl.get('clear')}
       </Button>
     </Group>
   );
@@ -164,7 +166,7 @@ function AccountTransactionDatePeriodField() {
     >
       <FSelect
         name={'period'}
-        items={periodOptions}
+        items={getPeriodOptions()}
         onItemSelect={handleItemChange}
         popoverProps={{ captureDismiss: true }}
       />
@@ -172,18 +174,19 @@ function AccountTransactionDatePeriodField() {
   );
 }
 
-const periodOptions = [
-  { text: 'All Dates', value: 'all_dates' },
-  { text: 'Custom', value: 'custom' },
-  { text: 'Today', value: 'today' },
-  { text: 'Yesterday', value: 'yesterday' },
-  { text: 'This week', value: 'this_week' },
-  { text: 'This year', value: 'this_year' },
-  { text: 'This month', value: 'this_month' },
-  { text: 'last week', value: 'last_week' },
-  { text: 'Last year', value: 'last_year' },
-  { text: 'Last month', value: 'last_month' },
-  { text: 'Last month', value: 'last_month' },
+// Список строится при вызове (словарь при импорте ещё пуст). Здесь же убран
+// дублировавшийся пункт «Last month» — он стоял в списке дважды.
+const getPeriodOptions = () => [
+  { text: intl.get('date_period.all_dates'), value: 'all_dates' },
+  { text: intl.get('date_period.custom'), value: 'custom' },
+  { text: intl.get('today'), value: 'today' },
+  { text: intl.get('date_period.yesterday'), value: 'yesterday' },
+  { text: intl.get('this_week'), value: 'this_week' },
+  { text: intl.get('this_year'), value: 'this_year' },
+  { text: intl.get('this_month'), value: 'this_month' },
+  { text: intl.get('date_period.last_week'), value: 'last_week' },
+  { text: intl.get('date_period.last_year'), value: 'last_year' },
+  { text: intl.get('date_period.last_month'), value: 'last_month' },
 ];
 
 const getDateRangePeriod = (period: string) => {

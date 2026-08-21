@@ -92,7 +92,7 @@ export function useAccountTransactionsColumns() {
       },
       {
         id: 'transaction_number',
-        Header: 'Transaction #',
+        Header: intl.get('transaction_number'),
         accessor: 'transaction_number',
         width: 160,
         className: 'transaction_number',
@@ -101,7 +101,7 @@ export function useAccountTransactionsColumns() {
       },
       {
         id: 'reference_number',
-        Header: 'Ref.#',
+        Header: intl.get('ref_no'),
         accessor: 'reference_number',
         width: 160,
         className: 'reference_number',
@@ -110,7 +110,7 @@ export function useAccountTransactionsColumns() {
       },
       {
         id: 'status',
-        Header: 'Status',
+        Header: intl.get('status'),
         accessor: allTransactionsStatusAccessor,
       },
       {

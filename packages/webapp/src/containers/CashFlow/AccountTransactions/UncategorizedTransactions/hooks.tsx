@@ -94,7 +94,7 @@ export function useAccountUncategorizedTransactionsColumns() {
       },
       {
         id: 'description',
-        Header: 'Description',
+        Header: intl.get('description'),
         accessor: 'description',
         width: 160,
         textOverview: true,
@@ -103,7 +103,7 @@ export function useAccountUncategorizedTransactionsColumns() {
       },
       {
         id: 'payee',
-        Header: 'Payee',
+        Header: intl.get('payee'),
         accessor: 'payee',
         width: 60,
         clickable: true,
@@ -111,7 +111,7 @@ export function useAccountUncategorizedTransactionsColumns() {
       },
       {
         id: 'reference_number',
-        Header: 'Ref.#',
+        Header: intl.get('ref_no'),
         accessor: 'reference_no',
         width: 50,
         clickable: true,
@@ -119,7 +119,7 @@ export function useAccountUncategorizedTransactionsColumns() {
       },
       {
         id: 'status',
-        Header: 'Status',
+        Header: intl.get('status'),
         accessor: statusAccessor,
       },
       {

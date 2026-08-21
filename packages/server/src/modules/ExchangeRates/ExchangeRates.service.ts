@@ -110,7 +110,7 @@ export class ExchangeRatesService {
 
   /** Точка подмены в тестах: иначе они полезли бы в сеть. */
   protected createProvider(): IExchangeRateService {
-    return new ExchangeRate(ExchangeRateServiceType.OpenExchangeRate);
+    return new ExchangeRate(ExchangeRateServiceType.CbrRu);
   }
 
   /**

@@ -4,6 +4,7 @@ export interface IExchangeRateService {
 
 export enum ExchangeRateServiceType {
   OpenExchangeRate = 'OpenExchangeRate',
+  CbrRu = 'CbrRu',
 }
 
 export enum EchangeRateErrors {
@@ -19,3 +20,6 @@ export enum EchangeRateErrors {
 
 export const OPEN_EXCHANGE_RATE_LATEST_URL =
   'https://openexchangerates.org/api/latest.json';
+
+/** Официальные дневные курсы Банка России (без ключа и предела запросов). */
+export const CBR_XML_DAILY_URL = 'https://www.cbr.ru/scripts/XML_daily.asp';

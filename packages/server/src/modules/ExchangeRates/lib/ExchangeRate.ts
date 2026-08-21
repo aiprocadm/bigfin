@@ -1,4 +1,6 @@
 import { OpenExchangeRate } from './OpenExchangeRate';
+import { CbrExchangeRate } from './CbrExchangeRate';
+import { FallbackExchangeRate } from './FallbackExchangeRate';
 import { ExchangeRateServiceType, IExchangeRateService } from './types';
 
 export class ExchangeRate {
@@ -22,6 +24,17 @@ export class ExchangeRate {
       this.exchangeRateServiceType === ExchangeRateServiceType.OpenExchangeRate
     ) {
       this.setExchangeRateService(new OpenExchangeRate());
+    }
+    if (this.exchangeRateServiceType === ExchangeRateServiceType.CbrRu) {
+      // ЦБ РФ — основной; прежний платный сервис остаётся запасным и
+      // зовётся только при отказе ЦБ и заданном ключе (К1 карты v17).
+      this.setExchangeRateService(
+        new FallbackExchangeRate(
+          new CbrExchangeRate(),
+          new OpenExchangeRate(),
+          Boolean(process.env.OPEN_EXCHANGE_RATE_APP_ID),
+        ),
+      );
     }
   }
 

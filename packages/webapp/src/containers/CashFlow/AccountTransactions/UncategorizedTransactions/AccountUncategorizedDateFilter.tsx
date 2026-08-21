@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState } from 'react';
+import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import moment from 'moment';
 import { Box, Icon } from '@/components';
@@ -27,8 +28,11 @@ function AccountUncategorizedDateFilterRoot({
 
   const buttonText =
     fromDate && toDate
-      ? `Date: ${fromDateFormatted} → ${toDateFormatted}`
-      : 'Date Filter';
+      ? intl.get('banking.date_filter.button_range', {
+          from: fromDateFormatted,
+          to: toDateFormatted,
+        })
+      : intl.get('banking.date_filter.button');
 
   // Popover open state.
   const [isOpen, setIsOpen] = useState<boolean>(false);

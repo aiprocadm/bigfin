@@ -18,9 +18,13 @@ const initialValues = {
   label: '',
 };
 
-const Schema = Yup.object().shape({
-  label: Yup.string().required().label('Confirmation'),
-});
+// Схема строится при вызове: словарь к моменту импорта модуля ещё не загружен.
+const getSchema = () =>
+  Yup.object().shape({
+    label: Yup.string()
+      .required()
+      .label(intl.get('banking.disconnect.confirmation_label')),
+  });
 
 interface DisconnectBankAccountDialogContentProps {
   bankAccountId: number;
@@ -40,9 +44,9 @@ function DisconnectBankAccountDialogContent({
   ) => {
     setSubmitting(true);
 
-    if (values.label !== 'DISCONNECT ACCOUNT') {
+    if (values.label !== intl.get('banking.disconnect.phrase')) {
       setErrors({
-        label: 'The entered value is incorrect.',
+        label: intl.get('banking.disconnect.value_incorrect'),
       });
       setSubmitting(false);
       return;
@@ -69,13 +73,15 @@ function DisconnectBankAccountDialogContent({
   return (
     <Formik
       onSubmit={handleSubmit}
-      validationSchema={Schema}
+      validationSchema={getSchema()}
       initialValues={initialValues}
     >
       <Form>
         <div className={Classes.DIALOG_BODY}>
           <FFormGroup
-            label={`Type "DISCONNECT ACCOUNT"`}
+            label={intl.get('banking.disconnect.type_phrase', {
+              phrase: intl.get('banking.disconnect.phrase'),
+            })}
             name={'label'}
             fastField
           >
@@ -86,11 +92,11 @@ function DisconnectBankAccountDialogContent({
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button type="submit" intent={Intent.DANGER}>
-              Disconnect Bank Account
+              {intl.get('cashflow.dialog.disconnect_bank_account')}
             </Button>
 
             <Button intent={Intent.NONE} onClick={handleCancelBtnClick}>
-              Cancel
+              {intl.get('cancel')}
             </Button>
           </div>
         </div>

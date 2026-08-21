@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Button, Classes, NavbarGroup } from '@blueprintjs/core';
 import * as R from 'ramda';
 import { Can, DashboardActionsBar, Icon } from '@/components';
@@ -21,7 +22,7 @@ function RulesListActionsBarRoot({
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="plus" />}
-            text={'New Bank Rule'}
+            text={intl.get('new_bank_rule')}
             onClick={handleCreateBtnClick}
           />
         </Can>

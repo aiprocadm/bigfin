@@ -1,19 +1,28 @@
-export const ExportResources = [
-  { value: 'account', text: 'Accounts' },
-  { value: 'item', text: 'Items' },
-  { value: 'item_category', text: 'Item Categories' },
-  { value: 'customer', text: 'Customers' },
-  { value: 'vendor', text: 'Vendors' },
-  { value: 'manual_journal', text: 'Manual Journal' },
-  { value: 'expense', text: 'Expenses' },
-  { value: 'sale_invoice', text: 'Invoices' },
-  { value: 'sale_estimate', text: ' Estimates' },
-  { value: 'sale_receipt', text: 'Receipts' },
-  { value: 'payment_receive', text: 'Payments Received' },
-  { value: 'credit_note', text: 'Credit Notes' },
-  { value: 'bill', text: 'Bills' },
-  { value: 'bill_payment', text: 'Bill Payments' },
-  { value: 'vendor_credit', text: 'Vendor Credits' },
-  { value: 'tax_rate', text: 'Tax Rate' },
-  { value: 'bank_transaction', text: 'Bank Transactions' },
+import intl from 'react-intl-universal';
+
+// Список строится при вызове: словарь к моменту импорта модуля ещё не загружен.
+export const getExportResources = () => [
+  { value: 'account', text: intl.get('accounts') },
+  { value: 'item', text: intl.get('items') },
+  { value: 'item_category', text: intl.get('export.resource.item_categories') },
+  { value: 'customer', text: intl.get('customers') },
+  { value: 'vendor', text: intl.get('vendors') },
+  { value: 'manual_journal', text: intl.get('manual_journals') },
+  { value: 'expense', text: intl.get('expenses') },
+  { value: 'sale_invoice', text: intl.get('invoices') },
+  { value: 'sale_estimate', text: intl.get('estimates') },
+  { value: 'sale_receipt', text: intl.get('receipts') },
+  {
+    value: 'payment_receive',
+    text: intl.get('export.resource.payments_received'),
+  },
+  { value: 'credit_note', text: intl.get('export.resource.credit_notes') },
+  { value: 'bill', text: intl.get('bills') },
+  { value: 'bill_payment', text: intl.get('payments_made') },
+  { value: 'vendor_credit', text: intl.get('export.resource.vendor_credits') },
+  { value: 'tax_rate', text: intl.get('tax_rates') },
+  {
+    value: 'bank_transaction',
+    text: intl.get('export.resource.bank_transactions'),
+  },
 ];

@@ -159,7 +159,7 @@ export function ActionsMenu({
       <Can I={SaleInvoiceAction.View} a={AbilitySubject.Invoice}>
         <MenuItem
           icon={<Icon icon={'envelope'} iconSize={16} />}
-          text={'Send Mail'}
+          text={intl.get('send_mail')}
           onClick={safeCallback(onSendMail, original)}
         />
         <MenuItem

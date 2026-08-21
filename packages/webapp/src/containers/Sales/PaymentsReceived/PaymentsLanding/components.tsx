@@ -36,7 +36,7 @@ export function ActionsMenu({
       />
       <MenuItem
         icon={<Icon icon={'envelope'} iconSize={16} />}
-        text={'Send Mail'}
+        text={intl.get('send_mail')}
         onClick={safeCallback(onSendMail, paymentReceive)}
       />
       <Can I={PaymentReceiveAction.Edit} a={AbilitySubject.PaymentReceive}>

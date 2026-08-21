@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -111,7 +112,7 @@ function EstimateDetailActionsBar({
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="envelope" />}
-            text={'Send Mail'}
+            text={intl.get('send_mail')}
             onClick={handleMailEstimate}
           />
           <Button

@@ -407,19 +407,19 @@ function AccountTransactionsActionsBar({
                 <MenuDivider />
               </If>
 
-              <MenuItem onClick={handleBankRulesClick} text={'Bank rules'} />
+              <MenuItem onClick={handleBankRulesClick} text={intl.get('sidebar.bank_rules')} />
               <MenuDivider />
               <If condition={isSyncingOwner && isFeedsActive}>
                 <MenuItem
                   intent={Intent.DANGER}
                   onClick={handleDisconnectClick}
-                  text={'Disconnect'}
+                  text={intl.get('banking.action.disconnect')}
                 />
               </If>
               <MenuItem
                 intent={Intent.DANGER}
                 onClick={handleDeleteAccountClick}
-                text={'Delete'}
+                text={intl.get('delete')}
               />
             </Menu>
           }

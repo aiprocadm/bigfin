@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -91,7 +92,7 @@ function PaymentsReceivedActionsBar({
         <Can I={PaymentReceiveAction.View} a={AbilitySubject.PaymentReceive}>
           <Button
             className={Classes.MINIMAL}
-            text={'Send Mail'}
+            text={intl.get('send_mail')}
             icon={<Icon icon="envelope" />}
             onClick={handleMailPaymentReceive}
           />

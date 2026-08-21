@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import {
   Button,
   NavbarGroup,
@@ -104,7 +105,7 @@ function CashFlowAccountsActionsBar({
         <FeatureCan feature={Features.BankSyncing}>
           <Button
             className={Classes.MINIMAL}
-            text={'Connect Bank/Credit Card'}
+            text={intl.get('banking.action.connect')}
             icon={<CreditCard2Icon />}
             onClick={handleConnectToBank}
             disabled={isPlaidLoading}

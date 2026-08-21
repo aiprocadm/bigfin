@@ -34,13 +34,13 @@ export function ActionsMenu({
       {original.status === 'categorized' && (
         <MenuItem
           icon={<Icon icon="reader-18" />}
-          text={'Uncategorize'}
+          text={intl.get('uncategorize')}
           onClick={safeCallback(onUncategorize, original)}
         />
       )}
       {original.status === 'matched' && (
         <MenuItem
-          text={'Unmatch'}
+          text={intl.get('banking.action.unmatch')}
           icon={<Icon icon="unlink" iconSize={16} />}
           onClick={safeCallback(onUnmatch, original)}
         />

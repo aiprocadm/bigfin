@@ -42,7 +42,7 @@ const createNewItemRenderer = (
   return (
     <MenuItem
       icon="add"
-      text={'Now contact address'}
+      text={intl.get('send_mail.new_address')}
       active={active}
       onClick={handleClick}
     />

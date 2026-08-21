@@ -52,6 +52,7 @@ export const API_ERROR_KEYS: Record<string, string> = {
   // текста и превращались в безымянную ошибку посреди экрана.
   EX_RATE_SERVICE_UNAVAILABLE: 'error.ex_rate_service_unavailable',
   EX_RATE_NOT_FOUND: 'error.ex_rate_not_found',
+  EX_RATE_DATE_UNSUPPORTED: 'error.ex_rate_date_unsupported',
   EX_RATE_LIMIT_EXCEEDED: 'error.ex_rate_limit_exceeded',
   EX_RATE_SERVICE_API_KEY_REQUIRED: 'error.ex_rate_service_not_configured',
   EX_RATE_SERVICE_NOT_ALLOWED: 'error.ex_rate_service_not_allowed',

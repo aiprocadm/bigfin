@@ -57,7 +57,11 @@ export class ExchangeRatesService {
     const fromCurrency = exchangeRateLatestDTO.fromCurrency || baseCurrency;
     const toCurrency = exchangeRateLatestDTO.toCurrency || baseCurrency;
 
-    const key = `${tenantId}:${fromCurrency}:${toCurrency}`;
+    // Дата — часть ключа: иначе исторический запрос отдал бы сегодняшний
+    // курс из кэша — молча и с виду правдоподобно (К1 срез 2 карты v17).
+    const key = `${tenantId}:${fromCurrency}:${toCurrency}:${
+      exchangeRateLatestDTO.date ?? 'today'
+    }`;
     const cached = this.cache.get(key);
     const now = Date.now();
 
@@ -72,6 +76,7 @@ export class ExchangeRatesService {
       const exchangeRate = await this.createProvider().latest(
         fromCurrency,
         toCurrency,
+        exchangeRateLatestDTO.date,
       );
       this.rememberRate(key, { exchangeRate, fetchedAt: now });
 

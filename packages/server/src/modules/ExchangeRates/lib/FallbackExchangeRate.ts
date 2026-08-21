@@ -20,14 +20,15 @@ export class FallbackExchangeRate implements IExchangeRateService {
   public async latest(
     baseCurrency: string,
     toCurrency: string,
+    date?: string,
   ): Promise<number> {
     try {
-      return await this.primary.latest(baseCurrency, toCurrency);
+      return await this.primary.latest(baseCurrency, toCurrency, date);
     } catch (primaryError) {
       if (!this.backupConfigured) throw primaryError;
 
       try {
-        return await this.backup.latest(baseCurrency, toCurrency);
+        return await this.backup.latest(baseCurrency, toCurrency, date);
       } catch {
         throw primaryError;
       }

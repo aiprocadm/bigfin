@@ -52,7 +52,13 @@ export class ExchangeRate {
    * @param {string} toCurrency
    * @returns {number}
    */
-  public latest(baseCurrency: string, toCurrency: string): Promise<number> {
-    return this.exchangeRateService.latest(baseCurrency, toCurrency);
+  public latest(
+    baseCurrency: string,
+    toCurrency: string,
+    date?: string,
+  ): Promise<number> {
+    // Живая проба ловила: без третьего аргумента дата ТЕРЯЛАСЬ здесь, и
+    // курс «на дату» молча приходил сегодняшним (К1 срез 2 карты v17).
+    return this.exchangeRateService.latest(baseCurrency, toCurrency, date);
   }
 }

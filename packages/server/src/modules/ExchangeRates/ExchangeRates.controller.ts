@@ -75,6 +75,9 @@ export class ExchangeRatesController {
     const exchangeRate = await this.exchangeRateApp.latest(tenantId, {
       fromCurrency: query.fromCurrency,
       toCurrency: query.toCurrency,
+      // Живая проба ловила: объект собирается руками, и забытое поле молча
+      // теряется — курс «на дату» приходил сегодняшним (К1 срез 2 карты v17).
+      date: query.date,
     });
     return exchangeRate;
   }

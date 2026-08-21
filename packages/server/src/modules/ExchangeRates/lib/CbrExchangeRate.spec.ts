@@ -103,6 +103,24 @@ describe('CbrExchangeRate', () => {
     expect(error?.errorType).toBe('EX_RATE_NOT_FOUND');
   });
 
+  it('курс на дату — ЦБ спрашивается с date_req в своём формате', async () => {
+    get.mockResolvedValueOnce(cbrResponse());
+
+    await service().latest('USD', 'RUB', '2026-08-01');
+
+    const [, options] = get.mock.calls[0];
+    expect(options.params).toEqual({ date_req: '01/08/2026' });
+  });
+
+  it('без даты параметр date_req не передаётся вовсе', async () => {
+    get.mockResolvedValueOnce(cbrResponse());
+
+    await service().latest('USD', 'RUB');
+
+    const [, options] = get.mock.calls[0];
+    expect(options.params).toBeUndefined();
+  });
+
   it('служба недоступна — деловая ошибка, а не сырая сетевая', async () => {
     get.mockRejectedValueOnce(new Error('timeout of 10000ms exceeded'));
 

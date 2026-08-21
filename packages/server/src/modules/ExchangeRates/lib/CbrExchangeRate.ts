@@ -25,15 +25,22 @@ export class CbrExchangeRate implements IExchangeRateService {
   public async latest(
     baseCurrency: string,
     toCurrency: string,
+    date?: string,
   ): Promise<number> {
     if (baseCurrency === toCurrency) return 1;
 
-    const rubPerUnit = await this.fetchRubPerUnit();
+    const rubPerUnit = await this.fetchRubPerUnit(date);
 
     const base = this.rubFor(rubPerUnit, baseCurrency);
     const to = this.rubFor(rubPerUnit, toCurrency);
 
     return base / to;
+  }
+
+  /** YYYY-MM-DD → DD/MM/YYYY (формат date_req у ЦБ). */
+  private toCbrDate(date: string): string {
+    const [year, month, day] = date.split('-');
+    return `${day}/${month}/${year}`;
   }
 
   /** Рублей за единицу валюты; рубль — единица по определению. */
@@ -50,8 +57,8 @@ export class CbrExchangeRate implements IExchangeRateService {
     return rate;
   }
 
-  /** Забирает дневной список ЦБ и строит карту CharCode → VunitRate. */
-  private async fetchRubPerUnit(): Promise<Map<string, number>> {
+  /** Забирает список ЦБ (сегодняшний или на дату) и строит карту CharCode → VunitRate. */
+  private async fetchRubPerUnit(date?: string): Promise<Map<string, number>> {
     let payload: Buffer;
     try {
       const result = await Axios.get(CBR_XML_DAILY_URL, {
@@ -60,6 +67,9 @@ export class CbrExchangeRate implements IExchangeRateService {
         // axios разобрал бы их как utf-8 и кириллица (и запятые рядом с ней)
         // превратилась бы в кашу.
         responseType: 'arraybuffer',
+        // Формат даты у ЦБ — DD/MM/YYYY; без даты параметр не передаём,
+        // и ЦБ отдаёт курс на сегодня.
+        ...(date ? { params: { date_req: this.toCbrDate(date) } } : {}),
       });
       payload = Buffer.from(result.data);
     } catch (error) {

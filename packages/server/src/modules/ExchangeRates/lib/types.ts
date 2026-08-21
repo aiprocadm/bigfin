@@ -1,5 +1,10 @@
 export interface IExchangeRateService {
-  latest(baseCurrency: string, toCurrency: string): Promise<number>;
+  latest(
+    baseCurrency: string,
+    toCurrency: string,
+    /** Дата курса (YYYY-MM-DD); без неё — курс на сегодня. */
+    date?: string,
+  ): Promise<number>;
 }
 
 export enum ExchangeRateServiceType {
@@ -16,6 +21,8 @@ export enum EchangeRateErrors {
   EX_RATE_SERVICE_UNAVAILABLE = 'EX_RATE_SERVICE_UNAVAILABLE',
   // Ответ пришёл, но курса запрошенной валюты в нём нет.
   EX_RATE_NOT_FOUND = 'EX_RATE_NOT_FOUND',
+  // Поставщик не умеет курс на дату (исторический даёт только ЦБ РФ).
+  EX_RATE_DATE_UNSUPPORTED = 'EX_RATE_DATE_UNSUPPORTED',
 }
 
 export const OPEN_EXCHANGE_RATE_LATEST_URL =

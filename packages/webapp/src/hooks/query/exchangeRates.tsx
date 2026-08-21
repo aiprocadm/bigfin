@@ -6,6 +6,8 @@ import useApiRequest from '../useRequest';
 interface LatestExchangeRateQuery {
   fromCurrency?: string;
   toCurrency?: string;
+  /** Дата курса (YYYY-MM-DD); без неё — курс на сегодня (К1 карты v17). */
+  date?: string;
 }
 
 /**
@@ -13,13 +15,13 @@ interface LatestExchangeRateQuery {
  * @param {number} customerId - Customer id.
  */
 export function useLatestExchangeRate(
-  { toCurrency, fromCurrency }: LatestExchangeRateQuery,
+  { toCurrency, fromCurrency, date }: LatestExchangeRateQuery,
   props,
 ) {
   const apiRequest = useApiRequest();
 
   return useQuery(
-    [QUERY_TYPES.EXCHANGE_RATE, toCurrency, fromCurrency],
+    [QUERY_TYPES.EXCHANGE_RATE, toCurrency, fromCurrency, date],
     () =>
       apiRequest
         .http({
@@ -30,6 +32,7 @@ export function useLatestExchangeRate(
           params: {
             to_currency: toCurrency,
             from_currency: fromCurrency,
+            date,
           },
         })
         .then((res) => res.data),

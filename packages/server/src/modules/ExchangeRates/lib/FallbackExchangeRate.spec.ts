@@ -52,6 +52,30 @@ describe('FallbackExchangeRate', () => {
     expect(backup.calls).toHaveLength(0);
   });
 
+  it('дата прокидывается основному и запасному', async () => {
+    const seen: any[] = [];
+    const primary = {
+      latest: async (...args: any[]) => {
+        seen.push(['primary', ...args]);
+        throw new Error('упал');
+      },
+    };
+    const backup = {
+      latest: async (...args: any[]) => {
+        seen.push(['backup', ...args]);
+        return 81;
+      },
+    };
+    const service = new FallbackExchangeRate(primary, backup, true);
+
+    await service.latest('USD', 'RUB', '2026-08-01');
+
+    expect(seen).toEqual([
+      ['primary', 'USD', 'RUB', '2026-08-01'],
+      ['backup', 'USD', 'RUB', '2026-08-01'],
+    ]);
+  });
+
   it('упали оба — наружу уходит ошибка основного (она говорит про ЦБ)', async () => {
     const primaryError = new Error('ЦБ недоступен');
     const primary = stub(async () => {

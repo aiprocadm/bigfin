@@ -1,4 +1,5 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import React from 'react';
 import { NavbarGroup, NavbarDivider, Button, Classes } from '@blueprintjs/core';
 import {
@@ -44,7 +45,7 @@ function TaxRatesActionsBar({
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="plus" />}
-            text={'New Tax Rate'}
+            text={intl.get('tax_rates.action.new')}
             onClick={onClickNewItem}
           />
         </Can>

@@ -59,8 +59,7 @@ function TaxRateFormDialogForm({
     // and confirm box is not checked.
     if (!isNewMode && isTaxChanged && !values.confirm_edit) {
       setErrors({
-        confirm_edit:
-          'Please review the terms and conditions below before proceeding',
+        confirm_edit: intl.get('tax_rates.form.confirm_required'),
       });
       setSubmitting(false);
       return;

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { useFormikContext } from 'formik';
 import { Button, Classes, Intent } from '@blueprintjs/core';
@@ -21,7 +22,7 @@ function TaxRateFormDialogFormFooterRoot({ closeDialog }) {
           onClick={handleClose}
           style={{ minWidth: '75px' }}
         >
-          Close
+          {intl.get('close')}
         </Button>
 
         <Button
@@ -30,7 +31,7 @@ function TaxRateFormDialogFormFooterRoot({ closeDialog }) {
           style={{ minWidth: '95px' }}
           type="submit"
         >
-          Submit
+          {intl.get('save')}
         </Button>
       </div>
     </div>

@@ -90,7 +90,7 @@ function TaxRateDetailsContentActionsBar({
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="pen-18" />}
-            text={'Edit Tax Rate'}
+            text={intl.get('tax_rates.action.edit')}
             onClick={handleEditTaxRate}
           />
         </Can>
@@ -98,7 +98,7 @@ function TaxRateDetailsContentActionsBar({
           <NavbarDivider />
           <Button
             className={Classes.MINIMAL}
-            text={'Delete'}
+            text={intl.get('delete')}
             icon={<Icon icon={'trash-16'} iconSize={16} />}
             intent={Intent.DANGER}
             onClick={handleDeleteTaxRate}
@@ -118,13 +118,13 @@ function TaxRateDetailsContentActionsBar({
               <Menu>
                 {!taxRate.active && (
                   <MenuItem
-                    text={'Activate Tax Rate'}
+                    text={intl.get('tax_rates.action.activate')}
                     onClick={handleActivateTaxRate}
                   />
                 )}
                 {!!taxRate.active && (
                   <MenuItem
-                    text={'Inactivate Tax Rate'}
+                    text={intl.get('tax_rates.action.inactivate')}
                     onClick={handleInactivateTaxRate}
                   />
                 )}

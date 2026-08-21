@@ -1,19 +1,20 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 
 const getSchema = () =>
   Yup.object().shape({
-    name: Yup.string().required().label('Name'),
-    code: Yup.string().required().label('Code'),
-    active: Yup.boolean().optional().label('Active'),
-    describtion: Yup.string().optional().label('Description'),
+    name: Yup.string().required().label(intl.get('tax_rates.label.name')),
+    code: Yup.string().required().label(intl.get('code')),
+    active: Yup.boolean().optional().label(intl.get('active')),
+    describtion: Yup.string().optional().label(intl.get('description')),
     rate: Yup.number()
-      .min(0, 'Enter a rate percentage of at least 0%')
-      .max(100, 'Enter a rate percentage of at most 100%')
+      .min(0, intl.get('tax_rates.validation.rate_min'))
+      .max(100, intl.get('tax_rates.validation.rate_max'))
       .required()
-      .label('Rate'),
-    is_compound: Yup.boolean().optional().label('Is Compound'),
-    is_non_recoverable: Yup.boolean().optional().label('Is Non Recoverable'),
+      .label(intl.get('tax_rates.label.rate')),
+    is_compound: Yup.boolean().optional().label(intl.get('tax_rates.label.is_compound')),
+    is_non_recoverable: Yup.boolean().optional().label(intl.get('tax_rates.label.is_non_recoverable')),
     confirm_edit: Yup.boolean().optional(),
   });
 

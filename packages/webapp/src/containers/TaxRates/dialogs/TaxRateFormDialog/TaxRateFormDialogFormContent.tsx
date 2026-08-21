@@ -19,9 +19,7 @@ export default function TaxRateFormDialogContent() {
         name={'name'}
         label={intl.get('tax_rates.label.name')}
         labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-        subLabel={
-          'The name as you would like it to appear in customers invoices.'
-        }
+        subLabel={intl.get('tax_rates.form.name_hint')}
         fastField={true}
       >
         <FInputGroup name={'name'} fastField={true} />
@@ -112,9 +110,7 @@ function ConfirmEditingTaxRate() {
       <ConfirmEditFormGroup name={'confirm_edit'} helperText={''}>
         <FCheckbox
           name={'confirm_edit'}
-          label={`I understand that updating the
-          tax will mark the existing tax inactive, create a new tax, and update
-          it in the chosen transactions.`}
+          label={intl.get('tax_rates.form.confirm_label')}
         />
       </ConfirmEditFormGroup>
     </EditWarningWrap>

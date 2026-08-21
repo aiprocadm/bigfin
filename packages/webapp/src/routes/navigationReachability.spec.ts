@@ -55,6 +55,19 @@ describe('навигация: у каждого модуля есть пункт
     expect(routes.includes('/projects')).toBe(false);
   });
 
+  it('отчёта «Прибыльность проектов» больше нет в маршрутах (К2 карты v17)', () => {
+    // Хвост закрытого раздела «Проекты» (вопрос 31): маршрут был жив, пункт
+    // меню закомментирован, «Все отчёты» не ссылаются, а хук бил в
+    // несуществующий адрес — прямая ссылка открывала битый экран.
+    const allPaths = getDashboardRoutes().map((route: any) => route.path);
+
+    expect(
+      allPaths.filter((path: string) =>
+        String(path).includes('project-profitability'),
+      ),
+    ).toEqual([]);
+  });
+
   it('в списке исключений нет лишнего: все они всё ещё существуют', () => {
     // Иначе исключение переживёт саму страницу и тихо ослабит проверку.
     const stale = [...UNLINKED_MODULE_ROUTES].filter(

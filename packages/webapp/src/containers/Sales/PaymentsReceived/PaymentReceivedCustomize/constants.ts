@@ -1,3 +1,5 @@
+import intl from 'react-intl-universal';
+
 export const initialValues = {
   templateName: '',
 
@@ -12,68 +14,70 @@ export const initialValues = {
 
   // Top details.
   showPaymentReceivedNumber: true,
-  paymentReceivedNumberLabel: 'Payment number',
+  paymentReceivedNumberLabel: 'Поступление №',
 
   // Payment number
   showPaymentReceivedDate: true,
-  paymentReceivedDateLabel: 'Date of Issue',
+  paymentReceivedDateLabel: 'Дата выставления',
 
   // Customer address
   showCompanyAddress: true,
 
   // Company address
   showCustomerAddress: true,
-  billedToLabel: 'Billed To',
+  billedToLabel: 'Плательщик',
 
   // Entries
-  itemNameLabel: 'Item',
-  itemDescriptionLabel: 'Description',
-  itemRateLabel: 'Rate',
-  itemTotalLabel: 'Total',
+  itemNameLabel: 'Позиция',
+  itemDescriptionLabel: 'Описание',
+  itemRateLabel: 'Цена',
+  itemTotalLabel: 'Сумма',
 
   // Subtotal
   showSubtotal: true,
-  subtotalLabel: 'Subtotal',
+  subtotalLabel: 'Подытог',
 
   // Total
   showTotal: true,
-  totalLabel: 'Total',
+  totalLabel: 'Итого',
 };
 
-export const fieldsGroups = [
+// Подписи вкладок редактора считаются при вызове: словарь к моменту
+// импорта модуля ещё не загружен (К3 карты v17).
+export const getFieldsGroups = () => [
   {
-    label: 'Header',
+    label: intl.get('branding.editor.header'),
     fields: [
       {
         labelKey: 'paymentReceivedNumberLabel',
         enableKey: 'showPaymentReceivedNumber',
-        label: 'Payment No.',
+        label: intl.get('branding.editor.payment_no'),
       },
       {
         labelKey: 'paymentReceivedDateLabel',
         enableKey: 'showPaymentReceivedDate',
-        label: 'Payment Date',
+        label: intl.get('branding.editor.payment_date'),
       },
       {
         enableKey: 'showCustomerAddress',
         labelKey: 'billedToLabel',
-        label: 'Bill To',
+        label: intl.get('branding.editor.bill_to'),
       },
       {
         enableKey: 'showCompanyAddress',
-        label: 'Billed From',
+        label: intl.get('branding.editor.billed_from'),
       },
     ],
   },
   {
-    label: 'Totals',
+    label: intl.get('branding.editor.totals'),
     fields: [
       {
         labelKey: 'subtotalLabel',
         enableKey: 'showSubtotal',
-        label: 'Subtotal',
+        label: intl.get('branding.editor.subtotal'),
       },
-      { labelKey: 'totalLabel', enableKey: 'showTotal', label: 'Total' },
+      { labelKey: 'totalLabel', enableKey: 'showTotal', label: intl.get('branding.editor.total') },
     ],
   },
 ];

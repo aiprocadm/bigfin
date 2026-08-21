@@ -6,7 +6,7 @@ import {
   ElementCustomizeFieldsGroup,
 } from '@/containers/ElementCustomize/ElementCustomizeFieldsGroup';
 import { Classes } from '@blueprintjs/core';
-import { fieldsGroups } from './constants';
+import { getFieldsGroups } from './constants';
 
 export function CreditNoteCustomizeContentFields() {
   return (
@@ -20,7 +20,7 @@ export function CreditNoteCustomizeContentFields() {
       </Stack>
 
       <Stack>
-        {fieldsGroups.map((group) => (
+        {getFieldsGroups().map((group) => (
           <ElementCustomizeFieldsGroup label={group.label}>
             {group.fields.map((item, index) => (
               <ElementCustomizeContentItemFieldGroup

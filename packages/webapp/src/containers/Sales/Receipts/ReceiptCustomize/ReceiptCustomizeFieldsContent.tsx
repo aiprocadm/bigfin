@@ -6,7 +6,7 @@ import {
   ElementCustomizeContentItemFieldGroup,
   ElementCustomizeFieldsGroup,
 } from '@/containers/ElementCustomize/ElementCustomizeFieldsGroup';
-import { fieldsGroups } from './constants';
+import { getFieldsGroups } from './constants';
 
 export function ReceiptCustomizeFieldsContent() {
   return (
@@ -20,7 +20,7 @@ export function ReceiptCustomizeFieldsContent() {
       </Stack>
 
       <Stack>
-        {fieldsGroups.map((group) => (
+        {getFieldsGroups().map((group) => (
           <ElementCustomizeFieldsGroup label={group.label}>
             {group.fields.map((item, index) => (
               <ElementCustomizeContentItemFieldGroup

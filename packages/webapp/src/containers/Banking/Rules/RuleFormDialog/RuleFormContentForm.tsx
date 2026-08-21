@@ -5,7 +5,7 @@ import intl from 'react-intl-universal';
 import { get } from 'lodash';
 import { Button, Classes, Intent, Radio, Tag } from '@blueprintjs/core';
 import * as R from 'ramda';
-import { CreateRuleFormSchema } from './RuleFormContentForm.schema';
+import { getCreateRuleFormSchema } from './RuleFormContentForm.schema';
 import {
   AccountsSelect,
   AppToaster,
@@ -19,9 +19,9 @@ import {
 } from '@/components';
 import { useCreateBankRule, useEditBankRule } from '@/hooks/query/bank-rules';
 import {
-  Fields,
+  getFields,
   RuleFormValues,
-  TransactionTypeOptions,
+  getTransactionTypeOptions,
   getAccountRootFromMoneyCategory,
   getDefaultFieldConditionByFieldKey,
   getFieldConditionsByFieldKey,
@@ -51,7 +51,7 @@ function RuleFormContentFormRoot({
   const { mutateAsync: createBankRule } = useCreateBankRule();
   const { mutateAsync: editBankRule } = useEditBankRule();
 
-  const validationSchema = CreateRuleFormSchema;
+  const validationSchema = getCreateRuleFormSchema();
 
   const _initialValues = {
     ...initialValues,
@@ -139,7 +139,7 @@ function RuleFormContentFormRoot({
 
         <RuleFormConditions />
         <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: '0.8rem' }}>
-          Then Assign
+          {intl.get('banking.rules.then_assign')}
         </h3>
 
         <RuleAssignCategoryField />
@@ -199,7 +199,7 @@ function RuleFormConditions() {
             >
               <FSelect
                 name={`conditions[${index}].field`}
-                items={Fields}
+                items={getFields()}
                 popoverProps={{ minimal: true, inline: false }}
                 onItemChange={handleConditionFieldChange(index)}
                 fastField
@@ -245,7 +245,7 @@ function RuleFormConditions() {
         onClick={handleAddConditionBtnClick}
         style={{ marginTop: 8 }}
       >
-        Add Condition
+        {intl.get('banking.rules.add_condition')}
       </Button>
     </Box>
   );
@@ -279,7 +279,7 @@ function RuleFormActionsRoot({
           onClick={handleSaveBtnClick}
           style={{ minWidth: 100 }}
         >
-          Save
+          {intl.get('save')}
         </Button>
       </Box>
     </Box>
@@ -309,7 +309,7 @@ function RuleApplyIfTransactionTypeField() {
     >
       <FSelect
         name={'applyIfTransactionType'}
-        items={TransactionTypeOptions}
+        items={getTransactionTypeOptions()}
         popoverProps={{ minimal: true, inline: false }}
         onItemChange={handleItemChange}
         fastField

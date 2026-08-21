@@ -50,41 +50,41 @@ export function useUncategorizedTransactionsColumns() {
   return React.useMemo(
     () => [
       {
-        Header: 'Date',
+        Header: intl.get('date'),
         accessor: 'formatted_date',
         width: 110,
         textOverview: true,
       },
       {
-        Header: 'Description',
+        Header: intl.get('description'),
         accessor: 'description',
         className: clsx(Classes.TEXT_MUTED),        
         textOverview: true,
       },
       {
-        Header: 'Payee',
+        Header: intl.get('payee'),
         accessor: 'payee',
         textOverview: true,
       },
       {
-        Header: 'Recognize',
+        Header: intl.get('banking.col.recognize'),
         accessor: recognizeAccessor,
         textOverview: true,
       },
       {
-        Header: 'Rule',
+        Header: intl.get('banking.col.rule'),
         accessor: 'bank_rule_name',
         textOverview: true,
       },
       {
-        Header: 'Deposit',
+        Header: intl.get('banking.col.deposit'),
         accessor: 'formatted_deposit_amount',
         align: 'right',
         width: depositWidth,
         money: true
       },
       {
-        Header: 'Withdrawal',
+        Header: intl.get('banking.col.withdrawal'),
         accessor: 'formatted_withdrawal_amount',
         align: 'right',
         width: withdrawalWidth,

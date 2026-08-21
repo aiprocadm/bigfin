@@ -37,28 +37,28 @@ export function useExcludedTransactionsColumns() {
   return React.useMemo(
     () => [
       {
-        Header: 'Date',
+        Header: intl.get('date'),
         accessor: 'formatted_date',
         width: 110,
       },
       {
-        Header: 'Description',
+        Header: intl.get('description'),
         accessor: descriptionAccessor,
         textOverview: true,
       },
       {
-        Header: 'Payee',
+        Header: intl.get('payee'),
         accessor: 'payee',
       },
       {
-        Header: 'Deposit',
+        Header: intl.get('banking.col.deposit'),
         accessor: 'formatted_deposit_amount',
         align: 'right',
         width: depositWidth,
         money: true
       },
       {
-        Header: 'Withdrawal',
+        Header: intl.get('banking.col.withdrawal'),
         accessor: 'formatted_withdrawal_amount',
         align: 'right',
         width: withdrawalWidth,

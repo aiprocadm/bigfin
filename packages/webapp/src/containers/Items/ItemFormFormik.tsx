@@ -45,7 +45,11 @@ export default function ItemFormFormik({
   } = useItemFormContext();
 
   // Initial values in create and edit mode.
-  const initialValues = useItemFormInitialValues(item, initialValuesComponent);
+  const initialValues = useItemFormInitialValues(
+    item,
+    initialValuesComponent,
+    accounts,
+  );
 
   // Handles the form submit.
   const handleFormSubmit = (values, form) => {

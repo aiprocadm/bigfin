@@ -28,7 +28,12 @@ export default class SeedSettings extends TenantSeeder {
         key: 'preferred_inventory_account',
         value: inventoryAccount?.id,
       },
-    ];
+      // Настройка с пустым значением бесполезна и молча ломает префил формы
+      // товара — если счёта-слага нет, строку не пишем вовсе.
+    ].filter((setting) => setting.value !== undefined && setting.value !== null);
+
+    if (settings.length === 0) return;
+
     return knex('settings').insert(settings);
   }
 }

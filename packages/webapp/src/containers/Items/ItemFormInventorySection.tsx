@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { useFormikContext } from 'formik';
 import {
   AccountsSelect,
   FFormGroup,
@@ -19,6 +20,11 @@ import { compose } from '@/utils';
  */
 function ItemFormInventorySection({ organization: { base_currency } }) {
   const { accounts } = useItemFormContext();
+  const { values } = useFormikContext();
+
+  // Складской счёт нужен только товару со складским учётом — услуге эта
+  // секция лишь мешала (линия 5 карты v17).
+  if (values.type !== 'inventory') return null;
 
   return (
     <div className="page-form__section page-form__section--inventory">

@@ -1,4 +1,6 @@
 import { OpenExchangeRate } from './OpenExchangeRate';
+import { CbrExchangeRate } from './CbrExchangeRate';
+import { FallbackExchangeRate } from './FallbackExchangeRate';
 import { ExchangeRateServiceType, IExchangeRateService } from './types';
 
 export class ExchangeRate {
@@ -23,6 +25,17 @@ export class ExchangeRate {
     ) {
       this.setExchangeRateService(new OpenExchangeRate());
     }
+    if (this.exchangeRateServiceType === ExchangeRateServiceType.CbrRu) {
+      // ЦБ РФ — основной; прежний платный сервис остаётся запасным и
+      // зовётся только при отказе ЦБ и заданном ключе (К1 карты v17).
+      this.setExchangeRateService(
+        new FallbackExchangeRate(
+          new CbrExchangeRate(),
+          new OpenExchangeRate(),
+          Boolean(process.env.OPEN_EXCHANGE_RATE_APP_ID),
+        ),
+      );
+    }
   }
 
   /**
@@ -39,7 +52,13 @@ export class ExchangeRate {
    * @param {string} toCurrency
    * @returns {number}
    */
-  public latest(baseCurrency: string, toCurrency: string): Promise<number> {
-    return this.exchangeRateService.latest(baseCurrency, toCurrency);
+  public latest(
+    baseCurrency: string,
+    toCurrency: string,
+    date?: string,
+  ): Promise<number> {
+    // Живая проба ловила: без третьего аргумента дата ТЕРЯЛАСЬ здесь, и
+    // курс «на дату» молча приходил сегодняшним (К1 срез 2 карты v17).
+    return this.exchangeRateService.latest(baseCurrency, toCurrency, date);
   }
 }

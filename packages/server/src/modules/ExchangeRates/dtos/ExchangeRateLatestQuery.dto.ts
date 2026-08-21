@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Length } from 'class-validator';
+import { IsDateString, IsOptional, IsString, Length } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
@@ -28,4 +28,13 @@ export class ExchangeRateLatestQueryDto {
   @IsString()
   @Length(3, 3, { message: 'Currency code must be 3 characters (ISO 4217)' })
   toCurrency?: string;
+
+  @ApiPropertyOptional({
+    name: 'date',
+    description: 'Rate date (YYYY-MM-DD); omit for today',
+    example: '2026-08-01',
+  })
+  @IsOptional()
+  @IsDateString()
+  date?: string;
 }

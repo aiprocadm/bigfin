@@ -1,6 +1,8 @@
 export interface ExchangeRateLatestDTO {
   fromCurrency?: string;
   toCurrency?: string;
+  /** Дата курса (YYYY-MM-DD); без неё — курс на сегодня. */
+  date?: string;
 }
 
 export interface EchangeRateLatestPOJO {

@@ -22,11 +22,15 @@ const AutoExchangeRateContext = React.createContext(
 function AutoExchangeRateProvider({ children }: AutoExchangeRateProviderProps) {
   const [autoExRateCurrency, setAutoExRateCurrency] =
     React.useState<string>('');
+  // Дата документа: курс должен быть на день сделки, а не на сегодня
+  // (К1 срез 2 карты v17). Сегодняшняя дата не передаётся вовсе — тогда у
+  // сервера остаётся запасной поставщик, который умеет только «сегодня».
+  const [autoExRateDate, setAutoExRateDate] = React.useState<string>('');
 
   // Retrieves the exchange rate.
   const { data: autoExchangeRate, isLoading: isAutoExchangeRateLoading } =
     useLatestExchangeRate(
-      { fromCurrency: autoExRateCurrency },
+      { fromCurrency: autoExRateCurrency, date: autoExRateDate || undefined },
       {
         enabled: Boolean(autoExRateCurrency),
         refetchOnWindowFocus: false,
@@ -58,6 +62,8 @@ function AutoExchangeRateProvider({ children }: AutoExchangeRateProviderProps) {
   const value = {
     autoExRateCurrency,
     setAutoExRateCurrency,
+    autoExRateDate,
+    setAutoExRateDate,
     isAutoExchangeRateLoading,
     isAutoExchangeRateStale,
     autoExchangeRate,

@@ -49,6 +49,22 @@ describe('ExchangeRatesController', () => {
     });
   });
 
+  it('дата из строки запроса доходит до службы (К1 срез 2 карты v17)', async () => {
+    // Живая проба поймала: контроллер собирал объект руками и ТЕРЯЛ дату —
+    // курс «на 1 августа» молча приходил сегодняшним.
+    const { controller, latest } = build();
+
+    await controller.getLatestExchangeRate(
+      { fromCurrency: 'USD', toCurrency: 'RUB', date: '2026-08-01' } as any,
+      request,
+    );
+
+    expect(latest).toHaveBeenCalledWith(
+      7,
+      expect.objectContaining({ date: '2026-08-01' }),
+    );
+  });
+
   it('ответ службы возвращается как есть', async () => {
     const { controller } = build();
 

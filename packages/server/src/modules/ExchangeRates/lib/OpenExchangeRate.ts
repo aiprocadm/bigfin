@@ -24,8 +24,17 @@ export class OpenExchangeRate implements IExchangeRateService {
    */
   public async latest(
     baseCurrency: string,
-    toCurrency: string
+    toCurrency: string,
+    date?: string,
   ): Promise<number> {
+    // Исторические курсы у этой службы — отдельный платный план. Честный
+    // отказ лучше сегодняшнего курса под видом курса на дату (К1 карты v17).
+    if (date) {
+      throw new ServiceError(
+        EchangeRateErrors.EX_RATE_DATE_UNSUPPORTED,
+        'Служба не отдаёт курс на дату.',
+      );
+    }
     // Validates the Open Exchange Rate api id early.
     this.validateApiIdExistance();
 

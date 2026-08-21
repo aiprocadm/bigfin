@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useFormikContext } from 'formik';
+import moment from 'moment';
 import { useUpdateEntriesOnExchangeRateChange } from './useUpdateEntriesOnExchangeRateChange';
 import { useAutoExRateContext } from './AutoExchangeProvider';
 import { pickSyncedExRate } from './pickSyncedExRate';
@@ -97,11 +98,43 @@ interface UseSyncExRateToFormProps {
  * @param {UseSyncExRateToFormProps} props -
  * @returns {React.ReactNode}
  */
+/**
+ * Поле даты документа в каждой из форм зовётся по-своему; в значениях формы
+ * одновременно живёт ровно одно из этих имён.
+ */
+const DOCUMENT_DATE_FIELDS = [
+  'invoice_date',
+  'estimate_date',
+  'receipt_date',
+  'credit_note_date',
+] as const;
+
 export const useSyncExRateToForm = ({ onSynced }: UseSyncExRateToFormProps) => {
   const { setFieldValue, values } = useFormikContext();
-  const { autoExRateCurrency, autoExchangeRate, isAutoExchangeRateLoading } =
-    useAutoExRateContext();
+  const {
+    autoExRateCurrency,
+    autoExchangeRate,
+    isAutoExchangeRateLoading,
+    setAutoExRateDate,
+  } = useAutoExRateContext();
   const updateEntriesOnExChange = useUpdateEntriesOnExchangeRateChange();
+
+  // Курс на день сделки, а не на сегодня (К1 срез 2 карты v17): дата
+  // документа уходит в провайдер автокурса. Сегодняшняя дата не передаётся —
+  // у сервера остаётся запасной поставщик, умеющий только «сегодня».
+  const documentDateField = DOCUMENT_DATE_FIELDS.find(
+    (field) => (values as any)[field] !== undefined,
+  );
+  const documentDate = documentDateField
+    ? (values as any)[documentDateField]
+    : '';
+  const today = moment().format('YYYY-MM-DD');
+
+  useEffect(() => {
+    setAutoExRateDate?.(
+      documentDate && documentDate !== today ? documentDate : '',
+    );
+  }, [documentDate, today, setAutoExRateDate]);
 
   // Sync the fetched real-time exchanage rate to the form.
   useEffect(() => {

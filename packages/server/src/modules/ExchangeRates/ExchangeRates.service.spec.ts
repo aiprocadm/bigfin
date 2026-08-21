@@ -120,6 +120,20 @@ describe('ExchangeRatesService', () => {
     expect((service as any).cache.size).toBeLessThanOrEqual(1000);
   });
 
+  it('курс на дату не смешивается в кэше с сегодняшним', async () => {
+    // К1 срез 2 (карта v17): без даты в ключе кэша исторический запрос
+    // отдал бы сегодняшний курс — молча и с виду правдоподобно.
+    const { service, provider } = build([80, 75]);
+
+    const today = await service.latest(1, dto);
+    const dated = await service.latest(1, { ...dto, date: '2026-08-01' });
+
+    expect(today.exchangeRate).toBe(80);
+    expect(dated.exchangeRate).toBe(75);
+    expect(provider).toHaveBeenCalledTimes(2);
+    expect(provider).toHaveBeenLastCalledWith('USD', 'RUB', '2026-08-01');
+  });
+
   it('служба недоступна и известного курса нет — честная ошибка', async () => {
     const failure = Object.assign(new Error('нет связи'), {
       errorType: 'EX_RATE_SERVICE_UNAVAILABLE',

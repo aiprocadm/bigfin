@@ -1620,6 +1620,7 @@
   "error.broken_reference": "The action refers to a record that no longer exists. Refresh the page and try again.",
   "error.exchange_rate_required": "The document is in a foreign currency — specify an exchange rate above zero.",
   "error.ex_rate_service_unavailable": "The exchange rate service is not responding. Try again later or enter the rate manually.",
+  "error.ex_rate_date_unsupported": "The exchange-rate service cannot provide a rate for a past date. The CBR dated rate is unavailable right now — try again later or enter the rate manually.",
   "error.ex_rate_not_found": "No rate found for this currency. Enter the rate manually.",
   "error.ex_rate_limit_exceeded": "The exchange rate service request limit has been exceeded. Try again in a few minutes.",
   "error.ex_rate_service_not_configured": "Automatic exchange rates are not connected. Enter the rate manually or contact support.",

@@ -48,17 +48,28 @@ const defaultInitialValues = {
 /**
  * Initial values in create and edit mode.
  */
-export const useItemFormInitialValues = (item, initialValues) => {
+export const useItemFormInitialValues = (item, initialValues, accounts) => {
   const { items: itemsSettings } = useSettingsSelector();
+
+  // Фолбэк префила: у старых организаций сид мог оставить настройки
+  // пустыми — тогда счёт ищется по слагу среди счетов организации.
+  const accountIdBySlug = (slug) =>
+    accounts?.find((account) => account.slug === slug)?.id ?? '';
 
   return useMemo(
     () => ({
       ...defaultInitialValues,
-      cost_account_id: defaultTo(itemsSettings?.preferredCostAccount, ''),
-      sell_account_id: defaultTo(itemsSettings?.preferredSellAccount, ''),
+      cost_account_id: defaultTo(
+        itemsSettings?.preferredCostAccount,
+        accountIdBySlug('cost-of-goods-sold'),
+      ),
+      sell_account_id: defaultTo(
+        itemsSettings?.preferredSellAccount,
+        accountIdBySlug('sales-of-product-income'),
+      ),
       inventory_account_id: defaultTo(
         itemsSettings?.preferredInventoryAccount,
-        '',
+        accountIdBySlug('inventory-asset'),
       ),
       /**
        * We only care about the fields in the form. Previously unfilled optional
@@ -71,7 +82,7 @@ export const useItemFormInitialValues = (item, initialValues) => {
       ),
       ...initialValues,
     }),
-    [item, itemsSettings, initialValues],
+    [item, itemsSettings, initialValues, accounts],
   );
 };
 

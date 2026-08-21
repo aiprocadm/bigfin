@@ -1,7 +1,14 @@
 // @ts-nocheck
 import React from 'react';
 import { useFormikContext, FastField, ErrorMessage } from 'formik';
-import { FormGroup, Classes, Checkbox, ControlGroup } from '@blueprintjs/core';
+import {
+  FormGroup,
+  Classes,
+  Checkbox,
+  ControlGroup,
+  Button,
+  Collapse,
+} from '@blueprintjs/core';
 import {
   AccountsSelect,
   MoneyInputGroup,
@@ -79,31 +86,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             </ControlGroup>
           </FFormGroup>
 
-          {/*------------- Selling account ------------- */}
-          <FFormGroup
-            label={<T id={'account'} />}
-            name={'sell_account_id'}
-            labelInfo={
-              <Hint content={<T id={'item.field.sell_account.hint'} />} />
-            }
-            inline={true}
-            items={accounts}
-            sellable={values.sellable}
-            shouldUpdate={sellAccountFieldShouldUpdate}
-            fastField={true}
-          >
-            <AccountsSelect
-              name={'sell_account_id'}
-              items={accounts}
-              placeholder={<T id={'select_account'} />}
-              disabled={!values.sellable}
-              filterByParentTypes={[ACCOUNT_PARENT_TYPE.INCOME]}
-              fill={true}
-              allowCreate={true}
-              fastField={true}
-            />
-          </FFormGroup>
-
           {/*------------- Sell Tax Rate ------------- */}
           <FFormGroup
             name={'sell_tax_rate_id'}
@@ -175,33 +157,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             </ControlGroup>
           </FFormGroup>
 
-          {/*------------- Cost account ------------- */}
-          <FFormGroup
-            name={'cost_account_id'}
-            purchasable={values.purchasable}
-            items={accounts}
-            shouldUpdate={costAccountFieldShouldUpdate}
-            label={<T id={'account'} />}
-            labelInfo={
-              <Hint content={<T id={'item.field.cost_account.hint'} />} />
-            }
-            inline={true}
-            fastField={true}
-          >
-            <AccountsSelect
-              name={'cost_account_id'}
-              items={accounts}
-              placeholder={<T id={'select_account'} />}
-              filterByParentTypes={[ACCOUNT_PARENT_TYPE.EXPENSE]}
-              popoverFill={true}
-              allowCreate={true}
-              fastField={true}
-              disabled={!values.purchasable}
-              purchasable={values.purchasable}
-              shouldUpdate={costAccountFieldShouldUpdate}
-            />
-          </FFormGroup>
-
           {/*------------- Purchase Tax Rate ------------- */}
           <FFormGroup
             name={'purchase_tax_rate_id'}
@@ -239,6 +194,103 @@ function ItemFormBody({ organization: { base_currency } }) {
           </FFormGroup>
         </Col>
       </Row>
+
+      <ItemFormAccountingSection accounts={accounts} />
+    </div>
+  );
+}
+
+/**
+ * Свёрнутый блок «Бухгалтерия»: счета продаж и себестоимости. Обычно их
+ * заполняет префил из настроек организации, и новичку блок не нужен —
+ * поэтому по умолчанию он свёрнут. Раскрывается сам, если счета пусты
+ * или после сабмита в них ошибка (иначе ошибка была бы невидима).
+ */
+function ItemFormAccountingSection({ accounts }) {
+  const { values, errors, submitCount } = useFormikContext();
+
+  const hasEmptyAccount =
+    (values.sellable && !values.sell_account_id) ||
+    (values.purchasable && !values.cost_account_id);
+
+  const [isOpen, setIsOpen] = React.useState(hasEmptyAccount);
+
+  React.useEffect(() => {
+    if (submitCount > 0 && (errors.sell_account_id || errors.cost_account_id)) {
+      setIsOpen(true);
+    }
+  }, [submitCount, errors.sell_account_id, errors.cost_account_id]);
+
+  return (
+    <div className="page-form__section page-form__section--accounting">
+      <Button
+        minimal={true}
+        small={true}
+        icon={isOpen ? 'chevron-down' : 'chevron-right'}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <T id={'item.form.accounting_section'} />
+      </Button>
+
+      <Collapse isOpen={isOpen} keepChildrenMounted={true}>
+        <Row>
+          <Col xs={6}>
+            {/*------------- Selling account ------------- */}
+            <FFormGroup
+              label={<T id={'item.form.sell_account'} />}
+              name={'sell_account_id'}
+              labelInfo={
+                <Hint content={<T id={'item.field.sell_account.hint'} />} />
+              }
+              inline={true}
+              items={accounts}
+              sellable={values.sellable}
+              shouldUpdate={sellAccountFieldShouldUpdate}
+              fastField={true}
+            >
+              <AccountsSelect
+                name={'sell_account_id'}
+                items={accounts}
+                placeholder={<T id={'select_account'} />}
+                disabled={!values.sellable}
+                filterByParentTypes={[ACCOUNT_PARENT_TYPE.INCOME]}
+                fill={true}
+                allowCreate={true}
+                fastField={true}
+              />
+            </FFormGroup>
+          </Col>
+
+          <Col xs={6}>
+            {/*------------- Cost account ------------- */}
+            <FFormGroup
+              name={'cost_account_id'}
+              purchasable={values.purchasable}
+              items={accounts}
+              shouldUpdate={costAccountFieldShouldUpdate}
+              label={<T id={'item.form.cost_account'} />}
+              labelInfo={
+                <Hint content={<T id={'item.field.cost_account.hint'} />} />
+              }
+              inline={true}
+              fastField={true}
+            >
+              <AccountsSelect
+                name={'cost_account_id'}
+                items={accounts}
+                placeholder={<T id={'select_account'} />}
+                filterByParentTypes={[ACCOUNT_PARENT_TYPE.EXPENSE]}
+                popoverFill={true}
+                allowCreate={true}
+                fastField={true}
+                disabled={!values.purchasable}
+                purchasable={values.purchasable}
+                shouldUpdate={costAccountFieldShouldUpdate}
+              />
+            </FFormGroup>
+          </Col>
+        </Row>
+      </Collapse>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { defaultTo } from 'lodash';
 
 import {
   CommercialDocHeader,
-  FormatDate,
   DetailsMenu,
   DetailItem,
 } from '@/components';
@@ -18,11 +17,11 @@ export default function RefundCreditNoteDetailHeader() {
   return (
     <CommercialDocHeader>
       <DetailsMenu direction={'horizantal'} minLabelSize={'180px'}>
+        {/* Дата уже отформатирована сервером; повторный прогон через
+            moment давал бы «Invalid date» на русском формате с точками. */}
         <DetailItem
           label={intl.get('date')}
-          children={
-            <FormatDate value={refundCreditTransaction.formatted_date} />
-          }
+          children={refundCreditTransaction.formatted_date}
         />
         <DetailItem label={intl.get('refund_credit.drawer.label.amount')}>
           <strong>{refundCreditTransaction.formtted_amount}</strong>

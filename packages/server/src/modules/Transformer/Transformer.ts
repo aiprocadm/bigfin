@@ -1,5 +1,12 @@
 import * as moment from 'moment';
+// Русская локаль moment: без неё словесные форматы («DD MMMM YYYY») печатали
+// «28 Jul 2026» даже русским организациям. Импорт локали ЗАОДНО переключает
+// глобальную локаль — возвращаем en, а русскую ставим на каждый вызов
+// формата отдельно (moment(...).locale(this.dateLocale)).
+import 'moment/locale/ru';
 import * as R from 'ramda';
+
+moment.locale('en');
 import { includes, isFunction, isObject, isUndefined, omit } from 'lodash';
 // import { EXPORT_DTE_FORMAT } from '@/services/Export/constants';
 import { formatNumber } from '@/utils/format-number';
@@ -159,6 +166,13 @@ export class Transformer<T = {}, ExtraContext = {}> {
     this.dateFormat = format;
   }
 
+  // Локаль словесных месяцев в датах; выставляется по языку организации.
+  private dateLocale = 'en';
+
+  setDateLocale(locale: string) {
+    this.dateLocale = locale;
+  }
+
   /**
    * Format date.
    * @param {string} date
@@ -172,7 +186,7 @@ export class Transformer<T = {}, ExtraContext = {}> {
       ? EXPORT_DTE_FORMAT
       : format || this.dateFormat;
 
-    return date ? moment(date).format(_format) : '';
+    return date ? moment(date).locale(this.dateLocale).format(_format) : '';
   }
 
   /**
@@ -222,6 +236,7 @@ export class Transformer<T = {}, ExtraContext = {}> {
     transformer.setOptions(options);
     transformer.setContext(this.context);
     transformer.setDateFormat(this.dateFormat);
+    transformer.setDateLocale(this.dateLocale);
 
     return transformer.work(obj);
   }

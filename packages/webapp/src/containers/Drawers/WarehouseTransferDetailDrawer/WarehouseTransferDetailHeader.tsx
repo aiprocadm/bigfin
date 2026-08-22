@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { defaultTo } from 'lodash';
 
 import {
-  FormatDate,
   Row,
   Col,
   DetailsMenu,
@@ -37,7 +36,9 @@ export default function WarehouseTransferDetailHeader() {
         <Col xs={6}>
           <DetailsMenu direction={'horizantal'} minLabelSize={'180px'}>
             <DetailItem label={intl.get('date')}>
-              <FormatDate value={warehouseTransfer.formatted_date} />
+              {/* Дата уже отформатирована сервером; повторный moment дал бы
+                  «Invalid date» на русском формате с точками. */}
+              {warehouseTransfer.formatted_date}
             </DetailItem>
 
             <DetailItem

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import _ from 'lodash';
 import * as R from 'ramda';
 import Currencies from 'js-money/lib/currency';
@@ -185,11 +186,24 @@ export const defaultExpanderReducer = (tableRows, level) => {
   return expended;
 };
 
-export function formattedAmount(cents, currencyCode = '', props) {
+// Неразрывный пробел: сумма и знак валюты не должны разъезжаться переносом.
+const NBSP = ' ';
+
+// Валюты, которые принято писать по-русски: разряды через пробел, копейки
+// через запятую, знак ПОСЛЕ суммы («100 000,00 ₽»).
+const RU_STYLE_CURRENCIES = ['RUB'];
+
+/**
+ * Формат сумм — зеркало серверного packages/server/src/utils/format-number.ts.
+ * У рубля в js-money поле `symbol` — буквы «RUB», настоящий знак «₽» лежит
+ * в `symbol_native`; со старым кодом списки печатали «RUB100 000,00».
+ */
+export function formattedAmount(cents, currencyCode = '', props = {}) {
   const currency = Currency[currencyCode];
 
   const parsedCurrency = {
     symbol: '',
+    symbol_native: '',
     decimal_digits: 0,
     ...currency,
   };
@@ -197,13 +211,19 @@ export function formattedAmount(cents, currencyCode = '', props) {
     noZero: false,
     ...props,
   };
+  const ruStyle = RU_STYLE_CURRENCIES.includes(currencyCode);
+  const sign = parsedCurrency.symbol_native || '';
+  const body = sign ? (ruStyle ? `%v${NBSP}%s` : '%s%v') : '%v';
+
   const formatOptions = {
-    symbol: parsedCurrency.symbol,
+    symbol: sign,
     precision: parsedCurrency.decimal_digits,
+    thousand: ruStyle ? NBSP : ',',
+    decimal: ruStyle ? ',' : '.',
     format: {
-      pos: '%s%v',
-      neg: '%s-%v',
-      zero: parsedProps.noZero ? '' : '%s%v',
+      pos: body,
+      neg: `-${body}`,
+      zero: parsedProps.noZero ? '' : body,
     },
   };
 
@@ -234,8 +254,13 @@ export function formattedExchangeRate(amount, currency) {
     currency: currency,
     minimumFractionDigits: 2,
   };
-
-  const formatter = new Intl.NumberFormat(undefined, options);
+  // Локаль приложения, а не браузера: иначе у пользователя с английским
+  // браузером курс печатался в чужом формате.
+  const appLocale = intl.getInitOptions()?.currentLocale ?? 'ru';
+  const formatter = new Intl.NumberFormat(
+    appLocale === 'ru' ? 'ru-RU' : appLocale,
+    options,
+  );
 
   return formatter.format(amount);
 }

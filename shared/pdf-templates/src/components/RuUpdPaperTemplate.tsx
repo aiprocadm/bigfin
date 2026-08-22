@@ -31,6 +31,10 @@ export interface RuUpdLine {
 }
 
 export interface RuUpdPaperTemplateProps {
+  // Подписанты: пустые значения оставляют линии подписи пустыми.
+  signerDirectorName?: string;
+  signerDirectorPosition?: string;
+  signerAccountantName?: string;
   /** Статус УПД: «1» — СЧФ+передаточный документ, «2» — только передаточный */
   status?: string;
 
@@ -76,6 +80,8 @@ const headerValue: CSSProperties = {
 };
 
 export function RuUpdPaperTemplate({
+  signerDirectorName = '',
+  signerAccountantName = '',
   status = '1',
   documentNumber = '',
   documentDate = '',
@@ -220,13 +226,24 @@ export function RuUpdPaperTemplate({
                 ...ruCellNoBorder,
                 width: 180,
                 borderBottom: '1px solid #000',
+                textAlign: 'center',
               }}
-            />
+            >
+              {signerDirectorName}
+            </td>
             <td style={{ ...ruCellNoBorder, width: 40 }} />
             <td style={{ ...ruCellNoBorder, width: 220 }}>
               Главный бухгалтер (или иное уполномоченное лицо)
             </td>
-            <td style={{ ...ruCellNoBorder, borderBottom: '1px solid #000' }} />
+            <td
+              style={{
+                ...ruCellNoBorder,
+                borderBottom: '1px solid #000',
+                textAlign: 'center',
+              }}
+            >
+              {signerAccountantName}
+            </td>
           </tr>
         </tbody>
       </table>

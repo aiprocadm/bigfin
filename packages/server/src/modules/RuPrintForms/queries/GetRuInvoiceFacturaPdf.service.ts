@@ -21,6 +21,7 @@ import {
   isSoleProprietorInn,
   joinRequisites,
   mapInvoiceToRuVatLines,
+  buildSignerProps,
 } from '../utils/ruFormMapping';
 
 /**
@@ -107,6 +108,8 @@ export const transformToRuInvoiceFacturaProps = (
   const shipsGoods = hasGoodsEntries(entries);
 
   return {
+    ...buildSignerProps(metadata),
+
     documentNumber: invoice.invoiceNo ?? '',
     documentDate: formatDateNumericRu(invoice.invoiceDate),
     correctionNumber: DASH,

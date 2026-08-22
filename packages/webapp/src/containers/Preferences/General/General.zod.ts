@@ -105,6 +105,12 @@ export const generalSchema = z.object({
     });
   }),
 
+  // Подписанты печатных форм (вопрос 33 карты v17): свободный текст,
+  // пустое значение оставляет линию подписи в документе пустой.
+  signer_director_name: optionalText(),
+  signer_director_position: optionalText(),
+  signer_accountant_name: optionalText(),
+
   bank_name: optionalText(),
   bank_bik: checkedText(isValidBik, 'validation.bik.format'),
   bank_account: checkedText(

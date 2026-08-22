@@ -30,6 +30,10 @@ export interface RuPaymentInvoiceLine {
 }
 
 export interface RuPaymentInvoicePaperTemplateProps {
+  // Подписанты: пустые значения оставляют линии подписи пустыми.
+  signerDirectorName?: string;
+  signerDirectorPosition?: string;
+  signerAccountantName?: string;
   // Шапка с банковскими реквизитами получателя (поставщика).
   bankName?: string;
   bankBik?: string;
@@ -68,6 +72,9 @@ export interface RuPaymentInvoicePaperTemplateProps {
 }
 
 export function RuPaymentInvoicePaperTemplate({
+  signerDirectorName = '',
+  signerDirectorPosition = '',
+  signerAccountantName = '',
   bankName = '',
   bankBik = '',
   bankCorrespondentAccount = '',
@@ -222,20 +229,31 @@ export function RuPaymentInvoicePaperTemplate({
         <tbody>
           <tr>
             <td style={{ ...ruCellNoBorder, width: 120, ...ruBold }}>
-              Руководитель
+              {signerDirectorPosition || 'Руководитель'}
             </td>
             <td
               style={{
                 ...ruCellNoBorder,
                 width: 200,
                 borderBottom: '1px solid #000',
+                textAlign: 'center',
               }}
-            />
+            >
+              {signerDirectorName}
+            </td>
             <td style={{ ...ruCellNoBorder, width: 40 }} />
             <td style={{ ...ruCellNoBorder, width: 120, ...ruBold }}>
               Бухгалтер
             </td>
-            <td style={{ ...ruCellNoBorder, borderBottom: '1px solid #000' }} />
+            <td
+              style={{
+                ...ruCellNoBorder,
+                borderBottom: '1px solid #000',
+                textAlign: 'center',
+              }}
+            >
+              {signerAccountantName}
+            </td>
           </tr>
         </tbody>
       </table>

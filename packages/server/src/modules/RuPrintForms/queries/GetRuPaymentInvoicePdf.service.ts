@@ -13,6 +13,7 @@ import {
   buildRuFormTotals,
   buildSellerLine,
   mapEntriesToRuFormLines,
+  buildSignerProps,
 } from '../utils/ruFormMapping';
 
 /**
@@ -74,6 +75,8 @@ export const transformToRuPaymentInvoiceProps = (
   const entries = invoice.entries || [];
 
   return {
+    ...buildSignerProps(metadata),
+
     bankName: metadata?.bankName ?? '',
     bankBik: metadata?.bankBik ?? '',
     bankCorrespondentAccount: metadata?.bankCorrespondentAccount ?? '',

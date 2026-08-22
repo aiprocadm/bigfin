@@ -13,6 +13,7 @@ import {
   buildOrganizationAddress,
   joinRequisites,
   mapInvoiceToRuVatLines,
+  buildSignerProps,
 } from '../utils/ruFormMapping';
 
 /**
@@ -84,6 +85,8 @@ export const transformToRuUpdProps = (
   }));
 
   return {
+    ...buildSignerProps(metadata),
+
     status: '1',
     documentNumber: invoice.invoiceNo ?? '',
     documentDate: formatDateRu(invoice.invoiceDate),

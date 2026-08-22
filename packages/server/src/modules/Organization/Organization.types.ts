@@ -57,6 +57,11 @@ export interface IOrganizationUpdateDTO {
   bankBik?: string;
   bankAccount?: string;
   bankCorrespondentAccount?: string;
+
+  // Подписанты печатных форм (вопрос 33 карты v17).
+  signerDirectorName?: string;
+  signerDirectorPosition?: string;
+  signerAccountantName?: string;
 }
 
 export interface IOrganizationBuildEventPayload {

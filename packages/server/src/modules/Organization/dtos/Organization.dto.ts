@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsString,
   Matches,
+  MaxLength,
   Validate,
   ValidateIf,
 } from 'class-validator';
@@ -306,4 +307,33 @@ export class UpdateOrganizationDto {
     example: 'business',
   })
   interfaceMode?: string;
+
+  // Подписанты печатных форм. Свободный текст: продукт не навязывает
+  // формат ФИО, а пустое значение оставляет линию подписи пустой.
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  @ApiPropertyOptional({
+    description: 'Print forms signer: director full name',
+    example: 'Петров Пётр Петрович',
+  })
+  signerDirectorName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  @ApiPropertyOptional({
+    description: 'Print forms signer: director position',
+    example: 'Генеральный директор',
+  })
+  signerDirectorPosition?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  @ApiPropertyOptional({
+    description: 'Print forms signer: chief accountant full name',
+    example: 'Сидорова Светлана Сергеевна',
+  })
+  signerAccountantName?: string;
 }

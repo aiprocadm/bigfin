@@ -44,6 +44,21 @@ const REQUISITE_TEXT_FIELDS = [
   { name: 'inn', labelKey: 'requisites.inn', hintKey: 'requisites.inn.hint' },
   { name: 'kpp', labelKey: 'requisites.kpp', hintKey: 'requisites.kpp.hint' },
   { name: 'ogrn', labelKey: 'requisites.ogrn', hintKey: 'requisites.ogrn.hint' },
+  {
+    name: 'signer_director_name',
+    labelKey: 'requisites.signer_director_name',
+    hintKey: 'requisites.signers.hint',
+  },
+  {
+    name: 'signer_director_position',
+    labelKey: 'requisites.signer_director_position',
+    hintKey: null,
+  },
+  {
+    name: 'signer_accountant_name',
+    labelKey: 'requisites.signer_accountant_name',
+    hintKey: null,
+  },
   { name: 'bank_name', labelKey: 'requisites.bank_name', hintKey: null },
   { name: 'bank_bik', labelKey: 'requisites.bank_bik', hintKey: null },
   {

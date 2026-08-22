@@ -13,6 +13,7 @@ import {
   buildRuFormTotals,
   buildSellerLine,
   mapEntriesToRuFormLines,
+  buildSignerProps,
 } from '../utils/ruFormMapping';
 
 /**
@@ -70,6 +71,8 @@ export const transformToRuActProps = (
   const entries = invoice.entries || [];
 
   return {
+    ...buildSignerProps(metadata),
+
     documentNumber: invoice.invoiceNo ?? '',
     documentDate: formatDateRu(invoice.invoiceDate),
 

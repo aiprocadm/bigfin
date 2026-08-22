@@ -67,6 +67,10 @@ export interface RuInvoiceFacturaLine {
 }
 
 export interface RuInvoiceFacturaPaperTemplateProps {
+  // Подписанты: пустые значения оставляют линии подписи пустыми.
+  signerDirectorName?: string;
+  signerDirectorPosition?: string;
+  signerAccountantName?: string;
   documentNumber?: string;
   /** «26.07.2026» */
   documentDate?: string;
@@ -178,10 +182,12 @@ function HeaderRow({
   );
 }
 
-function SignatureBlock({ title, extraLabel, extraValue }: {
+function SignatureBlock({ title, extraLabel, extraValue, name }: {
   title: string;
   extraLabel?: string;
   extraValue?: string;
+  /** Расшифровка подписи (ф. и. о.); пусто — линия остаётся пустой. */
+  name?: string;
 }) {
   return (
     <div style={{ fontSize: 8 }}>
@@ -191,7 +197,11 @@ function SignatureBlock({ title, extraLabel, extraValue }: {
         <div style={{ ...ruSmall, textAlign: 'center' }}>(подпись)</div>
       </div>
       <div style={{ display: 'inline-block', width: 180 }}>
-        <div style={{ borderBottom: '1px solid #000', minHeight: 12 }} />
+        <div
+          style={{ borderBottom: '1px solid #000', minHeight: 12, textAlign: 'center' }}
+        >
+          {name}
+        </div>
         <div style={{ ...ruSmall, textAlign: 'center' }}>(ф. и. о.)</div>
       </div>
       {extraLabel ? (
@@ -207,6 +217,8 @@ function SignatureBlock({ title, extraLabel, extraValue }: {
 }
 
 export function RuInvoiceFacturaPaperTemplate({
+  signerDirectorName = '',
+  signerAccountantName = '',
   documentNumber = '',
   documentDate = '',
   correctionNumber = DASH,
@@ -434,6 +446,7 @@ export function RuInvoiceFacturaPaperTemplate({
         {isSoleProprietor ? (
           <SignatureBlock
             title="Индивидуальный предприниматель или иное уполномоченное лицо"
+            name={signerDirectorName}
             extraLabel={
               isRedaction2026
                 ? LABELS.soleProprietorFrom2026
@@ -448,10 +461,16 @@ export function RuInvoiceFacturaPaperTemplate({
                 <td
                   style={{ ...ruCellNoBorder, width: '50%', paddingRight: 20 }}
                 >
-                  <SignatureBlock title="Руководитель организации или иное уполномоченное лицо" />
+                  <SignatureBlock
+                    title="Руководитель организации или иное уполномоченное лицо"
+                    name={signerDirectorName}
+                  />
                 </td>
                 <td style={{ ...ruCellNoBorder, width: '50%', paddingLeft: 20 }}>
-                  <SignatureBlock title="Главный бухгалтер или иное уполномоченное лицо" />
+                  <SignatureBlock
+                    title="Главный бухгалтер или иное уполномоченное лицо"
+                    name={signerAccountantName}
+                  />
                 </td>
               </tr>
             </tbody>

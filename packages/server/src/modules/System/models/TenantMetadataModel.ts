@@ -31,6 +31,9 @@ export class TenantMetadata extends BaseModel {
   public bankBik!: string;
   public bankAccount!: string;
   public bankCorrespondentAccount!: string;
+  public signerDirectorName!: string;
+  public signerDirectorPosition!: string;
+  public signerAccountantName!: string;
 
   // Режим интерфейса: 'business' | 'accountant' (пусто → business при чтении).
   public interfaceMode!: string;
@@ -64,6 +67,9 @@ export class TenantMetadata extends BaseModel {
         bankBik: { type: 'string', maxLength: 9 },
         bankAccount: { type: 'string', maxLength: 20 },
         bankCorrespondentAccount: { type: 'string', maxLength: 20 },
+        signerDirectorName: { type: 'string', maxLength: 255 },
+        signerDirectorPosition: { type: 'string', maxLength: 255 },
+        signerAccountantName: { type: 'string', maxLength: 255 },
         interfaceMode: { type: 'string', maxLength: 20 },
       },
     };

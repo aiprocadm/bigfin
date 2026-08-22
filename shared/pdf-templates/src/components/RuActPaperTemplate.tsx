@@ -27,6 +27,10 @@ export interface RuActLine {
 }
 
 export interface RuActPaperTemplateProps {
+  // Подписанты: пустые значения оставляют линии подписи пустыми.
+  signerDirectorName?: string;
+  signerDirectorPosition?: string;
+  signerAccountantName?: string;
   documentNumber?: string;
   /** «26 июля 2026 г.» */
   documentDate?: string;
@@ -58,6 +62,7 @@ const DEFAULT_ACCEPTANCE_TEXT =
   'Заказчик претензий по объёму, качеству и срокам оказания услуг не имеет.';
 
 export function RuActPaperTemplate({
+  signerDirectorName = '',
   documentNumber = '',
   documentDate = '',
   sellerLine = '',
@@ -176,8 +181,12 @@ export function RuActPaperTemplate({
                 ...ruCellNoBorder,
                 width: 200,
                 borderBottom: '1px solid #000',
+                textAlign: 'center',
               }}
-            />
+            >
+              {/* Исполнитель — наша организация: расшифровка руководителя. */}
+              {signerDirectorName}
+            </td>
             <td style={{ ...ruCellNoBorder, width: 40 }} />
             <td style={{ ...ruCellNoBorder, width: 120, ...ruBold }}>
               Заказчик

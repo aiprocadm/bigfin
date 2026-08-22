@@ -34,6 +34,16 @@ export const buildSellerLine = (metadata: any): string =>
     metadata?.addressTextFormatted,
   ]);
 
+/**
+ * Подписанты печатных форм из метаданных организации. Поля необязательны:
+ * пустое ФИО оставляет линию подписи пустой, как в бланке без подписантов.
+ */
+export const buildSignerProps = (metadata: any) => ({
+  signerDirectorName: metadata?.signerDirectorName ?? '',
+  signerDirectorPosition: metadata?.signerDirectorPosition ?? '',
+  signerAccountantName: metadata?.signerAccountantName ?? '',
+});
+
 /** «Название, ИНН …, КПП …» из контакта-покупателя. */
 export const buildBuyerLine = (customer: any): string =>
   joinRequisites([

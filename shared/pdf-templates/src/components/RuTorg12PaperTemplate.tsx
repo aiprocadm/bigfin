@@ -33,6 +33,10 @@ export interface RuTorg12Line {
 }
 
 export interface RuTorg12PaperTemplateProps {
+  // Подписанты: пустые значения оставляют линии подписи пустыми.
+  signerDirectorName?: string;
+  signerDirectorPosition?: string;
+  signerAccountantName?: string;
   documentNumber?: string;
   /** «26.07.2026» */
   documentDate?: string;
@@ -120,17 +124,32 @@ function FieldLine({ label, value }: { label: string; value?: string }) {
   );
 }
 
-/** Пустая линия для подписи с пояснением под ней. */
-function SignatureLine({ label, width }: { label: string; width?: number }) {
+/** Линия для подписи с пояснением под ней; value — текст на линии. */
+function SignatureLine({
+  label,
+  width,
+  value,
+}: {
+  label: string;
+  width?: number;
+  value?: string;
+}) {
   return (
     <div style={{ display: 'inline-block', width: width ?? 150, marginRight: 8 }}>
-      <div style={{ borderBottom: '1px solid #000', minHeight: 13 }} />
+      <div
+        style={{ borderBottom: '1px solid #000', minHeight: 13, textAlign: 'center' }}
+      >
+        {value}
+      </div>
       <div style={{ ...ruSmall, textAlign: 'center' }}>{label}</div>
     </div>
   );
 }
 
 export function RuTorg12PaperTemplate({
+  signerDirectorName = '',
+  signerDirectorPosition = '',
+  signerAccountantName = '',
   documentNumber = '',
   documentDate = '',
   shipperLine = '',
@@ -456,14 +475,26 @@ export function RuTorg12PaperTemplate({
             <td style={{ ...ruCellNoBorder, width: '50%', paddingRight: 16 }}>
               <div style={{ marginBottom: 6 }}>
                 Отпуск груза разрешил{' '}
-                <SignatureLine label="должность" width={110} />
+                <SignatureLine
+                  label="должность"
+                  width={110}
+                  value={signerDirectorPosition}
+                />
                 <SignatureLine label="подпись" width={90} />
-                <SignatureLine label="расшифровка подписи" width={110} />
+                <SignatureLine
+                  label="расшифровка подписи"
+                  width={110}
+                  value={signerDirectorName}
+                />
               </div>
               <div style={{ marginBottom: 6 }}>
                 Главный (старший) бухгалтер{' '}
                 <SignatureLine label="подпись" width={90} />
-                <SignatureLine label="расшифровка подписи" width={110} />
+                <SignatureLine
+                  label="расшифровка подписи"
+                  width={110}
+                  value={signerAccountantName}
+                />
               </div>
               <div style={{ marginBottom: 6 }}>
                 Отпуск груза произвёл{' '}

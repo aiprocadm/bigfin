@@ -12,6 +12,11 @@ export const transformBuildDto = (
 ): BuildOrganizationDto => {
   return {
     ...buildDTO,
-    dateFormat: defaultTo(buildDTO.dateFormat, 'DD MMM YYYY'),
+    // Русская организация по умолчанию получает «28.07.2026»; словесный
+    // формат оставлен прочим языкам (Р2 карты v18).
+    dateFormat: defaultTo(
+      buildDTO.dateFormat,
+      buildDTO.language === 'ru' ? 'DD.MM.YYYY' : 'DD MMM YYYY',
+    ),
   };
 };

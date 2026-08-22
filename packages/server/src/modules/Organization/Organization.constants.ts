@@ -1,6 +1,10 @@
 import currencies from 'js-money/lib/currency';
 
 export const DATE_FORMATS = [
+  // Русский формат с точками (Р2 карты v18); списки Miscellaneous и этот
+  // должны совпадать, иначе выбор из выпадашки не пройдёт валидацию.
+  'DD.MM.YYYY',
+  'DD.MM.YY',
   'MM/DD/YY',
   'DD/MM/YY',
   'YY/MM/DD',

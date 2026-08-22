@@ -40,6 +40,15 @@ export class TransformerInjectable {
   }
 
   /**
+   * Локаль словесных месяцев в датах — по языку организации, а не запроса:
+   * даты в списках должны совпадать у всех сотрудников (Р2 карты v18).
+   */
+  async getTenantDateLocale() {
+    const tenant = await this.tenancyContext.getTenant(true);
+    return tenant.metadata?.language === 'ru' ? 'ru' : 'en';
+  }
+
+  /**
    * Transformes the given transformer after inject the tenant context.
    * @param {Record<string, any> | Record<string, any>[]} object
    * @param {Transformer} transformer
@@ -55,8 +64,11 @@ export class TransformerInjectable {
     transformer.setContext(context);
 
     const dateFormat = await this.getTenantDateFormat();
+    const dateLocale = await this.getTenantDateLocale();
 
-    transformer.setDateFormat(dateFormat || 'DD-MM-YYYY');
+    // Фолбэк «ДД.ММ.ГГГГ»: организации без выбранного формата — русские.
+    transformer.setDateFormat(dateFormat || 'DD.MM.YYYY');
+    transformer.setDateLocale(dateLocale);
     transformer.setOptions(options);
 
     return transformer.work(object);

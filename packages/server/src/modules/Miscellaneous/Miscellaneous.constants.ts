@@ -1,4 +1,7 @@
 export const DATE_FORMATS = [
+  // Русский формат с точками — первым: его выбирает основная аудитория.
+  'DD.MM.YYYY',
+  'DD.MM.YY',
   'MM/DD/YY',
   'DD/MM/YY',
   'YY/MM/DD',

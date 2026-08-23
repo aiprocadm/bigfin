@@ -40,6 +40,7 @@ function CreditNoteDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
+  openDrawer,
 }) {
   const { creditNoteId, creditNote } = useCreditNoteDetailDrawerContext();
 
@@ -62,6 +63,11 @@ function CreditNoteDetailActionsBar({
 
   const handleReconcileCreditNote = () => {
     openDialog('reconcile-credit-note', { creditNoteId });
+  };
+
+  // Отправка кредит-ноты по email (Р3б карты v18).
+  const handleSendMailCreditNote = () => {
+    openDrawer(DRAWERS.CREDIT_NOTE_SEND_MAIL, { creditNoteId });
   };
 
   // Handle print credit note.
@@ -88,6 +94,17 @@ function CreditNoteDetailActionsBar({
               icon={<Icon icon="arrow-upward" iconSize={18} />}
               text={<T id={'refund'} />}
               onClick={handleRefundCreditNote}
+            />
+            <NavbarDivider />
+          </If>
+        </Can>
+        <Can I={CreditNoteAction.Edit} a={AbilitySubject.CreditNote}>
+          <If condition={creditNote.is_published}>
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon={'envelope'} iconSize={16} />}
+              text={<T id={'send_mail'} />}
+              onClick={handleSendMailCreditNote}
             />
             <NavbarDivider />
           </If>

@@ -15,7 +15,15 @@ import { safeCallback } from '@/utils';
 import { CreditNoteAction, AbilitySubject } from '@/constants/abilityOption';
 
 export function ActionsMenu({
-  payload: { onEdit, onDelete, onRefund, onOpen, onReconcile, onViewDetails },
+  payload: {
+    onEdit,
+    onDelete,
+    onRefund,
+    onOpen,
+    onReconcile,
+    onViewDetails,
+    onSendMail,
+  },
   row: { original },
 }) {
   return (
@@ -37,6 +45,16 @@ export function ActionsMenu({
             icon={<Icon icon={'check'} iconSize={18} />}
             text={intl.get('credit_note.action.make_as_open')}
             onClick={safeCallback(onOpen, original)}
+          />
+        </If>
+      </Can>
+
+      <Can I={CreditNoteAction.Edit} a={AbilitySubject.CreditNote}>
+        <If condition={original.is_published}>
+          <MenuItem
+            icon={<Icon icon="envelope" iconSize={16} />}
+            text={intl.get('credit_note.send_mail')}
+            onClick={safeCallback(onSendMail, original)}
           />
         </If>
       </Can>

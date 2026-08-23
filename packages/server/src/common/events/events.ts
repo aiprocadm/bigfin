@@ -497,6 +497,11 @@ export const events = {
   creditNote: {
     onPdfViewed: 'onCreditNotePdfViewed',
 
+    // Почта кредит-ноты (Р3б карты v18).
+    onPreMailSend: 'onCreditNotePreMailSend',
+    onMailSend: 'onCreditNoteMailSend',
+    onMailSent: 'onCreditNoteMailSent',
+
     onCreate: 'onCreditNoteCreate',
     onCreating: 'onCreditNoteCreating',
     onCreated: 'onCreditNoteCreated',

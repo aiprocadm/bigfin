@@ -98,6 +98,11 @@ function CreditNotesDataTable({
     openDrawer(DRAWERS.CREDIT_NOTE_DETAILS, { creditNoteId: id });
   };
 
+  // Отправка кредит-ноты по email (Р3б карты v18).
+  const handleSendMailCreditNote = ({ id }) => {
+    openDrawer(DRAWERS.CREDIT_NOTE_SEND_MAIL, { creditNoteId: id });
+  };
+
   // Handle delete credit note.
   const handleDeleteCreditNote = ({ id }) => {
     openAlert('credit-note-delete', { creditNoteId: id });
@@ -161,6 +166,7 @@ function CreditNotesDataTable({
           onRefund: handleRefundCreditNote,
           onOpen: handleOpenCreditNote,
           onReconcile: handleReconcileCreditNote,
+          onSendMail: handleSendMailCreditNote,
         }}
       />
     </DashboardContentTable>

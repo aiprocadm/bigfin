@@ -24,6 +24,10 @@
   "receipt.subject": "Чек {Receipt Number} от {Company Name}",
   "receipt.body": "Здравствуйте, {Customer Name}!\n\nНаправляем чек № {Receipt Number} на сумму {Receipt Amount}.\n\nЧек оплачен {Receipt Date}, итоговая оплаченная сумма — {Receipt Amount}.\n\nЧек о продаже приложен к этому письму для вашего сведения.\n\nЕсли у вас возникнут вопросы, дайте нам знать.\n\nС уважением,\n{Company Name}",
 
+  "credit_note.number_label": "Кредит-нота № {creditNoteNumber}",
+  "credit_note.subject": "Кредит-нота {Credit Note Number} от {Company Name}",
+  "credit_note.body": "Здравствуйте, {Customer Name}!\n\nНаправляем кредит-ноту № {Credit Note Number} на сумму {Credit Note Amount}.\n\nДата кредит-ноты — {Credit Note Date}.\n\nДокумент приложен к этому письму для вашего сведения.\n\nЕсли у вас возникнут вопросы, дайте нам знать.\n\nС уважением,\n{Company Name}",
+
   "payment.number_label": "Платёж № {paymentNumber}",
   "payment.subject": "Оплата получена от {Customer Name} — {Company Name}",
   "payment.body": "Здравствуйте, {Customer Name}!\n\nСпасибо за оплату. Было приятно работать с вами и рассчитываем на дальнейшее сотрудничество.\n\nПлатёж: {Payment Number}\nДата платежа: {Payment Date}\nСумма: {Payment Amount}\n\nС уважением,\n{Company Name}"

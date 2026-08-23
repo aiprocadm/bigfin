@@ -11,6 +11,9 @@ import { GetCreditNoteState } from './queries/GetCreditNoteState.service';
 import { GetCreditNoteService } from './queries/GetCreditNote.service';
 import { BulkDeleteCreditNotesService } from './BulkDeleteCreditNotes.service';
 import { ValidateBulkDeleteCreditNotesService } from './ValidateBulkDeleteCreditNotes.service';
+import { CreditNoteMailNotification } from './commands/CreditNoteMailNotification';
+import { GetCreditNoteMailStateService } from './queries/GetCreditNoteMailState.service';
+import { CreditNoteMailOptsDTO } from './types/CreditNotes.types';
 
 @Injectable()
 export class CreditNoteApplication {
@@ -25,7 +28,33 @@ export class CreditNoteApplication {
     private readonly getCreditNoteService: GetCreditNoteService,
     private readonly bulkDeleteCreditNotesService: BulkDeleteCreditNotesService,
     private readonly validateBulkDeleteCreditNotesService: ValidateBulkDeleteCreditNotesService,
+    private readonly creditNoteMailNotification: CreditNoteMailNotification,
+    private readonly getCreditNoteMailStateService: GetCreditNoteMailStateService,
   ) { }
+
+  /**
+   * Отправляет письмо кредит-ноты (Р3б карты v18).
+   * @param {number} creditNoteId
+   * @param {CreditNoteMailOptsDTO} messageOpts
+   * @returns {Promise<void>}
+   */
+  sendCreditNoteMail(
+    creditNoteId: number,
+    messageOpts: CreditNoteMailOptsDTO,
+  ) {
+    return this.creditNoteMailNotification.triggerMail(
+      creditNoteId,
+      messageOpts,
+    );
+  }
+
+  /**
+   * Отдаёт состояние письма кредит-ноты для формы отправки.
+   * @param {number} creditNoteId
+   */
+  getCreditNoteMail(creditNoteId: number) {
+    return this.getCreditNoteMailStateService.getMailState(creditNoteId);
+  }
 
   /**
    * Creates a new credit note.
@@ -74,6 +103,15 @@ export class CreditNoteApplication {
    */
   getCreditNotePdf(creditNoteId: number) {
     return this.getCreditNotePdfService.getCreditNotePdf(creditNoteId);
+  }
+
+  /**
+   * Отдаёт html печатной формы кредит-ноты (превью письма, Р3б v18).
+   * @param {number} creditNoteId
+   * @returns {Promise<string>}
+   */
+  getCreditNoteHtml(creditNoteId: number) {
+    return this.getCreditNotePdfService.getCreditNoteHtml(creditNoteId);
   }
 
   /**

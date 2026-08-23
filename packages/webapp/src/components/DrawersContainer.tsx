@@ -33,6 +33,7 @@ import { DRAWERS } from '@/constants/drawers';
 import { InvoiceSendMailDrawer } from '@/containers/Sales/Invoices/InvoiceSendMailDrawer/InvoiceSendMailDrawer';
 import { EstimateSendMailDrawer } from '@/containers/Sales/Estimates/EstimateSendMailDrawer';
 import { ReceiptSendMailDrawer } from '@/containers/Sales/Receipts/ReceiptSendMailDrawer';
+import { CreditNoteSendMailDrawer } from '@/containers/Sales/CreditNotes/CreditNoteSendMailDrawer';
 import { PaymentReceivedSendMailDrawer } from '@/containers/Sales/PaymentsReceived/PaymentReceivedMailDrawer';
 import { CreateWorkspaceDrawer } from '@/ee/workspaces/containers/CreateWorkspaceDrawer/CreateWorkspaceDrawer';
 import { OrganizationsListDrawer } from '@/ee/workspaces/containers/OrganizationsListDrawer';
@@ -87,6 +88,7 @@ export default function DrawersContainer() {
       <InvoiceSendMailDrawer name={DRAWERS.INVOICE_SEND_MAIL} />
       <EstimateSendMailDrawer name={DRAWERS.ESTIMATE_SEND_MAIL} />
       <ReceiptSendMailDrawer name={DRAWERS.RECEIPT_SEND_MAIL} />
+      <CreditNoteSendMailDrawer name={DRAWERS.CREDIT_NOTE_SEND_MAIL} />
       <PaymentReceivedSendMailDrawer name={DRAWERS.PAYMENT_RECEIVED_SEND_MAIL} />
       <CreateWorkspaceDrawer name={DRAWERS.CREATE_WORKSPACE} />
       <OrganizationsListDrawer name={DRAWERS.ORGANIZATIONS_LIST} />

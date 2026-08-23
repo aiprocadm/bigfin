@@ -13,7 +13,9 @@ import {
   Delete,
   Get,
   Headers,
+  HttpCode,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -36,7 +38,10 @@ import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
-import { CreditNoteAction } from './types/CreditNotes.types';
+import {
+  CreditNoteAction,
+  CreditNoteMailOptsDTO,
+} from './types/CreditNotes.types';
 
 @Controller('credit-notes')
 @ApiTags('Credit Notes')
@@ -58,6 +63,28 @@ export class CreditNotesController {
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   createCreditNote(@Body() creditNoteDTO: CreateCreditNoteDto) {
     return this.creditNoteApplication.createCreditNote(creditNoteDTO);
+  }
+
+  @Post(':id/mail')
+  // Письмо уходит покупателю от имени организации — это не чтение.
+  @RequirePermission(CreditNoteAction.Edit, AbilitySubject.CreditNote)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Send the credit note mail.' })
+  @ApiParam({ name: 'id', description: 'Credit note ID', type: 'number' })
+  sendCreditNoteMail(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() messageOpts: CreditNoteMailOptsDTO,
+  ) {
+    return this.creditNoteApplication.sendCreditNoteMail(id, messageOpts);
+  }
+
+  @Get(':id/mail')
+  @RequirePermission(CreditNoteAction.View, AbilitySubject.CreditNote)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Retrieves the credit note mail state.' })
+  @ApiParam({ name: 'id', description: 'Credit note ID', type: 'number' })
+  getCreditNoteMail(@Param('id', ParseIntPipe) id: number) {
+    return this.creditNoteApplication.getCreditNoteMail(id);
   }
 
   @Get('state')
@@ -99,6 +126,12 @@ export class CreditNotesController {
         'Content-Disposition': `attachment; filename="${filename}"`,
       });
       res.status(200).send(pdfContent);
+    } else if (acceptHeader?.includes(AcceptType.ApplicationTextHtml)) {
+      // Превью печатной формы в письме кредит-ноты (Р3б карты v18).
+      const htmlContent =
+        await this.creditNoteApplication.getCreditNoteHtml(creditNoteId);
+
+      return { htmlContent };
     } else {
       const creditNote =
         await this.creditNoteApplication.getCreditNote(creditNoteId);

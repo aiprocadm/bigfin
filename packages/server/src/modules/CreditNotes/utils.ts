@@ -2,6 +2,20 @@
 import { CreditNotePdfTemplateAttributes, ICreditNote } from '@/interfaces';
 import { contactAddressTextFormat } from '@/utils/address-text-format';
 
+/**
+ * Аргументы подстановки в тему и тело письма кредит-ноты (Р3б карты v18).
+ * Имена переменных — контракт подстановки, как у чека и счёта: их видит
+ * пользователь в редакторе письма, менять нельзя.
+ */
+export const transformCreditNoteToMailDataArgs = (creditNote: any) => {
+  return {
+    'Customer Name': creditNote.customer?.displayName,
+    'Credit Note Number': creditNote.creditNoteNumber,
+    'Credit Note Date': creditNote.formattedCreditNoteDate,
+    'Credit Note Amount': creditNote.formattedAmount,
+  };
+};
+
 export const transformCreditNoteToPdfTemplate = (
   creditNote: ICreditNote
 ): Partial<CreditNotePdfTemplateAttributes> => {

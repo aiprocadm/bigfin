@@ -38,9 +38,34 @@ import { CreditNoteRefundsModule } from '../CreditNoteRefunds/CreditNoteRefunds.
 import { CreditNotesApplyInvoiceModule } from '../CreditNotesApplyInvoice/CreditNotesApplyInvoice.module';
 import { BulkDeleteCreditNotesService } from './BulkDeleteCreditNotes.service';
 import { ValidateBulkDeleteCreditNotesService } from './ValidateBulkDeleteCreditNotes.service';
+import { BullModule } from '@nestjs/bullmq';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { MailModule } from '../Mail/Mail.module';
+import { MailNotificationModule } from '../MailNotification/MailNotification.module';
+import { MAIL_QUEUE_JOB_OPTIONS } from '@/modules/Mail/mailQueueJobOptions';
+import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed.module';
+import { SendCreditNoteMailQueue } from './constants';
+import { CreditNoteMailNotification } from './commands/CreditNoteMailNotification';
+import { SendCreditNoteMailProcess } from './processes/SendCreditNoteMail.process';
+import { GetCreditNoteMailStateService } from './queries/GetCreditNoteMailState.service';
+import { GetCreditNoteMailTemplateService } from './queries/GetCreditNoteMailTemplate.service';
 
 @Module({
   imports: [
+    // Падение письма после всех попыток попадает в ленту (Ф1).
+    NotifyMailFailedModule,
+    MailModule,
+    MailNotificationModule,
+    BullModule.registerQueue({
+      name: SendCreditNoteMailQueue,
+      // Письма людям: повторяем с затуханием (шаг Ф2 карты v10).
+      defaultJobOptions: MAIL_QUEUE_JOB_OPTIONS,
+    }),
+    BullBoardModule.forFeature({
+      name: SendCreditNoteMailQueue,
+      adapter: BullMQAdapter,
+    }),
     ItemsModule,
     // Налог документа считает общий сервис из TaxRates (Д1: НДС в возвратах).
     TaxRatesModule,
@@ -83,6 +108,11 @@ import { ValidateBulkDeleteCreditNotesService } from './ValidateBulkDeleteCredit
     CreditNoteAutoSerialSubscriber,
     BulkDeleteCreditNotesService,
     ValidateBulkDeleteCreditNotesService,
+    // Почта кредит-ноты (Р3б карты v18).
+    CreditNoteMailNotification,
+    SendCreditNoteMailProcess,
+    GetCreditNoteMailStateService,
+    GetCreditNoteMailTemplateService,
   ],
   exports: [
     CreateCreditNoteService,

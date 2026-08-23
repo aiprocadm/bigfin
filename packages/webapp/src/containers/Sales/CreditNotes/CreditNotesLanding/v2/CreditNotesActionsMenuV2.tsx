@@ -2,6 +2,7 @@ import intl from 'react-intl-universal';
 import {
   Check,
   Eye,
+  Mail,
   MoreHorizontal,
   Pencil,
   Receipt,
@@ -40,6 +41,7 @@ export interface CreditNoteRowActions {
   onOpen: (row: CreditNoteRow) => void;
   onRefund: (row: CreditNoteRow) => void;
   onReconcile: (row: CreditNoteRow) => void;
+  onSendMail: (row: CreditNoteRow) => void;
   onDelete: (row: CreditNoteRow) => void;
 }
 
@@ -81,6 +83,14 @@ export function CreditNotesActionsMenuV2({
             <DropdownMenuItem onClick={() => actions.onOpen(row)}>
               <Check className="mr-2 h-4 w-4" aria-hidden />
               {intl.get('credit_note.action.make_as_open')}
+            </DropdownMenuItem>
+          )}
+        </Can>
+        <Can I={CreditNoteAction.Edit} a={AbilitySubject.CreditNote}>
+          {row.is_published && (
+            <DropdownMenuItem onClick={() => actions.onSendMail(row)}>
+              <Mail className="mr-2 h-4 w-4" aria-hidden />
+              {intl.get('credit_note.send_mail')}
             </DropdownMenuItem>
           )}
         </Can>

@@ -6,7 +6,10 @@ import {
 import { contactAddressTextFormat } from '@/utils/address-text-format';
 
 export const transformReceiptToBrandingTemplateAttributes = (
-  saleReceipt: ISaleReceipt
+  saleReceipt: ISaleReceipt,
+  // Базовый лейбл скидки приходит из шаблона организации (он переведён);
+  // раньше хардкод «Discount» затирал перевод в клиентском PDF (Р3 v18).
+  { discountLabel = 'Discount' }: { discountLabel?: string } = {}
 ): Partial<ISaleReceiptBrandingTemplateAttributes> => {
   return {
     total: saleReceipt.totalFormatted,
@@ -23,8 +26,8 @@ export const transformReceiptToBrandingTemplateAttributes = (
     adjustment: saleReceipt.adjustmentFormatted,
     discount: saleReceipt.discountAmountFormatted,
     discountLabel: saleReceipt.discountPercentageFormatted
-      ? `Discount [${saleReceipt.discountPercentageFormatted}]`
-      : 'Discount',
+      ? `${discountLabel} [${saleReceipt.discountPercentageFormatted}]`
+      : discountLabel,
     customerAddress: contactAddressTextFormat(saleReceipt.customer),
   };
 };

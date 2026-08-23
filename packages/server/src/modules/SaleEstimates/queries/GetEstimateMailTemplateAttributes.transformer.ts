@@ -3,6 +3,7 @@ import { Transformer } from '@/modules/Transformer/Transformer';
 export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
   public includeAttributes = (): string[] => {
     return [
+      'lang',
       'companyLogoUri',
       'companyName',
 
@@ -45,6 +46,12 @@ export class GetEstimateMailTemplateAttributesTransformer extends Transformer {
    * Exclude all attributes.
    * @returns {string[]}
    */
+
+  /** Язык письма (html lang) — по языку организации (Р3 v18). */
+  public lang(): string {
+    return this.context.organization?.language === 'ru' ? 'ru' : 'en';
+  }
+
   public excludeAttributes = (): string[] => {
     return ['*'];
   };

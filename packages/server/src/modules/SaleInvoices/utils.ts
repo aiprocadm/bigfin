@@ -18,7 +18,10 @@ export const mergePdfTemplateWithDefaultAttributes = (
 };
 
 export const transformInvoiceToPdfTemplate = (
-  invoice: ISaleInvoice
+  invoice: ISaleInvoice,
+  // Базовый лейбл скидки приходит из шаблона организации (он переведён);
+  // раньше хардкод «Discount» затирал перевод в клиентском PDF (Р3 v18).
+  { discountLabel = 'Discount' }: { discountLabel?: string } = {}
 ): Partial<InvoicePdfTemplateAttributes> => {
   return {
     dueDate: invoice.dueDateFormatted,
@@ -46,8 +49,8 @@ export const transformInvoiceToPdfTemplate = (
     })),
     discount: invoice.discountAmountFormatted,
     discountLabel: invoice.discountPercentageFormatted
-      ? `Discount [${invoice.discountPercentageFormatted}]`
-      : 'Discount',
+      ? `${discountLabel} [${invoice.discountPercentageFormatted}]`
+      : discountLabel,
     customerAddress: contactAddressTextFormat(invoice.customer),
   };
 };

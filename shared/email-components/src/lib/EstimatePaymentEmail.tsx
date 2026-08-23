@@ -14,6 +14,8 @@ import { EmailTemplate } from './EmailTemplate';
 
 export interface EstimatePaymentEmailProps {
   preview: string;
+  /** Язык письма (html lang); по языку организации. */
+  lang?: string;
 
   // # Company
   companyName?: string;
@@ -61,6 +63,7 @@ export const EstimatePaymentEmail: React.FC<
   Readonly<EstimatePaymentEmailProps>
 > = ({
   preview,
+  lang,
 
   // # Company
   companyName = 'Bigfin, Inc.',
@@ -104,7 +107,7 @@ export const EstimatePaymentEmail: React.FC<
   items = [],
 }) => {
   return (
-    <EmailTemplateLayout preview={preview}>
+    <EmailTemplateLayout preview={preview} lang={lang}>
       <EmailTemplate>
         {companyLogoUri && <EmailTemplate.CompanyLogo src={companyLogoUri} />}
 

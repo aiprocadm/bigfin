@@ -63,7 +63,7 @@ function ReceiptSendMailFooter() {
           onClick={handleClose}
           style={{ minWidth: '65px' }}
         >
-          Close
+          {intl.get('close')}
         </Button>
 
         <Button

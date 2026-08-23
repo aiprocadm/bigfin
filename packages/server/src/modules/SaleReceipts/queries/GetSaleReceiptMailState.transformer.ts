@@ -140,9 +140,13 @@ export class GetSaleReceiptMailStateTransformer extends Transformer {
   * @returns {string}
   */
  protected discountLabel(receipt) {
+   // Хардкод «Discount» затирал перевод в превью письма (Р3 v18).
+   const label = this.context.i18n.t('mail.label.discount', {
+     lang: this.context.organization?.language ?? 'en',
+   });
    return receipt.discountType === DiscountType.Percentage
-     ? `Discount [${receipt.discountPercentageFormatted}]`
-     : 'Discount';
+     ? `${label} [${receipt.discountPercentageFormatted}]`
+     : label;
  }
 
   /**

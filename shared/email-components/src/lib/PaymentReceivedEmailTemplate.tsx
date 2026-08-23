@@ -13,6 +13,8 @@ import { CSSProperties } from 'react';
 
 export interface PaymentReceivedEmailTemplateProps {
   preview: string;
+  /** Язык письма (html lang); по языку организации. */
+  lang?: string;
 
   // # Company
   companyName?: string;
@@ -43,6 +45,7 @@ export const PaymentReceivedEmailTemplate: React.FC<
   Readonly<PaymentReceivedEmailTemplateProps>
 > = ({
   preview,
+  lang,
 
   // # Company
   companyName = 'Bigfin, Inc.',
@@ -70,7 +73,7 @@ export const PaymentReceivedEmailTemplate: React.FC<
   message,
 }) => {
     return (
-      <EmailTemplateLayout preview={preview}>
+      <EmailTemplateLayout preview={preview} lang={lang}>
         <Container style={containerStyle}>
           {companyLogoUri && (
             <Section style={logoSectionStyle}>

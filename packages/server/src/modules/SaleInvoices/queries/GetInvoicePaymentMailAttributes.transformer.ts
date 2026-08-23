@@ -7,6 +7,7 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
    */
   public includeAttributes = (): string[] => {
     return [
+      'lang',
       'companyLogoUri',
       'companyName',
 
@@ -44,6 +45,12 @@ export class GetInvoicePaymentMailAttributesTransformer extends Transformer {
       'items',
     ];
   };
+
+
+  /** Язык письма (html lang) — по языку организации (Р3 v18). */
+  public lang(): string {
+    return this.context.organization?.language === 'ru' ? 'ru' : 'en';
+  }
 
   public excludeAttributes = (): string[] => {
     return ['*'];

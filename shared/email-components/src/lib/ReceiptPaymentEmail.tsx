@@ -12,6 +12,8 @@ import { EmailTemplateLayout } from './EmailTemplateLayout';
 import { EmailTemplate } from './EmailTemplate';
 export interface ReceiptEmailTemplateProps {
   preview: string;
+  /** Язык письма (html lang); по языку организации. */
+  lang?: string;
 
   companyName?: string;
   companyLogoUri: string;
@@ -50,6 +52,7 @@ export const ReceiptEmailTemplate: React.FC<
   Readonly<ReceiptEmailTemplateProps>
 > = ({
   preview,
+  lang,
 
   // # Company
   companyName = 'Bigfin, Inc.',
@@ -85,7 +88,7 @@ export const ReceiptEmailTemplate: React.FC<
   items = [{ label: 'Swaniawski Muller', quantity: '1', rate: '$1,000.00' }],
 }) => {
   return (
-    <EmailTemplateLayout preview={preview}>
+    <EmailTemplateLayout preview={preview} lang={lang}>
       <EmailTemplate>
         {companyLogoUri && <EmailTemplate.CompanyLogo src={companyLogoUri} />}
 

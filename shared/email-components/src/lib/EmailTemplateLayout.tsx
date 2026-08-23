@@ -4,13 +4,16 @@ import { CSSProperties } from 'react';
 interface EmailTemplateLayoutProps {
   children?: React.ReactNode;
   preview: string;
+  /** Язык письма для почтовых клиентов и читалок; по языку организации. */
+  lang?: string;
 }
 export const EmailTemplateLayout = ({
   children,
   preview,
+  lang = 'en',
 }: EmailTemplateLayoutProps) => {
   return (
-    <Html lang="en">
+    <Html lang={lang}>
       <Head />
       <Preview>{preview}</Preview>
 

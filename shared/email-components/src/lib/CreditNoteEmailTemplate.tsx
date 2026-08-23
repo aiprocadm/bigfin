@@ -14,6 +14,8 @@ import { EmailTemplate } from './EmailTemplate';
 
 export interface CreditNoteEmailProps {
   preview: string;
+  /** Язык письма (html lang); по языку организации. */
+  lang?: string;
 
   // # Company
   companyName?: string;
@@ -57,6 +59,7 @@ export const CreditNoteEmailTemplate: React.FC<
   Readonly<CreditNoteEmailProps>
 > = ({
   preview,
+  lang,
 
   // # Company
   companyName = 'Bigfin, Inc.',
@@ -96,7 +99,7 @@ export const CreditNoteEmailTemplate: React.FC<
   items = [],
 }) => {
   return (
-    <EmailTemplateLayout preview={preview}>
+    <EmailTemplateLayout preview={preview} lang={lang}>
       <EmailTemplate>
         <Section style={mainSectionStyle}>
           {companyLogoUri && <EmailTemplate.CompanyLogo src={companyLogoUri} />}

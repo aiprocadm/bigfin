@@ -100,7 +100,9 @@ export class SaleInvoicePdf {
     // Merge the branding template attributes with the invoice.
     return {
       ...brandingTemplate.attributes,
-      ...transformInvoiceToPdfTemplate(invoice),
+      ...transformInvoiceToPdfTemplate(invoice, {
+        discountLabel: brandingTemplate.attributes?.discountLabel,
+      }),
     };
   }
 }

@@ -109,7 +109,9 @@ export class SaleReceiptsPdfService {
       );
     return {
       ...brandingTemplate.attributes,
-      ...transformReceiptToBrandingTemplateAttributes(saleReceipt),
+      ...transformReceiptToBrandingTemplateAttributes(saleReceipt, {
+        discountLabel: brandingTemplate.attributes?.discountLabel,
+      }),
     };
   }
 }

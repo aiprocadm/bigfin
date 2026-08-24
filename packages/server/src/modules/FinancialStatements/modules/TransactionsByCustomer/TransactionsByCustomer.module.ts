@@ -24,5 +24,9 @@ import { TransactionsByCustomerApplication } from './TransactionsByCustomersAppl
     TenancyContext,
   ],
   controllers: [TransactionsByCustomerController],
+  // Наружу для акта сверки взаимных расчётов (К2 карты v19): он берёт
+  // обороты из ЭТОГО отчёта, чтобы второго способа считать сальдо в
+  // продукте не появилось.
+  exports: [TransactionsByCustomersSheet],
 })
 export class TransactionsByCustomerModule {}

@@ -148,6 +148,9 @@ import { NotifyMailFailedModule } from '@/modules/Notifications/NotifyMailFailed
     ValidateBulkDeleteSaleInvoicesService,
   ],
   exports: [
+    // Наружу для наполнения демо-организации (Д2 карты v18): демо создаёт
+    // счета обычной службой, а не вставкой в базу.
+    CreateSaleInvoice,
     GetSaleInvoice,
     SaleInvoicesCost,
     SaleInvoicePdf,

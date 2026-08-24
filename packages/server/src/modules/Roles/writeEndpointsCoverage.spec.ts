@@ -39,6 +39,14 @@ const OPEN_BY_DESIGN: string[] = [
   // Создание организации: роли появляются вместе с ней, спрашивать нечего.
   'Organization/Organization.controller.ts#build',
 
+  // Демо «в один щелчок» (Д1 карты v18): и создание демо, и вход в него
+  // происходят ДО всякой организации — прав в этот момент не существует.
+  // Вместо права здесь стоят три засова: флаг `ONE_CLICK_DEMO_ENABLE` (по
+  // умолчанию выключен, проверяется в каждой службе), предел частоты по
+  // адресу и вход только по случайному ключу демо.
+  'OneClickDemo/OneClickDemo.controller.ts#createOneClickDemo',
+  'OneClickDemo/OneClickDemo.controller.ts#signin',
+
   // Уведомления читает их собственный получатель — это не общие данные.
   'Notifications/Notifications.controller.ts#markAllRead',
   'Notifications/Notifications.controller.ts#markRead',

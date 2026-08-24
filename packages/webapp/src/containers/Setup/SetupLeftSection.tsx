@@ -29,10 +29,12 @@ function SetupLeftSectionFooter() {
   const footerLinks = getFooterLinks();
 
   const { data: authMeta } = useAuthMetadata();
-  // Сервер отдаёт поля плоско и `one_click_demo` не шлёт вовсе (вопрос 21
-  // владельцу — демо-режим). Читаем по фактическому имени, чтобы кнопка
-  // появилась сразу, как только поле появится на сервере (М4 карты v15).
+  // Сервер отдаёт поля плоско: `{ one_click_demo: { enable, demo_url } }`
+  // (Д1 карты v18). Ссылка есть всегда, поэтому кнопку показываем только
+  // при включённом демо — иначе она вела бы на закрытую страницу.
+  const demoEnabled = Boolean(authMeta?.one_click_demo?.enable);
   const demoUrl = authMeta?.one_click_demo?.demo_url;
+  const showDemoButton = demoEnabled && Boolean(demoUrl);
 
   const handleDemoBtnClick = () => {
     window.open(demoUrl);
@@ -40,13 +42,13 @@ function SetupLeftSectionFooter() {
 
   return (
     <div className={'content__footer'}>
-      {demoUrl && (
+      {showDemoButton && (
         <Stack spacing={16}>
           <Text className={style.demoButtonLabel}>
             <T id={'setup.left_side.not_now'} />
           </Text>
           <button className={style.demoButton} onClick={handleDemoBtnClick}>
-            Try Demo Account
+            <T id={'setup.left_side.try_demo'} />
           </button>
         </Stack>
       )}

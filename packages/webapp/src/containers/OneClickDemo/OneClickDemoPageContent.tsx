@@ -1,12 +1,13 @@
 // @ts-nocheck
+import intl from 'react-intl-universal';
 import { Button, Intent, ProgressBar, Text } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
 import {
   useCreateOneClickDemo,
+  useOneClickDemoBuildJob,
   useOneClickDemoSignin,
 } from '@/hooks/query/oneclick-demo';
 import { Box, Icon, Stack } from '@/components';
-import { useJob } from '@/hooks/query';
 import style from './OneClickDemoPage.module.scss';
 
 export function OneClickDemoPageContent() {
@@ -19,41 +20,45 @@ export function OneClickDemoPageContent() {
     isLoading: isOneclickDemoSigningIn,
   } = useOneClickDemoSignin();
 
-  // Job states.
   const [demoId, setDemoId] = useState<string>('');
-  const [buildJobId, setBuildJobId] = useState<string>('');
   const [isJobDone, setIsJobDone] = useState<boolean>(false);
+  const [hasFailed, setHasFailed] = useState<boolean>(false);
 
-  const {
-    data: { running, completed },
-  } = useJob(buildJobId, {
+  // Поллим постройку по ключу демо (а не по номеру джоба).
+  const { data: buildJob } = useOneClickDemoBuildJob(demoId, {
     refetchInterval: 2000,
-    enabled: !isJobDone && !!buildJobId,
+    enabled: !isJobDone && !!demoId,
   });
 
   useEffect(() => {
-    if (completed) {
+    if (buildJob?.isCompleted) {
       setIsJobDone(true);
     }
-  }, [completed, setIsJobDone]);
+    // Провал постройки раньше не показывался никак: страница просто
+    // крутилась вечно (Д1 карты v18).
+    if (buildJob?.isFailed) {
+      setHasFailed(true);
+    }
+  }, [buildJob?.isCompleted, buildJob?.isFailed]);
 
-  // One the job done request sign-in using the demo id.
+  // Как только организация готова — входим по ключу демо.
   useEffect(() => {
     if (isJobDone) {
-      oneClickDemoSignIn({ demoId }).then((res) => {});
+      oneClickDemoSignIn({ demoId }).catch(() => setHasFailed(true));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isJobDone]);
 
   const handleCreateAccountBtnClick = () => {
+    setHasFailed(false);
     createOneClickDemo({})
       .then(({ data: { data } }) => {
-        setBuildJobId(data?.build_job?.job_id);
         setDemoId(data?.demo_id);
       })
-      .catch(() => {});
+      .catch(() => setHasFailed(true));
   };
-  const isLoading = running || isOneclickDemoSigningIn;
+  const isBuilding = !!demoId && !isJobDone && !hasFailed;
+  const isLoading = isBuilding || isOneclickDemoSigningIn;
 
   return (
     <Box className={style.root}>
@@ -66,17 +71,21 @@ export function OneClickDemoPageContent() {
               <ProgressBar stripes value={null} className={style.progressBar} />
               {isOneclickDemoSigningIn && (
                 <Text className={style.waitingText}>
-                  It's signin-in to your demo account, Just a second!
+                  {intl.get('one_click_demo.signing_in')}
                 </Text>
               )}
-              {running && (
+              {isBuilding && (
                 <Text className={style.waitingText}>
-                  We're preparing the temporary environment for trial. It
-                  typically takes a few seconds. Do not close or refresh the
-                  page.
+                  {intl.get('one_click_demo.preparing')}
                 </Text>
               )}
             </Stack>
+          )}
+
+          {hasFailed && (
+            <Text className={style.waitingText}>
+              {intl.get('one_click_demo.failed')}
+            </Text>
           )}
         </Stack>
 
@@ -87,7 +96,7 @@ export function OneClickDemoPageContent() {
             onClick={handleCreateAccountBtnClick}
             loading={isCreateOneClickLoading}
           >
-            Create Demo Account
+            {intl.get('one_click_demo.create_account')}
           </Button>
         )}
       </Box>

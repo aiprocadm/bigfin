@@ -11,8 +11,11 @@ export const EnsureOneClickDemoAccountEnabled = ({
   children,
   redirectTo = '/',
 }: EnsureOneClickDemoAccountEnabledProps) => {
-  const { authMeta } = useOneClickDemoBoot();
-  const enabled = authMeta?.meta?.one_click_demo?.enable || false;
+  // Раньше читали `authMeta.meta.one_click_demo` — лишняя ступенька `meta`
+  // делала поле мёртвым, и страница демо была недостижима всегда
+  // (та же грабля, что с закрытой регистрацией; Д1 карты v18).
+  const { isDemoEnabled } = useOneClickDemoBoot();
+  const enabled = isDemoEnabled;
 
   if (!enabled) {
     return <Redirect to={{ pathname: redirectTo }} />;

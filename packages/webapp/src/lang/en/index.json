@@ -3650,6 +3650,7 @@
   "modules.ru_print_forms.label": "Russian print forms",
   "modules.ru_print_forms.desc": "Payment invoice and other Russian document forms",
   "ru_print_forms.submenu": "Russian print form",
+  "ru_print_forms.reconciliation_act.button": "Reconciliation act (RF)",
   "ru_print_forms.payment_invoice.button": "Payment invoice (RF)",
   "ru_print_forms.act.button": "Act (RF)",
   "ru_print_forms.upd.button": "UPD (RF)",

@@ -3,23 +3,25 @@ import {
   useMutation,
   UseMutationOptions,
   UseMutationResult,
-  useQueryClient,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
 } from 'react-query';
 import useApiRequest from '../useRequest';
 import {
   useSetAuthToken,
   useSetAuthUserId,
-  useSetLocale,
   useSetOrganizationId,
 } from '../state';
 import { setAuthLoginCookies } from './authentication';
 import { batch } from 'react-redux';
+import { transformToCamelCase } from '@/utils';
 
-interface CreateOneClickDemoValues { }
+interface CreateOneClickDemoValues {}
 interface CreateOneClickDemoRes {
+  demoId: string;
   email: string;
-  signedIn: any;
-  buildJob: any;
+  buildJob: { jobId: string };
 }
 
 /**
@@ -34,22 +36,48 @@ export function useCreateOneClickDemo(
     CreateOneClickDemoValues
   >,
 ): UseMutationResult<CreateOneClickDemoRes, Error, CreateOneClickDemoValues> {
-  const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation<CreateOneClickDemoRes, Error, CreateOneClickDemoValues>(
     () => apiRequest.post(`/demo/one_click`),
-    {
-      onSuccess: (res, id) => { },
-      ...props,
-    },
+    { ...props },
+  );
+}
+
+interface OneClickDemoBuildJobRes {
+  id: string;
+  state: string;
+  isCompleted: boolean;
+  isRunning: boolean;
+  isWaiting: boolean;
+  isFailed: boolean;
+}
+
+/**
+ * Состояние постройки демо-организации. Спрашиваем по ключу демо, а не по
+ * номеру джоба: номер джоба у очереди угадываемый, ключ демо — нет
+ * (Д1 карты v18).
+ */
+export function useOneClickDemoBuildJob(
+  demoId: string,
+  props?: UseQueryOptions<OneClickDemoBuildJobRes, Error>,
+): UseQueryResult<OneClickDemoBuildJobRes, Error> {
+  const apiRequest = useApiRequest();
+
+  return useQuery<OneClickDemoBuildJobRes, Error>(
+    ['ONE_CLICK_DEMO_BUILD_JOB', demoId],
+    () =>
+      apiRequest
+        .get(`/demo/one_click/${demoId}/build_job`)
+        .then((res) => transformToCamelCase(res.data)),
+    { ...props },
   );
 }
 
 interface OneClickSigninDemoValues {
   demoId: string;
 }
-interface OneClickSigninDemoRes { }
+interface OneClickSigninDemoRes {}
 
 /**
  * Sign-in to the created one-click demo account.
@@ -63,31 +91,27 @@ export function useOneClickDemoSignin(
     OneClickSigninDemoValues
   >,
 ): UseMutationResult<OneClickSigninDemoRes, Error, OneClickSigninDemoValues> {
-  const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   const setAuthToken = useSetAuthToken();
   const setOrganizationId = useSetOrganizationId();
   const setUserId = useSetAuthUserId();
-  const setLocale = useSetLocale();
 
   return useMutation<OneClickSigninDemoRes, Error, OneClickSigninDemoValues>(
     ({ demoId }) =>
       apiRequest.post(`/demo/one_click_signin`, { demo_id: demoId }),
     {
-      onSuccess: (res, id) => {
-        // Set authentication cookies.
+      onSuccess: (res) => {
+        // Вход в демо отдаёт ровно тот же ответ, что обычный вход
+        // (`access_token` / `organization_id` / `user_id`). Прежний код
+        // читал `token` и `tenant.organization_id` — таких полей сервер не
+        // отдаёт вовсе, поэтому вход не срабатывал (Д1 карты v18).
         setAuthLoginCookies(res.data);
 
         batch(() => {
-          // Sets the auth metadata to global state.
-          setAuthToken(res.data.token);
-          setOrganizationId(res.data.tenant.organization_id);
-          setUserId(res.data.user.id);
-
-          if (res.data?.tenant?.metadata?.language) {
-            setLocale(res.data?.tenant?.metadata?.language);
-          }
+          setAuthToken(res.data.access_token);
+          setOrganizationId(res.data.organization_id);
+          setUserId(res.data.user_id);
         });
       },
       ...props,

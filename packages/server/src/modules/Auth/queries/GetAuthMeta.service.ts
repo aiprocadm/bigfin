@@ -17,6 +17,10 @@ export class GetAuthMetaService {
   public async getAuthMeta(): Promise<IAuthGetMetaPOJO> {
     return {
       signupDisabled: this.configService.get('signupRestrictions.disabled'),
+      oneClickDemo: {
+        enable: this.configService.get('oneClickDemo.enable') ?? false,
+        demoUrl: this.configService.get('oneClickDemo.demoUrl') ?? '/demo',
+      },
     };
   }
 }

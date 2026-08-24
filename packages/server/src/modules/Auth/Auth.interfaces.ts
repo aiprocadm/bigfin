@@ -59,6 +59,12 @@ export interface IAuthSendedResetPassword {
 
 export interface IAuthGetMetaPOJO {
   signupDisabled: boolean;
+  // Демо-режим «в один щелчок» (Д1 карты v18): фронт по этим полям решает,
+  // показывать ли страницу демо и кнопку «Посмотреть демо» в мастере.
+  oneClickDemo: {
+    enable: boolean;
+    demoUrl: string;
+  };
 }
 
 export interface IAuthSignUpVerifingEventPayload {

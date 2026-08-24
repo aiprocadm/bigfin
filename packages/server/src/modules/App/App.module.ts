@@ -107,6 +107,7 @@ import { PaymentLinksModule } from '../PaymentLinks/PaymentLinks.module';
 import { RolesModule } from '../Roles/Roles.module';
 import { SubscriptionModule } from '../Subscription/Subscription.module';
 import { OrganizationModule } from '../Organization/Organization.module';
+import { OneClickDemoModule } from '../OneClickDemo/OneClickDemo.module';
 import { WorkspacesModule } from '../ee/Workspaces/Workspaces.module';
 import { TenantDBManagerModule } from '../TenantDBManager/TenantDBManager.module';
 import { PaymentServicesModule } from '../PaymentServices/PaymentServices.module';
@@ -308,6 +309,9 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     RolesModule,
     SubscriptionModule,
     OrganizationModule,
+    // Демо-режим «в один щелчок» (Д1 карты v18); ручки работают только
+    // при включённом флаге ONE_CLICK_DEMO_ENABLE.
+    OneClickDemoModule,
     WorkspacesModule,
     TenantDBManagerModule,
     PaymentServicesModule,

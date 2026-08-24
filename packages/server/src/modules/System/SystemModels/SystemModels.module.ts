@@ -8,9 +8,17 @@ import { SystemModelsConnection } from './SystemModels.constants';
 import { SystemUser } from '../models/SystemUser';
 import { TenantMetadata } from '../models/TenantMetadataModel';
 import { UserTenant } from '../models/UserTenant.model';
+import { OneClickDemo } from '../models/OneClickDemo.model';
 import { TenantRepository } from '../repositories/Tenant.repository';
 
-const models = [SystemUser, PlanSubscription, TenantModel, TenantMetadata, UserTenant];
+const models = [
+  SystemUser,
+  PlanSubscription,
+  TenantModel,
+  TenantMetadata,
+  UserTenant,
+  OneClickDemo,
+];
 
 const modelProviders = models.map((model) => {
   return {

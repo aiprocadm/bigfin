@@ -3,6 +3,8 @@ import { useAuthMetadata } from '@/hooks/query/authentication';
 
 interface OneClickDemoContextType {
   authMeta: any;
+  /** Демо включено на сервере: поле приходит ПЛОСКО (Д1 карты v18). */
+  isDemoEnabled: boolean;
 }
 
 const OneClickDemoContext = createContext<OneClickDemoContextType>(
@@ -32,6 +34,7 @@ export const OneClickDemoBoot: React.FC<OneClickDemoBootProps> = ({
   const value = {
     isAuthMetaLoading,
     authMeta,
+    isDemoEnabled: Boolean(authMeta?.one_click_demo?.enable),
   };
 
   if (isAuthMetaLoading) {

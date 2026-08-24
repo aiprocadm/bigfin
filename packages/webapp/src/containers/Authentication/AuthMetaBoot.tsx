@@ -8,6 +8,10 @@ export interface AuthMetaBootValue {
   isAuthMetaLoading: boolean;
   /** Владелец закрыл регистрацию: форму показывать нельзя. */
   signupDisabled: boolean;
+  /** Демо «в один щелчок» включено на сервере (Д1 карты v18). */
+  oneClickDemoEnabled: boolean;
+  /** Куда ведёт кнопка «Посмотреть демо». */
+  oneClickDemoUrl: string;
 }
 
 const AuthMetaBootContext = createContext();
@@ -24,6 +28,10 @@ function AuthMetaBootProvider({ ...props }) {
   const state = {
     isAuthMetaLoading,
     signupDisabled: Boolean(authMeta?.signup_disabled),
+    // Демо-режим приходит тем же плоским полем `one_click_demo` (Д1 v18);
+    // читаем здесь, чтобы у страницы демо и мастера был один источник.
+    oneClickDemoEnabled: Boolean(authMeta?.one_click_demo?.enable),
+    oneClickDemoUrl: authMeta?.one_click_demo?.demo_url ?? '/demo',
   };
 
   if (isAuthMetaLoading) {
@@ -43,6 +51,8 @@ function AuthMetaBootProvider({ ...props }) {
 const EMPTY_AUTH_META: AuthMetaBootValue = {
   isAuthMetaLoading: false,
   signupDisabled: false,
+  oneClickDemoEnabled: false,
+  oneClickDemoUrl: '/demo',
 };
 
 const useAuthMetaBoot = (): AuthMetaBootValue =>

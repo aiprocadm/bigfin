@@ -87,7 +87,9 @@ const models = [
       adapter: BullMQAdapter,
     }),
   ],
-  exports: [...models],
+  // AuthSigninService наружу — вход в демо выдаёт тот же токен тем же
+  // способом, что обычный вход (Д1 карты v18).
+  exports: [...models, AuthSigninService],
   providers: [
     ...models,
     LocalStrategy,

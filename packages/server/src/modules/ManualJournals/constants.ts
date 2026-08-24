@@ -32,7 +32,7 @@ export const DEFAULT_VIEW_COLUMNS = [];
 
 export const ManualJournalDefaultViews = [
   {
-    name: 'Draft',
+    name: 'manual_journal.view.draft',
     slug: 'draft',
     rolesLogicExpression: '1',
     roles: [
@@ -41,7 +41,7 @@ export const ManualJournalDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Published',
+    name: 'manual_journal.view.published',
     slug: 'published',
     rolesLogicExpression: '1',
     roles: [

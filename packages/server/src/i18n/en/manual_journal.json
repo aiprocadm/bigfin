@@ -1,12 +1,14 @@
 {
-  "field.date": "Date",
-  "field.journal_number": "Journal No.",
-  "field.reference": "Reference No.",
-  "field.journal_type": "Journal Type",
+  "view.draft": "Draft",
+  "view.published": "Published",
   "field.amount": "Amount",
-  "field.description": "Description",
+  "field.created_at": "Created at",
   "field.currency": "Currency",
+  "field.date": "Date",
+  "field.description": "Description",
   "field.exchange_rate": "Exchange Rate",
-  "field.status": "Status",
-  "field.created_at": "Created at"
+  "field.journal_number": "Journal No.",
+  "field.journal_type": "Journal Type",
+  "field.reference": "Reference No.",
+  "field.status": "Status"
 }

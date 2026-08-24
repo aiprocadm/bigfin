@@ -1,5 +1,6 @@
 {
+  "view.overdue": "Overdue",
+  "view.unpaid": "Unpaid",
   "type.business": "Business",
   "type.individual": "Individual"
 }
-

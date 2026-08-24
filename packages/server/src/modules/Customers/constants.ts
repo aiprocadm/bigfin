@@ -2,7 +2,7 @@ export const DEFAULT_VIEW_COLUMNS = [];
 
 export const CustomerDefaultViews = [
   {
-    name: 'Overdue',
+    name: 'customer.view.overdue',
     slug: 'overdue',
     rolesLogicExpression: '1',
     roles: [
@@ -11,7 +11,7 @@ export const CustomerDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Unpaid',
+    name: 'customer.view.unpaid',
     slug: 'unpaid',
     rolesLogicExpression: '1',
     roles: [

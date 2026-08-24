@@ -31,7 +31,7 @@ export const ERRORS = {
 export const DEFAULT_VIEW_COLUMNS = [];
 export const SaleReceiptDefaultViews = [
   {
-    name: 'Draft',
+    name: 'receipt.view.draft',
     slug: 'draft',
     rolesLogicExpression: '1',
     roles: [
@@ -40,7 +40,7 @@ export const SaleReceiptDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Closed',
+    name: 'receipt.view.closed',
     slug: 'closed',
     rolesLogicExpression: '1',
     roles: [

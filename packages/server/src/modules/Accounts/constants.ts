@@ -37,7 +37,7 @@ export const MAX_ACCOUNTS_CHART_DEPTH = 5;
 // Accounts default views.
 export const AccountDefaultViews = [
   {
-    name: 'Assets',
+    name: 'account.view.assets',
     slug: 'assets',
     rolesLogicExpression: '1',
     roles: [
@@ -46,7 +46,7 @@ export const AccountDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Liabilities',
+    name: 'account.view.liabilities',
     slug: 'liabilities',
     rolesLogicExpression: '1',
     roles: [
@@ -60,7 +60,7 @@ export const AccountDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Equity',
+    name: 'account.view.equity',
     slug: 'equity',
     rolesLogicExpression: '1',
     roles: [
@@ -74,7 +74,7 @@ export const AccountDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Income',
+    name: 'account.view.income',
     slug: 'income',
     rolesLogicExpression: '1',
     roles: [
@@ -88,7 +88,7 @@ export const AccountDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Expenses',
+    name: 'account.view.expenses',
     slug: 'expenses',
     rolesLogicExpression: '1',
     roles: [

@@ -1,5 +1,5 @@
 export const OtherExpensesAccount = {
-  name: 'Other Expenses',
+  name: 'account_seed.other_expenses',
   slug: 'other-expenses',
   accountType: 'other-expense',
   code: '40011',
@@ -10,7 +10,7 @@ export const OtherExpensesAccount = {
 };
 
 export const TaxPayableAccount = {
-  name: 'Tax Payable',
+  name: 'account_seed.tax_payable',
   slug: 'tax-payable',
   accountType: 'tax-payable',
   code: '20006',
@@ -29,7 +29,7 @@ export const TaxPayableAccount = {
  * Без этого счёта «НДС к вычету» в анализе НДС всегда оставался нулём.
  */
 export const TaxReceivableAccount = {
-  name: 'НДС к вычету',
+  name: 'account_seed.tax_receivable',
   slug: 'tax-receivable',
   accountType: 'other-current-asset',
   code: '10198',
@@ -40,7 +40,7 @@ export const TaxReceivableAccount = {
 };
 
 export const UnearnedRevenueAccount = {
-  name: 'Unearned Revenue',
+  name: 'account_seed.unearned_revenue',
   slug: 'unearned-revenue',
   accountType: 'other-current-liability',
   parentAccountId: null,
@@ -51,7 +51,7 @@ export const UnearnedRevenueAccount = {
 };
 
 export const PrepardExpenses = {
-  name: 'Prepaid Expenses',
+  name: 'account_seed.prepaid_expenses',
   slug: 'prepaid-expenses',
   accountType: 'other-current-asset',
   parentAccountId: null,
@@ -62,7 +62,7 @@ export const PrepardExpenses = {
 };
 
 export const StripeClearingAccount = {
-  name: 'Stripe Clearing',
+  name: 'account_seed.stripe_clearing',
   slug: 'stripe-clearing',
   accountType: 'other-current-asset',
   parentAccountId: null,
@@ -73,7 +73,7 @@ export const StripeClearingAccount = {
 };
 
 export const DiscountExpenseAccount = {
-  name: 'Discount',
+  name: 'account_seed.discount',
   slug: 'discount',
   accountType: 'other-income',
   code: '40008',
@@ -83,7 +83,7 @@ export const DiscountExpenseAccount = {
 };
 
 export const PurchaseDiscountAccount = {
-  name: 'Purchase Discount',
+  name: 'account_seed.purchase_discount',
   slug: 'purchase-discount',
   accountType: 'other-expense',
   code: '40009',
@@ -93,7 +93,7 @@ export const PurchaseDiscountAccount = {
 };
 
 export const OtherChargesAccount = {
-  name: 'Other Charges',
+  name: 'account_seed.other_charges',
   slug: 'other-charges',
   accountType: 'other-income',
   code: '40010',
@@ -104,7 +104,7 @@ export const OtherChargesAccount = {
 
 export const SeedAccounts = [
   {
-    name: 'Bank Account',
+    name: 'account_seed.bank_account',
     slug: 'bank-account',
     accountType: 'bank',
     code: '10001',
@@ -114,7 +114,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Saving Bank Account',
+    name: 'account_seed.saving_bank_account',
     slug: 'saving-bank-account',
     account_type: 'bank',
     code: '10002',
@@ -124,7 +124,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Undeposited Funds',
+    name: 'account_seed.undeposited_funds',
     slug: 'undeposited-funds',
     account_type: 'cash',
     code: '10003',
@@ -134,7 +134,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Petty Cash',
+    name: 'account_seed.petty_cash',
     slug: 'petty-cash',
     account_type: 'cash',
     code: '10004',
@@ -144,7 +144,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Computer Equipment',
+    name: 'account_seed.computer_equipment',
     slug: 'computer-equipment',
     code: '10005',
     account_type: 'fixed-asset',
@@ -155,7 +155,7 @@ export const SeedAccounts = [
     description: '',
   },
   {
-    name: 'Office Equipment',
+    name: 'account_seed.office_equipment',
     slug: 'office-equipment',
     code: '10006',
     account_type: 'fixed-asset',
@@ -166,7 +166,7 @@ export const SeedAccounts = [
     description: '',
   },
   {
-    name: 'Accounts Receivable (A/R)',
+    name: 'account_seed.accounts_receivable_a_r',
     slug: 'accounts-receivable',
     account_type: 'accounts-receivable',
     code: '10007',
@@ -176,7 +176,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Inventory Asset',
+    name: 'account_seed.inventory_asset',
     slug: 'inventory-asset',
     code: '10008',
     account_type: 'inventory',
@@ -190,7 +190,7 @@ export const SeedAccounts = [
 
   // Libilities
   {
-    name: 'Accounts Payable (A/P)',
+    name: 'account_seed.accounts_payable_a_p',
     slug: 'accounts-payable',
     account_type: 'accounts-payable',
     parent_account_id: null,
@@ -201,7 +201,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Owner A Drawings',
+    name: 'account_seed.withdrawals_by_the_owners',
     slug: 'owner-drawings',
     account_type: 'other-current-liability',
     parent_account_id: null,
@@ -212,7 +212,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Loan',
+    name: 'account_seed.loan',
     slug: 'owner-drawings',
     account_type: 'other-current-liability',
     code: '20003',
@@ -222,7 +222,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Opening Balance Liabilities',
+    name: 'account_seed.opening_balance_liabilities',
     slug: 'opening-balance-liabilities',
     account_type: 'other-current-liability',
     code: '20004',
@@ -233,7 +233,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Revenue Received in Advance',
+    name: 'account_seed.revenue_received_in_advance',
     slug: 'revenue-received-in-advance',
     account_type: 'other-current-liability',
     parent_account_id: null,
@@ -247,7 +247,7 @@ export const SeedAccounts = [
 
   // Equity
   {
-    name: 'Retained Earnings',
+    name: 'account_seed.retained_earnings',
     slug: 'retained-earnings',
     account_type: 'equity',
     code: '30001',
@@ -258,7 +258,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Opening Balance Equity',
+    name: 'account_seed.opening_balance_equity',
     slug: 'opening-balance-equity',
     account_type: 'equity',
     code: '30002',
@@ -293,7 +293,7 @@ export const SeedAccounts = [
   // Expenses
   OtherExpensesAccount,
   {
-    name: 'Other Expenses',
+    name: 'account_seed.other_expenses',
     slug: 'other-expenses',
     account_type: 'other-expense',
     parent_account_id: null,
@@ -304,7 +304,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Cost of Goods Sold',
+    name: 'account_seed.cost_of_goods_sold',
     slug: 'cost-of-goods-sold',
     account_type: 'cost-of-goods-sold',
     parent_account_id: null,
@@ -315,7 +315,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Office expenses',
+    name: 'account_seed.office_expenses',
     slug: 'office-expenses',
     account_type: 'expense',
     parent_account_id: null,
@@ -326,7 +326,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Rent',
+    name: 'account_seed.rent',
     slug: 'rent',
     account_type: 'expense',
     parent_account_id: null,
@@ -337,7 +337,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Exchange Gain or Loss',
+    name: 'account_seed.exchange_gain_or_loss',
     slug: 'exchange-grain-loss',
     account_type: 'other-expense',
     parent_account_id: null,
@@ -348,7 +348,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Bank Fees and Charges',
+    name: 'account_seed.bank_fees_and_charges',
     slug: 'bank-fees-and-charges',
     account_type: 'expense',
     parent_account_id: null,
@@ -360,7 +360,7 @@ export const SeedAccounts = [
     predefined: 0,
   },
   {
-    name: 'Depreciation Expense',
+    name: 'account_seed.depreciation_expense',
     slug: 'depreciation-expense',
     account_type: 'expense',
     parent_account_id: null,
@@ -373,7 +373,7 @@ export const SeedAccounts = [
 
   // Income
   {
-    name: 'Sales of Product Income',
+    name: 'account_seed.sales_of_product_income',
     slug: 'sales-of-product-income',
     account_type: 'income',
     predefined: 1,
@@ -384,7 +384,7 @@ export const SeedAccounts = [
     description: '',
   },
   {
-    name: 'Sales of Service Income',
+    name: 'account_seed.sales_of_service_income',
     slug: 'sales-of-service-income',
     account_type: 'income',
     predefined: 0,
@@ -395,7 +395,7 @@ export const SeedAccounts = [
     description: '',
   },
   {
-    name: 'Uncategorized Income',
+    name: 'account_seed.uncategorized_income',
     slug: 'uncategorized-income',
     account_type: 'income',
     parent_account_id: null,
@@ -406,7 +406,7 @@ export const SeedAccounts = [
     predefined: 1,
   },
   {
-    name: 'Other Income',
+    name: 'account_seed.other_income',
     slug: 'other-income',
     account_type: 'other-income',
     parent_account_id: null,

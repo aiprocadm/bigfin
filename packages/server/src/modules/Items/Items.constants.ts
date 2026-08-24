@@ -36,7 +36,7 @@ export const ERRORS = {
 export const DEFAULT_VIEW_COLUMNS = [];
 export const ItemDefaultViews = [
   {
-    name: 'Services',
+    name: 'item.view.services',
     slug: 'services',
     rolesLogicExpression: '1',
     roles: [
@@ -45,7 +45,7 @@ export const ItemDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Inventory',
+    name: 'item.view.inventory',
     slug: 'inventory',
     rolesLogicExpression: '1',
     roles: [
@@ -54,7 +54,7 @@ export const ItemDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Non Inventory',
+    name: 'item.view.non_inventory',
     slug: 'non-inventory',
     rolesLogicExpression: '1',
     roles: [

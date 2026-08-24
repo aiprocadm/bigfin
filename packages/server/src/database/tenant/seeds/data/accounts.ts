@@ -172,7 +172,7 @@ export const AccountsData = [
     index: 1,
     active: 1,
     description:
-      'An account that holds valuation of products or goods that available for sale.',
+      'account_seed.inventory_asset_description',
   },
 
   // Libilities
@@ -214,7 +214,7 @@ export const AccountsData = [
     account_type: 'other-current-liability',
     code: '20004',
     description:
-      'This account will hold the difference in the debits and credits entered during the opening balance..',
+      'account_seed.opening_balance_difference_description',
     active: 1,
     index: 1,
     predefined: 0,
@@ -239,7 +239,7 @@ export const AccountsData = [
     account_type: 'equity',
     code: '30001',
     description:
-      'Retained earnings tracks net income from previous fiscal years.',
+      'account_seed.retained_earnings_description',
     active: 1,
     index: 1,
     predefined: 1,
@@ -250,7 +250,7 @@ export const AccountsData = [
     account_type: 'equity',
     code: '30002',
     description:
-      'When you enter opening balances to the accounts, the amounts enter in Opening balance equity. This ensures that you have a correct trial balance sheet for your company, without even specific the second credit or debit entry.',
+      'account_seed.opening_balance_equity_description',
     active: 1,
     index: 1,
     predefined: 1,
@@ -271,7 +271,7 @@ export const AccountsData = [
     account_type: 'equity',
     code: '30003',
     description:
-      'Goods purchased with the intention of selling these to customers',
+      'account_seed.cost_of_goods_sold_description',
     active: 1,
     index: 1,
     predefined: 1,
@@ -330,7 +330,7 @@ export const AccountsData = [
     parent_account_id: null,
     code: '40006',
     description:
-      'Any bank fees levied is recorded into the bank fees and charges account. A bank account maintenance fee, transaction charges, a late payment fee are some examples.',
+      'account_seed.bank_fees_and_charges_description',
     active: 1,
     index: 1,
     predefined: 0,
@@ -388,7 +388,7 @@ export const AccountsData = [
     parent_account_id: null,
     code: '50004',
     description:
-      'The income activities are not associated to the core business.',
+      'account_seed.other_income_description',
     active: 1,
     index: 1,
     predefined: 0,

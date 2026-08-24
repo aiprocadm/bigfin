@@ -2,7 +2,7 @@ export const DEFAULT_VIEW_COLUMNS = [];
 
 export const VendorDefaultViews = [
   {
-    name: 'Overdue',
+    name: 'vendor.view.overdue',
     slug: 'overdue',
     rolesLogicExpression: '1',
     roles: [
@@ -11,7 +11,7 @@ export const VendorDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Unpaid',
+    name: 'vendor.view.unpaid',
     slug: 'unpaid',
     rolesLogicExpression: '1',
     roles: [

@@ -28,7 +28,7 @@ export const ERRORS = {
 export const DEFAULT_VIEW_COLUMNS = [];
 export const SaleEstimateDefaultViews = [
   {
-    name: 'Draft',
+    name: 'estimate.view.draft',
     slug: 'draft',
     rolesLogicExpression: '1',
     roles: [
@@ -37,7 +37,7 @@ export const SaleEstimateDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Delivered',
+    name: 'estimate.view.delivered',
     slug: 'delivered',
     rolesLogicExpression: '1',
     roles: [
@@ -51,7 +51,7 @@ export const SaleEstimateDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Approved',
+    name: 'estimate.view.approved',
     slug: 'approved',
     rolesLogicExpression: '1',
     roles: [
@@ -65,7 +65,7 @@ export const SaleEstimateDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Rejected',
+    name: 'estimate.view.rejected',
     slug: 'rejected',
     rolesLogicExpression: '1',
     roles: [
@@ -79,7 +79,7 @@ export const SaleEstimateDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Invoiced',
+    name: 'estimate.view.invoiced',
     slug: 'invoiced',
     rolesLogicExpression: '1',
     roles: [
@@ -93,7 +93,7 @@ export const SaleEstimateDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Expired',
+    name: 'estimate.view.expired',
     slug: 'expired',
     rolesLogicExpression: '1',
     roles: [
@@ -107,7 +107,7 @@ export const SaleEstimateDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Closed',
+    name: 'estimate.view.closed',
     slug: 'closed',
     rolesLogicExpression: '1',
     roles: [

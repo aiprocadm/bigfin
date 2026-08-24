@@ -126,6 +126,29 @@ export class AccountRepository extends TenantRepository {
    * @param trx
    * @returns
    */
+  /**
+   * Имя предопределённого счёта хранится ключом перевода: счёт создаётся
+   * лениво (в момент первой скидки, комиссии, аванса), и без перевода
+   * русская организация получала «Stripe Clearing» посреди русского плана
+   * счетов (Р4 карты v18). Язык берём у организации, а не у запроса: счёт
+   * остаётся в плане навсегда, а язык запроса зависит от того, кто первым
+   * его создал.
+   */
+  private async withTranslatedName<T extends { name: string }>(
+    account: T,
+  ): Promise<T> {
+    const lang = await this.organizationLanguage();
+
+    return { ...account, name: this.i18n.t(account.name, { lang }) };
+  }
+
+  /** Язык организации (`tenants_metadata.language`), по умолчанию `en`. */
+  private async organizationLanguage(): Promise<string> {
+    const tenantMeta = await this.tenancyContext.getTenantMetadata();
+
+    return tenantMeta?.language ?? 'en';
+  }
+
   findOrCreateAccountReceivable = async (
     currencyCode: string = '',
     extraAttrs = {},
@@ -145,6 +168,7 @@ export class AccountRepository extends TenantRepository {
       result = await this.model.query(trx).insertAndFetch({
         name: this.i18n.t('account.accounts_receivable.currency', {
           args: { currency: currencyCode },
+          lang: await this.organizationLanguage(),
         }),
         accountType: 'accounts-receivable',
         currencyCode,
@@ -171,7 +195,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...TaxPayableAccount,
+        ...(await this.withTranslatedName(TaxPayableAccount)),
         ...extraAttrs,
       });
     }
@@ -191,7 +215,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...TaxReceivableAccount,
+        ...(await this.withTranslatedName(TaxReceivableAccount)),
         ...extraAttrs,
       });
     }
@@ -217,6 +241,7 @@ export class AccountRepository extends TenantRepository {
       result = await this.model.query(trx).insertAndFetch({
         name: this.i18n.t('account.accounts_payable.currency', {
           args: { currency: currencyCode },
+          lang: await this.organizationLanguage(),
         }),
         accountType: 'accounts-payable',
         currencyCode,
@@ -248,7 +273,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...UnearnedRevenueAccount,
+        ...(await this.withTranslatedName(UnearnedRevenueAccount)),
         ..._extraAttrs,
       });
     }
@@ -277,7 +302,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...PrepardExpenses,
+        ...(await this.withTranslatedName(PrepardExpenses)),
         ..._extraAttrs,
       });
     }
@@ -305,7 +330,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...StripeClearingAccount,
+        ...(await this.withTranslatedName(StripeClearingAccount)),
         ..._extraAttrs,
       });
     }
@@ -334,7 +359,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...DiscountExpenseAccount,
+        ...(await this.withTranslatedName(DiscountExpenseAccount)),
         ..._extraAttrs,
       });
     }
@@ -357,7 +382,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...PurchaseDiscountAccount,
+        ...(await this.withTranslatedName(PurchaseDiscountAccount)),
         ..._extraAttrs,
       });
     }
@@ -380,7 +405,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...OtherChargesAccount,
+        ...(await this.withTranslatedName(OtherChargesAccount)),
         ..._extraAttrs,
       });
     }
@@ -402,7 +427,7 @@ export class AccountRepository extends TenantRepository {
 
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
-        ...OtherExpensesAccount,
+        ...(await this.withTranslatedName(OtherExpensesAccount)),
         ..._extraAttrs,
       });
     }

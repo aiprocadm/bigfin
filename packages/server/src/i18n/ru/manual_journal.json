@@ -1,12 +1,14 @@
 {
-  "field.date": "Дата",
-  "field.journal_number": "№ проводки",
-  "field.reference": "№ документа",
-  "field.journal_type": "Тип проводки",
+  "view.draft": "Черновик",
+  "view.published": "Проведена",
   "field.amount": "Сумма",
-  "field.description": "Описание",
+  "field.created_at": "Создано",
   "field.currency": "Валюта",
+  "field.date": "Дата",
+  "field.description": "Описание",
   "field.exchange_rate": "Курс валюты",
-  "field.status": "Статус",
-  "field.created_at": "Создано"
+  "field.journal_number": "№ проводки",
+  "field.journal_type": "Тип проводки",
+  "field.reference": "№ документа",
+  "field.status": "Статус"
 }

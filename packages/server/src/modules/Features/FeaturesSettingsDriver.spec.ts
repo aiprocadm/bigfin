@@ -6,8 +6,13 @@ describe('FeaturesSettingsDriver — persistence', () => {
     const set = jest.fn();
     const save = jest.fn().mockResolvedValue(undefined);
     const store = { set, save };
-    // конструктор: (configure, featuresConfigure, settingsFactory)
-    const driver = new FeaturesSettingsDriver(null as any, null as any, () => store as any);
+    // конструктор: (configure, featuresConfigure, settingsFactory, tenancyContext)
+    const driver = new FeaturesSettingsDriver(
+      null as any,
+      null as any,
+      () => store as any,
+      null as any,
+    );
     return { driver, set, save };
   };
 

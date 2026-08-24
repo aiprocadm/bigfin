@@ -5,8 +5,11 @@ import { FeaturesSettingsDriver } from './FeaturesSettingsDriver';
 import { FeaturesConfigure } from './FeaturesConfigure';
 import { FeaturesController } from './Features.controller';
 import { FeatureGuard } from './Feature.guard';
+import { TenancyModule } from '../Tenancy/Tenancy.module';
 
 @Module({
+  // Набор модулей из коробки зависит от страны организации (К1 карты v19).
+  imports: [TenancyModule],
   controllers: [FeaturesController],
   providers: [
     FeaturesManager,

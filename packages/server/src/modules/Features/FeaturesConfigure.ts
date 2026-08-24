@@ -3,6 +3,36 @@ import { IFeatureConfiugration } from '@/common/types/Features';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+/**
+ * Модули, включённые по умолчанию для организаций с локацией RU
+ * (К1 карты v19, решение 36).
+ *
+ * Все они уже написаны и покрыты тестами, но по умолчанию были невидимы:
+ * из 36 модулей включены два. Целевой пользователь — предприниматель без
+ * бухгалтерского образования: он не пойдёт в «Настройки → Модули» искать
+ * печатные формы, он решит, что их нет.
+ *
+ * Сюда НЕ входят модули, бесполезные без внешних ключей (`bank_api_sync`,
+ * `marketplaces`): пустой экран вместо возможности — хуже, чем её
+ * отсутствие. Не входят и узкие сценарии (зарплата, дивиденды, основные
+ * средства, сделки) — их включают осознанно.
+ *
+ * Список именно список: что получает новая русская организация, должно
+ * читаться глазами, а не собираться обходом конфигурации.
+ */
+export const RU_DEFAULT_FEATURES: string[] = [
+  Features.RU_PRINT_FORMS,
+  Features.VAT_ANALYSIS,
+  Features.BANK_STATEMENT_IMPORT,
+  Features.ONEC_IMPORT,
+  Features.ONEC_EXPORT,
+  Features.PAYMENT_CALENDAR,
+  Features.DEBTS,
+];
+
+/** Локация организации, для которой действует российский набор. */
+export const RU_LOCATION = 'RU';
+
 @Injectable()
 export class FeaturesConfigure {
   constructor(private readonly configService: ConfigService) {}

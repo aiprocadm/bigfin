@@ -17,6 +17,14 @@ export const parseFormNumber = (value: string) =>
  * текущий счёт и счёт-источник; описание — от 3 символов, если заполнено.
  * Сообщение = подпись поля (паттерн ItemCategory.zod).
  */
+/**
+ * Обязательность «не null» проверяем через `superRefine`, а не `refine`:
+ * `refine` в новых версиях сужает выводимый тип до `number`, и тогда
+ * `defaultValues: { credit_account_id: null }` перестаёт подходить под тип
+ * формы. Под компилятором 4.9 это не проявлялось, под 5.6 — 28 ошибок в
+ * обеих формах денег (К3 карты v19). Поведение проверки не меняется:
+ * сообщение и условие те же.
+ */
 export const getMoneyInSchema = () =>
   z.object({
     date: z
@@ -30,14 +38,25 @@ export const getMoneyInSchema = () =>
     cashflow_account_id: z
       .number()
       .nullable()
-      .refine(
-        (value) => value !== null,
-        intl.get('cash_flow_transaction.label_current_account'),
-      ),
+      .superRefine((value, ctx) => {
+        if (value === null) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: intl.get('cash_flow_transaction.label_current_account'),
+          });
+        }
+      }),
     credit_account_id: z
       .number()
       .nullable()
-      .refine((value) => value !== null, intl.get('select_account')),
+      .superRefine((value, ctx) => {
+        if (value === null) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: intl.get('select_account'),
+          });
+        }
+      }),
     transaction_number: z.string().optional().default(''),
     reference_no: z.string().optional().default(''),
     branch_id: z.number().nullable(),

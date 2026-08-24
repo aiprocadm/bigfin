@@ -27,6 +27,14 @@
 # приложением при обращении, отдельного шага здесь нет.
 #
 # Зависимости: git, pnpm (через corepack), flock, systemd.
+#
+# ВАЖНО про версию pnpm. Проект держит `overrides` в pnpm-workspace.yaml —
+# это поведение pnpm 10; девятый их там не видит и падает на установке с
+# ERR_PNPM_LOCKFILE_CONFIG_MISMATCH («overrides не совпадают с файлом
+# блокировки»). На сервере в PATH стоит pnpm 9, поэтому установку зовём
+# строго десятым. Проверено 24.08.2026: стенд простоял день на старой
+# версии именно из-за этого — обновление падало и откатывалось каждые
+# десять минут.
 # sudo НЕ нужен: служба объявлена с User=aiproc, поэтому перезапуск делается
 # сигналом своему же процессу, а Restart=always поднимет её обратно.
 #
@@ -117,6 +125,14 @@ rollback() {
     log "откат завершён, стенд продолжает работать на старой версии"
 }
 
+# Команда pnpm нужной версии: если в PATH уже десятый — берём его, иначе
+# поднимаем через npx (кеш npx делает это быстрым).
+if [[ "$(pnpm --version 2>/dev/null | cut -d. -f1)" == "10" ]]; then
+    PNPM_CMD=(pnpm)
+else
+    PNPM_CMD=(npx --yes pnpm@10)
+fi
+
 lock_before="$(md5sum pnpm-lock.yaml 2>/dev/null | cut -d' ' -f1)"
 
 if ! git reset --hard "$target" --quiet 2>>"$STAND_LOG"; then
@@ -130,14 +146,14 @@ lock_after="$(md5sum pnpm-lock.yaml 2>/dev/null | cut -d' ' -f1)"
 # Зависимости переустанавливаем только если список реально изменился.
 if [[ "$lock_before" != "$lock_after" ]]; then
     log "изменился pnpm-lock.yaml — переустанавливаю зависимости"
-    if ! pnpm install --frozen-lockfile >>"$STAND_LOG" 2>&1; then
+    if ! "${PNPM_CMD[@]}" install --frozen-lockfile >>"$STAND_LOG" 2>&1; then
         log "ОШИБКА: не встали зависимости"
         rollback
         exit 1
     fi
 fi
 
-if ! pnpm build >>"$STAND_LOG" 2>&1; then
+if ! "${PNPM_CMD[@]}" build >>"$STAND_LOG" 2>&1; then
     log "ОШИБКА: не собралось"
     rollback
     exit 1

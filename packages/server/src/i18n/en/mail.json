@@ -24,6 +24,10 @@
   "receipt.subject": "Receipt {Receipt Number} from {Company Name}",
   "receipt.body": "Hi {Customer Name},\n\nHere's receipt # {Receipt Number} for Receipt {Receipt Amount}\n\nThe receipt paid on {Receipt Date}, and the total amount paid is {Receipt Amount}.\n\nPlease find your sale receipt attached to this email for your reference\n\nIf you have any questions, please let us know.\n\nThanks,\n{Company Name}",
 
+  "credit_note.number_label": "Credit Note # {creditNoteNumber}",
+  "credit_note.subject": "Credit note {Credit Note Number} from {Company Name}",
+  "credit_note.body": "Hi {Customer Name},\n\nHere's credit note # {Credit Note Number} for {Credit Note Amount}.\n\nThe credit note was issued on {Credit Note Date}.\n\nPlease find your credit note attached to this email for your reference.\n\nIf you have any questions, please let us know.\n\nThanks,\n{Company Name}",
+
   "payment.number_label": "Payment # {paymentNumber}",
   "payment.subject": "Payment Received for {Customer Name} from {Company Name}",
   "payment.body": "Dear {Customer Name}\n\nThank you for your payment. It was a pleasure doing business with you. We look forward to work together again!\n\nPayment Transaction: {Payment Number}\nPayment Date : {Payment Date}\nAmount : {Payment Amount}\n\nRegards,\n{Company Name}"

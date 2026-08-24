@@ -12,6 +12,28 @@ export const ERRORS = {
   CUSTOMER_HAS_LINKED_CREDIT_NOTES: 'CUSTOMER_HAS_LINKED_CREDIT_NOTES',
 };
 
+// # Почта кредит-ноты (Р3б карты v18, решение 35).
+// Дефолты английские, как у чека и счёта: страховка на случай организации
+// без языка; русские тексты приходят из ключей i18n `mail.credit_note.*`.
+export const DEFAULT_CREDIT_NOTE_MAIL_SUBJECT =
+  'Credit note {Credit Note Number} from {Company Name}';
+
+export const DEFAULT_CREDIT_NOTE_MAIL_CONTENT = `Hi {Customer Name},
+
+Here's credit note # {Credit Note Number} for {Credit Note Amount}.
+
+The credit note was issued on {Credit Note Date}.
+
+Please find your credit note attached to this email for your reference.
+
+If you have any questions, please let us know.
+
+Thanks,
+{Company Name}`;
+
+export const SendCreditNoteMailQueue = 'SendCreditNoteMailQueue';
+export const SendCreditNoteMailJob = 'SendCreditNoteMailJob';
+
 export const DEFAULT_VIEW_COLUMNS = [];
 export const CreditNoteDefaultViews = [
   {

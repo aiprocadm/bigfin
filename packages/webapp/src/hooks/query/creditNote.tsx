@@ -393,6 +393,117 @@ export function usePdfCreditNote(creditNoteId) {
   return useRequestPdf({ url: `credit-notes/${creditNoteId}` });
 }
 
+/**
+ * Отправляет письмо кредит-ноты (Р3б карты v18).
+ */
+export function useSendCreditNoteMail(props) {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation(
+    ([id, values]) => apiRequest.post(`credit-notes/${id}/mail`, values),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(queryClient);
+      },
+      ...props,
+    },
+  );
+}
+
+export interface GetCreditNoteMailStateResponse {
+  attachCreditNote: boolean;
+
+  companyName: string;
+  companyLogoUri: string;
+  primaryColor: string;
+  customerName: string;
+
+  formatArgs: Record<string, any>;
+
+  from: string[];
+  fromOptions: Array<{ mail: string; label: string; primary: boolean }>;
+  to: string[];
+  toOptions: Array<{ mail: string; label: string; primary: boolean }>;
+  cc?: string[];
+  bcc?: string[];
+
+  subject: string;
+  message: string;
+
+  creditNoteNumber: string;
+  creditNoteDate: string;
+  creditNoteDateFormatted: string;
+
+  total: number;
+  totalFormatted: string;
+  subtotal: number;
+  subtotalFormatted: string;
+
+  discountAmount: number;
+  discountAmountFormatted: string;
+  discountPercentage: number;
+  discountPercentageFormatted: string;
+  discountLabel: string;
+
+  adjustment: number;
+  adjustmentFormatted: string;
+
+  entries: Array<{
+    name: string;
+    quantity: number;
+    quantityFormatted: string;
+    rate: number;
+    rateFormatted: string;
+    total: number;
+    totalFormatted: string;
+  }>;
+}
+
+/**
+ * Состояние письма кредит-ноты (настройки письма и данные превью).
+ */
+export function useCreditNoteMailState(
+  creditNoteId: number,
+  props?: UseQueryOptions<GetCreditNoteMailStateResponse, Error>,
+): UseQueryResult<GetCreditNoteMailStateResponse, Error> {
+  const apiRequest = useApiRequest();
+
+  return useQuery<GetCreditNoteMailStateResponse, Error>(
+    [t.CREDIT_NOTE_MAIL_OPTIONS, creditNoteId],
+    () =>
+      apiRequest
+        .get(`credit-notes/${creditNoteId}/mail`)
+        .then((res) => transformToCamelCase(res.data)),
+    { ...props },
+  );
+}
+
+export interface GetCreditNoteHtmlResponse {
+  htmlContent: string;
+}
+
+/**
+ * Html печатной формы кредит-ноты — для превью во вкладке письма.
+ */
+export const useGetCreditNoteHtml = (
+  creditNoteId: number,
+  options?: UseQueryOptions<GetCreditNoteHtmlResponse, Error>,
+): UseQueryResult<GetCreditNoteHtmlResponse, Error> => {
+  const apiRequest = useApiRequest();
+
+  return useQuery<GetCreditNoteHtmlResponse, Error>(
+    ['CREDIT_NOTE_HTML', creditNoteId],
+    () =>
+      apiRequest
+        .get(`credit-notes/${creditNoteId}`, {
+          headers: { Accept: 'application/json+html' },
+        })
+        .then((res) => transformToCamelCase(res.data)),
+    { ...options },
+  );
+};
+
 export interface CreditNoteStateResponse {
   defaultTemplateId: number;
 }

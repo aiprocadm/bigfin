@@ -1,0 +1,83 @@
+import intl from 'react-intl-universal';
+import { Button, Intent } from '@blueprintjs/core';
+import { useFormikContext } from 'formik';
+import { FCheckbox, FFormGroup, FInputGroup, Group, Stack } from '@/components';
+import { SendMailViewToAddressField } from '../../Estimates/SendMailViewDrawer/SendMailViewToAddressField';
+import { SendMailViewMessageField } from '../../Estimates/SendMailViewDrawer/SendMailViewMessageField';
+import { useDrawerActions } from '@/hooks/state';
+import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
+import { useSendCreditNoteFormatArgsOptions } from './_hooks';
+import { useSendMailItems } from '../../Estimates/SendMailViewDrawer/hooks';
+import { useIsDarkMode } from '@/hooks/useDarkMode';
+
+export function CreditNoteSendMailFormFields() {
+  const argsOptions = useSendCreditNoteFormatArgsOptions();
+  const items = useSendMailItems();
+
+  return (
+    <Stack flex={1}>
+      <Stack spacing={0} overflow="auto" flex="1" p={'30px'}>
+        <SendMailViewToAddressField
+          toMultiSelectProps={{ items }}
+          ccMultiSelectProps={{ items }}
+          bccMultiSelectProps={{ items }}
+        />
+        <FFormGroup label={intl.get('mail.label.subject')} name={'subject'}>
+          <FInputGroup name={'subject'} large fastField />
+        </FFormGroup>
+
+        <SendMailViewMessageField argsOptions={argsOptions} />
+
+        <Group>
+          <FCheckbox
+            name={'attachPdf'}
+            label={intl.get('send_mail.label.attach_pdf')}
+          />
+        </Group>
+      </Stack>
+
+      <CreditNoteSendMailFooter />
+    </Stack>
+  );
+}
+
+function CreditNoteSendMailFooter() {
+  const { isSubmitting } = useFormikContext();
+  const { name } = useDrawerContext();
+  const { closeDrawer } = useDrawerActions();
+  const isDarkmode = useIsDarkMode();
+
+  const handleClose = () => {
+    closeDrawer(name);
+  };
+
+  return (
+    <Group
+      py={'12px'}
+      px={'16px'}
+      borderTopWidth={'1px'}
+      borderTopColor={isDarkmode ? 'rgba(255, 255, 255, 0.2)' : '#d8d8d9'}
+      borderTopStyle={'solid'}
+      position={'apart'}
+    >
+      <Group spacing={10} ml={'auto'}>
+        <Button
+          disabled={isSubmitting}
+          onClick={handleClose}
+          style={{ minWidth: '65px' }}
+        >
+          {intl.get('close')}
+        </Button>
+
+        <Button
+          intent={Intent.PRIMARY}
+          loading={isSubmitting}
+          style={{ minWidth: '85px' }}
+          type="submit"
+        >
+          {intl.get('send_mail')}
+        </Button>
+      </Group>
+    </Group>
+  );
+}

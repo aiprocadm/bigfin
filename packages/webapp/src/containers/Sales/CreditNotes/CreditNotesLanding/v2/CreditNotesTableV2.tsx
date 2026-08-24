@@ -74,6 +74,9 @@ function CreditNotesTableV2Root({
     onReconcile: (row) =>
       openDialog('reconcile-credit-note', { creditNoteId: row.id }),
     onDelete: (row) => openAlert('credit-note-delete', { creditNoteId: row.id }),
+    // Отправка кредит-ноты по email (Р3б карты v18).
+    onSendMail: (row) =>
+      openDrawer(DRAWERS.CREDIT_NOTE_SEND_MAIL, { creditNoteId: row.id }),
   });
 
   const handleSortChange = useCallback(

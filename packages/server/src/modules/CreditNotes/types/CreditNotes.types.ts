@@ -4,6 +4,30 @@ import { IFilterMeta, IPaginationMeta } from '@/interfaces/Model';
 import { IDynamicListFilter } from '@/modules/DynamicListing/DynamicFilter/DynamicFilter.types';
 import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { CreateCreditNoteDto, EditCreditNoteDto } from '../dtos/CreditNote.dto';
+import {
+  CommonMailOptions,
+  CommonMailOptionsDTO,
+} from '@/modules/MailNotification/MailNotification.types';
+import { TenantJobPayload } from '@/interfaces/Tenant';
+
+// # Почта кредит-ноты (Р3б карты v18).
+export interface CreditNoteMailOpts extends CommonMailOptions {
+  attachCreditNote: boolean;
+}
+
+export interface CreditNoteMailOptsDTO extends CommonMailOptionsDTO {
+  attachCreditNote?: boolean;
+}
+
+export interface ICreditNoteMailPresend {
+  creditNoteId: number;
+  messageOptions: CreditNoteMailOptsDTO;
+}
+
+export interface CreditNoteSendMailPayload extends TenantJobPayload {
+  messageOpts: CreditNoteMailOptsDTO;
+  creditNoteId: number;
+}
 
 export enum CreditNoteAction {
   Create = 'Create',

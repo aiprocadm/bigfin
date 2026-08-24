@@ -3366,6 +3366,8 @@
   "dropzone.reject.file_too_large": "Файл слишком большой.",
   "dropzone.reject.file_invalid_type": "Неподдерживаемый формат файла.",
   "dropzone.reject.generic": "Не удалось загрузить файл.",
+  "data_table.aria.prev_page": "Предыдущая страница",
+  "data_table.aria.next_page": "Следующая страница",
   "data_table.aria.select_all": "Выбрать все",
   "data_table.aria.select_row": "Выбрать строку",
   "data_table.aria.resize_column": "Изменить ширину столбца",

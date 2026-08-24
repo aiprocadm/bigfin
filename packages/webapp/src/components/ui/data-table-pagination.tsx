@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import intl from 'react-intl-universal';
 import { Button } from './button';
 
 export interface DataTablePaginationProps {
@@ -45,9 +46,17 @@ export function DataTablePagination({
             </option>
           ))}
         </select>
+        {/*
+          На телефоне эти кнопки выходили целью 18×32 — попасть пальцем
+          тяжело (рекомендации от 44 px). Расширяем только на узких экранах
+          и даём подпись: без текста внутри чтение с экрана произносило
+          просто «кнопка» (К4 карты v19).
+        */}
         <Button
           variant="secondary"
           size="sm"
+          aria-label={intl.get('data_table.aria.prev_page')}
+          className="max-md:h-11 max-md:w-11"
           disabled={pageIndex <= 0}
           onClick={() => onPageChange(pageIndex - 1)}
         >
@@ -59,6 +68,8 @@ export function DataTablePagination({
         <Button
           variant="secondary"
           size="sm"
+          aria-label={intl.get('data_table.aria.next_page')}
+          className="max-md:h-11 max-md:w-11"
           disabled={pageIndex + 1 >= pageCount}
           onClick={() => onPageChange(pageIndex + 1)}
         >

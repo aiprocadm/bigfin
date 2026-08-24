@@ -16,6 +16,10 @@ import { GetRuActPdf } from './queries/GetRuActPdf.service';
 import { GetRuUpdPdf } from './queries/GetRuUpdPdf.service';
 import { GetRuTorg12Pdf } from './queries/GetRuTorg12Pdf.service';
 import { GetRuInvoiceFacturaPdf } from './queries/GetRuInvoiceFacturaPdf.service';
+import { GetRuReconciliationActPdf } from './queries/GetRuReconciliationActPdf.service';
+import { RuReconciliationActQueryDto } from './dtos/RuReconciliationActQuery.dto';
+import { Query } from '@nestjs/common';
+import { CustomerAction } from '@/modules/Customers/types/Customers.types';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
 import { Features } from '@/common/types/Features';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
@@ -71,6 +75,7 @@ export class RuPrintFormsController {
     private readonly getRuUpdPdfService: GetRuUpdPdf,
     private readonly getRuTorg12PdfService: GetRuTorg12Pdf,
     private readonly getRuInvoiceFacturaPdfService: GetRuInvoiceFacturaPdf,
+    private readonly getRuReconciliationActPdfService: GetRuReconciliationActPdf,
     private readonly featuresManager: FeaturesManager,
   ) {}
 
@@ -218,6 +223,45 @@ export class RuPrintFormsController {
       res,
       () => this.getRuInvoiceFacturaPdfService.getInvoiceFacturaPdf(id),
       () => this.getRuInvoiceFacturaPdfService.getInvoiceFacturaHtml(id),
+    );
+  }
+
+  @Get('customers/:id/reconciliation-act')
+  @RequirePermission(CustomerAction.View, AbilitySubject.Customer)
+  @ApiOperation({
+    summary:
+      'Печатная форма РФ «Акт сверки взаимных расчётов» по контрагенту за период.',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    type: Number,
+    description: 'The customer id',
+  })
+  @ApiResponse(FORM_API_RESPONSES[0])
+  @ApiResponse(FORM_API_RESPONSES[1])
+  @ApiResponse({ status: 404, description: 'The customer not found.' })
+  async reconciliationAct(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() query: RuReconciliationActQueryDto,
+    @Headers('accept') acceptHeader: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const period = { fromDate: query.fromDate, toDate: query.toDate };
+
+    return this.respondWithForm(
+      acceptHeader,
+      res,
+      () =>
+        this.getRuReconciliationActPdfService.getReconciliationActPdf(
+          id,
+          period,
+        ),
+      () =>
+        this.getRuReconciliationActPdfService.getReconciliationActHtml(
+          id,
+          period,
+        ),
     );
   }
 }

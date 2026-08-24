@@ -21,6 +21,8 @@ export * from './renders/render-financial-sheet-template';
 export * from './renders/render-export-resource-table-template';
 export * from './renders/render-ru-payment-invoice';
 export * from './renders/render-ru-act';
+export * from './renders/render-ru-reconciliation-act';
+export * from './components/RuReconciliationActTemplate';
 export * from './renders/render-ru-upd';
 export * from './renders/render-ru-torg12';
 export * from './renders/render-ru-invoice-factura';

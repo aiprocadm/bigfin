@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { Inject, Injectable } from '@nestjs/common';
-import { I18nService } from 'nestjs-i18n';
+import { OrganizationI18nService } from '@/modules/OrganizationI18n/OrganizationI18n.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ERRORS } from '../constants';
 import {
@@ -22,7 +22,7 @@ export class ActivateBranches {
     private readonly eventPublisher: EventEmitter2,
     private readonly createBranch: CreateBranchService,
     private readonly branchesSettings: BranchesSettingsService,
-    private readonly i18n: I18nService,
+    private readonly orgI18n: OrganizationI18nService,
   ) {}
 
   /**
@@ -37,9 +37,13 @@ export class ActivateBranches {
   /**
    * Creates a new initial branch.
    */
-  private createInitialBranch = () => {
+  private createInitialBranch = async () => {
+    // Имя головного подразделения — на языке организации, а не запроса:
+    // оно остаётся в справочнике навсегда (Р4 карты v18).
+    const name = await this.orgI18n.translate('branches.head_branch');
+
     return this.createBranch.createBranch({
-      name: this.i18n.t('branches.head_branch'),
+      name,
       code: '10001',
       primary: true,
     });

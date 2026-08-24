@@ -1,4 +1,6 @@
 {
+  "view.overdue": "Просроченные",
+  "view.unpaid": "С задолженностью",
   "type.business": "Организация",
   "type.individual": "Частное лицо"
 }

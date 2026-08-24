@@ -58,7 +58,7 @@ export const ERRORS = {
 export const DEFAULT_VIEW_COLUMNS = [];
 export const SaleInvoiceDefaultViews = [
   {
-    name: 'Draft',
+    name: 'invoice.view.draft',
     slug: 'draft',
     rolesLogicExpression: '1',
     roles: [
@@ -67,7 +67,7 @@ export const SaleInvoiceDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Delivered',
+    name: 'invoice.view.delivered',
     slug: 'delivered',
     rolesLogicExpression: '1',
     roles: [
@@ -81,7 +81,7 @@ export const SaleInvoiceDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Unpaid',
+    name: 'invoice.view.unpaid',
     slug: 'unpaid',
     rolesLogicExpression: '1',
     roles: [
@@ -90,7 +90,7 @@ export const SaleInvoiceDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Partially paid',
+    name: 'invoice.view.partially_paid',
     slug: 'partially-paid',
     rolesLogicExpression: '1',
     roles: [
@@ -104,7 +104,7 @@ export const SaleInvoiceDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Paid',
+    name: 'invoice.view.paid',
     slug: 'paid',
     rolesLogicExpression: '1',
     roles: [

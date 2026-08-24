@@ -25,7 +25,7 @@ export const DEFAULT_VIEW_COLUMNS = [];
 
 export const BillDefaultViews = [
   {
-    name: 'Draft',
+    name: 'bill.view.draft',
     slug: 'draft',
     rolesLogicExpression: '1',
     roles: [
@@ -34,7 +34,7 @@ export const BillDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Opened',
+    name: 'bill.view.opened',
     slug: 'opened',
     rolesLogicExpression: '1',
     roles: [
@@ -43,7 +43,7 @@ export const BillDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Unpaid',
+    name: 'bill.view.unpaid',
     slug: 'unpaid',
     rolesLogicExpression: '1',
     roles: [
@@ -52,7 +52,7 @@ export const BillDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Overdue',
+    name: 'bill.view.overdue',
     slug: 'overdue',
     rolesLogicExpression: '1',
     roles: [
@@ -61,7 +61,7 @@ export const BillDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Partially paid',
+    name: 'bill.view.partially_paid',
     slug: 'partially-paid',
     rolesLogicExpression: '1',
     roles: [

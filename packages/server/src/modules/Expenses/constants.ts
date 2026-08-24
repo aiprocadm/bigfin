@@ -3,7 +3,7 @@ import { ACCOUNT_TYPE } from '@/constants/accounts';
 export const DEFAULT_VIEW_COLUMNS = [];
 export const ExpenseDefaultViews = [
   {
-    name: 'Draft',
+    name: 'expense.view.draft',
     slug: 'draft',
     rolesLogicExpression: '1',
     roles: [
@@ -12,7 +12,7 @@ export const ExpenseDefaultViews = [
     columns: DEFAULT_VIEW_COLUMNS,
   },
   {
-    name: 'Published',
+    name: 'expense.view.published',
     slug: 'published',
     rolesLogicExpression: '1',
     roles: [

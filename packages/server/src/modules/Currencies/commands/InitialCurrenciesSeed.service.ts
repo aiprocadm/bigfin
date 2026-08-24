@@ -4,10 +4,14 @@ import * as Currencies from 'js-money/lib/currency';
 import { InitialCurrencies } from '../Currencies.constants';
 import { TenantModelProxy } from '../../System/models/TenantBaseModel';
 import { Currency } from '../models/Currency.model';
+import { currencyName } from '../utils/currencyName';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class InitialCurrenciesSeedService {
   constructor(
+    private readonly tenancyContext: TenancyContext,
+
     @Inject(Currency.name)
     private readonly currencyModel: TenantModelProxy<typeof Currency>,
   ) { }
@@ -23,9 +27,14 @@ export class InitialCurrenciesSeedService {
       .query()
       .findOne('currency_code', currencyCode);
     if (!foundBaseCurrency) {
+      // Название — на языке организации: js-money знает только английские
+      // («Russian Ruble» в русском списке валют), Р4 карты v18.
+      const tenantMeta = await this.tenancyContext.getTenantMetadata();
+      const lang = tenantMeta?.language ?? 'en';
+
       await this.currencyModel().query().insert({
         currencyCode: currencyMeta.code,
-        currencyName: currencyMeta.name,
+        currencyName: currencyName(currencyCode, lang),
         currencySign: currencyMeta.symbol,
       });
     }

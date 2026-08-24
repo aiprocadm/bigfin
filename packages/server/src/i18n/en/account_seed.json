@@ -38,5 +38,13 @@
   "tracks_the_direct_cost_of_the_goods_sold": "Tracks the direct cost of the goods sold.",
   "withdrawals_by_the_owners": "Withdrawals by the owners.",
   "owner_s_equity": "Owner's Equity",
-  "drawings": "Drawings"
+  "drawings": "Drawings",
+  "inventory_asset_description": "An account that holds valuation of products or goods that available for sale.",
+  "opening_balance_difference_description": "This account holds the difference between debits and credits entered during the opening balance.",
+  "retained_earnings_description": "Retained earnings tracks net income from previous fiscal years.",
+  "opening_balance_equity_description": "When you enter opening balances to the accounts, the amounts enter in opening balance equity. This keeps your trial balance correct without entering the second side of the entry.",
+  "cost_of_goods_sold_description": "Goods purchased with the intention of selling these to customers.",
+  "bank_fees_and_charges_description": "Any bank fees levied are recorded here: account maintenance fees, transaction charges, late payment fees and the like.",
+  "other_income_description": "Income that is not associated with the core business.",
+  "tax_receivable": "Tax receivable"
 }

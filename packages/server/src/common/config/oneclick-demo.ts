@@ -14,4 +14,7 @@ export default registerAs('oneClickDemo', () => ({
   // Сколько демо-организаций разрешено создать с одного адреса за окно.
   rateLimit: Number(process.env.ONE_CLICK_DEMO_RATE_LIMIT || 3),
   rateTtl: Number(process.env.ONE_CLICK_DEMO_RATE_TTL || 3600000),
+  // Сколько часов живёт демо-организация до автоматической уборки (Д2 v18).
+  // Каждое демо — отдельная база данных, поэтому копить их вечно нельзя.
+  ttlHours: Number(process.env.ONE_CLICK_DEMO_TTL_HOURS || 24),
 }));

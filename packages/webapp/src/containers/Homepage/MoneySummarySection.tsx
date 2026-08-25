@@ -15,6 +15,18 @@ import { useMoneySummary } from './useMoneySummary';
  * Цифры считает сервер теми же отчётами, что показывают разделы продукта:
  * плитка — это ссылка в раздел, где те же суммы можно разобрать построчно.
  */
+/** «2026-08-27» → «27 августа» на языке интерфейса. */
+const formatDay = (isoDate: string): string => {
+  const parsed = new Date(isoDate);
+
+  if (Number.isNaN(parsed.getTime())) return isoDate;
+
+  return new Intl.DateTimeFormat(intl.getInitOptions?.()?.currentLocale || 'ru', {
+    day: 'numeric',
+    month: 'long',
+  }).format(parsed);
+};
+
 export default function MoneySummarySection() {
   const { data, isLoading, isError } = useMoneySummary();
 
@@ -54,6 +66,19 @@ export default function MoneySummarySection() {
             })
           : null,
     },
+    {
+      key: 'upcoming',
+      title: intl.get('homepage.money.upcoming_payments'),
+      value: data.upcomingPayments?.formattedAmount,
+      to: '/payment-calendar',
+      // День ближайшего платежа подписываем, только когда платить есть что:
+      // «ближайший платёж — нет» звучало бы странно.
+      note: data.upcomingPaymentsDate
+        ? intl.get('homepage.money.nearest_payment', {
+            date: formatDay(data.upcomingPaymentsDate),
+          })
+        : null,
+    },
   ];
 
   return (
@@ -62,7 +87,7 @@ export default function MoneySummarySection() {
         {intl.get('homepage.money.title')}
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {tiles.map((tile) => (
           <Link
             key={tile.key}

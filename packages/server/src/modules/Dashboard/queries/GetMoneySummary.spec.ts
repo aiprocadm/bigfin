@@ -14,6 +14,14 @@ const buildService = ({
   ar = { total: { total: { amount: 53000 }, current: { amount: 18000 } } },
   ap = { total: { total: { amount: 12000 }, current: { amount: 12000 } } },
   arThrows = false,
+  // Дни прогноза платёжного календаря: null (а не отсутствие поля), чтобы
+  // значение по умолчанию не перекрыло проверку «календарь молчит».
+  forecastDays = [
+    { date: '2026-08-25', inflow: 0, outflow: 0 },
+    { date: '2026-08-27', inflow: 0, outflow: 40000 },
+    { date: '2026-08-29', inflow: 0, outflow: 15000 },
+  ],
+  forecastThrows = false,
 }: any = {}) => {
   const accountModel = () => ({
     query: () => ({
@@ -29,7 +37,15 @@ const buildService = ({
       },
     } as any,
     { APAgingSummary: async () => ({ data: ap }) } as any,
-    { getTenantMetadata: async () => ({ baseCurrency: 'RUB' }) } as any,
+    {
+      getForecast: async () => {
+        if (forecastThrows) throw new Error('прогноз недоступен');
+        return { days: forecastDays ?? [] };
+      },
+    } as any,
+    {
+      getTenantMetadata: async () => ({ baseCurrency: 'RUB', tenantId: 7 }),
+    } as any,
     accountModel as any,
   );
   return service;
@@ -85,5 +101,38 @@ describe('сводка «как дела с деньгами»', () => {
     expect(summary.cashBalance.amount).toBe(0);
     expect(summary.receivable.amount).toBe(0);
     expect(summary.payable.amount).toBe(0);
+  });
+});
+
+describe('плитка «ближайшие платежи»', () => {
+  it('складывает расходы прогноза за ближайшую неделю', async () => {
+    const summary = await buildService().getMoneySummary();
+
+    // 40 000 + 15 000; день без расхода в сумму ничего не добавляет.
+    expect(summary.upcomingPayments.amount).toBe(55000);
+  });
+
+  it('показывает день ближайшего платежа, а не первый день недели', async () => {
+    const summary = await buildService().getMoneySummary();
+
+    expect(summary.upcomingPaymentsDate).toBe('2026-08-27');
+  });
+
+  it('когда платить нечего — ноль и пустая дата', async () => {
+    const summary = await buildService({
+      forecastDays: [{ date: '2026-08-25', inflow: 0, outflow: 0 }],
+    }).getMoneySummary();
+
+    expect(summary.upcomingPayments.amount).toBe(0);
+    expect(summary.upcomingPaymentsDate).toBeNull();
+  });
+
+  it('сбой прогноза не роняет остальную сводку', async () => {
+    const summary = await buildService({ forecastThrows: true }).getMoneySummary();
+
+    expect(summary.upcomingPayments.amount).toBe(0);
+    expect(summary.upcomingPaymentsDate).toBeNull();
+    // Главное: остальные плитки на месте.
+    expect(summary.cashBalance.amount).toBe(175000);
   });
 });

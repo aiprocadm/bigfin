@@ -3440,6 +3440,8 @@
   "homepage.money.receivable": "Должны нам",
   "homepage.money.payable": "Должны мы",
   "homepage.money.overdue_of_it": "из них просрочено {amount}",
+  "homepage.money.upcoming_payments": "Платить на этой неделе",
+  "homepage.money.nearest_payment": "ближайший — {date}",
   "setup.left_side.try_demo": "Посмотреть демо",
   "one_click_demo.create_account": "Создать демо-организацию",
   "one_click_demo.preparing": "Готовим демо-организацию. Обычно это занимает несколько секунд — не закрывайте и не обновляйте страницу.",

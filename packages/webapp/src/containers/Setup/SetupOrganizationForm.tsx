@@ -22,6 +22,10 @@ import intl from 'react-intl-universal';
 import { getFiscalYear } from '@/constants/fiscalYearOptions';
 import { getLanguages } from '@/constants/languagesOptions';
 import { getAllCurrenciesOptions } from '@/constants/currencies';
+import {
+  TAX_REGIMES,
+  withLabels,
+} from '@/containers/Preferences/General/requisitesOptions';
 
 const countries = getAllCountries();
 
@@ -33,6 +37,9 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
   const Languages = getLanguages();
   const currencies = getAllCurrenciesOptions();
   const isDarkMode = useIsDarkMode();
+  // Подписи режимов считаем при отрисовке: словарь к моменту импорта ещё
+  // не загружен (то же правило, что в форме реквизитов).
+  const taxRegimes = React.useMemo(() => withLabels(TAX_REGIMES), []);
 
   return (
     <Form>
@@ -141,6 +148,27 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
           }}
         />
       </FFormGroup>
+
+      {/* ---------- Налоговый режим (Н1 карты v22) ---------- */}
+      {/* Спрашиваем только у российских организаций: от режима зависит,
+          платит ли предприниматель НДС, и дальше — оценка налога. */}
+      {values?.location === 'RU' && (
+        <FFormGroup
+          name={'taxRegime'}
+          label={<T id={'requisites.tax_regime'} />}
+          helperText={<T id={'setup.organization.tax_regime_hint'} />}
+        >
+          <FSelect
+            name={'taxRegime'}
+            items={taxRegimes}
+            valueAccessor={'value'}
+            textAccessor={'label'}
+            placeholder={<T id={'requisites.tax_regime.select'} />}
+            popoverProps={{ minimal: true }}
+            buttonProps={{ large: true }}
+          />
+        </FFormGroup>
+      )}
 
       {/* ---------- Режим интерфейса (③) ---------- */}
       <FFormGroup

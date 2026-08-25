@@ -24,5 +24,8 @@ import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
     TenancyContext,
   ],
   controllers: [APAgingSummaryController],
+  // Наружу для сводки «как дела с деньгами» на главной (Г2 карты v20):
+  // она берёт долги из этого же отчёта, а не считает их заново.
+  exports: [APAgingSummaryService],
 })
 export class APAgingSummaryModule {}

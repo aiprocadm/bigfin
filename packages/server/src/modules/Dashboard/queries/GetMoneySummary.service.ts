@@ -6,6 +6,8 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ARAgingSummaryService } from '@/modules/FinancialStatements/modules/ARAgingSummary/ARAgingSummaryService';
 import { APAgingSummaryService } from '@/modules/FinancialStatements/modules/APAgingSummary/APAgingSummaryService';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/queries/GetPaymentCalendarForecast.service';
+import * as moment from 'moment';
 
 export interface MoneySummaryAmount {
   amount: number;
@@ -21,14 +23,25 @@ export interface MoneySummary {
   /** Сколько должны мы — всего и просрочено. */
   payable: MoneySummaryAmount;
   payableOverdue: MoneySummaryAmount;
+  /**
+   * Ближайшие платежи: сколько предстоит заплатить в течение недели и
+   * когда ближайший. Считает платёжный календарь — тот же прогноз, что
+   * показывает раздел «Платёжный календарь».
+   */
+  upcomingPayments: MoneySummaryAmount;
+  upcomingPaymentsDate: string | null;
   currencyCode: string;
 }
+
+/** На сколько дней вперёд смотрит плитка «Ближайшие платежи». */
+export const UPCOMING_PAYMENTS_DAYS = 7;
 
 @Injectable()
 export class GetMoneySummaryService {
   constructor(
     private readonly arAging: ARAgingSummaryService,
     private readonly apAging: APAgingSummaryService,
+    private readonly paymentCalendar: GetPaymentCalendarForecastService,
     private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
@@ -47,10 +60,11 @@ export class GetMoneySummaryService {
     const metadata = await this.tenancyContext.getTenantMetadata();
     const currencyCode = metadata?.baseCurrency ?? 'RUB';
 
-    const [cashBalance, receivable, payable] = await Promise.all([
+    const [cashBalance, receivable, payable, upcoming] = await Promise.all([
       this.getCashBalance(),
       this.getAgingTotals('receivable'),
       this.getAgingTotals('payable'),
+      this.getUpcomingPayments((metadata as any)?.tenantId),
     ]);
 
     return {
@@ -59,6 +73,8 @@ export class GetMoneySummaryService {
       receivableOverdue: this.amount(receivable.overdue, currencyCode),
       payable: this.amount(payable.total, currencyCode),
       payableOverdue: this.amount(payable.overdue, currencyCode),
+      upcomingPayments: this.amount(upcoming.total, currencyCode),
+      upcomingPaymentsDate: upcoming.nearestDate,
       currencyCode,
     };
   }
@@ -103,6 +119,45 @@ export class GetMoneySummaryService {
       // недоступный отчёт — это ноль, а не ошибка на весь экран.
       console.error(`[money-summary] ${side} aging failed:`, error);
       return { total: 0, overdue: 0 };
+    }
+  }
+
+  /**
+   * Ближайшие платежи: сколько предстоит заплатить за неделю вперёд и когда
+   * ближайший день с расходом (Р3 карты v21).
+   *
+   * Считаем не сами — спрашиваем платёжный календарь. Он уже умеет всё
+   * сложное: счета поставщиков, плановые и повторяющиеся операции, пересчёт
+   * валют. Второго способа считать те же суммы быть не должно, иначе
+   * главная и раздел разойдутся.
+   */
+  private async getUpcomingPayments(
+    tenantId: number,
+  ): Promise<{ total: number; nearestDate: string | null }> {
+    const fromDate = moment().format('YYYY-MM-DD');
+    const toDate = moment()
+      .add(UPCOMING_PAYMENTS_DAYS - 1, 'days')
+      .format('YYYY-MM-DD');
+
+    try {
+      const forecast = await this.paymentCalendar.getForecast(tenantId, {
+        fromDate,
+        toDate,
+      } as any);
+
+      const days = forecast?.days ?? [];
+      const total = days.reduce(
+        (sum: number, day: any) => sum + Number(day?.outflow ?? 0),
+        0,
+      );
+      const nearest = days.find((day: any) => Number(day?.outflow ?? 0) > 0);
+
+      return { total, nearestDate: nearest?.date ?? null };
+    } catch (error) {
+      // Как и с отчётами: сбой прогноза — это пустая плитка, а не ошибка на
+      // весь экран.
+      console.error('[money-summary] payment calendar failed:', error);
+      return { total: 0, nearestDate: null };
     }
   }
 

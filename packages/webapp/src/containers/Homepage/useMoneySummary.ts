@@ -16,6 +16,9 @@ export interface MoneySummary {
   receivableOverdue: MoneySummaryAmount;
   payable: MoneySummaryAmount;
   payableOverdue: MoneySummaryAmount;
+  /** Ближайшие платежи за неделю вперёд и день ближайшего (Р3 карты v21). */
+  upcomingPayments: MoneySummaryAmount;
+  upcomingPaymentsDate: string | null;
   currencyCode: string;
 }
 

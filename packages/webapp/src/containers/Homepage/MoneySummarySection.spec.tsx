@@ -6,6 +6,7 @@ vi.mock('react-intl-universal', () => ({
   default: {
     get: (key: string, args?: Record<string, unknown>) =>
       args ? `${key}:${Object.values(args).join(',')}` : key,
+    getInitOptions: () => ({ currentLocale: 'ru' }),
   },
 }));
 
@@ -26,6 +27,8 @@ const summary = {
   receivableOverdue: { amount: 35000, formattedAmount: '35 000,00 ₽' },
   payable: { amount: 12000, formattedAmount: '12 000,00 ₽' },
   payableOverdue: { amount: 0, formattedAmount: '0,00 ₽' },
+  upcomingPayments: { amount: 55000, formattedAmount: '55 000,00 ₽' },
+  upcomingPaymentsDate: '2026-08-27',
   currencyCode: 'RUB',
 };
 
@@ -66,7 +69,12 @@ describe('сводка о деньгах на главной', () => {
     const links = screen
       .getAllByRole('link')
       .map((anchor: HTMLElement) => anchor.getAttribute('href'));
-    expect(links).toEqual(['/cashflow-accounts', '/invoices', '/bills']);
+    expect(links).toEqual([
+      '/cashflow-accounts',
+      '/invoices',
+      '/bills',
+      '/payment-calendar',
+    ]);
   });
 
   it('пока грузится — блок не мигает пустыми плитками', () => {
@@ -79,5 +87,32 @@ describe('сводка о деньгах на главной', () => {
     const { container } = renderSection({ isLoading: false, isError: true });
 
     expect(container).toBeEmptyDOMElement();
+  });
+});
+
+describe('плитка «платить на этой неделе» (Р3 карты v21)', () => {
+  it('показывает сумму ближайших платежей и день ближайшего', () => {
+    renderSection({ data: summary, isLoading: false, isError: false });
+
+    expect(screen.getByText('55 000,00 ₽')).toBeTruthy();
+    // Дата человеку показывается днём и месяцем, а не как «2026-08-27».
+    expect(
+      screen.getByText(/homepage\.money\.nearest_payment:.*27/),
+    ).toBeTruthy();
+  });
+
+  it('когда платить нечего — дня не подписываем', () => {
+    renderSection({
+      data: {
+        ...summary,
+        upcomingPayments: { amount: 0, formattedAmount: '0,00 ₽' },
+        // null, а не отсутствие поля: так отвечает сервер, когда расходов нет.
+        upcomingPaymentsDate: null,
+      },
+      isLoading: false,
+      isError: false,
+    });
+
+    expect(screen.queryByText(/homepage\.money\.nearest_payment/)).toBeNull();
   });
 });

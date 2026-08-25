@@ -115,7 +115,6 @@ import { AuthModule } from '../Auth/Auth.module';
 import { TwoFactorModule } from '../TwoFactor/TwoFactor.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { OrganizationI18nModule } from '../OrganizationI18n/OrganizationI18n.module';
-import { OrganizationLanguageResolver } from '../OrganizationI18n/OrganizationLanguage.resolver';
 import { LoopsModule } from '../Loops/Loops.module';
 import { AttachmentsModule } from '../Attachments/Attachment.module';
 import { S3Module } from '../S3/S3.module';
@@ -154,7 +153,6 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     SystemModelsModule,
     EventEmitterModule.forRoot(),
     I18nModule.forRootAsync({
-      imports: [TenancyModule],
       useFactory: () => ({
         fallbackLanguage: 'en',
         loaderOptions: {
@@ -162,11 +160,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
           watch: true,
         },
       }),
-      // Первым идёт язык организации (Р2 карты v21): если клиент попросил
-      // язык, которого мы не знаем, сервер отвечает на языке организации, а
-      // не откатывается на английский. Остальная цепочка — как была.
       resolvers: [
-        OrganizationLanguageResolver,
         new QueryResolver(),
         new HeaderResolver(),
         new CookieResolver(),

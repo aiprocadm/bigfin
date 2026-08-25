@@ -94,6 +94,20 @@ export class BuildOrganizationDto {
     example: 'business',
   })
   interfaceMode?: string;
+
+  // Н1 карты v22. Налоговый режим спрашивается сразу при создании: раньше
+  // его можно было указать только в «Настройках», и он оставался пустым у
+  // всех организаций. Пустая строка означает «не задан» — так же, как в
+  // форме реквизитов, иначе страны кроме России не смогли бы создаться.
+  @IsOptional()
+  @ValidateIf((o) => o.taxRegime !== '')
+  @IsEnum(TaxRegime)
+  @ApiPropertyOptional({
+    description: 'Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)',
+    enum: TaxRegime,
+    example: TaxRegime.USN_INCOME,
+  })
+  taxRegime?: TaxRegime;
 }
 
 export class UpdateOrganizationDto {

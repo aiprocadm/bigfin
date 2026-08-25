@@ -4150,6 +4150,7 @@
   "notifications.telegram.entry.pulled": "Записано: {imported}, пропущено: {skipped}.",
   "notifications.telegram.entry.pull_failed": "Не удалось забрать сообщения.",
   "setup.organization.interface_mode": "Режим интерфейса",
+  "setup.organization.tax_regime_hint": "От режима зависит, платите ли вы НДС. Позже это можно изменить в настройках.",
   "marketplaces.ozon.title": "Ozon",
   "marketplaces.ozon.connected": "Ozon подключён.",
   "marketplaces.ozon.hint": "Создайте API-ключ в кабинете продавца Ozon (Настройки → API-ключи) и вставьте сюда Client-Id и ключ.",

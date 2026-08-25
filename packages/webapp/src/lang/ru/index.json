@@ -3433,6 +3433,8 @@
   "mail_notification.label.from": "От кого",
   "mail_notification.label.to": "Кому",
   "mail_notification.label.subject": "Тема",
+  "manual_journals.empty_result.title": "Ничего не нашлось",
+  "manual_journals.empty_result.description": "По выбранному отбору проводок нет. Измените условия отбора или период.",
   "homepage.money.title": "Как дела с деньгами",
   "homepage.money.cash_balance": "На счетах и в кассе",
   "homepage.money.receivable": "Должны нам",

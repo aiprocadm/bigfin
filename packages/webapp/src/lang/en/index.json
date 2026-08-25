@@ -3433,6 +3433,8 @@
   "mail_notification.label.from": "From",
   "mail_notification.label.to": "To",
   "mail_notification.label.subject": "Subject",
+  "manual_journals.empty_result.title": "Nothing found",
+  "manual_journals.empty_result.description": "No journal entries match the current filter. Change the filter or the period.",
   "homepage.money.title": "How the money is doing",
   "homepage.money.cash_balance": "Cash and bank",
   "homepage.money.receivable": "Owed to us",

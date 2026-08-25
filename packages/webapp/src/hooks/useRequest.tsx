@@ -11,6 +11,7 @@ import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { AppToaster } from '@/components/AppToaster';
 import { getCookie, normalizeApiPath } from '../utils';
+import { getRequestLocale } from '../services/requestLocale';
 import {
   withCamelAliases,
   shouldAliasResponse,
@@ -19,7 +20,7 @@ import {
 export default function useApiRequest() {
   const setGlobalErrors = useSetGlobalErrors();
   const { setLogout } = useAuthActions();
-  const currentLocale = getCookie('locale');
+  const currentLocale = getRequestLocale();
 
   // Authentication token.
   const token = useAuthToken();

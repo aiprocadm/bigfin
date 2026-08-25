@@ -1,7 +1,10 @@
 import { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import intl from 'react-intl-universal';
+import { BookOpen } from 'lucide-react';
 
 import { DataTable } from '@/components/ui/data-table';
+import { EmptyState } from '@/components/ui/empty-state';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
@@ -16,6 +19,24 @@ import { useManualJournalsTableColumnsV2 } from './useManualJournalsTableColumns
 import type { ManualJournalRow } from './ManualJournalsActionsMenuV2';
 
 const getJournalRowId = (row: ManualJournalRow) => String(row.id);
+
+/**
+ * Пустой результат отбора (Г3 карты v20).
+ *
+ * У раздела уже была подсказка «проводок пока нет» — она показывается,
+ * когда журнал пуст целиком. А вот когда отбор или поиск ничего не нашли,
+ * оставалась голая таблица без единого слова: единственный такой список из
+ * двадцати одного.
+ */
+function ManualJournalsEmptyResultV2() {
+  return (
+    <EmptyState
+      icon={<BookOpen className="h-8 w-8" aria-hidden />}
+      title={intl.get('manual_journals.empty_result.title')}
+      description={intl.get('manual_journals.empty_result.description')}
+    />
+  );
+}
 
 function ManualJournalsTableV2Root({
   // #withManualJournalsActions
@@ -76,6 +97,7 @@ function ManualJournalsTableV2Root({
         onRowClick={(row: ManualJournalRow) =>
           openDrawer(DRAWERS.JOURNAL_DETAILS, { manualJournalId: row.id })
         }
+        emptyState={<ManualJournalsEmptyResultV2 />}
       />
       <DataTablePagination
         pageIndex={manualJournalsTableState?.pageIndex ?? 0}

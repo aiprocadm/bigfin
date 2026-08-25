@@ -25,13 +25,21 @@ export const formatQuantity = (quantity: number): string => {
   return String(Math.round(quantity * 1000) / 1000).replace('.', ',');
 };
 
-/** «ООО Ромашка, ИНН …, КПП …, адрес» из метаданных организации. */
+/**
+ * «ООО Ромашка, ИНН …, КПП …, адрес» из метаданных организации.
+ *
+ * Адрес берём через `buildOrganizationAddress`: сырой
+ * `addressTextFormatted` — это РАЗМЕТКА (`<strong>…</strong><br />…`), и в
+ * бланке она показывалась как есть, экранированная: «Организация:
+ * Демо-организация, &lt;strong&gt;Демо-организация&lt;/strong&gt;…».
+ * Нашлось живой пробой акта сверки на стенде; касается всех форм РФ.
+ */
 export const buildSellerLine = (metadata: any): string =>
   joinRequisites([
     metadata?.name,
     metadata?.inn && `ИНН ${metadata.inn}`,
     metadata?.kpp && `КПП ${metadata.kpp}`,
-    metadata?.addressTextFormatted,
+    buildOrganizationAddress(metadata),
   ]);
 
 /**

@@ -113,6 +113,17 @@ export class NotificationEvaluationProcessor extends WorkerHost {
     for (const candidate of toFire) {
       const firedAt = moment().toMySqlDateTime();
 
+      // Свежий повтор события заменяет прежнюю запись ленты: без этого
+      // ежедневный обход копил одинаковые непрочитанные строки (У1 карты
+      // v27). Вытеснение — ДО вставки, иначе новая запись вытеснит себя.
+      // История срабатываний остаётся — по ней считается срок «не
+      // повторять чаще».
+      await this.notifModel()
+        .query()
+        .where('dedupKey', candidate.dedupKey)
+        .whereNull('supersededAt')
+        .patch({ supersededAt: firedAt } as any);
+
       const inserted: any = await this.notifModel().query().insertAndFetch({
         eventType: candidate.eventType,
         title: candidate.title,

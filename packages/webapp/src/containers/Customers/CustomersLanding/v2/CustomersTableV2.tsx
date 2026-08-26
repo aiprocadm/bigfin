@@ -30,7 +30,7 @@ function CustomersEmptyStateV2() {
       icon={<Users className="h-8 w-8" aria-hidden />}
       title={intl.get('create_and_manage_your_organization_s_customers')}
       description={intl.get(
-        'here_a_list_of_your_organization_products_and_services',
+        'customers.empty.description',
       )}
       action={
         <Can I={CustomerAction.Create} a={AbilitySubject.Customer}>

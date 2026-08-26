@@ -14,7 +14,7 @@ export default function VendorsEmptyStatus() {
       title={<T id={'create_and_manage_your_organization_s_vendors'} />}
       description={
         <p>
-          <T id={'here_a_list_of_your_organization_products_and_services'} />
+          <T id={'vendors.empty.description'} />
         </p>
       }
       action={

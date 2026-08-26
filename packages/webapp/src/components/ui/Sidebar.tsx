@@ -90,7 +90,11 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
       onClick={handleClick}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'mx-2 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+        // На телефоне пункт не ниже 44 px: палец накрывает примерно
+        // сантиметр, а пункты идут вплотную — промах уводит в соседний
+        // раздел. На больших экранах ограничение снимается, там указатель
+        // точный и лишняя высота удлиняла бы список без пользы.
+        'mx-2 flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors md:min-h-0',
         active
           ? 'bg-surface text-text-primary font-semibold'
           : 'text-text-secondary hover:bg-surface hover:text-text-primary',

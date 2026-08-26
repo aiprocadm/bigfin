@@ -5,6 +5,8 @@
   "low_balance.body": "Ниже порога {minAmount}: {count} счёт(ов) — {names}.",
   "overdue.title": "Просроченные счета клиентов",
   "overdue.body": "Просрочено счетов: {count} на сумму {total}.",
+  "tax_due.title": "Скоро платить налог",
+  "tax_due.body": "Налог за квартал по оценке — {amount} (ставка {ratePercent}%). Заплатить до {dueDate}. Сумма оценочная: взносы и льготы не учтены.",
   "email_footer": "Откройте Bigfin, чтобы посмотреть детали.",
   "telegram": {
     "connected_message": "✅ Bigfin подключён. Уведомления будут приходить сюда."

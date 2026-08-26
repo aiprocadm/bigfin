@@ -95,6 +95,14 @@ export function buildNotificationArgs(
         count: p.count ?? 0,
         total: formatNotificationMoney(Number(p.total ?? 0), ctx),
       };
+    // Н4 карты v22: сумма — деньгами, срок — датой на языке организации.
+    case 'tax_due':
+      return {
+        amount: formatNotificationMoney(Number(p.amount ?? 0), ctx),
+        ratePercent: p.ratePercent ?? 0,
+        dueDate: formatNotificationDate(String(p.dueDate), ctx),
+        daysLeft: p.daysLeft ?? 0,
+      };
     default:
       return p;
   }

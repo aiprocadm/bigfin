@@ -15,6 +15,7 @@ import { NotificationsSettingsService } from '../NotificationsSettings.service';
 import { CashGapEvaluatorService } from '../evaluators/CashGapEvaluator.service';
 import { LowBalanceEvaluatorService } from '../evaluators/LowBalanceEvaluator.service';
 import { OverdueEvaluatorService } from '../evaluators/OverdueEvaluator.service';
+import { TaxDueEvaluatorService } from '../evaluators/TaxDueEvaluator.service';
 import { EmailChannelService } from '../delivery/EmailChannel.service';
 import { TelegramChannelService } from '../delivery/TelegramChannel.service';
 import { DeliveryChannel } from '../delivery/DeliveryChannel';
@@ -29,6 +30,7 @@ export class NotificationEvaluationProcessor extends WorkerHost {
     private readonly cashGap: CashGapEvaluatorService,
     private readonly lowBalance: LowBalanceEvaluatorService,
     private readonly overdue: OverdueEvaluatorService,
+    private readonly taxDue: TaxDueEvaluatorService,
     private readonly email: EmailChannelService,
     private readonly telegram: TelegramChannelService,
     @Inject(NotificationPreference.name)
@@ -79,6 +81,8 @@ export class NotificationEvaluationProcessor extends WorkerHost {
         produced = await this.lowBalance.evaluate(threshold);
       } else if (pref.eventType === 'overdue') {
         produced = await this.overdue.evaluate(threshold);
+      } else if (pref.eventType === 'tax_due') {
+        produced = await this.taxDue.evaluate(threshold);
       }
       produced.forEach((c) => {
         c.channels = prefChannels;

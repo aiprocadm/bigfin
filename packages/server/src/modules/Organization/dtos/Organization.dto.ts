@@ -5,13 +5,17 @@ import {
   IsIn,
   IsISO31661Alpha2,
   IsISO4217CurrencyCode,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,
+  Max,
   MaxLength,
+  Min,
   Validate,
   ValidateIf,
 } from 'class-validator';
+import { ToNumber } from '@/common/decorators/Validators';
 import { MONTHS } from '../Organization/constants';
 import { ACCEPTED_LOCALES, DATE_FORMATS, INTERFACE_MODES } from '../Organization.constants';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -248,6 +252,21 @@ export class UpdateOrganizationDto {
     example: TaxRegime.OSNO,
   })
   taxRegime?: TaxRegime;
+
+  // Н3б карты v22. Своя ставка налога: регионы снижают упрощёнку до 1 % и
+  // 5 %. Пустая строка = «сбросить, считать по ставке режима» — так же, как
+  // у остальных реквизитов: иначе очистить поле в форме было бы нельзя.
+  @IsOptional()
+  @ValidateIf((o) => o.taxRate !== '' && o.taxRate !== null)
+  @ToNumber()
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  @ApiPropertyOptional({
+    description: 'Custom tax rate in percent (regional reduced rate). Empty means "use the regime rate".',
+    example: 1,
+  })
+  taxRate?: number;
 
   @IsOptional()
   @IsString()

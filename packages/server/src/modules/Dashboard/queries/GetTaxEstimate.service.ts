@@ -33,6 +33,12 @@ export class GetTaxEstimateService {
   ): Promise<SimplifiedTaxEstimate | null> {
     const metadata = await this.tenancyContext.getTenantMetadata();
     const regime = (metadata as any)?.taxRegime ?? (metadata as any)?.tax_regime;
+    // Своя ставка организации, если регион даёт льготу (Н3б карты v22).
+    const rawRate = (metadata as any)?.taxRate ?? (metadata as any)?.tax_rate;
+    const customRatePercent =
+      rawRate === null || rawRate === undefined || rawRate === ''
+        ? null
+        : Number(rawRate);
 
     // Сначала дешёвая проверка режима: не на упрощёнке — отчёт не строим.
     const dryRun = estimateSimplifiedTax({
@@ -40,6 +46,7 @@ export class GetTaxEstimateService {
       income: 0,
       expenses: 0,
       today,
+      customRatePercent,
     });
     if (!dryRun) return null;
 
@@ -60,7 +67,13 @@ export class GetTaxEstimateService {
         ProfitLossAggregateNodeId.OTHER_EXPENSES,
       ]);
 
-      return estimateSimplifiedTax({ regime, income, expenses, today });
+      return estimateSimplifiedTax({
+        regime,
+        income,
+        expenses,
+        today,
+        customRatePercent,
+      });
     } catch (error) {
       // Сводка не должна ронять главную страницу: пустая организация или
       // недоступный отчёт — это отсутствие оценки, а не ошибка на экран.

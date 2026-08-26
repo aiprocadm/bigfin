@@ -31,6 +31,7 @@ import {
 } from './options';
 import {
   ORGANIZATION_LEGAL_FORMS,
+  TAX_RATE_REGIMES,
   TAX_REGIMES,
   withLabels,
 } from './requisitesOptions';
@@ -240,6 +241,33 @@ export default function GeneralForm() {
             </FormItem>
           )}
         />
+
+        {/* Своя ставка налога (Н3б карты v22). Показываем только там, где
+            оценка вообще считается: на общей системе и патенте ставка
+            упрощёнки смысла не имеет. */}
+        {TAX_RATE_REGIMES.includes(form.watch('tax_regime') as string) && (
+          <FormField
+            control={form.control}
+            name="tax_rate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{intl.get('requisites.tax_rate')}</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    value={field.value ?? ''}
+                    inputMode="decimal"
+                    placeholder={intl.get('requisites.tax_rate.placeholder')}
+                  />
+                </FormControl>
+                <FormDescription>
+                  {intl.get('requisites.tax_rate.hint')}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         {REQUISITE_TEXT_FIELDS.map(({ name, labelKey, hintKey }) => (
           <FormField

@@ -65,6 +65,25 @@ export const generalSchema = z.object({
   legal_form: optionalOneOf(ORGANIZATION_LEGAL_FORMS.map((o) => o.value)),
   tax_regime: optionalOneOf(TAX_REGIMES.map((o) => o.value)),
 
+  // Своя ставка налога (Н3б карты v22): регионы снижают упрощёнку до 1 % и
+  // 5 %, бывают и нулевые каникулы для новых ИП. Пусто = «считать по ставке
+  // режима», поэтому пустая строка проходит, а мусор — нет.
+  tax_rate: z
+    .string()
+    .optional()
+    .superRefine((value, ctx) => {
+      if (!value) return;
+
+      const parsed = Number(String(value).replace(',', '.'));
+
+      if (!Number.isFinite(parsed) || parsed < 0 || parsed > 100) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: intl.get('requisites.tax_rate.invalid'),
+        });
+      }
+    }),
+
   // ИНН: 10 цифр у юрлица, 12 у ИП и самозанятого. Сначала говорим про
   // длину, и только потом про контрольную сумму — иначе человек с 8 цифрами
   // получит совет «проверьте номер» вместо «цифр не хватает».

@@ -5,8 +5,8 @@ import { TaxRegime } from '@/modules/RussianLegalAttributes/constants';
  * Ставки налога по режимам — базовые, федеральные.
  *
  * Регионы вправе снижать их (УСН «Доходы» — до 1 %, «Доходы минус расходы» —
- * до 5 %), поэтому это именно оценка. Возможность поставить свою ставку —
- * следующий срез карты (Н3б).
+ * до 5 %), поэтому это лишь умолчание: своя ставка организации, если она
+ * указана в реквизитах, главнее (Н3б карты v22).
  */
 export const TAX_RATE_BY_REGIME: Partial<Record<TaxRegime, number>> = {
   [TaxRegime.USN_INCOME]: 6,
@@ -41,8 +41,9 @@ export interface SimplifiedTaxEstimate {
  *
  * Это ОЦЕНКА, а не бухгалтерский расчёт. Не учитываются страховые взносы,
  * которые уменьшают налог, минимальный налог 1 % на «Доходах минус
- * расходах», убытки прошлых лет и региональные льготные ставки. Так и
- * подписано в интерфейсе.
+ * расходах» и убытки прошлых лет. Так и подписано в интерфейсе.
+ * Региональную льготную ставку учесть можно — её указывают в реквизитах
+ * организации (Н3б карты v22).
  *
  * Сроки: авансовый платёж по упрощёнке платится до 28-го числа месяца,
  * следующего за кварталом (НК РФ в редакции с 2023 года). За IV квартал
@@ -58,14 +59,26 @@ export const estimateSimplifiedTax = (params: {
   expenses: number;
   /** Сегодняшняя дата (передаём, чтобы тесты не зависели от календаря). */
   today: string;
+  /**
+   * Своя ставка организации в процентах (Н3б карты v22). Регионы снижают
+   * упрощёнку до 1 % и 5 %, и по базовой ставке оценка была бы в несколько
+   * раз больше настоящей. Пусто — считаем по ставке режима.
+   */
+  customRatePercent?: number | null;
 }): SimplifiedTaxEstimate | null => {
-  const { regime, income, expenses, today } = params;
-  const ratePercent = TAX_RATE_BY_REGIME[regime as TaxRegime];
+  const { regime, income, expenses, today, customRatePercent } = params;
+  const regimeRate = TAX_RATE_BY_REGIME[regime as TaxRegime];
 
-  // Общая система и патент сюда не попадают: на патенте налог не зависит от
-  // выручки вовсе, а на общей системе это отдельная большая тема (НДС плюс
-  // налог на прибыль). Обещать оценку там, где она была бы выдумкой, нельзя.
-  if (!ratePercent) return null;
+  // Есть ли вообще оценка — решает РЕЖИМ, а не ставка. Общая система и
+  // патент сюда не попадают: на патенте налог не зависит от выручки вовсе,
+  // а на общей системе это отдельная большая тема (НДС плюс налог на
+  // прибыль). Обещать оценку там, где она была бы выдумкой, нельзя.
+  if (!regimeRate) return null;
+
+  // Своя ставка может быть и нулевой — налоговые каникулы для новых ИП, —
+  // поэтому её нельзя проверять «на правдивость»: ноль означал бы «оценки
+  // нет», хотя правильный ответ «ноль к уплате».
+  const ratePercent = resolveRate(regimeRate, customRatePercent);
 
   const day = moment(today, 'YYYY-MM-DD', true);
   if (!day.isValid()) return null;
@@ -88,6 +101,26 @@ export const estimateSimplifiedTax = (params: {
     toDate: quarterEnd.format('YYYY-MM-DD'),
     dueDate: dueDateForQuarter(quarterEnd),
   };
+};
+
+/**
+ * Какая ставка идёт в расчёт: своя, если она задана и осмысленна, иначе
+ * ставка режима. Ноль — допустимая ставка (в некоторых регионах для новых
+ * ИП бывают налоговые каникулы), поэтому проверяем именно «задана ли», а
+ * не «правдива ли» — иначе 0 молча превратился бы в 6 %.
+ */
+const resolveRate = (
+  regimeRate: number,
+  customRatePercent: number | null | undefined,
+): number => {
+  if (customRatePercent === null || customRatePercent === undefined) {
+    return regimeRate;
+  }
+  const custom = Number(customRatePercent);
+
+  if (!Number.isFinite(custom) || custom < 0 || custom > 100) return regimeRate;
+
+  return custom;
 };
 
 /**

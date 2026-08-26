@@ -24,6 +24,9 @@ export class TenantMetadata extends BaseModel {
   // через UpdateOrganizationDto → saveMetadata spread).
   public legalForm!: string;
   public taxRegime!: string;
+  // Своя ставка налога, если региональная льгота отличается от базовой
+  // ставки режима (Н3б карты v22). Пусто — считаем по ставке режима.
+  public taxRate!: number | null;
   public inn!: string;
   public kpp!: string;
   public ogrn!: string;
@@ -60,6 +63,7 @@ export class TenantMetadata extends BaseModel {
         address: { type: 'object' },
         legalForm: { type: 'string', maxLength: 20 },
         taxRegime: { type: 'string', maxLength: 20 },
+        taxRate: { type: ['number', 'null'], minimum: 0, maximum: 100 },
         inn: { type: 'string', maxLength: 12 },
         kpp: { type: 'string', maxLength: 9 },
         ogrn: { type: 'string', maxLength: 15 },

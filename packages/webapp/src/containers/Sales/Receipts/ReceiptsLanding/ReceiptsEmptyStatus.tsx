@@ -11,7 +11,7 @@ export default function ReceiptsEmptyStatus() {
 
   return (
     <EmptyStatus
-      title={<T id={'manage_the_organization_s_services_and_products'} />}
+      title={<T id={'receipts.empty.title'} />}
       description={
         <p>
           <T id={'receipt_empty_status_description'} />

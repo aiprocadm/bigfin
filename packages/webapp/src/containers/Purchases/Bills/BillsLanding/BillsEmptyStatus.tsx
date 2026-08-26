@@ -11,7 +11,7 @@ export default function BillsEmptyStatus() {
 
   return (
     <EmptyStatus
-      title={<T id={'manage_the_organization_s_services_and_products'} />}
+      title={<T id={'bills.empty_state.title'} />}
       description={
         <p>
           <T id="bill_empty_status_description" />

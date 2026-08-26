@@ -30,7 +30,7 @@ function VendorsEmptyStateV2() {
       icon={<Truck className="h-8 w-8" aria-hidden />}
       title={intl.get('create_and_manage_your_organization_s_vendors')}
       description={intl.get(
-        'here_a_list_of_your_organization_products_and_services',
+        'vendors.empty.description',
       )}
       action={
         <Can I={VendorAction.Create} a={AbilitySubject.Vendor}>

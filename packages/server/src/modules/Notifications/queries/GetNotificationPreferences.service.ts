@@ -9,6 +9,8 @@ const DEFAULT_THRESHOLDS: Record<string, any> = {
   cash_gap: { horizonDays: 7 },
   low_balance: { minAmount: 0 },
   overdue: {},
+  // За сколько дней до срока напоминать о налоге (Н4 карты v22).
+  tax_due: { daysBefore: 7 },
 };
 
 @Injectable()

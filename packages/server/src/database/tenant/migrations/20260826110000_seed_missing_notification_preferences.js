@@ -19,8 +19,16 @@
 exports.up = async function (knex) {
   const events = ['cash_gap', 'low_balance', 'overdue', 'tax_due'];
 
+  // Тенантный knex настроен через knexSnakeCaseMappers({ upperCase: true }):
+  // имена таблиц уходят в базу в ВЕРХНЕМ регистре, а поля ответа приходят
+  // обратно в camelCase. Читать `row.event_type` здесь нельзя — вернётся
+  // `undefined`, все правила покажутся отсутствующими и вставятся заново
+  // (так и случилось на стенде: 4 дубля). Берём оба написания, чтобы
+  // миграция не зависела от настроек соединения.
   const existing = await knex('notification_preferences').select('event_type');
-  const known = new Set(existing.map((row) => row.event_type));
+  const known = new Set(
+    existing.map((row) => row.eventType ?? row.event_type).filter(Boolean),
+  );
   const missing = events.filter((event) => !known.has(event));
 
   if (!missing.length) return;

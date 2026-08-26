@@ -7,6 +7,8 @@ import { GetMoneySummaryService } from './queries/GetMoneySummary.service';
 import { ARAgingSummaryModule } from '../FinancialStatements/modules/ARAgingSummary/ARAgingSummary.module';
 import { APAgingSummaryModule } from '../FinancialStatements/modules/APAgingSummary/APAgingSummary.module';
 import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module';
+import { ProfitLossSheetModule } from '../FinancialStatements/modules/ProfitLossSheet/ProfitLossSheet.module';
+import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
 
 @Module({
   // Сводка о деньгах берёт цифры из тех же отчётов, что показывают разделы
@@ -16,8 +18,14 @@ import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module
     ARAgingSummaryModule,
     APAgingSummaryModule,
     PaymentCalendarModule,
+    ProfitLossSheetModule,
   ],
-  providers: [DashboardService, TenancyContext, GetMoneySummaryService],
+  providers: [
+    DashboardService,
+    TenancyContext,
+    GetMoneySummaryService,
+    GetTaxEstimateService,
+  ],
   controllers: [DashboardController],
 })
 export class DashboardModule {}

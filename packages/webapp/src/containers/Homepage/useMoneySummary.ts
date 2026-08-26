@@ -19,6 +19,10 @@ export interface MoneySummary {
   /** Ближайшие платежи за неделю вперёд и день ближайшего (Р3 карты v21). */
   upcomingPayments: MoneySummaryAmount;
   upcomingPaymentsDate: string | null;
+  /** Оценка налога на упрощёнке за квартал (Н3 карты v22); null — нет. */
+  taxEstimate: MoneySummaryAmount | null;
+  taxEstimateRatePercent: number | null;
+  taxEstimateDueDate: string | null;
   currencyCode: string;
 }
 

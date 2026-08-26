@@ -8,6 +8,7 @@ import { APAgingSummaryService } from '@/modules/FinancialStatements/modules/APA
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/queries/GetPaymentCalendarForecast.service';
 import * as moment from 'moment';
+import { GetTaxEstimateService } from './GetTaxEstimate.service';
 
 export interface MoneySummaryAmount {
   amount: number;
@@ -30,6 +31,14 @@ export interface MoneySummary {
    */
   upcomingPayments: MoneySummaryAmount;
   upcomingPaymentsDate: string | null;
+  /**
+   * Оценка налога на упрощёнке за текущий квартал (Н3 карты v22).
+   * `null` — организация не на упрощёнке или режим не задан: тогда плитка
+   * не показывается, молчание честнее выдуманной цифры.
+   */
+  taxEstimate: MoneySummaryAmount | null;
+  taxEstimateRatePercent: number | null;
+  taxEstimateDueDate: string | null;
   currencyCode: string;
 }
 
@@ -42,6 +51,7 @@ export class GetMoneySummaryService {
     private readonly arAging: ARAgingSummaryService,
     private readonly apAging: APAgingSummaryService,
     private readonly paymentCalendar: GetPaymentCalendarForecastService,
+    private readonly taxEstimate: GetTaxEstimateService,
     private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
@@ -60,12 +70,15 @@ export class GetMoneySummaryService {
     const metadata = await this.tenancyContext.getTenantMetadata();
     const currencyCode = metadata?.baseCurrency ?? 'RUB';
 
-    const [cashBalance, receivable, payable, upcoming] = await Promise.all([
-      this.getCashBalance(),
-      this.getAgingTotals('receivable'),
-      this.getAgingTotals('payable'),
-      this.getUpcomingPayments((metadata as any)?.tenantId),
-    ]);
+    const [cashBalance, receivable, payable, upcoming, tax] = await Promise.all(
+      [
+        this.getCashBalance(),
+        this.getAgingTotals('receivable'),
+        this.getAgingTotals('payable'),
+        this.getUpcomingPayments((metadata as any)?.tenantId),
+        this.taxEstimate.getTaxEstimate(moment().format('YYYY-MM-DD')),
+      ],
+    );
 
     return {
       cashBalance: this.amount(cashBalance, currencyCode),
@@ -75,6 +88,9 @@ export class GetMoneySummaryService {
       payableOverdue: this.amount(payable.overdue, currencyCode),
       upcomingPayments: this.amount(upcoming.total, currencyCode),
       upcomingPaymentsDate: upcoming.nearestDate,
+      taxEstimate: tax ? this.amount(tax.amount, currencyCode) : null,
+      taxEstimateRatePercent: tax?.ratePercent ?? null,
+      taxEstimateDueDate: tax?.dueDate ?? null,
       currencyCode,
     };
   }

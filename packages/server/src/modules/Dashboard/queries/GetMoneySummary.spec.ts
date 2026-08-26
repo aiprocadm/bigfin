@@ -22,6 +22,9 @@ const buildService = ({
     { date: '2026-08-29', inflow: 0, outflow: 15000 },
   ],
   forecastThrows = false,
+  // null, а не отсутствие поля: так отвечает сервис организации не на
+  // упрощёнке — плитки налога быть не должно.
+  taxEstimate = null,
 }: any = {}) => {
   const accountModel = () => ({
     query: () => ({
@@ -43,6 +46,9 @@ const buildService = ({
         return { days: forecastDays ?? [] };
       },
     } as any,
+    // Оценка налога проверяется своими тестами (GetTaxEstimate.spec); здесь
+    // важно лишь, что сводка её спрашивает и не падает без неё.
+    { getTaxEstimate: async () => taxEstimate } as any,
     {
       getTenantMetadata: async () => ({ baseCurrency: 'RUB', tenantId: 7 }),
     } as any,

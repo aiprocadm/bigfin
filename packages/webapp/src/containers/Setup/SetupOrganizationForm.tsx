@@ -23,6 +23,7 @@ import { getFiscalYear } from '@/constants/fiscalYearOptions';
 import { getLanguages } from '@/constants/languagesOptions';
 import { getAllCurrenciesOptions } from '@/constants/currencies';
 import {
+  ORGANIZATION_LEGAL_FORMS,
   TAX_REGIMES,
   withLabels,
 } from '@/containers/Preferences/General/requisitesOptions';
@@ -40,6 +41,10 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
   // Подписи режимов считаем при отрисовке: словарь к моменту импорта ещё
   // не загружен (то же правило, что в форме реквизитов).
   const taxRegimes = React.useMemo(() => withLabels(TAX_REGIMES), []);
+  const legalForms = React.useMemo(
+    () => withLabels(ORGANIZATION_LEGAL_FORMS),
+    [],
+  );
 
   return (
     <Form>
@@ -148,6 +153,27 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
           }}
         />
       </FFormGroup>
+
+      {/* ---------- Юридическая форма (Н6 карты v22) ---------- */}
+      {/* От неё зависят печатные формы: у ИП и самозанятого счёт-фактура
+          подписывается иначе, чем у ООО. */}
+      {values?.location === 'RU' && (
+        <FFormGroup
+          name={'legalForm'}
+          label={<T id={'requisites.legal_form'} />}
+          helperText={<T id={'setup.organization.legal_form_hint'} />}
+        >
+          <FSelect
+            name={'legalForm'}
+            items={legalForms}
+            valueAccessor={'value'}
+            textAccessor={'label'}
+            placeholder={<T id={'requisites.legal_form.select'} />}
+            popoverProps={{ minimal: true }}
+            buttonProps={{ large: true }}
+          />
+        </FFormGroup>
+      )}
 
       {/* ---------- Налоговый режим (Н1 карты v22) ---------- */}
       {/* Спрашиваем только у российских организаций: от режима зависит,

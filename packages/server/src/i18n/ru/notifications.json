@@ -2,7 +2,7 @@
   "cash_gap.title": "Приближается кассовый разрыв",
   "cash_gap.body": "Ожидается нехватка средств на {amount} — {date} (через {days} дн.).",
   "low_balance.title": "Остаток на счёте ниже минимума",
-  "low_balance.body": "Ниже порога {minAmount}: {count} счёт(ов) — {names}.",
+  "low_balance.body": "Ниже порога {minAmount}: {count} {accountsWord} — {names}.",
   "overdue.title": "Просроченные счета клиентов",
   "overdue.body": "Просрочено счетов: {count} на сумму {total}.",
   "tax_due.title": "Скоро платить налог",

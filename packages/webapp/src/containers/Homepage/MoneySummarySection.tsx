@@ -81,13 +81,31 @@ export default function MoneySummarySection() {
     },
   ];
 
+  // Плитка налога появляется только у организаций на упрощёнке: остальным
+  // оценка была бы выдумкой, а выдуманной цифре о налоге верить нельзя.
+  if (data.taxEstimate) {
+    tiles.push({
+      key: 'tax',
+      title: intl.get('homepage.money.tax_estimate', {
+        rate: data.taxEstimateRatePercent,
+      }),
+      value: data.taxEstimate.formattedAmount,
+      to: '/financial-reports/profit-loss-sheet',
+      note: data.taxEstimateDueDate
+        ? intl.get('homepage.money.tax_due', {
+            date: formatDay(data.taxEstimateDueDate),
+          })
+        : null,
+    });
+  }
+
   return (
     <section>
       <h2 className="mb-3 text-lg font-semibold text-text-primary">
         {intl.get('homepage.money.title')}
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {tiles.map((tile) => (
           <Link
             key={tile.key}
@@ -104,6 +122,12 @@ export default function MoneySummarySection() {
           </Link>
         ))}
       </div>
+
+      {data.taxEstimate && (
+        <p className="mt-2 text-xs text-text-secondary">
+          {intl.get('homepage.money.tax_estimate_hint')}
+        </p>
+      )}
     </section>
   );
 }

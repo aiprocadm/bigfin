@@ -29,7 +29,19 @@ const summary = {
   payableOverdue: { amount: 0, formattedAmount: '0,00 ₽' },
   upcomingPayments: { amount: 55000, formattedAmount: '55 000,00 ₽' },
   upcomingPaymentsDate: '2026-08-27',
+  // null, а не отсутствие поля: так сервер отвечает организации не на
+  // упрощёнке — плитки налога у неё быть не должно.
+  taxEstimate: null,
+  taxEstimateRatePercent: null,
+  taxEstimateDueDate: null,
   currencyCode: 'RUB',
+};
+
+const withTax = {
+  ...summary,
+  taxEstimate: { amount: 60000, formattedAmount: '60 000,00 ₽' },
+  taxEstimateRatePercent: 6,
+  taxEstimateDueDate: '2026-10-28',
 };
 
 const renderSection = (state: any) => {
@@ -114,5 +126,43 @@ describe('плитка «платить на этой неделе» (Р3 кар
     });
 
     expect(screen.queryByText(/homepage\.money\.nearest_payment/)).toBeNull();
+  });
+});
+
+describe('плитка «налог за квартал» (Н3 карты v22)', () => {
+  it('у организации на упрощёнке показывает оценку и срок', () => {
+    renderSection({ data: withTax, isLoading: false, isError: false });
+
+    expect(screen.getByText('60 000,00 ₽')).toBeTruthy();
+    expect(screen.getByText(/homepage\.money\.tax_estimate:6/)).toBeTruthy();
+    expect(screen.getByText(/homepage\.money\.tax_due:.*28/)).toBeTruthy();
+  });
+
+  it('всегда подписывает, что это оценка, а не расчёт', () => {
+    renderSection({ data: withTax, isLoading: false, isError: false });
+
+    expect(
+      screen.getByText('homepage.money.tax_estimate_hint'),
+    ).toBeTruthy();
+  });
+
+  it('организации не на упрощёнке плитку не показываем', () => {
+    renderSection({ data: summary, isLoading: false, isError: false });
+
+    expect(screen.queryByText(/homepage\.money\.tax_estimate/)).toBeNull();
+    // И подписи про оценку тоже быть не должно.
+    expect(
+      screen.queryByText('homepage.money.tax_estimate_hint'),
+    ).toBeNull();
+  });
+
+  it('плитка ведёт в отчёт, по которому её посчитали', () => {
+    renderSection({ data: withTax, isLoading: false, isError: false });
+
+    const links = screen
+      .getAllByRole('link')
+      .map((anchor: HTMLElement) => anchor.getAttribute('href'));
+
+    expect(links).toContain('/financial-reports/profit-loss-sheet');
   });
 });

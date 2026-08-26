@@ -1,6 +1,10 @@
 // © 2026 Bigfin
 import React from 'react';
+import moment from 'moment';
+import { Position } from '@blueprintjs/core';
+import { DateInput } from '@blueprintjs/datetime';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import intl from 'react-intl-universal';
 import { useFeatureCan } from '@/hooks/state/feature';
 import {
@@ -50,18 +54,31 @@ export default function VatAnalysisPage() {
           {intl.get('vat_analysis.page.title')}
         </h1>
         <div className="flex items-center gap-2">
-          <input
-            type="date"
-            className="rounded border px-2 py-1 text-sm"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
+          {/* Период вводится полем продукта: дата в формате организации
+              («26.08.2026»), а не в том, который выберет браузер (Р3 карты
+              v26). Запрос ждёт строки YYYY-MM-DD, поэтому здесь перевод. */}
+          <DateInput
+            formatDate={formatOrganizationDate}
+            parseDate={(str) => new Date(str)}
+            value={moment(fromDate).toDate()}
+            onChange={(date) => {
+              if (date && moment(date).isValid()) {
+                setFromDate(moment(date).format('YYYY-MM-DD'));
+              }
+            }}
+            popoverProps={{ position: Position.BOTTOM, minimal: true }}
           />
           <span className="text-muted-foreground">—</span>
-          <input
-            type="date"
-            className="rounded border px-2 py-1 text-sm"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
+          <DateInput
+            formatDate={formatOrganizationDate}
+            parseDate={(str) => new Date(str)}
+            value={moment(toDate).toDate()}
+            onChange={(date) => {
+              if (date && moment(date).isValid()) {
+                setToDate(moment(date).format('YYYY-MM-DD'));
+              }
+            }}
+            popoverProps={{ position: Position.BOTTOM, minimal: true }}
           />
         </div>
       </div>

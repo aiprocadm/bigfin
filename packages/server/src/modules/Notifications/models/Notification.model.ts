@@ -11,6 +11,8 @@ export class Notification extends TenantBaseModel {
   readAt!: string | null;
   userId!: number | null;
   channelsSent!: string | null;
+  /** Момент, когда запись вытеснена более свежим повтором того же события. */
+  supersededAt!: string | null;
 
   static get tableName() {
     return 'notifications';

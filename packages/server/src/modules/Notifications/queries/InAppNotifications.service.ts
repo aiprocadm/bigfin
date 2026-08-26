@@ -41,6 +41,8 @@ export class InAppNotificationsService {
     const notifs: any[] = await this.notifModel()
       .query()
       .where('firedAt', '>=', this.feedCutoff())
+      // Вытесненные более свежим повтором записи лента не показывает.
+      .whereNull('supersededAt')
       .orderBy('firedAt', 'desc')
       .limit(limit);
 
@@ -104,6 +106,7 @@ export class InAppNotificationsService {
           .andOnVal('notification_reads.userId', '=', userId),
       )
       .where('notifications.firedAt', '>=', this.feedCutoff())
+      .whereNull('notifications.supersededAt')
       .whereNull('notification_reads.id')
       .count('notifications.id as count')
       .first();
@@ -147,6 +150,7 @@ export class InAppNotificationsService {
           .andOnVal('notification_reads.userId', '=', userId),
       )
       .where('notifications.firedAt', '>=', this.feedCutoff())
+      .whereNull('notifications.supersededAt')
       .whereNull('notification_reads.id')
       .select('notifications.id as id');
 

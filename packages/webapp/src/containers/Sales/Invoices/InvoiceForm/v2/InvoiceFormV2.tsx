@@ -56,6 +56,7 @@ import {
   useInvoiceFormV2Context,
   type ServerErrorsResponse,
 } from './InvoiceFormV2.types';
+import { resolveDefaultTaxRateId } from '@/utils/russianLegalAttributes/defaultTaxRate';
 import {
   applyInvoiceServerErrors,
   normalizeEntriesToForm,
@@ -75,7 +76,10 @@ interface InvoiceFormV2RootProps
   extends InvoiceSettingsProps,
     WithDialogActionsProps {
   // #withCurrentOrganization
-  organization: { base_currency: string };
+  // `tax_regime` — российский налоговый режим организации; по нему продукт
+  // сам подставляет ставку НДС (Н2 карты v22). У организаций других стран
+  // и у созданных до карты v22 он пуст — тогда ставку выбирает человек.
+  organization: { base_currency: string; tax_regime?: string };
 }
 
 /** Легаси-диалог номера счёта — ts-nocheck, кастуем сигнатуру локально. */
@@ -98,7 +102,7 @@ function InvoiceFormV2Root({
   invoiceAutoIncrementMode,
   invoiceCustomerNotes,
   invoiceTermsConditions,
-  organization: { base_currency },
+  organization: { base_currency, tax_regime },
   openDialog,
 }: InvoiceFormV2RootProps) {
   const history = useHistory();
@@ -118,6 +122,16 @@ function InvoiceFormV2Root({
     editInvoiceMutate,
   } = useInvoiceFormV2Context();
 
+  // Н2 карты v22: ставку НДС подставляет продукт — он знает налоговый режим
+  // организации. Предприниматель на упрощёнке НДС не платит вовсе, и
+  // выбирать «Без НДС» руками в каждой строке каждого счёта незачем. Если
+  // режим не задан или нужной ставки нет в справочнике, поле остаётся
+  // пустым, как раньше, и человек выбирает сам.
+  const defaultTaxRateId = React.useMemo(
+    () => resolveDefaultTaxRateId(taxRates, tax_regime),
+    [taxRates, tax_regime],
+  );
+
   // Начальные значения — та же логика, что в легаси InvoiceForm:
   // редактирование → transformToEditForm; создание → дефолты + настройки.
   const initialValues = React.useMemo<InvoiceFormValues>(() => {
@@ -133,7 +147,12 @@ function InvoiceFormV2Root({
                 ),
               }
             : {}),
-          entries: orderingLinesIndexes(defaultInvoice.entries),
+          entries: orderingLinesIndexes(
+            defaultInvoice.entries.map((entry: Record<string, unknown>) => ({
+              ...entry,
+              tax_rate_id: entry.tax_rate_id || defaultTaxRateId,
+            })),
+          ),
           currency_code: base_currency,
           invoice_message: defaultTo(invoiceCustomerNotes, ''),
           terms_conditions: defaultTo(invoiceTermsConditions, ''),
@@ -332,7 +351,10 @@ function InvoiceFormV2Root({
                 items={itemOptions}
                 showDiscount
                 taxRates={taxRateOptions}
-                emptyLine={{ ...defaultInvoiceEntry }}
+                emptyLine={{
+                  ...defaultInvoiceEntry,
+                  tax_rate_id: defaultTaxRateId,
+                }}
                 onItemChange={handleEntryItemChange}
               />
               <InvoiceFormTotalsV2 />

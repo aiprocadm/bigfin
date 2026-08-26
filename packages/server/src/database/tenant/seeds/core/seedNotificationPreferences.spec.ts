@@ -36,7 +36,7 @@ describe('сид правил уведомлений', () => {
   it('заводит правило на каждое событие продукта', async () => {
     const { knex, captured } = captureInsert();
 
-    await new SeedNotificationPreferences().up(knex);
+    await new SeedNotificationPreferences(knex).up(knex);
 
     expect(captured.table).toBe('notification_preferences');
     expect(captured.rows.map((row: any) => row.event_type)).toEqual([
@@ -47,7 +47,7 @@ describe('сид правил уведомлений', () => {
   it('каждое правило включено сразу', async () => {
     const { knex, captured } = captureInsert();
 
-    await new SeedNotificationPreferences().up(knex);
+    await new SeedNotificationPreferences(knex).up(knex);
 
     expect(captured.rows.every((row: any) => row.enabled === true)).toBe(true);
   });
@@ -55,7 +55,7 @@ describe('сид правил уведомлений', () => {
   it('каналы записываются явно — умолчания колонки TEXT в MySQL не работают', async () => {
     const { knex, captured } = captureInsert();
 
-    await new SeedNotificationPreferences().up(knex);
+    await new SeedNotificationPreferences(knex).up(knex);
 
     for (const row of captured.rows) {
       expect(typeof row.channels).toBe('string');

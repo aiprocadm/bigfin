@@ -61,6 +61,38 @@ function formatNames(names: string[], max = 3): string {
 }
 
 /**
+ * У4 карты v27: слово, согласованное с числом. «1 счёт / 3 счёта /
+ * 5 счетов» вместо заглушки «счёт(ов)». Правила берёт Intl.PluralRules,
+ * поэтому «21 счёт» и «111 счетов» получаются сами.
+ */
+export function pluralWord(
+  count: number,
+  ctx: NotificationFormatContext,
+  forms: { one: string; few?: string; many: string },
+): string {
+  const category = new Intl.PluralRules(localeTag(ctx.locale)).select(count);
+  if (category === 'one') return forms.one;
+  if (category === 'few') return forms.few ?? forms.many;
+  return forms.many;
+}
+
+// Слова шаблонов, которые согласуются с числом. Живут рядом с LOCALE_TAGS:
+// это та же локальная кухня подстановок, шаблоны получают слово готовым.
+const ACCOUNT_FORMS: Record<string, { one: string; few?: string; many: string }> = {
+  ru: { one: 'счёт', few: 'счёта', many: 'счетов' },
+  en: { one: 'account', many: 'accounts' },
+};
+const INVOICE_FORMS: Record<string, { one: string; few?: string; many: string }> = {
+  ru: { one: 'счёт', few: 'счёта', many: 'счетов' },
+  en: { one: 'invoice', many: 'invoices' },
+};
+
+const wordForms = (
+  table: Record<string, { one: string; few?: string; many: string }>,
+  locale: string,
+) => table[locale] ?? table.en;
+
+/**
  * Собирает аргументы шаблона по типу события.
  *
  * Неизвестный тип события возвращает payload как есть — шаблона для него всё
@@ -88,12 +120,22 @@ export function buildNotificationArgs(
         count: accounts.length,
         minAmount: formatNotificationMoney(Number(p.minAmount ?? 0), ctx),
         names: formatNames(accounts.map((a) => a?.name ?? '?')),
+        accountsWord: pluralWord(
+          accounts.length,
+          ctx,
+          wordForms(ACCOUNT_FORMS, ctx.locale),
+        ),
       };
     }
     case 'overdue':
       return {
         count: p.count ?? 0,
         total: formatNotificationMoney(Number(p.total ?? 0), ctx),
+        invoicesWord: pluralWord(
+          Number(p.count ?? 0),
+          ctx,
+          wordForms(INVOICE_FORMS, ctx.locale),
+        ),
       };
     // Н4 карты v22: сумма — деньгами, срок — датой на языке организации.
     case 'tax_due':

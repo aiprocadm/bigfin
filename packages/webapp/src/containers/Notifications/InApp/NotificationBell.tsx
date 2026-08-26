@@ -22,13 +22,16 @@ export function NotificationBell() {
   const enabled = featureCan(Features.Notifications);
   const { data } = useUnreadCount({ enabled });
   const count = data?.count ?? 0;
+  // Управляемое состояние: переход из уведомления закрывает выпадашку,
+  // иначе она остаётся висеть над новым разделом.
+  const [open, setOpen] = React.useState(false);
 
   if (!enabled) {
     return null;
   }
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
@@ -48,7 +51,7 @@ export function NotificationBell() {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-96 p-0">
-        <NotificationsList />
+        <NotificationsList onNavigate={() => setOpen(false)} />
       </PopoverContent>
     </Popover>
   );

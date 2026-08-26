@@ -42,3 +42,14 @@ export const withLabels = (options: readonly RequisiteOption[]) =>
     value: option.value,
     label: intl.get(option.labelKey),
   }));
+
+/**
+ * Режимы, где своя ставка налога имеет смысл (Н3б карты v22): упрощёнка и
+ * автоматизированная упрощёнка. На общей системе и патенте оценка налога не
+ * считается вовсе, поэтому и поле ставки там не показывается.
+ */
+export const TAX_RATE_REGIMES: readonly string[] = [
+  TaxRegime.USN_INCOME,
+  TaxRegime.USN_INCOME_EXPENSE,
+  TaxRegime.AUSN,
+];

@@ -143,4 +143,73 @@ describe('оценка налога на упрощёнке', () => {
       }),
     ).toBeNull();
   });
+
+  it('своя ставка региона главнее ставки режима', () => {
+    const result = estimateSimplifiedTax({
+      regime: TaxRegime.USN_INCOME,
+      income: 1_000_000,
+      expenses: 0,
+      today: '2026-08-26',
+      // Регион снизил упрощёнку «Доходы» до 1 % — по базовым 6 % оценка
+      // была бы в шесть раз больше настоящей.
+      customRatePercent: 1,
+    });
+
+    expect(result?.ratePercent).toBe(1);
+    expect(result?.amount).toBe(10_000);
+  });
+
+  it('нулевая своя ставка — это ноль к уплате, а не «оценки нет»', () => {
+    // Налоговые каникулы для новых ИП: ставка честно нулевая.
+    const result = estimateSimplifiedTax({
+      regime: TaxRegime.USN_INCOME,
+      income: 1_000_000,
+      expenses: 0,
+      today: '2026-08-26',
+      customRatePercent: 0,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.ratePercent).toBe(0);
+    expect(result?.amount).toBe(0);
+  });
+
+  it('своя ставка не задана — считаем по режиму', () => {
+    // null, а не отсутствие поля: так приходит пустая колонка реквизитов.
+    const result = estimateSimplifiedTax({
+      regime: TaxRegime.USN_INCOME,
+      income: 1_000_000,
+      expenses: 0,
+      today: '2026-08-26',
+      customRatePercent: null,
+    });
+
+    expect(result?.ratePercent).toBe(6);
+  });
+
+  it('бессмысленная своя ставка не применяется', () => {
+    for (const bad of [-5, 150, Number.NaN]) {
+      const result = estimateSimplifiedTax({
+        regime: TaxRegime.USN_INCOME,
+        income: 1_000_000,
+        expenses: 0,
+        today: '2026-08-26',
+        customRatePercent: bad,
+      });
+
+      expect(result?.ratePercent).toBe(6);
+    }
+  });
+
+  it('на патенте своя ставка ничего не меняет — оценки всё равно нет', () => {
+    expect(
+      estimateSimplifiedTax({
+        regime: TaxRegime.PATENT,
+        income: 1_000_000,
+        expenses: 0,
+        today: '2026-08-26',
+        customRatePercent: 3,
+      }),
+    ).toBeNull();
+  });
 });

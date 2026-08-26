@@ -29,6 +29,8 @@ const defaultValues: GeneralFormValues = {
   // Реквизиты организации (Р2 срез 1 карты v16).
   legal_form: '',
   tax_regime: '',
+  // Пусто = считать по ставке режима (Н3б карты v22).
+  tax_rate: '',
   inn: '',
   kpp: '',
   ogrn: '',

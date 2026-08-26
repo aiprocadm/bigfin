@@ -112,6 +112,20 @@ export class BuildOrganizationDto {
     example: TaxRegime.USN_INCOME,
   })
   taxRegime?: TaxRegime;
+
+  // Н6 карты v22. Юридическая форма: от неё зависят печатные формы — у ИП
+  // и самозанятого счёт-фактура подписывается иначе, чем у ООО. Пока её не
+  // спрашивали, продукт угадывал форму по длине ИНН, а ИНН при создании
+  // тоже не спрашивают.
+  @IsOptional()
+  @ValidateIf((o) => o.legalForm !== '')
+  @IsEnum(LegalForm)
+  @ApiPropertyOptional({
+    description: 'Russian legal form (OOO / IP / NPD / AO). Empty string means "not set".',
+    enum: LegalForm,
+    example: LegalForm.OOO,
+  })
+  legalForm?: LegalForm;
 }
 
 export class UpdateOrganizationDto {

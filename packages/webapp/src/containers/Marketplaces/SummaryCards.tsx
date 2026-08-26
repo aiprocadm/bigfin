@@ -1,9 +1,13 @@
 // © 2026 Bigfin
 import intl from 'react-intl-universal';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { MarketplaceSummary } from '@/hooks/query/marketplaces';
 
-const money = (v: number): string =>
-  new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(v ?? 0);
+// Сумму печатает общая утилита продукта: она знает валюту организации и
+// показывает рубль так, как принято — «45 000,00 ₽». Раньше здесь стоял
+// свой Intl.NumberFormat без знака валюты, и число висело без подписи
+// (Р1 карты v26).
+const money = (v: number): string => formatOrganizationMoney(v);
 
 function Card({ title, value }: { title: string; value: string }) {
   return (

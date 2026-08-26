@@ -15,15 +15,23 @@ import { NOTIFICATION_EVENTS } from '@/modules/Notifications/constants';
  * (горизонт кассового разрыва — неделя и так далее), а свои цифры владелец
  * поставит в настройках.
  *
- * Канал остаётся тот же, что в схеме таблицы (`email`): письмо уйдёт ТОЛЬКО
- * если владелец укажет адрес получателя — без адреса канал считается
- * ненастроенным и доставка пропускается. Заработает лента в приложении.
+ * Канал — `email`: письмо уйдёт ТОЛЬКО если владелец укажет адрес
+ * получателя, без адреса канал считается ненастроенным и доставка
+ * пропускается. Заработает лента в приложении.
+ *
+ * Канал записывается ЯВНО, хотя в миграции у колонки есть `defaultTo`.
+ * MariaDB и MySQL не принимают значения по умолчанию для колонок типа TEXT
+ * и молча их игнорируют, поэтому вставка без `channels` падала с
+ * «ER_NO_DEFAULT_FOR_FIELD: Field 'CHANNELS' doesn't have a default value»
+ * — и вместе с ней ломалась сборка ВСЕЙ новой организации. Держится
+ * тестом `seedNotificationPreferences.spec.ts`.
  */
 export default class SeedNotificationPreferences extends TenantSeeder {
   up(knex) {
     const rows = NOTIFICATION_EVENTS.map((eventType) => ({
       event_type: eventType,
       enabled: true,
+      channels: JSON.stringify(['email']),
     }));
 
     return knex('notification_preferences').insert(rows);

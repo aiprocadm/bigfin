@@ -1,5 +1,6 @@
 // @ts-nocheck
 import intl from 'react-intl-universal';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { useFormikContext } from 'formik';
 import {
   Button,
@@ -85,7 +86,7 @@ export function SharePaymentLinkFormContent() {
             <FDateInput
               name={'expiryDate'}
               popoverProps={{ position: Position.BOTTOM, minimal: true }}
-              formatDate={(date) => date.toLocaleDateString()}
+              formatDate={formatOrganizationDate}
               parseDate={(str) => new Date(str)}
               inputProps={{
                 fill: true,

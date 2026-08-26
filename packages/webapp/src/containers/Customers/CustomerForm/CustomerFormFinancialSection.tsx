@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { ErrorMessage, useFormikContext } from 'formik';
 import { Features } from '@/constants';
@@ -91,7 +92,7 @@ function CustomerOpeningBalanceAtField() {
         name={'opening_balance_at'}
         popoverProps={{ position: Position.BOTTOM, minimal: true }}
         disabled={customerId}
-        formatDate={(date) => date.toLocaleDateString()}
+        formatDate={formatOrganizationDate}
         parseDate={(str) => new Date(str)}
         inputProps={{
           leftIcon: <Icon icon={'date-range'} />,

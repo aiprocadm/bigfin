@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Classes, Position, FormGroup, ControlGroup } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { isEqual } from 'lodash';
@@ -67,7 +68,7 @@ function CustomerOpeningBalanceFields({
       >
         <FDateInput
           name={'opening_balance_at'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{ position: Position.BOTTOM, minimal: true }}
           inputProps={{

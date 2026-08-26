@@ -1,5 +1,6 @@
 // @ts-nocheck
 import styled from 'styled-components';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import { Position, Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -72,7 +73,7 @@ export default function EstimateFormHeader() {
       >
         <FDateInput
           name={'estimate_date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
           inputProps={{
@@ -93,7 +94,7 @@ export default function EstimateFormHeader() {
       >
         <FDateInput
           name={'expiration_date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
           inputProps={{

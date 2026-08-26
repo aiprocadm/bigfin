@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { formattedAmount } from '@/utils';
 import {
   Controller,
   useFieldArray,
@@ -108,12 +109,21 @@ export function computeLinesTotal(
   );
 }
 
-/** Формат денег для вычисляемых ячеек (2 знака, локаль браузера). */
-function formatAmount(value: number): string {
-  return value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+/**
+ * Формат денег для вычисляемых ячеек.
+ *
+ * Раньше здесь стоял `toLocaleString(undefined, …)` — то есть формат брался
+ * из БРАУЗЕРА. В одной и той же форме счёта сумма показывалась двумя
+ * способами: в строке `100,000.00`, а в итогах ниже — `100 000,00 ₽`
+ * (их считает `formattedAmount`). У человека с русским браузером всё
+ * выглядело прилично, у человека с английским запятая означала копейки.
+ *
+ * Теперь формат один и тот же — по валюте организации, как в итогах.
+ * Валюты может не быть (общий компонент, документ без валюты) — тогда
+ * печатаем просто число по русским правилам, без знака.
+ */
+function formatAmount(value: number, currencyCode?: string): string {
+  return formattedAmount(value, currencyCode ?? '', {});
 }
 
 export interface LineItemsEditorProps {
@@ -139,6 +149,12 @@ export interface LineItemsEditorProps {
   emptyLine?: Partial<LineItemValues> & Record<string, unknown>;
   /** Колбэк после выбора позиции в строке (автоподстановка цены и пр.). */
   onItemChange?: (index: number, itemId: string) => void;
+  /**
+   * Валюта документа (`RUB`, `USD`…). По ней печатаются суммы в строках и
+   * итог — так же, как в блоке итогов внизу формы. Без неё сумма печатается
+   * числом по русским правилам, без знака валюты.
+   */
+  currencyCode?: string;
 }
 
 /**
@@ -155,6 +171,7 @@ export function LineItemsEditor({
   taxRates,
   emptyLine,
   onItemChange,
+  currencyCode,
 }: LineItemsEditorProps) {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name });
@@ -300,6 +317,7 @@ export function LineItemsEditor({
                       lines[index]?.rate,
                       lines[index]?.discount,
                     ),
+                    currencyCode,
                   )}
                 </td>
                 <td className="px-1.5 py-1 text-center">
@@ -338,7 +356,7 @@ export function LineItemsEditor({
             {intl.get('total')}
           </span>
           <span className="text-sm font-semibold tabular-nums text-text-primary">
-            {formatAmount(total)}
+            {formatAmount(total, currencyCode)}
           </span>
         </div>
       </div>

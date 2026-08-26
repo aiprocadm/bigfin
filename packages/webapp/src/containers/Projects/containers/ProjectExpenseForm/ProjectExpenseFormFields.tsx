@@ -57,7 +57,6 @@ export default function ProjectExpenseFormFields() {
         <FDateInput
           {...momentFormatter('YYYY/MM/DD')}
           name="expemseDate"
-          formatDate={(date) => date.toLocaleString()}
           popoverProps={{
             position: Position.BOTTOM,
             minimal: true,

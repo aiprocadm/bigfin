@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import { FormGroup, ControlGroup, Position, Classes } from '@blueprintjs/core';
 import { FastField, ErrorMessage, useFormikContext } from 'formik';
@@ -134,7 +135,7 @@ function VendorOpeningBalanceAtField() {
         name={'opening_balance_at'}
         popoverProps={{ position: Position.BOTTOM, minimal: true }}
         disabled={vendorId}
-        formatDate={(date) => date.toLocaleDateString()}
+        formatDate={formatOrganizationDate}
         parseDate={(str) => new Date(str)}
         fill
         fastField

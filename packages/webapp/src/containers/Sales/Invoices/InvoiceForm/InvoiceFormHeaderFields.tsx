@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import styled from 'styled-components';
 import classNames from 'classnames';
 import { Position, Classes } from '@blueprintjs/core';
@@ -78,7 +79,7 @@ export default function InvoiceFormHeaderFields() {
       >
         <FDateInput
           name={'invoice_date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{
             position: Position.BOTTOM_LEFT,
@@ -103,7 +104,7 @@ export default function InvoiceFormHeaderFields() {
       >
         <FDateInput
           name={'due_date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{
             position: Position.BOTTOM_LEFT,

@@ -348,6 +348,7 @@ function InvoiceFormV2Root({
             <CardContent className="space-y-4 p-4 sm:p-5">
               <LineItemsEditor
                 name="entries"
+                currencyCode={base_currency}
                 items={itemOptions}
                 showDiscount
                 taxRates={taxRateOptions}

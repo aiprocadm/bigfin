@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useMemo } from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import intl from 'react-intl-universal';
 import moment from 'moment';
 import { Button, Tabs, Tab, DrawerSize, Position } from '@blueprintjs/core';
@@ -173,7 +174,7 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                     <FDateInput
                       name="fromDate"
                       popoverProps={{ position: Position.BOTTOM, minimal: true }}
-                      formatDate={(date) => date.toLocaleDateString()}
+                      formatDate={formatOrganizationDate}
                       parseDate={(str) => new Date(str)}
                       inputProps={{ fill: true }}
                       fastField
@@ -190,7 +191,7 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                       name="toDate"
                       type="date"
                       popoverProps={{ position: Position.BOTTOM, minimal: true }}
-                      formatDate={(date) => date.toLocaleDateString()}
+                      formatDate={formatOrganizationDate}
                       parseDate={(str) => new Date(str)}
                       inputProps={{ fill: true }}
                       fastField

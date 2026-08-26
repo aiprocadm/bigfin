@@ -27,5 +27,9 @@ import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
     GetTaxEstimateService,
   ],
   controllers: [DashboardController],
+  // Оценку налога спрашивает и правило уведомления «скоро платить налог»
+  // (Н4 карты v22). Провайдер чужого модуля должен быть в exports, иначе
+  // сервер не поднимается — на этом уже спотыкались трижды.
+  exports: [GetTaxEstimateService],
 })
 export class DashboardModule {}

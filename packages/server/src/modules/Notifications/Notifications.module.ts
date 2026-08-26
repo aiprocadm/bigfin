@@ -7,6 +7,7 @@ import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.mod
 import { TenancyModule } from '@/modules/Tenancy/Tenancy.module';
 import { MailModule } from '@/modules/Mail/Mail.module';
 import { FeaturesModule } from '@/modules/Features/Features.module';
+import { DashboardModule } from '../Dashboard/Dashboard.module';
 import { ExchangeRatesModule } from '@/modules/ExchangeRates/ExchangeRates.module';
 import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/queries/GetPaymentCalendarForecast.service';
 import { NotificationsController } from './Notifications.controller';
@@ -15,6 +16,7 @@ import { NotificationsSettingsService } from './NotificationsSettings.service';
 import { NotificationTextsService } from './NotificationTexts.service';
 import { CashGapEvaluatorService } from './evaluators/CashGapEvaluator.service';
 import { LowBalanceEvaluatorService } from './evaluators/LowBalanceEvaluator.service';
+import { TaxDueEvaluatorService } from './evaluators/TaxDueEvaluator.service';
 import { OverdueEvaluatorService } from './evaluators/OverdueEvaluator.service';
 import { EmailChannelService } from './delivery/EmailChannel.service';
 import { TelegramApiService } from './delivery/TelegramApi.service';
@@ -36,6 +38,9 @@ import { NOTIFICATIONS_QUEUE, TELEGRAM_ENTRIES_QUEUE } from './constants';
   imports: [
     TenancyDatabaseModule,
     TenancyModule,
+    // Оценка налога для правила «скоро платить налог» (Н4 карты v22):
+    // считаем ею же, что и плитка на главной, второго способа быть не должно.
+    DashboardModule,
     MailModule,
     FeaturesModule,
     ExchangeRatesModule,
@@ -59,6 +64,7 @@ import { NOTIFICATIONS_QUEUE, TELEGRAM_ENTRIES_QUEUE } from './constants';
     NotificationTextsService,
     CashGapEvaluatorService,
     LowBalanceEvaluatorService,
+    TaxDueEvaluatorService,
     OverdueEvaluatorService,
     EmailChannelService,
     TelegramApiService,

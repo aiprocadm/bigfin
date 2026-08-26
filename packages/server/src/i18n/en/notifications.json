@@ -5,6 +5,8 @@
   "low_balance.body": "{count} account(s) below the {minAmount} threshold: {names}.",
   "overdue.title": "Overdue customer invoices",
   "overdue.body": "{count} invoice(s) are overdue, totaling {total}.",
+  "tax_due.title": "Tax payment is due soon",
+  "tax_due.body": "Estimated quarterly tax is {amount} (rate {ratePercent}%). Due by {dueDate}. The amount is an estimate: contributions and reliefs are not included.",
   "email_footer": "Open Bigfin to see details.",
   "telegram": {
     "connected_message": "✅ Bigfin connected. Notifications will arrive here."

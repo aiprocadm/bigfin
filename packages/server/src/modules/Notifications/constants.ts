@@ -1,5 +1,14 @@
 // © 2026 Bigfin
-export const NOTIFICATION_EVENTS = ['cash_gap', 'low_balance', 'overdue'] as const;
+// Список событий, о которых продукт умеет предупреждать. Из него же
+// заводятся правила новой организации (сид), поэтому новое событие
+// автоматически получает правило — руками список не переписываем.
+export const NOTIFICATION_EVENTS = [
+  'cash_gap',
+  'low_balance',
+  'overdue',
+  // Н4 карты v22: срок уплаты налога — самый предсказуемый платёж года.
+  'tax_due',
+] as const;
 export type NotificationEvent = (typeof NOTIFICATION_EVENTS)[number];
 
 export const NOTIFICATIONS_QUEUE = 'notifications-evaluation';

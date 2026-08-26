@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import { FormGroup, InputGroup, Position } from '@blueprintjs/core';
@@ -67,7 +68,7 @@ export default function CreditNoteFormHeaderFields() {
       >
         <FDateInput
           name={'credit_note_date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
           inputProps={{

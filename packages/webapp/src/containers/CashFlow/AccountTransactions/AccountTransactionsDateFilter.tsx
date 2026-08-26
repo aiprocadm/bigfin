@@ -1,5 +1,6 @@
 // @ts-nocheck
 import intl from 'react-intl-universal';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Button, FormGroup, Intent, Position } from '@blueprintjs/core';
 import * as Yup from 'yup';
 import moment from 'moment';
@@ -75,7 +76,7 @@ export function AccountTransactionsDateFilterForm({
               <FDateInput
                 name={'fromDate'}
                 popoverProps={{ position: Position.BOTTOM, minimal: true }}
-                formatDate={(date) => date.toLocaleDateString()}
+                formatDate={formatOrganizationDate}
                 parseDate={(str) => new Date(str)}
                 inputProps={{
                   fill: true,
@@ -93,7 +94,7 @@ export function AccountTransactionsDateFilterForm({
               <FDateInput
                 name={'toDate'}
                 popoverProps={{ position: Position.BOTTOM, minimal: true }}
-                formatDate={(date) => date.toLocaleDateString()}
+                formatDate={formatOrganizationDate}
                 parseDate={(str) => new Date(str)}
                 inputProps={{
                   fill: true,

@@ -45,7 +45,6 @@ export default function ProjectBillableEntriesFormFields() {
         <FDateInput
           {...momentFormatter('YYYY/MM/DD')}
           name="date"
-          formatDate={(date) => date.toLocaleString()}
           popoverProps={{
             position: Position.BOTTOM,
             minimal: true,

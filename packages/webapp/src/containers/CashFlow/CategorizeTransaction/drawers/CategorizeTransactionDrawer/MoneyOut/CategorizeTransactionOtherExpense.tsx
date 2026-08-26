@@ -1,5 +1,6 @@
 // @ts-nocheck
 import intl from 'react-intl-universal';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Position } from '@blueprintjs/core';
 import {
   AccountsSelect,
@@ -21,7 +22,7 @@ export default function CategorizeTransactionOtherExpense() {
         <FDateInput
           name={'date'}
           popoverProps={{ position: Position.BOTTOM, minimal: true }}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           inputProps={{ fill: true, leftElement: <Icon icon={'date-range'} /> }}
         />

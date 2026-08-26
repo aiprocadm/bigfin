@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import intl from 'react-intl-universal';
 import { ShieldCheck, ShieldOff } from 'lucide-react';
 
@@ -119,7 +120,7 @@ export const TwoFactorCard = () => {
               {state.enabledAt ? (
                 <p>
                   {intl.get('two_factor.enabled_at')}{' '}
-                  {new Date(state.enabledAt).toLocaleDateString()}
+                  {formatOrganizationDate(new Date(state.enabledAt))}
                 </p>
               ) : null}
               <p>

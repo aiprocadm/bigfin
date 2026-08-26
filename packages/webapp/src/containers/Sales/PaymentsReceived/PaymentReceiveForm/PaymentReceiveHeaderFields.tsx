@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useMemo } from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import {
@@ -122,7 +123,7 @@ export default function PaymentReceiveHeaderFields() {
       >
         <FDateInput
           name={'payment_date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
           inputProps={{

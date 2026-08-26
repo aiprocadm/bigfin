@@ -53,7 +53,6 @@ function ProjectFormFields() {
             <FDateInput
               {...momentFormatter('YYYY/MM/DD')}
               name="deadline"
-              formatDate={(date) => date.toLocaleString()}
               popoverProps={{
                 position: Position.BOTTOM,
                 minimal: true,

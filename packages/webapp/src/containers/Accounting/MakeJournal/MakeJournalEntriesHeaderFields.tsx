@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Position } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import classNames from 'classnames';
@@ -61,7 +62,7 @@ export default function MakeJournalEntriesHeader({}) {
       >
         <FDateInput
           name={'date'}
-          formatDate={(date) => date.toLocaleDateString()}
+          formatDate={formatOrganizationDate}
           parseDate={(str) => new Date(str)}
           popoverProps={{
             position: Position.BOTTOM_LEFT,

@@ -31,6 +31,7 @@ import { AccountDialogAction } from '@/containers/Dialogs/AccountDialog/utils';
 import { compose } from '@/utils';
 
 import type { AccountDetail } from './types';
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
 
 interface AccountDetailsHeaderV2Props {
   account: AccountDetail;
@@ -152,9 +153,11 @@ function AccountDetailsHeaderV2Root({
         </span>
       </div>
 
-      {account.account_type_label ? (
+      {/* Подпись типа — из словаря по ключу: сервер отдаёт её по-английски
+          (С1 карты v29). */}
+      {accountTypeLabel(account.account_type, account.account_type_label) ? (
         <p className="text-sm text-text-secondary">
-          {account.account_type_label}
+          {accountTypeLabel(account.account_type, account.account_type_label)}
         </p>
       ) : null}
     </DrawerHeader>

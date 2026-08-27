@@ -4,7 +4,9 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Tag } from '@blueprintjs/core';
 import { isBlank } from '@/utils';
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
 import { Link } from 'react-router-dom';
+import { accountBalanceText } from '@/utils/accountBalance';
 
 /**
  * Account code accessor.
@@ -22,10 +24,15 @@ export const AccountCodeAccessor = (row) =>
 export const BalanceCell = ({ cell }) => {
   const account = cell.row.original;
 
-  return account.amount !== null ? (
-    <span>{account.formatted_amount}</span>
-  ) : (
-    <span className="placeholder">—</span>
+  // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).
+  return (
+    <span>
+      {accountBalanceText(
+        account.amount,
+        account.formatted_amount,
+        account.currency_code,
+      )}
+    </span>
   );
 };
 
@@ -67,7 +74,10 @@ export function useCashFlowAccountsTableColumns() {
       {
         id: 'type',
         Header: intl.get('type'),
-        accessor: 'account_type_label',
+        // Подпись типа — из словаря по ключу: сервер отдаёт её
+        // по-английски (С1 карты v29).
+        accessor: (row: any) =>
+          accountTypeLabel(row.account_type, row.account_type_label),
         className: 'type',
         width: 140,
         textOverview: true,

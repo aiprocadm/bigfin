@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { payrollRunSchema, PayrollRunFormValues } from './schemas';
 import { useCreatePayrollRun } from '@/hooks/query/payroll';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   onDone: () => void;
@@ -88,7 +89,10 @@ export function PayrollRunDialog({ onDone, onCancel }: Props) {
                 <FormItem>
                   <FormLabel>{intl.get('payroll.run.pay_date')}</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

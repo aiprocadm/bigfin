@@ -1,8 +1,8 @@
 import * as React from 'react';
-import moment from 'moment';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
+import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
@@ -38,7 +38,11 @@ export function DatePicker({
           )}
         >
           <CalendarIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden />
-          {value ? moment(value).format('DD.MM.YYYY') : placeholder}
+          {/* Дата печатается по формату организации, а не зашитым
+              «ДД.ММ.ГГГГ» (Ж1 карты v32): организация может выбрать
+              другой формат в настройках, и списки рядом печатают именно
+              его. */}
+          {value ? formatOrganizationDate(value) : placeholder}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">

@@ -25,6 +25,7 @@ import {
   useCreatePlannedOperation,
   useEditPlannedOperation,
 } from '@/hooks/query/paymentCalendar';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   operation?: PlannedOperation;
@@ -186,7 +187,10 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
                     {intl.get('payment_calendar.field.date')}
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -356,13 +360,9 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
                         {intl.get('payment_calendar.field.end_date')}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          type="date"
+                        <DateField
                           value={field.value ?? ''}
                           onChange={field.onChange}
-                          onBlur={field.onBlur}
-                          name={field.name}
-                          ref={field.ref}
                         />
                       </FormControl>
                       <FormMessage />

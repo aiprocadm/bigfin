@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useAccounts } from '@/hooks/query';
 import { useCreateCredit } from '@/hooks/query/credits';
 import { getCreateCreditSchema, CreateCreditFormValues } from './schemas';
+import { DateField } from '@/components/ui/date-field';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
@@ -218,7 +219,10 @@ export function CreditCreateDialog({ onDone, onCancel }: Props) {
                       {intl.get('credits.field.start_date')}
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

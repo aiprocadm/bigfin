@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useAccounts } from '@/hooks/query';
 import { useCreateFixedAsset } from '@/hooks/query/fixed-assets';
 import { getCreateFixedAssetSchema, CreateFixedAssetValues } from './schemas';
+import { DateField } from '@/components/ui/date-field';
 
 // Типы счетов — с дефисами, как в constants/accountTypes (сервер отвергает
 // счёт иного типа с ошибкой ASSET_ACCOUNT_NOT_FIXED).
@@ -223,7 +224,10 @@ export function FixedAssetCreateDialog({ onDone, onCancel }: Props) {
                       {intl.get('fixed_assets.form.commissioned_at')}
                     </FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

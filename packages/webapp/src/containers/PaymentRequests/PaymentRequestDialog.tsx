@@ -19,6 +19,7 @@ import { useManagementArticles } from '@/hooks/query/managementArticles';
 import { useAccounts } from '@/hooks/query/accounts';
 import { getPaymentRequestSchema, PaymentRequestFormValues } from './schemas';
 import { useCreatePaymentRequest } from '@/hooks/query/paymentRequests';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   onDone: () => void;
@@ -119,7 +120,10 @@ export function PaymentRequestDialog({ onDone, onCancel }: Props) {
                     {intl.get('payment_requests.field.due_date')}
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

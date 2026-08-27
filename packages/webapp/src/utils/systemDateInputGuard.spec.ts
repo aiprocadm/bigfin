@@ -17,26 +17,12 @@ import path from 'path';
  */
 const SRC = path.resolve(__dirname, '..');
 
-/** Старые экраны с системным полем даты — долг, чинится по срезам. */
-const ALLOWED = [
-  'containers/Acquiring/AcquiringPage.tsx',
-  'containers/BankApiSync/ImportStatementForm.tsx',
-  'containers/CostAllocation/CostAllocationRuleDialog.tsx',
-  'containers/Credits/CreditCreateDialog.tsx',
-  'containers/Deals/DealDialog.tsx',
-  'containers/Deals/DealStageDialog.tsx',
-  'containers/Debts/RepaymentPlanDialog.tsx',
-  'containers/Dividends/DividendsPage.tsx',
-  'containers/FinancialRatios/FinancialRatiosPage.tsx',
-  'containers/FinancialStatements/AuditLog/AuditLogHeader.tsx',
-  'containers/FixedAssets/FixedAssetCreateDialog.tsx',
-  'containers/FixedAssets/FixedAssetDetailCard.tsx',
-  'containers/Marketplaces/MarketplacesPage.tsx',
-  'containers/OnecExport/OnecExportPage.tsx',
-  'containers/PaymentCalendar/PlannedOperationDialog.tsx',
-  'containers/PaymentRequests/PaymentRequestDialog.tsx',
-  'containers/Payroll/PayrollRunDialog.tsx',
-];
+/**
+ * Экраны с системным полем даты. Долг закрыт целиком (Ж2 карты v32):
+ * все семнадцать экранов перешли на поле продукта, список пуст и должен
+ * таким остаться.
+ */
+const ALLOWED: string[] = [];
 
 const sourceFiles = (dir: string): string[] =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

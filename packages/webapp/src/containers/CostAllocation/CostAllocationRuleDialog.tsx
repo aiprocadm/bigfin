@@ -22,6 +22,7 @@ import {
   CostAllocationRuleFormValues,
   ALLOCATION_KEYS,
 } from './schemas';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   initialValues?: Partial<CostAllocationRuleFormValues> & { id?: number };
@@ -242,7 +243,10 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
                     {intl.get('cost_allocation.field.valid_from')}
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} value={field.value ?? ''} />
+                    <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -259,7 +263,10 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
                     {intl.get('cost_allocation.field.valid_to')}
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} value={field.value ?? ''} />
+                    <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

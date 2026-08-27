@@ -44,6 +44,6 @@ export class APAgingSummaryTable extends AgingSummaryTable {
    * @returns {ITableColumn}
    */
   contactNameTableColumn = (): ITableColumn => {
-    return { label: 'Vendor name', key: 'vendor_name' };
+    return { label: this.i18n.t('report_columns.vendor_name'), key: 'vendor_name' };
   };
 }

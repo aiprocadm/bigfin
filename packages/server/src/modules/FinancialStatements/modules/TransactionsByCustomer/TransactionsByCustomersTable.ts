@@ -88,13 +88,13 @@ export class TransactionsByCustomersTable extends TransactionsByContactsTableRow
    */
   public tableColumns = (): ITableColumn[] => {
     return [
-      { key: 'customer_name', label: 'Customer name' },
-      { key: 'account_name', label: 'Account Name' },
-      { key: 'ref_type', label: 'Reference Type' },
-      { key: 'transaction_type', label: 'Transaction Type' },
-      { key: 'credit', label: 'Credit' },
-      { key: 'debit', label: 'Debit' },
-      { key: 'running_balance', label: 'Running Balance' },
+      { key: 'customer_name', label: this.i18n.t('report_columns.customer_name') },
+      { key: 'account_name', label: this.i18n.t('report_columns.account_name') },
+      { key: 'ref_type', label: this.i18n.t('report_columns.reference_type') },
+      { key: 'transaction_type', label: this.i18n.t('report_columns.transaction_type') },
+      { key: 'credit', label: this.i18n.t('report_columns.credit') },
+      { key: 'debit', label: this.i18n.t('report_columns.debit') },
+      { key: 'running_balance', label: this.i18n.t('report_columns.running_balance') },
     ];
   };
 }

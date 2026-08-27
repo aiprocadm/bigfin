@@ -10,19 +10,26 @@ import { FinancialTable } from '../../common/FinancialTable';
 import { FinancialSheetStructure } from '../../common/FinancialSheetStructure';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { tableRowMapper } from '../../utils/Table.utils';
+import { I18nService } from 'nestjs-i18n';
 
 export class PurchasesByItemsTable extends R.compose(
   FinancialTable,
   FinancialSheetStructure
 )(FinancialSheet) {
+  /** Переводчик подписей столбцов: базовый класс объявляет поле
+   * только для чтения, поэтому переобъявляем — как в JournalSheetTable. */
+  i18n: any;
+
   private data: IPurchasesByItemsSheetData;
 
   /**
    * Constructor method.
    * @param data
    */
-  constructor(data: IPurchasesByItemsSheetData) {
+  constructor(data: IPurchasesByItemsSheetData, i18n: I18nService) {
     super();
+    // Подписи столбцов печатаются на языке организации (Л2 карты v34).
+    this.i18n = i18n;
     this.data = data;
   }
 
@@ -45,10 +52,10 @@ export class PurchasesByItemsTable extends R.compose(
    */
   private commonTableColumns(): ITableColumn[] {
     return [
-      { label: 'Item name', key: 'item_name' },
-      { label: 'Quantity Purchased', key: 'quantity_purchases' },
-      { label: 'Purchase Amount', key: 'purchase_amount' },
-      { label: 'Average Price', key: 'average_cost' },
+      { label: this.i18n.t('report_columns.item_name'), key: 'item_name' },
+      { label: this.i18n.t('report_columns.quantity_purchased'), key: 'quantity_purchases' },
+      { label: this.i18n.t('report_columns.purchase_amount'), key: 'purchase_amount' },
+      { label: this.i18n.t('report_columns.average_price'), key: 'average_cost' },
     ];
   }
 

@@ -120,14 +120,14 @@ export class JournalSheetTable extends R.pipe(
    */
   private commonColumns(): ITableColumn[] {
     return [
-      { key: 'date', label: 'Date' },
-      { key: 'transaction_type', label: 'Transaction Type' },
-      { key: 'transaction_number', label: 'Num.' },
-      { key: 'description', label: 'Description' },
-      { key: 'account_code', label: 'Acc. Code' },
-      { key: 'account_name', label: 'Account' },
-      { key: 'debit', label: 'Debit' },
-      { key: 'credit', label: 'Credit' },
+      { key: 'date', label: this.i18n.t('report_columns.date') },
+      { key: 'transaction_type', label: this.i18n.t('report_columns.transaction_type') },
+      { key: 'transaction_number', label: this.i18n.t('report_columns.number') },
+      { key: 'description', label: this.i18n.t('report_columns.description') },
+      { key: 'account_code', label: this.i18n.t('report_columns.account_code') },
+      { key: 'account_name', label: this.i18n.t('report_columns.account') },
+      { key: 'debit', label: this.i18n.t('report_columns.debit') },
+      { key: 'credit', label: this.i18n.t('report_columns.credit') },
     ];
   }
 

@@ -13,6 +13,8 @@ import { CleanupOneClickDemosJob } from './jobs/CleanupOneClickDemos.job';
 import { CustomersModule } from '../Customers/Customers.module';
 import { ItemsModule } from '../Items/Items.module';
 import { SaleInvoicesModule } from '../SaleInvoices/SaleInvoices.module';
+import { PaymentsReceivedModule } from '../PaymentReceived/PaymentsReceived.module';
+import { ExpensesModule } from '../Expenses/Expenses.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
 
@@ -30,6 +32,9 @@ import { AccountsModule } from '../Accounts/Accounts.module';
     CustomersModule,
     ItemsModule,
     SaleInvoicesModule,
+    // Деньги в демо: оплаты по счетам и расходы (С3 карты v29).
+    PaymentsReceivedModule,
+    ExpensesModule,
     TenancyModule,
     // Модель счёта учёта: демо-товарам нужен счёт доходов из плана счетов.
     AccountsModule,

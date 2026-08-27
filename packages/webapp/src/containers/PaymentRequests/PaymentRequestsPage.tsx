@@ -11,10 +11,11 @@ import {
   useCancelPaymentRequest,
 } from '@/hooks/query/paymentRequests';
 import { PaymentRequestDialog } from './PaymentRequestDialog';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 type StatusFilter = '' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
-const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 
 const STATUS_TABS: { key: StatusFilter; label: string }[] = [
   { key: '', label: 'payment_requests.filter.all' },

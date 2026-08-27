@@ -34,6 +34,21 @@ const ALLOWED = [
   'components/Dashboard/DashboardSummary.tsx',
 ];
 
+/**
+ * Места, где знак валюты или локаль вписаны руками осознанно.
+ * Список может только уменьшаться.
+ */
+const ALLOWED_HARDCODED = [
+  // Общая утилита денег: она и есть то самое единственное место, где
+  // знак валюты появляется.
+  'utils/index.tsx',
+  // Сетка бюджета — ПОЛЯ ВВОДА: человек вписывает суммы руками, знак
+  // валюты в поле мешал бы вводу. Итоги в тех же столбцах печатаются
+  // так же, чтобы колонка читалась одинаково.
+  'containers/Budgets/budgetFormatters.ts',
+  'containers/Budgets/BudgetGrid.tsx',
+];
+
 const sourceFiles = (dir: string): string[] =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
@@ -71,6 +86,44 @@ describe('формат денег', () => {
       if (!/Intl\.NumberFormat/.test(code)) return;
 
       offenders.push(relative);
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
+  /**
+   * Э1 карты v31. Ловим правило по существу, а не по именам.
+   *
+   * Проверка выше искала помощников с говорящими именами (`money`,
+   * `amountFormat`, `formatMoney`). В десяти новых разделах их назвали
+   * `fmt` — и она прошла мимо двадцати одного места вида
+   *
+   *   const fmt = (n) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+   *
+   * которые теряют копейки, зашивают рубль мимо валюты организации и
+   * зашивают русскую локаль. Признак надёжнее имени: знак валюты или
+   * локаль, вписанные руками.
+   */
+  it('знак валюты и локаль не вписываются в код руками', () => {
+    const offenders: string[] = [];
+
+    files.forEach((file) => {
+      const relative = path.relative(SRC, file);
+      if (ALLOWED_HARDCODED.includes(relative)) return;
+
+      const code = fs
+        .readFileSync(file, 'utf8')
+        .split('\n')
+        .filter((line) => !/^\s*(\/\/|\*|\/\*)/.test(line))
+        .join('\n');
+
+      // Ловим СБОРКУ строки на ходу: `${…} ₽`. Готовая строка-образец
+      // («1000,00 ₽» как значение по умолчанию в предпросмотре шаблона) —
+      // не печатник и никого не обманывает.
+      const buildsMoney = /\$\{[^}]*\}[^`'"]{0,4}₽/.test(code);
+      const hardcodedLocale = /toLocaleString\(\s*['"]ru-RU['"]/.test(code);
+
+      if (buildsMoney || hardcodedLocale) offenders.push(relative);
     });
 
     expect(offenders).toEqual([]);

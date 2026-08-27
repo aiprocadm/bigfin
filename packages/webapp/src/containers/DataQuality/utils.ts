@@ -1,9 +1,10 @@
 // © 2026 Bigfin
 import intl from 'react-intl-universal';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 /** Money formatting — same pattern as Payroll/Debts pages. */
 export const fmt = (n: number | undefined | null) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 /** Formats an ISO date as a short ru-RU date; falls back to raw value. */
 export const fmtDate = (value: string | undefined | null) => {

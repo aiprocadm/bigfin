@@ -14,9 +14,10 @@ import { SegmentTable, ProductTable } from './SegmentTables';
 import { MarketingPanel } from './MarketingPanel';
 import { BreakEvenPanel } from './BreakEvenPanel';
 import { formatShortDate } from '@/utils/formatShortDate';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const fmtMoney = (n: number | null | undefined) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 const fmtPct = (frac: number | null | undefined) =>
   `${Math.round((frac ?? 0) * 1000) / 10}%`;
 

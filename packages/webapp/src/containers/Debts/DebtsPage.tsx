@@ -5,10 +5,11 @@ import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
 import { useDebtsOverview, useRepaymentPlans } from '@/hooks/query/debts';
 import { DebtsContactRow } from './DebtsContactRow';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 type Side = 'receivable' | 'payable';
 
-const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 
 const BUCKET_LABELS = [
   'debts.aging.0_30',

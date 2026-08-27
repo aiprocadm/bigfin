@@ -10,9 +10,10 @@ import {
   useDeleteKpiTarget,
 } from '@/hooks/query/payroll';
 import { KpiTargetDialog } from './KpiTargetDialog';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const fmt = (n: number | undefined | null) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const fmtMonth = (value: string) => {
   try {

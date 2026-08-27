@@ -10,9 +10,10 @@ import {
   useUpsertMarketingMonthly,
   useSetCustomerLifetime,
 } from '@/hooks/query/financialModel';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const fmtMoney = (n: number | null | undefined) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const btn = 'rounded border px-3 py-1 text-sm hover:bg-muted disabled:opacity-50';
 const input = 'rounded border px-2 py-1 text-sm';

@@ -14,19 +14,26 @@ import {
   ITableRow,
 } from '../../types/Table.types';
 import { tableRowMapper } from '../../utils/Table.utils';
+import { I18nService } from 'nestjs-i18n';
 
 export class InventoryValuationSheetTable extends R.pipe(
   FinancialTable,
   FinancialSheetStructure,
 )(FinancialSheet) {
+  /** Переводчик подписей столбцов: базовый класс объявляет поле
+   * только для чтения, поэтому переобъявляем — как в JournalSheetTable. */
+  i18n: any;
+
   private readonly data: IInventoryValuationSheetData;
 
   /**
    * Constructor method.
    * @param {IInventoryValuationSheetData} data
    */
-  constructor(data: IInventoryValuationSheetData) {
+  constructor(data: IInventoryValuationSheetData, i18n: I18nService) {
     super();
+    // Подписи столбцов печатаются на языке организации (Л2 карты v34).
+    this.i18n = i18n;
     this.data = data;
   }
 
@@ -97,10 +104,10 @@ export class InventoryValuationSheetTable extends R.pipe(
    */
   public tableColumns(): ITableColumn[] {
     const columns = [
-      { key: 'item_name', label: 'Item Name' },
-      { key: 'quantity', label: 'Quantity' },
-      { key: 'valuation', label: 'Valuation' },
-      { key: 'average', label: 'Average' },
+      { key: 'item_name', label: this.i18n.t('report_columns.item_name') },
+      { key: 'quantity', label: this.i18n.t('report_columns.quantity') },
+      { key: 'valuation', label: this.i18n.t('report_columns.valuation') },
+      { key: 'average', label: this.i18n.t('report_columns.average') },
     ];
     return R.compose(this.tableColumnsCellIndexing)(columns);
   }

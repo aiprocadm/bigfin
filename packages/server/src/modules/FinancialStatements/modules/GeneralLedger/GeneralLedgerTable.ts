@@ -17,11 +17,16 @@ import {
   ITableRow,
 } from '../../types/Table.types';
 import { tableRowMapper } from '../../utils/Table.utils';
+import { I18nService } from 'nestjs-i18n';
 
 export class GeneralLedgerTable extends R.compose(
   FinancialTable,
   FinancialSheetStructure,
 )(FinancialSheet) {
+  /** Переводчик подписей столбцов: базовый класс объявляет поле
+   * только для чтения, поэтому переобъявляем — как в JournalSheetTable. */
+  i18n: any;
+
   private data: IGeneralLedgerSheetData;
   private query: IGeneralLedgerSheetQuery;
   private meta: IGeneralLedgerMeta;
@@ -35,8 +40,11 @@ export class GeneralLedgerTable extends R.compose(
     data: IGeneralLedgerSheetData,
     query: IGeneralLedgerSheetQuery,
     meta: IGeneralLedgerMeta,
+    i18n: I18nService,
   ) {
     super();
+    // Подписи столбцов печатаются на языке организации (Л2 карты v34).
+    this.i18n = i18n;
 
     this.data = data;
     this.query = query;
@@ -154,15 +162,15 @@ export class GeneralLedgerTable extends R.compose(
    */
   private commonColumns(): ITableColumn[] {
     return [
-      { key: 'date', label: 'Date' },
-      { key: 'account_name', label: 'Account Name' },
-      { key: 'reference_type', label: 'Transaction Type' },
-      { key: 'reference_number', label: 'Transaction #' },
-      { key: 'description', label: 'Description' },
-      { key: 'credit', label: 'Credit' },
-      { key: 'debit', label: 'Debit' },
-      { key: 'amount', label: 'Amount' },
-      { key: 'running_balance', label: 'Running Balance' },
+      { key: 'date', label: this.i18n.t('report_columns.date') },
+      { key: 'account_name', label: this.i18n.t('report_columns.account_name') },
+      { key: 'reference_type', label: this.i18n.t('report_columns.transaction_type') },
+      { key: 'reference_number', label: this.i18n.t('report_columns.transaction_number') },
+      { key: 'description', label: this.i18n.t('report_columns.description') },
+      { key: 'credit', label: this.i18n.t('report_columns.credit') },
+      { key: 'debit', label: this.i18n.t('report_columns.debit') },
+      { key: 'amount', label: this.i18n.t('report_columns.amount') },
+      { key: 'running_balance', label: this.i18n.t('report_columns.running_balance') },
     ];
   }
 

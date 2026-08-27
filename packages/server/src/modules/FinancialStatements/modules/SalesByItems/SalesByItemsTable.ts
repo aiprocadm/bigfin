@@ -10,19 +10,26 @@ import { FinancialSheetStructure } from '../../common/FinancialSheetStructure';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { ITableColumn, ITableRow } from '../../types/Table.types';
 import { tableRowMapper } from '../../utils/Table.utils';
+import { I18nService } from 'nestjs-i18n';
 
 export class SalesByItemsTable extends R.pipe(
   FinancialTable,
   FinancialSheetStructure,
 )(FinancialSheet) {
+  /** Переводчик подписей столбцов: базовый класс объявляет поле
+   * только для чтения, поэтому переобъявляем — как в JournalSheetTable. */
+  i18n: any;
+
   private readonly data: ISalesByItemsSheetData;
 
   /**
    * Constructor method.
    * @param {ISalesByItemsSheetStatement} data
    */
-  constructor(data: ISalesByItemsSheetData) {
+  constructor(data: ISalesByItemsSheetData, i18n: I18nService) {
     super();
+    // Подписи столбцов печатаются на языке организации (Л2 карты v34).
+    this.i18n = i18n;
     this.data = data;
   }
 
@@ -93,10 +100,10 @@ export class SalesByItemsTable extends R.pipe(
    */
   public tableColumns(): ITableColumn[] {
     const columns = [
-      { key: 'item_name', label: 'Item name' },
-      { key: 'sold_quantity', label: 'Sold quantity' },
-      { key: 'sold_amount', label: 'Sold amount' },
-      { key: 'average_price', label: 'Average price' },
+      { key: 'item_name', label: this.i18n.t('report_columns.item_name') },
+      { key: 'sold_quantity', label: this.i18n.t('report_columns.sold_quantity') },
+      { key: 'sold_amount', label: this.i18n.t('report_columns.sold_amount') },
+      { key: 'average_price', label: this.i18n.t('report_columns.average_price') },
     ];
     return R.compose(this.tableColumnsCellIndexing)(columns);
   }

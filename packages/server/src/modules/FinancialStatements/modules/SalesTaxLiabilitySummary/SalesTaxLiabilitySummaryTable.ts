@@ -12,11 +12,16 @@ import { FinancialSheetStructure } from '../../common/FinancialSheetStructure';
 import { ITableRow } from '../../types/Table.types';
 import { ITableColumn } from '../../types/Table.types';
 import { tableRowMapper } from '../../utils/Table.utils';
+import { I18nService } from 'nestjs-i18n';
 
 export class SalesTaxLiabilitySummaryTable extends R.pipe(
   FinancialTable,
   FinancialSheetStructure,
 )(AgingReport) {
+  /** Переводчик подписей столбцов: базовый класс объявляет поле
+   * только для чтения, поэтому переобъявляем — как в JournalSheetTable. */
+  i18n: any;
+
   private data: SalesTaxLiabilitySummaryReportData;
   private query: SalesTaxLiabilitySummaryQuery;
 
@@ -28,8 +33,11 @@ export class SalesTaxLiabilitySummaryTable extends R.pipe(
   constructor(
     data: SalesTaxLiabilitySummaryReportData,
     query: SalesTaxLiabilitySummaryQuery,
+    i18n: I18nService,
   ) {
     super();
+    // Подписи столбцов печатаются на языке организации (Л2 карты v34).
+    this.i18n = i18n;
 
     this.data = data;
     this.query = query;
@@ -137,23 +145,23 @@ export class SalesTaxLiabilitySummaryTable extends R.pipe(
   public tableColumns(): ITableColumn[] {
     return R.compose(this.tableColumnsCellIndexing)([
       {
-        label: 'Tax Name',
+        label: this.i18n.t('report_columns.tax_name'),
         key: 'taxName',
       },
       {
-        label: 'Tax Percentage',
+        label: this.i18n.t('report_columns.tax_percentage'),
         key: 'taxPercentage',
       },
       {
-        label: 'Taxable Amount',
+        label: this.i18n.t('report_columns.taxable_amount'),
         key: 'taxableAmount',
       },
       {
-        label: 'Collected Tax',
+        label: this.i18n.t('report_columns.collected_tax'),
         key: 'collectedTax',
       },
       {
-        label: 'Tax Amount',
+        label: this.i18n.t('report_columns.tax_amount'),
         key: 'taxRate',
       },
     ]);

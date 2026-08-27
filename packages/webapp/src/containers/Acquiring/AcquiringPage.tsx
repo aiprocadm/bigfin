@@ -12,6 +12,7 @@ import {
   useConnectYookassa,
   useDisconnectYookassa,
 } from '@/hooks/query/acquiring';
+import { DateField } from '@/components/ui/date-field';
 
 const monthAgo = () => {
   const d = new Date();
@@ -121,19 +122,9 @@ export default function AcquiringPage() {
       {connected && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-end gap-2">
-            <input
-              type="date"
-              className="rounded border px-2 py-1 text-sm"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-            />
+            <DateField value={from} onChange={setFrom} className="rounded border px-2 py-1 text-sm" />
             <span className="text-muted-foreground">—</span>
-            <input
-              type="date"
-              className="rounded border px-2 py-1 text-sm"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-            />
+            <DateField value={to} onChange={setTo} className="rounded border px-2 py-1 text-sm" />
           </div>
           {summary && (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">

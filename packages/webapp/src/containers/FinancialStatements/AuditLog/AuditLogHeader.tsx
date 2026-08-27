@@ -187,9 +187,11 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                     fill
                     fastField
                   >
+                    {/* Здесь стоял лишний проп системного поля даты: это
+                        поле продукта, а не поле браузера — оно и так
+                        печатает дату форматом организации (Ж2 карты v32). */}
                     <FDateInput
                       name="toDate"
-                      type="date"
                       popoverProps={{ position: Position.BOTTOM, minimal: true }}
                       formatDate={formatOrganizationDate}
                       parseDate={(str) => new Date(str)}

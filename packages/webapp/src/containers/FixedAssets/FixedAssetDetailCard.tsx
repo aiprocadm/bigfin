@@ -23,6 +23,7 @@ import {
 } from '@/hooks/query/fixed-assets';
 import { getDisposeSchema, DisposeValues } from './schemas';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { DateField } from '@/components/ui/date-field';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -234,7 +235,10 @@ function DisposeForm({
               <FormItem>
                 <FormLabel>{intl.get('fixed_assets.dispose.date')}</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                 </FormControl>
                 <FormMessage />
               </FormItem>

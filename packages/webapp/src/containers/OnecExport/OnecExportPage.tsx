@@ -6,6 +6,7 @@ import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import useApiRequest from '@/hooks/useRequest';
+import { DateField } from '@/components/ui/date-field';
 
 const monthAgo = () => {
   const d = new Date();
@@ -64,19 +65,9 @@ export default function OnecExportPage() {
         <label className="text-sm">{intl.get('onec_export.account_id')}</label>
         <Input value={accountId} onChange={(e) => setAccountId(e.target.value)} />
         <div className="flex items-center gap-2">
-          <input
-            type="date"
-            className="rounded border px-2 py-1 text-sm"
-            value={from}
-            onChange={(e) => setFrom(e.target.value)}
-          />
+          <DateField value={from} onChange={setFrom} className="rounded border px-2 py-1 text-sm" />
           <span className="text-muted-foreground">—</span>
-          <input
-            type="date"
-            className="rounded border px-2 py-1 text-sm"
-            value={to}
-            onChange={(e) => setTo(e.target.value)}
-          />
+          <DateField value={to} onChange={setTo} className="rounded border px-2 py-1 text-sm" />
         </div>
         <div className="flex justify-end">
           <Button onClick={handleDownload} disabled={!accountId || loading}>

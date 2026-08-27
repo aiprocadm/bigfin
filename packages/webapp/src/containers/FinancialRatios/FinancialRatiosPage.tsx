@@ -7,6 +7,7 @@ import {
   HorizontalRow,
   VerticalRow,
 } from '@/hooks/query/financialRatios';
+import { DateField } from '@/components/ui/date-field';
 
 // Дата «сегодня» по местному времени: toISOString() отдаёт UTC, и ночью
 // в Москве поле «по» показывало вчерашний день.
@@ -101,19 +102,9 @@ export default function FinancialRatiosPage() {
           {intl.get('financial_ratios.page.title')}
         </h1>
         <div className="flex items-center gap-2">
-          <input
-            type="date"
-            className="rounded border px-2 py-1 text-sm"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-          />
+          <DateField value={fromDate} onChange={setFromDate} className="rounded border px-2 py-1 text-sm" />
           <span className="text-muted-foreground">—</span>
-          <input
-            type="date"
-            className="rounded border px-2 py-1 text-sm"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-          />
+          <DateField value={toDate} onChange={setToDate} className="rounded border px-2 py-1 text-sm" />
         </div>
       </div>
 

@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { getRepaymentPlanSchema, RepaymentPlanFormValues } from './schemas';
 import { useCreateRepaymentPlan } from '@/hooks/query/debts';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   side: 'receivable' | 'payable';
@@ -121,7 +122,10 @@ export function RepaymentPlanDialog({
                       <FormItem className="flex-1">
                         <FormLabel>{intl.get('debts.plan.due_date')}</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

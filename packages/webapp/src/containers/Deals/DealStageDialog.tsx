@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useCreateStage, useEditStage } from '@/hooks/query/dealStages';
 import { getDealStageSchema, DealStageFormValues } from './stageSchemas';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   dealId: number | string;
@@ -121,7 +122,10 @@ export function DealStageDialog({ dealId, stage, defaultStatus, onDone, onCancel
               <FormItem>
                 <FormLabel>{intl.get('deal_stages.field.closed_date')}</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} value={field.value ?? ''} />
+                  <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                 </FormControl>
                 <FormMessage />
               </FormItem>

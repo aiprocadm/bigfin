@@ -13,6 +13,7 @@ import {
 } from '@/hooks/query/marketplaces';
 import { OzonSection } from './OzonSection';
 import { SummaryCards } from './SummaryCards';
+import { DateField } from '@/components/ui/date-field';
 
 const monthAgo = () => {
   const d = new Date();
@@ -113,19 +114,9 @@ export default function MarketplacesPage() {
       {(connected || ozonConnected) && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-end gap-2">
-            <input
-              type="date"
-              className="rounded border px-2 py-1 text-sm"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-            />
+            <DateField value={fromDate} onChange={setFromDate} className="rounded border px-2 py-1 text-sm" />
             <span className="text-muted-foreground">—</span>
-            <input
-              type="date"
-              className="rounded border px-2 py-1 text-sm"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-            />
+            <DateField value={toDate} onChange={setToDate} className="rounded border px-2 py-1 text-sm" />
           </div>
           {summary && (
             <div className="flex flex-col gap-2">

@@ -20,6 +20,7 @@ import { useCustomers } from '@/hooks/query/customers';
 import { useCreateDeal, useEditDeal } from '@/hooks/query/deals';
 import { useEmployees } from '@/hooks/query/payroll';
 import { getDealSchema, DealFormValues } from './schemas';
+import { DateField } from '@/components/ui/date-field';
 
 interface Props {
   deal?: any; // when present → edit mode
@@ -155,7 +156,10 @@ export function DealDialog({ deal, onDone, onCancel }: Props) {
                 <FormItem>
                   <FormLabel>{intl.get('deals.field.deadline')}</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} value={field.value ?? ''} />
+                    <DateField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

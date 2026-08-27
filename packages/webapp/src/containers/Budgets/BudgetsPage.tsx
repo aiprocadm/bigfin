@@ -85,7 +85,10 @@ export default function BudgetsPage() {
                 {intl.get('budgets.planfact.title')}
               </Button>
             </div>
-            <div className="flex items-center gap-1">
+            {/* На телефоне три кнопки в строку не помещаются: ряд занимал
+                421 px при экране 390, и «Пессимистичный» обрезало
+                посередине. Переносим на вторую строку (И2 карты v33). */}
+            <div className="flex flex-wrap items-center gap-1">
               {(['optimistic', 'realistic', 'pessimistic'] as const).map(
                 (s) => (
                   <Button

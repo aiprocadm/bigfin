@@ -81,59 +81,61 @@ export function PayrollKpiTab() {
             {intl.get('payroll.kpi.summary.empty')}
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-muted-foreground">
-                <th className="px-4 py-2 font-medium">
-                  {intl.get('payroll.kpi.col.manager')}
-                </th>
-                <th className="px-4 py-2 font-medium">
-                  {intl.get('payroll.kpi.col.metric')}
-                </th>
-                <th className="px-4 py-2 text-right font-medium">
-                  {intl.get('payroll.kpi.col.target')}
-                </th>
-                <th className="px-4 py-2 text-right font-medium">
-                  {intl.get('payroll.kpi.col.fact')}
-                </th>
-                <th className="px-4 py-2 text-right font-medium">
-                  {intl.get('payroll.kpi.col.achievement')}
-                </th>
-                <th className="px-4 py-2 text-right font-medium">
-                  {intl.get('payroll.kpi.col.bonus')}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {summaryRows.map((row) => (
-                <tr
-                  key={`${row.employeeId}-${row.metric}`}
-                  className="border-b last:border-0"
-                >
-                  <td className="px-4 py-2 font-medium">{row.fullName}</td>
-                  <td className="px-4 py-2">
-                    {intl.get(`payroll.kpi.metric.${row.metric}`)}
-                  </td>
-                  <td className="px-4 py-2 text-right">
-                    {fmt(row.targetAmount)}
-                  </td>
-                  <td className="px-4 py-2 text-right">{fmt(row.fact)}</td>
-                  <td
-                    className={`px-4 py-2 text-right ${
-                      row.achievementPct != null && row.achievementPct < 100
-                        ? 'text-red-600'
-                        : ''
-                    }`}
-                  >
-                    {row.achievementPct == null
-                      ? '—'
-                      : `${Math.round(row.achievementPct)}%`}
-                  </td>
-                  <td className="px-4 py-2 text-right">{fmt(row.bonus)}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-muted-foreground">
+                  <th className="px-4 py-2 font-medium">
+                    {intl.get('payroll.kpi.col.manager')}
+                  </th>
+                  <th className="px-4 py-2 font-medium">
+                    {intl.get('payroll.kpi.col.metric')}
+                  </th>
+                  <th className="px-4 py-2 text-right font-medium">
+                    {intl.get('payroll.kpi.col.target')}
+                  </th>
+                  <th className="px-4 py-2 text-right font-medium">
+                    {intl.get('payroll.kpi.col.fact')}
+                  </th>
+                  <th className="px-4 py-2 text-right font-medium">
+                    {intl.get('payroll.kpi.col.achievement')}
+                  </th>
+                  <th className="px-4 py-2 text-right font-medium">
+                    {intl.get('payroll.kpi.col.bonus')}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {summaryRows.map((row) => (
+                  <tr
+                    key={`${row.employeeId}-${row.metric}`}
+                    className="border-b last:border-0"
+                  >
+                    <td className="px-4 py-2 font-medium">{row.fullName}</td>
+                    <td className="px-4 py-2">
+                      {intl.get(`payroll.kpi.metric.${row.metric}`)}
+                    </td>
+                    <td className="px-4 py-2 text-right">
+                      {fmt(row.targetAmount)}
+                    </td>
+                    <td className="px-4 py-2 text-right">{fmt(row.fact)}</td>
+                    <td
+                      className={`px-4 py-2 text-right ${
+                        row.achievementPct != null && row.achievementPct < 100
+                          ? 'text-red-600'
+                          : ''
+                      }`}
+                    >
+                      {row.achievementPct == null
+                        ? '—'
+                        : `${Math.round(row.achievementPct)}%`}
+                    </td>
+                    <td className="px-4 py-2 text-right">{fmt(row.bonus)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

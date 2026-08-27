@@ -159,51 +159,53 @@ export default function FinancialRatiosPage() {
             {intl.get('financial_ratios.empty')}
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-muted-foreground">
-                <th className="py-1">{intl.get('financial_ratios.vertical.article')}</th>
-                <th className="py-1 text-right">{intl.get('financial_ratios.vertical.amount')}</th>
-                <th className="py-1 text-right">{intl.get('financial_ratios.vertical.share')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Сначала разделы со своими статьями, потом — итоговые строки.
-                  Раньше итоги стояли вперемешку с разделами, и доли выглядели
-                  так, будто их можно складывать. */}
-              {verticalSections.map((row) => (
-                <tr
-                  key={row.key}
-                  className={
-                    'border-t' + (row.level ? '' : ' font-medium')
-                  }
-                >
-                  <td className={'py-1' + (row.level ? ' pl-6' : '')}>
-                    {row.label}
-                  </td>
-                  <td className="py-1 text-right">{money(row.amount)}</td>
-                  <td className="py-1 text-right">{pct(row.share)}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-muted-foreground">
+                  <th className="py-1">{intl.get('financial_ratios.vertical.article')}</th>
+                  <th className="py-1 text-right">{intl.get('financial_ratios.vertical.amount')}</th>
+                  <th className="py-1 text-right">{intl.get('financial_ratios.vertical.share')}</th>
                 </tr>
-              ))}
-              {verticalTotals.length > 0 && (
-                <tr className="border-t-2">
-                  <td
-                    className="text-muted-foreground pt-3 pb-1 text-xs uppercase"
-                    colSpan={3}
+              </thead>
+              <tbody>
+                {/* Сначала разделы со своими статьями, потом — итоговые строки.
+                    Раньше итоги стояли вперемешку с разделами, и доли выглядели
+                    так, будто их можно складывать. */}
+                {verticalSections.map((row) => (
+                  <tr
+                    key={row.key}
+                    className={
+                      'border-t' + (row.level ? '' : ' font-medium')
+                    }
                   >
-                    {intl.get('financial_ratios.vertical.totals')}
-                  </td>
-                </tr>
-              )}
-              {verticalTotals.map((row) => (
-                <tr key={row.key} className="border-t font-medium">
-                  <td className="py-1">{row.label}</td>
-                  <td className="py-1 text-right">{money(row.amount)}</td>
-                  <td className="py-1 text-right">{pct(row.share)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <td className={'py-1' + (row.level ? ' pl-6' : '')}>
+                      {row.label}
+                    </td>
+                    <td className="py-1 text-right">{money(row.amount)}</td>
+                    <td className="py-1 text-right">{pct(row.share)}</td>
+                  </tr>
+                ))}
+                {verticalTotals.length > 0 && (
+                  <tr className="border-t-2">
+                    <td
+                      className="text-muted-foreground pt-3 pb-1 text-xs uppercase"
+                      colSpan={3}
+                    >
+                      {intl.get('financial_ratios.vertical.totals')}
+                    </td>
+                  </tr>
+                )}
+                {verticalTotals.map((row) => (
+                  <tr key={row.key} className="border-t font-medium">
+                    <td className="py-1">{row.label}</td>
+                    <td className="py-1 text-right">{money(row.amount)}</td>
+                    <td className="py-1 text-right">{pct(row.share)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -226,31 +228,33 @@ export default function FinancialRatiosPage() {
             {intl.get('financial_ratios.empty')}
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-muted-foreground">
-                <th className="py-1">{intl.get('financial_ratios.vertical.article')}</th>
-                <th className="py-1 text-right">{intl.get('financial_ratios.horizontal.current')}</th>
-                <th className="py-1 text-right">{intl.get('financial_ratios.horizontal.previous')}</th>
-                <th className="py-1 text-right">{intl.get('financial_ratios.horizontal.change')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {horizontal.map((row) => (
-                <tr key={row.key} className="border-t">
-                  <td className="py-1">{row.label}</td>
-                  <td className="py-1 text-right">{money(row.current)}</td>
-                  <td className="py-1 text-right">{money(row.previous)}</td>
-                  <td className="py-1 text-right">
-                    {money(row.change)}
-                    {row.changePct !== null && row.changePct !== undefined
-                      ? ` (${pct(row.changePct)})`
-                      : ''}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-muted-foreground">
+                  <th className="py-1">{intl.get('financial_ratios.vertical.article')}</th>
+                  <th className="py-1 text-right">{intl.get('financial_ratios.horizontal.current')}</th>
+                  <th className="py-1 text-right">{intl.get('financial_ratios.horizontal.previous')}</th>
+                  <th className="py-1 text-right">{intl.get('financial_ratios.horizontal.change')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {horizontal.map((row) => (
+                  <tr key={row.key} className="border-t">
+                    <td className="py-1">{row.label}</td>
+                    <td className="py-1 text-right">{money(row.current)}</td>
+                    <td className="py-1 text-right">{money(row.previous)}</td>
+                    <td className="py-1 text-right">
+                      {money(row.change)}
+                      {row.changePct !== null && row.changePct !== undefined
+                        ? ` (${pct(row.changePct)})`
+                        : ''}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

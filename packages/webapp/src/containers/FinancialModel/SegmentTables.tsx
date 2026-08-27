@@ -31,12 +31,14 @@ function TableShell({
           {intl.get('financial_model.segment.empty')}
         </div>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b text-left text-muted-foreground">{head}</tr>
-          </thead>
-          <tbody>{children}</tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-left text-muted-foreground">{head}</tr>
+            </thead>
+            <tbody>{children}</tbody>
+          </table>
+        </div>
       )}
     </div>
   );

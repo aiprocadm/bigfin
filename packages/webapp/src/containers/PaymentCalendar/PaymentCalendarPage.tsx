@@ -109,7 +109,10 @@ export default function PaymentCalendarPage() {
         <h1 className="text-xl font-semibold">
           {intl.get('payment_calendar.page_title')}
         </h1>
-        <div className="flex items-center gap-2">
+        {/* Три горизонта и кнопка «Добавить плановую операцию» в строку на
+            телефоне не помещаются: ряд занимал 544 px при экране 390.
+            Переносим (И2 карты v33). */}
+        <div className="flex flex-wrap items-center gap-2">
           {(['week', 'month', 'quarter'] as const).map((h) => (
             <Button
               key={h}

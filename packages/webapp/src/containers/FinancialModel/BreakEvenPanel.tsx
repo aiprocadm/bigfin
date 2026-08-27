@@ -114,50 +114,52 @@ export function BreakEvenPanel({ breakEven }: { breakEven?: BreakEvenResult }) {
             {intl.get('financial_model.breakeven.empty_articles')}
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-muted-foreground">
-                <th className="px-2 py-1 font-normal">
-                  {intl.get('financial_model.breakeven.article')}
-                </th>
-                <th className="px-2 py-1 text-right font-normal">
-                  {intl.get('financial_model.breakeven.behavior')}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((a) => (
-                <tr key={a.id} className="border-b last:border-0">
-                  <td className="px-2 py-1">
-                    {a.parentId != null && (
-                      <span className="text-muted-foreground">— </span>
-                    )}
-                    {a.name}
-                  </td>
-                  <td className="whitespace-nowrap px-2 py-1 text-right">
-                    <button
-                      className={`${btn} mr-1 ${a.costBehavior === 'fixed' ? btnActive : ''}`}
-                      onClick={() => setOne(a.id, 'fixed')}
-                    >
-                      {intl.get('financial_model.breakeven.fixed')}
-                    </button>
-                    <button
-                      className={`${btn} mr-1 ${a.costBehavior === 'variable' ? btnActive : ''}`}
-                      onClick={() => setOne(a.id, 'variable')}
-                    >
-                      {intl.get('financial_model.breakeven.variable')}
-                    </button>
-                    <button
-                      className={`${btn} ${a.costBehavior == null ? btnActive : ''}`}
-                      onClick={() => setOne(a.id, null)}
-                    >
-                      {intl.get('financial_model.breakeven.clear')}
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-muted-foreground">
+                  <th className="px-2 py-1 font-normal">
+                    {intl.get('financial_model.breakeven.article')}
+                  </th>
+                  <th className="px-2 py-1 text-right font-normal">
+                    {intl.get('financial_model.breakeven.behavior')}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {list.map((a) => (
+                  <tr key={a.id} className="border-b last:border-0">
+                    <td className="px-2 py-1">
+                      {a.parentId != null && (
+                        <span className="text-muted-foreground">— </span>
+                      )}
+                      {a.name}
+                    </td>
+                    <td className="whitespace-nowrap px-2 py-1 text-right">
+                      <button
+                        className={`${btn} mr-1 ${a.costBehavior === 'fixed' ? btnActive : ''}`}
+                        onClick={() => setOne(a.id, 'fixed')}
+                      >
+                        {intl.get('financial_model.breakeven.fixed')}
+                      </button>
+                      <button
+                        className={`${btn} mr-1 ${a.costBehavior === 'variable' ? btnActive : ''}`}
+                        onClick={() => setOne(a.id, 'variable')}
+                      >
+                        {intl.get('financial_model.breakeven.variable')}
+                      </button>
+                      <button
+                        className={`${btn} ${a.costBehavior == null ? btnActive : ''}`}
+                        onClick={() => setOne(a.id, null)}
+                      >
+                        {intl.get('financial_model.breakeven.clear')}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

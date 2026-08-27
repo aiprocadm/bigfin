@@ -116,24 +116,26 @@ export function TableStatementUpload({ accountId, onImported }) {
             })}
           </p>
 
-          <table className="bp4-html-table bp4-html-table-condensed">
-            <thead>
-              <tr>
-                <th>{intl.get('bank_import.table.col_date')}</th>
-                <th>{intl.get('bank_import.table.col_amount')}</th>
-                <th>{intl.get('bank_import.table.col_description')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {preview.sample.slice(0, 5).map((row, index) => (
-                <tr key={index}>
-                  <td>{row.date}</td>
-                  <td>{row.amount}</td>
-                  <td>{row.payee || row.description || ''}</td>
+          <div className="overflow-x-auto">
+            <table className="bp4-html-table bp4-html-table-condensed">
+              <thead>
+                <tr>
+                  <th>{intl.get('bank_import.table.col_date')}</th>
+                  <th>{intl.get('bank_import.table.col_amount')}</th>
+                  <th>{intl.get('bank_import.table.col_description')}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {preview.sample.slice(0, 5).map((row, index) => (
+                  <tr key={index}>
+                    <td>{row.date}</td>
+                    <td>{row.amount}</td>
+                    <td>{row.payee || row.description || ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <button
             className="bp4-button bp4-intent-primary"

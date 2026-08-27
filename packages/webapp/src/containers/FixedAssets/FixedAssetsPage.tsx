@@ -24,9 +24,10 @@ import {
 } from '@/hooks/query/fixed-assets';
 import { FixedAssetCreateDialog } from './FixedAssetCreateDialog';
 import { FixedAssetDetailCard } from './FixedAssetDetailCard';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const fmt = (n: number | null | undefined) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const fmtDate = (d: string | null | undefined) => {
   if (!d) return '—';

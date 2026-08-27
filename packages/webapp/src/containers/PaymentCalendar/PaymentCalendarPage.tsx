@@ -15,6 +15,7 @@ import { DayRow } from './DayRow';
 import type { ForecastLine } from './mapForecast';
 import { PlannedOperationDialog } from './PlannedOperationDialog';
 import { PlannedOperation } from './schemas';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -100,7 +101,7 @@ export default function PaymentCalendarPage() {
           ⚠{' '}
           {intl.get('payment_calendar.gap_warning', {
             days: gap.daysFromStart,
-            amount: `${gap.amount.toLocaleString('ru-RU')} ₽`,
+            amount: formatOrganizationMoney(gap.amount),
           })}
         </div>
       )}

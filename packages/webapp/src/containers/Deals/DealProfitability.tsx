@@ -3,8 +3,9 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDealProfitability } from '@/hooks/query/deals';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
-const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 const pct = (n: number) => `${Math.round((n ?? 0) * 100)}%`;
 
 export function DealProfitability({ deal }: { deal: any }) {

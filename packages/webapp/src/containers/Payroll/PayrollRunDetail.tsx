@@ -11,6 +11,7 @@ import {
   useUnapprovePayrollRun,
   useDeletePayrollRun,
 } from '@/hooks/query/payroll';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 interface Props {
   runId: number;
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const fmt = (n: number | undefined | null) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const safeNum = (raw: string) => {
   const n = parseFloat(raw);

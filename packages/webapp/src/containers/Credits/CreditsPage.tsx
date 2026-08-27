@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { useCredits, useCreditsSummary } from '@/hooks/query/credits';
 import { CreditCreateDialog } from './CreditCreateDialog';
 import { CreditDetailCard } from './CreditDetailCard';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const fmt = (n: number | null | undefined) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const fmtDate = (d: string | null | undefined) => {
   if (!d) return '—';

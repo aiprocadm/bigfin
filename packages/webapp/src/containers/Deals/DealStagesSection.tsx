@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { useDealStages, useDeleteStage } from '@/hooks/query/dealStages';
 import { DealStageDialog } from './DealStageDialog';
 import { formatShortDate } from '@/utils/formatShortDate';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
-const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 const pct = (n: number) => `${Math.round((n ?? 0) * 100)}%`;
 
 export function DealStagesSection({ dealId }: { dealId: number | string }) {

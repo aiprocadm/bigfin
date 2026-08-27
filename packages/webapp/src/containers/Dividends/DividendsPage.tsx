@@ -12,11 +12,12 @@ import {
   useDividendPayouts,
   useDividendsSummary,
 } from '@/hooks/query/dividends';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
 const fmt = (n: number | undefined | null) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const fmtDate = (d: string) => {
   try {

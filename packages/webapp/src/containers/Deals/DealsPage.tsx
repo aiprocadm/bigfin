@@ -10,10 +10,11 @@ import { useEmployees } from '@/hooks/query/payroll';
 import { DealDialog } from './DealDialog';
 import { DealProfitability } from './DealProfitability';
 import { DealStagesSection } from './DealStagesSection';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
-const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 const pct = (n: number) => `${Math.round((n ?? 0) * 100)}%`;
 
 const STATUS_TABS: { key: StatusFilter; label: string }[] = [

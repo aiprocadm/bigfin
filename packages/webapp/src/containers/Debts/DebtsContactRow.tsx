@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { useContactDebts, useRemindDebtor } from '@/hooks/query/debts';
 import { RepaymentPlanDialog } from './RepaymentPlanDialog';
 import { formatShortDate } from '@/utils/formatShortDate';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
-const fmt = (n: number) => `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 
 interface Props {
   contact: {

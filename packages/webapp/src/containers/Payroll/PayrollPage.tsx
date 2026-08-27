@@ -16,11 +16,12 @@ import { PayrollSettingsDialog } from './PayrollSettingsDialog';
 import { PayrollRunDetail } from './PayrollRunDetail';
 import { PayrollKpiTab } from './PayrollKpiTab';
 import { formatMonth } from '@/utils/formatShortDate';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 type TabKey = 'runs' | 'employees' | 'kpi';
 
 const fmt = (n: number | undefined | null) =>
-  `${(n ?? 0).toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(n ?? 0);
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'runs', label: 'payroll.tab.runs' },

@@ -4,9 +4,10 @@ import { FilePlus2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ForecastDay, ForecastLine } from './mapForecast';
 import { formatDay, isWeekend } from './formatDay';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
 
 const money = (amount: number): string =>
-  `${amount.toLocaleString('ru-RU')} ₽`;
+  formatOrganizationMoney(amount);
 
 export function DayRow({
   day,

@@ -11,6 +11,7 @@ import { TenantsMigrateMakeCommand } from './commands/TenantsMigrateMake.command
 import { TenantsListCommand } from './commands/TenantsList.command';
 import { SystemSeedLatestCommand } from './commands/SystemSeedLatest.command';
 import { TenantsSeedLatestCommand } from './commands/TenantsSeedLatest.command';
+import { TenantsTranslateAccountsCommand } from './commands/TenantsTranslateAccounts.command';
 import { OpenApiExportCommand } from './commands/OpenApiExport.command';
 
 @Module({
@@ -32,6 +33,7 @@ import { OpenApiExportCommand } from './commands/OpenApiExport.command';
     SystemSeedLatestCommand,
     TenantsSeedLatestCommand,
     OpenApiExportCommand,
+    TenantsTranslateAccountsCommand,
   ],
 })
 export class CLIModule { }

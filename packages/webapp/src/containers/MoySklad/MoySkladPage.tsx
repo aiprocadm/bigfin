@@ -221,24 +221,26 @@ function PreviewTable({
   return (
     <div className="rounded-md border p-4">
       <h2 className="mb-2 font-medium">{title}</h2>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-muted-foreground">
-            {cols.map((c) => (
-              <th key={c} className="py-1">{c}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r, i) => (
-            <tr key={i} className="border-t">
-              {r.map((cell, j) => (
-                <td key={j} className="py-1">{cell}</td>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-muted-foreground">
+              {cols.map((c) => (
+                <th key={c} className="py-1">{c}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={i} className="border-t">
+                {r.map((cell, j) => (
+                  <td key={j} className="py-1">{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

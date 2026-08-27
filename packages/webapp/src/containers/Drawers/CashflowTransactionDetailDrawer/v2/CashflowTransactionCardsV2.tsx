@@ -76,57 +76,59 @@ export function CashflowTransactionCardsV2({
       <Card className="p-4 sm:p-5">
         <CardTitleSm>{intl.get('journal_entries')}</CardTitleSm>
 
-        <table className="mt-3 w-full border-collapse text-sm">
-          <thead>
-            <tr className="text-xs text-text-muted">
-              <th className="pb-2 text-left font-normal">
-                {intl.get('account_name')}
-              </th>
-              <th className="pb-2 text-left font-normal">
-                {intl.get('contact')}
-              </th>
-              <th className="pb-2 text-right font-normal">
-                {intl.get('credit')}
-              </th>
-              <th className="pb-2 text-right font-normal">
-                {intl.get('debit')}
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {entries.map((entry, index) => (
-              <tr key={entry.id ?? index} className="border-t border-border">
-                <td className="py-2.5 pr-3 text-text-primary">
-                  {entry.account?.name || EMPTY_VALUE}
+        <div className="overflow-x-auto">
+          <table className="mt-3 w-full border-collapse text-sm">
+            <thead>
+              <tr className="text-xs text-text-muted">
+                <th className="pb-2 text-left font-normal">
+                  {intl.get('account_name')}
+                </th>
+                <th className="pb-2 text-left font-normal">
+                  {intl.get('contact')}
+                </th>
+                <th className="pb-2 text-right font-normal">
+                  {intl.get('credit')}
+                </th>
+                <th className="pb-2 text-right font-normal">
+                  {intl.get('debit')}
+                </th>
+              </tr>
+            </thead>
+  
+            <tbody>
+              {entries.map((entry, index) => (
+                <tr key={entry.id ?? index} className="border-t border-border">
+                  <td className="py-2.5 pr-3 text-text-primary">
+                    {entry.account?.name || EMPTY_VALUE}
+                  </td>
+                  <td className="py-2.5 pr-3 text-text-secondary">
+                    {entry.contact?.display_name || EMPTY_VALUE}
+                  </td>
+                  <td className="py-2.5 pl-3 text-right tabular-nums text-text-primary">
+                    {formatEntryAmount(entry.credit)}
+                  </td>
+                  <td className="py-2.5 pl-3 text-right tabular-nums text-text-primary">
+                    {formatEntryAmount(entry.debit)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+  
+            <tfoot>
+              <tr className="border-t border-border font-medium">
+                <td className="pt-2.5 text-text-primary" colSpan={2}>
+                  {intl.get('manual_journal.details.total')}
                 </td>
-                <td className="py-2.5 pr-3 text-text-secondary">
-                  {entry.contact?.display_name || EMPTY_VALUE}
+                <td className="pt-2.5 pl-3 text-right tabular-nums text-text-primary">
+                  {transaction.formatted_amount || EMPTY_VALUE}
                 </td>
-                <td className="py-2.5 pl-3 text-right tabular-nums text-text-primary">
-                  {formatEntryAmount(entry.credit)}
-                </td>
-                <td className="py-2.5 pl-3 text-right tabular-nums text-text-primary">
-                  {formatEntryAmount(entry.debit)}
+                <td className="pt-2.5 pl-3 text-right tabular-nums text-text-primary">
+                  {transaction.formatted_amount || EMPTY_VALUE}
                 </td>
               </tr>
-            ))}
-          </tbody>
-
-          <tfoot>
-            <tr className="border-t border-border font-medium">
-              <td className="pt-2.5 text-text-primary" colSpan={2}>
-                {intl.get('manual_journal.details.total')}
-              </td>
-              <td className="pt-2.5 pl-3 text-right tabular-nums text-text-primary">
-                {transaction.formatted_amount || EMPTY_VALUE}
-              </td>
-              <td className="pt-2.5 pl-3 text-right tabular-nums text-text-primary">
-                {transaction.formatted_amount || EMPTY_VALUE}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+            </tfoot>
+          </table>
+        </div>
       </Card>
 
       {/* Назначение — только если заполнено. */}

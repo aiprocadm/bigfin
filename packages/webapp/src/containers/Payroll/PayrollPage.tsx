@@ -148,7 +148,9 @@ export default function PayrollPage() {
                     {intl.get(`payroll.status.${r.status}`)}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-right">
+                {/* Четыре суммы в строку на телефоне не помещаются: ряд
+                    занимал 397 px при экране 390. Переносим (И2 карты v33). */}
+                <div className="flex flex-wrap items-center gap-4 text-right">
                   <div className="flex flex-col">
                     <span className="font-medium">{fmt(r.totals?.totalNet)}</span>
                     <span className="text-muted-foreground text-xs">
@@ -189,34 +191,36 @@ export default function PayrollPage() {
                   {intl.get('payroll.taxes.empty')}
                 </div>
               ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-left text-muted-foreground">
-                      <th className="px-4 py-2 font-medium">
-                        {intl.get('payroll.taxes.month')}
-                      </th>
-                      <th className="px-4 py-2 font-medium">
-                        {intl.get('payroll.taxes.ndfl')}
-                      </th>
-                      <th className="px-4 py-2 font-medium">
-                        {intl.get('payroll.taxes.contributions')}
-                      </th>
-                      <th className="px-4 py-2 font-medium">
-                        {intl.get('payroll.taxes.total')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {taxRows.map((row) => (
-                      <tr key={row.month} className="border-b last:border-0">
-                        <td className="px-4 py-2">{formatMonth(row.month)}</td>
-                        <td className="px-4 py-2">{fmt(row.ndfl)}</td>
-                        <td className="px-4 py-2">{fmt(row.contributions)}</td>
-                        <td className="px-4 py-2">{fmt(row.total)}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b text-left text-muted-foreground">
+                        <th className="px-4 py-2 font-medium">
+                          {intl.get('payroll.taxes.month')}
+                        </th>
+                        <th className="px-4 py-2 font-medium">
+                          {intl.get('payroll.taxes.ndfl')}
+                        </th>
+                        <th className="px-4 py-2 font-medium">
+                          {intl.get('payroll.taxes.contributions')}
+                        </th>
+                        <th className="px-4 py-2 font-medium">
+                          {intl.get('payroll.taxes.total')}
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {taxRows.map((row) => (
+                        <tr key={row.month} className="border-b last:border-0">
+                          <td className="px-4 py-2">{formatMonth(row.month)}</td>
+                          <td className="px-4 py-2">{fmt(row.ndfl)}</td>
+                          <td className="px-4 py-2">{fmt(row.contributions)}</td>
+                          <td className="px-4 py-2">{fmt(row.total)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>

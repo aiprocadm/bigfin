@@ -77,26 +77,28 @@ function ImportFileMappingGroup({
         </h3>
       )}
 
-      <table className="w-full border-collapse text-sm">
-        <thead>
-          <tr className="bg-surface-elevated">
-            <th className="w-1/2 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
-              {intl.get('import.mapping.column.bigfin_fields')}
-            </th>
-            <th className="w-1/2 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
-              {intl.get('import.mapping.column.sheet_headers')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {fields.map((column) => (
-            <ImportFileMappingFieldRow
-              key={getFieldKey(column.key, column.group)}
-              column={column}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="bg-surface-elevated">
+              <th className="w-1/2 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                {intl.get('import.mapping.column.bigfin_fields')}
+              </th>
+              <th className="w-1/2 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
+                {intl.get('import.mapping.column.sheet_headers')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {fields.map((column) => (
+              <ImportFileMappingFieldRow
+                key={getFieldKey(column.key, column.group)}
+                column={column}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }

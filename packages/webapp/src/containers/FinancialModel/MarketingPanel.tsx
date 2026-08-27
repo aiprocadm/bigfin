@@ -116,60 +116,62 @@ export function MarketingPanel({
             {intl.get('financial_model.marketing.empty_channels')}
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-muted-foreground">
-                <th className="px-2 py-1 font-normal">
-                  {intl.get('financial_model.marketing.channel_name')}
-                </th>
-                <th className="px-2 py-1 text-right font-normal">
-                  {intl.get('financial_model.marketing.spend')}
-                </th>
-                <th className="px-2 py-1 text-right font-normal">
-                  {intl.get('financial_model.marketing.new_customers')}
-                </th>
-                <th className="px-2 py-1" />
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((c) => (
-                <tr key={c.id} className="border-b last:border-0">
-                  <td className="px-2 py-1">{c.name}</td>
-                  <td className="px-2 py-1 text-right">
-                    <input
-                      type="number"
-                      min={0}
-                      className={`${input} w-28 text-right`}
-                      value={drafts[c.id]?.spend ?? ''}
-                      onChange={(e) => setDraft(c.id, 'spend', e.target.value)}
-                    />
-                  </td>
-                  <td className="px-2 py-1 text-right">
-                    <input
-                      type="number"
-                      min={0}
-                      className={`${input} w-24 text-right`}
-                      value={drafts[c.id]?.newCustomers ?? ''}
-                      onChange={(e) =>
-                        setDraft(c.id, 'newCustomers', e.target.value)
-                      }
-                    />
-                  </td>
-                  <td className="whitespace-nowrap px-2 py-1 text-right">
-                    <button className={`${btn} mr-2`} onClick={() => saveMonthly(c.id)}>
-                      {intl.get('financial_model.marketing.save')}
-                    </button>
-                    <button
-                      className={`${btn} text-red-600`}
-                      onClick={() => deleteChannel.mutate(c.id)}
-                    >
-                      {intl.get('financial_model.marketing.delete')}
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-muted-foreground">
+                  <th className="px-2 py-1 font-normal">
+                    {intl.get('financial_model.marketing.channel_name')}
+                  </th>
+                  <th className="px-2 py-1 text-right font-normal">
+                    {intl.get('financial_model.marketing.spend')}
+                  </th>
+                  <th className="px-2 py-1 text-right font-normal">
+                    {intl.get('financial_model.marketing.new_customers')}
+                  </th>
+                  <th className="px-2 py-1" />
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {list.map((c) => (
+                  <tr key={c.id} className="border-b last:border-0">
+                    <td className="px-2 py-1">{c.name}</td>
+                    <td className="px-2 py-1 text-right">
+                      <input
+                        type="number"
+                        min={0}
+                        className={`${input} w-28 text-right`}
+                        value={drafts[c.id]?.spend ?? ''}
+                        onChange={(e) => setDraft(c.id, 'spend', e.target.value)}
+                      />
+                    </td>
+                    <td className="px-2 py-1 text-right">
+                      <input
+                        type="number"
+                        min={0}
+                        className={`${input} w-24 text-right`}
+                        value={drafts[c.id]?.newCustomers ?? ''}
+                        onChange={(e) =>
+                          setDraft(c.id, 'newCustomers', e.target.value)
+                        }
+                      />
+                    </td>
+                    <td className="whitespace-nowrap px-2 py-1 text-right">
+                      <button className={`${btn} mr-2`} onClick={() => saveMonthly(c.id)}>
+                        {intl.get('financial_model.marketing.save')}
+                      </button>
+                      <button
+                        className={`${btn} text-red-600`}
+                        onClick={() => deleteChannel.mutate(c.id)}
+                      >
+                        {intl.get('financial_model.marketing.delete')}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         <div className="mt-3 flex gap-2">
@@ -197,40 +199,42 @@ export function MarketingPanel({
             {intl.get('financial_model.marketing.no_data')}
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-muted-foreground">
-                <th className="px-2 py-1 font-normal">
-                  {intl.get('financial_model.marketing.channel_name')}
-                </th>
-                <th className="px-2 py-1 text-right font-normal">
-                  {intl.get('financial_model.marketing.spend')}
-                </th>
-                <th className="px-2 py-1 text-right font-normal">
-                  {intl.get('financial_model.marketing.new_customers')}
-                </th>
-                <th className="px-2 py-1 text-right font-normal">
-                  {intl.get('financial_model.metric.cac')}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {marketing.channels.map((c) => (
-                <tr key={c.channelId} className="border-b last:border-0">
-                  <td className="px-2 py-1">{c.name}</td>
-                  <td className="px-2 py-1 text-right tabular-nums">
-                    {fmtMoney(c.spend)}
-                  </td>
-                  <td className="px-2 py-1 text-right tabular-nums">
-                    {c.newCustomers}
-                  </td>
-                  <td className="px-2 py-1 text-right tabular-nums">
-                    {c.cac.applicable ? fmtMoney(c.cac.value) : na}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-muted-foreground">
+                  <th className="px-2 py-1 font-normal">
+                    {intl.get('financial_model.marketing.channel_name')}
+                  </th>
+                  <th className="px-2 py-1 text-right font-normal">
+                    {intl.get('financial_model.marketing.spend')}
+                  </th>
+                  <th className="px-2 py-1 text-right font-normal">
+                    {intl.get('financial_model.marketing.new_customers')}
+                  </th>
+                  <th className="px-2 py-1 text-right font-normal">
+                    {intl.get('financial_model.metric.cac')}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {marketing.channels.map((c) => (
+                  <tr key={c.channelId} className="border-b last:border-0">
+                    <td className="px-2 py-1">{c.name}</td>
+                    <td className="px-2 py-1 text-right tabular-nums">
+                      {fmtMoney(c.spend)}
+                    </td>
+                    <td className="px-2 py-1 text-right tabular-nums">
+                      {c.newCustomers}
+                    </td>
+                    <td className="px-2 py-1 text-right tabular-nums">
+                      {c.cac.applicable ? fmtMoney(c.cac.value) : na}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

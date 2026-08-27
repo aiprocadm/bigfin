@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import intl from 'react-intl-universal';
-import { FileText } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -78,11 +77,18 @@ export function useExpensesTableColumnsV2(actions: ExpenseRowActions) {
         id: 'description',
         Header: intl.get('description'),
         disableSortBy: true,
-        width: 60,
+        width: 200,
+        // Описание печатается ТЕКСТОМ (Д2 карты v30). Раньше здесь стоял
+        // значок, а текст показывался подсказкой при наведении — на
+        // телефоне наведения нет, и столбец «Описание» не показывал
+        // описания вовсе. Длинное усекаем, полное оставляем в подсказке.
         Cell: ({ row }: { row: { original: ExpenseRow } }) =>
           row.original.description ? (
-            <span title={row.original.description} className="text-text-muted">
-              <FileText className="h-4 w-4" aria-hidden />
+            <span
+              title={row.original.description}
+              className="block truncate text-text-muted"
+            >
+              {row.original.description}
             </span>
           ) : null,
       },

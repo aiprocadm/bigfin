@@ -24,15 +24,20 @@ import { safeCallback } from '@/utils';
  * Description accessor.
  */
 export function DescriptionAccessor(row) {
+  // Описание печатается ТЕКСТОМ (Д2 карты v30). Раньше здесь стоял значок,
+  // а текст показывался подсказкой при наведении — на телефоне наведения
+  // нет, и столбец «Описание» не показывал описания вовсе. Длинную строку
+  // усекает стиль, полный текст остаётся в подсказке.
   return (
     <If condition={row.description}>
       <Tooltip
-        className={Classes.TOOLTIP_INDICATOR}
         content={row.description}
         position={Position.TOP}
         hoverOpenDelay={250}
       >
-        <Icon icon={'file-alt'} iconSize={16} />
+        <span className={clsx('truncate', Classes.TEXT_MUTED)}>
+          {row.description}
+        </span>
       </Tooltip>
     </If>
   );

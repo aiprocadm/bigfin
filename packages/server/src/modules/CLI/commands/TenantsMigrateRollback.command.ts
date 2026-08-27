@@ -38,11 +38,16 @@ export class TenantsMigrateRollbackCommand extends BaseCommand {
         this.exit(`The given tenant id ${options.tenant_id} does not exist.`);
       }
 
+      // Как и в tenants:migrate:latest (М1 карты v28): сбой одной
+      // организации не обрывает откат остальных, ошибки называются итогом,
+      // соединения закрываются.
+      const failures: { organizationId: string; message: string }[] = [];
+
       const migrateTenant = async (organizationId: string) => {
+        const tenantKnex = this.initTenantKnex(organizationId);
+        const tenantDb = `${this.configService.get('tenantDatabase.dbNamePrefix')}${organizationId}`;
         try {
-          const tenantKnex = this.initTenantKnex(organizationId);
           const [batchNo, _log] = await tenantKnex.migrate.rollback();
-          const tenantDb = `${this.configService.get('tenantDatabase.dbNamePrefix')}${organizationId}`;
 
           if (_log.length === 0) {
             this.log('Already at the base migration');
@@ -53,7 +58,12 @@ export class TenantsMigrateRollbackCommand extends BaseCommand {
           );
           this.log('---------------');
         } catch (error) {
-          this.exit(error);
+          const message = error instanceof Error ? error.message : String(error);
+          failures.push({ organizationId, message });
+          this.log(`Tenant: ${tenantDb} > НЕ ОТКАЧЕН: ${message}`);
+          this.log('---------------');
+        } finally {
+          await tenantKnex.destroy().catch(() => {});
         }
       };
 
@@ -63,9 +73,20 @@ export class TenantsMigrateRollbackCommand extends BaseCommand {
           .process((tenant: any) => {
             return migrateTenant(tenant.organizationId);
           });
-        this.success('All tenants are rollbacked.');
       } else {
         await migrateTenant(options.tenant_id);
+      }
+
+      if (failures.length) {
+        this.exit(
+          `Не откачены ${failures.length} из ${
+            options.tenant_id ? 1 : tenants.length
+          }: ${failures
+            .map((f) => `${f.organizationId} (${f.message})`)
+            .join('; ')}`,
+        );
+      } else {
+        this.success('All tenants are rollbacked.');
       }
     } catch (error) {
       this.exit(error);

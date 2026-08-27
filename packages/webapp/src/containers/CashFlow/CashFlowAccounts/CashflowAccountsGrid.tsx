@@ -29,6 +29,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { AccountDialogAction } from '@/containers/Dialogs/AccountDialog/utils';
 import { safeCallback } from '@/utils';
 import { DRAWERS } from '@/constants/drawers';
+import { accountBalanceText } from '@/utils/accountBalance';
 
 const CASHFLOW_SKELETON_N = 4;
 
@@ -121,11 +122,17 @@ function CashflowBankAccount({
         <BankAccount
           title={account.name}
           code={account.code}
-          balance={!isNull(account.amount) ? account.formatted_amount : '-'}
+          balance={accountBalanceText(
+            account.amount,
+            account.formatted_amount,
+            account.currency_code,
+          )}
           type={account.account_type}
           updatedBeforeText={
             account.last_feeds_updated_from_now
-              ? `Updated ${account.last_feeds_updated_from_now} ago`
+              ? intl.get('cashflow.account.updated_ago', {
+                  time: account.last_feeds_updated_from_now,
+                })
               : ''
           }
           uncategorizedTransactionsCount={account.uncategorized_transactions}

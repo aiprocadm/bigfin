@@ -7,6 +7,7 @@ import clsx from 'classnames';
 import { If, AppToaster } from '@/components';
 import { NormalCell, BalanceCell, BankBalanceCell } from './components';
 import { transformTableStateToQuery, isBlank } from '@/utils';
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
 
 export const DeleteAccountTypeError = {
   AccountPredefined: 'account_predefined',
@@ -78,7 +79,10 @@ export const useAccountsTableColumns = () => {
       {
         id: 'type',
         Header: intl.get('type'),
-        accessor: 'account_type_label',
+        // Подпись типа — из словаря по ключу: сервер отдаёт её
+        // по-английски (С1 карты v29).
+        accessor: (row: any) =>
+          accountTypeLabel(row.account_type, row.account_type_label),
         className: clsx('type', Classes.TEXT_MUTED),
         width: 140,
         clickable: true,

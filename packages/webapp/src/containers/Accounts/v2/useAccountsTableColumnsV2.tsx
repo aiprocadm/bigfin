@@ -2,11 +2,13 @@ import { useMemo } from 'react';
 import intl from 'react-intl-universal';
 
 import { Badge } from '@/components/ui/badge';
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
 import {
   AccountsActionsMenuV2,
   type AccountRow,
   type AccountRowActions,
 } from './AccountsActionsMenuV2';
+import { accountBalanceText } from '@/utils/accountBalance';
 
 /** Id колонки «Имя»: в ней DataTable рисует шеврон/отступ дерева. */
 export const ACCOUNTS_TREE_COLUMN_ID = 'name';
@@ -56,11 +58,17 @@ export function useAccountsTableColumnsV2(actions: AccountRowActions) {
       {
         id: 'type',
         Header: intl.get('type'),
-        accessor: 'account_type_label',
+        // Подпись типа — из словаря по ключу: сервер отдаёт её
+        // по-английски (С1 карты v29).
+        accessor: (row: AccountRow) =>
+          accountTypeLabel(row.account_type, row.account_type_label),
         width: 150,
         Cell: ({ row }: { row: { original: AccountRow } }) => (
           <span className="text-text-secondary">
-            {row.original.account_type_label}
+            {accountTypeLabel(
+              row.original.account_type,
+              row.original.account_type_label,
+            )}
           </span>
         ),
       },
@@ -81,12 +89,16 @@ export function useAccountsTableColumnsV2(actions: AccountRowActions) {
         accessor: 'amount',
         align: 'right',
         width: 140,
-        Cell: ({ row }: { row: { original: AccountRow } }) =>
-          row.original.amount !== null ? (
-            <span>{row.original.formatted_amount}</span>
-          ) : (
-            <span className="text-text-muted">&mdash;</span>
-          ),
+        // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).
+        Cell: ({ row }: { row: { original: AccountRow } }) => (
+          <span>
+            {accountBalanceText(
+              row.original.amount,
+              row.original.formatted_amount,
+              row.original.currency_code,
+            )}
+          </span>
+        ),
       },
       {
         id: '__actions__',

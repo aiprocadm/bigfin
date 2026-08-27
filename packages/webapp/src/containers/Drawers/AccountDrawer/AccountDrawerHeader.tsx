@@ -9,6 +9,7 @@ import {
   FormattedMessage as T,
 } from '@/components';
 import { useAccountDrawerContext } from './AccountDrawerProvider';
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
 
 /**
  *  Account drawer header.
@@ -27,7 +28,9 @@ export default function AccountDrawerHeader() {
         </DetailItem>
 
         <DetailItem name={'account-type'} label={<T id={'account_type'} />}>
-          {account.account_type_label}
+          {/* Подпись типа — из словаря по ключу: сервер отдаёт её
+              по-английски (С1 карты v29). */}
+          {accountTypeLabel(account.account_type, account.account_type_label)}
         </DetailItem>
 
         <DetailItem name={'account-normal'} label={<T id={'account_normal'} />}>

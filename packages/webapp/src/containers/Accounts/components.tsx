@@ -13,6 +13,7 @@ import {
 import { Can, Icon, If } from '@/components';
 import { safeCallback } from '@/utils';
 import { AbilitySubject, AccountAction } from '@/constants/abilityOption';
+import { accountBalanceText } from '@/utils/accountBalance';
 
 /**
  * Accounts table actions menu.
@@ -107,13 +108,15 @@ export function NormalCell({ cell: { value } }) {
 export function BalanceCell({ cell }) {
   const account = cell.row.original;
 
-  return account.amount !== null ? (
+  // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).
+  return (
     <span>
-      {account.formatted_amount}
-      {/* <Money amount={account.amount} currency={account.currency_code} /> */}
+      {accountBalanceText(
+        account.amount,
+        account.formatted_amount,
+        account.currency_code,
+      )}
     </span>
-  ) : (
-    <span className="placeholder">—</span>
   );
 }
 
@@ -123,9 +126,14 @@ export function BalanceCell({ cell }) {
 export function BankBalanceCell({ cell }) {
   const account = cell.row.original;
 
-  return account.amount !== null ? (
-    <span>{account.bank_balance_formatted}</span>
-  ) : (
-    <span className="placeholder">—</span>
+  // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).
+  return (
+    <span>
+      {accountBalanceText(
+        account.amount,
+        account.bank_balance_formatted,
+        account.currency_code,
+      )}
+    </span>
   );
 }

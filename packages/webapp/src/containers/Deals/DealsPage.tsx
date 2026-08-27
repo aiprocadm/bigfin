@@ -11,6 +11,7 @@ import { DealDialog } from './DealDialog';
 import { DealProfitability } from './DealProfitability';
 import { DealStagesSection } from './DealStagesSection';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { EmptyState } from '@/components/ui/empty-state';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -121,9 +122,10 @@ export default function DealsPage() {
       {/* Список */}
       <div className="flex flex-col divide-y rounded-md border">
         {rows.length === 0 && (
-          <div className="text-muted-foreground p-4 text-sm">
-            {intl.get('deals.empty')}
-          </div>
+          <EmptyState
+            title={intl.get('deals.empty_status.title')}
+            description={intl.get('deals.empty_status.description')}
+          />
         )}
         {rows.map((d) => {
           const m = marginById.get(d.id);

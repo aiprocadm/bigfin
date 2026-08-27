@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useDebtsOverview, useRepaymentPlans } from '@/hooks/query/debts';
 import { DebtsContactRow } from './DebtsContactRow';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { EmptyState } from '@/components/ui/empty-state';
 
 type Side = 'receivable' | 'payable';
 
@@ -95,9 +96,10 @@ export default function DebtsPage() {
       </h2>
       <div className="flex flex-col divide-y rounded-md border">
         {contacts.length === 0 && (
-          <div className="text-muted-foreground p-4 text-sm">
-            {intl.get('debts.empty')}
-          </div>
+          <EmptyState
+            title={intl.get('debts.empty_status.title')}
+            description={intl.get('debts.empty_status.description')}
+          />
         )}
         {contacts.map((c) => (
           <DebtsContactRow key={c.contactId} contact={c} side={side} />

@@ -38,11 +38,18 @@ export class TenantsMigrateLatestCommand extends BaseCommand {
         this.exit(`The given tenant id ${options.tenant_id} does not exist.`);
       }
 
+      // Сбой одной организации не должен лишать миграций остальные:
+      // раньше здесь звался process.exit(1) прямо из цикла — начатые соседи
+      // обрывались с взведёнными замками, а до кого очередь не дошла, молча
+      // оставались на старых миграциях (М1 карты v28). Ошибки копим и
+      // называем итогом, каждое соединение закрываем.
+      const failures: { organizationId: string; message: string }[] = [];
+
       const migrateTenant = async (organizationId: string) => {
+        const tenantKnex = this.initTenantKnex(organizationId);
+        const tenantDb = `${this.configService.get('tenantDatabase.dbNamePrefix')}${organizationId}`;
         try {
-          const tenantKnex = this.initTenantKnex(organizationId);
           const [batchNo, _log] = await tenantKnex.migrate.latest();
-          const tenantDb = `${this.configService.get('tenantDatabase.dbNamePrefix')}${organizationId}`;
 
           if (_log.length === 0) {
             this.log('Already up to date');
@@ -53,7 +60,12 @@ export class TenantsMigrateLatestCommand extends BaseCommand {
           );
           this.log('-------------------');
         } catch (error) {
-          this.exit(error);
+          const message = error instanceof Error ? error.message : String(error);
+          failures.push({ organizationId, message });
+          this.log(`Tenant ${tenantDb} > НЕ МИГРИРОВАН: ${message}`);
+          this.log('-------------------');
+        } finally {
+          await tenantKnex.destroy().catch(() => {});
         }
       };
 
@@ -63,9 +75,20 @@ export class TenantsMigrateLatestCommand extends BaseCommand {
           .process((tenant: any) => {
             return migrateTenant(tenant.organizationId);
           });
-        this.success('All tenants are migrated.');
       } else {
         await migrateTenant(options.tenant_id);
+      }
+
+      if (failures.length) {
+        this.exit(
+          `Не домигрированы ${failures.length} из ${
+            options.tenant_id ? 1 : tenants.length
+          }: ${failures
+            .map((f) => `${f.organizationId} (${f.message})`)
+            .join('; ')}`,
+        );
+      } else {
+        this.success('All tenants are migrated.');
       }
     } catch (error) {
       this.exit(error);

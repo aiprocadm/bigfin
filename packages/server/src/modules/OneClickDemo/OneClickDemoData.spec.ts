@@ -24,10 +24,17 @@ const buildSeedService = ({
     }),
   });
 
+  // Оплаты и расходы демо проверяются отдельно (OneClickDemoMoney.spec) —
+  // здесь достаточно, чтобы они никому не мешали.
+  const createPayment = jest.fn().mockResolvedValue({ id: 1 });
+  const createExpense = jest.fn().mockResolvedValue({ id: 1 });
+
   const service = new SeedOneClickDemoDataService(
     { createCustomer } as any,
     { createItem } as any,
     { createSaleInvoice: createInvoice } as any,
+    { createPaymentReceived: createPayment } as any,
+    { newExpense: createExpense } as any,
     accountModel as any,
   );
   return { service, createCustomer, createItem, createInvoice };

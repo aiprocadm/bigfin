@@ -3,9 +3,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateCustomer } from '@/modules/Customers/commands/CreateCustomer.service';
 import { CreateItemService } from '@/modules/Items/CreateItem.service';
 import { CreateSaleInvoice } from '@/modules/SaleInvoices/commands/CreateSaleInvoice.service';
+import { CreatePaymentReceivedService } from '@/modules/PaymentReceived/commands/CreatePaymentReceived.serivce';
+import { CreateExpense } from '@/modules/Expenses/commands/CreateExpense.service';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
-import { DEMO_CUSTOMERS, DEMO_ITEMS, DEMO_INVOICES } from '../OneClickDemo.data';
+import {
+  DEMO_CUSTOMERS,
+  DEMO_ITEMS,
+  DEMO_INVOICES,
+  DEMO_PAYMENTS,
+  DEMO_EXPENSES,
+} from '../OneClickDemo.data';
 
 @Injectable()
 export class SeedOneClickDemoDataService {
@@ -13,6 +21,8 @@ export class SeedOneClickDemoDataService {
     private readonly createCustomerService: CreateCustomer,
     private readonly createItemService: CreateItemService,
     private readonly createSaleInvoiceService: CreateSaleInvoice,
+    private readonly createPaymentReceivedService: CreatePaymentReceivedService,
+    private readonly createExpenseService: CreateExpense,
 
     @Inject(Account.name)
     private readonly accountModel: TenantModelProxy<typeof Account>,
@@ -30,18 +40,27 @@ export class SeedOneClickDemoDataService {
    * @param {string} baseCurrency - Базовая валюта демо-организации.
    */
   public async seedDemoData(baseCurrency = 'RUB'): Promise<void> {
-    const [incomeAccount, costAccount] = await Promise.all([
+    const [incomeAccount, costAccount, bankAccount] = await Promise.all([
       this.accountBySlug('sales-of-product-income'),
       this.accountBySlug('cost-of-goods-sold'),
+      this.accountBySlug('bank-account'),
     ]);
     const customerIds = await this.seedCustomers(baseCurrency);
     const itemIds = await this.seedItems(incomeAccount?.id, costAccount?.id);
 
     // Счета — только если и покупатели, и товары действительно созданы:
     // счёт без позиции не имеет смысла и упадёт на проверке.
-    if (customerIds.length && itemIds.length) {
-      await this.seedInvoices(customerIds, itemIds);
-    }
+    if (!customerIds.length || !itemIds.length) return;
+
+    const invoiceIds = await this.seedInvoices(customerIds, itemIds);
+
+    // Деньги двигаются только когда есть и что оплачивать, и куда класть
+    // (С3 карты v29). Без расчётного счёта демо остаётся с одними счетами
+    // покупателям — это лучше, чем уронить постройку организации.
+    if (!invoiceIds.length || !bankAccount?.id) return;
+
+    await this.seedPayments(customerIds, invoiceIds, bankAccount.id);
+    await this.seedExpenses(bankAccount.id);
   }
 
   /**
@@ -119,7 +138,9 @@ export class SeedOneClickDemoDataService {
   private async seedInvoices(
     customerIds: number[],
     itemIds: number[],
-  ): Promise<void> {
+  ): Promise<number[]> {
+    const ids: number[] = [];
+
     for (const invoice of DEMO_INVOICES) {
       const customerId = customerIds[invoice.customerIndex % customerIds.length];
 
@@ -131,7 +152,7 @@ export class SeedOneClickDemoDataService {
         description: entry.description,
       }));
 
-      await this.createSaleInvoiceService.createSaleInvoice({
+      const created: any = await this.createSaleInvoiceService.createSaleInvoice({
         customerId,
         invoiceDate: moment()
           .subtract(invoice.issuedDaysAgo, 'days')
@@ -143,6 +164,70 @@ export class SeedOneClickDemoDataService {
         delivered: invoice.delivered,
         invoiceMessage: invoice.message,
         entries,
+      } as any);
+
+      ids.push(created?.id);
+    }
+    return ids.filter(Boolean);
+  }
+
+  /**
+   * Создаёт оплаты по демо-счетам: одну полную и одну частичную (С3 карты
+   * v29). Деньги приходят на расчётный счёт, поэтому в отчёте о движении
+   * денег появляется приход, а в сводке на главной — остаток.
+   */
+  private async seedPayments(
+    customerIds: number[],
+    invoiceIds: number[],
+    depositAccountId: number,
+  ): Promise<void> {
+    for (const payment of DEMO_PAYMENTS) {
+      const invoiceId = invoiceIds[payment.invoiceIndex];
+      // Счёт мог не создаться (например, у него не нашлось позиции) —
+      // оплачивать нечего.
+      if (!invoiceId) continue;
+
+      const customerId = customerIds[payment.customerIndex % customerIds.length];
+
+      await this.createPaymentReceivedService.createPaymentReceived({
+        customerId,
+        paymentDate: moment()
+          .subtract(payment.paidDaysAgo, 'days')
+          .format('YYYY-MM-DD'),
+        depositAccountId,
+        referenceNo: payment.reference,
+        entries: [{ index: 1, invoiceId, paymentAmount: payment.amount }],
+      } as any);
+    }
+  }
+
+  /**
+   * Создаёт демо-расходы (С3 карты v29): аренда, канцелярия, банковская
+   * комиссия. Публикуем сразу — иначе расход не попадёт в проводки, и
+   * отчёт о движении денег покажет только приход.
+   */
+  private async seedExpenses(paymentAccountId: number): Promise<void> {
+    for (const expense of DEMO_EXPENSES) {
+      const account = await this.accountBySlug(expense.accountSlug);
+      // Счёт учёта берётся из плана счетов организации; если его там нет,
+      // пропускаем расход, а не роняем постройку.
+      if (!account?.id) continue;
+
+      await this.createExpenseService.newExpense({
+        paymentAccountId,
+        paymentDate: moment()
+          .subtract(expense.paidDaysAgo, 'days')
+          .format('YYYY-MM-DD'),
+        description: expense.description,
+        publish: true,
+        categories: [
+          {
+            index: 1,
+            expenseAccountId: account.id,
+            amount: expense.amount,
+            description: expense.description,
+          },
+        ],
       } as any);
     }
   }

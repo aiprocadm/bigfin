@@ -25,6 +25,7 @@ import {
 import { FixedAssetCreateDialog } from './FixedAssetCreateDialog';
 import { FixedAssetDetailCard } from './FixedAssetDetailCard';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -198,9 +199,10 @@ export default function FixedAssetsPage() {
       {/* Assets table */}
       <div className="overflow-x-auto rounded-md border">
         {assetRows.length === 0 ? (
-          <div className="p-6 text-center text-sm text-muted-foreground">
-            {intl.get('fixed_assets.empty')}
-          </div>
+          <EmptyState
+            title={intl.get('fixed_assets.empty_status.title')}
+            description={intl.get('fixed_assets.empty_status.description')}
+          />
         ) : (
           <table className="w-full text-sm">
             <thead>

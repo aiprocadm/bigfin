@@ -12,6 +12,7 @@ import {
 } from '@/hooks/query/paymentRequests';
 import { PaymentRequestDialog } from './PaymentRequestDialog';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { EmptyState } from '@/components/ui/empty-state';
 
 type StatusFilter = '' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
@@ -73,9 +74,10 @@ export default function PaymentRequestsPage() {
 
       <div className="flex flex-col divide-y rounded-md border">
         {rows.length === 0 && (
-          <div className="text-muted-foreground p-4 text-sm">
-            {intl.get('payment_requests.empty')}
-          </div>
+          <EmptyState
+            title={intl.get('payment_requests.empty_status.title')}
+            description={intl.get('payment_requests.empty_status.description')}
+          />
         )}
         {rows.map((r) => (
           <div

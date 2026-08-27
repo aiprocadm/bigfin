@@ -9,6 +9,7 @@ import {
   useDeleteRule,
 } from '@/hooks/query/costAllocation';
 import { CostAllocationRuleDialog } from './CostAllocationRuleDialog';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface RuleRow {
   id: number;
@@ -89,9 +90,10 @@ export default function CostAllocationPage() {
 
       <div className="flex flex-col divide-y rounded-md border">
         {rows.length === 0 && (
-          <div className="text-muted-foreground p-4 text-sm">
-            {intl.get('cost_allocation.empty')}
-          </div>
+          <EmptyState
+            title={intl.get('cost_allocation.empty_status.title')}
+            description={intl.get('cost_allocation.empty_status.description')}
+          />
         )}
         {rows.map((r) => (
           <div

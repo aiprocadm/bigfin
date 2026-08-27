@@ -13,6 +13,7 @@ import {
   useDividendsSummary,
 } from '@/hooks/query/dividends';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
@@ -219,9 +220,10 @@ export default function DividendsPage() {
         </h2>
         <div className="flex flex-col divide-y rounded-md border">
           {payoutRows.length === 0 && (
-            <div className="text-muted-foreground p-4 text-sm">
-              {intl.get('dividends.history.empty')}
-            </div>
+            <EmptyState
+            title={intl.get('dividends.empty_status.title')}
+            description={intl.get('dividends.empty_status.description')}
+          />
           )}
           {payoutRows.map((p: any) => (
             <div

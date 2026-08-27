@@ -7,6 +7,7 @@ import { useCredits, useCreditsSummary } from '@/hooks/query/credits';
 import { CreditCreateDialog } from './CreditCreateDialog';
 import { CreditDetailCard } from './CreditDetailCard';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -80,9 +81,10 @@ export default function CreditsPage() {
       {/* Credits table */}
       <div className="overflow-x-auto rounded-md border">
         {creditRows.length === 0 ? (
-          <div className="p-6 text-center text-sm text-muted-foreground">
-            {intl.get('credits.empty')}
-          </div>
+          <EmptyState
+            title={intl.get('credits.empty_status.title')}
+            description={intl.get('credits.empty_status.description')}
+          />
         ) : (
           <table className="w-full text-sm">
             <thead>

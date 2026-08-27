@@ -205,7 +205,13 @@ export class Transformer<T = {}, ExtraContext = {}> {
    * @returns {string}
    */
   protected formatNumber(number: number | string, props?) {
-    return formatNumber(number, { money: false, ...props });
+    // Раз валюту передали — это деньги, печатаем знак (Д1 карты v30).
+    // Раньше здесь стояло `money: false`, и каждый трансформер обязан был
+    // вспомнить про `money: true` руками: вспомнили 16 раз, забыли 91 —
+    // отсюда «25 000,00» на экране расходов рядом с «31 500,00 ₽» на
+    // экране счетов покупателям. Кому нужно голое число (количества,
+    // курсы), тот пишет `money: false` явно — `...props` сильнее.
+    return formatNumber(number, { money: Boolean(props?.currencyCode), ...props });
   }
 
   /**

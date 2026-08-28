@@ -1,6 +1,7 @@
 import * as xlsx from 'xlsx';
 import { ITableData } from '../types/Table.types';
 import { FinancialTableStructure } from './FinancialTableStructure';
+import { parseReportNumber } from './parseReportNumber';
 
 interface ITableSheet {
   convertToXLSX(): xlsx.WorkBook;
@@ -43,7 +44,11 @@ export class TableSheet implements ITableSheet {
     );
     return computedRows.map((row) => {
       const entries = row.cells.map((cell, index) => {
-        return [`${index}`, cell.value];
+        // Сумма выгружается ЧИСЛОМ, а не подписью (Н1 карты v35): иначе
+        // Excel читает «2 975 000,00 ₽» как текст и столбец нельзя ни
+        // сложить, ни отсортировать. Названия, коды и даты — текстом.
+        const parsed = parseReportNumber(cell.value);
+        return [`${index}`, parsed ? parsed.value : cell.value];
       });
       return Object.fromEntries(entries);
     });

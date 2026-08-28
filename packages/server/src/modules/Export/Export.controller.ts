@@ -41,20 +41,31 @@ export class ExportController {
     @Res({ passthrough: true }) res: Response,
     @Headers('accept') acceptHeader: string,
   ) {
-    const applicationFormat = convertAcceptFormatToFormat(acceptHeader);
+    // Заголовка может не быть вовсе, а обычная ссылка из браузера шлёт
+    // «звёздочку»: без защиты первый случай ронял ответ пятисотой, второй
+    // отдавал 200 с пустым телом (Н2 карты v35). Умолчание — xlsx: именно
+    // его просит витрина, и он же ожидаем для ссылки «скачать».
+    const requested = acceptHeader || '';
+    const accept = requested.includes(AcceptType.ApplicationCsv)
+      ? AcceptType.ApplicationCsv
+      : requested.includes(AcceptType.ApplicationPdf)
+        ? AcceptType.ApplicationPdf
+        : AcceptType.ApplicationXlsx;
+
+    const applicationFormat = convertAcceptFormatToFormat(accept);
 
     const data = await this.exportResourceApp.export(
       query.resource,
       applicationFormat,
     );
     // Retrieves the csv format.
-    if (acceptHeader.includes(AcceptType.ApplicationCsv)) {
+    if (accept.includes(AcceptType.ApplicationCsv)) {
       res.setHeader('Content-Disposition', 'attachment; filename=output.csv');
       res.setHeader('Content-Type', 'text/csv');
 
       res.send(data);
       // Retrieves the xlsx format.
-    } else if (acceptHeader.includes(AcceptType.ApplicationXlsx)) {
+    } else if (accept.includes(AcceptType.ApplicationXlsx)) {
       res.setHeader('Content-Disposition', 'attachment; filename=output.xlsx');
       res.setHeader(
         'Content-Type',
@@ -62,7 +73,7 @@ export class ExportController {
       );
       res.send(data);
       // Retrieve the pdf format.
-    } else if (acceptHeader.includes(AcceptType.ApplicationPdf)) {
+    } else if (accept.includes(AcceptType.ApplicationPdf)) {
       res.set({
         'Content-Type': 'application/pdf',
         'Content-Length': data.length,

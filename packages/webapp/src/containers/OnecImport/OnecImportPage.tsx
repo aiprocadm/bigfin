@@ -10,6 +10,7 @@ import {
   useOnecImport,
   useOnecImportPreview,
 } from '@/hooks/query/onecImport';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 /**
  * ⑩ Импорт справочников из 1С (CommerceML): выбор файла → предпросмотр →
@@ -24,7 +25,7 @@ export default function OnecImportPage() {
   const previewMutation = useOnecImportPreview();
   const importMutation = useOnecImport();
 
-  if (!featureCan('onec_import')) return null;
+  if (!featureCan('onec_import')) return <ModuleDisabled />;
 
   const pickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);

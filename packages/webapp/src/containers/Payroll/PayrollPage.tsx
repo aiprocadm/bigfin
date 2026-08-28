@@ -17,6 +17,7 @@ import { PayrollRunDetail } from './PayrollRunDetail';
 import { PayrollKpiTab } from './PayrollKpiTab';
 import { formatMonth } from '@/utils/formatShortDate';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type TabKey = 'runs' | 'employees' | 'kpi';
 
@@ -44,7 +45,7 @@ export default function PayrollPage() {
   const { data: employees } = useEmployees({}, {});
   const deleteEmployee = useDeleteEmployee({});
 
-  if (!featureCan('payroll')) return null;
+  if (!featureCan('payroll')) return <ModuleDisabled />;
 
   const tabs: { key: TabKey; label: string }[] = featureCan('payroll_kpi')
     ? [...TABS, { key: 'kpi', label: 'payroll.tab.kpi' }]

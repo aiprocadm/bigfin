@@ -15,6 +15,7 @@ import {
   useGenerateOwnCrmToken,
   CrmSyncResult,
 } from '@/hooks/query/crmIntegration';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 /**
  * ⑯a Страница CRM-интеграции: подключение Битрикс24 (webhook-URL) и запуск
@@ -48,7 +49,7 @@ export default function CrmIntegrationPage() {
     }
   };
 
-  if (!featureCan('crm_integration')) return null;
+  if (!featureCan('crm_integration')) return <ModuleDisabled />;
 
   const connected = !!status?.bitrix24Connected;
   const amoConnected = !!status?.amocrmConnected;

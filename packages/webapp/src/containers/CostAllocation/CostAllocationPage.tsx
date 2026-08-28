@@ -10,6 +10,7 @@ import {
 } from '@/hooks/query/costAllocation';
 import { CostAllocationRuleDialog } from './CostAllocationRuleDialog';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 interface RuleRow {
   id: number;
@@ -31,7 +32,7 @@ export default function CostAllocationPage() {
   const { data: rules } = useCostAllocationRules({}, {});
   const deleteMutation = useDeleteRule({});
 
-  if (!featureCan('cost_allocation')) return null;
+  if (!featureCan('cost_allocation')) return <ModuleDisabled />;
 
   const rows: RuleRow[] = rules ?? [];
 

@@ -12,6 +12,7 @@ import {
   VatByAccount,
   VatByRate,
 } from '@/hooks/query/vatAnalysis';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const yearStart = () => `${new Date().getFullYear()}-01-01`;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -42,7 +43,7 @@ export default function VatAnalysisPage() {
 
   const { data } = useVatSummary(fromDate, toDate);
 
-  if (!featureCan('vat_analysis')) return null;
+  if (!featureCan('vat_analysis')) return <ModuleDisabled />;
 
   const byAccount: VatByAccount[] = data?.byAccount ?? [];
   const byRate: VatByRate[] = data?.byRate ?? [];

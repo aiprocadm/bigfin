@@ -15,6 +15,7 @@ import {
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DateField } from '@/components/ui/date-field';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
@@ -48,7 +49,7 @@ export default function DividendsPage() {
   const [accountId, setAccountId] = React.useState<string>('');
   const [note, setNote] = React.useState<string>('');
 
-  if (!featureCan('dividends')) return null;
+  if (!featureCan('dividends')) return <ModuleDisabled />;
 
   const cashAccounts: any[] = (accounts ?? []).filter((a: any) =>
     CASH_ACCOUNT_TYPES.includes(a.account_type ?? a.accountType),

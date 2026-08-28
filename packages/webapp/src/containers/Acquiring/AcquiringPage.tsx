@@ -13,6 +13,7 @@ import {
   useDisconnectYookassa,
 } from '@/hooks/query/acquiring';
 import { DateField } from '@/components/ui/date-field';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const monthAgo = () => {
   const d = new Date();
@@ -52,7 +53,7 @@ export default function AcquiringPage() {
   const connected = !!status?.yookassaConnected;
   const { data: summary } = useYookassaSummary(from, to, { enabled: connected });
 
-  if (!featureCan('acquiring')) return null;
+  if (!featureCan('acquiring')) return <ModuleDisabled />;
 
   const handleConnect = async () => {
     try {

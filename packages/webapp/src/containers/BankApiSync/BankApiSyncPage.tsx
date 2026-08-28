@@ -8,6 +8,7 @@ import {
 import { TinkoffCard } from './TinkoffCard';
 import { AlfaCard } from './AlfaCard';
 import { ImportStatementForm } from './ImportStatementForm';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 /**
  * ⑨c Страница банковских API: подключение банков волны 1 (Тинькофф,
@@ -18,7 +19,7 @@ export default function BankApiSyncPage() {
   const { featureCan } = useFeatureCan();
   const { data: status } = useBankApiStatus();
 
-  if (!featureCan('bank_api_sync')) return null;
+  if (!featureCan('bank_api_sync')) return <ModuleDisabled />;
 
   const connected = status?.connected ?? { tinkoff: false, alfa: false };
   const connectedProviders = (['tinkoff', 'alfa'] as BankProviderId[]).filter(

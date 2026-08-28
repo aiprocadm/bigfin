@@ -12,6 +12,7 @@ import {
   useManagementArticles,
   useDeleteManagementArticle,
 } from '@/hooks/query/managementArticles';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 export default function ManagementArticlesPage() {
   const { featureCan } = useFeatureCan();
@@ -22,7 +23,7 @@ export default function ManagementArticlesPage() {
   );
   const [showForm, setShowForm] = React.useState(false);
 
-  if (!featureCan('mgmt_articles')) return null;
+  if (!featureCan('mgmt_articles')) return <ModuleDisabled />;
 
   const openCreate = () => {
     setEditing(undefined);

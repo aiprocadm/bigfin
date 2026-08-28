@@ -12,6 +12,7 @@ import { Intent } from '@blueprintjs/core';
 import { AppToaster } from '@/components/AppToaster';
 import { getCookie, normalizeApiPath } from '../utils';
 import { getRequestLocale } from '../services/requestLocale';
+import { isFeatureDisabledResponse } from './featureDisabledResponse';
 import {
   withCamelAliases,
   shouldAliasResponse,
@@ -84,7 +85,9 @@ export default function useApiRequest() {
           setGlobalErrors({ session_expired: true });
           setLogout();
         }
-        if (status === 403) {
+        if (status === 403 && !isFeatureDisabledResponse(data)) {
+          // Выключенный модуль тоже отвечает 403, но это не отказ в правах:
+          // о нём рассказывает сам экран раздела (П1 карты v36).
           setGlobalErrors({ access_denied: { message: data.message } });
         }
         if (status === 429) {

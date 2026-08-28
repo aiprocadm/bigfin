@@ -8,6 +8,7 @@ import { CreditCreateDialog } from './CreditCreateDialog';
 import { CreditDetailCard } from './CreditDetailCard';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -29,7 +30,7 @@ export default function CreditsPage() {
   const { data: summary } = useCreditsSummary({});
   const { data: credits } = useCredits({}, {});
 
-  if (!featureCan('credits')) return null;
+  if (!featureCan('credits')) return <ModuleDisabled />;
 
   const creditRows: any[] = credits ?? [];
 

@@ -21,6 +21,7 @@ import { useCreateDeal, useEditDeal } from '@/hooks/query/deals';
 import { useEmployees } from '@/hooks/query/payroll';
 import { getDealSchema, DealFormValues } from './schemas';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 interface Props {
   deal?: any; // when present → edit mode
@@ -172,14 +173,9 @@ export function DealDialog({ deal, onDone, onCancel }: Props) {
                 <FormItem>
                   <FormLabel>{intl.get('deals.field.budget')}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === '' ? null : Number(e.target.value),
-                        )
-                      }
+                    <MoneyField
+                      value={field.value}
+                      onChange={(value) => field.onChange(value ?? null)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}

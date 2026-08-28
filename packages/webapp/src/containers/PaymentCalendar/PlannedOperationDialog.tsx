@@ -26,6 +26,7 @@ import {
   useEditPlannedOperation,
 } from '@/hooks/query/paymentCalendar';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 interface Props {
   operation?: PlannedOperation;
@@ -165,10 +166,9 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
                     {intl.get('payment_calendar.field.amount')}
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <MoneyField
                       value={field.value}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      onChange={(value) => field.onChange(value ?? 0)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -338,6 +338,7 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
                       <FormControl>
                         <Input
                           type="number"
+                          step={1}
                           value={field.value ?? 1}
                           onChange={(e) =>
                             field.onChange(Number(e.target.value))

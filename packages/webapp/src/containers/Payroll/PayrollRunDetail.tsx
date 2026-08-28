@@ -12,6 +12,7 @@ import {
   useDeletePayrollRun,
 } from '@/hooks/query/payroll';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { MoneyField } from '@/components/ui/money-field';
 
 interface Props {
   runId: number;
@@ -170,12 +171,11 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
                 </td>
                 <td className="py-2 pr-3">
                   {isDraft ? (
-                    <Input
-                      type="number"
+                    <MoneyField
                       className="h-7 w-24"
                       value={line.baseAmount}
-                      onChange={(e) =>
-                        updateLine(idx, 'baseAmount', safeNum(e.target.value))
+                      onChange={(value) =>
+                        updateLine(idx, 'baseAmount', value ?? 0)
                       }
                     />
                   ) : (
@@ -184,12 +184,11 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
                 </td>
                 <td className="py-2 pr-3">
                   {isDraft ? (
-                    <Input
-                      type="number"
+                    <MoneyField
                       className="h-7 w-24"
                       value={line.bonusAmount}
-                      onChange={(e) =>
-                        updateLine(idx, 'bonusAmount', safeNum(e.target.value))
+                      onChange={(value) =>
+                        updateLine(idx, 'bonusAmount', value ?? 0)
                       }
                     />
                   ) : (
@@ -198,12 +197,11 @@ export function PayrollRunDetail({ runId, onClose }: Props) {
                 </td>
                 <td className="py-2 pr-3">
                   {isDraft ? (
-                    <Input
-                      type="number"
+                    <MoneyField
                       className="h-7 w-24"
                       value={line.deductionAmount}
-                      onChange={(e) =>
-                        updateLine(idx, 'deductionAmount', safeNum(e.target.value))
+                      onChange={(value) =>
+                        updateLine(idx, 'deductionAmount', value ?? 0)
                       }
                     />
                   ) : (

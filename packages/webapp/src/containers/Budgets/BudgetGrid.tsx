@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useManagementArticles } from '@/hooks/query/managementArticles';
 import { useBudget, useUpsertBudgetLines } from '@/hooks/query/budgets';
+import { MoneyField } from '@/components/ui/money-field';
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i); // 0..11
 
@@ -170,12 +171,11 @@ export function BudgetGrid({
                   const period = periodOf(year, m);
                   return (
                     <td key={m} className="px-1 py-1">
-                      <Input
-                        type="number"
+                      <MoneyField
                         className="w-24 text-right"
                         value={valueAt(article.id, period)}
-                        onChange={(e) =>
-                          setCell(article.id, period, Number(e.target.value))
+                        onChange={(value) =>
+                          setCell(article.id, period, value ?? 0)
                         }
                       />
                     </td>

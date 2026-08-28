@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { getRepaymentPlanSchema, RepaymentPlanFormValues } from './schemas';
 import { useCreateRepaymentPlan } from '@/hooks/query/debts';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 interface Props {
   side: 'receivable' | 'payable';
@@ -138,12 +139,9 @@ export function RepaymentPlanDialog({
                       <FormItem className="flex-1">
                         <FormLabel>{intl.get('debts.plan.amount')}</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
+                          <MoneyField
                             value={field.value}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
+                            onChange={(value) => field.onChange(value ?? 0)}
                             onBlur={field.onBlur}
                             name={field.name}
                             ref={field.ref}

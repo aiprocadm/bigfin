@@ -20,6 +20,7 @@ import { payrollSettingsSchema, PayrollSettingsFormValues } from './schemas';
 import { usePayrollSettings } from '@/hooks/query/payroll';
 import { useSaveSettings } from '@/hooks/query/settings';
 import t from '@/hooks/query/types';
+import { MoneyField } from '@/components/ui/money-field';
 
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
@@ -111,11 +112,9 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                     {intl.get('payroll.settings.ndfl_rate')}
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
+                    <MoneyField
                       value={field.value}
-                      onChange={(e) => field.onChange(safeNum(e.target.value))}
+                      onChange={(value) => field.onChange(value ?? 0)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -163,11 +162,9 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                     {intl.get('payroll.settings.contrib_rate')}
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
+                    <MoneyField
                       value={field.value}
-                      onChange={(e) => field.onChange(safeNum(e.target.value))}
+                      onChange={(value) => field.onChange(value ?? 0)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -188,13 +185,9 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                         {intl.get('payroll.settings.msp_rate')}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
+                        <MoneyField
                           value={field.value}
-                          onChange={(e) =>
-                            field.onChange(safeNum(e.target.value))
-                          }
+                          onChange={(value) => field.onChange(value ?? 0)}
                           onBlur={field.onBlur}
                           name={field.name}
                           ref={field.ref}
@@ -213,12 +206,9 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                         {intl.get('payroll.settings.msp_threshold')}
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
+                        <MoneyField
                           value={field.value}
-                          onChange={(e) =>
-                            field.onChange(safeNum(e.target.value))
-                          }
+                          onChange={(value) => field.onChange(value ?? 0)}
                           onBlur={field.onBlur}
                           name={field.name}
                           ref={field.ref}

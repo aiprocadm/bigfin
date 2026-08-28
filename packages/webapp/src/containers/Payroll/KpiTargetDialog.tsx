@@ -22,6 +22,7 @@ import {
   useCreateKpiTarget,
   useEditKpiTarget,
 } from '@/hooks/query/payroll';
+import { MoneyField } from '@/components/ui/money-field';
 
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
@@ -192,10 +193,9 @@ export function KpiTargetDialog({ target, onDone, onCancel }: Props) {
                 <FormItem>
                   <FormLabel>{intl.get('payroll.kpi.target.amount')}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <MoneyField
                       value={field.value}
-                      onChange={(e) => field.onChange(safeNum(e.target.value))}
+                      onChange={(value) => field.onChange(value ?? 0)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
@@ -214,10 +214,9 @@ export function KpiTargetDialog({ target, onDone, onCancel }: Props) {
                     {intl.get('payroll.kpi.target.bonus_rate')}
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <MoneyField
                       value={field.value}
-                      onChange={(e) => field.onChange(safeNum(e.target.value))}
+                      onChange={(value) => field.onChange(value ?? 0)}
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}

@@ -6,6 +6,7 @@ import { Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDeals } from '@/hooks/query/deals';
+import { MoneyField } from '@/components/ui/money-field';
 
 interface DealRow {
   id: number;
@@ -113,16 +114,16 @@ export function ManualSharesField({ value, onChange }: ManualSharesFieldProps) {
             ))}
           </select>
 
-          <Input
+          <MoneyField
             className="w-24"
-            type="number"
-            min="0"
-            step="0.01"
             aria-label={intl.get('cost_allocation.manual_shares.weight')}
             value={row.weight}
-            onChange={(event) => {
+            onChange={(value) => {
               const next = [...rows];
-              next[index] = { ...row, weight: event.target.value };
+              next[index] = {
+                ...row,
+                weight: value === undefined ? '' : String(value),
+              };
               update(next);
             }}
           />

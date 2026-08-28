@@ -30,6 +30,7 @@ import {
   NotificationsSettingsFormValues,
 } from './schema';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { MoneyField } from '@/components/ui/money-field';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -297,6 +298,7 @@ export default function NotificationsSettingsPage() {
                           <Input
                             type="number"
                             min={1}
+                            step={1}
                             value={field.value ?? ''}
                             onChange={(e) => field.onChange(safeNum(e.target.value))}
                             onBlur={field.onBlur}
@@ -351,11 +353,9 @@ export default function NotificationsSettingsPage() {
                           {intl.get('notifications.settings.min_balance')}
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            value={field.value ?? ''}
-                            onChange={(e) => field.onChange(safeNum(e.target.value))}
+                          <MoneyField
+                            value={field.value}
+                            onChange={(value) => field.onChange(value ?? 0)}
                             onBlur={field.onBlur}
                             name={field.name}
                             ref={field.ref}
@@ -445,6 +445,7 @@ export default function NotificationsSettingsPage() {
                         <Input
                           type="number"
                           min={1}
+                          step={1}
                           value={field.value ?? ''}
                           onChange={(e) => field.onChange(safeNum(e.target.value))}
                           onBlur={field.onBlur}

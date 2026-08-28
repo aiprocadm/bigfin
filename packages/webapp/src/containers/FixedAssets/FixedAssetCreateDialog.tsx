@@ -19,6 +19,7 @@ import { useAccounts } from '@/hooks/query';
 import { useCreateFixedAsset } from '@/hooks/query/fixed-assets';
 import { getCreateFixedAssetSchema, CreateFixedAssetValues } from './schemas';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 // Типы счетов — с дефисами, как в constants/accountTypes (сервер отвергает
 // счёт иного типа с ошибкой ASSET_ACCOUNT_NOT_FIXED).
@@ -130,18 +131,9 @@ export function FixedAssetCreateDialog({ onDone, onCancel }: Props) {
                   <FormItem>
                     <FormLabel>{intl.get('fixed_assets.form.cost')}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        value={field.value ?? ''}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ''
-                              ? undefined
-                              : Number(e.target.value),
-                          )
-                        }
+                      <MoneyField
+                        value={field.value}
+                        onChange={field.onChange}
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}
@@ -159,18 +151,9 @@ export function FixedAssetCreateDialog({ onDone, onCancel }: Props) {
                   <FormItem>
                     <FormLabel>{intl.get('fixed_assets.form.salvage')}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        value={field.value ?? ''}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ''
-                              ? undefined
-                              : Number(e.target.value),
-                          )
-                        }
+                      <MoneyField
+                        value={field.value}
+                        onChange={field.onChange}
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}

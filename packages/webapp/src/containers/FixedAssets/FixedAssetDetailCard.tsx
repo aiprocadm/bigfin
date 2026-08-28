@@ -24,6 +24,7 @@ import {
 import { getDisposeSchema, DisposeValues } from './schemas';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -168,18 +169,9 @@ function DisposeForm({
                       {intl.get('fixed_assets.dispose.proceeds')}
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        value={field.value ?? ''}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ''
-                              ? undefined
-                              : Number(e.target.value),
-                          )
-                        }
+                      <MoneyField
+                        value={field.value}
+                        onChange={field.onChange}
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}

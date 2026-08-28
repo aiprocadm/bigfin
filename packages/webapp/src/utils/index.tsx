@@ -10,6 +10,10 @@ import Currency from 'js-money/lib/currency';
 import accounting from 'accounting';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { isEqual, castArray, isEmpty, includes, pickBy } from 'lodash';
+// Неразрывный пробел и список «русских» валют лежат отдельным листком:
+// тем же списком пользуется разбор напечатанной суммы
+// (`utils/amountInput`) — печать и ввод обязаны знать одно и то же.
+import { NBSP, RU_STYLE_CURRENCIES } from './currencyStyle';
 import jsCookie from 'js-cookie';
 import { deepMapKeys } from './map-key-deep';
 export * from './deep';
@@ -186,12 +190,6 @@ export const defaultExpanderReducer = (tableRows, level) => {
   return expended;
 };
 
-// Неразрывный пробел: сумма и знак валюты не должны разъезжаться переносом.
-const NBSP = ' ';
-
-// Валюты, которые принято писать по-русски: разряды через пробел, копейки
-// через запятую, знак ПОСЛЕ суммы («100 000,00 ₽»).
-const RU_STYLE_CURRENCIES = ['RUB'];
 
 /**
  * Формат сумм — зеркало серверного packages/server/src/utils/format-number.ts.

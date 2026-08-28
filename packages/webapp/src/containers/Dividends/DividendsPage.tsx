@@ -16,6 +16,7 @@ import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DateField } from '@/components/ui/date-field';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { MoneyField } from '@/components/ui/money-field';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
@@ -148,11 +149,11 @@ export default function DividendsPage() {
             <label className="text-muted-foreground text-xs">
               {intl.get('dividends.form.amount')}
             </label>
-            <Input
-              type="number"
-              min={0}
+            <MoneyField
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(value) =>
+                setAmount(value === undefined ? '' : String(value))
+              }
               placeholder={intl.get('dividends.form.amount_placeholder')}
             />
           </div>

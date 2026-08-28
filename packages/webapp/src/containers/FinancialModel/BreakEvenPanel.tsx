@@ -8,11 +8,12 @@ import {
   useSetCostBehavior,
 } from '@/hooks/query/financialModel';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formatOrganizationNumber } from '@/utils/organizationNumber';
 
 const fmtMoney = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
 const fmtPct = (frac: number | null | undefined) =>
-  `${Math.round((frac ?? 0) * 1000) / 10}%`;
+  `${formatOrganizationNumber(Math.round((frac ?? 0) * 1000) / 10)}%`;
 
 const btn = 'rounded border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50';
 const btnActive = 'bg-primary text-primary-foreground hover:bg-primary';

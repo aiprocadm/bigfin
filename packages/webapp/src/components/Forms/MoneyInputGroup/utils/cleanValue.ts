@@ -3,6 +3,7 @@ import { parseAbbrValue } from './parseAbbrValue';
 import { removeSeparators } from './removeSeparators';
 import { removeInvalidChars } from './removeInvalidChars';
 import { escapeRegExp } from './escapeRegExp';
+import { normalizeTypedSeparators } from '@/utils/amountInput';
 
 export type CleanValueOptions = {
   value: string;
@@ -29,6 +30,12 @@ export const cleanValue = ({
   prefix = '',
 }: CleanValueOptions): string => {
   const abbreviations = turnOffAbbreviations ? [] : ['k', 'm', 'b'];
+
+  // З1 карты v37. Сначала приводим напечатанное к знакам поля: без этого
+  // точка в русском поле считается разрядом, и «1000.50» превращается в
+  // «100050» — в сто раз больше, молча.
+  value = normalizeTypedSeparators(value, { decimalSeparator, groupSeparator });
+
   const isNegative = value.includes('-');
 
   const [prefixWithValue, preValue] = RegExp(`(\\d+)-?${escapeRegExp(prefix)}`).exec(value) || [];

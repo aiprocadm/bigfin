@@ -2,7 +2,7 @@
 import React from 'react';
 import { Intent } from '@blueprintjs/core';
 import { Field, FastField, getIn } from 'formik';
-import { CurrencyInput } from './MoneyInputGroup';
+import { MoneyInputGroup } from './MoneyInputGroup';
 
 const fieldToMoneyInputGroup = ({
   field: { onBlur: onFieldBlur, ...field },
@@ -29,7 +29,7 @@ const fieldToMoneyInputGroup = ({
 };
 
 function FieldToMoneyInputGroup({ ...props }) {
-  return <CurrencyInput {...fieldToMoneyInputGroup(props)} />;
+  return <MoneyInputGroup {...fieldToMoneyInputGroup(props)} />;
 }
 
 export function FMoneyInputGroup({ fastField, ...props }) {

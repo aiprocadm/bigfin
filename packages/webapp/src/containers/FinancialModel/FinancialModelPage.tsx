@@ -15,11 +15,12 @@ import { MarketingPanel } from './MarketingPanel';
 import { BreakEvenPanel } from './BreakEvenPanel';
 import { formatShortDate } from '@/utils/formatShortDate';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formatOrganizationNumber } from '@/utils/organizationNumber';
 
 const fmtMoney = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
 const fmtPct = (frac: number | null | undefined) =>
-  `${Math.round((frac ?? 0) * 1000) / 10}%`;
+  `${formatOrganizationNumber(Math.round((frac ?? 0) * 1000) / 10)}%`;
 
 function MetricCard({
   label,

@@ -8,6 +8,7 @@ import {
   VerticalRow,
 } from '@/hooks/query/financialRatios';
 import { DateField } from '@/components/ui/date-field';
+import { formatOrganizationNumber } from '@/utils/organizationNumber';
 
 // Дата «сегодня» по местному времени: toISOString() отдаёт UTC, и ночью
 // в Москве поле «по» показывало вчерашний день.
@@ -20,9 +21,11 @@ const yearStart = () => `${new Date().getFullYear()}-01-01`;
 const today = () => localDate(new Date());
 
 const pct = (v: number | null): string =>
-  v === null || v === undefined ? '—' : `${(v * 100).toFixed(1)}%`;
+  `${formatOrganizationNumber(v === null || v === undefined ? null : v * 100, {
+    digits: 1,
+  })}%`;
 const ratio = (v: number | null): string =>
-  v === null || v === undefined ? '—' : v.toFixed(2);
+  formatOrganizationNumber(v, { digits: 2 });
 // Единственная денежная плитка среди девяти — без знака валюты её путали
 // с коэффициентом.
 const money = (v: number): string =>

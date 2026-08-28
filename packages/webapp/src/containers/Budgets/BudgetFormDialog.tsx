@@ -120,6 +120,7 @@ export function BudgetFormDialog({ budget, onDone, onCancel }: Props) {
                   <FormControl>
                     <Input
                       type="number"
+                      step={1}
                       value={field.value}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                       onBlur={field.onBlur}

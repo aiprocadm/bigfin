@@ -10,6 +10,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { formatMonthShort } from '@/utils/formatShortDate';
+import { formatOrganizationNumber } from '@/utils/organizationNumber';
 
 export interface MarginPoint {
   month: string;
@@ -30,7 +31,9 @@ export function MarginOverTimeChart({ data }: { data: MarginPoint[] }) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" fontSize={12} tickFormatter={formatMonthShort} />
           <YAxis unit="%" fontSize={12} />
-          <Tooltip formatter={(v: any) => `${v}%`} />
+          <Tooltip
+            formatter={(v: any) => `${formatOrganizationNumber(v)}%`}
+          />
           <Line
             type="monotone"
             dataKey="marginPct"

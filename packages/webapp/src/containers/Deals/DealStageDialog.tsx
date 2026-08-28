@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useCreateStage, useEditStage } from '@/hooks/query/dealStages';
 import { getDealStageSchema, DealStageFormValues } from './stageSchemas';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 interface Props {
   dealId: number | string;
@@ -87,8 +88,8 @@ export function DealStageDialog({ dealId, stage, defaultStatus, onDone, onCancel
               <FormItem>
                 <FormLabel>{intl.get('deal_stages.field.planned_revenue')}</FormLabel>
                 <FormControl>
-                  <Input type="number" value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+                  <MoneyField value={field.value}
+                    onChange={field.onChange}
                     onBlur={field.onBlur} name={field.name} ref={field.ref} />
                 </FormControl>
                 <FormMessage />
@@ -98,8 +99,8 @@ export function DealStageDialog({ dealId, stage, defaultStatus, onDone, onCancel
               <FormItem>
                 <FormLabel>{intl.get('deal_stages.field.planned_cost')}</FormLabel>
                 <FormControl>
-                  <Input type="number" value={field.value ?? ''}
-                    onChange={(e) => field.onChange(e.target.value === '' ? undefined : Number(e.target.value))}
+                  <MoneyField value={field.value}
+                    onChange={field.onChange}
                     onBlur={field.onBlur} name={field.name} ref={field.ref} />
                 </FormControl>
                 <FormMessage />

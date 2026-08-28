@@ -19,6 +19,7 @@ import { useAccounts } from '@/hooks/query';
 import { useCreateCredit } from '@/hooks/query/credits';
 import { getCreateCreditSchema, CreateCreditFormValues } from './schemas';
 import { DateField } from '@/components/ui/date-field';
+import { MoneyField } from '@/components/ui/money-field';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
@@ -127,18 +128,9 @@ export function CreditCreateDialog({ onDone, onCancel }: Props) {
                   <FormItem>
                     <FormLabel>{intl.get('credits.field.principal')}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        value={field.value ?? ''}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ''
-                              ? undefined
-                              : Number(e.target.value),
-                          )
-                        }
+                      <MoneyField
+                        value={field.value}
+                        onChange={field.onChange}
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}
@@ -156,18 +148,9 @@ export function CreditCreateDialog({ onDone, onCancel }: Props) {
                   <FormItem>
                     <FormLabel>{intl.get('credits.field.rate')}</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        step="0.01"
-                        value={field.value ?? ''}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ''
-                              ? undefined
-                              : Number(e.target.value),
-                          )
-                        }
+                      <MoneyField
+                        value={field.value}
+                        onChange={field.onChange}
                         onBlur={field.onBlur}
                         name={field.name}
                         ref={field.ref}

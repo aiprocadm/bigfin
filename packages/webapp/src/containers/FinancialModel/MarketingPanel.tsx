@@ -11,6 +11,7 @@ import {
   useSetCustomerLifetime,
 } from '@/hooks/query/financialModel';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { MoneyField } from '@/components/ui/money-field';
 
 const fmtMoney = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -84,12 +85,12 @@ export function MarketingPanel({
           <span className="text-muted-foreground">
             {intl.get('financial_model.marketing.lifetime_label')}
           </span>
-          <input
-            type="number"
-            min={0}
+          <MoneyField
             className={`${input} w-40`}
             value={lifetime}
-            onChange={(e) => setLifetime$(e.target.value)}
+            onChange={(value) =>
+              setLifetime$(value === undefined ? '' : String(value))
+            }
           />
         </label>
         <button className={btn} onClick={() => setLifetime.mutate(Number(lifetime) || 0)}>
@@ -137,18 +138,23 @@ export function MarketingPanel({
                   <tr key={c.id} className="border-b last:border-0">
                     <td className="px-2 py-1">{c.name}</td>
                     <td className="px-2 py-1 text-right">
-                      <input
-                        type="number"
-                        min={0}
+                      <MoneyField
                         className={`${input} w-28 text-right`}
                         value={drafts[c.id]?.spend ?? ''}
-                        onChange={(e) => setDraft(c.id, 'spend', e.target.value)}
+                        onChange={(value) =>
+                          setDraft(
+                            c.id,
+                            'spend',
+                            value === undefined ? '' : String(value),
+                          )
+                        }
                       />
                     </td>
                     <td className="px-2 py-1 text-right">
                       <input
                         type="number"
                         min={0}
+                        step={1}
                         className={`${input} w-24 text-right`}
                         value={drafts[c.id]?.newCustomers ?? ''}
                         onChange={(e) =>

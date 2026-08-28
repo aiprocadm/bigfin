@@ -9,6 +9,7 @@ import {
   useImportBankStatement,
 } from '@/hooks/query/bankApiSync';
 import { DateField } from '@/components/ui/date-field';
+import { CashAccountField } from '@/components/ui/cash-account-field';
 
 const monthAgo = () => {
   const d = new Date();
@@ -80,7 +81,7 @@ export function ImportStatementForm({ providers }: ImportStatementFormProps) {
       )}
 
       <label className="text-sm">{intl.get('bank_api.import.account_id')}</label>
-      <Input value={accountId} onChange={(e) => setAccountId(e.target.value)} />
+      <CashAccountField value={accountId} onChange={setAccountId} />
       <label className="text-sm">
         {intl.get('bank_api.import.account_number')}
       </label>

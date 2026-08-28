@@ -23,6 +23,8 @@ import {
   ALLOCATION_KEYS,
 } from './schemas';
 import { DateField } from '@/components/ui/date-field';
+import { ManualSharesField } from './ManualSharesField';
+import { withoutEmptyDates } from './withoutEmptyDates';
 
 interface Props {
   initialValues?: Partial<CostAllocationRuleFormValues> & { id?: number };
@@ -62,26 +64,21 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
   const isSubmitting = form.formState.isSubmitting;
   const allocationKey = form.watch('allocationKey');
 
-  // Local raw text for the manual-shares JSON editor, so invalid input is shown
-  // and flagged (instead of silently keeping the last valid value).
-  const [manualSharesText, setManualSharesText] = React.useState(
-    initialValues?.manualShares && Object.keys(initialValues.manualShares).length
-      ? JSON.stringify(initialValues.manualShares, null, 2)
-      : '',
-  );
-  const [manualSharesInvalid, setManualSharesInvalid] = React.useState(false);
-
   const expenseArticles = React.useMemo<ArticleRow[]>(
     () => ((articles ?? []) as ArticleRow[]).filter((a) => a.kind === 'expense'),
     [articles],
   );
 
   const onSubmit = async (values: CostAllocationRuleFormValues) => {
+    // Незаполненный срок — это «не задано», а не пустая дата: иначе база
+    // отвечает «Incorrect date value» и правило не сохраняется вообще.
+    const payload = withoutEmptyDates(values);
+
     try {
       if (isEdit && initialValues?.id != null) {
-        await editMutation.mutateAsync([initialValues.id, values]);
+        await editMutation.mutateAsync([initialValues.id, payload]);
       } else {
-        await createMutation.mutateAsync(values);
+        await createMutation.mutateAsync(payload);
       }
       toast.success(intl.get('cost_allocation.saved'));
       onDone();
@@ -185,7 +182,7 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
               )}
             />
 
-            {/* Manual shares editor — shown only when allocationKey === 'manual_share' */}
+            {/* Ручные доли: строка на сделку, вес числом (П3 карты v36). */}
             {allocationKey === 'manual_share' && (
               <FormField
                 control={form.control}
@@ -196,37 +193,11 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
                       {intl.get('cost_allocation.field.manual_shares')}
                     </FormLabel>
                     <FormControl>
-                      <textarea
-                        className="border-input bg-background min-h-[80px] w-full rounded-md border px-3 py-2 text-sm font-mono"
-                        placeholder={intl.get(
-                          'cost_allocation.field.manual_shares_placeholder',
-                        )}
-                        value={manualSharesText}
-                        onChange={(e) => {
-                          const text = e.target.value;
-                          setManualSharesText(text);
-                          if (text.trim() === '') {
-                            field.onChange({});
-                            setManualSharesInvalid(false);
-                            return;
-                          }
-                          try {
-                            field.onChange(JSON.parse(text));
-                            setManualSharesInvalid(false);
-                          } catch {
-                            setManualSharesInvalid(true);
-                          }
-                        }}
-                        onBlur={field.onBlur}
-                        name={field.name}
-                        ref={field.ref}
+                      <ManualSharesField
+                        value={field.value ?? {}}
+                        onChange={field.onChange}
                       />
                     </FormControl>
-                    {manualSharesInvalid && (
-                      <p className="text-destructive text-sm">
-                        {intl.get('cost_allocation.error.manual_shares_invalid')}
-                      </p>
-                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -305,10 +276,7 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
               </Button>
               <Button
                 type="submit"
-                disabled={
-                  isSubmitting ||
-                  (allocationKey === 'manual_share' && manualSharesInvalid)
-                }
+                disabled={isSubmitting}
               >
                 {intl.get('cost_allocation.save')}
               </Button>

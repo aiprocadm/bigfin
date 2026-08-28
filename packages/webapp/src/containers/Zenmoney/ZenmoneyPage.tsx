@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import React from 'react';
 import intl from 'react-intl-universal';
+import { CashAccountField } from '@/components/ui/cash-account-field';
 import { toast } from 'sonner';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import {
   useDisconnectZenmoney,
   useImportZenmoney,
 } from '@/hooks/query/zenmoney';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 /**
  * ⑨b Страница импорта Дзенмани: подключение токеном + импорт операций в
@@ -27,7 +29,7 @@ export default function ZenmoneyPage() {
   const importOps = useImportZenmoney();
   const connected = !!status?.connected;
 
-  if (!featureCan('zenmoney_import')) return null;
+  if (!featureCan('zenmoney_import')) return <ModuleDisabled />;
 
   const handleConnect = async () => {
     try {
@@ -103,7 +105,7 @@ export default function ZenmoneyPage() {
         <div className="flex max-w-xl flex-col gap-2 rounded-md border p-4">
           <h2 className="font-medium">{intl.get('zenmoney.import.title')}</h2>
           <label className="text-sm">{intl.get('zenmoney.import.account_id')}</label>
-          <Input value={accountId} onChange={(e) => setAccountId(e.target.value)} />
+          <CashAccountField value={accountId} onChange={setAccountId} />
           <div className="flex justify-end">
             <Button
               onClick={handleImport}

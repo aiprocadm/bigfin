@@ -33,7 +33,19 @@ export class FeatureGuard implements CanActivate {
       const accessible = await this.featuresManager.accessible(feature);
 
       if (!accessible) {
-        throw new ForbiddenException(`Модуль «${feature}» выключен`);
+        // Выключенный модуль — не отказ в правах: человек сам может включить
+        // его в настройках. Витрина различает эти два случая по типу, иначе
+        // на выключенный раздел она показывала «у вас нет прав» (П1 v36).
+        throw new ForbiddenException({
+          errors: [
+            {
+              statusCode: 403,
+              type: 'FEATURE_DISABLED',
+              message: `Модуль «${feature}» выключен`,
+              payload: { feature },
+            },
+          ],
+        });
       }
     }
     return true;

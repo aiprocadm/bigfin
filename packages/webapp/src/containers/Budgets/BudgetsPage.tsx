@@ -10,6 +10,7 @@ import { BudgetFormDialog } from './BudgetFormDialog';
 import { BudgetGrid } from './BudgetGrid';
 import { BudgetPlanFact } from './BudgetPlanFact';
 import { Budget } from './schemas';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
 
@@ -22,7 +23,7 @@ export default function BudgetsPage() {
   const [scenario, setScenario] = React.useState('realistic');
   const [month, setMonth] = React.useState<string>(''); // '' = весь финансовый год, иначе 'YYYY-MM'
 
-  if (!featureCan('budgets')) return null;
+  if (!featureCan('budgets')) return <ModuleDisabled />;
 
   const year = selected?.fiscalYear ?? moment().year();
   // Период план-факта: конкретный месяц или весь финансовый год.

@@ -29,6 +29,7 @@ import {
   notificationsSettingsSchema,
   NotificationsSettingsFormValues,
 } from './schema';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -185,7 +186,7 @@ export default function NotificationsSettingsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  if (!featureCan('notifications')) return null;
+  if (!featureCan('notifications')) return <ModuleDisabled />;
 
   const onSubmit = async (values: NotificationsSettingsFormValues) => {
     const preferences: NotificationPreferenceItem[] = [

@@ -13,6 +13,7 @@ import {
 import { PaymentRequestDialog } from './PaymentRequestDialog';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type StatusFilter = '' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
@@ -35,7 +36,7 @@ export default function PaymentRequestsPage() {
   const reject = useRejectPaymentRequest({});
   const cancel = useCancelPaymentRequest({});
 
-  if (!featureCan('payment_requests')) return null;
+  if (!featureCan('payment_requests')) return <ModuleDisabled />;
 
   const rows: any[] = requests ?? [];
 

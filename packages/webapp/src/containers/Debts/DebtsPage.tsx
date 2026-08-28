@@ -7,6 +7,7 @@ import { useDebtsOverview, useRepaymentPlans } from '@/hooks/query/debts';
 import { DebtsContactRow } from './DebtsContactRow';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type Side = 'receivable' | 'payable';
 
@@ -29,7 +30,7 @@ export default function DebtsPage() {
   const { data: overview } = useDebtsOverview({}, {});
   const { data: plans } = useRepaymentPlans({ side }, {});
 
-  if (!featureCan('debts')) return null;
+  if (!featureCan('debts')) return <ModuleDisabled />;
 
   const summary =
     side === 'receivable' ? overview?.receivable : overview?.payable;

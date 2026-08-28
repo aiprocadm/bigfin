@@ -16,6 +16,7 @@ import type { ForecastLine } from './mapForecast';
 import { PlannedOperationDialog } from './PlannedOperationDialog';
 import { PlannedOperation } from './schemas';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -89,7 +90,7 @@ export default function PaymentCalendarPage() {
     {},
   );
 
-  if (!featureCan('payment_calendar')) return null;
+  if (!featureCan('payment_calendar')) return <ModuleDisabled />;
 
   const days = data?.days ?? [];
   const gap = data?.gap ?? null;

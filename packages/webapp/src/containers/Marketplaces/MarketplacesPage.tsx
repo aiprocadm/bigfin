@@ -14,6 +14,7 @@ import {
 import { OzonSection } from './OzonSection';
 import { SummaryCards } from './SummaryCards';
 import { DateField } from '@/components/ui/date-field';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const monthAgo = () => {
   const d = new Date();
@@ -41,7 +42,7 @@ export default function MarketplacesPage() {
     enabled: connected,
   });
 
-  if (!featureCan('marketplaces')) return null;
+  if (!featureCan('marketplaces')) return <ModuleDisabled />;
 
   const handleConnect = async () => {
     try {

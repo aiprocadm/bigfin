@@ -26,6 +26,7 @@ import { FixedAssetCreateDialog } from './FixedAssetCreateDialog';
 import { FixedAssetDetailCard } from './FixedAssetDetailCard';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -128,7 +129,7 @@ export default function FixedAssetsPage() {
   const { data: summary } = useFixedAssetsSummary();
   const { data: assets } = useFixedAssets();
 
-  if (!featureCan('fixed_assets')) return null;
+  if (!featureCan('fixed_assets')) return <ModuleDisabled />;
 
   const assetRows: any[] = assets ?? [];
 

@@ -4,9 +4,10 @@ import intl from 'react-intl-universal';
 import { toast } from 'sonner';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import useApiRequest from '@/hooks/useRequest';
 import { DateField } from '@/components/ui/date-field';
+import { CashAccountField } from '@/components/ui/cash-account-field';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const monthAgo = () => {
   const d = new Date();
@@ -27,7 +28,7 @@ export default function OnecExportPage() {
   const [to, setTo] = React.useState(today());
   const [loading, setLoading] = React.useState(false);
 
-  if (!featureCan('onec_export')) return null;
+  if (!featureCan('onec_export')) return <ModuleDisabled />;
 
   const handleDownload = async () => {
     setLoading(true);
@@ -63,7 +64,7 @@ export default function OnecExportPage() {
 
       <div className="flex max-w-xl flex-col gap-2 rounded-md border p-4">
         <label className="text-sm">{intl.get('onec_export.account_id')}</label>
-        <Input value={accountId} onChange={(e) => setAccountId(e.target.value)} />
+        <CashAccountField value={accountId} onChange={setAccountId} />
         <div className="flex items-center gap-2">
           <DateField value={from} onChange={setFrom} className="rounded border px-2 py-1 text-sm" />
           <span className="text-muted-foreground">—</span>

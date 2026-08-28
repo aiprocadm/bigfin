@@ -9,6 +9,7 @@ import { PlCashflowTab } from './PlCashflowTab';
 import { UnbalancedTab } from './UnbalancedTab';
 import { CrookedCurrencyTab } from './CrookedCurrencyTab';
 import { FailedMailsTab } from './FailedMailsTab';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type TabKey =
   | 'unmapped'
@@ -37,7 +38,7 @@ export default function DataQualityPage() {
   const [tab, setTab] = React.useState<TabKey>('unmapped');
   const [year, setYear] = React.useState<number>(new Date().getFullYear());
 
-  if (!featureCan('data_quality')) return null;
+  if (!featureCan('data_quality')) return <ModuleDisabled />;
 
   const currentYear = new Date().getFullYear();
   const years = Array.from(

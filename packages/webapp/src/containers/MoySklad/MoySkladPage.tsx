@@ -16,6 +16,7 @@ import {
   MoyskladProduct,
   MoyskladSale,
 } from '@/hooks/query/moysklad';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 // Сумму печатает общая утилита продукта: она знает валюту организации и
 // показывает рубль так, как принято — «45 000,00 ₽». Раньше здесь стоял
@@ -38,7 +39,7 @@ export default function MoySkladPage() {
   const connected = !!status?.connected;
   const { data: preview } = useMoyskladPreview({ enabled: connected });
 
-  if (!featureCan('moysklad')) return null;
+  if (!featureCan('moysklad')) return <ModuleDisabled />;
 
   const products: MoyskladProduct[] = preview?.products ?? [];
   const sales: MoyskladSale[] = preview?.sales ?? [];

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDeals } from '@/hooks/query/deals';
 import { MoneyField } from '@/components/ui/money-field';
+import { formatOrganizationNumber } from '@/utils/organizationNumber';
 
 interface DealRow {
   id: number;
@@ -81,7 +82,9 @@ export function ManualSharesField({ value, onChange }: ManualSharesFieldProps) {
   const percent = (row: ShareRow): string => {
     const weight = Number(row.weight);
     if (!row.dealId || Number.isNaN(weight) || total <= 0) return '';
-    return `${Math.round((weight / total) * 1000) / 10} %`;
+    return `${formatOrganizationNumber(
+      Math.round((weight / total) * 1000) / 10,
+    )} %`;
   };
 
   return (

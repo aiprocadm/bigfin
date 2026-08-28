@@ -9,6 +9,7 @@ import { CreditDetailCard } from './CreditDetailCard';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { formatOrganizationNumber } from '@/utils/organizationNumber';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -132,7 +133,7 @@ export default function CreditsPage() {
                     {fmt(credit.principalAmount)}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    {credit.annualInterestRate} %
+                    {formatOrganizationNumber(credit.annualInterestRate)} %
                   </td>
                   <td className="px-4 py-3 text-right">
                     {credit.termMonths}

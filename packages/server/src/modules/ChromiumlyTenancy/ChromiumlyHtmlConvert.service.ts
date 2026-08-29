@@ -62,13 +62,17 @@ export class ChromiumlyHtmlConvert {
     const url = path.join(Chromiumly.GOTENBERG_DOCS_ENDPOINT, fileDir);
     const urlConverter = new UrlConverter();
 
-    const buffer = await urlConverter.convert({
-      url,
-      properties,
-      pdfFormat,
-    });
-    await cleanupTempFile();
-
-    return buffer;
+    // Н3 карты v38: убираем за собой ВСЕГДА. Раньше уборка стояла после
+    // превращения в PDF, и сорвавшаяся печать оставляла временный файл на
+    // диске и запись о нём в базе — навсегда и при каждой попытке.
+    try {
+      return await urlConverter.convert({
+        url,
+        properties,
+        pdfFormat,
+      });
+    } finally {
+      await cleanupTempFile();
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { Global, Injectable } from '@nestjs/common';
 import { Exportable } from '../Export/Exportable';
-import { EXPORT_ROWS_LIMIT } from '../Export/exportRowsLimit';
+import { exportRowsLimit } from '../Export/exportRowsLimit';
 import { ItemsApplicationService } from './ItemsApplication.service';
 import { IItemsFilter } from './types/Items.types';
 import { ExportableService } from '../Export/decorators/ExportableModel.decorator';
@@ -26,7 +26,7 @@ export class ItemsExportable extends Exportable {
       columnSortBy: 'created_at',
       page: 1,
       ...query,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
     } as IItemsFilter;
 
     return this.itemsApplication

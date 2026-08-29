@@ -1,6 +1,6 @@
 import * as xlsx from 'xlsx';
 import { ExportAllService } from './ExportAllService';
-import { EXPORT_ROWS_LIMIT } from './exportRowsLimit';
+import { exportRowsLimit } from './exportRowsLimit';
 
 /**
  * С3 (карта v14): «выгрузить всё» — одна xlsx-книга, лист на каждый
@@ -15,7 +15,7 @@ describe('ExportAllService', () => {
         if (resource === 'TooBig') {
           // Экспортируемый ничего не знает про потолок: он просто отдаёт
           // столько строк, сколько есть. Считать обязан сам «выгрузить всё».
-          return Array.from({ length: EXPORT_ROWS_LIMIT + 1 }, () => ({
+          return Array.from({ length: exportRowsLimit() + 1 }, () => ({
             name: 'Ромашка',
             amount: 1,
           }));
@@ -80,6 +80,6 @@ describe('ExportAllService', () => {
     const skipped = JSON.stringify(workbook.Sheets['Skipped']);
 
     expect(skipped).toContain('TooBig');
-    expect(skipped).toContain(String(EXPORT_ROWS_LIMIT));
+    expect(skipped).toContain(String(exportRowsLimit()));
   });
 });

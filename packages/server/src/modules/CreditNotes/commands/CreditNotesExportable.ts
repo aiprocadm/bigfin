@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ICreditNotesQueryDTO } from '../types/CreditNotes.types';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { CreditNote } from '../models/CreditNote';
-import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
+import { exportRowsLimit } from '@/modules/Export/exportRowsLimit';
 
 @Injectable()
 @ExportableService({ name: CreditNote.name })
@@ -27,7 +27,7 @@ export class CreditNotesExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
       filterQuery,
     } as ICreditNotesQueryDTO;
 

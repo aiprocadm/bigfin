@@ -7,7 +7,7 @@ import { ResourceService } from '@/modules/Resource/ResourceService';
 import { getExportableServiceNames } from './decorators/ExportableModel.decorator';
 import { getDataAccessor } from './utils';
 import {
-  EXPORT_ROWS_LIMIT,
+  exportRowsLimit,
   ExportErrors,
   isExportOverLimit,
 } from './exportRowsLimit';
@@ -109,7 +109,7 @@ export class ExportAllService {
 
   /** Текст причины «не поместилось»: с числом, иначе он бесполезен. */
   private tooManyRowsReason(): string {
-    return `Too many rows (over ${EXPORT_ROWS_LIMIT}) — narrow the filter or export separately`;
+    return `Too many rows (over ${exportRowsLimit()}) — narrow the filter or export separately`;
   }
 
   /**

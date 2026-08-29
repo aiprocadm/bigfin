@@ -1,7 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
-import { EXPORT_ROWS_LIMIT } from './exportRowsLimit';
+import { exportRowsLimit } from './exportRowsLimit';
 
 /**
  * М3 срез 4 (карта v15): у выгрузки не было настоящего предела. В двенадцати
@@ -74,7 +74,7 @@ describe('предел выгрузки', () => {
   });
 
   it('потолок выгрузки — настоящее число', () => {
-    expect(EXPORT_ROWS_LIMIT).toBeGreaterThan(1000);
-    expect(EXPORT_ROWS_LIMIT).toBeLessThan(1000000);
+    expect(exportRowsLimit()).toBeGreaterThan(1000);
+    expect(exportRowsLimit()).toBeLessThan(1000000);
   });
 });

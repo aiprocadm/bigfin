@@ -1,5 +1,5 @@
 import { getExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
-import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
+import { exportRowsLimit } from '@/modules/Export/exportRowsLimit';
 import { BankTransactionsExportable } from './BankTransactionsExportable';
 import { BankTransaction } from '../models/BankTransaction';
 import { BankTransactionMeta } from '../models/BankTransaction.meta';
@@ -30,6 +30,6 @@ describe('BankTransactionsExportable', () => {
 
     const service = new BankTransactionsExportable(model as any);
     await expect(service.exportable({})).resolves.toEqual(rows);
-    expect(limit).toHaveBeenCalledWith(EXPORT_ROWS_LIMIT + 1);
+    expect(limit).toHaveBeenCalledWith(exportRowsLimit() + 1);
   });
 });

@@ -17,17 +17,21 @@ Fintablo и PlanFact с возможностью развёртывания на
 
 ## Установка
 
-### Docker (рекомендуется)
+### Окружение в Docker
+
+`docker-compose.yml` поднимает то, без чего продукт не работает: базу
+(MariaDB), Redis и службу печати Gotenberg. Самого продукта в этом файле
+нет — он запускается отдельно, следующим шагом.
 
 ```bash
+cp .env.example .env
 docker compose up -d
 ```
 
-После старта откройте http://localhost:80
+### Запуск продукта
 
-### Локальная разработка
-
-Требования: Node.js 18.16.1, pnpm, PostgreSQL, Redis.
+Требования: Node.js 18.16.1, pnpm, а также поднятое окружение из
+предыдущего шага (MariaDB, Redis, Gotenberg).
 
 ```bash
 pnpm install
@@ -35,11 +39,17 @@ pnpm build
 pnpm dev
 ```
 
+После старта витрина открывается на http://localhost:4000, сервер — на
+http://localhost:3000.
+
+Настройки продукт берёт из `.env`. Переменные из этого файла читаются при
+запуске приложения, поэтому менять его нужно до `pnpm dev`.
+
 Подробнее в [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Стек
 
-- **Бэкенд:** Node.js, TypeScript, NestJS, PostgreSQL, Redis, Knex
+- **Бэкенд:** Node.js, TypeScript, NestJS, MySQL/MariaDB, Redis, Knex
 - **Фронтенд:** React, TypeScript, Vite
 - **Монорепо:** lerna + pnpm workspaces
 

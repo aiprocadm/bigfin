@@ -1,6 +1,6 @@
 // © 2026 Bigfin
 import {
-  REPORT_ROWS_LIMIT,
+  reportRowsLimit,
   ReportErrors,
   assertReportRowsWithinLimit,
 } from './reportRowsLimit';
@@ -18,14 +18,14 @@ describe('потолок строк отчёта', () => {
   });
 
   it('строк ровно по потолок — всё ещё пропускаем', () => {
-    expect(() => assertReportRowsWithinLimit(REPORT_ROWS_LIMIT)).not.toThrow();
+    expect(() => assertReportRowsWithinLimit(reportRowsLimit())).not.toThrow();
   });
 
   it('строк больше потолка — честный отказ с кодом', () => {
     let error: any;
 
     try {
-      assertReportRowsWithinLimit(REPORT_ROWS_LIMIT + 1);
+      assertReportRowsWithinLimit(reportRowsLimit() + 1);
     } catch (caught) {
       error = caught;
     }
@@ -43,7 +43,7 @@ describe('потолок строк отчёта', () => {
     // Без этих чисел на экране будет «слишком много» без единого ориентира.
     expect(error?.payload).toEqual({
       rowsCount: 123456,
-      limit: REPORT_ROWS_LIMIT,
+      limit: reportRowsLimit(),
     });
   });
 
@@ -60,7 +60,7 @@ describe('потолок строк отчёта', () => {
 
   it('потолок — разумное число, а не бесконечность', () => {
     // 9999999 в лимите выгрузки — ровно та «бесконечность», от которой уходим.
-    expect(REPORT_ROWS_LIMIT).toBeGreaterThan(1000);
-    expect(REPORT_ROWS_LIMIT).toBeLessThan(1000000);
+    expect(reportRowsLimit()).toBeGreaterThan(1000);
+    expect(reportRowsLimit()).toBeLessThan(1000000);
   });
 });

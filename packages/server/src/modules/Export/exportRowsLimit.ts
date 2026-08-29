@@ -9,11 +9,15 @@ import { ServiceError } from '@/modules/Items/ServiceError';
  * честно отказывает и просит сузить отбор, а «выгрузить всё» пропускает
  * такой раздел и пишет причину в лист «Skipped» (М3 срез 4 карты v15).
  *
- * Значение можно переопределить переменной окружения.
+ * Значение можно переопределить переменной окружения `EXPORT_ROWS_LIMIT`.
+ *
+ * Н1 карты v38: окружение спрашивается в момент ОБРАЩЕНИЯ. Раньше значение
+ * запоминалось на загрузке модуля — то есть до того, как `ConfigModule`
+ * прочитает `.env`, — и настройка из `.env` молча не действовала.
  */
-export const EXPORT_ROWS_LIMIT = Number(
-  process.env.EXPORT_ROWS_LIMIT || 100000,
-);
+export function exportRowsLimit(): number {
+  return Number(process.env.EXPORT_ROWS_LIMIT || 100000);
+}
 
 export enum ExportErrors {
   EXPORT_ROWS_LIMIT_EXCEEDED = 'EXPORT_ROWS_LIMIT_EXCEEDED',
@@ -22,11 +26,11 @@ export enum ExportErrors {
 /**
  * Влезает ли выгрузка в потолок.
  * @param {number} rowsCount - Сколько строк вышло.
- * @param {number} limit - Потолок; по умолчанию общий {@link EXPORT_ROWS_LIMIT}.
+ * @param {number} limit - Потолок; по умолчанию общий {@link exportRowsLimit}.
  */
 export function isExportOverLimit(
   rowsCount: number,
-  limit: number = EXPORT_ROWS_LIMIT,
+  limit: number = exportRowsLimit(),
 ): boolean {
   return rowsCount > limit;
 }
@@ -41,7 +45,7 @@ export function isExportOverLimit(
 export function assertExportRowsWithinLimit(
   rowsCount: number,
   resource: string,
-  limit: number = EXPORT_ROWS_LIMIT,
+  limit: number = exportRowsLimit(),
 ): void {
   if (isExportOverLimit(rowsCount, limit)) {
     throw new ServiceError(

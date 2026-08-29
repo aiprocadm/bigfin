@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EXPORT_ROWS_LIMIT } from '../Export/exportRowsLimit';
+import { exportRowsLimit } from '../Export/exportRowsLimit';
 import { Exportable } from '../Export/Exportable';
 import { ISalesInvoicesFilter } from '../SaleInvoices/SaleInvoice.types';
 import { SaleEstimatesApplication } from './SaleEstimates.application';
@@ -30,7 +30,7 @@ export class SaleEstimatesExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
       filterQuery,
     } as ISalesInvoicesFilter;
 

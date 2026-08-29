@@ -1,6 +1,6 @@
 // © 2026 Bigfin
 import {
-  EXPORT_ROWS_LIMIT,
+  exportRowsLimit,
   ExportErrors,
   assertExportRowsWithinLimit,
   isExportOverLimit,
@@ -21,7 +21,7 @@ describe('потолок строк выгрузки', () => {
 
   it('строк ровно по потолок — всё ещё пропускаем', () => {
     expect(() =>
-      assertExportRowsWithinLimit(EXPORT_ROWS_LIMIT, 'items'),
+      assertExportRowsWithinLimit(exportRowsLimit(), 'items'),
     ).not.toThrow();
   });
 
@@ -29,7 +29,7 @@ describe('потолок строк выгрузки', () => {
     let error: any;
 
     try {
-      assertExportRowsWithinLimit(EXPORT_ROWS_LIMIT + 1, 'items');
+      assertExportRowsWithinLimit(exportRowsLimit() + 1, 'items');
     } catch (caught) {
       error = caught;
     }
@@ -47,15 +47,15 @@ describe('потолок строк выгрузки', () => {
     // Без этих трёх чисел на экране будет «слишком много» без ориентиров.
     expect(error?.payload).toEqual({
       rowsCount: 250000,
-      limit: EXPORT_ROWS_LIMIT,
+      limit: exportRowsLimit(),
       resource: 'sale_invoice',
     });
   });
 
   it('проверка «влезает ли» не бросает, а отвечает да/нет', () => {
     // «Выгрузить всё» не должно падать целиком из-за одного большого раздела.
-    expect(isExportOverLimit(EXPORT_ROWS_LIMIT + 1)).toBe(true);
-    expect(isExportOverLimit(EXPORT_ROWS_LIMIT)).toBe(false);
+    expect(isExportOverLimit(exportRowsLimit() + 1)).toBe(true);
+    expect(isExportOverLimit(exportRowsLimit())).toBe(false);
   });
 
   it('код ошибки объявлен перечислением', () => {
@@ -65,7 +65,7 @@ describe('потолок строк выгрузки', () => {
   });
 
   it('потолок — настоящее число, а не 9999999', () => {
-    expect(EXPORT_ROWS_LIMIT).toBeGreaterThan(1000);
-    expect(EXPORT_ROWS_LIMIT).toBeLessThan(1000000);
+    expect(exportRowsLimit()).toBeGreaterThan(1000);
+    expect(exportRowsLimit()).toBeLessThan(1000000);
   });
 });

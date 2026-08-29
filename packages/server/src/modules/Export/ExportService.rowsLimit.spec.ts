@@ -1,6 +1,6 @@
 // © 2026 Bigfin
 import { ExportResourceService } from './ExportService';
-import { EXPORT_ROWS_LIMIT } from './exportRowsLimit';
+import { exportRowsLimit } from './exportRowsLimit';
 
 /**
  * М3 срез 4 (карта v15): у выгрузки не было настоящего предела — стояла
@@ -46,7 +46,7 @@ describe('потолок строк выгрузки — сама выгрузк
   });
 
   it('строк больше потолка — честный отказ, файл не собирается', async () => {
-    const { service, built } = buildService(EXPORT_ROWS_LIMIT + 1);
+    const { service, built } = buildService(exportRowsLimit() + 1);
     let error: any;
 
     try {
@@ -60,7 +60,7 @@ describe('потолок строк выгрузки — сама выгрузк
   });
 
   it('в отказе видно, чего и сколько', async () => {
-    const { service } = buildService(EXPORT_ROWS_LIMIT + 3);
+    const { service } = buildService(exportRowsLimit() + 3);
     let error: any;
 
     try {
@@ -68,8 +68,8 @@ describe('потолок строк выгрузки — сама выгрузк
     } catch (caught) {
       error = caught;
     }
-    expect(error?.payload?.rowsCount).toBe(EXPORT_ROWS_LIMIT + 3);
-    expect(error?.payload?.limit).toBe(EXPORT_ROWS_LIMIT);
+    expect(error?.payload?.rowsCount).toBe(exportRowsLimit() + 3);
+    expect(error?.payload?.limit).toBe(exportRowsLimit());
     expect(error?.payload?.resource).toBe('sale_invoice');
   });
 });

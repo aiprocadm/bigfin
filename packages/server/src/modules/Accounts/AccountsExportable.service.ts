@@ -1,6 +1,6 @@
 import { AccountsApplication } from './AccountsApplication.service';
 import { Exportable } from '../Export/Exportable';
-import { EXPORT_ROWS_LIMIT } from '../Export/exportRowsLimit';
+import { exportRowsLimit } from '../Export/exportRowsLimit';
 import { IAccountsFilter, IAccountsStructureType } from './Accounts.types';
 import { Global, Injectable } from '@nestjs/common';
 import { ExportableService } from '../Export/decorators/ExportableModel.decorator';
@@ -27,7 +27,7 @@ export class AccountsExportable extends Exportable {
       inactiveMode: false,
       ...query,
       structure: IAccountsStructureType.Flat,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
       page: 1,
     } as IAccountsFilter;
 

@@ -1,6 +1,6 @@
 // © 2026 Bigfin
 import { JournalSheetRepository } from './JournalSheetRepository';
-import { REPORT_ROWS_LIMIT } from '../../common/reportRowsLimit';
+import { reportRowsLimit } from '../../common/reportRowsLimit';
 
 /**
  * М3 срез 3 (карта v15): Журнал, как и Главная книга, тянул в память ВСЕ
@@ -50,7 +50,7 @@ describe('потолок строк Журнала', () => {
   });
 
   it('строк больше потолка — отказ, и строки НЕ загружаются', async () => {
-    const { repository, calls } = buildRepository(REPORT_ROWS_LIMIT + 1);
+    const { repository, calls } = buildRepository(reportRowsLimit() + 1);
     let error: any;
 
     try {
@@ -63,7 +63,7 @@ describe('потолок строк Журнала', () => {
   });
 
   it('в отказе видно, сколько строк вышло', async () => {
-    const { repository } = buildRepository(REPORT_ROWS_LIMIT + 42);
+    const { repository } = buildRepository(reportRowsLimit() + 42);
     let error: any;
 
     try {
@@ -71,6 +71,6 @@ describe('потолок строк Журнала', () => {
     } catch (caught) {
       error = caught;
     }
-    expect(error?.payload?.rowsCount).toBe(REPORT_ROWS_LIMIT + 42);
+    expect(error?.payload?.rowsCount).toBe(reportRowsLimit() + 42);
   });
 });

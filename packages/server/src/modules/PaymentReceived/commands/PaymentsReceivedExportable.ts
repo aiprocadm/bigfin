@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PaymentReceivesApplication } from '../PaymentReceived.application';
 import { IPaymentsReceivedFilter } from '../types/PaymentReceived.types';
-import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
+import { exportRowsLimit } from '@/modules/Export/exportRowsLimit';
 import { Exportable } from '@/modules/Export/Exportable';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { PaymentReceived } from '../models/PaymentReceived';
@@ -26,7 +26,7 @@ export class PaymentsReceivedExportable extends Exportable {
     };
     const parsedQuery = {
       page: 1,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
       filterQuery,
       ...query
     };

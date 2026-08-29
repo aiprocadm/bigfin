@@ -1,5 +1,5 @@
 import { Exportable } from '../../Export/Exportable';
-import { EXPORT_ROWS_LIMIT } from '../../Export/exportRowsLimit';
+import { exportRowsLimit } from '../../Export/exportRowsLimit';
 import { Injectable } from '@nestjs/common';
 import { IManualJournalsFilter } from '../types/ManualJournals.types';
 import { ManualJournalsApplication } from '../ManualJournalsApplication.service';
@@ -25,7 +25,7 @@ export class ManualJournalsExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
     } as IManualJournalsFilter;
 
     return this.manualJournalsApplication

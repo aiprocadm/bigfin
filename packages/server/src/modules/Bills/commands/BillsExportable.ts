@@ -3,7 +3,7 @@ import { BillsApplication } from '../Bills.application';
 import { Injectable } from '@nestjs/common';
 import { Exportable } from '@/modules/Export/Exportable';
 import { IBillsFilter } from '../Bills.types';
-import { EXPORT_ROWS_LIMIT } from '@/modules/Export/exportRowsLimit';
+import { exportRowsLimit } from '@/modules/Export/exportRowsLimit';
 import { ExportableService } from '@/modules/Export/decorators/ExportableModel.decorator';
 import { Bill } from '../models/Bill';
 
@@ -27,7 +27,7 @@ export class BillsExportable extends Exportable {
       columnSortBy: 'created_at',
       ...query,
       page: 1,
-      pageSize: EXPORT_ROWS_LIMIT + 1,
+      pageSize: exportRowsLimit() + 1,
       filterQuery,
     } as IBillsFilter;
 

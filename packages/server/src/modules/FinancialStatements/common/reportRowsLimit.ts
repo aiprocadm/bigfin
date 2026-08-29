@@ -9,12 +9,16 @@ import { ServiceError } from '@/modules/Items/ServiceError';
  * как ошибка учёта. Поэтому предохранитель отказывает и просит сузить
  * период (М3 срез 3 карты v15).
  *
- * Значение можно переопределить переменной окружения на случай, если у
- * клиента машина мощнее.
+ * Значение можно переопределить переменной окружения `reportRowsLimit()`
+ * на случай, если у клиента машина мощнее.
+ *
+ * Н1 карты v38: окружение спрашивается в момент ОБРАЩЕНИЯ. Раньше значение
+ * запоминалось на загрузке модуля — то есть до того, как `ConfigModule`
+ * прочитает `.env`, — и настройка из `.env` молча не действовала.
  */
-export const REPORT_ROWS_LIMIT = Number(
-  process.env.REPORT_ROWS_LIMIT || 50000,
-);
+export function reportRowsLimit(): number {
+  return Number(process.env.REPORT_ROWS_LIMIT || 50000);
+}
 
 export enum ReportErrors {
   REPORT_ROWS_LIMIT_EXCEEDED = 'REPORT_ROWS_LIMIT_EXCEEDED',
@@ -23,12 +27,12 @@ export enum ReportErrors {
 /**
  * Проверяет, что отчёт помещается в потолок строк.
  * @param {number} rowsCount - Сколько строк даст отчёт.
- * @param {number} limit - Потолок; по умолчанию общий {@link REPORT_ROWS_LIMIT}.
+ * @param {number} limit - Потолок; по умолчанию общий {@link reportRowsLimit}.
  * @throws {ServiceError} REPORT_ROWS_LIMIT_EXCEEDED
  */
 export function assertReportRowsWithinLimit(
   rowsCount: number,
-  limit: number = REPORT_ROWS_LIMIT,
+  limit: number = reportRowsLimit(),
 ): void {
   if (rowsCount > limit) {
     throw new ServiceError(

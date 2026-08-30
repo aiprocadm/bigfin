@@ -791,11 +791,22 @@ export class SaleInvoice extends TenantBaseModel {
   /**
    * Model search attributes.
    */
+  /**
+   * С1 карты v39. Счёт покупателю ищется как все документы продукта.
+   *
+   * Ссылка и сумма лежали здесь закомментированными, и счёт покупателю
+   * был единственным документом с одним полем поиска: «СЧ-001» находил
+   * его, а собственная сумма счёта — нет. У соседей (счёт поставщика,
+   * чек, смета, кредит-нота, оплаты) все три поля работают.
+   *
+   * Поле `amount` в описании модели указывает на колонку `balance` — там
+   * и лежит сумма счёта.
+   */
   static get searchRoles(): ISearchRole[] {
     return [
       { fieldKey: 'invoice_no', comparator: 'contains' },
-      // { condition: 'or', fieldKey: 'reference_no', comparator: 'contains' },
-      // { condition: 'or', fieldKey: 'amount', comparator: 'equals' },
+      { condition: 'or', fieldKey: 'reference_no', comparator: 'contains' },
+      { condition: 'or', fieldKey: 'amount', comparator: 'equals' },
     ];
   }
 

@@ -1,5 +1,6 @@
 // @ts-nocheck — хуки в @/hooks/state и @/hooks/query не типизированы
 import { Plus, Search } from 'lucide-react';
+import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,6 +20,8 @@ import { useAuthActions } from '@/hooks/state';
 import { useAuthenticatedAccount } from '@/hooks/query';
 import { firstLettersArgs } from '@/utils';
 import { NotificationBell } from '@/containers/Notifications/InApp/NotificationBell';
+import { useGetUniversalSearchTypeOptions } from '@/containers/UniversalSearch/utils';
+import { searchScopeLabel } from '@/containers/UniversalSearch/searchScope';
 
 export const ConnectedTopbar = () => {
   const history = useHistory();
@@ -31,6 +34,16 @@ export const ConnectedTopbar = () => {
 
   // Заголовок текущей страницы (вернули в панель после удаления старой).
   const pageTitle = useSelector((state) => state.dashboard?.pageTitle);
+
+  // С3 карты v39: подпись поиска называет ТОТ вид записей, среди которого
+  // поиск и правда будет искать. Прежняя подпись обещала «по контрагентам,
+  // счетам…», а поиск смотрит один вид за раз — и «ничего не найдено»
+  // читалось как «такого нет в продукте».
+  const searchTypeOptions = useGetUniversalSearchTypeOptions();
+  const searchResourceType = useSelector(
+    (state) => state.globalSearch?.defaultResourceType,
+  );
+  const searchScope = searchScopeLabel(searchTypeOptions, searchResourceType);
 
   const initials = user
     ? firstLettersArgs(user.first_name, user.last_name)
@@ -51,7 +64,13 @@ export const ConnectedTopbar = () => {
           {/* Поле-триггер: открывает оверлей универсального поиска. */}
           <Input
             readOnly
-            placeholder="Поиск по контрагентам, счетам..."
+            placeholder={
+              searchScope
+                ? intl.get('universal_search.placeholder_in', {
+                    resource: searchScope.toLowerCase(),
+                  })
+                : intl.get('search')
+            }
             className="cursor-pointer pl-9"
             onClick={openSearch}
             onFocus={openSearch}

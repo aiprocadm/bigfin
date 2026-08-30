@@ -4230,5 +4230,8 @@
   "cost_allocation.manual_shares.deal": "Deal",
   "cost_allocation.manual_shares.select_deal": "Select a deal",
   "cost_allocation.manual_shares.weight": "Weight",
-  "cost_allocation.manual_shares.remove": "Remove row"
+  "cost_allocation.manual_shares.remove": "Remove row",
+  "universal_search.placeholder_in": "Search: {resource}",
+  "universal_search.no_results_in": "Nothing found in: {resource}",
+  "universal_search.switch_type_hint": "Pick another record type with the button next to the search field."
 }

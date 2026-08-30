@@ -4230,5 +4230,8 @@
   "cost_allocation.manual_shares.deal": "Сделка",
   "cost_allocation.manual_shares.select_deal": "Выберите сделку",
   "cost_allocation.manual_shares.weight": "Вес",
-  "cost_allocation.manual_shares.remove": "Убрать строку"
+  "cost_allocation.manual_shares.remove": "Убрать строку",
+  "universal_search.placeholder_in": "Поиск: {resource}",
+  "universal_search.no_results_in": "Ничего не найдено среди: {resource}",
+  "universal_search.switch_type_hint": "Другой вид записей — кнопкой справа от строки поиска."
 }

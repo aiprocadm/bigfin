@@ -21,6 +21,7 @@ import {
   useUniversalSearchContext,
 } from './UniversalSearchProvider';
 import { filterItemsByResourceType } from './utils';
+import { searchScopeLabel } from '@/containers/UniversalSearch/searchScope';
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
 
 // Resource type from RESOURCES_TYPES constant
@@ -301,6 +302,32 @@ interface UniversalSearchQueryListProps {
 }
 
 /**
+ * С3 карты v39. Пустой ответ говорит, СРЕДИ ЧЕГО искали.
+ *
+ * Прежде здесь было одно «Ничего не найдено.» — и на экране счетов при
+ * вводе имени клиента это читалось как «такого клиента нет», хотя поиск
+ * просто смотрел среди счетов. Теперь видно и вид записей, и то, что его
+ * можно переключить.
+ */
+function UniversalSearchNoResults() {
+  const { searchType, searchTypeOptions } = useUniversalSearchContext();
+  const scope = searchScopeLabel(searchTypeOptions, searchType);
+
+  if (!scope) {
+    return <MenuItem disabled={true} text={<T id={'no_results'} />} />;
+  }
+  return (
+    <MenuItem
+      disabled={true}
+      text={intl.get('universal_search.no_results_in', {
+        resource: scope.toLowerCase(),
+      })}
+      label={intl.get('universal_search.switch_type_hint')}
+    />
+  );
+}
+
+/**
  * Universal search query list.
  */
 function UniversalSearchQueryList({
@@ -322,7 +349,7 @@ function UniversalSearchQueryList({
       )}
       noResults={
         !isLoading ? (
-          <MenuItem disabled={true} text={<T id={'no_results'} />} />
+          <UniversalSearchNoResults />
         ) : (
           <MenuItem
             disabled={true}

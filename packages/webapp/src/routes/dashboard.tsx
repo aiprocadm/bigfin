@@ -94,7 +94,7 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Items/ItemsImportPage')),
     backLink: true,
     pageTitle: intl.get('items_import'),
-    defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
+    defaultSearchResource: RESOURCES_TYPES.ITEM,
   },
 
   {
@@ -196,7 +196,7 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('general_ledger'),
     backLink: true,
     sidebarExpand: false,
-    defaultSearchResource: RESOURCES_TYPES.INVENTORY_ADJUSTMENT,
+    defaultSearchResource: RESOURCES_TYPES.MANUAL_JOURNAL,
   },
   {
     path: `/financial-reports/balance-sheet`,

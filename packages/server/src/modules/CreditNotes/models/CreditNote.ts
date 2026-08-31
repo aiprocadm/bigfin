@@ -454,6 +454,7 @@ export class CreditNote extends TenantBaseModel {
       { fieldKey: 'credit_number', comparator: 'contains' },
       { condition: 'or', fieldKey: 'reference_no', comparator: 'contains' },
       { condition: 'or', fieldKey: 'amount', comparator: 'equals' },
+      { condition: 'or', fieldKey: 'customer_name', comparator: 'contains' },
     ];
   }
 

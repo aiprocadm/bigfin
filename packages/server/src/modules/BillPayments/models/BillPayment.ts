@@ -169,6 +169,7 @@ export class BillPayment extends TenantBaseModel {
       { fieldKey: 'payment_number', comparator: 'contains' },
       { condition: 'or', fieldKey: 'reference_no', comparator: 'contains' },
       { condition: 'or', fieldKey: 'amount', comparator: 'equals' },
+      { condition: 'or', fieldKey: 'vendor_name', comparator: 'contains' },
     ];
   }
 

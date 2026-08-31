@@ -18,6 +18,16 @@ export const SaleInvoiceMeta = {
     pageTitle: 'Sale invoices',
   },
   fields: {
+    // К1 карты v41. Служебное поле поиска: имя контрагента лежит в
+    // соседней таблице, и поиск добирается до него соединением.
+    // Из фильтров скрыто — по контрагенту уже фильтруют полем «customer».
+    customer_name: {
+      name: 'invoice.field.customer',
+      fieldType: 'relation',
+      relationKey: 'customer',
+      relationEntityKey: 'display_name',
+      filterable: false,
+    },
     customer: {
       name: 'invoice.field.customer',
       column: 'customer_id',

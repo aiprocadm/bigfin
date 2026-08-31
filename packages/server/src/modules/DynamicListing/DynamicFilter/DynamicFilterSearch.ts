@@ -19,10 +19,20 @@ export class DynamicFilterSearch extends DynamicFilterFilterRoles {
 
   /**
    * On initialize the dynamic filter.
+   *
+   * К1 карты v41. Порядок здесь принципиален. Родитель по ролям поиска
+   * считает, к каким таблицам нужно соединение (`setFilterRolesRelations`),
+   * а роли задавались строкой НИЖЕ — родитель видел пустой список и
+   * соединений не заказывал.
+   *
+   * Из-за этого поиск по полю связанной таблицы давал условие
+   * `contacts.display_name like ...` без самого соединения — запрос,
+   * который база отвергает. Отсюда и вывод прошлых карт, будто соединений
+   * в DynamicListing нет вовсе: механизм есть, его лишал работы порядок.
    */
   public onInitialize() {
-    super.onInitialize();
     this.filterRoles = this.getModelSearchFilterRoles(this.searchKeyword);
+    super.onInitialize();
   }
 
   /**

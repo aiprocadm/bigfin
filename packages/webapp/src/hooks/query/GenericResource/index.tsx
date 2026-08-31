@@ -45,6 +45,7 @@ function getResourceUrlFromType(type) {
     [RESOURCES_TYPES.ACCOUNT]: '/accounts',
     [RESOURCES_TYPES.CREDIT_NOTE]: '/credit-notes',
     [RESOURCES_TYPES.VENDOR_CREDIT]: '/vendor-credits',
+    [RESOURCES_TYPES.EXPENSE]: '/expenses',
   };
   return config[type] || '';
 }
@@ -117,6 +118,13 @@ const transformVendorCredits = (response) => ({
 });
 
 /**
+ * Transformes expenses to resource data.
+ */
+const transformExpenses = (response) => ({
+  items: response.data.expenses,
+});
+
+/**
  * Detarmines the transformer based on the given resource type.
  * @param {string} type - Resource type.
  */
@@ -135,6 +143,7 @@ const transformResourceData = (type) => (response) => {
     [RESOURCES_TYPES.ACCOUNT]: transformAccounts,
     [RESOURCES_TYPES.CREDIT_NOTE]: transformCreditNotes,
     [RESOURCES_TYPES.VENDOR_CREDIT]: transformVendorCredits,
+    [RESOURCES_TYPES.EXPENSE]: transformExpenses,
   };
   return {
     ...pairs[type](response),

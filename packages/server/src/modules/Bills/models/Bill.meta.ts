@@ -16,6 +16,16 @@ export const BillMeta = {
     pageTitle: 'Bills',
   },
   fields: {
+    // К1 карты v41. Служебное поле поиска: имя контрагента лежит в
+    // соседней таблице, и поиск добирается до него соединением.
+    // Из фильтров скрыто — по контрагенту уже фильтруют полем «vendor».
+    vendor_name: {
+      name: 'bill.field.vendor',
+      fieldType: 'relation',
+      relationKey: 'vendor',
+      relationEntityKey: 'display_name',
+      filterable: false,
+    },
     vendor: {
       name: 'bill.field.vendor',
       column: 'vendor_id',

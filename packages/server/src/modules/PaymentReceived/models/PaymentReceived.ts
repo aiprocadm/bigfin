@@ -191,6 +191,7 @@ export class PaymentReceived extends TenantBaseModel {
       { fieldKey: 'payment_receive_no', comparator: 'contains' },
       { condition: 'or', fieldKey: 'reference_no', comparator: 'contains' },
       { condition: 'or', fieldKey: 'amount', comparator: 'equals' },
+      { condition: 'or', fieldKey: 'customer_name', comparator: 'contains' },
     ];
   }
 

@@ -27,6 +27,16 @@ export const CreditNoteMeta = {
   },
 
   fields: {
+    // К1 карты v41. Служебное поле поиска: имя контрагента лежит в
+    // соседней таблице, и поиск добирается до него соединением.
+    // Из фильтров скрыто — по контрагенту уже фильтруют полем «customer».
+    customer_name: {
+      name: 'credit_note.field.customer',
+      fieldType: 'relation',
+      relationKey: 'customer',
+      relationEntityKey: 'display_name',
+      filterable: false,
+    },
     customer: {
       name: 'credit_note.field.customer',
       column: 'customer_id',

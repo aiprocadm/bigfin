@@ -10,4 +10,10 @@ export class GetPaymentRequestsQueryDto {
   @IsOptional()
   @ApiPropertyOptional({ enum: REQUEST_STATUSES })
   status?: string;
+
+  /** Запрос из поиска в шапке (Р3 карты v43). */
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Search keyword.' })
+  keyword?: string;
 }

@@ -2,6 +2,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { FixedAsset } from '../models/FixedAsset.model';
+import { applyKeywordSearch } from '@/common/utils/keywordSearch';
+import { GetFixedAssetsQueryDto } from '../dtos/GetFixedAssetsQuery.dto';
 
 @Injectable()
 export class GetFixedAssetsService {
@@ -10,9 +12,12 @@ export class GetFixedAssetsService {
     private readonly assetModel: TenantModelProxy<typeof FixedAsset>,
   ) {}
 
-  public async getFixedAssets() {
-    const assets: any[] = await this.assetModel()
-      .query()
+  public async getFixedAssets(filter: GetFixedAssetsQueryDto = {}) {
+    const query = this.assetModel().query();
+
+    applyKeywordSearch(query, FixedAsset.searchColumns, filter.keyword);
+
+    const assets: any[] = await query
       .orderBy('commissionedAt', 'desc')
       .orderBy('id', 'desc');
 

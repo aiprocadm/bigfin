@@ -10,4 +10,10 @@ export class GetDealsQueryDto {
   @IsOptional()
   @ApiPropertyOptional({ enum: DEAL_STATUSES })
   status?: string;
+
+  /** Запрос из поиска в шапке (Р2 карты v43). */
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Search keyword.' })
+  keyword?: string;
 }

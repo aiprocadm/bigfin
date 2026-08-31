@@ -16,6 +16,11 @@ export class PaymentRequest extends TenantBaseModel {
   approvedAt!: string | null;
   plannedOperationId!: number | null;
 
+  /** Колонки, по которым ищет поиск в шапке (Р3 карты v43). */
+  static get searchColumns() {
+    return ['description'];
+  }
+
   /**
    * Table name.
    */

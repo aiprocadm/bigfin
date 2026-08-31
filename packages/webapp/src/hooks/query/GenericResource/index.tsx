@@ -46,6 +46,9 @@ function getResourceUrlFromType(type) {
     [RESOURCES_TYPES.CREDIT_NOTE]: '/credit-notes',
     [RESOURCES_TYPES.VENDOR_CREDIT]: '/vendor-credits',
     [RESOURCES_TYPES.EXPENSE]: '/expenses',
+    [RESOURCES_TYPES.DEAL]: '/deals',
+    [RESOURCES_TYPES.PAYMENT_REQUEST]: '/payment-requests',
+    [RESOURCES_TYPES.FIXED_ASSET]: '/fixed-assets',
   };
   return config[type] || '';
 }
@@ -125,6 +128,14 @@ const transformExpenses = (response) => ({
 });
 
 /**
+ * Разделы карты v43 отдают список массивом — иногда завёрнутым в `data`.
+ * Общий разбор: одна форма ответа на три раздела.
+ */
+const transformPlainList = (response) => ({
+  items: response.data?.data ?? response.data ?? [],
+});
+
+/**
  * Detarmines the transformer based on the given resource type.
  * @param {string} type - Resource type.
  */
@@ -144,6 +155,9 @@ const transformResourceData = (type) => (response) => {
     [RESOURCES_TYPES.CREDIT_NOTE]: transformCreditNotes,
     [RESOURCES_TYPES.VENDOR_CREDIT]: transformVendorCredits,
     [RESOURCES_TYPES.EXPENSE]: transformExpenses,
+    [RESOURCES_TYPES.DEAL]: transformPlainList,
+    [RESOURCES_TYPES.PAYMENT_REQUEST]: transformPlainList,
+    [RESOURCES_TYPES.FIXED_ASSET]: transformPlainList,
   };
   return {
     ...pairs[type](response),

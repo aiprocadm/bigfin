@@ -12,6 +12,8 @@ import { DealProfitability } from './DealProfitability';
 import { DealStagesSection } from './DealStagesSection';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
+import { useHistory, useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -26,6 +28,8 @@ const STATUS_TABS: { key: StatusFilter; label: string }[] = [
 ];
 
 export default function DealsPage() {
+  const { search } = useLocation();
+  const history = useHistory();
   const { featureCan } = useFeatureCan();
   const [status, setStatus] = React.useState<StatusFilter>('');
   const [editing, setEditing] = React.useState<any | null>(null);
@@ -53,6 +57,21 @@ export default function DealsPage() {
   );
 
   const rows: any[] = deals ?? [];
+
+  // Карта v43. Поиск в шапке приводит сюда с номером найденной сделки в
+  // адресе. Без этого человек попадал бы в общий список и искал глазами
+  // второй раз.
+  const requestedId = openIdFromSearch(search);
+  const requestedDeal =
+    requestedId !== null ? rows.find((d: any) => d.id === requestedId) : null;
+  const shownDeal = openDeal ?? requestedDeal ?? null;
+
+  // Закрыть карточку — значит убрать и номер из адреса: иначе карточка,
+  // открытая поиском, возвращалась бы сразу после закрытия.
+  const closeDeal = () => {
+    setOpenDeal(null);
+    if (requestedId !== null) history.replace('/deals');
+  };
   const marginById = new Map<number, any>(
     ((summary as any)?.deals ?? []).map((d: any) => [d.id, d]),
   );
@@ -169,21 +188,21 @@ export default function DealsPage() {
         })}
       </div>
 
-      {openDeal && (
+      {shownDeal && (
         <div className="mt-2">
-          {canKpi && openDeal.managerId != null && (
+          {canKpi && shownDeal.managerId != null && (
             <div className="text-muted-foreground mb-2 text-sm">
               {intl.get('deal.manager')}:{' '}
               <span className="text-foreground font-medium">
-                {managerNameById.get(openDeal.managerId) ??
-                  `#${openDeal.managerId}`}
+                {managerNameById.get(shownDeal.managerId) ??
+                  `#${shownDeal.managerId}`}
               </span>
             </div>
           )}
-          <DealProfitability deal={openDeal} />
-          <DealStagesSection dealId={openDeal.id} />
+          <DealProfitability deal={shownDeal} />
+          <DealStagesSection dealId={shownDeal.id} />
           <div className="mt-2">
-            <Button variant="ghost" size="sm" onClick={() => setOpenDeal(null)}>
+            <Button variant="ghost" size="sm" onClick={closeDeal}>
               {intl.get('deals.close')}
             </Button>
           </div>

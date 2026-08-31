@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { Deal } from '../models/Deal.model';
 import { GetDealsQueryDto } from '../dtos/GetDealsQuery.dto';
+import { applyKeywordSearch } from '@/common/utils/keywordSearch';
 
 @Injectable()
 export class GetDealsService {
@@ -16,6 +17,7 @@ export class GetDealsService {
       .query()
       .onBuild((q) => {
         if (filter.status) q.modify('filterByStatus', filter.status);
+        applyKeywordSearch(q, Deal.searchColumns, filter.keyword);
         q.orderBy('createdAt', 'desc');
       });
   }

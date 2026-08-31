@@ -16,6 +16,7 @@ import { BreakEvenPanel } from './BreakEvenPanel';
 import { formatShortDate } from '@/utils/formatShortDate';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 const fmtMoney = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -61,7 +62,7 @@ export default function FinancialModelPage() {
     { enabled: flagEnabled },
   );
 
-  if (!flagEnabled) return null;
+  if (!flagEnabled) return <ModuleDisabled />;
 
   const na = intl.get('financial_model.na');
   const metricMoney = (m?: MetricValue) =>

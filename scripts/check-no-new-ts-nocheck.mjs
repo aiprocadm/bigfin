@@ -12,8 +12,16 @@
 // Выход: 0 — чисто; 1 — найдены новые @ts-nocheck; 2 — внутренняя ошибка.
 
 import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
-const TS_NOCHECK = /@ts-nocheck/;
+// Директива TypeScript — это комментарий, который с неё и НАЧИНАЕТСЯ:
+// `// @ts-nocheck`, `/* @ts-nocheck */`, ` * @ts-nocheck`.
+//
+// Раньше здесь стояла подстрока, и запрет срабатывал на любом упоминании —
+// в том числе на фразе, которая про сам этот запрет и написана. Сторожа, о
+// котором нельзя написать словами, обходят флагом --no-verify, и тогда он
+// не сторожит вовсе.
+const TS_NOCHECK = /^\s*(?:\/\/|\/\*+|\*)\s*@ts-nocheck\b/;
 
 function getDiff() {
   // Аргументы передаются массивом в execFile (без оболочки) → нет шелл-инъекций.
@@ -33,7 +41,7 @@ function getDiff() {
   }
 }
 
-function findOffenders(diff) {
+export function findOffenders(diff) {
   const offenders = [];
   let currentFile = null;
   let newLineNo = 0;
@@ -47,7 +55,9 @@ function findOffenders(diff) {
       const m = line.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
       newLineNo = m ? Number(m[1]) : 0;
     } else if (line.startsWith('+') && !line.startsWith('+++')) {
-      if (currentFile && TS_NOCHECK.test(line)) {
+      // Снимаем знак диффа: без этого строка начинается с '+', и правило
+      // «комментарий начинается с директивы» не сработало бы никогда.
+      if (currentFile && TS_NOCHECK.test(line.slice(1))) {
         offenders.push(`${currentFile}:${newLineNo}`);
       }
       newLineNo++;
@@ -58,21 +68,25 @@ function findOffenders(diff) {
   return offenders;
 }
 
-const offenders = findOffenders(getDiff());
-
-if (offenders.length > 0) {
-  console.error('\n✖ Обнаружены НОВЫЕ // @ts-nocheck — это запрещено:\n');
-  for (const o of offenders) console.error('   ' + o);
-  console.error(
-    '\nФайл с @ts-nocheck полностью отключает проверку типов TypeScript —\n' +
-      'баги в нём не ловятся. Не добавляйте новые такие файлы/строки.\n\n' +
-      'Что делать:\n' +
-      '  • Уберите // @ts-nocheck и типизируйте файл\n' +
-      '    (точечно можно // @ts-expect-error с пояснением).\n' +
-      '  • В исключительном случае осознанного легаси обойдите хук:\n' +
-      '    git commit --no-verify — и поясните причину в описании PR.\n',
-  );
-  process.exit(1);
+// Запускаемся как команда только при прямом вызове: при импорте из теста
+// скрипт не должен ничего делать и уж тем более звать process.exit.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const offenders = findOffenders(getDiff());
+  
+  if (offenders.length > 0) {
+    console.error('\n✖ Обнаружены НОВЫЕ // @ts-nocheck — это запрещено:\n');
+    for (const o of offenders) console.error('   ' + o);
+    console.error(
+      '\nФайл с @ts-nocheck полностью отключает проверку типов TypeScript —\n' +
+        'баги в нём не ловятся. Не добавляйте новые такие файлы/строки.\n\n' +
+        'Что делать:\n' +
+        '  • Уберите // @ts-nocheck и типизируйте файл\n' +
+        '    (точечно можно // @ts-expect-error с пояснением).\n' +
+        '  • В исключительном случае осознанного легаси обойдите хук:\n' +
+        '    git commit --no-verify — и поясните причину в описании PR.\n',
+    );
+    process.exit(1);
+  }
+  
+  process.exit(0);
 }
-
-process.exit(0);

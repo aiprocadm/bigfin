@@ -1158,6 +1158,7 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('payment_requests.page_title'),
     pageTitle: intl.get('payment_requests.page_title'),
+    defaultSearchResource: RESOURCES_TYPES.PAYMENT_REQUEST,
   },
   // Deals (Сделки)
   {
@@ -1165,6 +1166,7 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Deals/DealsPage')),
     breadcrumb: intl.get('deals.page_title'),
     pageTitle: intl.get('deals.page_title'),
+    defaultSearchResource: RESOURCES_TYPES.DEAL,
   },
   // Cost Allocation (Распределение расходов)
   {
@@ -1284,6 +1286,7 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/FixedAssets/FixedAssetsPage')),
     breadcrumb: intl.get('fixed_assets.page.title'),
     pageTitle: intl.get('fixed_assets.page.title'),
+    defaultSearchResource: RESOURCES_TYPES.FIXED_ASSET,
   },
   // Notifications (Уведомления — настройки)
   {

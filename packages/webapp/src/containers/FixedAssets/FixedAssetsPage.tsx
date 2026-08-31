@@ -27,6 +27,8 @@ import { FixedAssetDetailCard } from './FixedAssetDetailCard';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { useHistory, useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -125,6 +127,19 @@ export default function FixedAssetsPage() {
   const [showCreate, setShowCreate] = React.useState(false);
   const [showAccrue, setShowAccrue] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
+  const { search } = useLocation();
+  const history = useHistory();
+
+  // Карта v43. Поиск в шапке приводит сюда с номером найденного объекта.
+  const requestedId = openIdFromSearch(search);
+  const shownId = selectedId ?? requestedId;
+
+  // Закрыть карточку — значит убрать и номер из адреса: иначе карточка,
+  // открытая поиском, возвращалась бы сразу после закрытия.
+  const closeDetail = () => {
+    setSelectedId(null);
+    if (requestedId !== null) history.replace('/fixed-assets');
+  };
 
   const { data: summary } = useFixedAssetsSummary();
   const { data: assets } = useFixedAssets();
@@ -277,10 +292,10 @@ export default function FixedAssetsPage() {
       </div>
 
       {/* Detail card */}
-      {selectedId !== null && (
+      {shownId !== null && (
         <FixedAssetDetailCard
-          assetId={selectedId}
-          onClose={() => setSelectedId(null)}
+          assetId={shownId}
+          onClose={closeDetail}
         />
       )}
     </div>

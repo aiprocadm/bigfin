@@ -14,6 +14,8 @@ import { PaymentRequestDialog } from './PaymentRequestDialog';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 type StatusFilter = '' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
@@ -30,6 +32,13 @@ export default function PaymentRequestsPage() {
   const { featureCan } = useFeatureCan();
   const [status, setStatus] = React.useState<StatusFilter>('');
   const [showForm, setShowForm] = React.useState(false);
+  const { search } = useLocation();
+
+  // Карта v43. У заявки нет своей карточки — реестр показывает их списком.
+  // Поэтому найденную поиском заявку не «открываем», а выделяем среди
+  // соседних: иначе человек попадал бы в общий список и искал глазами
+  // второй раз.
+  const foundId = openIdFromSearch(search);
 
   const { data: requests } = usePaymentRequests(status ? { status } : {}, {});
   const approve = useApprovePaymentRequest({});
@@ -83,7 +92,13 @@ export default function PaymentRequestsPage() {
         {rows.map((r) => (
           <div
             key={r.id}
-            className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
+            ref={(node) =>
+              r.id === foundId && node?.scrollIntoView({ block: 'center' })
+            }
+            className={
+              'flex items-center justify-between gap-3 px-4 py-3 text-sm' +
+              (r.id === foundId ? ' ring-2 ring-action rounded-md' : '')
+            }
           >
             <div className="flex flex-col">
               <span className="font-medium">{fmt(r.amount)}</span>

@@ -14,6 +14,7 @@ import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useHistory, useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -50,7 +51,7 @@ export default function DealsPage() {
   const { data: employees } = useEmployees({}, { enabled: canKpi });
   const del = useDeleteDeal({});
 
-  if (!canDeals) return null;
+  if (!canDeals) return <ModuleDisabled />;
 
   const managerNameById = new Map<number, string>(
     ((employees as any[]) ?? []).map((e: any) => [e.id, e.fullName]),

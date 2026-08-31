@@ -14,6 +14,16 @@ export const BillPaymentMeta = {
   importAggregateOn: 'entries',
   importAggregateBy: 'paymentNumber',
   fields: {
+    // К1 карты v41. Служебное поле поиска: имя контрагента лежит в
+    // соседней таблице, и поиск добирается до него соединением.
+    // Из фильтров скрыто — по контрагенту уже фильтруют полем «vendor».
+    vendor_name: {
+      name: 'bill_payment.field.vendor',
+      fieldType: 'relation',
+      relationKey: 'vendor',
+      relationEntityKey: 'display_name',
+      filterable: false,
+    },
     vendor: {
       name: 'bill_payment.field.vendor',
       column: 'vendor_id',

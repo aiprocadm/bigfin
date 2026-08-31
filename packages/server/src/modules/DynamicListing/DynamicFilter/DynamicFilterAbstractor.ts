@@ -42,7 +42,18 @@ export class DynamicFilterAbstractor {
         const splitToRelation = relation.join.to.split('.');
         const relationTable = splitToRelation[0] || '';
 
-        builder.join(relationTable, relation.join.from, '=', relation.join.to);
+        // К1 карты v41. Соединение ЛЕВОЕ, а не внутреннее. Колонка
+        // контрагента в базе допускает пустое значение, и внутреннее
+        // соединение выкидывало бы такой документ из выдачи даже при
+        // поиске по его собственному номеру. Левое соединение строку
+        // сохраняет, а условие по чужой колонке для неё просто не
+        // выполнится.
+        builder.leftJoin(
+          relationTable,
+          relation.join.from,
+          '=',
+          relation.join.to,
+        );
       }
     });
   };

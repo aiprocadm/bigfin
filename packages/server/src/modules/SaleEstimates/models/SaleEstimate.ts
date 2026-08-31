@@ -389,6 +389,7 @@ export class SaleEstimate extends TenantBaseModel {
       { fieldKey: 'amount', comparator: 'equals' },
       { condition: 'or', fieldKey: 'estimate_number', comparator: 'contains' },
       { condition: 'or', fieldKey: 'reference_no', comparator: 'contains' },
+      { condition: 'or', fieldKey: 'customer_name', comparator: 'contains' },
     ];
   }
 

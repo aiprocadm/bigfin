@@ -486,6 +486,7 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('expenses_list'),
     pageTitle: intl.get('expenses_list'),
     hotkey: 'shift+x',
+    defaultSearchResource: RESOURCES_TYPES.EXPENSE,
   },
   // Customers
   {

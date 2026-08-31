@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -23,6 +24,7 @@ import {
   CreateFixedAssetDto,
   DisposeFixedAssetDto,
 } from './dtos/FixedAsset.dto';
+import { GetFixedAssetsQueryDto } from './dtos/GetFixedAssetsQuery.dto';
 
 @Controller('fixed-assets')
 @ApiTags('Fixed Assets')
@@ -40,8 +42,8 @@ export class FixedAssetsController {
 
   @Get()
   @ApiOperation({ summary: 'List fixed assets with net value.' })
-  getFixedAssets() {
-    return this.application.getFixedAssets();
+  getFixedAssets(@Query() query: GetFixedAssetsQueryDto) {
+    return this.application.getFixedAssets(query);
   }
 
   @Get(':id')

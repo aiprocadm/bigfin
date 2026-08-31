@@ -9,6 +9,11 @@ export class Deal extends TenantBaseModel {
   costEstimate!: number | null;
   status!: string;
 
+  /** Колонки, по которым ищет поиск в шапке (Р2 карты v43). */
+  static get searchColumns() {
+    return ['name'];
+  }
+
   /** Reuses the dormant base "projects" table as the Deal entity. */
   static get tableName() {
     return 'projects';

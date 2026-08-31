@@ -8,6 +8,7 @@ import { GetFixedAssetsService } from './queries/GetFixedAssets.service';
 import { GetFixedAssetDetailService } from './queries/GetFixedAssetDetail.service';
 import { GetFixedAssetsSummaryService } from './queries/GetFixedAssetsSummary.service';
 import { CreateFixedAssetDto, DisposeFixedAssetDto } from './dtos/FixedAsset.dto';
+import { GetFixedAssetsQueryDto } from './dtos/GetFixedAssetsQuery.dto';
 
 @Injectable()
 export class FixedAssetsApplication {
@@ -21,8 +22,8 @@ export class FixedAssetsApplication {
     private readonly getSummaryService: GetFixedAssetsSummaryService,
   ) {}
 
-  getFixedAssets() {
-    return this.getAssetsService.getFixedAssets();
+  getFixedAssets(query: GetFixedAssetsQueryDto = {}) {
+    return this.getAssetsService.getFixedAssets(query);
   }
   getDetail(id: number) {
     return this.getDetailService.getDetail(id);

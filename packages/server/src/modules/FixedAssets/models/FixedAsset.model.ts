@@ -18,6 +18,11 @@ export class FixedAsset extends TenantBaseModel {
   disposalProceeds!: number | null;
   note!: string | null;
 
+  /** Колонки, по которым ищет поиск в шапке (Р4 карты v43). */
+  static get searchColumns() {
+    return ['name'];
+  }
+
   static get tableName() {
     return 'fixed_assets';
   }

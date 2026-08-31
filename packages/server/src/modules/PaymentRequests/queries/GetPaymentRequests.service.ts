@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { PaymentRequest } from '../models/PaymentRequest.model';
 import { GetPaymentRequestsQueryDto } from '../dtos/GetPaymentRequestsQuery.dto';
+import { applyKeywordSearch } from '@/common/utils/keywordSearch';
 
 @Injectable()
 export class GetPaymentRequestsService {
@@ -19,6 +20,7 @@ export class GetPaymentRequestsService {
       .query()
       .onBuild((q) => {
         if (filter.status) q.modify('filterByStatus', filter.status);
+        applyKeywordSearch(q, PaymentRequest.searchColumns, filter.keyword);
         q.orderBy('dueDate', 'asc');
       });
   }

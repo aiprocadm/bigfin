@@ -4,7 +4,8 @@ import { Route, Switch } from 'react-router-dom';
 
 import { getDashboardRoutes } from '@/routes/dashboard';
 import DashboardPage from './DashboardPage';
-import { useAccountantOnlyRouteGuard } from '@/hooks/state/interfaceMode';
+import { useAccountantOnlyExplained } from '@/hooks/state/interfaceMode';
+import { AccountantOnly } from '@/components/ui/accountant-only';
 
 /**
  * Dashboard inner route content.
@@ -28,8 +29,15 @@ function DashboardContentRouteContent({ route }) {
  * Dashboard content route.
  */
 export default function DashboardContentRoute() {
-  useAccountantOnlyRouteGuard();
+  // Р2 карты v40. Экран, скрытый режимом «Бизнес», объясняет себя вместо
+  // молчаливой подмены адреса на главную: адрес остаётся, человек видит
+  // причину и дорогу к настройке режима.
+  const accountantOnlyExplained = useAccountantOnlyExplained();
   const routes = getDashboardRoutes();
+
+  if (accountantOnlyExplained) {
+    return <AccountantOnly />;
+  }
 
   return (
     <Route pathname="/">

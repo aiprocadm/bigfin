@@ -1,13 +1,12 @@
 // @ts-nocheck
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useCurrentOrganization } from '@/hooks/state/organizations';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Features } from '@/constants/features';
 import {
   INTERFACE_MODE,
-  isAccountantOnlyHidden,
-  isAccountantOnlyPath,
+  shouldExplainAccountantOnly,
 } from '@/constants/interfaceMode';
 
 /**
@@ -19,24 +18,22 @@ export const useInterfaceMode = () => {
 };
 
 /**
- * Редиректит на главную, если открыт accountant-only маршрут,
- * а режим = business (и фича включена). Монтируется один раз в дашборде.
+ * Показать ли объяснение вместо содержимого экрана: открыт accountant-only
+ * маршрут, а режим = business (и фича включена).
+ *
+ * Р2 карты v40. Раньше здесь был страж, который молча подменял адрес на
+ * `/`: человек нажимал ссылку и оказывался на главной без единого слова.
+ * Теперь адрес сохраняется, а экран говорит, почему он закрыт и где
+ * переключается режим.
  */
-export const useAccountantOnlyRouteGuard = () => {
-  const history = useHistory();
+export const useAccountantOnlyExplained = (): boolean => {
   const location = useLocation();
   const mode = useInterfaceMode();
   const { featureCan } = useFeatureCan();
-  // Стабильный boolean в deps: если флаг догружается асинхронно (off→on),
-  // эффект перезапустится, а не будет ждать смены маршрута.
-  const isFeatureOn = featureCan(Features.InterfaceModes);
 
-  React.useEffect(() => {
-    if (
-      isAccountantOnlyHidden(mode, isFeatureOn) &&
-      isAccountantOnlyPath(location.pathname)
-    ) {
-      history.replace('/');
-    }
-  }, [location.pathname, mode, isFeatureOn]);
+  return shouldExplainAccountantOnly(
+    mode,
+    featureCan(Features.InterfaceModes),
+    location.pathname,
+  );
 };

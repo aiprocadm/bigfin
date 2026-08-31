@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * С3 карты v39. Поиск не обещает того, чего не делает.
@@ -16,7 +17,7 @@ import path from 'path';
 const SRC = path.resolve(__dirname, '../..');
 
 const read = (relative: string): string =>
-  fs.readFileSync(path.join(SRC, relative), 'utf8');
+  activeCode(fs.readFileSync(path.join(SRC, relative), 'utf8'));
 
 describe('подпись поиска', () => {
   const topbar = read('components/Dashboard/ConnectedTopbar.tsx');

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Л1 карты v34. Меню не предлагает того, чего продукт не покажет.
@@ -20,7 +21,7 @@ import path from 'path';
 const SRC = path.resolve(__dirname, '../..');
 
 const read = (relative: string) =>
-  fs.readFileSync(path.join(SRC, relative), 'utf8');
+  activeCode(fs.readFileSync(path.join(SRC, relative), 'utf8'));
 
 /** Пометки, которыми меню ограничивает показ пункта. */
 const GUARDS = ['feature', 'permission', 'accountantOnly'] as const;
@@ -48,6 +49,6 @@ describe('меню и его пометки', () => {
     // Правило «прятать ли accountant-only» уже живёт в constants/interfaceMode
     // и используется маршрутом-сторожем: два разных ответа на один вопрос —
     // это будущее расхождение.
-    expect(sidebar).toContain('isAccountantOnlyHidden');
+    expect(sidebar).toContain('isAccountantOnlyHidden(');
   });
 });

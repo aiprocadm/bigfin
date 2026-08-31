@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { activeCode } from '../testing/activeCode';
 
 /**
  * П1 карты v36. Выключенный раздел объясняет себя, а не гаснет.
@@ -93,7 +94,9 @@ const blankScreens = () => {
     if (PARTS.test(relative)) return;
     if (HIDDEN_ON_PURPOSE.includes(relative)) return;
 
-    const code = fs.readFileSync(file, 'utf8');
+    // Действующий код: закомментированный экран не гаснет — он не
+    // существует, и считать его нарушением значит краснеть впустую.
+    const code = activeCode(fs.readFileSync(file, 'utf8'));
     if (!goesBlank(code)) return;
 
     offenders.push(relative);
@@ -163,9 +166,8 @@ describe('выключенный раздел', () => {
   });
 
   it('выключенный модуль не поднимает плашку «нет прав»', () => {
-    const source = fs.readFileSync(
-      path.resolve(__dirname, '../hooks/useRequest.tsx'),
-      'utf-8',
+    const source = activeCode(
+      fs.readFileSync(path.resolve(__dirname, '../hooks/useRequest.tsx'), 'utf-8'),
     );
 
     // Экраны спрашивают сервер ДО проверки флага (иначе ломается порядок
@@ -175,6 +177,6 @@ describe('выключенный раздел', () => {
       .split('\n')
       .find((line) => line.includes('status === 403'));
 
-    expect(handler).toContain('isFeatureDisabledResponse');
+    expect(handler).toContain('isFeatureDisabledResponse(');
   });
 });

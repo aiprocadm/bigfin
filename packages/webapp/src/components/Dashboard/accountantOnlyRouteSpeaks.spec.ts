@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Р2 карты v40. Скрытый экран объясняет себя, а не подменяет адрес.
@@ -17,7 +18,7 @@ import path from 'path';
 const SRC = path.resolve(__dirname, '../..');
 
 const read = (relative: string) =>
-  fs.readFileSync(path.join(SRC, relative), 'utf8');
+  activeCode(fs.readFileSync(path.join(SRC, relative), 'utf8'));
 
 describe('маршрут, скрытый режимом интерфейса', () => {
   const route = read('components/Dashboard/DashboardContentRoute.tsx');
@@ -40,11 +41,11 @@ describe('маршрут, скрытый режимом интерфейса', (
     // Тот же вопрос уже решают меню и экран отчётов. Второй ответ на один
     // вопрос — это будущее расхождение. Маршрут спрашивает общий хук, а
     // хук — общее правило из constants/interfaceMode.
-    expect(route).toContain('useAccountantOnlyExplained');
+    expect(route).toContain('useAccountantOnlyExplained(');
 
     const hook = read('hooks/state/interfaceMode.tsx');
 
-    expect(hook).toContain('shouldExplainAccountantOnly');
+    expect(hook).toContain('shouldExplainAccountantOnly(');
   });
 
   it('экран объяснения существует и говорит из словаря', () => {

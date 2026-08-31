@@ -2,6 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 vi.mock('react-intl-universal', () => ({
   default: { get: (key: string) => key },
@@ -21,7 +22,7 @@ vi.mock('react-intl-universal', () => ({
 const SRC = path.resolve(__dirname, '../..');
 
 const read = (relative: string) =>
-  fs.readFileSync(path.join(SRC, relative), 'utf8');
+  activeCode(fs.readFileSync(path.join(SRC, relative), 'utf8'));
 
 describe('поиск по расходам', () => {
   it('поиск знает адрес запроса за расходами', () => {

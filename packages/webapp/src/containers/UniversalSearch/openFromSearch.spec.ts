@@ -41,6 +41,6 @@ describe('открыть найденную запись', () => {
     ['containers/PaymentRequests/PaymentRequestsPage.tsx'],
     ['containers/FixedAssets/FixedAssetsPage.tsx'],
   ])('%s открывает запись, пришедшую из поиска', (page) => {
-    expect(read(page)).toContain('openIdFromSearch');
+    expect(read(page)).toContain('openIdFromSearch(');
   });
 });

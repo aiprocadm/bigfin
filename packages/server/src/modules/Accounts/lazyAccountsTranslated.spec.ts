@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /** Словари читаем с диска: импорт json в сборке сервера не включён. */
 const dictionary = (lang: string, name: string): Record<string, string> =>
@@ -29,8 +30,8 @@ const isTranslationKey = (name: string) =>
   /^[a-z0-9_]+(\.[a-z0-9_]+)+$/.test(name);
 
 describe('лениво создаваемые счета рождаются на языке организации', () => {
-  const constants = fs.readFileSync(CONSTANTS, 'utf8');
-  const repository = fs.readFileSync(REPOSITORY, 'utf8');
+  const constants = activeCode(fs.readFileSync(CONSTANTS, 'utf8'));
+  const repository = activeCode(fs.readFileSync(REPOSITORY, 'utf8'));
   const ruAccountSeed = dictionary('ru', 'account_seed');
   const enAccountSeed = dictionary('en', 'account_seed');
   const ruAccount = dictionary('ru', 'account');

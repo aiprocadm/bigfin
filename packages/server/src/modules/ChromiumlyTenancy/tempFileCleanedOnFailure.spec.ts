@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Н3 карты v38. За сорвавшейся печатью не остаётся мусор.
@@ -17,10 +18,10 @@ import * as path from 'path';
 const SERVICE = path.resolve(__dirname, 'ChromiumlyHtmlConvert.service.ts');
 
 describe('печать убирает за собой', () => {
-  const code = fs.readFileSync(SERVICE, 'utf8');
+  const code = activeCode(fs.readFileSync(SERVICE, 'utf8'));
 
   it('исходник службы печати читается', () => {
-    expect(code).toContain('writeTempHtmlFile');
+    expect(code).toContain('this.writeTempHtmlFile(');
   });
 
   it('уборка временного файла стоит в finally', () => {

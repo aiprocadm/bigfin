@@ -4,6 +4,7 @@ import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
 import { MODULE_ALLOWLIST } from './Features.constants';
 import { FeaturesConfigure } from './FeaturesConfigure';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сверка «что сервер разрешает включать ↔ что показано в Настройки → Модули».
@@ -36,7 +37,7 @@ const code = (source: string): string =>
  * сторожа в молчаливо-зелёный.
  */
 const uiModuleKeys = (): string[] => {
-  const source = code(fs.readFileSync(MODULES_PAGE, 'utf-8'));
+  const source = code(activeCode(fs.readFileSync(MODULES_PAGE, 'utf-8')));
   const lists = Array.from(source.matchAll(/features:\s*\[([^\]]*)\]/g));
 
   expect(lists.length).toBeGreaterThan(0);
@@ -48,7 +49,7 @@ const uiModuleKeys = (): string[] => {
 
 /** Ключи, у которых на странице задана иконка. */
 const uiIconKeys = (): string[] => {
-  const source = code(fs.readFileSync(MODULES_PAGE, 'utf-8'));
+  const source = code(activeCode(fs.readFileSync(MODULES_PAGE, 'utf-8')));
   const start = source.indexOf('const MODULE_ICONS');
   const block = source.slice(start, source.indexOf('};', start));
 
@@ -104,7 +105,7 @@ describe('список модулей в интерфейсе совпадает
   it.each(['ru', 'en'])(
     'у каждого модуля есть название и описание в локали %s',
     (locale) => {
-      const lang = JSON.parse(fs.readFileSync(LANG(locale), 'utf-8'));
+      const lang = JSON.parse(activeCode(fs.readFileSync(LANG(locale), 'utf-8')));
       const missing = MODULE_ALLOWLIST.flatMap((f) =>
         [`modules.${f}.label`, `modules.${f}.desc`].filter(
           (key) => !lang[key],

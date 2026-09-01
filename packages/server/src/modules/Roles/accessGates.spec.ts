@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сверка «граница доступа объявлена ↔ страж, который её исполняет, подключён».
@@ -44,7 +45,7 @@ const controllerFiles = (dir: string): string[] =>
   });
 
 const read = (rel: string) =>
-  fs.readFileSync(path.join(MODULES_DIR, rel), 'utf8');
+  activeCode(fs.readFileSync(path.join(MODULES_DIR, rel), 'utf8'));
 
 describe('границы доступа исполняются, а не только объявлены', () => {
   const files = controllerFiles(MODULES_DIR);
@@ -55,7 +56,7 @@ describe('границы доступа исполняются, а не толь
 
   it('пометка «только владелец» всегда идёт со своим стражем', () => {
     const empty = files.filter((file) => {
-      const text = fs.readFileSync(file, 'utf8');
+      const text = activeCode(fs.readFileSync(file, 'utf8'));
       return text.includes('@RequireOwner(') && !text.includes('OwnerGuard');
     });
 
@@ -65,7 +66,7 @@ describe('границы доступа исполняются, а не толь
   it('пометка права всегда идёт со своим стражем', () => {
     const empty = files
       .filter((file) => {
-        const text = fs.readFileSync(file, 'utf8');
+        const text = activeCode(fs.readFileSync(file, 'utf8'));
         return (
           text.includes('@RequirePermission(') &&
           !text.includes('PermissionGuard')
@@ -84,7 +85,7 @@ describe('границы доступа исполняются, а не толь
     // исполнять некому.
     const empty = files
       .filter((file) => {
-        const text = fs.readFileSync(file, 'utf8');
+        const text = activeCode(fs.readFileSync(file, 'utf8'));
         return (
           text.includes('@RequireAnyPermission(') &&
           !text.includes('PermissionGuard')
@@ -98,7 +99,7 @@ describe('границы доступа исполняются, а не толь
   it('список мнимой защиты не разросся и не выдуман', () => {
     const empty = files
       .filter((file) => {
-        const text = fs.readFileSync(file, 'utf8');
+        const text = activeCode(fs.readFileSync(file, 'utf8'));
         return (
           text.includes('@RequirePermission(') &&
           !text.includes('PermissionGuard')

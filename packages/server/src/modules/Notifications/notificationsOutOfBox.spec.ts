@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { NOTIFICATION_EVENTS } from './constants';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Г1 карты v20: продукт должен предупреждать сам.
@@ -16,7 +17,7 @@ const SEED = path.resolve(
 );
 
 describe('уведомления из коробки', () => {
-  const seed = fs.readFileSync(SEED, 'utf8');
+  const seed = activeCode(fs.readFileSync(SEED, 'utf8'));
 
   it('сид заводит правила для всех событий, какие умеет продукт', () => {
     // Список берётся из констант, а не переписывается руками: новое

@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сверка «подписчик пишет складские движения ↔ его ошибки доходят до
@@ -51,7 +52,7 @@ const tsFiles = (dir: string): string[] =>
 
 const inventorySubscribers = () =>
   tsFiles(MODULES_DIR)
-    .map((file) => ({ file, src: fs.readFileSync(file, 'utf8') }))
+    .map((file) => ({ file, src: activeCode(fs.readFileSync(file, 'utf8')) }))
     .filter(({ src }) => src.includes('@OnEvent') && INVENTORY.test(src))
     .map(({ file, src }) => ({
       rel: path.relative(MODULES_DIR, file),

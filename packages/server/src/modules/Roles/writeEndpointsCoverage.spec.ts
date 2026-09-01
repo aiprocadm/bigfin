@@ -5,6 +5,7 @@ import {
   parseWriteEndpoints,
   endpointKey,
 } from '@/common/utils/findUnguardedWriteEndpoints';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сплошная разметка прав (шаг П1 карты v8) под машинной проверкой.
@@ -120,7 +121,7 @@ const controllerFiles = (dir: string): string[] =>
 const allEndpoints = () =>
   controllerFiles(MODULES_DIR).flatMap((file) =>
     parseWriteEndpoints(
-      fs.readFileSync(file, 'utf8'),
+      activeCode(fs.readFileSync(file, 'utf8')),
       path.relative(MODULES_DIR, file).split(path.sep).join('/'),
     ),
   );

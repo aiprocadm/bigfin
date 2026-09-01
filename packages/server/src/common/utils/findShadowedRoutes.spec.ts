@@ -6,6 +6,7 @@ import {
   parseRouteDeclarations,
   shadows,
 } from './findShadowedRoutes';
+import { activeCode } from '../../testing/activeCode';
 
 describe('findShadowedRoutes — разбор и правило перекрытия', () => {
   it('читает маршруты в порядке файла', () => {
@@ -112,7 +113,7 @@ describe('ни одна ручка не перекрыта параметрич�
     const shadowed = controllerFiles(modulesDir).flatMap((file) =>
       findShadowedRoutes(
         path.relative(modulesDir, file),
-        fs.readFileSync(file, 'utf8'),
+        activeCode(fs.readFileSync(file, 'utf8')),
       ),
     );
 

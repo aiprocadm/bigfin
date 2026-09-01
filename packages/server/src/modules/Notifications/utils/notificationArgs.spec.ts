@@ -6,6 +6,7 @@ import {
   formatNotificationDate,
   formatNotificationMoney,
 } from './notificationArgs';
+import { activeCode } from '../../../testing/activeCode';
 
 const RU = { locale: 'ru', currencyCode: 'RUB' };
 const EN = { locale: 'en', currencyCode: 'USD' };
@@ -107,7 +108,7 @@ describe('шаблоны переводов и подстановки согла
 
   it.each(['ru', 'en'])('%s: у каждого шаблона есть все поля', (lang) => {
     const file = path.join(__dirname, `../../../i18n/${lang}/notifications.json`);
-    const templates = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const templates = JSON.parse(activeCode(fs.readFileSync(file, 'utf8')));
 
     for (const eventType of Object.keys(SAMPLE_PAYLOADS)) {
       const args = buildNotificationArgs(

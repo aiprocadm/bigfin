@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сверка «модуль за флагом ↔ сервер этот флаг проверяет».
@@ -63,7 +64,7 @@ describe('модули за флагом проверяют флаг на сер
     const redundant = Object.keys(WITHOUT_GATE).filter((rel) => {
       const full = path.join(MODULES_DIR, rel);
       if (!fs.existsSync(full)) return false;
-      const src = fs.readFileSync(full, 'utf8');
+      const src = activeCode(fs.readFileSync(full, 'utf8'));
       return src.includes('RequireFeature') || src.includes('FeaturesManager');
     });
 
@@ -75,7 +76,7 @@ describe('модули за флагом проверяют флаг на сер
     // обидная ошибка, потому что выглядит как рабочая защита.
     const declaredButUnguarded = files
       .filter((file) => {
-        const src = fs.readFileSync(file, 'utf8');
+        const src = activeCode(fs.readFileSync(file, 'utf8'));
         return src.includes('@RequireFeature(') && !src.includes('FeatureGuard');
       })
       .map((file) => path.relative(MODULES_DIR, file));

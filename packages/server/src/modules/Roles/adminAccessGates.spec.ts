@@ -13,6 +13,7 @@ import { staffRolePermissions } from '@/database/tenant/seeds/core/2021081212190
 import { ImportController } from '@/modules/Import/Import.controller';
 import { OrganizationController } from '@/modules/Organization/Organization.controller';
 import { PdfTemplatesController } from '@/modules/PdfTemplate/PdfTemplates.controller';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Группа «настройки и обслуживание» шага П1 карты v8.
@@ -197,7 +198,7 @@ describe('рабочие пространства защищены собств�
   );
 
   it.each(WORKSPACE_COMMANDS)('%s сверяет владельца', (file) => {
-    const text = fs.readFileSync(path.join(commandsDir, file), 'utf8');
+    const text = activeCode(fs.readFileSync(path.join(commandsDir, file), 'utf8'));
 
     expect({
       file,

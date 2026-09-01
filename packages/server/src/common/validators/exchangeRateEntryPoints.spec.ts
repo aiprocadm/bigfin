@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Р1 срез 2 (карта v16). Правило «валюта документа ≠ базовой ⇒ курс
@@ -50,7 +51,7 @@ const collectSources = (dir: string): string[] => {
 
 describe('курс обязателен во всех точках входа', () => {
   const entryPoints = collectSources(MODULES).filter((file) =>
-    FROM_REQUEST.test(fs.readFileSync(file, 'utf8')),
+    FROM_REQUEST.test(activeCode(fs.readFileSync(file, 'utf8'))),
   );
 
   it('точки входа вообще нашлись', () => {

@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TransactionTypes } from './constants';
 import { getTransactionTypeLabel } from './utils';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * М3 срез 3 (карта v15). Живая проба показала, что Главная книга и Журнал
@@ -41,7 +42,7 @@ const usedTransactionTypes = (): string[] => {
   const found = new Set<string>();
 
   for (const file of collectSources(path.join(SERVER_SRC, 'modules'))) {
-    const source = fs.readFileSync(file, 'utf8');
+    const source = activeCode(fs.readFileSync(file, 'utf8'));
 
     for (const m of source.matchAll(/transactionType:\s*'([A-Za-z]+)'/g)) {
       found.add(m[1]);
@@ -70,8 +71,8 @@ describe('названия типов операций', () => {
   });
 
   it('название переведено на русский и английский', () => {
-    const ru = JSON.parse(fs.readFileSync(RU_LABELS, 'utf8'));
-    const en = JSON.parse(fs.readFileSync(EN_LABELS, 'utf8'));
+    const ru = JSON.parse(activeCode(fs.readFileSync(RU_LABELS, 'utf8')));
+    const en = JSON.parse(activeCode(fs.readFileSync(EN_LABELS, 'utf8')));
 
     const untranslated = types
       .map((type) => TransactionTypes[type])

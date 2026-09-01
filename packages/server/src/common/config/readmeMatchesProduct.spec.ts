@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Н2 карты v38. Инструкция обещает ровно то, что продукт делает.
@@ -16,7 +17,7 @@ import * as path from 'path';
 const ROOT = path.resolve(__dirname, '../../../../..');
 
 const read = (name: string): string =>
-  fs.readFileSync(path.join(ROOT, name), 'utf8');
+  activeCode(fs.readFileSync(path.join(ROOT, name), 'utf8'));
 
 describe('инструкция и продукт', () => {
   it('файлы продукта на месте', () => {

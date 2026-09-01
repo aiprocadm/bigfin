@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { exportRowsLimit } from './exportRowsLimit';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * М3 срез 4 (карта v15): у выгрузки не было настоящего предела. В двенадцати
@@ -52,7 +53,7 @@ describe('предел выгрузки', () => {
 
   it('старой константы EXPORT_SIZE_LIMIT в коде больше нет', () => {
     const offenders = collectFiles(SERVER_MODULES, () => true).filter((file) =>
-      withoutComments(fs.readFileSync(file, 'utf8')).includes(
+      withoutComments(activeCode(fs.readFileSync(file, 'utf8'))).includes(
         'EXPORT_SIZE_LIMIT',
       ),
     );
@@ -64,7 +65,7 @@ describe('предел выгрузки', () => {
     const offenders: string[] = [];
 
     exportables.forEach((file) => {
-      const source = withoutComments(fs.readFileSync(file, 'utf8'));
+      const source = withoutComments(activeCode(fs.readFileSync(file, 'utf8')));
 
       for (const m of source.matchAll(/pageSize:\s*(\d+)/g)) {
         offenders.push(`${short(file)}: pageSize ${m[1]}`);

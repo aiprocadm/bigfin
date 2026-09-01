@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../../testing/activeCode';
 
 /**
  * Правило проекта: миграция без рабочего `down()` — мина, которую нельзя
@@ -18,7 +19,7 @@ const migrationFiles = fs
   .sort();
 
 const source = (name: string) =>
-  fs.readFileSync(path.join(MIGRATIONS_DIR, name), 'utf-8');
+  activeCode(fs.readFileSync(path.join(MIGRATIONS_DIR, name), 'utf-8'));
 
 const HAS_UP = /exports\.up\s*=|export const up|export async function up/;
 const HAS_DOWN =

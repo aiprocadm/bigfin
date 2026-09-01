@@ -16,6 +16,7 @@ import { VendorCredit } from '@/modules/VendorCredit/models/VendorCredit';
 import { SaleReceipt } from '@/modules/SaleReceipts/models/SaleReceipt';
 import { SaleEstimate } from '@/modules/SaleEstimates/models/SaleEstimate';
 import { Item } from '@/modules/Items/models/Item';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Р1 срез 1 (карта v16). Смена базовой валюты организации переписывает
@@ -87,7 +88,7 @@ describe('замок смены базовой валюты', () => {
     const byGetter = collectModelSources(MODULES)
       .filter((file) =>
         /static\s+get\s+preventMutateBaseCurrency/.test(
-          fs.readFileSync(file, 'utf8'),
+          activeCode(fs.readFileSync(file, 'utf8')),
         ),
       )
       .map((file) => path.relative(MODULES, file));

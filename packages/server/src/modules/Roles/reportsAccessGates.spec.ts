@@ -22,6 +22,7 @@ import { PurchasesByItemReportController } from '@/modules/FinancialStatements/m
 import { InventoryValuationController } from '@/modules/FinancialStatements/modules/InventoryValuationSheet/InventoryValuation.controller';
 import { InventoryItemDetailsController } from '@/modules/FinancialStatements/modules/InventoryItemDetails/InventoryItemDetails.controller';
 import { SalesTaxLiabilitySummaryController } from '@/modules/FinancialStatements/modules/SalesTaxLiabilitySummary/SalesTaxLiabilitySummary.controller';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Шаг В1 карты v9: отчёты спрашивают права.
@@ -235,7 +236,7 @@ describe('отчёты спрашивают права', () => {
 
     const unmarked = controllers(dir)
       .filter((file) => {
-        const text = fs.readFileSync(file, 'utf8');
+        const text = activeCode(fs.readFileSync(file, 'utf8'));
         return !text.includes('@RequirePermission(');
       })
       .map((file) => path.basename(file));

@@ -2,6 +2,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { Credit } from '../models/Credit.model';
+import { applyKeywordSearch } from '@/common/utils/keywordSearch';
+import { GetCreditsQueryDto } from '../dtos/GetCreditsQuery.dto';
 
 @Injectable()
 export class GetCreditsService {
@@ -10,9 +12,12 @@ export class GetCreditsService {
     private readonly creditModel: TenantModelProxy<typeof Credit>,
   ) {}
 
-  public async getCredits() {
-    const credits: any[] = await this.creditModel()
-      .query()
+  public async getCredits(filter: GetCreditsQueryDto = {}) {
+    const query = this.creditModel().query();
+
+    applyKeywordSearch(query, Credit.searchColumns, filter.keyword);
+
+    const credits: any[] = await query
       .withGraphFetched('installments')
       .orderBy('startDate', 'desc');
 

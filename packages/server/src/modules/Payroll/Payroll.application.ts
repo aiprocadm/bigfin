@@ -45,8 +45,8 @@ export class PayrollApplication {
     private readonly deleteKpiTargetService: DeleteKpiTargetService,
   ) {}
 
-  public getEmployees(activeOnly?: boolean) {
-    return this.getEmployeesService.getEmployees(activeOnly);
+  public getEmployees(activeOnly?: boolean, keyword?: string) {
+    return this.getEmployeesService.getEmployees(activeOnly, keyword);
   }
 
   public createEmployee(dto: CreateEmployeeDto) {

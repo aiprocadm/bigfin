@@ -39,8 +39,8 @@ export class BudgetsController {
 
   @Get()
   @ApiOperation({ summary: 'List budgets.' })
-  getBudgets() {
-    return this.application.getBudgets();
+  getBudgets(@Query('keyword') keyword?: string) {
+    return this.application.getBudgets(keyword);
   }
 
   @Get(':id')

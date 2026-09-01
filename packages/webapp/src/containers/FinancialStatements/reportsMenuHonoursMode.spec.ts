@@ -5,6 +5,7 @@ import path from 'path';
 
 import { financialReportMenus } from '@/constants/financialReportsMenu';
 import { filterAccountantOnlyReports } from '@/constants/interfaceMode';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Р1 карты v40. Раздел отчётов не предлагает того, чего не откроет.
@@ -19,7 +20,7 @@ import { filterAccountantOnlyReports } from '@/constants/interfaceMode';
 const SRC = path.resolve(__dirname, '../..');
 
 const read = (relative: string) =>
-  fs.readFileSync(path.join(SRC, relative), 'utf8');
+  activeCode(fs.readFileSync(path.join(SRC, relative), 'utf8'));
 
 /** Отчёты, скрытые в режиме «Бизнес». */
 const ACCOUNTANT_ONLY_REPORTS = [
@@ -54,12 +55,12 @@ describe('экран «Все отчёты» и режим интерфейса'
     // экран остался бы прежним, а тесты зелёными.
     const filter = read('containers/FinancialStatements/FilterFinancialReports.tsx');
 
-    expect(filter).toContain('filterAccountantOnlyReports');
+    expect(filter).toContain('filterAccountantOnlyReports(');
   });
 
   it('режим берётся из общего правила, а не переписан заново', () => {
     const filter = read('containers/FinancialStatements/FilterFinancialReports.tsx');
 
-    expect(filter).toContain('isAccountantOnlyHidden');
+    expect(filter).toContain('isAccountantOnlyHidden(');
   });
 });

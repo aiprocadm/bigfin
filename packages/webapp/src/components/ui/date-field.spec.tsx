@@ -63,6 +63,6 @@ describe('сам DatePicker больше не печатает зашитым ф
     );
 
     expect(source).not.toContain("format('DD.MM.YYYY')");
-    expect(source).toContain('formatOrganizationDate');
+    expect(source).toContain('formatOrganizationDate(');
   });
 });

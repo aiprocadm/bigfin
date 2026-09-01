@@ -44,7 +44,7 @@ describe('описание расхода в списке', () => {
     const cell = column.slice(0, column.indexOf('__actions__'));
 
     expect(cell).toContain('{row.original.description}');
-    expect(cell).not.toContain('FileText');
+    expect(cell).not.toContain('<FileText');
   });
 
   it('длинное описание не растягивает строку', () => {

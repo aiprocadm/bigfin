@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сторож на класс ошибок «служба чужого модуля не экспортирована».
@@ -45,7 +46,7 @@ const constructorTypes = (source: string): string[] =>
 
 describe('печатные формы: чужие службы доступны через exports', () => {
   const modules = moduleFiles(MODULES_DIR).map((file) => {
-    const source = fs.readFileSync(file, 'utf8');
+    const source = activeCode(fs.readFileSync(file, 'utf8'));
     return {
       file: path.relative(MODULES_DIR, file).split(path.sep).join('/'),
       isGlobal: /@Global\(\)/.test(source),
@@ -63,7 +64,7 @@ describe('печатные формы: чужие службы доступны 
     .filter((name) => name.endsWith('.service.ts'))
     .map((name) => ({
       name,
-      types: constructorTypes(fs.readFileSync(path.join(FORMS_DIR, name), 'utf8')),
+      types: constructorTypes(activeCode(fs.readFileSync(path.join(FORMS_DIR, name), 'utf8'))),
     }));
 
   it('службы форм вообще нашлись', () => {

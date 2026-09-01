@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Л2 карты v34. Шапки отчётов — на языке организации.
@@ -34,7 +35,7 @@ const hardcodedLabels = () => {
   const offenders: string[] = [];
 
   sourceFiles(REPORTS).forEach((file) => {
-    fs.readFileSync(file, 'utf8')
+    activeCode(fs.readFileSync(file, 'utf8'))
       .split('\n')
       .forEach((line, index) => {
         if (!line.includes('label:') || line.includes('i18n')) return;

@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Тот же класс ошибок, что однажды уже уронил сервер: служба чужого модуля
@@ -29,15 +30,15 @@ const section = (source: string, name: 'providers' | 'exports' | 'imports'): str
 };
 
 describe('сводка о деньгах: чужие службы доступны', () => {
-  const service = fs.readFileSync(SERVICE, 'utf8');
-  const own = fs.readFileSync(OWN_MODULE, 'utf8');
+  const service = activeCode(fs.readFileSync(SERVICE, 'utf8'));
+  const own = activeCode(fs.readFileSync(OWN_MODULE, 'utf8'));
 
   const types = [
     ...service.matchAll(/private readonly \w+:\s*([A-Z][A-Za-z0-9_]*)\s*,/g),
   ].map((m) => m[1]);
 
   const modules = moduleFiles(MODULES_DIR).map((file) => {
-    const source = fs.readFileSync(file, 'utf8');
+    const source = activeCode(fs.readFileSync(file, 'utf8'));
     return {
       file: path.relative(MODULES_DIR, file).split(path.sep).join('/'),
       isGlobal: /@Global\(\)/.test(source),

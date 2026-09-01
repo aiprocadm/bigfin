@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Н1 карты v38. Настройки не читаются в момент загрузки модуля.
@@ -67,7 +68,7 @@ describe('чтение настроек', () => {
     const offenders: string[] = [];
 
     files.forEach((file) => {
-      const found = readsEnvOnLoad(fs.readFileSync(file, 'utf8'));
+      const found = readsEnvOnLoad(activeCode(fs.readFileSync(file, 'utf8')));
       found.forEach((place) =>
         offenders.push(`${path.relative(SRC, file)}:${place}`),
       );

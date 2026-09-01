@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { MAIL_QUEUE_JOB_OPTIONS } from './mailQueueJobOptions';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Шаг Ф2 карты v10: у почтовых очередей есть повторы с затуханием.
@@ -48,7 +49,7 @@ describe('повторы почтовых очередей', () => {
   it('каждая почтовая очередь регистрируется с повторами', () => {
     const sources = allSources(SRC_DIR).map((file) => ({
       file,
-      text: fs.readFileSync(file, 'utf8'),
+      text: activeCode(fs.readFileSync(file, 'utf8')),
     }));
 
     const missing: string[] = [];

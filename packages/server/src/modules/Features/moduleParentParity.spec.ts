@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Приёмка v15: при выключенных «Сделках» ручка этапов сделки отвечала 200 —
@@ -51,7 +52,7 @@ const requiredPairs = (): Array<[string, string]> => {
   const pairs: Array<[string, string]> = [];
 
   for (const file of collectSources(SERVER_MODULES)) {
-    const source = fs.readFileSync(file, 'utf8');
+    const source = activeCode(fs.readFileSync(file, 'utf8'));
 
     for (const m of source.matchAll(
       /@RequireFeature\(\s*Features\.([A-Z_0-9]+)\s*,\s*Features\.([A-Z_0-9]+)\s*\)/g,
@@ -65,7 +66,7 @@ const requiredPairs = (): Array<[string, string]> => {
 describe('дочерние модули знают своего родителя', () => {
   const values = featureValues();
   const pairs = requiredPairs();
-  const modulesPage = fs.readFileSync(MODULES_PAGE, 'utf8');
+  const modulesPage = activeCode(fs.readFileSync(MODULES_PAGE, 'utf8'));
 
   it('перечисление флагов прочиталось', () => {
     expect(Object.keys(values).length).toBeGreaterThan(20);

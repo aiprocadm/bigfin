@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * М3 срез 2 (карта v15). Глобальный перехватчик переименовывает ВХОДЯЩИЕ
@@ -47,7 +48,7 @@ describe('имена полей во входящих описаниях зап�
     const offenders: string[] = [];
 
     for (const file of files) {
-      const source = fs.readFileSync(file, 'utf8');
+      const source = activeCode(fs.readFileSync(file, 'utf8'));
 
       for (const match of source.matchAll(SNAKE_FIELD)) {
         offenders.push(`${path.relative(MODULES, file)}: ${match[1]}`);

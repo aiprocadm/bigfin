@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Имена стандартных списков («Черновик», «Оплачен», «Просрочен») видит
@@ -37,7 +38,7 @@ const isTranslationKey = (name: string) => /^[a-z0-9_]+(\.[a-z0-9_]+)+$/.test(na
 describe('имена стандартных списков — ключи перевода', () => {
   const files = constantsFiles(MODULES_DIR);
   const found = files.flatMap((file) =>
-    viewNames(fs.readFileSync(file, 'utf8')).map((name) => ({
+    viewNames(activeCode(fs.readFileSync(file, 'utf8'))).map((name) => ({
       file: path.relative(MODULES_DIR, file).split(path.sep).join('/'),
       name,
     })),

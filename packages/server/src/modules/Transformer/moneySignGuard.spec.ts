@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Д1 карты v30. Знак валюты не глушится молча.
@@ -60,7 +61,7 @@ const bareMoneyCalls = () => {
   const offenders: string[] = [];
 
   sourceFiles(SRC).forEach((file) => {
-    const code = fs.readFileSync(file, 'utf8');
+    const code = activeCode(fs.readFileSync(file, 'utf8'));
     const relative = path.relative(SRC, file).split(path.sep).join('/');
 
     calls(code).forEach(({ position, args }) => {
@@ -76,7 +77,7 @@ const bareMoneyCalls = () => {
 
 describe('знак валюты не глушится молча', () => {
   it('общий помощник не выключает знак по умолчанию', () => {
-    const helper = fs.readFileSync(HELPER, 'utf8');
+    const helper = activeCode(fs.readFileSync(HELPER, 'utf8'));
     const call = helper.match(
       /protected formatNumber\([\s\S]*?return formatNumber\(([\s\S]*?)\);/,
     );

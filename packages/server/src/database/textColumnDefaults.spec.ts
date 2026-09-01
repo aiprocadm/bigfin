@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../testing/activeCode';
 
 /**
  * Ловушка, на которой сломалось создание новой организации (найдено живой
@@ -32,7 +33,7 @@ const findTextDefaults = (): string[] =>
       .readdirSync(dir)
       .filter((file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'))
       .flatMap((file) => {
-        const content = fs.readFileSync(path.join(dir, file), 'utf8');
+        const content = activeCode(fs.readFileSync(path.join(dir, file), 'utf8'));
 
         return content
           .split('\n')

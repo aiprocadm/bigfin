@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Грабля С4 (карта v14), повторившаяся в Р1 срезе 2 (карта v16): если в
@@ -56,7 +57,7 @@ describe('внедрение TenancyContext подкреплено модуле�
     MODULES,
     (name) => name.endsWith('.ts') && !name.includes('.spec.'),
   ).filter((file) => {
-    const source = fs.readFileSync(file, 'utf8');
+    const source = activeCode(fs.readFileSync(file, 'utf8'));
 
     // Именно внедрение в конструктор, а не любое упоминание типа.
     return /(private|public|protected)[^\n]*:\s*TenancyContext\b/.test(source);
@@ -76,7 +77,7 @@ describe('внедрение TenancyContext подкреплено модуле�
       const moduleFiles = fs
         .readdirSync(dir)
         .filter((name) => name.endsWith('.module.ts'))
-        .map((name) => fs.readFileSync(path.join(dir, name), 'utf8'));
+        .map((name) => activeCode(fs.readFileSync(path.join(dir, name), 'utf8')));
 
       // Строки импорта не считаются: `import { TenancyModule } ...` есть и
       // тогда, когда модуль его не подключил. Именно на этом сторож едва не

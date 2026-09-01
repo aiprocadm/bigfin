@@ -1,6 +1,7 @@
 import { execFileSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from './testing/activeCode';
 
 /**
  * Карта v42. Сторожа, которых никто не сторожит.
@@ -17,7 +18,7 @@ import * as path from 'path';
 const ROOT = path.resolve(__dirname, '../../..');
 
 const read = (relative: string): string =>
-  fs.readFileSync(path.join(ROOT, relative), 'utf8');
+  activeCode(fs.readFileSync(path.join(ROOT, relative), 'utf8'));
 
 /** Режим файла, каким его хранит сам репозиторий, а не рабочая копия. */
 const gitFileModes = (dir: string): Array<[string, string]> => {

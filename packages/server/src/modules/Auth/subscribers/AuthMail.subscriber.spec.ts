@@ -1,5 +1,6 @@
 // © 2026 Bigfin
 import { AuthMailSubscriber } from './AuthMail.subscriber';
+import { activeCode } from '../../../testing/activeCode';
 
 /**
  * Шаг Ф3 карты v10: сбой постановки письма в очередь не глотается.
@@ -52,9 +53,8 @@ describe('ошибки обработчиков не глушатся Nest-ом'
     // чинился у подписчиков журнала (#206). Без пометки весь смысл Ф3
     // теряется молча.
     const fs = require('fs');
-    const source = fs.readFileSync(
-      require.resolve('./AuthMail.subscriber'),
-      'utf8',
+    const source = activeCode(
+      fs.readFileSync(require.resolve('./AuthMail.subscriber'), 'utf8'),
     );
 
     const onEvents = source.match(/@OnEvent\([^)]*\)/g) ?? [];

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../../testing/activeCode';
 
 /**
  * С1 срез 2 (карта v14): валидатор «у покупателя есть кредит-ноты» обязан
@@ -9,9 +10,11 @@ import * as path from 'path';
  */
 describe('DeleteCustomerLinkedCreditSubscriber: ошибки не глушатся', () => {
   it('каждый @OnEvent несёт suppressErrors: false', () => {
-    const source = fs.readFileSync(
-      path.join(__dirname, 'DeleteCustomerLinkedCreditSubscriber.ts'),
-      'utf-8',
+    const source = activeCode(
+      fs.readFileSync(
+        path.join(__dirname, 'DeleteCustomerLinkedCreditSubscriber.ts'),
+        'utf-8',
+      ),
     );
     const onEvents = source.match(/@OnEvent\([^)]*\)/g) ?? [];
     expect(onEvents.length).toBeGreaterThan(0);

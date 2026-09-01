@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { activeCode } from '../../testing/activeCode';
 
 /**
  * Сторож С4 (карта v14): трансформер документа с валютой контрагента и
@@ -22,9 +23,8 @@ const TRANSFORMERS = [
 
 describe('трансформеры документов валидируют курс', () => {
   it.each(TRANSFORMERS)('%s зовёт assertValidExchangeRate', (rel) => {
-    const source = fs.readFileSync(
-      path.join(__dirname, '..', '..', rel),
-      'utf-8',
+    const source = activeCode(
+      fs.readFileSync(path.join(__dirname, '..', '..', rel), 'utf-8'),
     );
     expect(source).toContain('assertValidExchangeRate(');
   });

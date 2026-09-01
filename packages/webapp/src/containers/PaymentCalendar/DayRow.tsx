@@ -12,10 +12,17 @@ const money = (amount: number): string =>
 export function DayRow({
   day,
   onMaterialize,
+  foundOperationId,
 }: {
   day: ForecastDay;
   /** Записать плановую строку в учёт (О3): строка + дата вхождения. */
   onMaterialize?: (line: ForecastLine, date: string) => void;
+  /**
+   * Номер плановой операции, которую нашёл поиск в шапке (карта v48).
+   * Календарь не открывает операцию отдельным экраном — он показывает её
+   * среди соседних дней, поэтому найденную выделяем и подводим к ней.
+   */
+  foundOperationId?: number | null;
 }) {
   const negative = day.balance < 0;
   const weekend = isWeekend(day.date);
@@ -35,12 +42,18 @@ export function DayRow({
           {intl.get('payment_calendar.balance')}: {money(day.balance)}
         </span>
       </div>
-      {(day.lines ?? []).map((line, i) => (
+      {(day.lines ?? []).map((line, i) => {
+        const found =
+          foundOperationId != null &&
+          line.plannedOperationId === foundOperationId;
+
+        return (
         <div
           key={i}
+          ref={(node) => found && node?.scrollIntoView({ block: 'center' })}
           className={`flex items-center justify-between px-4 text-sm ${
             line.direction === 'inflow' ? 'text-green-600' : 'text-red-500'
-          }`}
+          }${found ? ' ring-2 ring-action rounded-md' : ''}`}
         >
           <span>{line.label}</span>
           <span className="flex items-center gap-2">
@@ -59,7 +72,8 @@ export function DayRow({
             )}
           </span>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

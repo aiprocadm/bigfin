@@ -20,4 +20,10 @@ export const RESOURCES_TYPES = {
   DEAL: 'deal',
   PAYMENT_REQUEST: 'payment_request',
   FIXED_ASSET: 'fixed_asset',
+
+  // Карта v48. Последние разделы из задела карт v39 и v43.
+  CREDIT: 'credit',
+  EMPLOYEE: 'employee',
+  BUDGET: 'budget',
+  PLANNED_OPERATION: 'planned_operation',
 };

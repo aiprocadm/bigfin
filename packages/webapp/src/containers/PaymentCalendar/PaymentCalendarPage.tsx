@@ -17,6 +17,8 @@ import { PlannedOperationDialog } from './PlannedOperationDialog';
 import { PlannedOperation } from './schemas';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -38,6 +40,12 @@ const filterSelectClassName =
   'border-input bg-background h-9 rounded-md border px-3 text-sm';
 
 export default function PaymentCalendarPage() {
+  const { search } = useLocation();
+
+  // Карта v48. Календарь не открывает операцию отдельным экраном — он
+  // показывает её среди соседних дней. Найденную поиском выделяем и
+  // подводим к ней экран.
+  const foundOperationId = openIdFromSearch(search);
   const { featureCan } = useFeatureCan();
   const [horizon, setHorizon] = React.useState<'week' | 'month' | 'quarter'>(
     'month',
@@ -180,7 +188,12 @@ export default function PaymentCalendarPage() {
       )}
       <div className="flex flex-col">
         {days.map((day: any) => (
-          <DayRow key={day.date} day={day} onMaterialize={handleMaterialize} />
+          <DayRow
+            key={day.date}
+            day={day}
+            onMaterialize={handleMaterialize}
+            foundOperationId={foundOperationId}
+          />
         ))}
       </div>
     </div>

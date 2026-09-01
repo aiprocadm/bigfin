@@ -11,6 +11,8 @@ import { BudgetGrid } from './BudgetGrid';
 import { BudgetPlanFact } from './BudgetPlanFact';
 import { Budget } from './schemas';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
 
@@ -20,12 +22,22 @@ export default function BudgetsPage() {
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Budget | undefined>();
   const [tab, setTab] = React.useState<'grid' | 'planfact'>('grid');
+  const { search } = useLocation();
+
+  // Карта v48. Поиск в шапке приводит сюда с номером найденного бюджета:
+  // открываем его, а не оставляем человека в общем списке.
+  const requestedId = openIdFromSearch(search);
+  const requestedBudget =
+    requestedId !== null
+      ? (budgets ?? []).find((b: Budget) => b.id === requestedId)
+      : undefined;
+  const shownBudget = selected ?? requestedBudget;
   const [scenario, setScenario] = React.useState('realistic');
   const [month, setMonth] = React.useState<string>(''); // '' = весь финансовый год, иначе 'YYYY-MM'
 
   if (!featureCan('budgets')) return <ModuleDisabled />;
 
-  const year = selected?.fiscalYear ?? moment().year();
+  const year = shownBudget?.fiscalYear ?? moment().year();
   // Период план-факта: конкретный месяц или весь финансовый год.
   const pfFrom = month ? `${month}-01` : `${year}-01-01`;
   const pfTo = month
@@ -67,7 +79,7 @@ export default function BudgetsPage() {
         ))}
       </ul>
 
-      {selected && (
+      {shownBudget && (
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex gap-2">
@@ -105,14 +117,14 @@ export default function BudgetsPage() {
             </div>
           </div>
           {tab === 'grid' ? (
-            <BudgetGrid budgetId={selected.id} scenario={scenario} />
+            <BudgetGrid budgetId={shownBudget.id} scenario={scenario} />
           ) : (
             <BudgetPlanFact
-              budgetId={selected.id}
+              budgetId={shownBudget.id}
               fromDate={pfFrom}
               toDate={pfTo}
               scenario={scenario}
-              type={selected.type}
+              type={shownBudget.type}
             />
           )}
         </div>

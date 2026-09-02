@@ -76,7 +76,10 @@ function ProfitLossSheet({
   );
 }
 
+// Тип указан явно: `R.compose` возвращает обобщённую функцию, и загрузчик
+// страниц (`lazy`) не признаёт её за компонент — маршрут отчёта краснел
+// проверкой типов, хотя экран работает (карта v52).
 export default R.compose(
   withDashboardActions,
   withProfitLossActions,
-)(ProfitLossSheet);
+)(ProfitLossSheet) as React.ComponentType;

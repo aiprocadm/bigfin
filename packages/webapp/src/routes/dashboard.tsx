@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { lazy } from 'react';
 import intl from 'react-intl-universal';
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
@@ -104,14 +103,6 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('edit_item'),
     pageTitle: intl.get('edit_item'),
     backLink: true,
-    defaultSearchResource: RESOURCES_TYPES.ITEM,
-  },
-  {
-    path: `/items/new?duplicate=/:id`,
-    component: lazy({
-      loader: () => import('@/containers/Items/ItemFormPage'),
-    }),
-    breadcrumb: intl.get('duplicate_item'),
     defaultSearchResource: RESOURCES_TYPES.ITEM,
   },
   {
@@ -532,17 +523,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('customers_list'),
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
   },
-  {
-    path: `/customers/contact_duplicate=/:id`,
-    component: lazy(
-      () => import('@/containers/Customers/CustomerForm/CustomerFormPage'),
-    ),
-    name: 'duplicate-customer',
-    breadcrumb: intl.get('duplicate_customer'),
-    pageTitle: intl.get('new_customer'),
-    backLink: true,
-    defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
-  },
 
   // Vendors
   {
@@ -585,17 +565,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('vendors_list'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
   },
-  {
-    path: `/vendors/contact_duplicate=/:id`,
-    component: lazy(
-      () => import('@/containers/Vendors/VendorForm/VendorFormPage'),
-    ),
-    name: 'duplicate-vendor',
-    breadcrumb: intl.get('duplicate_vendor'),
-    pageTitle: intl.get('new_vendor'),
-    backLink: true,
-    defaultSearchResource: RESOURCES_TYPES.VENDOR,
-  },
 
   // Estimates
   {
@@ -621,19 +590,6 @@ export const getDashboardRoutes = () => [
     backLink: true,
     sidebarExpand: false,
     defaultSearchResource: RESOURCES_TYPES.ESTIMATE,
-  },
-  {
-    path: `/invoices/new?from_estimate_id=/:id`,
-    component: lazy(
-      () =>
-        import('@/containers/Sales/Estimates/EstimateForm/v2/EstimateFormPageV2'),
-    ),
-    name: 'convert-to-invoice',
-    breadcrumb: intl.get('new_estimate'),
-    pageTitle: intl.get('new_estimate'),
-    backLink: true,
-    sidebarExpand: false,
-    defaultSearchResource: RESOURCES_TYPES.INVOICE,
   },
   {
     path: `/estimates/new`,
@@ -780,21 +736,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('credit_note.label.edit_credit_note'),
     backLink: true,
     sidebarExpand: false,
-    defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
-  },
-  {
-    path: `/credit-notes/new/?from_invoice_id=/:id`,
-    component: lazy(
-      () =>
-        import(
-          '@/containers/Sales/CreditNotes/CreditNoteForm/CreditNoteFormPage'
-        ),
-    ),
-    name: 'credit-note-new',
-    breadcrumb: intl.get('credit_note.label.new_credit_note'),
-    backLink: true,
-    sidebarExpand: false,
-    pageTitle: intl.get('credit_note.label.new_credit_note'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT_NOTE,
   },
   {
@@ -949,21 +890,6 @@ export const getDashboardRoutes = () => [
     pageTitle: intl.get('vendor_credits.label.edit_vendor_credit'),
     backLink: true,
     sidebarExpand: false,
-    defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
-  },
-  {
-    path: '/vendor-credits/new/?from_bill_id=/:id',
-    component: lazy(
-      () =>
-        import(
-          '@/containers/Purchases/CreditNotes/CreditNoteForm/VendorCreditNoteFormPage'
-        ),
-    ),
-    name: 'vendor-credits-new',
-    backLink: true,
-    sidebarExpand: false,
-    breadcrumb: intl.get('vendor_credits.label.new_vendor_credit'),
-    pageTitle: intl.get('vendor_credits.label.new_vendor_credit'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR_CREDIT,
   },
   {

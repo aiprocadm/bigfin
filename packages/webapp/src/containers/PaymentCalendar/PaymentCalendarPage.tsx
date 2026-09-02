@@ -19,6 +19,8 @@ import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { usePlannedOperationsTruncated } from '@/hooks/query/paymentCalendar';
+import { ListTruncated } from '@/components/ui/list-truncated';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -46,6 +48,9 @@ export default function PaymentCalendarPage() {
   // показывает её среди соседних дней. Найденную поиском выделяем и
   // подводим к ней экран.
   const foundOperationId = openIdFromSearch(search);
+
+  // С2 карты v49. Календарь не молчит о том, что показал не все операции.
+  const { data: truncated } = usePlannedOperationsTruncated({});
   const { featureCan } = useFeatureCan();
   const [horizon, setHorizon] = React.useState<'week' | 'month' | 'quarter'>(
     'month',
@@ -186,6 +191,8 @@ export default function PaymentCalendarPage() {
           onCancel={() => setShowForm(false)}
         />
       )}
+      {truncated && <ListTruncated shown={days.length} />}
+
       <div className="flex flex-col">
         {days.map((day: any) => (
           <DayRow

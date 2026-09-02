@@ -16,6 +16,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { usePaymentRequestsTruncated } from '@/hooks/query/paymentRequests';
+import { ListTruncated } from '@/components/ui/list-truncated';
 
 type StatusFilter = '' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
@@ -48,6 +50,9 @@ export default function PaymentRequestsPage() {
   if (!featureCan('payment_requests')) return <ModuleDisabled />;
 
   const rows: any[] = requests ?? [];
+
+  // С2 карты v49. Список не молчит о том, что показал не всё.
+  const { data: truncated } = usePaymentRequestsTruncated(status ? { status } : {});
 
   const act = async (mutation: any, id: number, okKey: string) => {
     try {
@@ -89,6 +94,7 @@ export default function PaymentRequestsPage() {
             description={intl.get('payment_requests.empty_status.description')}
           />
         )}
+        {truncated && <ListTruncated shown={rows.length} />}
         {rows.map((r) => (
           <div
             key={r.id}

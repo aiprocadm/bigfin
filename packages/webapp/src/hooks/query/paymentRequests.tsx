@@ -87,3 +87,21 @@ export function useCancelPaymentRequest(
     { onSuccess: () => invalidate(client), ...props },
   );
 }
+
+/**
+ * С2 карты v49. Показал ли сервер не всё.
+ *
+ * Ключ запроса тот же, что у списка, — значит ответ берётся из уже
+ * полученного, второго обращения к серверу не происходит.
+ */
+export function usePaymentRequestsTruncated(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.PAYMENT_REQUESTS, query],
+    { method: 'get', url: 'payment-requests', params: query },
+    {
+      select: (res: any) => Boolean(res?.data?.truncated),
+      defaultData: false,
+      ...props,
+    },
+  );
+}

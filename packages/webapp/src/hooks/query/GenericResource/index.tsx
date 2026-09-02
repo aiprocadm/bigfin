@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
 
@@ -9,7 +8,7 @@ import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
  * @param {*} query
  * @returns
  */
-export function useResourceData(type, query, props) {
+export function useResourceData(type: string, query?: any, props?: any) {
   const url = getResourceUrlFromType(type);
 
   return useRequestQuery(
@@ -30,7 +29,7 @@ export function useResourceData(type, query, props) {
  * @param {string} type
  * @returns {string}
  */
-function getResourceUrlFromType(type) {
+function getResourceUrlFromType(type: string): string {
   const config = {
     [RESOURCES_TYPES.INVOICE]: '/sale-invoices',
     [RESOURCES_TYPES.ESTIMATE]: '/sale-estimates',
@@ -60,74 +59,74 @@ function getResourceUrlFromType(type) {
 /**
  * Transformes invoices to resource data.
  */
-const transformInvoices = (response) => ({
+const transformInvoices = (response: any) => ({
   items: response.data.sales_invoices,
 });
 
 /**
  * Transformes items to resource data.
  */
-const transformItems = (response) => ({
+const transformItems = (response: any) => ({
   items: response.data.items,
 });
 
 /**
  * Transformes payment receives to resource data.
  */
-const transformPaymentReceives = (response) => ({
+const transformPaymentReceives = (response: any) => ({
   items: response.data.payment_receives,
 });
 
 /**
  * Transformes customers to resoruce data.
  */
-const transformCustomers = (response) => ({
+const transformCustomers = (response: any) => ({
   items: response.data.customers,
 });
 
 /**
  * Transformes customers to resoruce data.
  */
-const transformVendors = (response) => ({
+const transformVendors = (response: any) => ({
   items: response.data.vendors,
 });
 
-const transformPaymentMades = (response) => ({
+const transformPaymentMades = (response: any) => ({
   items: response.data.bill_payments,
 });
 
-const transformSaleReceipts = (response) => ({
+const transformSaleReceipts = (response: any) => ({
   items: response.data.data,
 });
 
-const transformBills = (response) => ({
+const transformBills = (response: any) => ({
   items: response.data.bills,
 });
 
-const transformManualJournals = (response) => ({
+const transformManualJournals = (response: any) => ({
   items: response.data.manual_journals,
 });
 
-const transformsEstimates = (response) => ({
+const transformsEstimates = (response: any) => ({
   items: response.data.sales_estimates,
 });
 
-const transformAccounts = (response) => ({
+const transformAccounts = (response: any) => ({
   items: response.data.accounts,
 });
 
-const transformCreditNotes = (response) => ({
+const transformCreditNotes = (response: any) => ({
   items: response.data.credit_notes,
 });
 
-const transformVendorCredits = (response) => ({
+const transformVendorCredits = (response: any) => ({
   items: response.data.vendor_credits,
 });
 
 /**
  * Transformes expenses to resource data.
  */
-const transformExpenses = (response) => ({
+const transformExpenses = (response: any) => ({
   items: response.data.expenses,
 });
 
@@ -135,7 +134,7 @@ const transformExpenses = (response) => ({
  * Разделы карты v43 отдают список массивом — иногда завёрнутым в `data`.
  * Общий разбор: одна форма ответа на три раздела.
  */
-const transformPlainList = (response) => ({
+const transformPlainList = (response: any) => ({
   items: response.data?.data ?? response.data ?? [],
 });
 
@@ -143,7 +142,7 @@ const transformPlainList = (response) => ({
  * Detarmines the transformer based on the given resource type.
  * @param {string} type - Resource type.
  */
-const transformResourceData = (type) => (response) => {
+const transformResourceData = (type: string) => (response: any) => {
   const pairs = {
     [RESOURCES_TYPES.ESTIMATE]: transformsEstimates,
     [RESOURCES_TYPES.INVOICE]: transformInvoices,

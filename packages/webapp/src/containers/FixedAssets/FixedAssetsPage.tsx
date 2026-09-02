@@ -29,6 +29,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useHistory, useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { useFixedAssetsTruncated } from '@/hooks/query/fixed-assets';
+import { ListTruncated } from '@/components/ui/list-truncated';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -148,6 +150,9 @@ export default function FixedAssetsPage() {
 
   const assetRows: any[] = assets ?? [];
 
+  // С2 карты v49. Список не молчит о том, что показал не всё.
+  const { data: truncated } = useFixedAssetsTruncated();
+
   return (
     <div className="flex flex-col gap-4 p-6">
       {/* Header */}
@@ -213,6 +218,8 @@ export default function FixedAssetsPage() {
       )}
 
       {/* Assets table */}
+      {truncated && <ListTruncated shown={assetRows.length} />}
+
       <div className="overflow-x-auto rounded-md border">
         {assetRows.length === 0 ? (
           <EmptyState

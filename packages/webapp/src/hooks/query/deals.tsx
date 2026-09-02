@@ -96,3 +96,21 @@ export function useDeleteDeal(
     { onSuccess: () => invalidate(client), ...props },
   );
 }
+
+/**
+ * С2 карты v49. Показал ли сервер не всё.
+ *
+ * Ключ запроса тот же, что у списка, — значит ответ берётся из уже
+ * полученного, второго обращения к серверу не происходит.
+ */
+export function useDealsTruncated(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.DEALS, query],
+    { method: 'get', url: 'deals', params: query },
+    {
+      select: (res: any) => Boolean(res?.data?.truncated),
+      defaultData: false,
+      ...props,
+    },
+  );
+}

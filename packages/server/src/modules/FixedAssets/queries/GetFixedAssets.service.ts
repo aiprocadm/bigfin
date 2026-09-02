@@ -4,6 +4,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { FixedAsset } from '../models/FixedAsset.model';
 import { applyKeywordSearch } from '@/common/utils/keywordSearch';
 import { GetFixedAssetsQueryDto } from '../dtos/GetFixedAssetsQuery.dto';
+import { applyListCap, splitCapped } from '@/common/utils/listCap';
 
 @Injectable()
 export class GetFixedAssetsService {
@@ -17,11 +18,15 @@ export class GetFixedAssetsService {
 
     applyKeywordSearch(query, FixedAsset.searchColumns, filter.keyword);
 
-    const assets: any[] = await query
+    applyListCap(query);
+
+    const rows: any[] = await query
       .orderBy('commissionedAt', 'desc')
       .orderBy('id', 'desc');
 
-    return assets.map((a) => {
+    const { items: assets, truncated } = splitCapped(rows);
+
+    const data = assets.map((a) => {
       const cost = Number(a.cost) || 0;
       const accumulated = Number(a.accumulatedDepreciation) || 0;
       return {
@@ -36,5 +41,9 @@ export class GetFixedAssetsService {
         status: a.status,
       };
     });
+
+    // Форма ответа прежняя: `data` — то, что показываем, `truncated` —
+    // признак «есть ещё». Витрина берёт `data` и не замечает разницы.
+    return { data, truncated };
   }
 }

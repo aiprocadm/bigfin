@@ -480,6 +480,8 @@
   "module_disabled.title": "This section is turned off",
   "module_disabled.description": "The section belongs to a module that is currently off. You can turn it on in settings, where all modules of the product live and each is switched separately.",
   "module_disabled.open_settings": "Open module settings",
+  "list_truncated.notice": "Showing the first {shown} records — there are more.",
+  "list_truncated.hint": "Use the search in the header to find the one you need.",
   "accountant_only.title": "Available in Accountant mode",
   "accountant_only.description": "Business mode is on — it hides the accounting screens: manual journals, ledgers, trial balance and period locking. Switch the interface mode in settings to open this screen.",
   "accountant_only.open_settings": "Open interface mode settings",

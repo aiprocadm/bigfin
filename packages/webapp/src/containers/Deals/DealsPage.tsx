@@ -15,6 +15,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { useHistory, useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { useDealsTruncated } from '@/hooks/query/deals';
+import { ListTruncated } from '@/components/ui/list-truncated';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -58,6 +60,9 @@ export default function DealsPage() {
   );
 
   const rows: any[] = deals ?? [];
+
+  // С2 карты v49. Список не молчит о том, что показал не всё.
+  const { data: truncated } = useDealsTruncated(status ? { status } : {});
 
   // Карта v43. Поиск в шапке приводит сюда с номером найденной сделки в
   // адресе. Без этого человек попадал бы в общий список и искал глазами
@@ -147,6 +152,7 @@ export default function DealsPage() {
             description={intl.get('deals.empty_status.description')}
           />
         )}
+        {truncated && <ListTruncated shown={rows.length} />}
         {rows.map((d) => {
           const m = marginById.get(d.id);
           return (

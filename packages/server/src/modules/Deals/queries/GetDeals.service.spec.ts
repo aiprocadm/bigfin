@@ -32,6 +32,11 @@ const sqlForFilter = (filter: any): string => {
       kb.orderBy(...(args as [any]));
       return builder;
     },
+    limit: (count: number) => {
+      kb.limit(count);
+      return builder;
+    },
+    then: (resolve: any) => resolve([]),
   };
   const dealModel = () => ({ query: () => builder });
 
@@ -39,6 +44,14 @@ const sqlForFilter = (filter: any): string => {
 
   return kb.toString();
 };
+
+describe('потолок выдачи', () => {
+  it('список просит на одну строку больше потолка (С1 карты v49)', () => {
+    // Без потолка список отдавал всё, что накопилось, а витрина рисовала
+    // это одним куском — долгая загрузка и подвисший телефон.
+    expect(sqlForFilter({})).toContain('limit 201');
+  });
+});
 
 describe('поиск сделок', () => {
   it('ищет по названию сделки', () => {

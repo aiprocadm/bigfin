@@ -137,3 +137,21 @@ export function useDeletePlannedOperation(
     },
   );
 }
+
+/**
+ * С2 карты v49. Показал ли сервер не всё.
+ *
+ * Ключ запроса тот же, что у списка, — значит ответ берётся из уже
+ * полученного, второго обращения к серверу не происходит.
+ */
+export function usePlannedOperationsTruncated(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.PLANNED_OPERATIONS, query],
+    { method: 'get', url: 'payment-calendar/planned-operations', params: query },
+    {
+      select: (res: any) => Boolean(res?.data?.truncated),
+      defaultData: false,
+      ...props,
+    },
+  );
+}

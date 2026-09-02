@@ -176,3 +176,21 @@ export function useDeleteFixedAsset(
     { onSuccess: () => invalidateAll(client), ...props },
   );
 }
+
+/**
+ * С2 карты v49. Показал ли сервер не всё.
+ *
+ * Ключ запроса тот же, что у списка, — значит ответ берётся из уже
+ * полученного, второго обращения к серверу не происходит.
+ */
+export function useFixedAssetsTruncated(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.FIXED_ASSETS, query],
+    { method: 'get', url: 'fixed-assets', params: query },
+    {
+      select: (res: any) => Boolean(res?.data?.truncated),
+      defaultData: false,
+      ...props,
+    },
+  );
+}

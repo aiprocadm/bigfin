@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { isNumber } from '../isNumber';
 
 describe('isNumber', () => {

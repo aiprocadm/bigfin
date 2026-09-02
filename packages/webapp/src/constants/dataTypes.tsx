@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const DATATYPES_LENGTH = {
   STRING: 255,
   TEXT: 65535,

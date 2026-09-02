@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { abbrValue, parseAbbrValue } from '../parseAbbrValue';
 
 describe('abbrValue', () => {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 export * from './accountTypes';
 export * from './tableStyle';
 export * from './features';

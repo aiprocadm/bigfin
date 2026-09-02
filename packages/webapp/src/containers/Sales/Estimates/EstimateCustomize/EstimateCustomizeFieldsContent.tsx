@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { FInputGroup, FSwitch, Group, Stack } from '@/components';
 import { CLASSES } from '@/constants';

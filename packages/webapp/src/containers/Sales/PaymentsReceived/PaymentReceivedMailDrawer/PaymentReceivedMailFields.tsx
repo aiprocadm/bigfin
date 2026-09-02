@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';

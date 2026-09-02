@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Tab } from "@blueprintjs/core";
 import intl from 'react-intl-universal';
 import { Card, Group } from "@/components";

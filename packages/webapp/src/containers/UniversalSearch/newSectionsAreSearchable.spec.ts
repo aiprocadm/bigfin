@@ -55,7 +55,7 @@ const SECTIONS = [
     type: 'PLANNED_OPERATION',
     url: '/payment-calendar/planned-operations',
     route: '/payment-calendar',
-    bind: 'universalSearchPlannedoperationBind',
+    bind: 'universalSearchPlannedOperationBind',
   },
 ];
 

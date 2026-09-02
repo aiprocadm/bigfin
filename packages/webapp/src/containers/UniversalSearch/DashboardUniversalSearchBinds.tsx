@@ -19,7 +19,7 @@ import { universalSearchFixedAssetBind } from '../FixedAssets/FixedAssetsUnivers
 import { universalSearchCreditBind } from '../Credits/CreditsUniversalSearch';
 import { universalSearchEmployeeBind } from '../Payroll/PayrollUniversalSearch';
 import { universalSearchBudgetBind } from '../Budgets/BudgetsUniversalSearch';
-import { universalSearchPlannedoperationBind } from '../PaymentCalendar/PaymentCalendarUniversalSearch';
+import { universalSearchPlannedOperationBind } from '../PaymentCalendar/PaymentCalendarUniversalSearch';
 
 // Universal search binds.
 export const universalSearchBinds = [
@@ -43,5 +43,5 @@ export const universalSearchBinds = [
   universalSearchCreditBind,
   universalSearchEmployeeBind,
   universalSearchBudgetBind,
-  universalSearchPlannedoperationBind,
+  universalSearchPlannedOperationBind,
 ];

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { displayColumnsByOptions } from './constants';
 import { transfromToSnakeCase, flatten } from '@/utils';
@@ -6,7 +5,7 @@ import { transfromToSnakeCase, flatten } from '@/utils';
 /**
  * Associate display columns by and type properties to query object.
  */
-export const transformDisplayColumnsType = (form) => {
+export const transformDisplayColumnsType = (form: any) => {
   const columnType = R.find(
     R.propEq('key', form.displayColumnsType),
     displayColumnsByOptions,
@@ -24,7 +23,7 @@ export const transformDisplayColumnsType = (form) => {
 /**
  * Associate none zero and none transaction property to query.
  */
-const setNoneZeroTransactions = (form) => {
+const setNoneZeroTransactions = (form: any) => {
   return {
     ...form,
     noneZero: form.filterByOption === 'without-zero-balance',
@@ -33,14 +32,14 @@ const setNoneZeroTransactions = (form) => {
   };
 };
 // filterByOption
-export const transformAccountsFilter = (form) => {
+export const transformAccountsFilter = (form: any) => {
   return R.compose(R.omit(['filterByOption']), setNoneZeroTransactions)(form);
 };
 
 /**
  * Transform filter form to http query.
  */
-export const transformFilterFormToQuery = (form) => {
+export const transformFilterFormToQuery = (form: any) => {
   return R.compose(
     transfromToSnakeCase,
     transformAccountsFilter,

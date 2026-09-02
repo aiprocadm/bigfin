@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 
 import { CLASSES } from '@/constants/classes';
 
 // Dashboard card.
-export function DashboardCard({ children, page }) {
+export function DashboardCard({ children, page }: any) {
   return (
     <div
       className={classNames(CLASSES.DASHBOARD_CARD, {

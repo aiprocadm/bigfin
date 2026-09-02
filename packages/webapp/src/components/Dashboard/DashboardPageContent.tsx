@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 
 /**
  * Dashboard page content.
  */
-export function DashboardPageContent({ children }) {
+export function DashboardPageContent({ children }: any) {
   return <div className="dashboard__page-content">{children}</div>;
 }

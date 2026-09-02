@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 
-export function Join({ items, sep }) {
+export function Join({ items, sep }: any) {
   return items.length > 0
-    ? items.reduce((result, item) => (
+    ? items.reduce((result: any, item: any) => (
         <>
           {result}
           {sep}

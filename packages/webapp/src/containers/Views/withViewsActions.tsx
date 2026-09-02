@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {connect} from 'react-redux';
 import {
   fetchView,
@@ -10,14 +9,14 @@ import {
 } from '@/store/custom-views/custom-views.actions';
 
 
-export const mapDispatchToProps = (dispatch) => ({
-  requestFetchView: (id) => dispatch(fetchView({ id })),
-  requestSubmitView: (form) => dispatch(submitView({ form })),
-  requestEditView: (id, form) => dispatch(editView({ id, form })),
-  requestDeleteView: (id) => dispatch(deleteView({ id })),
+export const mapDispatchToProps = (dispatch: any) => ({
+  requestFetchView: (id: any) => dispatch(fetchView({ id })),
+  requestSubmitView: (form: any) => dispatch(submitView({ form })),
+  requestEditView: (id: any, form: any) => dispatch(editView({ id, form })),
+  requestDeleteView: (id: any) => dispatch(deleteView({ id })),
 
-  requestFetchResourceViews: (resourceSlug) => dispatch(fetchResourceViews({ resourceSlug })),
-  requestFetchViewResource: (id) => dispatch(fetchViewResource({ id })),
+  requestFetchResourceViews: (resourceSlug: any) => dispatch(fetchResourceViews({ resourceSlug })),
+  requestFetchViewResource: (id: any) => dispatch(fetchViewResource({ id })),
 });
 
 export const withViewsActions = connect(null, mapDispatchToProps);

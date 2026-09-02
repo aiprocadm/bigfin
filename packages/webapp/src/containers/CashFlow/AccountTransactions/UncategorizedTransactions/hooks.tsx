@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -19,7 +18,7 @@ import {
 import { Box, Icon } from '@/components';
 import styles from './AccountTransactionsUncategorizedTable.module.scss';
 
-function statusAccessor(transaction) {
+function statusAccessor(transaction: any) {
   return transaction.is_recognized ? (
     <Tooltip
       interactionKind={PopoverInteractionKind.HOVER}
@@ -62,7 +61,7 @@ function TransactionSelectCheckbox({
   const isTransactionSelected =
     useIsTransactionToCategorizeSelected(transactionId);
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     isTransactionSelected
       ? removeTransactionsToCategorizeSelected(transactionId)
       : addTransactionsToCategorizeSelected(transactionId);
@@ -145,7 +144,7 @@ export function useAccountUncategorizedTransactionsColumns() {
       {
         id: 'categorize_include',
         Header: '',
-        accessor: (value) => (
+        accessor: (value: any) => (
           <TransactionSelectCheckbox transactionId={value.id} />
         ),
         width: 20,

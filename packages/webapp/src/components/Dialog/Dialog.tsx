@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Dialog } from '@blueprintjs/core';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
@@ -7,10 +6,10 @@ import { compose } from '@/utils';
 import '@/style/components/Dialog/Dialog.scss';
 import { DialogProvider } from './DialogProvider';
 
-function DialogComponent(props) {
+function DialogComponent(props: any) {
   const { name, children, closeDialog, onClose } = props;
 
-  const handleClose = (event) => {
+  const handleClose = (event: any) => {
     closeDialog(name);
     onClose && onClose(event);
   };

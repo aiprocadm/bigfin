@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   closeSidebarSubmenu,
   openSidebarSubmenu,
 } from '@/store/dashboard/dashboard.actions';
 
-const mapActionsToProps = (dispatch) => ({
+const mapActionsToProps = (dispatch: any) => ({
   // Opens the dashboard submenu sidebar.
-  openDashboardSidebarSubmenu: (submenuId) =>
+  openDashboardSidebarSubmenu: (submenuId: any) =>
     dispatch(openSidebarSubmenu(submenuId)),
 
   // Closes the dashboard submenu sidebar.

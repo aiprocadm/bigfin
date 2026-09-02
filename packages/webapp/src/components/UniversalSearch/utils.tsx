@@ -1,5 +1,4 @@
-// @ts-nocheck
 
-export const filterItemsByResourceType = (items, type) => {
-    return items.filter((item) => item._type === type);
+export const filterItemsByResourceType = (items: any, type: any) => {
+    return items.filter((item: any) => item._type === type);
 }

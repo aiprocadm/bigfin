@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -17,11 +16,11 @@ import {
   changePreferencesPageTitle,
 } from '@/store/dashboard/dashboard.actions';
 
-export const useDispatchAction = (action) => {
+export const useDispatchAction = (action: any) => {
   const dispatch = useDispatch();
 
   return useCallback(
-    (payload) => {
+    (payload: any) => {
       dispatch(action(payload));
     },
     [dispatch, action],
@@ -57,8 +56,8 @@ export const useSidebarSubmnuActions = () => {
  * Retrieves the sidebar submenu selector.
  */
 const sidebarSubmenuSelector = createSelector(
-  (state) => state.dashboard.sidebarSubmenu,
-  (sidebarSubmenu) => sidebarSubmenu,
+  (state: any) => state.dashboard.sidebarSubmenu,
+  (sidebarSubmenu: any) => sidebarSubmenu,
 );
 
 /**
@@ -95,8 +94,8 @@ export const useDrawerActions = () => {
   const dispatch = useDispatch();
 
   return {
-    openDrawer: (name, payload?: {}) => dispatch(openDrawer(name, payload)),
-    closeDrawer: (name, payload?: {}) => dispatch(closeDrawer(name, payload)),
+    openDrawer: (name: any, payload?: {}) => dispatch(openDrawer(name, payload)),
+    closeDrawer: (name: any, payload?: {}) => dispatch(closeDrawer(name, payload)),
   };
 };
 
@@ -108,8 +107,8 @@ export const useAlertActions = () => {
   const dispatch = useDispatch();
 
   return {
-    openAlert: (name, payload?: {}) => dispatch(openAlert(name, payload)),
-    closeAlert: (name, payload?: {}) => dispatch(closeAlert(name, payload)),
+    openAlert: (name: any, payload?: {}) => dispatch(openAlert(name, payload)),
+    closeAlert: (name: any, payload?: {}) => dispatch(closeAlert(name, payload)),
   };
 };
 

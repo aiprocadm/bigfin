@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { getSetupWizardSteps } from '@/constants/registerWizard';
 
-function WizardSetupStep({ label, isActive = false }) {
+function WizardSetupStep({ label, isActive = false }: any) {
   return (
     <li className={classNames({ 'is-active': isActive })}>
       <p className={'wizard-info'}>{label}</p>

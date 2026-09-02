@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { MenuItem, Button } from '@blueprintjs/core';
@@ -14,7 +13,7 @@ import classNames from 'classnames';
  * @param {*} exactMatch
  * @returns
  */
-const projectsItemPredicate = (query, project, _index, exactMatch) => {
+const projectsItemPredicate = (query: any, project: any, _index: any, exactMatch: any) => {
   const normalizedTitle = project.name.toLowerCase();
   const normalizedQuery = query.toLowerCase();
 
@@ -31,7 +30,7 @@ const projectsItemPredicate = (query, project, _index, exactMatch) => {
  * @param {*} param1
  * @returns
  */
-const projectsItemRenderer = (project, { handleClick, modifiers, query }) => {
+const projectsItemRenderer = (project: any, { handleClick, modifiers, query }: any) => {
   return (
     <MenuItem
       disabled={modifiers.disabled}
@@ -54,7 +53,7 @@ const projectSelectProps = {
  * @param {*} param0
  * @returns
  */
-export function ProjectsSelect({ projects, popoverFill, ...rest }) {
+export function ProjectsSelect({ projects, popoverFill, ...rest }: any) {
   return (
     <FSelect
       {...projectSelectProps}
@@ -72,7 +71,7 @@ export function ProjectsSelect({ projects, popoverFill, ...rest }) {
  * @param {*} param0
  * @returns
  */
-export function ProjectSelectButton({ label, ...rest }) {
+export function ProjectSelectButton({ label, ...rest }: any) {
   return (
     <Button
       text={label ? label : intl.get('find_or_choose_a_project')}

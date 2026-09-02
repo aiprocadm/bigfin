@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setEstimatesTableState,
@@ -6,10 +5,10 @@ import {
   setEstimatesSelectedRows,
 } from '@/store/estimate/estimates.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  setEstimatesTableState: (state) => dispatch(setEstimatesTableState(state)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setEstimatesTableState: (state: any) => dispatch(setEstimatesTableState(state)),
   resetEstimatesTableState: () => dispatch(resetEstimatesTableState()),
-  setEstimatesSelectedRows: (selectedRows) => dispatch(setEstimatesSelectedRows(selectedRows)),
+  setEstimatesSelectedRows: (selectedRows: any) => dispatch(setEstimatesSelectedRows(selectedRows)),
 });
 
 export const withEstimatesActions = connect(null, mapDispatchToProps);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieves the sales tax liability summary report.
  */
-export function useSalesTaxLiabilitySummary(query, props) {
+export function useSalesTaxLiabilitySummary(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.SALES_TAX_LIABILITY_SUMMARY, query],
     {
@@ -19,13 +18,13 @@ export function useSalesTaxLiabilitySummary(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useSalesTaxLiabilitySummaryXlsxExport = (query, args) => {
+export const useSalesTaxLiabilitySummaryXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/sales-tax-liability-summary',
     config: {
@@ -39,7 +38,7 @@ export const useSalesTaxLiabilitySummaryXlsxExport = (query, args) => {
   });
 };
 
-export const useSalesTaxLiabilitySummaryCsvExport = (query, args) => {
+export const useSalesTaxLiabilitySummaryCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/sales-tax-liability-summary',
     config: {

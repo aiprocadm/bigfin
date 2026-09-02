@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import classNames from 'classnames';
@@ -18,7 +17,7 @@ import '@/style/pages/Preferences/Page.scss';
 /**
  * Preferences page.
  */
-function PreferencesPage({ toggleSidebarExpand }) {
+function PreferencesPage({ toggleSidebarExpand }: any) {
   // Shrink the dashboard sidebar once open application preferences page.
   React.useEffect(() => {
     toggleSidebarExpand(false);

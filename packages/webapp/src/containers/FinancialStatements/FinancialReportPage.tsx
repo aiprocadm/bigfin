@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import styled from 'styled-components';
@@ -8,7 +7,7 @@ import { CLASSES } from '@/constants/classes';
 /**
  * Financial report page.
  */
-export default function FinancialReportPage(props) {
+export default function FinancialReportPage(props: any) {
   return (
     <FinancialReportPageRoot
       {...props}

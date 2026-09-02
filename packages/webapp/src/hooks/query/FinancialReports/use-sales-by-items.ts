@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve sales by items.
  */
-export function useSalesByItems(query, props) {
+export function useSalesByItems(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.SALES_BY_ITEMS, query],
     {
@@ -24,7 +23,7 @@ export function useSalesByItems(query, props) {
 /**
  * Retrieves sales by items table format.
  */
-export function useSalesByItemsTable(query, props) {
+export function useSalesByItemsTable(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.SALES_BY_ITEMS, query],
     {
@@ -36,13 +35,13 @@ export function useSalesByItemsTable(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useSalesByItemsCsvExport = (query, args) => {
+export const useSalesByItemsCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/sales-by-items',
     config: {
@@ -56,7 +55,7 @@ export const useSalesByItemsCsvExport = (query, args) => {
   });
 };
 
-export const useSalesByItemsXlsxExport = (query, args) => {
+export const useSalesByItemsXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/sales-by-items',
     config: {

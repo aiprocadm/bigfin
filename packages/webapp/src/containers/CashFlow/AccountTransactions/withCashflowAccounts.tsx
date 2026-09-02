@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { getCashflowAccountsTableStateFactory } from '@/store/cashflow-accounts/cashflow-accounts.selectors';
 
-export const withCashflowAccounts = (mapState) => {
+export const withCashflowAccounts = (mapState: any) => {
   const getCashflowAccountsTableState = getCashflowAccountsTableStateFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       cashflowAccountsTableState: getCashflowAccountsTableState(state, props),
     };

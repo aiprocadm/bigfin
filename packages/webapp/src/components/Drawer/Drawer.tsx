@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Position, Drawer } from '@blueprintjs/core';
 
@@ -11,10 +10,10 @@ import { compose } from '@/utils';
 /**
  * Drawer component.
  */
-function DrawerComponent(props) {
+function DrawerComponent(props: any) {
   const { name, children, onClose, closeDrawer } = props;
 
-  const handleClose = (event) => {
+  const handleClose = (event: any) => {
     closeDrawer(name);
     onClose && onClose(event);
   };

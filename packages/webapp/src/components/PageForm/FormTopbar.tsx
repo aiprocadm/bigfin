@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { Navbar } from '@blueprintjs/core';
@@ -8,7 +7,7 @@ import { Navbar } from '@blueprintjs/core';
  * @param   {JSX.Element} children
  * @returns {JSX.Element}
  */
-export function FormTopbar({ className, children }) {
+export function FormTopbar({ className, children }: any) {
   return <FormTopBarRoot className={className}>{children}</FormTopBarRoot>;
 }
 

@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
   return {
     globalErrors: state.globalErrors.data,
   };

@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { FormattedMessage as T, ButtonLink, FormatDate } from '@/components';
 
-function BillableEntry({ label, children }) {
+function BillableEntry({ label, children }: any) {
   return (
     <BillableEntryItem>
       <BillableEntryItemLabel>{label}</BillableEntryItemLabel>
@@ -13,7 +12,7 @@ function BillableEntry({ label, children }) {
   );
 }
 
-function BillableEntriesList({ billableEntries }) {
+function BillableEntriesList({ billableEntries }: any) {
   return (
     <BillableEntriesContent>
       <BillableEntry label={intl.get('type')}>
@@ -31,8 +30,8 @@ function BillableEntriesList({ billableEntries }) {
   );
 }
 
-export function BillableEntriesItems({ billableEntries }) {
-  return billableEntries.map((entries) => (
+export function BillableEntriesItems({ billableEntries }: any) {
+  return billableEntries.map((entries: any) => (
     <BillableEntriesList billableEntries={entries} />
   ));
 }

@@ -1,5 +1,4 @@
-// @ts-nocheck
-export const getSubscriptionStatusText = (subscription) => {
+export const getSubscriptionStatusText = (subscription: any) => {
   if (subscription.status === 'on_trial') {
     return subscription.onTrial
       ? `Trials ends in ${subscription.trialEndsAtFormatted}`

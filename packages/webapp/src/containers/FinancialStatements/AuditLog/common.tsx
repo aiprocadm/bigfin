@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { transformToForm } from '@/utils';
@@ -20,7 +19,7 @@ export const getAuditLogQuerySchema = () => {
 };
 
 // Parse query from URL
-const parseAuditLogQuery = (locationQuery) => {
+const parseAuditLogQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultAuditLogQuery();
   return {
     ...defaultQuery,

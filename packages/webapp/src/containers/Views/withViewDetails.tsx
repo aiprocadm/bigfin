@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {connect} from 'react-redux';
 import {
   getViewItemFactory,
@@ -9,7 +8,7 @@ export const withViewDetails = () => {
   const getViewItem = getViewItemFactory();
   const getViewMeta = getViewMetaFactory();
 
-  const mapStateToProps = (state, props) => ({
+  const mapStateToProps = (state: any, props: any) => ({
     viewMeta: getViewMeta(state, props),
     viewItem: getViewItem(state, props),
   });

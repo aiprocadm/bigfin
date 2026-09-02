@@ -1,18 +1,17 @@
-// @ts-nocheck
 import React from 'react';
 
-export const isCellLoading = (loading, cellsCoords, rowIndex, columnId) => {
+export const isCellLoading = (loading: any, cellsCoords: any, rowIndex: any, columnId: any) => {
   if (!loading) {
     return false;
   }
   return !cellsCoords
     ? true
     : cellsCoords.some(
-        (cellCoord) => cellCoord[0] === rowIndex && cellCoord[1] === columnId,
+        (cellCoord: any) => cellCoord[0] === rowIndex && cellCoord[1] === columnId,
       );
 };
 
-export const useResizeObserver = (state, callback) => {
+export const useResizeObserver = (state: any, callback: any) => {
   // This Ref will contain the id of the column being resized or undefined
   const columnResizeRef = React.useRef();
 

@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { toggleTrialBalanceSheetFilterDrawer } from '@/store/financial-statement/financial-statements.actions';
 
-export const mapDispatchToProps = (dispatch) => ({
-  toggleTrialBalanceFilterDrawer: (toggle) =>
+export const mapDispatchToProps = (dispatch: any) => ({
+  toggleTrialBalanceFilterDrawer: (toggle: any) =>
     dispatch(toggleTrialBalanceSheetFilterDrawer(toggle)),
 });
 

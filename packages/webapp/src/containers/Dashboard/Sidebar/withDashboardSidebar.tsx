@@ -1,9 +1,8 @@
-// @ts-nocheck
 
 import { connect } from 'react-redux';
 
-export const withDashboardSidebar = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withDashboardSidebar = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       sidebarSubmenuOpen: state.dashboard.sidebarSubmenu.isOpen,
       sidebarSubmenuId: state.dashboard.sidebarSubmenu.submenuId,

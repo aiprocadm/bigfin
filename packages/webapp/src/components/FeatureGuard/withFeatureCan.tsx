@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { getDashboardFeaturesSelector } from '@/store/dashboard/dashboard.selectors';
 
-export const withFeatureCan = (mapState) => {
+export const withFeatureCan = (mapState: any) => {
   const featuresSelector = getDashboardFeaturesSelector();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const features = featuresSelector(state);
 
     const mapped = {

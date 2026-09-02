@@ -1,13 +1,12 @@
-// @ts-nocheck
-export const validateMoveToPartialLocking = (all) => {
+export const validateMoveToPartialLocking = (all: any) => {
   return all.is_enabled;
 };
 
-export const validateMoveToFullLocking = (modules) => {
-  return modules.filter((module) => module.is_enabled);
+export const validateMoveToFullLocking = (modules: any) => {
+  return modules.filter((module: any) => module.is_enabled);
 };
 
-export const transformItem = (item) => {
+export const transformItem = (item: any) => {
   return {
     name: item.formatted_module,
     module: item.module,
@@ -23,9 +22,9 @@ export const transformItem = (item) => {
   };
 };
 
-export const transformList = (res) => {
+export const transformList = (res: any) => {
   return {
     all: transformItem(res.all),
-    modules: res.modules.map((module) => transformItem(module)),
+    modules: res.modules.map((module: any) => transformItem(module)),
   };
 };

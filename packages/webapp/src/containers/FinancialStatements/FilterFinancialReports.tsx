@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { isEmpty } from 'lodash';
 import { useAbilityContext } from '@/hooks';
 import { useFeatureCan } from '@/hooks/state/feature';
@@ -9,7 +8,7 @@ import {
   filterAccountantOnlyReports,
 } from '@/constants/interfaceMode';
 
-function useFilterFinancialReports(financialSection) {
+function useFilterFinancialReports(financialSection: any) {
   const ability = useAbilityContext();
   const mode = useInterfaceMode();
   const { featureCan } = useFeatureCan();
@@ -22,8 +21,8 @@ function useFilterFinancialReports(financialSection) {
   );
 
   const byAbility = financialSection
-    .map((section) => {
-      const reports = section.reports.filter((report) => {
+    .map((section: any) => {
+      const reports = section.reports.filter((report: any) => {
         return ability.can(report.ability, report.subject);
       });
 
@@ -32,7 +31,7 @@ function useFilterFinancialReports(financialSection) {
         reports,
       };
     })
-    .filter(({ reports }) => !isEmpty(reports));
+    .filter(({ reports }: any) => !isEmpty(reports));
 
   return filterAccountantOnlyReports(byAbility, accountantOnlyHidden);
 }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { memo } from 'react';
 import { Popover, Position, Classes } from '@blueprintjs/core';
 import { saveInvoke } from '@/utils';
@@ -7,14 +6,14 @@ const POPPER_MODIFIERS = {
   preventOverflow: { boundariesElement: 'viewport' },
 };
 
-function ContextMenu(props) {
+function ContextMenu(props: any) {
   const { bindMenu, isOpen, children, onClosed, popoverProps } = props;
 
   const handleClosed = () => {
     requestAnimationFrame(() => saveInvoke(onClosed));
   };
 
-  const handleInteraction = (nextOpenState) => {
+  const handleInteraction = (nextOpenState: any) => {
     if (!nextOpenState) {
       // Delay the actual hiding till the event queue clears
       // to avoid flicker of opening twice

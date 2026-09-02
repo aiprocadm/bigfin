@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -12,7 +11,7 @@ import { FSelect } from '../Forms';
  * @param {*} exactMatch
  * @returns
  */
-const currencyItemPredicate = (query, currency, _index, exactMatch) => {
+const currencyItemPredicate = (query: any, currency: any, _index: any, exactMatch: any) => {
   const normalizedTitle = currency.currency_code.toLowerCase();
   const normalizedQuery = query.toLowerCase();
 
@@ -32,7 +31,7 @@ const currencyItemPredicate = (query, currency, _index, exactMatch) => {
  * @param {*} currencies
  * @returns
  */
-export function CurrencySelect({ currencies, ...rest }) {
+export function CurrencySelect({ currencies, ...rest }: any) {
   return (
     <FSelect
       itemPredicate={currencyItemPredicate}

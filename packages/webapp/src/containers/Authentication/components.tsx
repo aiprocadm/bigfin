@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { AuthInsiderCard } from './_components';
@@ -7,7 +6,7 @@ import { Skeleton } from '@/components';
 /**
  * Invite accept loading space.
  */
-export function InviteAcceptLoading({ isLoading, children }) {
+export function InviteAcceptLoading({ isLoading, children }: any) {
   return isLoading ? (
     <AuthInsiderCard>
       <Fields>

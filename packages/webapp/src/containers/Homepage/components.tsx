@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { isEmpty } from 'lodash';
 import { useAbilityContext } from '@/hooks';
 
-export const useFilterShortcutBoxesSection = (section) => {
+export const useFilterShortcutBoxesSection = (section: any) => {
   const ability = useAbilityContext();
 
   return section
-    .map(({ sectionTitle, shortcuts }) => {
-      const shortcut = shortcuts.filter((shortcuts) => {
+    .map(({ sectionTitle, shortcuts }: any) => {
+      const shortcut = shortcuts.filter((shortcuts: any) => {
         return ability.can(shortcuts.ability, shortcuts.subject);
       });
       return {
@@ -15,5 +14,5 @@ export const useFilterShortcutBoxesSection = (section) => {
         shortcuts: shortcut,
       };
     })
-    .filter(({ shortcuts }) => !isEmpty(shortcuts));
+    .filter(({ shortcuts }: any) => !isEmpty(shortcuts));
 };

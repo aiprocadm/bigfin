@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { Stack } from '@/components';
@@ -7,7 +6,7 @@ import { ElementCustomizePreviewContent } from './ElementCustomizePreviewContent
 import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 
-function ElementCustomizePreviewRoot({ closeDrawer }) {
+function ElementCustomizePreviewRoot({ closeDrawer }: any) {
   const { name } = useDrawerContext();
 
   const handleCloseBtnClick = () => {

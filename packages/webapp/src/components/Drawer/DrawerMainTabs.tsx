@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Tabs } from '@blueprintjs/core';
 import styled from 'styled-components';
@@ -6,7 +5,7 @@ import styled from 'styled-components';
 /**
  * Drawer main tabs.
  */
-export function DrawerMainTabs({ children, ...restProps }) {
+export function DrawerMainTabs({ children, ...restProps }: any) {
   return (
     <DrawerMainTabsRoot>
       <Tabs animate={true} large={true} {...restProps}>

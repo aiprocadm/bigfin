@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve journal sheet.
  */
-export function useJournalSheet(query, props) {
+export function useJournalSheet(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.JOURNAL, query],
     {
@@ -19,13 +18,13 @@ export function useJournalSheet(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useJournalSheetXlsxExport = (query, args) => {
+export const useJournalSheetXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/journal',
     config: {
@@ -39,7 +38,7 @@ export const useJournalSheetXlsxExport = (query, args) => {
   });
 };
 
-export const useJournalSheetCsvExport = (query, args) => {
+export const useJournalSheetCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/journal',
     config: {

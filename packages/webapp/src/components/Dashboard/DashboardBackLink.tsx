@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import { useHistory } from 'react-router-dom';
@@ -8,11 +7,11 @@ import { FormattedMessage as T } from '@/components';
 import { withDashboard } from '@/containers/Dashboard/withDashboard';
 import { compose } from '@/utils';
 
-function DashboardBackLink({ dashboardBackLink, breadcrumbs }) {
+function DashboardBackLink({ dashboardBackLink, breadcrumbs }: any) {
   const history = useHistory();
   const crumb = breadcrumbs[breadcrumbs.length - 2];
 
-  const handleClick = (event) => {
+  const handleClick = (event: any) => {
     const url =
       typeof dashboardBackLink === 'string'
         ? dashboardBackLink
@@ -34,7 +33,7 @@ function DashboardBackLink({ dashboardBackLink, breadcrumbs }) {
 
 export default compose(
   withBreadcrumbs([]),
-  withDashboard(({ dashboardBackLink }) => ({
+  withDashboard(({ dashboardBackLink }: any) => ({
     dashboardBackLink,
   })),
 )(DashboardBackLink);

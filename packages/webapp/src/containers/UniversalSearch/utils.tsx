@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { get } from 'lodash';
 import * as R from 'ramda';
 import React from 'react';
@@ -20,7 +19,7 @@ export const getUniversalSearchBinds = () => {
  * @param {*} key
  * @returns
  */
-export const getUniversalSearchBind = (resourceType, key) => {
+export const getUniversalSearchBind = (resourceType: any, key: any) => {
   const resourceConfig = getUniversalSearchBinds().find(
     (meta) => meta.resourceType === resourceType,
   );
@@ -36,7 +35,7 @@ export const useGetUniversalSearchTypeOptions = () => {
   const momerizedBinds = React.useMemo(() => {
     const filteredBinds = R.compose(abilityFilter, getUniversalSearchBinds)();
 
-    return filteredBinds.map((bind) => ({
+    return filteredBinds.map((bind: any) => ({
       key: bind.resourceType,
       label: bind.optionItemLabel,
     }));

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -7,7 +6,7 @@ import { Callout, Intent, Classes } from '@blueprintjs/core';
 import { CLASSES } from '@/constants/classes';
 import {T , MoneyFieldCell, FormatDateCell } from '@/components';
 
-export const transformErrors = (errors, { setErrors }) => {};
+export const transformErrors = (errors: any, { setErrors }: any) => {};
 
 export function EmptyStatuCallout() {
   return (
@@ -70,8 +69,8 @@ export const useReconcileVendorCreditTableColumns = () => {
 /**
  * Sets max amount credit from purchase due amount.
  */
-export const maxAmountCreditFromRemaining = (entries) => {
-  return entries.map((entry) => ({
+export const maxAmountCreditFromRemaining = (entries: any) => {
+  return entries.map((entry: any) => ({
     ...entry,
     amount: entry.amount ? Math.min(entry.due_amount, entry.amount) : '',
   }));

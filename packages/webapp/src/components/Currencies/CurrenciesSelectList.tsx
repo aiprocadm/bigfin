@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { MenuItem, Button } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 
-export function CurrenciesSelectList({ selectProps, onItemSelect, className }) {
+export function CurrenciesSelectList({ selectProps, onItemSelect, className }: any) {
   const currencies = [
     {
       id: 'USD',
@@ -19,7 +18,7 @@ export function CurrenciesSelectList({ selectProps, onItemSelect, className }) {
 
   // Handle currency item select.
   const onCurrencySelect = useCallback(
-    (currency) => {
+    (currency: any) => {
       onItemSelect && onItemSelect(currency);
     },
     [onItemSelect],
@@ -27,7 +26,7 @@ export function CurrenciesSelectList({ selectProps, onItemSelect, className }) {
 
   // Filters currencies list.
   const filterCurrenciesPredicator = useCallback(
-    (query, currency, _index, exactMatch) => {
+    (query: any, currency: any, _index: any, exactMatch: any) => {
       const normalizedTitle = currency.name.toLowerCase();
       const normalizedQuery = query.toLowerCase();
       return `${normalizedTitle}`.indexOf(normalizedQuery) >= 0;
@@ -36,7 +35,7 @@ export function CurrenciesSelectList({ selectProps, onItemSelect, className }) {
   );
 
   // Currency item of select currencies field.
-  const currencyItem = (item, { handleClick, modifiers, query }) => {
+  const currencyItem = (item: any, { handleClick, modifiers, query }: any) => {
     return (
       <MenuItem
         text={item.name}

@@ -1,15 +1,14 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { CLOSE_DRAWER, OPEN_DRAWER } from '@/store/types';;
 
-export const mapStateToProps = (state, props) => {
+export const mapStateToProps = (state: any, props: any) => {
   return {};
 };
 
-export const mapDispatchToProps = (dispatch) => ({
-  openDrawer: (name, payload) =>
+export const mapDispatchToProps = (dispatch: any) => ({
+  openDrawer: (name: any, payload: any) =>
     dispatch({ type: OPEN_DRAWER, name, payload }),
-  closeDrawer: (name, payload) =>
+  closeDrawer: (name: any, payload: any) =>
     dispatch({ type: CLOSE_DRAWER, name, payload }),
 });
 

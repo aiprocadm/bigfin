@@ -1,14 +1,13 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setManualJournalsTableState,
   setManualJournalsSelectedRows,
 } from '@/store/manual-journals/manual-journals.actions';
 
-const mapActionsToProps = (dispatch) => ({
-  setManualJournalsTableState: (queries) =>
+const mapActionsToProps = (dispatch: any) => ({
+  setManualJournalsTableState: (queries: any) =>
     dispatch(setManualJournalsTableState(queries)),
-  setManualJournalsSelectedRows: (selectedRows) =>
+  setManualJournalsSelectedRows: (selectedRows: any) =>
     dispatch(setManualJournalsSelectedRows(selectedRows)),
 });
 

@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import clsx from 'classnames';
 import { Classes } from '@blueprintjs/core';
 import { LoadingIndicator } from '../Indicator';
 
-export function DrawerLoading({ loading, mount = false, children }) {
+export function DrawerLoading({ loading, mount = false, children }: any) {
   return (
     <LoadingIndicator loading={loading} mount={mount}>
       {children}
@@ -12,7 +11,7 @@ export function DrawerLoading({ loading, mount = false, children }) {
   );
 }
 
-export function DrawerBody({ children, className }) {
+export function DrawerBody({ children, className }: any) {
   return <div className={clsx(Classes.DRAWER_BODY, className)}>{children}</div>;
 }
 

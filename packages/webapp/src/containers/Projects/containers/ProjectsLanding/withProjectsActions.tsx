@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 
 import {
@@ -6,8 +5,8 @@ import {
   resetProjectsTableState,
 } from '@/store/project/projects.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  setProjectsTableState: (state) => dispatch(setProjectsTableState(state)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setProjectsTableState: (state: any) => dispatch(setProjectsTableState(state)),
   resetProjectsTableState: () => dispatch(resetProjectsTableState()),
 });
 

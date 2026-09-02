@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
@@ -8,7 +7,7 @@ import {
   resetAutofill,
 } from '@/store/dashboard/dashboard.actions';
 
-const getAutofillPayload = (state, autofillRef) => {
+const getAutofillPayload = (state: any, autofillRef: any) => {
   return typeof state.dashboard.autofill[autofillRef + ''] !== 'undefined'
     ? state.dashboard.autofill[autofillRef]
     : null;

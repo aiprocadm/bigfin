@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as Yup from 'yup';
 import { defaultTo } from 'lodash';
 import intl from 'react-intl-universal';
@@ -65,7 +64,7 @@ const Schema = Yup.object().shape({
   purchasable: Yup.boolean().required(),
 });
 
-export const transformItemFormData = (item, defaultValue) => {
+export const transformItemFormData = (item: any, defaultValue: any) => {
   return {
     ...item,
     sellable: !!defaultTo(item?.sellable, defaultValue.sellable),

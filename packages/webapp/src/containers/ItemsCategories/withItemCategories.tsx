@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getItemsCategoriesTableStateFactory,
 } from '@/store/item-categories/items-categories.selectors';
 
-export const withItemCategories = (mapState) => {
+export const withItemCategories = (mapState: any) => {
   const getItemsCategoriesTableState = getItemsCategoriesTableStateFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {  
       itemsCategoriesTableState: getItemsCategoriesTableState(state, props),
     };

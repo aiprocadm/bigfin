@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 
 
-const mapDispatchToProps = (dispatch, props) => {
+const mapDispatchToProps = (dispatch: any, props: any) => {
   return {
-    addQuery: (key, value) => {
+    addQuery: (key: any, value: any) => {
       let pathname = props.location.pathname;
       let searchParams = new URLSearchParams(props.location.search);
 
@@ -16,7 +15,7 @@ const mapDispatchToProps = (dispatch, props) => {
       });
     },
 
-    removeQuery: (key) => {
+    removeQuery: (key: any) => {
       let pathname = props.location.pathname;
       let searchParams = new URLSearchParams(props.location.search);
       // returns the existing query string: '?type=fiction&author=fahid'

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { MenuItem, Button } from '@blueprintjs/core';
@@ -12,7 +11,7 @@ import { FSelect } from '@/components';
  * @param {*} exactMatch
  * @returns
  */
-const taskItemPredicate = (query, task, _index, exactMatch) => {
+const taskItemPredicate = (query: any, task: any, _index: any, exactMatch: any) => {
   const normalizedTitle = task.name.toLowerCase();
   const normalizedQuery = query.toLowerCase();
 
@@ -29,7 +28,7 @@ const taskItemPredicate = (query, task, _index, exactMatch) => {
  * @param {*} param1
  * @returns
  */
-const taskItemRenderer = (task, { handleClick, modifiers, query }) => {
+const taskItemRenderer = (task: any, { handleClick, modifiers, query }: any) => {
   return (
     <MenuItem
       active={modifiers.active}
@@ -53,7 +52,7 @@ const taskSelectProps = {
  * @param param0 
  * @returns 
  */
-export function ProjectTaskSelect({ tasks, ...rest }) {
+export function ProjectTaskSelect({ tasks, ...rest }: any) {
   return (
     <FSelect
       items={tasks}
@@ -64,6 +63,6 @@ export function ProjectTaskSelect({ tasks, ...rest }) {
   );
 }
 
-function TaskSelectButton({ label }) {
+function TaskSelectButton({ label }: any) {
   return <Button text={label ? label : intl.get('choose_a_task')} />;
 }

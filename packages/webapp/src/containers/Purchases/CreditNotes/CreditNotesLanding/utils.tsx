@@ -1,11 +1,10 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { AppToaster } from '@/components';
 
-export const handleDeleteErrors = (errors) => {
+export const handleDeleteErrors = (errors: any) => {
   if (
-    errors.find((error) => error.type === 'VENDOR_CREDIT_HAS_APPLIED_BILLS')
+    errors.find((error: any) => error.type === 'VENDOR_CREDIT_HAS_APPLIED_BILLS')
   ) {
     AppToaster.show({
       message: intl.get(
@@ -16,7 +15,7 @@ export const handleDeleteErrors = (errors) => {
   }
   if (
     errors.find(
-      (error) => error.type === 'VENDOR_CREDIT_HAS_REFUND_TRANSACTIONS',
+      (error: any) => error.type === 'VENDOR_CREDIT_HAS_REFUND_TRANSACTIONS',
     )
   ) {
     AppToaster.show({

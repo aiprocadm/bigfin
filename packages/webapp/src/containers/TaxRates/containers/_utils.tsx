@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Tag, Classes } from '@blueprintjs/core';
 import { Align } from '@/constants';
 import clsx from 'classnames';
 
-const codeAccessor = (taxRate) => {
+const codeAccessor = (taxRate: any) => {
   return (
     <Tag minimal={true} round={false} intent={Intent.NONE} interactive={true}>
       {taxRate.code}
@@ -13,7 +12,7 @@ const codeAccessor = (taxRate) => {
   );
 };
 
-const statusAccessor = (taxRate) => {
+const statusAccessor = (taxRate: any) => {
   return taxRate.active ? (
     <Tag round={false} intent={Intent.SUCCESS}>
       {intl.get('active')}
@@ -25,7 +24,7 @@ const statusAccessor = (taxRate) => {
   );
 };
 
-const nameAccessor = (taxRate) => {
+const nameAccessor = (taxRate: any) => {
   return (
     <>
       <span>{taxRate.name}</span>
@@ -38,7 +37,7 @@ const nameAccessor = (taxRate) => {
   );
 };
 
-const DescriptionAccessor = (taxRate) => {
+const DescriptionAccessor = (taxRate: any) => {
   return (
     <span className={clsx(Classes.TEXT_MUTED)}>{taxRate.description}</span>
   );

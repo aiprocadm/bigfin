@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { getTrialBalanceSheetFilterDrawer } from '@/store/financial-statement/financial-statements.selectors';
 
-export const withTrialBalance = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withTrialBalance = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       trialBalanceDrawerFilter: getTrialBalanceSheetFilterDrawer(state),
     };

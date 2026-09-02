@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import { get } from 'lodash';
 
 const hasErrorMessage = ({}) => {};
 
-export function ErrorMessage({ touched, errors, name, children }) {
+export function ErrorMessage({ touched, errors, name, children }: any) {
   const error = get(errors, name);
   const touch = get(touched, name);
 

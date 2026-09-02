@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setVendorsTableState,
@@ -7,10 +6,10 @@ import {
   resetVendorsSelectedRows,
 } from '@/store/vendors/vendors.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  setVendorsTableState: (queries) => dispatch(setVendorsTableState(queries)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setVendorsTableState: (queries: any) => dispatch(setVendorsTableState(queries)),
   resetVendorsTableState: () => dispatch(resetVendorsTableState()),
-  setVendorsSelectedRows: (selectedRows) =>
+  setVendorsSelectedRows: (selectedRows: any) =>
     dispatch(setVendorsSelectedRows(selectedRows)),
   resetVendorsSelectedRows: () => dispatch(resetVendorsSelectedRows()),
 });

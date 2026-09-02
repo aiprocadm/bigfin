@@ -1,4 +1,3 @@
-// @ts-nocheck
 import printValue from '../printValue';
 
 export const locale = {
@@ -7,7 +6,7 @@ export const locale = {
     required: '${path} är ett obligatoriskt fält ',
     oneOf: '${path} måste vara en av följande värden: ${values}',
     notOneOf: '${path} kan inte vara en av följande värden: ${values}',
-    notType: ({ path, type, value, originalValue }) => {
+    notType: ({ path, type, value, originalValue }: any) => {
       let isCast = originalValue != null && originalValue !== value;
       let msg =
         `${path} måste ha typen \`${type}\`, ` +

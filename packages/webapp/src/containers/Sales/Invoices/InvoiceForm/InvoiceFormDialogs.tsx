@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useFormikContext } from 'formik';
 import InvoiceNumberDialog from '@/containers/Dialogs/InvoiceNumberDialog';
 import { DialogsName } from '@/constants/dialogs';
@@ -10,7 +9,7 @@ export default function InvoiceFormDialogs() {
   const { setFieldValue } = useFormikContext();
 
   // Update the form once the invoice number form submit confirm.
-  const handleInvoiceNumberFormConfirm = (settings) => {
+  const handleInvoiceNumberFormConfirm = (settings: any) => {
     // Set the invoice transaction no. that cames from dialog to the form.
     // the `invoice_no_manually` will be empty except the increment mode is not auto.
     setFieldValue('invoice_no', settings.transactionNumber);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { sumBy, round } from 'lodash';
@@ -25,8 +24,8 @@ export const defaultInitialValues = {
 /**
  * Retrieve transaction entries of the given transaction id.
  */
-export function getEntriesByTransactionId(transactions, id) {
-  const transaction = transactions.find((trans) => trans.id === id);
+export function getEntriesByTransactionId(transactions: any, id: any) {
+  const transaction = transactions.find((trans: any) => trans.id === id);
   return transaction ? transaction.entries : [];
 }
 
@@ -36,8 +35,8 @@ export function getEntriesByTransactionId(transactions, id) {
  * @param {*} transactionEntryId
  * @returns
  */
-export function getTransactionEntryById(transaction, transactionEntryId) {
-  return transaction.entries.find((entry) => entry.id === transactionEntryId);
+export function getTransactionEntryById(transaction: any, transactionEntryId: any) {
+  return transaction.entries.find((entry: any) => entry.id === transactionEntryId);
 }
 
 /**
@@ -47,7 +46,7 @@ export function getTransactionEntryById(transaction, transactionEntryId) {
  * @param {*} entries
  * @returns
  */
-export function allocateCostToEntries(total, allocateType, entries) {
+export function allocateCostToEntries(total: any, allocateType: any, entries: any) {
   return R.compose(
     R.when(
       R.always(allocateType === 'value'),
@@ -66,15 +65,15 @@ export function allocateCostToEntries(total, allocateType, entries) {
  * @param {*} total
  * @returns
  */
-export function allocateCostByValue(total, entries) {
+export function allocateCostByValue(total: any, entries: any) {
   const totalAmount = sumBy(entries, 'amount');
 
-  const entriesMapped = entries.map((entry) => ({
+  const entriesMapped = entries.map((entry: any) => ({
     ...entry,
     percentageOfValue: entry.amount / totalAmount,
   }));
 
-  return entriesMapped.map((entry) => ({
+  return entriesMapped.map((entry: any) => ({
     ...entry,
     cost: round(entry.percentageOfValue * total, 2),
   }));
@@ -86,15 +85,15 @@ export function allocateCostByValue(total, entries) {
  * @param {*} total
  * @returns
  */
-export function allocateCostByQuantity(total, entries) {
+export function allocateCostByQuantity(total: any, entries: any) {
   const totalQuantity = sumBy(entries, 'quantity');
 
-  const _entries = entries.map((entry) => ({
+  const _entries = entries.map((entry: any) => ({
     ...entry,
     percentageOfQuantity: entry.quantity / totalQuantity,
   }));
 
-  return _entries.map((entry) => ({
+  return _entries.map((entry: any) => ({
     ...entry,
     cost: round(entry.percentageOfQuantity * total, 2),
   }));
@@ -103,14 +102,14 @@ export function allocateCostByQuantity(total, entries) {
 /**
  * Retrieve the landed cost transaction by the given id.
  */
-export function getCostTransactionById(id, transactions) {
-  return transactions.find((trans) => trans.id === id);
+export function getCostTransactionById(id: any, transactions: any) {
+  return transactions.find((trans: any) => trans.id === id);
 }
 
 /**
  * Detarmines the transactions selet field when should update.
  */
-export function transactionsSelectShouldUpdate(newProps, oldProps) {
+export function transactionsSelectShouldUpdate(newProps: any, oldProps: any) {
   return (
     newProps.transactions !== oldProps.transactions ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -122,8 +121,8 @@ export function transactionsSelectShouldUpdate(newProps, oldProps) {
  * @param {*} entries
  * @returns
  */
-export function resetAllocatedCostEntries(entries) {
-  return entries.map((entry) => ({ ...entry, cost: 0 }));
+export function resetAllocatedCostEntries(entries: any) {
+  return entries.map((entry: any) => ({ ...entry, cost: 0 }));
 }
 
 /**

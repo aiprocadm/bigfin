@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Button } from '@blueprintjs/core';
 import { Icon } from '@/components';
 
-export function FormWarehouseSelectButton({ text }) {
+export function FormWarehouseSelectButton({ text }: any) {
   return (
     <Button
       text={intl.get('page_form.warehouse_button.label', { text })}
@@ -15,7 +14,7 @@ export function FormWarehouseSelectButton({ text }) {
   );
 }
 
-export function FormBranchSelectButton({ text }) {
+export function FormBranchSelectButton({ text }: any) {
   return (
     <Button
       text={intl.get('page_form.branch_button.label', { text })}

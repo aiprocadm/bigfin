@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve purchases by items.
  */
-export function usePurchasesByItems(query, props) {
+export function usePurchasesByItems(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.PURCHASES_BY_ITEMS, query],
     {
@@ -16,13 +15,13 @@ export function usePurchasesByItems(query, props) {
       params: query,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export function usePurchasesByItemsTable(query, props) {
+export function usePurchasesByItemsTable(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.PURCHASES_BY_ITEMS, query],
     {
@@ -34,13 +33,13 @@ export function usePurchasesByItemsTable(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const usePurchasesByItemsCsvExport = (query, args) => {
+export const usePurchasesByItemsCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/purchases-by-items',
     config: {
@@ -54,7 +53,7 @@ export const usePurchasesByItemsCsvExport = (query, args) => {
   });
 };
 
-export const usePurchasesByItemsXlsxExport = (query, args) => {
+export const usePurchasesByItemsXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/purchases-by-items',
     config: {

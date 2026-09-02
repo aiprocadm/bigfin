@@ -1,4 +1,3 @@
-// @ts-nocheck
 import printValue from '../printValue';
 
 export const locale = {
@@ -7,7 +6,7 @@ export const locale = {
     required: '${path} — обязательное поле',
     oneOf: '${path} должно быть одним из: ${values}',
     notOneOf: '${path} не должно быть одним из: ${values}',
-    notType: ({ path, type, value, originalValue }) => {
+    notType: ({ path, type, value, originalValue }: any) => {
       let isCast = originalValue != null && originalValue !== value;
       let msg =
         `${path} должно быть типа \`${type}\`, ` +

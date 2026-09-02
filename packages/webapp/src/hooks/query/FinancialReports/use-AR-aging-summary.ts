@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -6,7 +5,7 @@ import t from '../types';
 /**
  * Retrieve A/R aging summary report.
  */
-export function useARAgingSummaryReport(query, props) {
+export function useARAgingSummaryReport(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.AR_AGING_SUMMARY, query],
     {
@@ -18,13 +17,13 @@ export function useARAgingSummaryReport(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useARAgingSheetXlsxExport = (query, args) => {
+export const useARAgingSheetXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/receivable-aging-summary',
     config: {
@@ -38,7 +37,7 @@ export const useARAgingSheetXlsxExport = (query, args) => {
   });
 };
 
-export const useARAgingSheetCsvExport = (query, args) => {
+export const useARAgingSheetCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/receivable-aging-summary',
     config: {

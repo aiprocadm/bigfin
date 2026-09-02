@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import intl from "react-intl-universal";
@@ -8,7 +7,7 @@ import { T, Icon } from '@/components';
 /**
  * Dashboard advanced filter button.
  */
-export function DashboardFilterButton({ conditionsCount }) {
+export function DashboardFilterButton({ conditionsCount }: any) {
   return (
     <Button
       className={classNames(Classes.MINIMAL, 'button--filter', {

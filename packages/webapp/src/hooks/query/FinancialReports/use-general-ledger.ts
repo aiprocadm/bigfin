@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve general ledger (GL) sheet.
  */
-export function useGeneralLedgerSheet(query, props) {
+export function useGeneralLedgerSheet(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.GENERAL_LEDGER, query],
     {
@@ -19,12 +18,12 @@ export function useGeneralLedgerSheet(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
-export const useGeneralLedgerSheetXlsxExport = (query, args) => {
+export const useGeneralLedgerSheetXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/general-ledger',
     config: {
@@ -38,7 +37,7 @@ export const useGeneralLedgerSheetXlsxExport = (query, args) => {
   });
 };
 
-export const useGeneralLedgerSheetCsvExport = (query, args) => {
+export const useGeneralLedgerSheetCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/general-ledger',
     config: {

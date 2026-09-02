@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setReceiptsTableState,
@@ -6,10 +5,10 @@ import {
   setReceiptsSelectedRows,
 } from '@/store/receipts/receipts.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  setReceiptsTableState: (queries) => dispatch(setReceiptsTableState(queries)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setReceiptsTableState: (queries: any) => dispatch(setReceiptsTableState(queries)),
   resetReceiptsTableState: () => dispatch(resetReceiptsTableState()),
-  setReceiptsSelectedRows: (selectedRows) =>
+  setReceiptsSelectedRows: (selectedRows: any) =>
     dispatch(setReceiptsSelectedRows(selectedRows)),
 });
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {connect} from 'react-redux';
 import {
   getResourceColumns,
@@ -7,11 +6,11 @@ import {
   getResourceDataFactory,
 } from '@/store/resources/resources.selectors';
 
-export const withResourceDetails = (mapState) => {
+export const withResourceDetails = (mapState: any) => {
   const getResourceFields = getResourceFieldsFactory();
   const getResourceData = getResourceDataFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const { resourceName } = props;
 
     const mapped =  {

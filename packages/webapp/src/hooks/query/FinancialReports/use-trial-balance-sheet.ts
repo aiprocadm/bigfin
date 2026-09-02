@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve trial balance sheet.
  */
-export function useTrialBalanceSheet(query, props) {
+export function useTrialBalanceSheet(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.TRIAL_BALANCE_SHEET, query],
     {
@@ -19,13 +18,13 @@ export function useTrialBalanceSheet(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useTrialBalanceSheetXlsxExport = (query, args) => {
+export const useTrialBalanceSheetXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/trial-balance-sheet',
     config: {
@@ -39,7 +38,7 @@ export const useTrialBalanceSheetXlsxExport = (query, args) => {
   });
 };
 
-export const useTrialBalanceSheetCsvExport = (query, args) => {
+export const useTrialBalanceSheetCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/trial-balance-sheet',
     config: {

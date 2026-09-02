@@ -1,9 +1,8 @@
-// @ts-nocheck
 
 import { connect } from 'react-redux';
 
-export const withDashboard = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withDashboard = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       pageTitle: state.dashboard.pageTitle,
       pageSubtitle: state.dashboard.pageSubtitle,

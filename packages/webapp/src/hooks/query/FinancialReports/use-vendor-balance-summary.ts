@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve vendors balance summary report.
  */
-export function useVendorsBalanceSummaryReport(query, props) {
+export function useVendorsBalanceSummaryReport(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.VENDORS_BALANCE_SUMMARY, query],
     {
@@ -19,7 +18,7 @@ export function useVendorsBalanceSummaryReport(query, props) {
       },
     },
     {
-      select: (res) => ({
+      select: (res: any) => ({
         query: res.data.query,
         table: res.data.table,
         meta: res.data.meta,
@@ -34,7 +33,7 @@ export function useVendorsBalanceSummaryReport(query, props) {
   );
 }
 
-export const useVendorBalanceSummaryXlsxExport = (args) => {
+export const useVendorBalanceSummaryXlsxExport = (args: any) => {
   const url = '/reports/vendor-balance-summary';
   const config = {
     headers: {
@@ -51,7 +50,7 @@ export const useVendorBalanceSummaryXlsxExport = (args) => {
   });
 };
 
-export const useVendorBalanceSummaryCsvExport = (args) => {
+export const useVendorBalanceSummaryCsvExport = (args: any) => {
   return useDownloadFile({
     url: '/reports/vendor-balance-summary',
     config: {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getOrganizationByIdFactory,
@@ -9,7 +8,7 @@ import {
   isOrganizationBuildRunningFactory
 } from '@/store/organizations/organizations.selectors';
 
-export const withOrganization = (mapState) => {
+export const withOrganization = (mapState: any) => {
   const getOrganizationById = getOrganizationByIdFactory();
   const isOrganizationReady = isOrganizationReadyFactory();
   const isOrganizationBuilt = isOrganizationBuiltFactory();
@@ -18,7 +17,7 @@ export const withOrganization = (mapState) => {
   const isOrganizationCongrats = isOrganizationCongratsFactory();
   const isOrganizationBuildRunning = isOrganizationBuildRunningFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       organization: getOrganizationById(state, props),
       isOrganizationReady: isOrganizationReady(state, props),

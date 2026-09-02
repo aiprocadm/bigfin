@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { toggleSalesTaxLiabilitySummaryFilterDrawer } from '@/store/financial-statement/financial-statements.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleSalesTaxLiabilitySummaryFilterDrawer: (toggle) =>
+const mapDispatchToProps = (dispatch: any) => ({
+  toggleSalesTaxLiabilitySummaryFilterDrawer: (toggle: any) =>
     dispatch(toggleSalesTaxLiabilitySummaryFilterDrawer(toggle)),
 });
 

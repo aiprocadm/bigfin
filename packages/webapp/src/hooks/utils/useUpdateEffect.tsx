@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRef, useEffect } from 'react';
 
 /**
@@ -7,7 +6,7 @@ import { useRef, useEffect } from 'react';
  * @param {Function} effect
  * @param {Array<any>} dependencies
  */
-export function useUpdateEffect(effect, dependencies = []) {
+export function useUpdateEffect(effect: any, dependencies = []) {
   const isInitialMount = useRef(true);
 
   useEffect(() => {

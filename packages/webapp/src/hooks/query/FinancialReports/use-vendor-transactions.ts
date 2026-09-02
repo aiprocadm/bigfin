@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve vendors transactions report.
  */
-export function useVendorsTransactionsReport(query, props) {
+export function useVendorsTransactionsReport(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.VENDORS_TRANSACTIONS, query],
     {
@@ -19,13 +18,13 @@ export function useVendorsTransactionsReport(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useVendorsTransactionsXlsxExport = (query, args) => {
+export const useVendorsTransactionsXlsxExport = (query: any, args: any) => {
   const url = '/reports/transactions-by-vendors';
   const config = {
     headers: {
@@ -43,7 +42,7 @@ export const useVendorsTransactionsXlsxExport = (query, args) => {
   });
 };
 
-export const useVendorsTransactionsCsvExport = (query, args) => {
+export const useVendorsTransactionsCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/transactions-by-vendors',
     config: {

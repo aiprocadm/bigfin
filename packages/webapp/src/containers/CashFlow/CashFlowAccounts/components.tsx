@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import intl from 'react-intl-universal';
@@ -11,7 +10,7 @@ import { accountBalanceText } from '@/utils/accountBalance';
 /**
  * Account code accessor.
  */
-export const AccountCodeAccessor = (row) =>
+export const AccountCodeAccessor = (row: any) =>
   !isBlank(row.code) ? (
     <Tag minimal={true} round={true} intent={Intent.NONE}>
       {row.code}
@@ -21,7 +20,7 @@ export const AccountCodeAccessor = (row) =>
 /**
  * Balance cell.
  */
-export const BalanceCell = ({ cell }) => {
+export const BalanceCell = ({ cell }: any) => {
   const account = cell.row.original;
 
   // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).
@@ -39,7 +38,7 @@ export const BalanceCell = ({ cell }) => {
 /**
  * Account cell.
  */
-const AccountCell = ({ row }) => {
+const AccountCell = ({ row }: any) => {
   const account = row.original;
   return (
     <>

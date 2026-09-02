@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { CLASSES } from '@/constants/classes';
 
-export default function PreferencesSidebarContainer({ children }) {
+export default function PreferencesSidebarContainer({ children }: any) {
   return (
     <div
       className={classNames(

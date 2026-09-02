@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import axios from 'axios';
 import {
@@ -97,19 +96,19 @@ export default function useApiRequest() {
           // 400 не обязан нести errors[] (например, сырой ответ прокси).
           const businessErrors = data.errors ?? [];
           const lockedError = businessErrors.find(
-            (error) => error.type === 'TRANSACTIONS_DATE_LOCKED',
+            (error: any) => error.type === 'TRANSACTIONS_DATE_LOCKED',
           );
           if (lockedError) {
             setGlobalErrors({ transactionsLocked: { ...lockedError.payload } });
           }
           if (
             businessErrors.find(
-              (e) => e.type === 'ORGANIZATION.SUBSCRIPTION.INACTIVE',
+              (e: any) => e.type === 'ORGANIZATION.SUBSCRIPTION.INACTIVE',
             )
           ) {
             setGlobalErrors({ subscriptionInactive: true });
           }
-          if (businessErrors.find((e) => e.type === 'USER_INACTIVE')) {
+          if (businessErrors.find((e: any) => e.type === 'USER_INACTIVE')) {
             setGlobalErrors({ userInactive: true });
             setLogout();
           }
@@ -124,27 +123,27 @@ export default function useApiRequest() {
     () => ({
       http,
 
-      get(resource, params) {
+      get(resource: any, params: any) {
         return http.get(`/api/${normalizeApiPath(resource)}`, params);
       },
 
-      post(resource, params, config) {
+      post(resource: any, params: any, config: any) {
         return http.post(`/api/${normalizeApiPath(resource)}`, params, config);
       },
 
-      update(resource, slug, params) {
+      update(resource: any, slug: any, params: any) {
         return http.put(`/api/${normalizeApiPath(resource)}/${slug}`, params);
       },
 
-      put(resource, params) {
+      put(resource: any, params: any) {
         return http.put(`/api/${normalizeApiPath(resource)}`, params);
       },
 
-      patch(resource, params, config) {
+      patch(resource: any, params: any, config: any) {
         return http.patch(`/api/${normalizeApiPath(resource)}`, params, config);
       },
 
-      delete(resource, params) {
+      delete(resource: any, params: any) {
         return http.delete(`/api/${normalizeApiPath(resource)}`, params);
       },
     }),
@@ -161,22 +160,22 @@ export function useAuthApiRequest() {
   return React.useMemo(
     () => ({
       http,
-      get(resource, params) {
+      get(resource: any, params: any) {
         return http.get(`/api/${normalizeApiPath(resource)}`, params);
       },
-      post(resource, params, config) {
+      post(resource: any, params: any, config: any) {
         return http.post(`/api/${normalizeApiPath(resource)}`, params, config);
       },
-      update(resource, slug, params) {
+      update(resource: any, slug: any, params: any) {
         return http.put(`/api/${normalizeApiPath(resource)}/${slug}`, params);
       },
-      put(resource, params) {
+      put(resource: any, params: any) {
         return http.put(`/api/${normalizeApiPath(resource)}`, params);
       },
-      patch(resource, params, config) {
+      patch(resource: any, params: any, config: any) {
         return http.patch(`/api/${normalizeApiPath(resource)}`, params, config);
       },
-      delete(resource, params) {
+      delete(resource: any, params: any) {
         return http.delete(`/api/${normalizeApiPath(resource)}`, params);
       },
     }),

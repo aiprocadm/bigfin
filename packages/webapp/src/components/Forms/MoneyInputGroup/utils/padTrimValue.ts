@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const padTrimValue = (value: string, decimalSeparator = '.', precision?: number): string => {
   if (!precision || value === '' || value === undefined) {
     return value;

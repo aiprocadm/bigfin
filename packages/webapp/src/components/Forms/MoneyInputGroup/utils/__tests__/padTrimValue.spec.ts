@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { padTrimValue } from '../padTrimValue';
 
 describe('padTrimValue', () => {

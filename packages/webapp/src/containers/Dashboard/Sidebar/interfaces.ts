@@ -1,4 +1,3 @@
-// @ts-nocheck
 export enum ISidebarMenuItemType {
   Label = 'label',
   Link = 'link',

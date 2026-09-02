@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import SetupRightSection from './SetupRightSection';
 import SetupLeftSection from './SetupLeftSection';

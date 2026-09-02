@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect } from 'react';
 import * as R from 'ramda';
 import {

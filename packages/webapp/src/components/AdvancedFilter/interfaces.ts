@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ArrayHelpers } from 'formik';
 import { IPopoverProps } from '@blueprintjs/core';
 

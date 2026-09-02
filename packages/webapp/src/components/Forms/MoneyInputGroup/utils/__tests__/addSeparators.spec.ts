@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { addSeparators } from '../addSeparators';
 
 describe('Separators', () => {

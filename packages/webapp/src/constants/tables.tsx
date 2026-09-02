@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const TABLES = {
   ITEMS: 'items',
   INVENTORY_ADJUSTMENTS: 'inventory_adjustment',

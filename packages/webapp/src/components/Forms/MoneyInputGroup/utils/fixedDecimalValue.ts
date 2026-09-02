@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const fixedDecimalValue = (
   value: string,
   decimalSeparator: string,

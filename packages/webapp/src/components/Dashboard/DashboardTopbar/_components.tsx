@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Classes } from '@blueprintjs/core';
 import { useGetUniversalSearchTypeOptions } from '@/containers/UniversalSearch/utils';

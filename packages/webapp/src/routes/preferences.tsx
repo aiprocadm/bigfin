@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { lazy } from 'react';
 
 const BASE_URL = '/preferences';

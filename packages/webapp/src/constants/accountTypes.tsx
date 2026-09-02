@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const ACCOUNT_TYPE = {
   CASH: 'cash',
   BANK: 'bank',

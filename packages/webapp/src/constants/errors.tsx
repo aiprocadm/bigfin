@@ -1,4 +1,3 @@
-// @ts-nocheck
 export const ERROR = {
   // Sales Estimates
   ESTIMATE_NUMBER_IS_NOT_UNQIUE: 'ESTIMATE.NUMBER.IS.NOT.UNQIUE',

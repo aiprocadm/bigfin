@@ -1,4 +1,3 @@
-// @ts-nocheck
 export enum DialogsName {
   AccountForm = 'account-form',
   CurrencyForm = 'currency-form',

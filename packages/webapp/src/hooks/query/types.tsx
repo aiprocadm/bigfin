@@ -1,4 +1,3 @@
-// @ts-nocheck
 const Authentication = {
   AUTH_METADATA_PAGE: 'AUTH_META_PAGE',
 };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { Callout, Classes } from '@blueprintjs/core';
 import { Box } from '@/components';

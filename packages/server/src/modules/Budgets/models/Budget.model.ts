@@ -9,6 +9,11 @@ export class Budget extends TenantBaseModel {
   activeScenario!: string;
   branchId!: number | null;
 
+  /** Колонки, по которым ищет поиск в шапке (Ш3 карты v48). */
+  static get searchColumns() {
+    return ['name'];
+  }
+
   static get tableName() {
     return 'budgets';
   }

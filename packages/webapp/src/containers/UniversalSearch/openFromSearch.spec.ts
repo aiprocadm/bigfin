@@ -40,6 +40,11 @@ describe('открыть найденную запись', () => {
     ['containers/Deals/DealsPage.tsx'],
     ['containers/PaymentRequests/PaymentRequestsPage.tsx'],
     ['containers/FixedAssets/FixedAssetsPage.tsx'],
+    // Карта v48
+    ['containers/Credits/CreditsPage.tsx'],
+    ['containers/Payroll/PayrollPage.tsx'],
+    ['containers/Budgets/BudgetsPage.tsx'],
+    ['containers/PaymentCalendar/PaymentCalendarPage.tsx'],
   ])('%s открывает запись, пришедшую из поиска', (page) => {
     expect(read(page)).toContain('openIdFromSearch(');
   });

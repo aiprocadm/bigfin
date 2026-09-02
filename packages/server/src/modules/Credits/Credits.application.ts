@@ -8,6 +8,7 @@ import { GetCreditsService } from './queries/GetCredits.service';
 import { GetCreditDetailService } from './queries/GetCreditDetail.service';
 import { GetCreditsSummaryService } from './queries/GetCreditsSummary.service';
 import { CreateCreditDto, EditCreditDto } from './dtos/Credit.dto';
+import { GetCreditsQueryDto } from './dtos/GetCreditsQuery.dto';
 
 @Injectable()
 export class CreditsApplication {
@@ -27,7 +28,7 @@ export class CreditsApplication {
   markInstallmentPaid(creditId: number, installmentId: number) {
     return this.markPaidService.markPaid(creditId, installmentId);
   }
-  getCredits() { return this.getCreditsService.getCredits(); }
+  getCredits(query: GetCreditsQueryDto = {}) { return this.getCreditsService.getCredits(query); }
   getCredit(id: number) { return this.getCreditDetailService.getCredit(id); }
   getSummary() { return this.getSummaryService.getSummary(); }
 }

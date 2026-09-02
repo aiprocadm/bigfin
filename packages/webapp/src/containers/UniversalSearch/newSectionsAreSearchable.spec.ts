@@ -32,6 +32,31 @@ const SECTIONS = [
     route: '/fixed-assets',
     bind: 'universalSearchFixedAssetBind',
   },
+  // Карта v48 — последние разделы из задела карт v39 и v43.
+  {
+    type: 'CREDIT',
+    url: '/credits',
+    route: '/credits',
+    bind: 'universalSearchCreditBind',
+  },
+  {
+    type: 'EMPLOYEE',
+    url: '/payroll/employees',
+    route: '/payroll',
+    bind: 'universalSearchEmployeeBind',
+  },
+  {
+    type: 'BUDGET',
+    url: '/budgets',
+    route: '/budgets',
+    bind: 'universalSearchBudgetBind',
+  },
+  {
+    type: 'PLANNED_OPERATION',
+    url: '/payment-calendar/planned-operations',
+    route: '/payment-calendar',
+    bind: 'universalSearchPlannedoperationBind',
+  },
 ];
 
 describe('поиск по новым разделам', () => {

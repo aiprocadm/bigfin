@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { PlannedOperation } from '../models/PlannedOperation.model';
 import { GetPlannedOperationsQueryDto } from '../dtos/GetPlannedOperationsQuery.dto';
+import { applyKeywordSearch } from '@/common/utils/keywordSearch';
 
 @Injectable()
 export class GetPlannedOperationsService {
@@ -33,6 +34,11 @@ export class GetPlannedOperationsService {
         if (filterDto.toDate) {
           query.where('plannedDate', '<=', filterDto.toDate);
         }
+        applyKeywordSearch(
+          query,
+          PlannedOperation.searchColumns,
+          filterDto.keyword,
+        );
         query.orderBy('plannedDate', 'asc');
       });
 

@@ -10,6 +10,8 @@ import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
+import { useHistory, useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -27,6 +29,19 @@ export default function CreditsPage() {
   const { featureCan } = useFeatureCan();
   const [showCreate, setShowCreate] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
+  const { search } = useLocation();
+  const history = useHistory();
+
+  // Карта v48. Поиск в шапке приводит сюда с номером найденного кредита.
+  const requestedId = openIdFromSearch(search);
+  const shownId = selectedId ?? requestedId;
+
+  // Закрыть карточку — значит убрать и номер из адреса: иначе карточка,
+  // открытая поиском, возвращалась бы сразу после закрытия.
+  const closeDetail = () => {
+    setSelectedId(null);
+    if (requestedId !== null) history.replace('/credits');
+  };
 
   const { data: summary } = useCreditsSummary({});
   const { data: credits } = useCredits({}, {});
@@ -164,11 +179,8 @@ export default function CreditsPage() {
       </div>
 
       {/* Detail card (expandable below table) */}
-      {selectedId !== null && (
-        <CreditDetailCard
-          creditId={selectedId}
-          onClose={() => setSelectedId(null)}
-        />
+      {shownId !== null && (
+        <CreditDetailCard creditId={shownId} onClose={closeDetail} />
       )}
     </div>
   );

@@ -23,4 +23,10 @@ export class GetPlannedOperationsQueryDto {
   @IsOptional()
   @ApiPropertyOptional({ example: '2026-06-30' })
   toDate?: string;
+
+  /** Запрос из поиска в шапке (Ш4 карты v48). */
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Search keyword.' })
+  keyword?: string;
 }

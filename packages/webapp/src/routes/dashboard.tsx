@@ -1135,6 +1135,7 @@ export const getDashboardRoutes = () => [
     ),
     breadcrumb: intl.get('payment_calendar.page_title'),
     pageTitle: intl.get('payment_calendar.page_title'),
+    defaultSearchResource: RESOURCES_TYPES.PLANNED_OPERATION,
   },
   // Budgets
   {
@@ -1142,6 +1143,7 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Budgets/BudgetsPage')),
     breadcrumb: intl.get('budgets.page_title'),
     pageTitle: intl.get('budgets.page_title'),
+    defaultSearchResource: RESOURCES_TYPES.BUDGET,
   },
   // Debts (Долги)
   {
@@ -1181,6 +1183,7 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Payroll/PayrollPage')),
     breadcrumb: intl.get('payroll.page_title'),
     pageTitle: intl.get('payroll.page_title'),
+    defaultSearchResource: RESOURCES_TYPES.EMPLOYEE,
   },
   // Data quality (Качество данных)
   {
@@ -1202,6 +1205,7 @@ export const getDashboardRoutes = () => [
     component: lazy(() => import('@/containers/Credits/CreditsPage')),
     breadcrumb: intl.get('credits.page.title'),
     pageTitle: intl.get('credits.page.title'),
+    defaultSearchResource: RESOURCES_TYPES.CREDIT,
   },
   // Financial model (Финмодель)
   {

@@ -20,6 +20,11 @@ export class PlannedOperation extends TenantBaseModel {
   /**
    * Table name.
    */
+  /** Колонки, по которым ищет поиск в шапке (Ш4 карты v48). */
+  static get searchColumns() {
+    return ['description'];
+  }
+
   static get tableName() {
     return 'planned_operations';
   }

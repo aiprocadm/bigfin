@@ -49,6 +49,10 @@ function getResourceUrlFromType(type) {
     [RESOURCES_TYPES.DEAL]: '/deals',
     [RESOURCES_TYPES.PAYMENT_REQUEST]: '/payment-requests',
     [RESOURCES_TYPES.FIXED_ASSET]: '/fixed-assets',
+    [RESOURCES_TYPES.CREDIT]: '/credits',
+    [RESOURCES_TYPES.EMPLOYEE]: '/payroll/employees',
+    [RESOURCES_TYPES.BUDGET]: '/budgets',
+    [RESOURCES_TYPES.PLANNED_OPERATION]: '/payment-calendar/planned-operations',
   };
   return config[type] || '';
 }
@@ -158,6 +162,10 @@ const transformResourceData = (type) => (response) => {
     [RESOURCES_TYPES.DEAL]: transformPlainList,
     [RESOURCES_TYPES.PAYMENT_REQUEST]: transformPlainList,
     [RESOURCES_TYPES.FIXED_ASSET]: transformPlainList,
+    [RESOURCES_TYPES.CREDIT]: transformPlainList,
+    [RESOURCES_TYPES.EMPLOYEE]: transformPlainList,
+    [RESOURCES_TYPES.BUDGET]: transformPlainList,
+    [RESOURCES_TYPES.PLANNED_OPERATION]: transformPlainList,
   };
   return {
     ...pairs[type](response),

@@ -9,6 +9,11 @@ export class Employee extends TenantBaseModel {
   active!: boolean;
   note!: string | null;
 
+  /** Колонки, по которым ищет поиск в шапке (Ш2 карты v48). */
+  static get searchColumns() {
+    return ['fullName'];
+  }
+
   static get tableName() {
     return 'employees';
   }

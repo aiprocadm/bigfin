@@ -34,8 +34,8 @@ export class BudgetsApplication {
   upsertLines(id: number, dto: UpsertBudgetLinesDto) {
     return this.upsertLinesService.upsert(id, dto);
   }
-  getBudgets() {
-    return this.getBudgetsService.getBudgets();
+  getBudgets(keyword?: string) {
+    return this.getBudgetsService.getBudgets(keyword);
   }
   getBudget(id: number) {
     return this.getBudgetService.getBudget(id);

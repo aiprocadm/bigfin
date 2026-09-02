@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { Budget } from '../models/Budget.model';
+import { applyKeywordSearch } from '@/common/utils/keywordSearch';
 
 @Injectable()
 export class GetBudgetsService {
@@ -13,8 +14,12 @@ export class GetBudgetsService {
    * Lists budgets ordered by fiscal year desc.
    * @returns {Promise<{ data: Budget[] }>}
    */
-  public async getBudgets(): Promise<{ data: Budget[] }> {
-    const data = await this.budgetModel().query().orderBy('fiscalYear', 'desc');
+  public async getBudgets(keyword?: string): Promise<{ data: Budget[] }> {
+    const query = this.budgetModel().query();
+
+    applyKeywordSearch(query, Budget.searchColumns, keyword);
+
+    const data = await query.orderBy('fiscalYear', 'desc');
     return { data };
   }
 }

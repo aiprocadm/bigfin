@@ -18,6 +18,8 @@ import { PayrollKpiTab } from './PayrollKpiTab';
 import { formatMonth } from '@/utils/formatShortDate';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { useLocation } from 'react-router-dom';
+import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 
 type TabKey = 'runs' | 'employees' | 'kpi';
 
@@ -32,6 +34,11 @@ const TABS: { key: TabKey; label: string }[] = [
 export default function PayrollPage() {
   const { featureCan } = useFeatureCan();
   const [tab, setTab] = React.useState<TabKey>('runs');
+  const { search } = useLocation();
+
+  // Карта v48. У сотрудника нет своей страницы — реестр показывает их
+  // списком. Найденного поиском не «открываем», а выделяем среди соседних.
+  const foundId = openIdFromSearch(search);
   const [showRunDialog, setShowRunDialog] = React.useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = React.useState(false);
   const [showEmployeeDialog, setShowEmployeeDialog] = React.useState(false);
@@ -239,7 +246,13 @@ export default function PayrollPage() {
           {employeeRows.map((emp) => (
             <div
               key={emp.id}
-              className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm hover:bg-muted/40"
+              ref={(node) =>
+                emp.id === foundId && node?.scrollIntoView({ block: 'center' })
+              }
+              className={
+                'flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm hover:bg-muted/40' +
+                (emp.id === foundId ? ' ring-2 ring-action rounded-md' : '')
+              }
               onClick={() => {
                 setEditEmployee(emp);
                 setShowEmployeeDialog(true);

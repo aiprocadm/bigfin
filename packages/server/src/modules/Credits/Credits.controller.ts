@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -20,6 +21,7 @@ import { CreateCreditDto, EditCreditDto } from './dtos/Credit.dto';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
+import { GetCreditsQueryDto } from './dtos/GetCreditsQuery.dto';
 
 @Controller('credits')
 @ApiTags('Credits')
@@ -35,7 +37,9 @@ export class CreditsController {
 
   @Get()
   @ApiOperation({ summary: 'List credits with outstanding balance.' })
-  getCredits() { return this.application.getCredits(); }
+  getCredits(@Query() query: GetCreditsQueryDto) {
+    return this.application.getCredits(query);
+  }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a credit with its installment schedule.' })

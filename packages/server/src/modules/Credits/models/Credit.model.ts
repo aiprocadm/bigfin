@@ -16,6 +16,11 @@ export class Credit extends TenantBaseModel {
   status!: string;
   note!: string | null;
 
+  /** Колонки, по которым ищет поиск в шапке (Ш1 карты v48). */
+  static get searchColumns() {
+    return ['name'];
+  }
+
   static get tableName() {
     return 'credits';
   }

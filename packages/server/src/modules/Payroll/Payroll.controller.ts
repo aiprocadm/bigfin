@@ -49,8 +49,11 @@ export class PayrollController {
   // ---- Employees ----
   @Get('employees')
   @ApiOperation({ summary: 'List employees.' })
-  getEmployees(@Query('activeOnly') activeOnly?: string) {
-    return this.application.getEmployees(activeOnly === 'true');
+  getEmployees(
+    @Query('activeOnly') activeOnly?: string,
+    @Query('keyword') keyword?: string,
+  ) {
+    return this.application.getEmployees(activeOnly === 'true', keyword);
   }
 
   @Post('employees')

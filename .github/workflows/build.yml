@@ -1,0 +1,66 @@
+# Сборка продукта — та проверка, которой не было.
+#
+# Зачем отдельный процесс. Проверка типов пропускает целые файлы: реестр
+# привязок поиска помечен `@ts-nocheck`, и опечатка в имени ввезённой
+# привязки прошла мимо неё, мимо тестов и мимо ревью. Поймал её только
+# стенд — обновление откатилось, и стенд встал на старой версии.
+#
+# Сборка ловит такое сразу: rollup не находит экспорт и падает. Процесс
+# намеренно отдельный от «Tests»: тот держат лёгким (ни базы, ни браузера),
+# а сборка идёт минуты и работает параллельно.
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/build.yml'
+  pull_request:
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - '**.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/build.yml'
+
+defaults:
+  run:
+    shell: 'bash'
+
+jobs:
+  build:
+    name: Продукт собирается
+    runs-on: ubuntu-latest
+    # Локально сервер собирается около минуты, витрина — около полутора.
+    # Запас — на установку зависимостей.
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Сборка сервера
+        run: pnpm --filter @bigfin/server build
+
+      - name: Сборка витрины
+        run: pnpm --filter @bigfin/webapp build

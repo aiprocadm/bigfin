@@ -25,6 +25,10 @@ const sqlForFilter = async (filter: any): Promise<string> => {
       kb.orderBy(...(args as [any]));
       return builder;
     },
+    limit: (count: number) => {
+      kb.limit(count);
+      return builder;
+    },
     then: (resolve: any) => resolve([]),
   };
   const model = () => ({ query: () => builder });

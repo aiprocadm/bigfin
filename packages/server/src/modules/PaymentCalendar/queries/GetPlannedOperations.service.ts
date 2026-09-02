@@ -3,6 +3,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { PlannedOperation } from '../models/PlannedOperation.model';
 import { GetPlannedOperationsQueryDto } from '../dtos/GetPlannedOperationsQuery.dto';
 import { applyKeywordSearch } from '@/common/utils/keywordSearch';
+import { applyListCap, splitCapped } from '@/common/utils/listCap';
 
 @Injectable()
 export class GetPlannedOperationsService {
@@ -18,8 +19,8 @@ export class GetPlannedOperationsService {
    */
   public async getPlannedOperations(
     filterDto: GetPlannedOperationsQueryDto,
-  ): Promise<{ data: PlannedOperation[] }> {
-    const data = await this.operationModel()
+  ): Promise<{ data: PlannedOperation[]; truncated: boolean }> {
+    const data: any[] = await this.operationModel()
       .query()
       .onBuild((query) => {
         if (filterDto.direction) {
@@ -40,8 +41,11 @@ export class GetPlannedOperationsService {
           filterDto.keyword,
         );
         query.orderBy('plannedDate', 'asc');
+        applyListCap(query);
       });
 
-    return { data };
+    const { items, truncated } = splitCapped(data);
+
+    return { data: items, truncated };
   }
 }

@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import InvoicePaymentTransactions from './InvoicePaymentTransactions';
 import EstimatePaymentTransactions from './EstimatePaymentTransactions';
 import ReceiptPaymentTransactions from './ReceiptPaymentTransactions';
 import BillPaymentTransactions from './BillPaymentTransactions';
 
-export default function ItemPaymentTransactionsContent({ tansactionType }) {
+export default function ItemPaymentTransactionsContent({ tansactionType }: any) {
   const handleType = () => {
     switch (tansactionType) {
       case 'invoices':

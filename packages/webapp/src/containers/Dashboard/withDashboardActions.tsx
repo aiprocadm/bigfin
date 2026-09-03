@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { ALTER_DASHBOARD_PAGE_SUBTITLE, CHANGE_DASHBOARD_PAGE_HINT, CHANGE_DASHBOARD_PAGE_TITLE, CHANGE_PREFERENCES_PAGE_TITLE, SET_DASHBOARD_BACK_LINK, SET_DASHBOARD_REQUEST_COMPLETED, SET_DASHBOARD_REQUEST_LOADING, SET_TOPBAR_EDIT_VIEW } from '@/store/types';;
 import {
@@ -6,26 +5,26 @@ import {
 } from '@/store/dashboard/dashboard.actions';
 import { splashStartLoading, splashStopLoading } from '@/store/dashboard/dashboard.actions';
 
-const mapActionsToProps = (dispatch) => ({
-  changePageTitle: (pageTitle) =>
+const mapActionsToProps = (dispatch: any) => ({
+  changePageTitle: (pageTitle: any) =>
     dispatch({
       type: CHANGE_DASHBOARD_PAGE_TITLE,
       pageTitle,
     }),
 
-  changePageSubtitle: (pageSubtitle) =>
+  changePageSubtitle: (pageSubtitle: any) =>
     dispatch({
       type: ALTER_DASHBOARD_PAGE_SUBTITLE,
       pageSubtitle,
     }),
 
-  changePageHint: (pageHint) =>
+  changePageHint: (pageHint: any) =>
     dispatch({
       type: CHANGE_DASHBOARD_PAGE_HINT,
       payload: { pageHint },
     }),
 
-  setTopbarEditView: (id) =>
+  setTopbarEditView: (id: any) =>
     dispatch({
       type: SET_TOPBAR_EDIT_VIEW,
       id,
@@ -44,15 +43,15 @@ const mapActionsToProps = (dispatch) => ({
   /**
    * Toggles the sidebar expend.
    */
-  toggleSidebarExpand: (toggle) => dispatch(toggleExpendSidebar(toggle)),
+  toggleSidebarExpand: (toggle: any) => dispatch(toggleExpendSidebar(toggle)),
 
-  changePreferencesPageTitle: (pageTitle) =>
+  changePreferencesPageTitle: (pageTitle: any) =>
     dispatch({
       type: CHANGE_PREFERENCES_PAGE_TITLE,
       pageTitle,
     }),
 
-  setDashboardBackLink: (backLink) =>
+  setDashboardBackLink: (backLink: any) =>
     dispatch({
       type: SET_DASHBOARD_BACK_LINK,
       payload: { backLink },

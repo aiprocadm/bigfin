@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { MenuItem, Button } from '@blueprintjs/core';
@@ -11,7 +10,7 @@ import { FSelect } from '@/components';
  * @param _index
  * @param exactMatch
  */
-const expenseItemPredicate = (query, expense, _index, exactMatch) => {
+const expenseItemPredicate = (query: any, expense: any, _index: any, exactMatch: any) => {
   const normalizedTitle = expense.name.toLowerCase();
   const normalizedQuery = query.toLowerCase();
 
@@ -28,7 +27,7 @@ const expenseItemPredicate = (query, expense, _index, exactMatch) => {
  * @param param1
  * @returns
  */
-const expenseItemRenderer = (expense, { handleClick, modifiers, query }) => {
+const expenseItemRenderer = (expense: any, { handleClick, modifiers, query }: any) => {
   return (
     <MenuItem
       active={modifiers.active}
@@ -47,7 +46,7 @@ const expenseSelectProps = {
   labelAccessor: 'name',
 };
 
-export function ExpenseSelect({ expenses, defaultText, ...rest }) {
+export function ExpenseSelect({ expenses, defaultText, ...rest }: any) {
   return (
     <FSelect
       items={expenses}
@@ -58,7 +57,7 @@ export function ExpenseSelect({ expenses, defaultText, ...rest }) {
   );
 }
 
-function ExpenseSelectButton({ label, ...rest }) {
+function ExpenseSelectButton({ label, ...rest }: any) {
   return (
     <Button
       text={label ? label : intl.get('choose_an_estimated_expense')}

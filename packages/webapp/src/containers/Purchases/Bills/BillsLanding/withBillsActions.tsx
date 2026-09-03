@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setBillsTableState,
@@ -6,10 +5,10 @@ import {
   setBillsSelectedRows,
 } from '@/store/bills/bills.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  setBillsTableState: (queries) => dispatch(setBillsTableState(queries)),
+const mapDispatchToProps = (dispatch: any) => ({
+  setBillsTableState: (queries: any) => dispatch(setBillsTableState(queries)),
   resetBillsTableState: () => dispatch(resetBillsTableState()),
-  setBillsSelectedRows: (selectedRows) =>
+  setBillsSelectedRows: (selectedRows: any) =>
     dispatch(setBillsSelectedRows(selectedRows)),
 });
 

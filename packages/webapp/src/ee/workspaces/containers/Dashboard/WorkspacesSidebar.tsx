@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import * as R from 'ramda';
 import { Tooltip, Position, Spinner, Icon } from '@blueprintjs/core';
@@ -16,7 +15,7 @@ import '@/ee/workspaces/style/containers/Dashboard/WorkspacesSidebar.scss';
 /**
  * Single workspace icon button.
  */
-function WorkspaceIcon({ workspace, isActive, onClick }) {
+function WorkspaceIcon({ workspace, isActive, onClick }: any) {
   const name = workspace.metadata?.name || workspace.organizationId;
   const initials = firstLettersArgs(...(name || '').split(' '));
   const isDisabled = !workspace.isReady || workspace.isBuildRunning;
@@ -58,7 +57,7 @@ function WorkspaceIcon({ workspace, isActive, onClick }) {
 /**
  * Organizations list button.
  */
-function OrganizationsListButton({ openDrawer }) {
+function OrganizationsListButton({ openDrawer }: any) {
   return (
     <Tooltip
       content="View all organizations"
@@ -82,7 +81,7 @@ function OrganizationsListButton({ openDrawer }) {
 /**
  * Add workspace button.
  */
-function AddWorkspaceButton({ openDrawer }) {
+function AddWorkspaceButton({ openDrawer }: any) {
   return (
     <Tooltip
       content="Create workspace"
@@ -106,13 +105,13 @@ function AddWorkspaceButton({ openDrawer }) {
 /**
  * Workspaces sidebar container.
  */
-function WorkspacesSidebarRoot({ openDrawer }) {
+function WorkspacesSidebarRoot({ openDrawer }: any) {
   const { data: workspaces, isLoading } = useWorkspaces();
   const activeOrganizationId = useAuthOrganizationId();
   const switchOrganization = useSwitchOrganization();
   const [switchingWorkspaceName, setSwitchingWorkspaceName] = useState(null);
 
-  const handleSwitchWorkspace = (organizationId, workspaceName) => {
+  const handleSwitchWorkspace = (organizationId: any, workspaceName: any) => {
     if (organizationId === activeOrganizationId) {
       return;
     }
@@ -133,7 +132,7 @@ function WorkspacesSidebarRoot({ openDrawer }) {
             </div>
           ) : (
             <div className="workspaces-sidebar__list">
-              {workspaces?.map((workspace) => (
+              {workspaces?.map((workspace: any) => (
                 <WorkspaceIcon
                   key={workspace.organizationId}
                   workspace={workspace}

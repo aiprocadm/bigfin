@@ -1,8 +1,7 @@
-// @ts-nocheck
 import React from 'react';
 import { Checkbox } from '@blueprintjs/core';
 import { CellType } from '@/constants';
-export default function TableIndeterminateCheckboxRow({ row }) {
+export default function TableIndeterminateCheckboxRow({ row }: any) {
   return (
     <div className="selection-checkbox">
       <Checkbox {...row.getToggleRowSelectedProps()} />

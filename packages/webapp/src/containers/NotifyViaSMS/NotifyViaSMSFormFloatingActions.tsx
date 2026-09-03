@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Intent, Button } from '@blueprintjs/core';
@@ -12,12 +11,12 @@ import {
 /**
  *
  */
-export default function NotifyViaSMSFormFloatingActions({ onCancel }) {
+export default function NotifyViaSMSFormFloatingActions({ onCancel }: any) {
   // Formik context.
   const { isSubmitting } = useFormikContext();
 
   // Handle close button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     onCancel && onCancel(event);
   };
 

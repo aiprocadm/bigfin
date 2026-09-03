@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import PaymentReceiveNumberDialog from '@/containers/Dialogs/PaymentReceiveNumberDialog';
@@ -10,7 +9,7 @@ import { ExcessPaymentDialog } from './dialogs/ExcessPaymentDialog';
 export default function PaymentReceiveFormDialogs() {
   const { setFieldValue } = useFormikContext();
 
-  const handleUpdatePaymentNumber = (settings) => {
+  const handleUpdatePaymentNumber = (settings: any) => {
     // Set the payment transaction no. that cames from dialog to the form.
     // the `payment_receive_no_manually` will be empty except the increment mode is not auto.
     setFieldValue('payment_receive_no', settings.transactionNumber);

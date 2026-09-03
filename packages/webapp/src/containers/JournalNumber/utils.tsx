@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   transformToForm,
   optionsMapToArray,
@@ -13,12 +12,12 @@ export const defaultInvoiceNoSettings = {
   autoIncrement: '',
 };
 
-export const transformSettingsToForm = (settings) => ({
+export const transformSettingsToForm = (settings: any) => ({
   ...omit(settings, ['autoIncrement']),
   incrementMode: settings.autoIncrement ? 'auto' : 'manual',
 });
 
-export const transformFormToSettings = (values, group) => {
+export const transformFormToSettings = (values: any, group: any) => {
   const options = transfromToSnakeCase({
     ...transformToForm(values, defaultInvoiceNoSettings),
     autoIncrement: values.incrementMode === 'auto',
@@ -31,7 +30,7 @@ export const transformFormToSettings = (values, group) => {
  * returns empty string if the increment mode is manually or returns the entered 
  * manual text if the increment mode is manual once just in this transaction.  
  */
-export const transformValuesToForm = (values) => {
+export const transformValuesToForm = (values: any) => {
   const autoIncrementNumber = transactionNumber(
     values.numberPrefix,
     values.nextNumber,

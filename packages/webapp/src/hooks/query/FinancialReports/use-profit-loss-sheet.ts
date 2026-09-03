@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve profit/loss (P&L) sheet.
  */
-export function useProfitLossSheet(query, props) {
+export function useProfitLossSheet(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.PROFIT_LOSS_SHEET, query],
     {
@@ -19,13 +18,13 @@ export function useProfitLossSheet(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useProfitLossSheetXlsxExport = (query, args) => {
+export const useProfitLossSheetXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/profit-loss-sheet',
     config: {
@@ -39,7 +38,7 @@ export const useProfitLossSheetXlsxExport = (query, args) => {
   });
 };
 
-export const useProfitLossSheetCsvExport = (query, args) => {
+export const useProfitLossSheetCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/profit-loss-sheet',
     config: {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik'; 
 import WarehouseTransferNumberDialog from '@/containers/Dialogs/WarehouseTransferNumberDialog';
@@ -8,7 +7,7 @@ import WarehouseTransferNumberDialog from '@/containers/Dialogs/WarehouseTransfe
  */
 export default function WarehouseTransferFormDialog() {
   // Update the form once the credit number form submit confirm.
-  const handleWarehouseNumberFormConfirm = ({ incrementNumber, manually }) => {
+  const handleWarehouseNumberFormConfirm = ({ incrementNumber, manually }: any) => {
     setFieldValue('transaction_number', incrementNumber || '');
     setFieldValue('transaction_no_manually', manually);
   };

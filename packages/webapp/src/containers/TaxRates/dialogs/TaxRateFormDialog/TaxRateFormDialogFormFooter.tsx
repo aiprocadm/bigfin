@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
@@ -7,7 +6,7 @@ import { Button, Classes, Intent } from '@blueprintjs/core';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 
-function TaxRateFormDialogFormFooterRoot({ closeDialog }) {
+function TaxRateFormDialogFormFooterRoot({ closeDialog }: any) {
   const { isSubmitting } = useFormikContext();
 
   const handleClose = () => {

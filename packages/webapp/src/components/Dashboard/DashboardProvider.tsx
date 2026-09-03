@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { Intent } from '@blueprintjs/core';
 import { DashboardAbilityProvider, AppToaster } from '../../components';
@@ -8,7 +7,7 @@ import intl from 'react-intl-universal';
 /**
  * Dashboard provider.
  */
-export default function DashboardProvider({ children }) {
+export default function DashboardProvider({ children }: any) {
   const { isLoading } = useDashboardMetaBoot();
 
   // Show toast when user has switched workspaces

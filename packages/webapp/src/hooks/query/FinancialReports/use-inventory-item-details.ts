@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve inventory item detail report.
  */
-export function useInventoryItemDetailsReport(query, props) {
+export function useInventoryItemDetailsReport(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.INVENTORY_ITEM_DETAILS, query],
     {
@@ -19,7 +18,7 @@ export function useInventoryItemDetailsReport(query, props) {
       },
     },
     {
-      select: (res) => ({
+      select: (res: any) => ({
         columns: res.data.table.columns,
         query: res.data.query,
         meta: res.data.meta,
@@ -36,7 +35,7 @@ export function useInventoryItemDetailsReport(query, props) {
   );
 }
 
-export const useInventoryItemDetailsXlsxExport = (query, args) => {
+export const useInventoryItemDetailsXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/inventory-item-details',
     config: {
@@ -50,7 +49,7 @@ export const useInventoryItemDetailsXlsxExport = (query, args) => {
   });
 };
 
-export const useInventoryItemDetailsCsvExport = (query, args) => {
+export const useInventoryItemDetailsCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/inventory-item-details',
     config: {

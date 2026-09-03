@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate.
   queryClient.invalidateQueries(t.TRANSACTION_LOCKING);
   queryClient.invalidateQueries(t.TRANSACTIONS_LOCKING);
@@ -14,7 +13,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Create a locking transactions.
  */
-export function useCreateLockingTransactoin(props) {
+export function useCreateLockingTransactoin(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -33,7 +32,7 @@ export function useCreateLockingTransactoin(props) {
 /**
  * Create cancle locking transactions
  */
-export function useCancelLockingTransaction(props) {
+export function useCancelLockingTransaction(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -52,7 +51,7 @@ export function useCancelLockingTransaction(props) {
 /**
  * Create a unlocking partial transactions.
  */
-export function useCreateUnlockingPartialTransactions(props) {
+export function useCreateUnlockingPartialTransactions(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
   return useMutation(
@@ -70,7 +69,7 @@ export function useCreateUnlockingPartialTransactions(props) {
 /**
  * Create cancle unlocking partial transactions.
  */
-export function useCancelUnlockingPartialTransactions(props) {
+export function useCancelUnlockingPartialTransactions(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
   return useMutation(
@@ -89,24 +88,24 @@ export function useCancelUnlockingPartialTransactions(props) {
 /**
  * Retrive the transactions locking.
  */
-export function useTransactionsLocking(query, props) {
+export function useTransactionsLocking(query: any, props: any) {
   return useRequestQuery(
     [t.TRANSACTIONS_LOCKING, query],
     { method: 'get', url: 'transactions-locking', params: query },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
   );
 }
 
-export function useEditTransactionsLocking(query, props) {
+export function useEditTransactionsLocking(query: any, props: any) {
   return useRequestQuery(
     [t.TRANSACTION_LOCKING, query],
     { method: 'get', url: `transactions-locking/${query}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },

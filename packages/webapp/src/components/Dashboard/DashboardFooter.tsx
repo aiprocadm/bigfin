@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import { getFooterLinks } from '@/constants/footerLinks';
 import { For } from '@/components';
 
-function FooterLinkItem({ title, link }) {
+function FooterLinkItem({ title, link }: any) {
   return (
     <div className="">
       <a href={link} target="_blank" rel="noopener noreferrer">

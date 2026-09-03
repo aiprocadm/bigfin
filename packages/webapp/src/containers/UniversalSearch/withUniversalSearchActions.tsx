@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { CLOSE_SEARCH, OPEN_SEARCH } from '@/store/types';;
 import {
@@ -8,17 +7,17 @@ import {
   universalSearchResetSelectedItem,
 } from '@/store/search/search.actions';
 
-export const mapDispatchToProps = (dispatch) => ({
+export const mapDispatchToProps = (dispatch: any) => ({
   openGlobalSearch: () => dispatch({ type: OPEN_SEARCH }),
   closeGlobalSearch: () => dispatch({ type: CLOSE_SEARCH }),
 
-  setResourceTypeUniversalSearch: (resourceType) =>
+  setResourceTypeUniversalSearch: (resourceType: any) =>
     dispatch(universalSearchSetResourceType(resourceType)),
 
   resetResourceTypeUniversalSearch: () =>
     dispatch(universalSearchResetResourceType()),
 
-  setSelectedItemUniversalSearch: (resourceType, resourceId) =>
+  setSelectedItemUniversalSearch: (resourceType: any, resourceId: any) =>
     dispatch(universalSearchSetSelectedItem(resourceType, resourceId)),
 
   resetSelectedItemUniversalSearch: () =>

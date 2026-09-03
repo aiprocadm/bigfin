@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import { useRequestQuery } from '@/hooks/useQueryRequest';
 import t from './type';
@@ -10,7 +9,7 @@ import t from './type';
  * @param props
  * @returns
  */
-export function useProjectBillableEntries(projectId, query, props) {
+export function useProjectBillableEntries(projectId: any, query: any, props: any) {
   return useRequestQuery(
     [t.PROJECT_BILLABLE_ENTRIES, projectId, query],
     {
@@ -19,7 +18,7 @@ export function useProjectBillableEntries(projectId, query, props) {
       params: query,
     },
     {
-      select: (res) => res.data.billable_entries,
+      select: (res: any) => res.data.billable_entries,
       defaultData: {},
       ...props,
     },

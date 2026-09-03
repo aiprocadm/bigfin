@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve customers balance summary report.
  */
-export function useCustomerBalanceSummaryReport(query, props) {
+export function useCustomerBalanceSummaryReport(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.CUSTOMERS_BALANCE_SUMMARY, query],
     {
@@ -19,7 +18,7 @@ export function useCustomerBalanceSummaryReport(query, props) {
       },
     },
     {
-      select: (res) => ({
+      select: (res: any) => ({
         query: res.data.query,
         table: res.data.table,
         meta: res.data.meta,
@@ -34,7 +33,7 @@ export function useCustomerBalanceSummaryReport(query, props) {
   );
 }
 
-export const useCustomerBalanceSummaryXlsxExport = (query, args) => {
+export const useCustomerBalanceSummaryXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/customer-balance-summary',
     config: {
@@ -48,7 +47,7 @@ export const useCustomerBalanceSummaryXlsxExport = (query, args) => {
   });
 };
 
-export const useCustomerBalanceSummaryCsvExport = (query, args) => {
+export const useCustomerBalanceSummaryCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/customer-balance-summary',
     config: {

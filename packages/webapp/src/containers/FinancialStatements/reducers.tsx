@@ -1,10 +1,9 @@
-// @ts-nocheck
 
-export const purchasesByItemsReducer = (sheet) => {
+export const purchasesByItemsReducer = (sheet: any) => {
   const results = [];
 
   if (sheet.items) {
-    sheet.items.forEach((item) => {
+    sheet.items.forEach((item: any) => {
       results.push(item);
     });
   }

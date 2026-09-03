@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { includes } from 'lodash';
 import { Callout, Intent } from '@blueprintjs/core';
 
-export const UserFormCalloutAlerts = ({ calloutCodes }) => {
+export const UserFormCalloutAlerts = ({ calloutCodes }: any) => {
   return [
     includes(calloutCodes, 200) && (
       <Callout icon={null} intent={Intent.DANGER}>

@@ -1,15 +1,14 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   isDrawerOpenFactory,
   getDrawerPayloadFactory,
 } from '@/store/dashboard/dashboard.selectors';
 
-export const withDrawers = (mapState) => {
+export const withDrawers = (mapState: any) => {
   const isDrawerOpen = isDrawerOpenFactory();
   const getDrawerPayload = getDrawerPayloadFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       isOpen: isDrawerOpen(state, props),
       payload: getDrawerPayload(state, props),

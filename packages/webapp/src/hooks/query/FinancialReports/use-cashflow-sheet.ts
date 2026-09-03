@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve cash flow statement report.
  */
-export function useCashFlowStatementReport(query, props) {
+export function useCashFlowStatementReport(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.CASH_FLOW_STATEMENT, query],
     {
@@ -19,7 +18,7 @@ export function useCashFlowStatementReport(query, props) {
       },
     },
     {
-      select: (res) => ({
+      select: (res: any) => ({
         columns: res.data.table.columns,
         query: res.data.query,
         meta: res.data.meta,
@@ -36,7 +35,7 @@ export function useCashFlowStatementReport(query, props) {
   );
 }
 
-export const useCashFlowStatementXlsxExport = (query, args) => {
+export const useCashFlowStatementXlsxExport = (query: any, args: any) => {
   const url = '/reports/cashflow-statement';
   const config = {
     headers: {
@@ -54,7 +53,7 @@ export const useCashFlowStatementXlsxExport = (query, args) => {
   });
 };
 
-export const useCashFlowStatementCsvExport = (query, args) => {
+export const useCashFlowStatementCsvExport = (query: any, args: any) => {
   const url = '/reports/cashflow-statement';
   const config = {
     headers: {

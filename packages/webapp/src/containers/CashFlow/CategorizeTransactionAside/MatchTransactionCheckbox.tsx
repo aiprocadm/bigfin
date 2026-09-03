@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Checkbox, Text } from '@blueprintjs/core';
@@ -32,7 +31,7 @@ export function MatchTransactionCheckbox({
     handleChange(!_active);
   };
 
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = (event: any) => {
     handleChange(!event.target.checked);
   };
 

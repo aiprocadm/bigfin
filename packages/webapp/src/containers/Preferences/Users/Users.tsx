@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -16,8 +15,8 @@ import { withUserPreferences } from '@/containers/Preferences/Users/withUserPref
 /**
  * Preferences page - Users page.
  */
-function UsersPreferences({ openDialog }) {
-  const onChangeTabs = (currentTabId) => {};
+function UsersPreferences({ openDialog }: any) {
+  const onChangeTabs = (currentTabId: any) => {};
 
   return (
     <div

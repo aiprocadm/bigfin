@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setAccountsTableState,
@@ -6,10 +5,10 @@ import {
   setAccountsSelectedRows,
 } from '@/store/accounts/accounts.actions';
 
-const mapActionsToProps = (dispatch) => ({
-  setAccountsTableState: (queries) => dispatch(setAccountsTableState(queries)),
+const mapActionsToProps = (dispatch: any) => ({
+  setAccountsTableState: (queries: any) => dispatch(setAccountsTableState(queries)),
   resetAccountsTableState: () => dispatch(resetAccountsTableState()),
-  setAccountsSelectedRows: (selectedRows) =>
+  setAccountsSelectedRows: (selectedRows: any) =>
     dispatch(setAccountsSelectedRows(selectedRows)),
 });
 

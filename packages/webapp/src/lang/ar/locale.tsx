@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Based on https://github.com/jquense/yup/blob/2973d0a/src/locale.js
 
 import printValue from '../printValue';
@@ -9,7 +8,7 @@ export const locale = {
     required: '${path} هو حقل مطلوب',
     oneOf: '${path} يجب أن تكون واحدة من القيم التالية: ${values}',
     notOneOf: '${path} لا يجب أن تكون واحدة من القيم التالية: ${values}',
-    notType: ({ path, type, value, originalValue }) => {
+    notType: ({ path, type, value, originalValue }: any) => {
       const isCast = originalValue != null && originalValue !== value;
       let msg =
         `${path} يجب أن يكون \`${type}\` نوع, ` +

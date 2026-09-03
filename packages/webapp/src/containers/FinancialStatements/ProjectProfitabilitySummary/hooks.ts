@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useRequestQuery } from '@/hooks/useQueryRequest';
 import t from '@/hooks/query/types';
 
 /**
  * Retrieve the profitability summary for the project
  */
-export function useProjectProfitabilitySummary(query, props) {
+export function useProjectProfitabilitySummary(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.PROJECT_PROFITABILITY_SUMMARY, query],
     {
@@ -17,7 +16,7 @@ export function useProjectProfitabilitySummary(query, props) {
       },
     },
     {
-      select: (res) => ({
+      select: (res: any) => ({
         columns: res.data.table.columns,
         tableRows: res.data.table.data,
       }),

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import JournalNumberDialog from '@/containers/Dialogs/JournalNumberDialog';
@@ -10,7 +9,7 @@ export default function MakeJournalFormDialogs() {
   const { setFieldValue } = useFormikContext();
 
   // Update the form once the journal number form submit confirm.
-  const handleConfirm = (settings) => {
+  const handleConfirm = (settings: any) => {
     // Set the invoice transaction no. that cames from dialog to the form.
     // the `journal_number` will be empty except the increment mode is not auto.
     setFieldValue('journal_number', settings.transactionNumber);

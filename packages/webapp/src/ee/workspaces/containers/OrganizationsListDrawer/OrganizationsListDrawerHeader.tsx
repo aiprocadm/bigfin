@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Switch } from '@blueprintjs/core';
 import { x } from '@xstyled/emotion';
@@ -30,7 +29,7 @@ export function OrganizationsListDrawerHeader({
   onSetDefaultWorkspace,
   onClose,
 }: OrganizationsListDrawerHeaderProps) {
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     if (e.currentTarget.checked && !isCurrentOrgDefault && activeOrganizationId) {
       onSetDefaultWorkspace(activeOrganizationId);
     }

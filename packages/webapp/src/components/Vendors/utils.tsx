@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { MenuItem } from '@blueprintjs/core';
 
 // Filter Contact List
-export const itemPredicate = (query, contact, index, exactMatch) => {
+export const itemPredicate = (query: any, contact: any, index: any, exactMatch: any) => {
   const normalizedTitle = contact.display_name.toLowerCase();
   const normalizedQuery = query.toLowerCase();
   if (exactMatch) {
@@ -16,7 +15,7 @@ export const itemPredicate = (query, contact, index, exactMatch) => {
   }
 };
 
-export const handleContactRenderer = (contact, { handleClick }) => (
+export const handleContactRenderer = (contact: any, { handleClick }: any) => (
   <MenuItem
     key={contact.id}
     text={contact.display_name}
@@ -25,14 +24,14 @@ export const handleContactRenderer = (contact, { handleClick }) => (
 );
 
 // Creates a new item from query.
-export const createNewItemFromQuery = (name) => {
+export const createNewItemFromQuery = (name: any) => {
   return {
     name,
   };
 };
 
 // Handle quick create new customer.
-export const createNewItemRenderer = (query, active, handleClick) => {
+export const createNewItemRenderer = (query: any, active: any, handleClick: any) => {
   return (
     <MenuItem
       icon="add"

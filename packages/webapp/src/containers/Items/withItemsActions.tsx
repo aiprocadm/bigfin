@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setItemsTableState,
@@ -6,10 +5,10 @@ import {
   setItemsSelectedRows,
 } from '@/store/items/items.actions';
 
-export const mapDispatchToProps = (dispatch) => ({
-  setItemsTableState: (queries) => dispatch(setItemsTableState(queries)),
+export const mapDispatchToProps = (dispatch: any) => ({
+  setItemsTableState: (queries: any) => dispatch(setItemsTableState(queries)),
   resetItemsTableState: () => dispatch(resetItemsTableState()),
-  setItemsSelectedRows: (selectedRows) => dispatch(setItemsSelectedRows(selectedRows)),
+  setItemsSelectedRows: (selectedRows: any) => dispatch(setItemsSelectedRows(selectedRows)),
 });
 
 export const withItemsActions = connect(null, mapDispatchToProps);

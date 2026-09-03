@@ -1,15 +1,14 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   isSubscriptionsInactiveFactory,
   isSubscriptionsActiveFactory,
 } from '@/store/subscription/subscription.selectors';
 
-export const withSubscriptionss = (mapState) => {
+export const withSubscriptionss = (mapState: any) => {
   const isSubscriptionsInactive = isSubscriptionsInactiveFactory();
   const isSubscriptionsActive = isSubscriptionsActiveFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       isSubscriptionsInactive: isSubscriptionsInactive(state, props),
       isSubscriptionsActive: isSubscriptionsActive(state, props),

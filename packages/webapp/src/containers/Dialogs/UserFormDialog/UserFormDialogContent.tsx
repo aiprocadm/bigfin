@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import UserForm from './UserForm';
@@ -8,7 +7,7 @@ import '@/style/pages/Users/UserFormDialog.scss';
 /**
  * User form dialog content.
  */
-export default function UserFormDialogContent({ userId, dialogName }) {
+export default function UserFormDialogContent({ userId, dialogName }: any) {
   return (
     <UserFormProvider userId={userId} dialogName={dialogName}>
       <UserForm />

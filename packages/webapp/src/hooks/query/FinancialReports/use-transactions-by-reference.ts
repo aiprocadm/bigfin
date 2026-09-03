@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import t from '../types';
 /**
  * Retrieve transactions by reference report.
  */
-export function useTransactionsByReference(query, props) {
+export function useTransactionsByReference(query: any, props: any) {
   return useRequestQuery(
     [t.TRANSACTIONS_BY_REFERENCE, query],
     {
@@ -13,7 +12,7 @@ export function useTransactionsByReference(query, props) {
       params: query,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {
         transactions: [],
       },

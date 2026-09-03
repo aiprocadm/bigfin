@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { useFormikContext } from 'formik';
 import { useDeepCompareEffect } from '@/hooks/utils';
 
-export function FormikObserver({ onChange }) {
+export function FormikObserver({ onChange }: any) {
   const { values } = useFormikContext();
 
   useDeepCompareEffect(() => {

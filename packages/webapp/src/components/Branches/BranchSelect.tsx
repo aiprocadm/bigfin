@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { MenuItem, Button } from '@blueprintjs/core';
@@ -9,7 +8,7 @@ import { FSelect } from '../Forms';
  * @param {*} param0
  * @returns {JSX.Element}
  */
-export function BranchSelect({ branches, ...rest }) {
+export function BranchSelect({ branches, ...rest }: any) {
   return (
     <FSelect
       valueAccessor={'id'}

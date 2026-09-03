@@ -1,7 +1,6 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: any) => ({
   // requestLogin: (form) => dispatch(login({ form })),
   // requestLogout: () => dispatch({ type: t.LOGOUT }),
   // requestRegister: (form) => dispatch(register({ form })),

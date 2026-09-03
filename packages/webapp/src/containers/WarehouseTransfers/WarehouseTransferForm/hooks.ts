@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useItem } from '@/hooks/query';
 
@@ -85,8 +84,8 @@ export const useFetchItemWarehouseQuantity = () => {
   };
 };
 
-const transformWarehousesQuantity = (item) => {
-  return item.item_warehouses.map((warehouse) => ({
+const transformWarehousesQuantity = (item: any) => {
+  return item.item_warehouses.map((warehouse: any) => ({
     warehouseId: warehouse.warehouse_id,
     quantityOnHand: warehouse.quantity_on_hand,
     quantityOnHandFormatted: warehouse.quantity_on_hand_formatted,

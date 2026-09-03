@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Intent } from '@blueprintjs/core';
 import { x } from '@xstyled/emotion';
@@ -14,7 +13,7 @@ import { compose } from '@/utils';
 /**
  * Setup congrats page.
  */
-function SetupCongratsPage({ setOrganizationSetupCompleted }) {
+function SetupCongratsPage({ setOrganizationSetupCompleted }: any) {
   const [isReloading, setIsReloading] = React.useState(false);
   const isDarkMode = useIsDarkMode();
 

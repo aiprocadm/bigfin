@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import EstimateNumberDialog from '@/containers/Dialogs/EstimateNumberDialog';
@@ -10,7 +9,7 @@ export default function EstimateFormDialogs() {
   const { setFieldValue } = useFormikContext();
 
   // Update the form once the estimate number form submit confirm.
-  const handleEstimateNumberFormConfirm = (settings) => {
+  const handleEstimateNumberFormConfirm = (settings: any) => {
     setFieldValue('estimate_number', settings.transactionNumber);
     setFieldValue('estimate_number_manually', '');
 

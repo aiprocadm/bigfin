@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
@@ -11,7 +10,7 @@ import t from '../types';
  * @param {Object} props - Additional options for the request.
  * @returns {Object} The response object from the useRequestQuery hook.
  */
-export function useBalanceSheet(query, props) {
+export function useBalanceSheet(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.BALANCE_SHEET, query],
     {
@@ -23,7 +22,7 @@ export function useBalanceSheet(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
@@ -35,7 +34,7 @@ export function useBalanceSheet(query, props) {
  * @param {Object} args - Additional configurations for the download.
  * @returns {Function} A function to trigger the file download.
  */
-export const useBalanceSheetXlsxExport = (query, args) => {
+export const useBalanceSheetXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/balance-sheet',
     config: {
@@ -55,7 +54,7 @@ export const useBalanceSheetXlsxExport = (query, args) => {
  * @param {Object} args - Additional configurations for the download.
  * @returns {Function} A function to trigger the file download.
  */
-export const useBalanceSheetCsvExport = (query, args) => {
+export const useBalanceSheetCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/balance-sheet',
     config: {

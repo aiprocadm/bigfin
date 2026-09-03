@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { resolveSetupStep } from './resolveSetupStep';
 
-export const withSetupWizard = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withSetupWizard = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const {
       isOrganizationSetupCompleted,
       isOrganizationReady,

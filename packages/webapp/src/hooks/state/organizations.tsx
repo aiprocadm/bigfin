@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setOrganizations } from '@/store/organizations/organizations.actions';
@@ -7,7 +6,7 @@ import { getCurrentOrganizationFactory } from '@/store/authentication/authentica
 export const useSetOrganizations = () => {
   const dispatch = useDispatch();
 
-  return useCallback((organizations) => {
+  return useCallback((organizations: any) => {
     dispatch(setOrganizations(organizations))    
   }, [dispatch]);
 };

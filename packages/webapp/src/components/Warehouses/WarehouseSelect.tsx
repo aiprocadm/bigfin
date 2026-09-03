@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FSelect } from '../Forms';
 
@@ -7,7 +6,7 @@ import { FSelect } from '../Forms';
  * @param {*} param0
  * @returns
  */
-export function WarehouseSelect({ warehouses, ...rest }) {
+export function WarehouseSelect({ warehouses, ...rest }: any) {
   return (
     <FSelect
       valueAccessor={'id'}

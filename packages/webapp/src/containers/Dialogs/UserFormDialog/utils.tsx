@@ -1,10 +1,9 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 
 // handle delete errors.
-export const transformErrors = (errors, { setErrors, setCalloutCode }) => {
+export const transformErrors = (errors: any, { setErrors, setCalloutCode }: any) => {
   if (
-    errors.find((error) => error.type === 'CANNOT_AUTHORIZED_USER_MUTATE_ROLE')
+    errors.find((error: any) => error.type === 'CANNOT_AUTHORIZED_USER_MUTATE_ROLE')
   ) {
     setCalloutCode([200]);
     setErrors({

@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 
-export const withSettings = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withSettings = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       allSettings: state.settings.data,
       organizationSettings: state.settings.data.organization,

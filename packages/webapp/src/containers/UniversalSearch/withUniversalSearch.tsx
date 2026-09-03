@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 
-export const withUniversalSearch = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withUniversalSearch = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const { globalSearch } = state;
 
     const mapped = {

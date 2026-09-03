@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
@@ -21,12 +20,12 @@ export default function QuickNewDropdown() {
     return null;
   }
   // Handle click quick new button.
-  const handleClickQuickNew = ({ path }) => {
+  const handleClickQuickNew = ({ path }: any) => {
     history.push(`/${path}`);
   };
 
   // Item renderer.
-  const itemRenderer = (item, { handleClick, modifiers, query }) => (
+  const itemRenderer = (item: any, { handleClick, modifiers, query }: any) => (
     <MenuItem text={item.name} label={item.label} onClick={handleClick} />
   );
 

@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { isAuthenticated } from '@/store/authentication/authentication.reducer';
 import { connect } from 'react-redux';
 
-export const withAuthentication = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withAuthentication = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       isAuthorized: isAuthenticated(state),
       authenticatedUserId: state.authentication.userId,

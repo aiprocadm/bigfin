@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { chain } from 'lodash';
 import intl from 'react-intl-universal';
 import {
@@ -640,7 +639,7 @@ export const getPermissionsSchema = () => [
   },
 ];
 
-export function getPermissionsSchemaService(subject) {
+export function getPermissionsSchemaService(subject: any) {
   const permissions = getPermissionsSchema();
 
   return chain(permissions)

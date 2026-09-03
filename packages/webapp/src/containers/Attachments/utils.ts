@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { transformToForm } from '@/utils';
 
 const attachmentReqSchema = {
@@ -8,12 +7,12 @@ const attachmentReqSchema = {
   mime_type: '',
 };
 
-export const transformAttachmentsToForm = (values) => {
-  return values.attachments?.map((attachment) =>
+export const transformAttachmentsToForm = (values: any) => {
+  return values.attachments?.map((attachment: any) =>
     transformToForm(attachment, attachmentReqSchema),
   );
 };
 
-export const transformAttachmentsToRequest = (values) => {
-  return values.attachments?.map((attachment) => ({ key: attachment.key }));
+export const transformAttachmentsToRequest = (values: any) => {
+  return values.attachments?.map((attachment: any) => ({ key: attachment.key }));
 };

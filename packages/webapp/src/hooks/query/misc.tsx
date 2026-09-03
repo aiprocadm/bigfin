@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../useQueryRequest';
 
 /**
@@ -9,7 +8,7 @@ export function useDateFormats(props = {}) {
     ['DATE_FORMATS'],
     { method: 'get', url: `/date-formats` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },

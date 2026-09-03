@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery } from 'react-query';
 import QUERY_TYPES from './types';
 import useApiRequest from '../useRequest';
@@ -16,7 +15,7 @@ interface LatestExchangeRateQuery {
  */
 export function useLatestExchangeRate(
   { toCurrency, fromCurrency, date }: LatestExchangeRateQuery,
-  props,
+  props: any,
 ) {
   const apiRequest = useApiRequest();
 

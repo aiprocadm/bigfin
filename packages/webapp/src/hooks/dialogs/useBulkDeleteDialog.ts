@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useCallback } from 'react';
 import { DialogsName } from '@/constants/dialogs';
 import { useDialogActions } from '@/hooks/state';
 
 export const useBulkDeleteDialog = (
   dialogName: DialogsName,
-  validateBulkDeleteMutation,
+  validateBulkDeleteMutation: any,
 ) => {
   const { openDialog, closeDialog } = useDialogActions();
   const { mutateAsync: validateBulkDelete, isLoading } =

@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import React from 'react';
 import intl from 'react-intl-universal';
@@ -9,7 +8,7 @@ import styled from 'styled-components';
  * Projec billable entries box.
  * @returns
  */
-function BillableEntriesBox({ billableEntry }) {
+function BillableEntriesBox({ billableEntry }: any) {
   return (
     <BillableEntriesWrap>
       <BillableEntriesHeader>
@@ -44,8 +43,8 @@ function BillableEntriesBox({ billableEntry }) {
  * Project billable entries box.
  * @returns
  */
-export function BillableEntiresBox({ billableEntries }) {
-  return billableEntries.map((entries) => (
+export function BillableEntiresBox({ billableEntries }: any) {
+  return billableEntries.map((entries: any) => (
     <BillableEntriesBox billableEntry={entries} />
   ));
 }

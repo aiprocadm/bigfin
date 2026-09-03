@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRequestQuery } from '../../useQueryRequest';
 import { useDownloadFile } from '../../useDownloadFile';
 import { useRequestPdf } from '../../useRequestPdf';
@@ -7,7 +6,7 @@ import t from '../types';
 /**
  * Retrieve inventory valuation.
  */
-export function useInventoryValuation(query, props) {
+export function useInventoryValuation(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.INVENTORY_VALUATION, query],
     {
@@ -16,7 +15,7 @@ export function useInventoryValuation(query, props) {
       params: query,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
 
       ...props,
     },
@@ -26,7 +25,7 @@ export function useInventoryValuation(query, props) {
 /**
  * Retrieve inventory valuation.
  */
-export function useInventoryValuationTable(query, props) {
+export function useInventoryValuationTable(query: any, props: any) {
   return useRequestQuery(
     [t.FINANCIAL_REPORT, t.INVENTORY_VALUATION, query],
     {
@@ -38,13 +37,13 @@ export function useInventoryValuationTable(query, props) {
       },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
 }
 
-export const useInventoryValuationXlsxExport = (query, args) => {
+export const useInventoryValuationXlsxExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/inventory-valuation',
     config: {
@@ -58,7 +57,7 @@ export const useInventoryValuationXlsxExport = (query, args) => {
   });
 };
 
-export const useInventoryValuationCsvExport = (query, args) => {
+export const useInventoryValuationCsvExport = (query: any, args: any) => {
   return useDownloadFile({
     url: '/reports/inventory-valuation',
     config: {

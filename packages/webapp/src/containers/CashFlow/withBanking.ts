@@ -1,9 +1,8 @@
-// @ts-nocheck
 
 import { connect } from 'react-redux';
 
-export const withBanking = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withBanking = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       openMatchingTransactionAside: state.plaid.openMatchingTransactionAside,
       selectedUncategorizedTransactionId:

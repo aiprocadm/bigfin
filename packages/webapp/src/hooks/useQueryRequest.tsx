@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery } from 'react-query';
 import { castArray, defaultTo } from 'lodash';
 import { useAuthOrganizationId } from './state';
@@ -9,13 +8,13 @@ import { useRef } from 'react';
 /**
  * Query for tenant requests.
  */
-export function useQueryTenant(query, callback, props) {
+export function useQueryTenant(query: any, callback: any, props: any) {
   const organizationId = useAuthOrganizationId();
 
   return useQuery([...castArray(query), organizationId], callback, props);
 }
 
-export function useRequestQuery(query, axios, props) {
+export function useRequestQuery(query: any, axios: any, props: any) {
   const apiRequest = useApiRequest();
 
   const states = useQuery(

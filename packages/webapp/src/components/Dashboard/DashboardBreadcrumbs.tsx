@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -9,7 +8,7 @@ import {
 } from '@blueprintjs/core';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 
-function DashboardBreadcrumbs({ breadcrumbs }) {
+function DashboardBreadcrumbs({ breadcrumbs }: any) {
   const history = useHistory();
 
   return (
@@ -19,7 +18,7 @@ function DashboardBreadcrumbs({ breadcrumbs }) {
       collapseFrom={Boundary.START}
       visibleItemCount={0}
     >
-      {breadcrumbs.map(({ breadcrumb, match }) => {
+      {breadcrumbs.map(({ breadcrumb, match }: any) => {
         return (
           <MenuItem
             key={match.url}

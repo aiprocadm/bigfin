@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import {
   defaultFastFieldShouldUpdate,
@@ -55,7 +54,7 @@ export const getNumberCampatators = () => [
 ];
 
 export const getConditionTypeCompatators = (
-  dataType,
+  dataType: any,
 ) => {
   return [
     ...(dataType === 'enumeration'
@@ -71,14 +70,14 @@ export const getConditionTypeCompatators = (
 };
 
 export const getConditionDefaultCompatator = (
-  dataType,
+  dataType: any,
 ) => {
   const compatators = getConditionTypeCompatators(dataType);
   return compatators[0];
 };
 
-export const transformFieldsToOptions = (fields) =>
-  fields.map((field) => ({
+export const transformFieldsToOptions = (fields: any) =>
+  fields.map((field: any) => ({
     value: field.key,
     label: field.name,
   }));
@@ -90,12 +89,12 @@ export const transformFieldsToOptions = (fields) =>
  * @returns
  */
 export const filterConditionRoles = (
-  conditions,
+  conditions: any,
 ) => {
   const requiredProps = ['fieldKey', 'condition', 'comparator', 'value'];
 
   const filteredConditions = conditions.filter(
-    (condition) =>
+    (condition: any) =>
       !checkRequiredProperties(condition, requiredProps),
   );
   return uniqueMultiProps(filteredConditions, requiredProps);
@@ -105,7 +104,7 @@ export const filterConditionRoles = (
  * Detarmines the value field when should update.
  * @returns {boolean}
  */
-export const shouldFilterValueFieldUpdate = (newProps, oldProps) => {
+export const shouldFilterValueFieldUpdate = (newProps: any, oldProps: any) => {
   return (
     newProps.fieldKey !== oldProps.fieldKey ||
     defaultFastFieldShouldUpdate(newProps, oldProps)

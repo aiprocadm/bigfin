@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import { Button, NavbarGroup, Intent } from '@blueprintjs/core';
 import { DrawerActionsBar, Icon } from '@/components';
@@ -13,7 +12,7 @@ import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
 /**
  * Account drawer action bar.
  */
-function BrandingTemplateActionsBarRoot({ openDrawer }) {
+function BrandingTemplateActionsBarRoot({ openDrawer }: any) {
   const {
     payload: { resource },
   } = useDrawerContext();

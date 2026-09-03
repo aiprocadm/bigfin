@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Button,
@@ -19,11 +18,11 @@ import Style from './style.module.scss';
 /**
  * Dashboard rows height button control.
  */
-export function DashboardRowsHeightButton({ initialValue, value, onChange }) {
+export function DashboardRowsHeightButton({ initialValue, value, onChange }: any) {
   const [localSize, setLocalSize] = React.useState(initialValue);
 
   // Handle menu item click.
-  const handleItemClick = (size) => (event) => {
+  const handleItemClick = (size: any) => (event: any) => {
     setLocalSize(size);
     onChange && onChange(size, event);
   };

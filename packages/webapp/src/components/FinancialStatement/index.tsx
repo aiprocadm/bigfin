@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 
@@ -10,7 +9,7 @@ const FinancialStatementBodyRoot = styled.div``;
  * @param {*} param0 
  * @returns 
  */
-export function FinancialStatement({ children, className }) {
+export function FinancialStatement({ children, className }: any) {
   return <FinancialStatementRoot children={children} className={className} />;
 }
 
@@ -18,7 +17,7 @@ export function FinancialStatement({ children, className }) {
  *
  * @param {React.JSX}
  */
-export function FinancialStatementBody({ children, className }) {
+export function FinancialStatementBody({ children, className }: any) {
   return (
     <FinancialStatementBodyRoot children={children} className={className} />
   );

@@ -1,9 +1,8 @@
-// @ts-nocheck
 import { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Tag } from '@blueprintjs/core';
 
-const applyToTypeAccessor = (rule) => {
+const applyToTypeAccessor = (rule: any) => {
   return rule.apply_if_transaction_type === 'deposit' ? (
     <Tag round intent={Intent.SUCCESS}>
       {intl.get('banking.rules.type.deposit')}
@@ -15,13 +14,13 @@ const applyToTypeAccessor = (rule) => {
   );
 };
 
-const conditionsAccessor = (rule) => (
+const conditionsAccessor = (rule: any) => (
   <span style={{ fontSize: 12 }}>
     {rule.conditions_formatted}
   </span>
 );
 
-const applyToAccessor = (rule) => (
+const applyToAccessor = (rule: any) => (
   <Tag intent={Intent.NONE} minimal>
     {rule.assign_account_name}
   </Tag>

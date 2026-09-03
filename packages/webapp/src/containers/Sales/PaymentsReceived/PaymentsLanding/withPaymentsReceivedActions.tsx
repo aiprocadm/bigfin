@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   setPaymentReceivesTableState,
@@ -6,8 +5,8 @@ import {
   setPaymentReceivesSelectedRows,
 } from '@/store/payment-receives/payment-receives.actions';
 
-const mapDispatchToProps = (dispatch) => ({
-  setPaymentReceivesTableState: (state) =>
+const mapDispatchToProps = (dispatch: any) => ({
+  setPaymentReceivesTableState: (state: any) =>
     dispatch(setPaymentReceivesTableState(state)),
 
   resetPaymentReceivesTableState: () =>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -27,7 +26,7 @@ export const useGLEntriesTableColumns = () => {
       },
       {
         Header: intl.get('debit'),
-        accessor: ({ debit }) => debit.formatted_amount,
+        accessor: ({ debit }: any) => debit.formatted_amount,
         width: 100,
         className: 'debit',
         textOverview: true,
@@ -35,7 +34,7 @@ export const useGLEntriesTableColumns = () => {
       },
       {
         Header: intl.get('credit'),
-        accessor: ({ credit }) => credit.formatted_amount,
+        accessor: ({ credit }: any) => credit.formatted_amount,
         width: 100,
         className: 'credit',
         align: 'right',

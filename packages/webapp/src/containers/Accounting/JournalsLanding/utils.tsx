@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -34,7 +33,7 @@ export const useManualJournalsColumns = () => {
       {
         id: 'journal_number',
         Header: intl.get('journal_no'),
-        accessor: (row) => `${row.journal_number}`,
+        accessor: (row: any) => `${row.journal_number}`,
         className: 'journal_number',
         width: 100,
         clickable: true,
@@ -51,7 +50,7 @@ export const useManualJournalsColumns = () => {
       {
         id: 'status',
         Header: intl.get('publish'),
-        accessor: (row) => StatusAccessor(row),
+        accessor: (row: any) => StatusAccessor(row),
         width: 95,
         clickable: true,
       },

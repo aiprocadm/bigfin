@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
@@ -15,7 +14,7 @@ import { DialogsName } from '@/constants/dialogs';
 function TaxRatesLandingEmptyStateRoot({
   // #withDialogAction
   openDialog,
-}) {
+}: any) {
   return (
     <EmptyStatus
       title={intl.get('tax_rates.empty_state.title')}

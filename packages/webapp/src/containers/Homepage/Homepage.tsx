@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { DashboardInsider } from '@/components/Dashboard';
 
@@ -18,7 +17,7 @@ function DashboardHomepage({
 
   // #withCurrentOrganization
   organization,
-}) {
+}: any) {
   useEffect(() => {
     changePageTitle(organization.name);
   }, [organization.name, changePageTitle]);
@@ -32,5 +31,5 @@ function DashboardHomepage({
 
 export default compose(
   withDashboardActions,
-  withCurrentOrganization(({ organization }) => ({ organization })),
+  withCurrentOrganization(({ organization }: any) => ({ organization })),
 )(DashboardHomepage);

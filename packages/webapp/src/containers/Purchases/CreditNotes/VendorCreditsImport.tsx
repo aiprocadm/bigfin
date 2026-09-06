@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DashboardInsider } from '@/components';
 import { ImportView } from '@/containers/Import';
 import { useHistory } from 'react-router-dom';

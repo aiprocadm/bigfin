@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   DrawerHeaderContent,
@@ -14,7 +13,7 @@ import { DRAWERS } from '@/constants/drawers';
 export default function QuickCreateCustomerDrawerContent({
   displayName,
   autofillRef,
-}) {
+}: any) {
   return (
     <React.Fragment>
       <DrawerHeaderContent

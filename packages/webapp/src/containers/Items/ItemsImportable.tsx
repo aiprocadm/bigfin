@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DashboardInsider } from '@/components';
 import { ImportView } from '../Import/ImportView';
 

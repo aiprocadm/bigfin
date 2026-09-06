@@ -65,7 +65,7 @@ function CustomersTable({
 
   // Local storage memorizing columns widths.
   const [initialColumnsWidths, , handleColumnResizing] =
-    useMemorizedColumnsWidths(TABLES.CUSTOMERS);
+    useMemorizedColumnsWidths(TABLES.CUSTOMER);
 
   // Handle fetch data once the page index, size or sort by of the table change.
   const handleFetchData = React.useCallback(

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
-import { transformPagination } from '@/utils';
+import { transformPagination, transformToCamelCase } from '@/utils';
 import useApiRequest from '../useRequest';
 import t from './types';
 
@@ -106,7 +106,7 @@ export function useDeleteVendorCredit(props) {
         commonInvalidateQueries(queryClient);
 
         // Invalidate vendor credit query.
-        queryClient.invalidateQueries([t.VENDOR_CREDIT_NOTE, id]);
+        queryClient.invalidateQueries([t.VENDOR_CREDIT, id]);
       },
       ...props,
     },

@@ -14,6 +14,12 @@ const REGISTER_ERRORS = {
   EMAIL_EXISTS: 'EMAIL_EXISTS',
 };
 
+// Коды, которые сервер шлёт на запрос восстановления пароля.
+// См. packages/server/src/modules/Auth/Auth.constants.ts
+const RESET_PASSWORD_ERRORS = {
+  EMAIL_NOT_FOUND: 'EMAIL_NOT_FOUND',
+};
+
 export const LoginSchema = Yup.object().shape({
   crediential: Yup.string().required().email().label(intl.get('email')),
   password: Yup.string().required().min(4).label(intl.get('password')),
@@ -48,7 +54,7 @@ export const InviteAcceptSchema = Yup.object().shape({
 export const transformSendResetPassErrorsToToasts = (error) => {
   const toastBuilders = [];
 
-  if (error.code === ERRORS.EMAIL_NOT_REGISTERED) {
+  if (error.code === RESET_PASSWORD_ERRORS.EMAIL_NOT_FOUND) {
     toastBuilders.push({
       message: intl.get('we_couldn_t_find_your_account_with_that_email'),
       intent: Intent.DANGER,

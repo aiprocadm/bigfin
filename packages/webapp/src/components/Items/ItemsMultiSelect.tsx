@@ -3,6 +3,11 @@ import React from 'react';
 import * as R from 'ramda';
 import { FMultiSelect } from '@/components/Forms';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import { DialogsName } from '@/constants/dialogs';
+import {
+  createNewItemRenderer,
+  createNewItemFromQuery,
+} from '@/components/Customers/utils';
 
 /**
  * Items multi-select.

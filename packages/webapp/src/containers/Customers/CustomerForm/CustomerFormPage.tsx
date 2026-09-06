@@ -3,7 +3,7 @@ import React from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { Box, DashboardCard, DashboardInsider } from '@/components';
-import { CustomerFormFormik, ustomerFormFormik } from './CustomerFormFormik';
+import { CustomerFormFormik } from './CustomerFormFormik';
 import {
   CustomerFormProvider,
   useCustomerFormContext,

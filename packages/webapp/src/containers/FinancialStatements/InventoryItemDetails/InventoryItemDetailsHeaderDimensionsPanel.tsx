@@ -8,6 +8,8 @@ import {
   Row,
   Col,
 } from '@/components';
+import { Features } from '@/constants';
+import { useFeatureCan } from '@/hooks/state';
 import {
   InventoryItemDetailsHeaderDimensionsProvider,
   useInventoryItemDetailsHeaderDimensionsPanelContext,
@@ -37,7 +39,7 @@ function InventoryItemDetailsHeaderDimensionsPanelContent() {
   const { featureCan } = useFeatureCan();
 
   const isBranchesFeatureCan = featureCan(Features.Branches);
-  const isWarehousesFeatureCan = featureCan(Features.warehouses);
+  const isWarehousesFeatureCan = featureCan(Features.Warehouses);
 
   return (
     <Row>

@@ -2,6 +2,10 @@
 import React, { useCallback } from 'react';
 import * as R from 'ramda';
 import { FMultiSelect } from '../Forms';
+import {
+  createNewItemRenderer,
+  createNewItemFromQuery,
+} from '@/components/Customers/utils';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { DRAWERS } from '@/constants/drawers';
 

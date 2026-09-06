@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Classes } from '@blueprintjs/core';
 import { Group, Icon } from '@/components';

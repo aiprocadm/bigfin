@@ -67,7 +67,7 @@ export const useAuthLogin = (props) => {
         //   setLocale(res.data?.tenant?.metadata?.language);
         // }
       });
-      props?.onSuccess && props?.onSuccess(...args);
+      props?.onSuccess && props?.onSuccess(res);
     },
     ...props,
   });

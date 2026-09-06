@@ -3,7 +3,7 @@ import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 
 import { DashboardViewsTabs } from '@/components';
-import { withReceiptActions } from './withReceiptsActions';
+import { withReceiptsActions } from './withReceiptsActions';
 import { withReceipts } from './withReceipts';
 
 import { compose, transfromViewsToTabs } from '@/utils';
@@ -13,7 +13,7 @@ import { useReceiptsListContext } from './ReceiptsListProvider';
  * Receipts views tabs.
  */
 function ReceiptViewTabs({
-  // #withReceiptActions
+  // #withReceiptsActions
   setReceiptsTableState,
 
   // #withReceipts
@@ -46,7 +46,7 @@ function ReceiptViewTabs({
 }
 
 export default compose(
-  withReceiptActions,
+  withReceiptsActions,
   withReceipts(({ receiptTableState }) => ({
     receiptsCurrentView: receiptTableState.viewSlug,
   })),

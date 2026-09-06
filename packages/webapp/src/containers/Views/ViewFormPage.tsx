@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useEffect, useState, useCallback } from 'react';
+import intl from 'react-intl-universal';
 import { useAsync } from 'react-use';
 import { useParams } from 'react-router-dom';
 import { Intent, Alert } from '@blueprintjs/core';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { AnchorButton } from '@blueprintjs/core';
 
@@ -13,7 +12,7 @@ function EstimatePdfPreviewDialogContent({
   dialogName,
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isLoading, pdfUrl, filename } = usePdfEstimate(estimateId);
 
   return (

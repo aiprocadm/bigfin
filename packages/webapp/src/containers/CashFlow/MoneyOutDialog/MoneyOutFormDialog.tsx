@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 
@@ -13,7 +12,7 @@ export default function MoneyOutFormDialog() {
   const handleTransactionNumberFormConfirm = ({
     incrementNumber,
     manually,
-  }) => {
+  }: any) => {
     setFieldValue('transaction_number', incrementNumber || '');
     setFieldValue('transaction_number_manually', manually);
   };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Menu, MenuItem, MenuDivider } from '@blueprintjs/core';
 import { Icon } from '@/components';
@@ -7,7 +6,7 @@ import { safeCallback } from '@/utils';
 export function ActionsMenu({
   payload: { onCategorize, onExclude },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem

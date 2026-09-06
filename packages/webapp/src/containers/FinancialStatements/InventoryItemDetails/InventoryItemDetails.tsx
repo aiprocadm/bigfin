@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import moment from 'moment';
 
@@ -25,11 +24,11 @@ import { compose } from '@/utils';
 function InventoryItemDetails({
   //#withInventoryItemDetailsActions
   toggleInventoryItemDetailsFilterDrawer: toggleFilterDrawer,
-}) {
+}: any) {
   const { query, setLocationQuery } = useInventoryValuationQuery();
 
   // Handle filter submit.
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: any) => {
     const _filter = {
       ...filter,
       fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -38,7 +37,7 @@ function InventoryItemDetails({
     setLocationQuery({ ..._filter });
   };
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     setLocationQuery({
       ...query,
       numberFormat: values,

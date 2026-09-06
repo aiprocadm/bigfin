@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { VendorDetailsDrawerProvider } from './VendorDetailsDrawerProvider';
@@ -11,7 +10,7 @@ import VendorDetails from './VendorDetails';
 export default function VendorDetailsDrawerContent({
   // #ownProp
   vendorId,
-}) {
+}: any) {
   return (
     <VendorDetailsDrawerProvider vendorId={vendorId}>
       <DrawerBody>

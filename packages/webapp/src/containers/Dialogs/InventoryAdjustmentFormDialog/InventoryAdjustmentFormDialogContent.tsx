@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/Items/ItemAdjustmentDialog.scss';
@@ -13,7 +12,7 @@ export default function InventoryAdjustmentFormDialogContent({
   // #ownProps
   dialogName,
   itemId
-}) {
+}: any) {
   return (
     <InventoryAdjustmentFormProvider itemId={itemId} dialogName={dialogName}>
       <InventoryAdjustmentForm />

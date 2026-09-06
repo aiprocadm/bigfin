@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 
@@ -12,7 +11,7 @@ export function DataTableEditable({
   actions,
   name,
   ...tableProps
-}) {
+}: any) {
   return (
     <DatatableEditableRoot>
       <DataTable {...tableProps} />

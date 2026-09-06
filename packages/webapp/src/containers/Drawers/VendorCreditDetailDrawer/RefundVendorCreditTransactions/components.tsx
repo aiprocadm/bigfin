@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, MenuItem, Menu } from '@blueprintjs/core';
@@ -9,7 +8,7 @@ import { VendorCreditAction, AbilitySubject } from '@/constants/abilityOption';
 /**
  * Actions menu.
  */
-export function ActionsMenu({ payload: { onDelete }, row: { original } }) {
+export function ActionsMenu({ payload: { onDelete }, row: { original } }: any) {
   return (
     <Menu>
       <Can I={VendorCreditAction.Delete} a={AbilitySubject.VendorCredit}>
@@ -43,7 +42,7 @@ export function useRefundCreditTransactionsTableColumns() {
       },
       {
         Header: intl.get('refund_vendor_credit.column.withdrawal_account'),
-        accessor: ({ deposit_account }) => deposit_account.name,
+        accessor: ({ deposit_account }: any) => deposit_account.name,
         width: 100,
         className: 'deposit_account',
       },

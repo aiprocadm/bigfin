@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { ProjectTimeEntryFormProvider } from './ProjectTimeEntryFormProvider';
 import ProjectTimeEntryForm from './ProjectTimeEntryForm';
@@ -12,7 +11,7 @@ export default function ProjectTimeEntryFormDialogContent({
   dialogName,
   timeEntry,
   project,
-}) {
+}: any) {
   return (
     <ProjectTimeEntryFormProvider
       timesheetId={timeEntry}

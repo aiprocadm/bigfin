@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { AnchorButton } from '@blueprintjs/core';
 
@@ -12,7 +11,7 @@ function ReceiptPdfPreviewDialogContent({
   subscriptionForm: { receiptId },
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isLoading, pdfUrl, filename } = usePdfReceipt(receiptId);
 
   return (

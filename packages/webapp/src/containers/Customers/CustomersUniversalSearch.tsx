@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { AbilitySubject, CustomerAction } from '@/constants/abilityOption';
 
@@ -14,7 +13,7 @@ function CustomerUniversalSearchSelectComponent({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   if (resourceType === RESOURCES_TYPES.CUSTOMER) {
     openDrawer(DRAWERS.CUSTOMER_DETAILS, { customerId: resourceId });
     onAction && onAction();
@@ -31,7 +30,7 @@ const CustomerUniversalSearchSelectAction = withDrawerActions(
  * @param {*} contact
  * @returns
  */
-const customersToSearch = (contact) => ({
+const customersToSearch = (contact: any) => ({
   id: contact.id,
   text: contact.display_name,
   label: contact.formatted_balance,

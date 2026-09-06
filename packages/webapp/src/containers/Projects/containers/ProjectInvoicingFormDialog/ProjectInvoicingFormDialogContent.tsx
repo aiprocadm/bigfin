@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { ProjectInvoicingFormProvider } from './ProjectInvoicingFormProvider';
@@ -11,7 +10,7 @@ import ProjectInvoicingForm from './ProjectInvoicingForm';
 export default function ProjectInvoicingFormDialogContent({
   // #ownProps
   dialogName,
-}) {
+}: any) {
   return (
     <ProjectInvoicingFormProvider dialogName={dialogName}>
       <ProjectInvoicingForm />

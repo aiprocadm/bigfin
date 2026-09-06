@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useHistory } from 'react-router-dom';
@@ -29,7 +28,7 @@ function GlobalHotkeys({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const history = useHistory();
   const routes = getDashboardRoutes();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/ManualJournal/List.scss';
@@ -19,7 +18,7 @@ function ManualJournalsTable({
   // #withManualJournals
   journalsTableState,
   journalsTableStateChanged,
-}) {
+}: any) {
   return (
     <ManualJournalsListProvider
       query={transformTableStateToQuery(journalsTableState)}
@@ -38,7 +37,7 @@ function ManualJournalsTable({
 
 export default compose(
   withManualJournals(
-    ({ manualJournalsTableState, manualJournalTableStateChanged }) => ({
+    ({ manualJournalsTableState, manualJournalTableStateChanged }: any) => ({
       journalsTableState: manualJournalsTableState,
       journalsTableStateChanged: manualJournalTableStateChanged,
     }),

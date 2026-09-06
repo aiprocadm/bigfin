@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/PaymentMade/List.scss';
@@ -23,7 +22,7 @@ function PaymentMadeList({
 
   // #withPaymentMadeActions
   resetPaymentMadesTableState,
-}) {
+}: any) {
   // Resets the invoices table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -49,7 +48,7 @@ function PaymentMadeList({
 }
 
 export default compose(
-  withPaymentMade(({ paymentMadesTableState, paymentsTableStateChanged }) => ({
+  withPaymentMade(({ paymentMadesTableState, paymentsTableStateChanged }: any) => ({
     paymentMadesTableState,
     paymentsTableStateChanged,
   })),

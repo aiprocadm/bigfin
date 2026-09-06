@@ -1,11 +1,10 @@
-// @ts-nocheck
-const round = number => Math.round(number * 100) / 100
-const monitorReducerEnhancer = createStore => (
-  reducer,
-  initialState,
-  enhancer
+const round = (number: any) => Math.round(number * 100) / 100
+const monitorReducerEnhancer = (createStore: any) => (
+  reducer: any,
+  initialState: any,
+  enhancer: any
 ) => {
-  const monitoredReducer = (state, action) => {
+  const monitoredReducer = (state: any, action: any) => {
     const start = performance.now()
     const newState = reducer(state, action)
     const end = performance.now()

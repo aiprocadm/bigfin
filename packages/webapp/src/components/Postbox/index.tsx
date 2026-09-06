@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Collapse } from '@blueprintjs/core';
 import classNames from 'classnames';
@@ -11,7 +10,7 @@ export function Postbox({
   toggable = true,
   title,
   children,
-}) {
+}: any) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   // Handle the title click.

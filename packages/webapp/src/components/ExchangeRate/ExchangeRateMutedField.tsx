@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -20,7 +19,7 @@ export function ExchangeRateMutedField({
   exchangeRate,
   exchangeRateFieldProps,
   popoverProps,
-}) {
+}: any) {
   const content = (
     <ExchangeRateFormGroupContent>
       <ExchangeRateInputGroup

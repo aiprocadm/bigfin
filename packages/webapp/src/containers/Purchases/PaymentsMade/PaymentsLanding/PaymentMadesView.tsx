@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
@@ -15,7 +14,7 @@ import { compose } from '@/utils';
 function PaymentMadesViewPage({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   return (
     <Switch>
       <Route

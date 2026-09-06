@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import moment from 'moment';
 import * as R from 'ramda';
@@ -24,11 +23,11 @@ import { DialogsName } from '@/constants/dialogs';
 function CustomersBalanceSummary({
   // #withCustomersBalanceSummaryActions
   toggleCustomerBalanceFilterDrawer,
-}) {
+}: any) {
   const { query, setLocationQuery } = useCustomerBalanceSummaryQuery();
 
   // Handle re-fetch customers balance summary after filter change.
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: any) => {
     const _filter = {
       ...filter,
       asDate: moment(filter.asDate).format('YYYY-MM-DD'),
@@ -36,7 +35,7 @@ function CustomersBalanceSummary({
     setLocationQuery({ ..._filter });
   };
   // Handle number format.
-  const handleNumberFormat = (values) => {
+  const handleNumberFormat = (values: any) => {
     setLocationQuery({
       ...query,
       numberFormat: values,

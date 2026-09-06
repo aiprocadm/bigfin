@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 export function useIntersectionObserver({
@@ -8,7 +7,7 @@ export function useIntersectionObserver({
   threshold = 1.0,
   rootMargin = '0px',
   enabled = true,
-}) {
+}: any) {
   React.useEffect(() => {
     if (!enabled) {
       return;

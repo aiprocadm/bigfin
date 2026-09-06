@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/SaleInvoice/List.scss';
@@ -25,7 +24,7 @@ function InvoicesList({
   // #withInvoicesActions
   resetInvoicesTableState,
   resetInvoicesSelectedRows,
-}) {
+}: any) {
   // Resets the invoices table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -52,7 +51,7 @@ function InvoicesList({
 }
 
 export default compose(
-  withInvoices(({ invoicesTableState, invoicesTableStateChanged }) => ({
+  withInvoices(({ invoicesTableState, invoicesTableStateChanged }: any) => ({
     invoicesTableState,
     invoicesTableStateChanged,
   })),

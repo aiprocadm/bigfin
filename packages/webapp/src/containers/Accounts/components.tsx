@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -29,7 +28,7 @@ export function ActionsMenu({
     onInactivate,
     // onDrawer,
   },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -83,7 +82,7 @@ export function ActionsMenu({
 /**
  * Normal cell.
  */
-export function NormalCell({ cell: { value } }) {
+export function NormalCell({ cell: { value } }: any) {
   const arrowDirection = value === 'credit' ? 'down' : 'up';
 
   // Can't continue if the value is not `credit` or `debit`.
@@ -105,7 +104,7 @@ export function NormalCell({ cell: { value } }) {
 /**
  * Balance cell.
  */
-export function BalanceCell({ cell }) {
+export function BalanceCell({ cell }: any) {
   const account = cell.row.original;
 
   // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).
@@ -123,7 +122,7 @@ export function BalanceCell({ cell }) {
 /**
  * Balance cell.
  */
-export function BankBalanceCell({ cell }) {
+export function BankBalanceCell({ cell }: any) {
   const account = cell.row.original;
 
   // Счёт без движений — это ноль, а не «неизвестно» (С2 карты v29).

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 
@@ -13,13 +12,13 @@ import { useAllocateLandedCostEntriesTableColumns } from './utils';
 export default function AllocateLandedCostEntriesTable({
   onUpdateData,
   entries,
-}) {
+}: any) {
   // Allocate landed cost entries table columns.
   const columns = useAllocateLandedCostEntriesTableColumns();
 
   // Handle update data.
   const handleUpdateData = React.useCallback(
-    (rowIndex, columnId, value) => {
+    (rowIndex: any, columnId: any, value: any) => {
       const newRows = compose(updateTableCell(rowIndex, columnId, value))(
         entries,
       );

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 
 import '@/style/pages/Expense/List.scss';
@@ -24,7 +23,7 @@ function ExpensesList({
 
   // #withExpensesActions
   resetExpensesTableState,
-}) {
+}: any) {
   // Resets the accounts table state once the page unmount.
   useEffect(
     () => () => {
@@ -50,7 +49,7 @@ function ExpensesList({
 }
 
 export default compose(
-  withExpenses(({ expensesTableState, expensesTableStateChanged }) => ({
+  withExpenses(({ expensesTableState, expensesTableStateChanged }: any) => ({
     expensesTableState,
     expensesTableStateChanged,
   })),

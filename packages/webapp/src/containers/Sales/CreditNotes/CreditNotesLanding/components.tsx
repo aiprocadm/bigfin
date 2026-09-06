@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -25,7 +24,7 @@ export function ActionsMenu({
     onSendMail,
   },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -93,7 +92,7 @@ export function ActionsMenu({
 /**
  * Status accessor.
  */
-export function StatusAccessor(creditNote) {
+export function StatusAccessor(creditNote: any) {
   return (
     <div>
       <Choose>

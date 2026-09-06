@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DrawerBody } from '@/components';
@@ -11,7 +10,7 @@ import CustomerDetails from './CustomerDetails';
 export default function CustomerDetailsDrawerContent({
   // #ownProp
   customerId,
-}) {
+}: any) {
   return (
     <CustomerDetailsDrawerProvider customerId={customerId}>
       <DrawerBody>

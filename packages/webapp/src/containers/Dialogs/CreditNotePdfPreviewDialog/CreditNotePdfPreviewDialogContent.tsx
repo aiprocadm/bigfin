@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { AnchorButton } from '@blueprintjs/core';
 
@@ -10,7 +9,7 @@ import { compose } from '@/utils';
 
 function CreditNotePdfPreviewDialogContent({
   subscriptionForm: { creditNoteId },
-}) {
+}: any) {
   const { isLoading, pdfUrl, filename } = usePdfCreditNote(creditNoteId);
 
   return (

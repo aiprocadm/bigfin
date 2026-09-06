@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerBody } from '@/components';
 
@@ -11,7 +10,7 @@ import BillDrawerDetails from './BillDrawerDetails';
 export default function BillDrawerContent({
   // #ownProp
   billId,
-}) {
+}: any) {
   return (
     <BillDrawerProvider billId={billId}>
       <DrawerBody>

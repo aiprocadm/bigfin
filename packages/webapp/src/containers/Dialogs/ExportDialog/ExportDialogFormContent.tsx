@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { FFormGroup, FRadioGroup, FSelect, Group } from '@/components';
 import { Button, Intent, Radio } from '@blueprintjs/core';
@@ -12,7 +11,7 @@ import { DialogsName } from '@/constants/dialogs';
 function ExportDialogFormContentRoot({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isSubmitting } = useFormikContext();
   const handleCancelBtnClick = () => {
     closeDialog(DialogsName.Export);

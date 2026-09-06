@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import clsx from 'classnames';
 
@@ -13,7 +12,7 @@ export function EmptyStatus({
   action,
   children,
   classNames,
-}) {
+}: any) {
   return (
     <div className={clsx(Style.root, classNames?.root)}>
       <h1 className={clsx(Style.root_title, classNames?.title)}>{title}</h1>

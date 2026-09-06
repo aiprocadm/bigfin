@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Suspense } from 'react';
 import { DrawerLoading } from '@/components';
 
@@ -9,6 +8,6 @@ function LoadingContent() {
   return <DrawerLoading loading={true} />;
 }
 
-export function DrawerSuspense({ children }) {
+export function DrawerSuspense({ children }: any) {
   return <Suspense fallback={<LoadingContent />}>{children}</Suspense>;
 }

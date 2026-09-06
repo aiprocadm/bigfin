@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { DashboardPageContent } from '@/components';
 
@@ -25,7 +24,7 @@ function BillsList({
   // #withBillsActions
   resetBillsTableState,
   setBillsSelectedRows,
-}) {
+}: any) {
   // Resets the bills table state and selection once the page unmount.
   useEffect(
     () => () => {
@@ -52,7 +51,7 @@ function BillsList({
 }
 
 export default compose(
-  withBills(({ billsTableState, billsTableStateChanged }) => ({
+  withBills(({ billsTableState, billsTableStateChanged }: any) => ({
     billsTableState,
     billsTableStateChanged,
   })),

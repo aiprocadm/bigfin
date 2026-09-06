@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import VendorCreditNumberDialog from '@/containers/Dialogs/VendorCreditNumberDialog';
 import { useFormikContext } from 'formik';
@@ -11,7 +10,7 @@ export default function VendorCreditNoteFormDialogs() {
   const handleVendorCreditNumberFormConfirm = ({
     incrementNumber,
     manually,
-  }) => {
+  }: any) => {
     setFieldValue('vendor_credit_number', incrementNumber || '');
     setFieldValue('vendor_credit_no_manually', manually);
   };

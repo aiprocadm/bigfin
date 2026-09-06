@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -12,7 +11,7 @@ import { safeCallback } from '@/utils';
 export function ActionsMenu({
   payload: { onEdit, onDelete },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -34,7 +33,7 @@ export function ActionsMenu({
  *
  * @returns
  */
-function TaskChrageType({ values: { charge_type, rate } }) {
+function TaskChrageType({ values: { charge_type, rate } }: any) {
   return (
     <Choose>
       <Choose.When condition={charge_type === 'TIME'}>
@@ -50,7 +49,7 @@ function TaskChrageType({ values: { charge_type, rate } }) {
   );
 }
 
-export function TaskAccessor(task) {
+export function TaskAccessor(task: any) {
   return (
     <TaskRoot>
       <TaskHeader>
@@ -70,7 +69,7 @@ export function TaskAccessor(task) {
   );
 }
 
-export function TaskTimeAccessor(task) {
+export function TaskTimeAccessor(task: any) {
   return (
     <TaskTimeRoot>
       <TaskTimeMinutesRoot>

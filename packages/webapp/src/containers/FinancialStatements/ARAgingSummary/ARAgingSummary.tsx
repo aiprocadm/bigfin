@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
@@ -25,12 +24,12 @@ import { compose } from '@/utils';
 function ReceivableAgingSummarySheet({
   // #withARAgingSummaryActions
   toggleARAgingSummaryFilterDrawer: toggleDisplayFilterDrawer,
-}) {
+}: any) {
   const { query, setLocationQuery } = useARAgingSummaryQuery();
 
   // Handle filter submit.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: any) => {
       const _filter = {
         ...filter,
         asDate: moment(filter.asDate).format('YYYY-MM-DD'),
@@ -41,7 +40,7 @@ function ReceivableAgingSummarySheet({
   );
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: any) => {
     setLocationQuery({ ...query, numberFormat });
   };
   // Hide the filter drawer once the page unmount.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -19,7 +18,7 @@ import { safeCallback } from '@/utils';
 export function ActionMenuList({
   row: { original },
   payload: { onEditCategory, onDeleteCategory },
-}) {
+}: any) {
   
 
   return (
@@ -43,7 +42,7 @@ export function ActionMenuList({
 /**
  * Table actions cell.
  */
-export function TableActionsCell(props) {
+export function TableActionsCell(props: any) {
   return (
     <Popover
       content={<ActionMenuList {...props} />}

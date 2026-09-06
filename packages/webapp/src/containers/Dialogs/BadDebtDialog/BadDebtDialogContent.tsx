@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/BadDebt/BadDebtDialog.scss';
@@ -12,7 +11,7 @@ export default function BadDebtDialogContent({
   // #ownProps
   dialogName,
   invoice,
-}) {
+}: any) {
   return (
     <BadDebtFormProvider invoiceId={invoice} dialogName={dialogName}>
       <BadDebtForm />

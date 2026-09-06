@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -15,7 +14,7 @@ import { BillAction, AbilitySubject } from '@/constants/abilityOption';
 export function ActionsMenu({
   row: { original },
   payload: { onEdit, onDelete },
-}) {
+}: any) {
   return (
     <Menu>
       <Can I={BillAction.Edit} a={AbilitySubject.Bill}>
@@ -63,7 +62,7 @@ export const useBillTransactionsColumns = () => {
       {
         id: 'bill_number',
         Header: intl.get('bill_number'),
-        accessor: (row) => (row.bill_number ? `${row.bill_number}` : null),
+        accessor: (row: any) => (row.bill_number ? `${row.bill_number}` : null),
         width: 100,
         className: 'bill_number',
       },

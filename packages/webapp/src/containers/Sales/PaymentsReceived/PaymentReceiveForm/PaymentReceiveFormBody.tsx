@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField } from 'formik';
 import PaymentReceiveItemsTable from './PaymentReceiveItemsTable';
@@ -11,10 +10,10 @@ export default function PaymentReceiveFormBody() {
   return (
     <Box p="18px 32px 0">
       <FastField name={'entries'}>
-        {({ form: { values, setFieldValue }, field: { value } }) => (
+        {({ form: { values, setFieldValue }, field: { value } }: any) => (
           <PaymentReceiveItemsTable
             entries={value}
-            onUpdateData={(newEntries) => {
+            onUpdateData={(newEntries: any) => {
               setFieldValue('entries', newEntries);
             }}
             currencyCode={values.currency_code}

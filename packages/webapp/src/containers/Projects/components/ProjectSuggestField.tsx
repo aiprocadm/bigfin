@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -22,9 +21,9 @@ export function ProjectSuggestField({
   popoverFill = false,
   onProjectSelected,
   ...suggestProps
-}) {
+}: any) {
   const initialProject = React.useMemo(
-    () => projects.find((b) => b.id === initialProjectId),
+    () => projects.find((b: any) => b.id === initialProjectId),
     [initialProjectId, projects],
   );
 
@@ -35,7 +34,7 @@ export function ProjectSuggestField({
   React.useEffect(() => {
     if (typeof selectedProjectId !== 'undefined') {
       const project = selectedProjectId
-        ? projects.find((a) => a.id === selectedProjectId)
+        ? projects.find((a: any) => a.id === selectedProjectId)
         : null;
       setSelectedProject(project);
     }
@@ -46,7 +45,7 @@ export function ProjectSuggestField({
    * @param {*} param1
    * @returns {JSX.Element}
    */
-  const projectsItemRenderer = (project, { handleClick, modifiers, query }) => {
+  const projectsItemRenderer = (project: any, { handleClick, modifiers, query }: any) => {
     return (
       <MenuItem
         icon={<AvatarSelect text={project} />}
@@ -66,7 +65,7 @@ export function ProjectSuggestField({
    * @param {*} exactMatch
    * @returns
    */
-  const projectsItemPredicate = (query, project, _index, exactMatch) => {
+  const projectsItemPredicate = (query: any, project: any, _index: any, exactMatch: any) => {
     const normalizedTitle = project.name.toLowerCase();
     const normalizedQuery = query.toLowerCase();
 
@@ -85,7 +84,7 @@ export function ProjectSuggestField({
    * @returns
    */
   const projectItemSelect = React.useCallback(
-    (project) => {
+    (project: any) => {
       if (project.id) {
         setSelectedProject({ ...project });
         onProjectSelected && onProjectSelected(project);
@@ -99,7 +98,7 @@ export function ProjectSuggestField({
    * @param {*} inputVaue
    * @returns
    */
-  const projectInputValueRenderer = (inputValue) => {
+  const projectInputValueRenderer = (inputValue: any) => {
     if (inputValue) {
       return inputValue.name.toString();
     }
@@ -127,7 +126,7 @@ export function ProjectSuggestField({
   );
 }
 
-const AvatarSelect = ({ text }) => {
+const AvatarSelect = ({ text }: any) => {
   return <AvatarContent>{firstLettersArgs(text?.name)}</AvatarContent>;
 };
 

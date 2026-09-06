@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { useFormikContext } from 'formik';
@@ -22,7 +21,7 @@ function VendorsSelectRoot({
   allowCreate,
 
   ...restProps
-}) {
+}: any) {
   // Maybe inject create new item props to suggest component.
   const maybeCreateNewItemRenderer = allowCreate ? createNewItemRenderer : null;
   const maybeCreateNewItemFromQuery = allowCreate
@@ -36,7 +35,7 @@ function VendorsSelectRoot({
   });
 
   // Handles the create item click.
-  const handleCreateItemClick = (item) => {
+  const handleCreateItemClick = (item: any) => {
     openDrawer(DRAWERS.QUICK_WRITE_VENDOR, {
       autofillRef,
       displayName: item.name,

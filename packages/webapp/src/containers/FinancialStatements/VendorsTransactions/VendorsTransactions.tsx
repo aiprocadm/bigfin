@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 
@@ -22,11 +21,11 @@ import { VendorTransactionsDialogs } from './VendorTransactionsDialogs';
 function VendorsTransactions({
   //#withVendorsTransactionsActions
   toggleVendorsTransactionsFilterDrawer,
-}) {
+}: any) {
   // filter
   const [filter, setFilter] = useVendorsTransactionsQuery();
 
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: any) => {
     const _filter = {
       ...filter,
       fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -36,7 +35,7 @@ function VendorsTransactions({
   };
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     setFilter({
       ...filter,
       numberFormat: values,

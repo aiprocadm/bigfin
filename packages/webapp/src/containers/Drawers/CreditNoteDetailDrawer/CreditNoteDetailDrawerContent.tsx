@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerBody } from '@/components';
 
@@ -11,7 +10,7 @@ import { CreditNoteDetailDrawerProvider } from './CreditNoteDetailDrawerProvider
 export default function CreditNoteDetailDrawerContent({
   // #ownProp
   creditNoteId,
-}) {
+}: any) {
   return (
     <CreditNoteDetailDrawerProvider creditNoteId={creditNoteId}>
       <DrawerBody>

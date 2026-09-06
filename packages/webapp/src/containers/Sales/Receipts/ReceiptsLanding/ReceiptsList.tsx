@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DashboardPageContent } from '@/components';
 
@@ -24,7 +23,7 @@ function ReceiptsList({
   // #withReceiptsActions
   resetReceiptsTableState,
   setReceiptsSelectedRows,
-}) {
+}: any) {
   // Resets the receipts table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -51,7 +50,7 @@ function ReceiptsList({
 }
 
 export default compose(
-  withReceipts(({ receiptTableState, receiptsTableStateChanged }) => ({
+  withReceipts(({ receiptTableState, receiptsTableStateChanged }: any) => ({
     receiptTableState,
     receiptsTableStateChanged,
   })),

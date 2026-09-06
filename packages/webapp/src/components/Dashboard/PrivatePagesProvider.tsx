@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useApplicationBoot } from '@/components';
 import { useAuthMetadata } from '@/hooks/query/authentication';
@@ -9,7 +8,7 @@ import { useAuthMetadata } from '@/hooks/query/authentication';
 export function PrivatePagesProvider({
   // #ownProps
   children,
-}) {
+}: any) {
   const { isLoading: isAppBootLoading } = useApplicationBoot();
   const { isLoading: isAuthMetaLoading } = useAuthMetadata();
 

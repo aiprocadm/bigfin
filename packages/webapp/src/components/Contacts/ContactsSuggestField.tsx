@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { MenuItem } from '@blueprintjs/core';
 import { Suggest } from '@blueprintjs/select';
@@ -19,11 +18,11 @@ export function ContactsSuggestField({
   popoverFill = false,
 
   ...suggestProps
-}) {
+}: any) {
   // filteredContacts
   const contacts = useMemo(
     () =>
-      contactsList.map((contact) => ({
+      contactsList.map((contact: any) => ({
         ...contact,
         _id: `${contact.id}_${contact.contact_type}`,
       })),
@@ -31,7 +30,7 @@ export function ContactsSuggestField({
   );
 
   const initialContact = useMemo(
-    () => contacts.find((a) => a.id === initialContactId),
+    () => contacts.find((a: any) => a.id === initialContactId),
     [initialContactId, contacts],
   );
 
@@ -42,14 +41,14 @@ export function ContactsSuggestField({
   useEffect(() => {
     if (typeof selectedContactId !== 'undefined') {
       const contact = selectedContactId
-        ? contacts.find((a) => a.id === selectedContactId)
+        ? contacts.find((a: any) => a.id === selectedContactId)
         : null;
       setSelectedContact(contact);
     }
   }, [selectedContactId, contacts, setSelectedContact]);
 
   const contactRenderer = useCallback(
-    (contact, { handleClick }) => (
+    (contact: any, { handleClick }: any) => (
       <MenuItem
         key={contact.id}
         text={contact.display_name}
@@ -61,20 +60,20 @@ export function ContactsSuggestField({
   );
 
   const onContactSelect = useCallback(
-    (contact) => {
+    (contact: any) => {
       setSelectedContact({ ...contact });
       onContactSelected && onContactSelected(contact);
     },
     [setSelectedContact, onContactSelected],
   );
 
-  const handleInputValueRenderer = (inputValue) => {
+  const handleInputValueRenderer = (inputValue: any) => {
     if (inputValue) {
       return inputValue.display_name.toString();
     }
   };
 
-  const filterContacts = (query, contact, index, exactMatch) => {
+  const filterContacts = (query: any, contact: any, index: any, exactMatch: any) => {
     const normalizedTitle = contact.display_name.toLowerCase();
     const normalizedQuery = query.toLowerCase();
     if (exactMatch) {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerBody } from '@/components';
 
@@ -14,7 +13,7 @@ export default function AccountDrawerContent({
   // #ownProp
   accountId,
   name,
-}) {
+}: any) {
   return (
     <AccountDrawerProvider name={name} accountId={accountId}>
       <DrawerBody>

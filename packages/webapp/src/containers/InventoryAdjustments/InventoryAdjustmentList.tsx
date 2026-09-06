@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/InventoryAdjustments/List.scss';
@@ -18,7 +17,7 @@ import { compose, transformTableStateToQuery } from '@/utils';
 function InventoryAdjustmentList({
   // #withInventoryAdjustments
   inventoryAdjustmentTableState,
-}) {
+}: any) {
   return (
     <InventoryAdjustmentsProvider
       query={transformTableStateToQuery(inventoryAdjustmentTableState)}
@@ -33,7 +32,7 @@ function InventoryAdjustmentList({
 }
 
 export default compose(
-  withInventoryAdjustments(({ inventoryAdjustmentTableState }) => ({
+  withInventoryAdjustments(({ inventoryAdjustmentTableState }: any) => ({
     inventoryAdjustmentTableState,
   })),
 )(InventoryAdjustmentList);

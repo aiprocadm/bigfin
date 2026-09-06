@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -17,7 +16,7 @@ import { withItemCategories } from './withItemCategories';
 function ItemCategoryList({
   // #withItemCategories
   itemsCategoriesTableState
-}) {
+}: any) {
   return (
     <ItemsCategoriesProvider tableState={itemsCategoriesTableState}>
       <ItemsCategoryActionsBar />
@@ -32,7 +31,7 @@ function ItemCategoryList({
 }
 
 export default R.compose(
-  withItemCategories(({ itemsCategoriesTableState }) => ({
+  withItemCategories(({ itemsCategoriesTableState }: any) => ({
     itemsCategoriesTableState,
   })),
 )(ItemCategoryList);

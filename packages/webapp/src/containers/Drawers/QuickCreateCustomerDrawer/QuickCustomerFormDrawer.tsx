@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import styled from 'styled-components';
@@ -18,7 +17,7 @@ import { useAddAutofillRef } from '@/hooks/state/autofill';
  * Drawer customer form loading wrapper.
  * @returns {JSX}
  */
-function DrawerCustomerFormLoading({ children }) {
+function DrawerCustomerFormLoading({ children }: any) {
   const { isFormLoading } = useCustomerFormContext();
 
   return <DrawerLoading loading={isFormLoading}>{children}</DrawerLoading>;
@@ -32,11 +31,11 @@ function QuickCustomerFormDrawer({
   autofillRef,
   closeDrawer,
   customerId,
-}) {
+}: any) {
   const addAutofillRef = useAddAutofillRef();
 
   // Handle the form submit request success.
-  const handleSubmitSuccess = (values, formArgs, submitPayload, res) => {
+  const handleSubmitSuccess = (values: any, formArgs: any, submitPayload: any, res: any) => {
     if (autofillRef) {
       addAutofillRef(autofillRef, {
         displayName: values.display_name,

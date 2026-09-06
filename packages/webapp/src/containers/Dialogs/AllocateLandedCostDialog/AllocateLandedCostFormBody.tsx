@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField } from 'formik';
 import { CLASSES } from '@/constants/classes';
@@ -13,10 +12,10 @@ export default function AllocateLandedCostFormBody() {
           form: { setFieldValue, values },
           field: { value },
           meta: { error, touched },
-        }) => (
+        }: any) => (
           <AllocateLandedCostEntriesTable
             entries={value}
-            onUpdateData={(newEntries) => {
+            onUpdateData={(newEntries: any) => {
               setFieldValue('items', newEntries);
             }}
           />

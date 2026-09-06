@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect } from 'react';
 import * as R from 'ramda';
 import { Redirect } from 'react-router-dom';
@@ -13,7 +12,7 @@ function BillingPageRoot({
 
   // #withAlertActions
   changePreferencesPageTitle,
-}) {
+}: any) {
   const { data: dashboardMeta } = useDashboardMeta({
     keepPreviousData: true,
   });

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Button,
@@ -16,13 +15,13 @@ export const CashFlowMenuItems = ({
   items,
   onItemSelect,
   buttonProps,
-}) => {
+}: any) => {
   // Menu items renderer.
-  const itemsRenderer = (item, { handleClick, modifiers, query }) => (
+  const itemsRenderer = (item: any, { handleClick, modifiers, query }: any) => (
     <MenuItem text={item.name} label={item.label} onClick={handleClick} />
   );
 
-  const handleCashFlowMenuSelect = (type) => {
+  const handleCashFlowMenuSelect = (type: any) => {
     onItemSelect && onItemSelect(type);
   };
 
@@ -51,7 +50,7 @@ export const CashFlowMenuItems = ({
   );
 };
 
-export const handleCashFlowTransactionType = (reference, openDrawer) => {
+export const handleCashFlowTransactionType = (reference: any, openDrawer: any) => {
   switch (reference.reference_type) {
     case 'SaleReceipt':
       return openDrawer(DRAWERS.RECEIPT_DETAILS, {

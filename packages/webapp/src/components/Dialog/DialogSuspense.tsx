@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Suspense } from 'react';
 import { Classes, Spinner } from '@blueprintjs/core';
 
@@ -8,7 +7,7 @@ function LoadingContent() {
 
 export function DialogSuspense({
   children
-}) {
+}: any) {
   return (
     <Suspense fallback={<LoadingContent /> }>
       <div className={'dialog__suspense-wrapper'}>

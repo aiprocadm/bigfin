@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import moment from 'moment';
 
@@ -28,12 +27,12 @@ import { CashflowSheetDialogs } from './CashflowSheetDialogs';
 function CashFlowStatement({
   // # withCashStatementActions
   toggleCashFlowStatementFilterDrawer,
-}) {
+}: any) {
   // Cashflow statement query.
   const { query, setLocationQuery } = useCashflowStatementQuery();
 
   // Handle refetch cash flow after filter change.
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: any) => {
     const newFilter = {
       ...filter,
       fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -42,7 +41,7 @@ function CashFlowStatement({
     setLocationQuery({ ...newFilter });
   };
   // Handle format number submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     setLocationQuery({
       ...query,
       numberFormat: values,

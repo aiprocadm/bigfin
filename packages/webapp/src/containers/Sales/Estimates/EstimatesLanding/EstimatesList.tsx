@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DashboardPageContent } from '@/components';
 
@@ -24,7 +23,7 @@ function EstimatesList({
   // #withEstimatesActions
   resetEstimatesTableState,
   setEstimatesSelectedRows,
-}) {
+}: any) {
   // Resets the estimates table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -51,7 +50,7 @@ function EstimatesList({
 }
 
 export default compose(
-  withEstimates(({ estimatesTableState, estimatesTableStateChanged }) => ({
+  withEstimates(({ estimatesTableState, estimatesTableStateChanged }: any) => ({
     estimatesTableState,
     estimatesTableStateChanged,
   })),

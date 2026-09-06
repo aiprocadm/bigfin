@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { ReconcileCreditNoteFormProvider } from './ReconcileCreditNoteFormProvider';
 import ReconcileCreditNoteForm from './ReconcileCreditNoteForm';
@@ -10,7 +9,7 @@ export default function ReconcileCreditNoteDialogContent({
   // #ownProps
   dialogName,
   creditNoteId,
-}) {
+}: any) {
   return (
     <ReconcileCreditNoteFormProvider
       creditNoteId={creditNoteId}

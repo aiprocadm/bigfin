@@ -1,10 +1,9 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Menu, MenuItem, MenuDivider } from '@blueprintjs/core';
 import { safeCallback } from '@/utils';
 import { Icon } from '@/components';
 
-export function ActionsMenu({ payload: { onRestore }, row: { original } }) {
+export function ActionsMenu({ payload: { onRestore }, row: { original } }: any) {
   return (
     <Menu>
       <MenuItem

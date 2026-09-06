@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { FSelect } from '@/components';
@@ -7,7 +6,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { MenuItem } from '@blueprintjs/core';
 
 // Create new account renderer.
-const createNewItemRenderer = (query, active, handleClick) => {
+const createNewItemRenderer = (query: any, active: any, handleClick: any) => {
   return (
     <MenuItem
       icon="add"
@@ -19,7 +18,7 @@ const createNewItemRenderer = (query, active, handleClick) => {
 };
 
 // Create new item from the given query string.
-const createNewItemFromQuery = (name) => ({ name });
+const createNewItemFromQuery = (name: any) => ({ name });
 
 /**
  * Tax rates select field binded with Formik form.
@@ -33,7 +32,7 @@ function TaxRatesSelectRoot({
   allowCreate,
 
   ...restProps
-}) {
+}: any) {
   // Maybe inject new item props to select component.
   const maybeCreateNewItemRenderer = allowCreate ? createNewItemRenderer : null;
   const maybeCreateNewItemFromQuery = allowCreate

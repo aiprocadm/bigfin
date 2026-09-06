@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classnames from 'classnames';
 import { LoadingIndicator } from '../Indicator';
@@ -12,7 +11,7 @@ export function DrawerInsider({
   name,
   mount = false,
   className,
-}) {
+}: any) {
   return (
     <div
       className={classnames(

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -30,7 +29,7 @@ export function ActionsMenu({
     onActivate,
     onViewDetails,
   },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -85,21 +84,21 @@ export function ActionsMenu({
 /**
  * Phone number accessor.
  */
-export function PhoneNumberAccessor(row) {
+export function PhoneNumberAccessor(row: any) {
   return <div className={'work_phone'}>{row.personal_phone}</div>;
 }
 
 /**
  * Balance accessor.
  */
-export function BalanceAccessor(row) {
+export function BalanceAccessor(row: any) {
   return <Money amount={row.closing_balance} currency={row.currency_code} />;
 }
 
 /**
  * Note column accessor.
  */
-export function NoteAccessor(row) {
+export function NoteAccessor(row: any) {
   return (
     <If condition={row.note}>
       <Tooltip

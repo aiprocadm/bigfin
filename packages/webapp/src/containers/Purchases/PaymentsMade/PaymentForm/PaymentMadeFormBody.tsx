@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { FastField } from 'formik';
@@ -13,10 +12,10 @@ export default function PaymentMadeFormBody() {
           form: { setFieldValue, values },
           field: { value },
           meta: { error, touched },
-        }) => (
+        }: any) => (
           <PaymentMadeEntriesTable
             entries={value}
-            onUpdateData={(newEntries) => {
+            onUpdateData={(newEntries: any) => {
               setFieldValue('entries', newEntries);
             }}
             currencyCode={values.currency_code}

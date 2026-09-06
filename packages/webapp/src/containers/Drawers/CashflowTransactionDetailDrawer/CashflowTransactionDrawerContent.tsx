@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/components/Drawers/CashflowTransactionDrawer.scss';
@@ -13,7 +12,7 @@ import CashflowTransactionDrawerDetails from './CashflowTransactionDrawerDetails
 export default function CashflowTransactionDrawerContent({
   // #ownProp
   referenceId,
-}) {
+}: any) {
   return (
     <CashflowTransactionDrawerProvider referenceId={referenceId}>
       <DrawerBody>

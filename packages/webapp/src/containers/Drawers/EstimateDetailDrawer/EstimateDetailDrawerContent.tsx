@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerBody } from '@/components';
 
@@ -11,7 +10,7 @@ import { EstimateDetailDrawerProvider } from './EstimateDetailDrawerProvider';
 export default function EstimateDetailDrawerContent({
   // #ownProp
   estimateId,
-}) {
+}: any) {
   return (
     <EstimateDetailDrawerProvider estimateId={estimateId}>
       <DrawerBody>

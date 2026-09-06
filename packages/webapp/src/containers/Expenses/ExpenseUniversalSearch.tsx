@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { AbilitySubject, ExpenseAction } from '@/constants/abilityOption';
 import { DRAWERS } from '@/constants/drawers';
@@ -15,7 +14,7 @@ function ExpenseUniversalSearchItemSelectComponent({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   if (resourceType === RESOURCES_TYPES.EXPENSE) {
     openDrawer(DRAWERS.EXPENSE_DETAILS, { expenseId: resourceId });
   }
@@ -33,7 +32,7 @@ export const ExpenseUniversalSearchItemSelect = withDrawerActions(
  * и сумме. Если ссылки нет, показываем дату: пустая строка в списке
  * результатов ничего не говорит.
  */
-const expensesToSearch = (expense) => ({
+const expensesToSearch = (expense: any) => ({
   id: expense.id,
   text: expense.reference_no || expense.formatted_date,
   label: expense.formatted_amount,

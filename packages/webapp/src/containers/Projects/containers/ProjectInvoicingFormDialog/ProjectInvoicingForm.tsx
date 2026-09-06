@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -26,23 +25,23 @@ const defaultInitialValues = {
 function ProjectInvoicingForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Initial form values
   const initialValues = {
     ...defaultInitialValues,
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     // Handle request response success.
-    const onSuccess = (response) => {};
+    const onSuccess = (response: any) => {};
 
     // Handle request response errors.
     const onError = ({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
   };

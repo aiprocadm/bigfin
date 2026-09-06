@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DashboardPageContent } from '@/components';
@@ -17,7 +16,7 @@ function WarehouseTransfersList({
 
   // #withWarehouseTransfersActions
   resetWarehouseTransferTableState,
-}) {
+}: any) {
   // Resets the warehouse transfer table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -45,7 +44,7 @@ function WarehouseTransfersList({
 export default compose(
   withWarehouseTransfersActions,
   withWarehouseTransfers(
-    ({ warehouseTransferTableState, warehouseTransferTableStateChanged }) => ({
+    ({ warehouseTransferTableState, warehouseTransferTableStateChanged }: any) => ({
       warehouseTransferTableState,
       warehouseTransferTableStateChanged,
     }),

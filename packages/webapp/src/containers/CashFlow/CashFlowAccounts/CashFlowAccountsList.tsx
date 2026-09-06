@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { compose } from 'lodash/fp';
 
@@ -24,7 +23,7 @@ function CashFlowAccountsList({
 
   // #withCashflowAccountsTableActions
   resetCashflowAccountsTableState,
-}) {
+}: any) {
   // Resets the cashflow accounts table state.
   useEffect(
     () => () => {
@@ -48,7 +47,7 @@ function CashFlowAccountsList({
 }
 
 export default compose(
-  withCashflowAccounts(({ cashflowAccountsTableState }) => ({
+  withCashflowAccounts(({ cashflowAccountsTableState }: any) => ({
     cashflowAccountsTableState,
   })),
   withCashflowAccountsTableActions,

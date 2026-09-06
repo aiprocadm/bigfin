@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { FormattedMessage as T } from '@/components';
 import intl from 'react-intl-universal';
@@ -21,10 +20,10 @@ export function ContactSelectField({
   buttonProps,
 
   ...restProps
-}) {
+}: any) {
   const localContacts = useMemo(
     () =>
-      contacts.map((contact) => ({
+      contacts.map((contact: any) => ({
         ...contact,
         _id: `${contact.id}_${contact.contact_type}`,
       })),
@@ -32,7 +31,7 @@ export function ContactSelectField({
   );
 
   const initialContact = useMemo(
-    () => contacts.find((a) => a.id === initialContactId),
+    () => contacts.find((a: any) => a.id === initialContactId),
     [initialContactId, contacts],
   );
 
@@ -43,14 +42,14 @@ export function ContactSelectField({
   useEffect(() => {
     if (typeof selectedContactId !== 'undefined') {
       const account = selectedContactId
-        ? contacts.find((a) => a.id === selectedContactId)
+        ? contacts.find((a: any) => a.id === selectedContactId)
         : null;
       setSelectedContact(account);
     }
   }, [selectedContactId, contacts, setSelectedContact]);
 
   const handleContactSelect = useCallback(
-    (contact) => {
+    (contact: any) => {
       setSelectedContact({ ...contact });
       onContactSelected && onContactSelected(contact);
     },

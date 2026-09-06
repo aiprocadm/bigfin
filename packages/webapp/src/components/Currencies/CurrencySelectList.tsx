@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FormattedMessage as T } from '@/components';
 import { FSelect } from '../Forms';
@@ -13,7 +12,7 @@ export function CurrencySelectList({
   name,
   placeholder = <T id={'select_currency_code'} />,
   ...props
-}) {
+}: any) {
   return (
     <FSelect
       name={name}

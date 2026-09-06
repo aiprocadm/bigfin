@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { NotifyInvoiceViaSMSFormProvider } from './NotifyInvoiceViaSMSFormProvider';
@@ -8,7 +7,7 @@ export default function NotifyInvoiceViaSMSDialogContent({
   // #ownProps
   dialogName,
   invoiceId,
-}) {
+}: any) {
   return (
     <NotifyInvoiceViaSMSFormProvider
       invoiceId={invoiceId}

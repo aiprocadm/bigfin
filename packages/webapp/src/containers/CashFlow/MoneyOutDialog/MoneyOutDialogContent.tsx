@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { MoneyOutProvider } from './MoneyOutDialogProvider';
 import MoneyOutForm from './MoneyOutForm';
@@ -11,7 +10,7 @@ export default function MoneyOutDialogContent({
   dialogName,
   accountId,
   accountType,
-}) {
+}: any) {
   return (
     <MoneyOutProvider
       accountId={accountId}

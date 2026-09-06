@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
@@ -19,7 +18,7 @@ function ItemUniversalSearchSelectComponent({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   if (resourceType === RESOURCES_TYPES.ITEM) {
     openDrawer(DRAWERS.ITEM_DETAILS, { itemId: resourceId });
     onAction && onAction();
@@ -36,7 +35,7 @@ export const ItemUniversalSearchSelectAction = withDrawerActions(
  * @param {*} item
  * @returns
  */
-const transfromItemsToSearch = (item) => ({
+const transfromItemsToSearch = (item: any) => ({
   id: item.id,
   text: item.name,
   subText: item.code,

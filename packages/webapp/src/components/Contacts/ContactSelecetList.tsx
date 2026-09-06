@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { FormattedMessage as T } from '@/components';
 import intl from 'react-intl-universal';
@@ -20,10 +19,10 @@ export function ContactSelecetList({
   buttonProps,
 
   ...restProps
-}) {
+}: any) {
   const contacts = useMemo(
     () =>
-      contactsList.map((contact) => ({
+      contactsList.map((contact: any) => ({
         ...contact,
         _id: `${contact.id}_${contact.contact_type}`,
       })),
@@ -31,7 +30,7 @@ export function ContactSelecetList({
   );
 
   const initialContact = useMemo(
-    () => contacts.find((a) => a.id === initialContactId),
+    () => contacts.find((a: any) => a.id === initialContactId),
     [initialContactId, contacts],
   );
 
@@ -42,14 +41,14 @@ export function ContactSelecetList({
   useEffect(() => {
     if (typeof selectedContactId !== 'undefined') {
       const account = selectedContactId
-        ? contacts.find((a) => a.id === selectedContactId)
+        ? contacts.find((a: any) => a.id === selectedContactId)
         : null;
       setSelectedContact(account);
     }
   }, [selectedContactId, contacts, setSelectedContact]);
 
   const handleContactRenderer = useCallback(
-    (contact, { handleClick }) => (
+    (contact: any, { handleClick }: any) => (
       <MenuItem
         key={contact.id}
         text={contact.display_name}
@@ -60,7 +59,7 @@ export function ContactSelecetList({
   );
 
   const onContactSelect = useCallback(
-    (contact) => {
+    (contact: any) => {
       setSelectedContact({ ...contact });
       onContactSelected && onContactSelected(contact);
     },
@@ -68,7 +67,7 @@ export function ContactSelecetList({
   );
 
   // Filter Contact List
-  const itemPredicate = (query, contact, index, exactMatch) => {
+  const itemPredicate = (query: any, contact: any, index: any, exactMatch: any) => {
     const normalizedTitle = contact.display_name.toLowerCase();
     const normalizedQuery = query.toLowerCase();
     if (exactMatch) {

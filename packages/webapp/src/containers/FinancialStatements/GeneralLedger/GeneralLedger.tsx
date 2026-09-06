@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
@@ -27,13 +26,13 @@ import { DialogsName } from '@/constants/dialogs';
 function GeneralLedger({
   // #withGeneralLedgerActions
   toggleGeneralLedgerFilterDrawer,
-}) {
+}: any) {
   // General ledger query.
   const { query, setLocationQuery } = useGeneralLedgerQuery();
 
   // Handle financial statement filter change.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: any) => {
       const parsedFilter = {
         ...filter,
         fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),

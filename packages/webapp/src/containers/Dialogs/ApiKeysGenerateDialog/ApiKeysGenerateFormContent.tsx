@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Form, useFormikContext } from 'formik';
 import {
@@ -24,7 +23,7 @@ function ApiKeysGenerateFormContent({
   dialogName,
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isSubmitting } = useFormikContext();
 
   const handleClose = () => {

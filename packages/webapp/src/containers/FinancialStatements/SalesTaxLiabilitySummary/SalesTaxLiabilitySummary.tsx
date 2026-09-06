@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import moment from 'moment';
 
@@ -22,10 +21,10 @@ import { DialogsName } from '@/constants/dialogs';
 function SalesTaxLiabilitySummary({
   // #withSalesTaxLiabilitySummaryActions
   toggleSalesTaxLiabilitySummaryFilterDrawer,
-}) {
+}: any) {
   const [query, setQuery] = useSalesTaxLiabilitySummaryQuery();
 
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: any) => {
     const newFilter = {
       ...filter,
       fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -34,7 +33,7 @@ function SalesTaxLiabilitySummary({
     setQuery({ ...newFilter });
   };
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     setQuery({
       ...query,
       numberFormat: values,

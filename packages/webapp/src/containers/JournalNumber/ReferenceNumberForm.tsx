@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -35,14 +34,14 @@ export default function ReferenceNumberForm({
   onSubmit,
   onClose,
   onChange,
-}) {
+}: any) {
   // Initial values.
   const formInitialValues = {
     ...initialFormValues,
     ...transformToForm(initialValues, initialFormValues),
   };
   // Handle the form submit.
-  const handleSubmit = (values, methods) => {
+  const handleSubmit = (values: any, methods: any) => {
     const parsed = transformValuesToForm(values);
     saveInvoke(onSubmit, { ...values, ...parsed }, methods);
   };

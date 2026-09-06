@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -14,9 +13,9 @@ function VendorDrawerLinkComponent({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   // Handle view customer drawer.
-  const handleVendorDrawer = (event) => {
+  const handleVendorDrawer = (event: any) => {
     openDrawer(DRAWERS.VENDOR_DETAILS, { vendorId });
     event.preventDefault();
   };

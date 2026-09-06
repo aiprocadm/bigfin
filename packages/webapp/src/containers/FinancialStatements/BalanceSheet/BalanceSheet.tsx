@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import moment from 'moment';
 
@@ -24,12 +23,12 @@ import { BalanceSheetDialogs } from './BalanceSheetDialogs';
 function BalanceSheet({
   // #withBalanceSheetActions
   toggleBalanceSheetFilterDrawer,
-}) {
+}: any) {
   // Balance sheet query.
   const { query, setLocationQuery } = useBalanceSheetQuery();
 
   // Handle re-fetch balance sheet after filter change.
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: any) => {
     const newFilter = {
       ...filter,
       fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -38,7 +37,7 @@ function BalanceSheet({
     setLocationQuery({ ...newFilter });
   };
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     setLocationQuery({
       ...query,
       numberFormat: values,

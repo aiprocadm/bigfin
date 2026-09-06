@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 
 import '@/style/pages/Vendors/List.scss';
@@ -25,7 +24,7 @@ function VendorsList({
   // #withVendorsActions
   resetVendorsTableState,
   resetVendorsSelectedRows,
-}) {
+}: any) {
   // Resets the vendors table state once the page unmount.
   useEffect(
     () => () => {
@@ -52,7 +51,7 @@ function VendorsList({
 }
 
 export default compose(
-  withVendors(({ vendorsTableState, vendorsTableStateChanged }) => ({
+  withVendors(({ vendorsTableState, vendorsTableStateChanged }: any) => ({
     vendorsTableState,
     vendorsTableStateChanged,
   })),

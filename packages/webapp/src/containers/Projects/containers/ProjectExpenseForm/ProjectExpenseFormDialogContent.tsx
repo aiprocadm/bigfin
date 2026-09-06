@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { ProjectExpenseFormProvider } from './ProjectExpenseFormProvider';
 import ProjectExpenseForm from './ProjectExpenseForm';
@@ -11,7 +10,7 @@ export default function ProjectExpenseFormDialogContent({
   // #ownProps
   dialogName,
   expense,
-}) {
+}: any) {
   return (
     <ProjectExpenseFormProvider dialogName={dialogName} expenseId={expense}>
       <ProjectExpenseForm />

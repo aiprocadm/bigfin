@@ -1,25 +1,24 @@
-// @ts-nocheck
 import axios from '@/services/axios';
 
 export default {
 
-  get(resource, params?) {
+  get(resource: any, params?: any) {
     return axios.get(`/api/${resource}`, params);
   },
 
-  post(resource, params?, config?) {
+  post(resource: any, params?: any, config?: any) {
     return axios.post(`/api/${resource}`, params, config);
   },
 
-  update(resource, slug, params?) {
+  update(resource: any, slug: any, params?: any) {
     return axios.put(`/api/${resource}/${slug}`, params);
   },
 
-  put(resource, params?) {
+  put(resource: any, params?: any) {
     return axios.put(`/api/${resource}`, params);
   },
 
-  delete(resource, params?) {
+  delete(resource: any, params?: any) {
     return axios.delete(`/api/${resource}`, params);
   }
 };

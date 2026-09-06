@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useRef } from 'react';
 import classNames from 'classnames';
 import { FormGroup, Classes, Intent } from '@blueprintjs/core';
@@ -17,7 +16,7 @@ export default function ItemsListCell({
   row: { index },
   cell: { value: initialValue },
   payload: { items, updateData, errors, autoFocus },
-}) {
+}: any) {
   const fieldRef = useRef();
 
   // Auto-focus the items list input field.
@@ -25,7 +24,7 @@ export default function ItemsListCell({
 
   // Handle the item selected.
   const handleItemSelected = useCallback(
-    (item) => {
+    (item: any) => {
       updateData(index, id, item.id);
     },
     [updateData, index, id],
@@ -46,7 +45,7 @@ export default function ItemsListCell({
         sellable={filterSellable}
         purchasable={filterPurchasable}
         inputProps={{
-          inputRef: (ref) => (fieldRef.current = ref),
+          inputRef: (ref: any) => (fieldRef.current = ref),
           placeholder: intl.get('enter_an_item'),
         }}
         openOnKeyDown={true}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -15,7 +14,7 @@ import { compose } from '@/utils';
 function Warehouses({
   // #withDashboardActions
   changePreferencesPageTitle,
-}) {
+}: any) {
   React.useEffect(() => {
     changePreferencesPageTitle(intl.get('warehouses.label'));
   }, [changePreferencesPageTitle]);

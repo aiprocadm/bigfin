@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import ContactDuplicateForm from './ContactDuplicateForm';
@@ -10,7 +9,7 @@ export default function ContactDuplicateDialogContent({
   // #ownProp
   contact,
   dialogName,
-}) {
+}: any) {
   return (
     <ContactDuplicateProvider dialogName={dialogName} contactId={contact}>
       <ContactDuplicateForm />

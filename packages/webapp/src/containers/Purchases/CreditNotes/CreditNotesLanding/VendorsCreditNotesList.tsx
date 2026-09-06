@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/VendorsCreditNote/List.scss';
@@ -20,7 +19,7 @@ function VendorsCreditNotesList({
 
   // #withVendorsCreditNotesActions
   resetVendorsCreditNoteTableState,
-}) {
+}: any) {
   // Resets the credit note table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -47,7 +46,7 @@ function VendorsCreditNotesList({
 export default compose(
   withVendorsCreditNotesActions,
   withVendorsCreditNotes(
-    ({ vendorsCreditNoteTableState, vendorsCreditNoteTableStateChanged }) => ({
+    ({ vendorsCreditNoteTableState, vendorsCreditNoteTableStateChanged }: any) => ({
       vendorsCreditNoteTableState,
       vendorsCreditNoteTableStateChanged,
     }),

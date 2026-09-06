@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { NonIdealState } from '@blueprintjs/core';
@@ -25,13 +24,13 @@ function AuditLogReportContent() {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: any) => {
       setLocationQuery(filter);
     },
     [setLocationQuery]
   );
 
-  const toggleFilterDrawer = useCallback((toggle) => {
+  const toggleFilterDrawer = useCallback((toggle: any) => {
     setIsFilterDrawerOpen((prev) =>
       typeof toggle !== 'undefined' ? toggle : !prev
     );

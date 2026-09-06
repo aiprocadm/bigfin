@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/CreditNote/List.scss';
@@ -20,7 +19,7 @@ function CreditNotesList({
 
   // #withCreditNotesActions
   resetCreditNotesTableState,
-}) {
+}: any) {
   // Resets the credit note table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -47,7 +46,7 @@ function CreditNotesList({
 
 export default compose(
   withCreditNotesActions,
-  withCreditNotes(({ creditNoteTableState, creditNoteTableStateChanged }) => ({
+  withCreditNotes(({ creditNoteTableState, creditNoteTableStateChanged }: any) => ({
     creditNoteTableState,
     creditNoteTableStateChanged,
   })),

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
@@ -16,7 +15,7 @@ function VendorUniversalSearchSelectComponent({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   if (resourceType === RESOURCES_TYPES.VENDOR) {
     openDrawer(DRAWERS.VENDOR_DETAILS, { vendorId: resourceId });
     onAction && onAction();
@@ -31,7 +30,7 @@ const VendorUniversalSearchSelectAction = withDrawerActions(
 /**
  * Transformes vendor resource item to search.
  */
-const vendorToSearch = (contact) => ({
+const vendorToSearch = (contact: any) => ({
   id: contact.id,
   text: contact.display_name,
   label: contact.formatted_balance,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DashboardPageContent, DashboardContentTable } from '@/components';
 
@@ -23,7 +22,7 @@ function ProjectsList({
 
   // #withProjectsActions
   resetProjectsTableState,
-}) {
+}: any) {
   // Resets the projects table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -50,7 +49,7 @@ function ProjectsList({
 }
 
 export default compose(
-  withProjects(({ projectsTableState, projectsTableStateChanged }) => ({
+  withProjects(({ projectsTableState, projectsTableStateChanged }: any) => ({
     projectsTableState,
     projectsTableStateChanged,
   })),

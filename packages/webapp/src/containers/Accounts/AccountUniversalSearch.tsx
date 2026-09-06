@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
@@ -15,7 +14,7 @@ function AccountUniversalSearchItemSelectComponent({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   if (resourceType === RESOURCES_TYPES.ACCOUNT) {
     openDrawer(DRAWERS.ACCOUNT_DETAILS, { accountId: resourceId });
     onAction && onAction();
@@ -32,7 +31,7 @@ export const AccountUniversalSearchItemSelect = withDrawerActions(
  * @param {*} account
  * @returns
  */
-const accountToSearch = (account) => ({
+const accountToSearch = (account: any) => ({
   id: account.id,
   text: `${account.name} - ${account.code}`,
   label: account.formatted_amount,

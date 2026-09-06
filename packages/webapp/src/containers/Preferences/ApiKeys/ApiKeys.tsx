@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -16,7 +15,7 @@ import { compose } from '@/utils';
 function ApiKeysPreferences({
   // #withDashboardActions
   changePreferencesPageTitle,
-}) {
+}: any) {
   useEffect(() => {
     changePreferencesPageTitle(intl.get('api_key.title'));
   }, [changePreferencesPageTitle]);

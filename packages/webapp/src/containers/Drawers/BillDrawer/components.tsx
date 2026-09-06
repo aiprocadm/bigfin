@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -11,7 +10,7 @@ import {  Icon } from '@/components';
 /**
  * Actions menu.
  */
-export function ActionsMenu({ row: { original }, payload: { onDelete } }) {
+export function ActionsMenu({ row: { original }, payload: { onDelete } }: any) {
   return (
     <Menu>
       <MenuItem
@@ -30,7 +29,7 @@ export function ActionsMenu({ row: { original }, payload: { onDelete } }) {
 export function FromTransactionCell({
   row: { original },
   payload: { onFromTranscationClick },
-}) {
+}: any) {
   // Handle the link click
   const handleAnchorClick = () => {
     onFromTranscationClick && onFromTranscationClick(original);
@@ -46,7 +45,7 @@ export function FromTransactionCell({
 /**
  * Name accessor.
  */
-export const NameAccessor = (row) => {
+export const NameAccessor = (row: any) => {
   return (
     <span className="name">
       <LabelName>{row.name}</LabelName>

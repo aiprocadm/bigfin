@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
@@ -14,8 +13,8 @@ function ProjectBillableEntriesLinkComponent({
 
   // #withDialogAction
   openDialog,
-}) {
-  const handleBillableEntries = (event) => {
+}: any) {
+  const handleBillableEntries = (event: any) => {
     openDialog('project-billable-entries', { projectId });
     event.preventDefault();
   };

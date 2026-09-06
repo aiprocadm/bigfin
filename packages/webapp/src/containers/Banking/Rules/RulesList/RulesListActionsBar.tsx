@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Button, Classes, NavbarGroup } from '@blueprintjs/core';
 import * as R from 'ramda';
@@ -10,7 +9,7 @@ import { DialogsName } from '@/constants/dialogs';
 function RulesListActionsBarRoot({
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const handleCreateBtnClick = () => {
     openDialog(DialogsName.BankRuleForm);
   };

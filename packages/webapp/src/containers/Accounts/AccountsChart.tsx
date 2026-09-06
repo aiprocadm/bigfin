@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 
 import '@/style/pages/Accounts/List.scss';
@@ -25,7 +24,7 @@ function AccountsChart({
   // #withAccountsActions
   resetAccountsTableState,
   setAccountsSelectedRows,
-}) {
+}: any) {
   // Resets the accounts table state once the page unmount.
   useEffect(
     () => () => {
@@ -52,7 +51,7 @@ function AccountsChart({
 }
 
 export default compose(
-  withAccounts(({ accountsTableState, accountsTableStateChanged }) => ({
+  withAccounts(({ accountsTableState, accountsTableStateChanged }: any) => ({
     accountsTableState,
     accountsTableStateChanged,
   })),

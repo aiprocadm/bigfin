@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Classes } from '@blueprintjs/core';
 import { DrawerBody, DrawerHeaderContent } from '@/components';

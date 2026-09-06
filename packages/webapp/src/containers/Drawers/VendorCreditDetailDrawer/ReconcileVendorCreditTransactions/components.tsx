@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, MenuItem, Menu } from '@blueprintjs/core';
@@ -9,7 +8,7 @@ import { VendorCreditAction, AbilitySubject } from '@/constants/abilityOption';
 /**
  * Actions menu.
  */
-export function ActionsMenu({ payload: { onDelete }, row: { original } }) {
+export function ActionsMenu({ payload: { onDelete }, row: { original } }: any) {
   return (
     <Menu>
       <Can I={VendorCreditAction.Delete} a={AbilitySubject.VendorCredit}>

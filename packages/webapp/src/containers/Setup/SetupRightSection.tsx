@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { x } from '@xstyled/emotion';
 
@@ -26,7 +25,7 @@ function SetupRightSection({
 
   // #withSubscriptions
   isSubscriptionActive,
-}) {
+}: any) {
   return (
     <x.section w="100%" overflow="auto">
       <SetupWizardContent stepId={setupStepId} stepIndex={setupStepIndex} />
@@ -35,7 +34,7 @@ function SetupRightSection({
 }
 
 export default compose(
-  withCurrentOrganization(({ organizationTenantId }) => ({
+  withCurrentOrganization(({ organizationTenantId }: any) => ({
     organizationId: organizationTenantId,
   })),
   withOrganization(
@@ -45,7 +44,7 @@ export default compose(
       isOrganizationSeeded,
       isOrganizationSetupCompleted,
       isOrganizationBuildRunning,
-    }) => ({
+    }: any) => ({
       organization,
       isOrganizationReady,
       isOrganizationSeeded,
@@ -54,12 +53,12 @@ export default compose(
     }),
   ),
   withSubscriptions(
-    ({ isSubscriptionActive }) => ({
+    ({ isSubscriptionActive }: any) => ({
       isSubscriptionActive,
     }),
     'main',
   ),
-  withSetupWizard(({ setupStepId, setupStepIndex }) => ({
+  withSetupWizard(({ setupStepId, setupStepIndex }: any) => ({
     setupStepId,
     setupStepIndex,
   })),

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
@@ -13,7 +12,7 @@ import { safeCallback } from '@/utils';
 export function BankRulesTableActionsMenu({
   payload: { onEdit, onDelete },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <Can I={BankRuleAction.Edit} a={AbilitySubject.BankRule}>

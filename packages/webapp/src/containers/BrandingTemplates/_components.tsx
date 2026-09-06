@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { safeCallback } from '@/utils';
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
@@ -9,7 +8,7 @@ import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 export function ActionsMenu({
   row: { original },
   payload: { onDeleteTemplate, onEditTemplate, onMarkDefaultTemplate },
-}) {
+}: any) {
   return (
     <Menu>
       {!original.default && (

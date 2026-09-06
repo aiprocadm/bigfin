@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { compose } from '@/utils';
 
@@ -24,7 +23,7 @@ function ItemsList({
   // #withItemsActions
   resetItemsTableState,
   setItemsSelectedRows,
-}) {
+}: any) {
   // Resets items table query state once the page unmount.
   React.useEffect(
     () => () => {
@@ -52,7 +51,7 @@ function ItemsList({
 
 export default compose(
   withItemsActions,
-  withItems(({ itemsTableState, itemsTableStateChanged }) => ({
+  withItems(({ itemsTableState, itemsTableStateChanged }: any) => ({
     itemsTableState,
     itemsTableStateChanged,
   })),

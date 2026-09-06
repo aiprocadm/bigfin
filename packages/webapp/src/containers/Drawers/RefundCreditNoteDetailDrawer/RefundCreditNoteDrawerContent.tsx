@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DrawerBody } from '@/components';
@@ -8,7 +7,7 @@ import RefundCreditNoteDetail from './RefundCreditNoteDetail';
 /**
  * Refund credit note drawer content.
  */
-export default function RefundCreditNoteDrawerContent({ refundTransactionId }) {
+export default function RefundCreditNoteDrawerContent({ refundTransactionId }: any) {
   return (
     <RefundCreditNoteDrawerProvider refundTransactionId={refundTransactionId}>
       <DrawerBody>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
@@ -25,12 +24,12 @@ import { JournalDialogs } from './JournalDialogs';
 function Journal({
   // #withJournalActions
   toggleJournalSheetFilter,
-}) {
+}: any) {
   const { query, setLocationQuery } = useJournalQuery();
 
   // Handle financial statement filter change.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: any) => {
       const _filter = {
         ...filter,
         fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),

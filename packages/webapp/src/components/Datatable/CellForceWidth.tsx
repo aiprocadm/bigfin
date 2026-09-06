@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { get } from 'lodash';
 
@@ -8,7 +7,7 @@ export function CellForceWidth({
   value,
   column: { forceWidthAccess },
   row: { original },
-}) {
+}: any) {
   const forceWidthValue = forceWidthAccess
     ? get(original, forceWidthAccess)
     : value;
@@ -16,7 +15,7 @@ export function CellForceWidth({
   return <ForceWidth forceValue={forceWidthValue}>{value}</ForceWidth>;
 }
 
-export function ForceWidth({ children, forceValue }) {
+export function ForceWidth({ children, forceValue }: any) {
   const forceWidthValue = forceValue || children;
 
   return (

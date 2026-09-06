@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { UnlockingPartialTransactionsFormProvider } from './UnlockingPartialTransactionsFormProvider';
@@ -11,7 +10,7 @@ export default function UnlockingPartialTransactionsDialogContent({
   // #ownProps
   moduleName,
   dialogName,
-}) {
+}: any) {
   return (
     <UnlockingPartialTransactionsFormProvider
       moduleName={moduleName}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
@@ -27,12 +26,12 @@ import { TrialBalanceSheetDialogs } from './TrialBalanceSheetDialogs';
 function TrialBalanceSheet({
   // #withTrialBalanceSheetActions
   toggleTrialBalanceFilterDrawer: toggleFilterDrawer,
-}) {
+}: any) {
   const { query, setLocationQuery } = useTrialBalanceSheetQuery();
 
   // Handle filter form submit.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: any) => {
       const parsedFilter = {
         ...filter,
         fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -43,7 +42,7 @@ function TrialBalanceSheet({
     [setLocationQuery],
   );
   // Handle numebr format form submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: any) => {
     setLocationQuery({
       ...query,
       numberFormat,

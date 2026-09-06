@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { Button, Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -9,7 +8,7 @@ import { withBankingActions } from '@/containers/CashFlow/withBankingActions';
 function CategorizeTransactionFormFooterRoot({
   // #withBankingActions
   closeMatchingTransactionAside,
-}) {
+}: any) {
   const { isSubmitting } = useFormikContext();
 
   const handleClose = () => {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import UnlockingTransactionsForm from './UnlockingTransactionsForm';
@@ -8,7 +7,7 @@ export default function UnlockingTransactionsDialogContent({
   // #ownProps
   moduleName,
   dialogName,
-}) {
+}: any) {
   return (
     <UnlockingTransactionsFormProvider moduleName={moduleName} dialogName={dialogName}>
       <UnlockingTransactionsForm />

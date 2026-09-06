@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/Branches/BranchFormDialog.scss';
@@ -13,7 +12,7 @@ export default function BranchFormDialogContent({
   // #ownProps
   dialogName,
   branchId,
-}) {
+}: any) {
   return (
     <BranchFormProvider branchId={branchId} dialogName={dialogName}>
       <BranchForm />

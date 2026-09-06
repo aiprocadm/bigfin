@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerBody } from '@/components';
 
@@ -8,7 +7,7 @@ import { VendorCreditDetailDrawerProvider } from './VendorCreditDetailDrawerProv
 /**
  * Vendor credit detail drawer content.
  */
-export default function VendorCreditDetailDrawerContent({ vendorCreditId }) {
+export default function VendorCreditDetailDrawerContent({ vendorCreditId }: any) {
   return (
     <VendorCreditDetailDrawerProvider vendorCreditId={vendorCreditId}>
       <DrawerBody>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
@@ -15,7 +14,7 @@ import styles from './BankRulesLandingEmptyState.module.scss';
 function BankRulesLandingEmptyStateRoot({
   // #withDialogAction
   openDialog,
-}) {
+}: any) {
   const handleNewBtnClick = () => {
     openDialog(DialogsName.BankRuleForm);
   };

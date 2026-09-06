@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DrawerBody } from '@/components';
@@ -12,7 +11,7 @@ import ExpenseDrawerDetails from './ExpenseDrawerDetails';
 export default function ExpenseDrawerContent({
   // #ownProp
   expenseId,
-}) {
+}: any) {
   return (
     <ExpenseDrawerProvider expenseId={expenseId}>
       <DrawerBody>

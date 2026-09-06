@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/Warehouses/warehouseFormDialog.scss';
@@ -12,7 +11,7 @@ export default function WarehouseFormDialogContent({
   // #ownProps
   dialogName,
   warehouseId,
-}) {
+}: any) {
   return (
     <WarehouseFormProvider warehouseId={warehouseId} dialogName={dialogName}>
       <WarehouseForm />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense } from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
@@ -9,7 +8,7 @@ import { withBanking } from '@/containers/CashFlow/withBanking';
 
 function CategorizeTransactionContentRoot({
   transactionsToCategorizeIdsSelected,
-}) {
+}: any) {
   return (
     <CategorizeTransactionBoot
       uncategorizedTransactionsIds={transactionsToCategorizeIdsSelected}
@@ -24,7 +23,7 @@ function CategorizeTransactionContentRoot({
 }
 
 export const CategorizeTransactionContent = R.compose(
-  withBanking(({ transactionsToCategorizeIdsSelected }) => ({
+  withBanking(({ transactionsToCategorizeIdsSelected }: any) => ({
     transactionsToCategorizeIdsSelected,
   })),
 )(CategorizeTransactionContentRoot);

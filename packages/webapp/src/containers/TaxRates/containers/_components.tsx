@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Can, Icon } from '@/components';
@@ -13,7 +12,7 @@ import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 export function TaxRatesTableActionsMenu({
   payload: { onEdit, onDelete, onViewDetails, onActivate, onInactivate },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem

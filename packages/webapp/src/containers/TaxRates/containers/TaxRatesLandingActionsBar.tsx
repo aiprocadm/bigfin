@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { NavbarGroup, NavbarDivider, Button, Classes } from '@blueprintjs/core';
@@ -22,7 +21,7 @@ import { useHistory } from 'react-router-dom';
 function TaxRatesActionsBar({
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const history = useHistory();
 
   // Handle `new item` button click.

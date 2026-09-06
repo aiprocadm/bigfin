@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { NotifyPaymentReceiveViaFormProvider } from './NotifyPaymentReceiveViaFormProvider';
@@ -8,7 +7,7 @@ export default function NotifyPaymentReceiveViaSMSContent({
   // #ownProps
   dialogName,
   paymentReceive,
-}) {
+}: any) {
   return (
     <NotifyPaymentReceiveViaFormProvider
       paymentReceiveId={paymentReceive}

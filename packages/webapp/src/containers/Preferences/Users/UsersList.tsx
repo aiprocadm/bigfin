@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
 
@@ -14,7 +13,7 @@ import { compose } from '@/utils';
 function UsersListPreferences({
   // #withDashboardActions
   changePreferencesPageTitle,
-}) {
+}: any) {
   useEffect(() => {
     changePreferencesPageTitle(intl.get('users'));
   }, [changePreferencesPageTitle]);

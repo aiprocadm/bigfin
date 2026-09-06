@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/PaymentReceive/List.scss';
@@ -21,7 +20,7 @@ function PaymentsReceivedList({
   // #withPaymentsReceivedActions
   resetPaymentReceivesTableState,
   setPaymentReceivesSelectedRows,
-}) {
+}: any) {
   // Resets the payment receives table state once the page unmount.
   React.useEffect(
     () => () => {
@@ -49,7 +48,7 @@ function PaymentsReceivedList({
 
 export default compose(
   withPaymentsReceived(
-    ({ paymentReceivesTableState, paymentsTableStateChanged }) => ({
+    ({ paymentReceivesTableState, paymentsTableStateChanged }: any) => ({
       paymentReceivesTableState,
       paymentsTableStateChanged,
     }),

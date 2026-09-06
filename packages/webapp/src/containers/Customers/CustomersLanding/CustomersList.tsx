@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 
 import '@/style/pages/Customers/List.scss';
@@ -25,7 +24,7 @@ function CustomersList({
   // #withCustomersActions
   resetCustomersTableState,
   resetCustomersSelectedRows,
-}) {
+}: any) {
   // Resets the accounts table state once the page unmount.
   useEffect(
     () => () => {
@@ -52,7 +51,7 @@ function CustomersList({
 }
 
 export default compose(
-  withCustomers(({ customersTableState, customersTableStateChanged }) => ({
+  withCustomers(({ customersTableState, customersTableStateChanged }: any) => ({
     customersTableState,
     customersTableStateChanged,
   })),

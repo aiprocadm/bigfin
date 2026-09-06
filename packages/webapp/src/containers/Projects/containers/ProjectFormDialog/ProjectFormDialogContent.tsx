@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { ProjectFormProvider } from './ProjectFormProvider';
@@ -12,7 +11,7 @@ export default function ProjectFormDialogContent({
   // #ownProps
   dialogName,
   project,
-}) {
+}: any) {
   return (
     <ProjectFormProvider projectId={project} dialogName={dialogName}>
       <ProjectForm />

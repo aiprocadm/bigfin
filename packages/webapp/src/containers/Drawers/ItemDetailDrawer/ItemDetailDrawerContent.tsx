@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/components/Drawers/ItemDrawer.scss';
@@ -13,7 +12,7 @@ import { ItemDetailDrawerProvider } from './ItemDetailDrawerProvider';
 export default function ItemDetailDrawerContent({
   // #ownProp
   itemId,
-}) {
+}: any) {
   return (
     <ItemDetailDrawerProvider itemId={itemId}>
       <DrawerBody>

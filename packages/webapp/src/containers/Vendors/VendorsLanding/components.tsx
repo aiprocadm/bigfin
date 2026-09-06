@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -31,7 +30,7 @@ export function ActionsMenu({
     onActivate,
     onViewDetails,
   },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -86,7 +85,7 @@ export function ActionsMenu({
 /**
  * Actions cell.
  */
-export function ActionsCell(props) {
+export function ActionsCell(props: any) {
   return (
     <Popover
       content={<ActionsMenu {...props} />}
@@ -100,28 +99,28 @@ export function ActionsCell(props) {
 /**
  * Avatar table accessor.
  */
-export function AvatarAccessor(row) {
+export function AvatarAccessor(row: any) {
   return <span className="avatar">{firstLettersArgs(row.display_name)}</span>;
 }
 
 /**
  * Phone number accessor.
  */
-export function PhoneNumberAccessor(row) {
+export function PhoneNumberAccessor(row: any) {
   return <div className={'work_phone'}>{row.work_phone}</div>;
 }
 
 /**
  * Balance accessor.
  */
-export function BalanceAccessor({ closing_balance, currency_code }) {
+export function BalanceAccessor({ closing_balance, currency_code }: any) {
   return <Money amount={closing_balance} currency={currency_code} />;
 }
 
 /**
  * Note column accessor.
  */
-export function NoteAccessor(row) {
+export function NoteAccessor(row: any) {
   return (
     <If condition={row.note}>
       <Tooltip

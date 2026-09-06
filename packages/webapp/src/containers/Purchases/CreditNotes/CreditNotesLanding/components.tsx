@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -15,7 +14,7 @@ import { VendorCreditAction, AbilitySubject } from '@/constants/abilityOption';
 export function ActionsMenu({
   payload: { onEdit, onDelete, onOpen, onRefund, onReconcile, onViewDetails },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -76,7 +75,7 @@ export function ActionsMenu({
 /**
  * Status accessor.
  */
-export function StatusAccessor(creditNote) {
+export function StatusAccessor(creditNote: any) {
   return (
     <div>
       <Choose>

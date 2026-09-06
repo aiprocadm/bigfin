@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { useFormikContext } from 'formik';
@@ -21,7 +20,7 @@ function CustomerSelectRoot({
   allowCreate,
   name,
   ...props
-}) {
+}: any) {
   // Maybe inject create new item props to suggest component.
   const maybeCreateNewItemRenderer = allowCreate ? createNewItemRenderer : null;
   const maybeCreateNewItemFromQuery = allowCreate
@@ -34,7 +33,7 @@ function CustomerSelectRoot({
     setFieldValue(name, payload.customerId);
   });
   // Handles the create item click.
-  const handleCreateItemClick = (item) => {
+  const handleCreateItemClick = (item: any) => {
     const displayName = item.name;
     openDrawer(DRAWERS.QUICK_CREATE_CUSTOMER, { autofillRef, displayName });
   };

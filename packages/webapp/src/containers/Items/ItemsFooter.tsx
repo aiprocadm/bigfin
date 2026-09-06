@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Button } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
@@ -8,7 +7,7 @@ export default function ItemFloatingFooter({
   onSubmitClick,
   onCancelClick,
   itemDetail,
-}) {
+}: any) {
   return (
     <div className="form__floating-footer">
       <Button

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
@@ -10,7 +9,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { usePreprocessingAccounts } from './_hooks';
 
 // Create new account renderer.
-const createNewItemRenderer = (query, active, handleClick) => {
+const createNewItemRenderer = (query: any, active: any, handleClick: any) => {
   return (
     <MenuItem
       icon="add"
@@ -22,13 +21,13 @@ const createNewItemRenderer = (query, active, handleClick) => {
 };
 
 // Create new item from the given query string.
-const createNewItemFromQuery = (name) => ({ name });
+const createNewItemFromQuery = (name: any) => ({ name });
 
 /**
  * Default account item renderer.
  * @returns {JSX.Element}
  */
-const accountRenderer = (item, { handleClick, modifiers, query }) => {
+const accountRenderer = (item: any, { handleClick, modifiers, query }: any) => {
   if (!modifiers.matchesPredicate) {
     return null;
   }
@@ -62,7 +61,7 @@ function AccountsSelectRoot({
   filterByRootTypes,
 
   ...restProps
-}) {
+}: any) {
   // Filters accounts based on filter props.
   const filteredAccounts = usePreprocessingAccounts(items, {
     filterByParentTypes,

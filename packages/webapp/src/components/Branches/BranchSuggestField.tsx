@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { MenuItem } from '@blueprintjs/core';
@@ -20,9 +19,9 @@ export function BranchSuggestField({
   popoverFill = false,
   onBranchSelected,
   ...suggestProps
-}) {
+}: any) {
   const initialBranch = React.useMemo(
-    () => branches.find((b) => b.id === initialBranchId),
+    () => branches.find((b: any) => b.id === initialBranchId),
     [initialBranchId, branches],
   );
 
@@ -33,7 +32,7 @@ export function BranchSuggestField({
   React.useEffect(() => {
     if (typeof selectedBranchId !== 'undefined') {
       const branch = selectedBranchId
-        ? branches.find((a) => a.id === selectedBranchId)
+        ? branches.find((a: any) => a.id === selectedBranchId)
         : null;
       setSelectedBranch(branch);
     }
@@ -44,7 +43,7 @@ export function BranchSuggestField({
    * @param {*} branch
    * @returns
    */
-  const branchItemRenderer = (branch, { handleClick, modifiers, query }) => {
+  const branchItemRenderer = (branch: any, { handleClick, modifiers, query }: any) => {
     return (
       <MenuItem
         // active={modifiers.active}
@@ -65,7 +64,7 @@ export function BranchSuggestField({
    * @param {*} exactMatch
    * @returns
    */
-  const branchItemPredicate = (query, branch, _index, exactMatch) => {
+  const branchItemPredicate = (query: any, branch: any, _index: any, exactMatch: any) => {
     const normalizedTitle = branch.name.toLowerCase();
     const normalizedQuery = query.toLowerCase();
 
@@ -82,7 +81,7 @@ export function BranchSuggestField({
    * @returns
    */
   const brnachItemSelect = React.useCallback(
-    (branch) => {
+    (branch: any) => {
       if (branch.id) {
         setSelectedBranch({ ...branch });
         onBranchSelected && onBranchSelected(branch);
@@ -96,7 +95,7 @@ export function BranchSuggestField({
    * @param {*} inputVaue
    * @returns
    */
-  const branchInputValueRenderer = (inputValue) => {
+  const branchInputValueRenderer = (inputValue: any) => {
     if (inputValue) {
       return inputValue.name.toString();
     }

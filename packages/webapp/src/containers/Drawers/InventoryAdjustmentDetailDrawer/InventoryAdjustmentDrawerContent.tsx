@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DrawerBody } from '@/components';
@@ -8,7 +7,7 @@ import InventoryAdjustmentDetail from './InventoryAdjustmentDetail';
 /**
  * Inventory adjustment drawer content.
  */
-export default function InventoryAdjustmentDrawerContent({ inventoryId }) {
+export default function InventoryAdjustmentDrawerContent({ inventoryId }: any) {
   return (
     <InventoryAdjustmentDrawerProvider inventoryId={inventoryId}>
       <DrawerBody>

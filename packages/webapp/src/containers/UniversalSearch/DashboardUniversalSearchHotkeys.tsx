@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -9,7 +8,7 @@ import { withUniversalSearchActions } from './withUniversalSearchActions';
  */
 function DashboardUniversalSearchHotkey({
   openGlobalSearch,
-}) {
+}: any) {
   useHotkeys('shift+p', (event, handle) => {
     openGlobalSearch();
   });

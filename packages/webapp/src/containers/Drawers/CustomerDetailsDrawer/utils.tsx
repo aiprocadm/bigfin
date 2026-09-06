@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Button,
@@ -14,7 +13,7 @@ import { Icon, FormattedMessage as T } from '@/components';
  *  Customer more actions menu items.
  * @returns
  */
-export function CustomerMoreMenuItem({ payload: { onEditOpeningBalance } }) {
+export function CustomerMoreMenuItem({ payload: { onEditOpeningBalance } }: any) {
   return (
     <Popover
       minimal={true}

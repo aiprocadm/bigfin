@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/components/Drawers/ManualJournalDrawer.scss';
@@ -13,7 +12,7 @@ import ManualJournalDrawerDetails from './ManualJournalDrawerDetails';
 export default function ManualJournalDrawerContent({
   // #ownProp
   manualJournalId,
-}) {
+}: any) {
   return (
     <ManualJournalDrawerProvider manualJournalId={manualJournalId}>
       <DrawerBody>

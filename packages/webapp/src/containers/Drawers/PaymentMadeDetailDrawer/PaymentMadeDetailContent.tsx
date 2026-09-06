@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DrawerBody } from '@/components';
@@ -11,7 +10,7 @@ import { PaymentMadeDetailProvider } from './PaymentMadeDetailProvider';
 export default function PaymentMadeDetailContent({
   // #ownProp
   paymentMadeId,
-}) {
+}: any) {
   return (
     <PaymentMadeDetailProvider paymentMadeId={paymentMadeId}>
       <DrawerBody>

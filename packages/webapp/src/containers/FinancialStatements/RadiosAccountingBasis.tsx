@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { FastField } from 'formik';
 import { handleStringChange } from '@/utils';
 import { RadioGroup, Radio } from '@blueprintjs/core';
 
-export default function RadiosAccountingBasis(props) {
+export default function RadiosAccountingBasis(props: any) {
   const { key = 'basis', ...rest } = props;
   
 
@@ -14,12 +13,12 @@ export default function RadiosAccountingBasis(props) {
       {({
         form: { setFieldValue },
         field: { value },
-      }) => (
+      }: any) => (
         <RadioGroup
           inline={true}
           label={intl.get('accounting_basis')}
           name="basis"
-          onChange={handleStringChange((value) => {
+          onChange={handleStringChange((value: any) => {
             setFieldValue(key, value);
           })}
           className={'radio-group---accounting-basis'}

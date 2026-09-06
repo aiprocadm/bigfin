@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import ContactDetail from './ContactDetail';
@@ -12,7 +11,7 @@ import '@/style/components/Drawers/ViewDetail/ViewDetail.scss';
 export default function ContactDetailDrawerContent({
   // #ownProp
   contact,
-}) {
+}: any) {
   return (
     <ContactDetailDrawerProvider contactId={contact}>
       <ContactDetail />

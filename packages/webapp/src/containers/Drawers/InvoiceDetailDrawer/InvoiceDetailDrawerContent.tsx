@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerBody } from '@/components';
 import InvoiceDetail from './InvoiceDetail';
@@ -11,7 +10,7 @@ import { InvoiceDetailDrawerProvider } from './InvoiceDetailDrawerProvider';
 export default function InvoiceDetailDrawerContent({
   // #ownProp
   invoiceId,
-}) {
+}: any) {
   return (
     <InvoiceDetailDrawerProvider invoiceId={invoiceId}>
       <DrawerBody>

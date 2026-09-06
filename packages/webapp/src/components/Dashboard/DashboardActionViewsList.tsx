@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo, useState } from 'react';
 import classNames from 'classnames';
 import {
@@ -23,12 +22,12 @@ export function DashboardActionViewsList({
   allMenuItemText,
   views,
   onChange,
-}) {
-  const handleClickViewItem = (view) => {
+}: any) {
+  const handleClickViewItem = (view: any) => {
     onChange && onChange(view);
   };
 
-  const viewsMenuItems = views.map((view) => (
+  const viewsMenuItems = views.map((view: any) => (
     <MenuItem onClick={() => handleClickViewItem(view)} text={view.name} />
   ));
 

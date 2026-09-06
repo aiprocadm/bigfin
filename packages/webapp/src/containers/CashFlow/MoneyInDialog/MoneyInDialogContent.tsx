@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { MoneyInDialogProvider } from './MoneyInDialogProvider';
 import MoneyInForm from './MoneyInForm';
 
@@ -10,7 +9,7 @@ export default function MoneyInDialogContent({
   dialogName,
   accountId,
   accountType,
-}) {
+}: any) {
   return (
     <MoneyInDialogProvider
       accountId={accountId}

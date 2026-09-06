@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Icon } from '@/components';
@@ -8,7 +7,7 @@ import { safeCallback } from '@/utils';
 /**
  * Table actions cell.
  */
-export function ActionMenu({ payload: { onDelete }, row: { original } }) {
+export function ActionMenu({ payload: { onDelete }, row: { original } }: any) {
   return (
     <Menu>
       <MenuItem

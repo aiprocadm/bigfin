@@ -284,7 +284,9 @@ export const useVendorCreditTotalFormatted = () => {
  */
 export const useVendorCreditFormattedSubtotal = () => {
   const subtotal = useVendorCreditSubtotal();
-  const currencyCode = useCurrentOrganizationCurrencyCode();
+  const {
+    values: { currency_code: currencyCode },
+  } = useFormikContext();
 
   return formattedAmount(subtotal, currencyCode);
 };

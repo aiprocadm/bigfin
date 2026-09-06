@@ -45,7 +45,7 @@ function APAgingSummary({
   );
   // Handle number format submit.
   const handleNumberFormatSubmit = (numberFormat) => {
-    setLocationQuery({ ...filter, numberFormat });
+    setLocationQuery({ ...query, numberFormat });
   };
   // Hide the report filter drawer once the page unmount.
   useEffect(

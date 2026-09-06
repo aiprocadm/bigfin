@@ -131,7 +131,7 @@ function useFilterSidebarItemSubscriptionPredicater() {
           : true;
 
         const isInactive = includes(subscription, [
-          ISidebarSubscriptionAbility.Inactive,
+          ISidebarSubscriptionAbility.Expired,
         ])
           ? isSubscriptionInactive
           : true;

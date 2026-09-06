@@ -42,7 +42,7 @@ function SalesByItems({
   // Handle number format form submit.
   const handleNumberFormatSubmit = (numberFormat) => {
     setLocationQuery({
-      ...filter,
+      ...query,
       numberFormat,
     });
   };

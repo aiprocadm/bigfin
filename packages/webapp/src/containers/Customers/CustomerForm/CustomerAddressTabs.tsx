@@ -2,8 +2,8 @@
 import React from 'react';
 import { Row } from '@/components';
 
-import CustomerBillingAddress from './CustomerBillingAddress';
-import CustomerShippingAddress from './CustomerShippingAddress';
+import { CustomerBillingAddress } from './CustomerBillingAddress';
+import { CustomerShippingAddress } from './CustomerShippingAddress';
 
 export default function CustomerAddressTabs() {
   return (

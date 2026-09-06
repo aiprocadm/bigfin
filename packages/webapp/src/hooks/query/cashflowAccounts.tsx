@@ -224,7 +224,7 @@ export function useRefreshCashflowTransactions() {
  * @param {number} uncategorizedTranasctionId -
  */
 export function useUncategorizedTransaction(
-  uncategorizedTranasctionId: nunber,
+  uncategorizedTranasctionId: number,
   props,
 ) {
   return useRequestQuery(

@@ -45,7 +45,6 @@ export function VendorFinanicalPanelTab() {
             label={<T id={'currency'} />}
             fastField
             inline
-            fastField
           >
             <CurrencySelectList
               name="currency_code"

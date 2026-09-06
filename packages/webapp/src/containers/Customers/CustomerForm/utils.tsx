@@ -6,6 +6,7 @@ import { first } from 'lodash';
 
 import { useCustomerFormContext } from './CustomerFormProvider';
 import { useCurrentOrganization } from '@/hooks/state';
+import { defaultFastFieldShouldUpdate } from '@/utils';
 import { contactRequisitesInitialValues } from '@/containers/Contacts/contactRequisites.schema';
 
 export const defaultInitialValues = {

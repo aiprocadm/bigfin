@@ -28,7 +28,7 @@ export default function ReceiptDetailTableFooter() {
           <TotalLine
             title={
               receipt.discount_percentage_formatted
-                ? `Discount [${invoice.discount_percentage_formatted}]`
+                ? `Discount [${receipt.discount_percentage_formatted}]`
                 : 'Discount'
             }
             value={receipt.discount_amount_formatted}

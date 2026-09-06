@@ -40,8 +40,8 @@ function PurchasesByItems({
   );
   // Handle number format form submit.
   const handleNumberFormatSubmit = (numberFormat) => {
-    setFilter({
-      ...filter,
+    setLocationQuery({
+      ...query,
       numberFormat,
     });
   };

@@ -1,6 +1,5 @@
 // @ts-nocheck
 import ApiService from '@/services/ApiService';
-import t from '@/store/types';
 
 export const submitBilling = ({ form }) => {
   return (dispatch) =>

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { getColumnWidth } from '@/utils';
 import { useExcludedTransactionsBoot } from './ExcludedTransactionsTableBoot';
 import { CLASSES } from '@/constants';

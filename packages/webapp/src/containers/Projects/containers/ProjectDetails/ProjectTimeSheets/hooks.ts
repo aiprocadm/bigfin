@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
-import { AvatarCell, TimesheetAccessor } from './components';
+import { TimesheetAccessor } from './components';
 
 /**
  * Retrieve project timesheet list columns.

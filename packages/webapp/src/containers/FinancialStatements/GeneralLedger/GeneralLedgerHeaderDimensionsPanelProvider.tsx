@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Features } from '@/constants';
@@ -6,13 +5,13 @@ import { useBranches } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const GeneralLedgerHeaderDimensionsPanelContext = React.createContext();
+const GeneralLedgerHeaderDimensionsPanelContext = React.createContext<any>(undefined);
 
 /**
  * General Ledger Header Dimensions Panel provider.
  * @returns {JSX.Element}
  */
-function GeneralLedgerHeaderDimensionsPanelProvider({ query, ...props }) {
+function GeneralLedgerHeaderDimensionsPanelProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

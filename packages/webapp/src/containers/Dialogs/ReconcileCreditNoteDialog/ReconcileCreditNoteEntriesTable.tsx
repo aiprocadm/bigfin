@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { defaultTo } from 'lodash';
@@ -20,7 +19,7 @@ export default function ReconcileCreditNoteEntriesTable({
   onUpdateData,
   entries,
   errors,
-}) {
+}: any) {
   // Retrieve the reconcile credit note table columns.
   const columns = useReconcileCreditNoteTableColumns();
 
@@ -31,7 +30,7 @@ export default function ReconcileCreditNoteEntriesTable({
 
   // Handle update data.
   const handleUpdateData = React.useCallback(
-    (rowIndex, columnId, value) => {
+    (rowIndex: any, columnId: any, value: any) => {
       const newRows = compose(updateTableCell(rowIndex, columnId, value))(
         entries,
       );

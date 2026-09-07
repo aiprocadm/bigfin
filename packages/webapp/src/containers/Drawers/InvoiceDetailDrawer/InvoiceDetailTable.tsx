@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -28,7 +27,7 @@ export default function InvoiceDetailTable() {
       styleName={TableStyle.Constrant}
       initialHiddenColumns={
         // If any entry has no discount, hide the discount column.
-        entries?.some((e) => e.discount_formatted) ? [] : ['discount']
+        entries?.some((e: any) => e.discount_formatted) ? [] : ['discount']
       }
     />
   );

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext } from "react";
 import TableContext from "./TableContext";
 
@@ -11,7 +10,7 @@ export default function TableRows() {
     props: { TableRowRenderer, TableCellRenderer },
   } = useContext(TableContext);
 
-  return page.map((row, index) => {
+  return page.map((row: any, index: any) => {
     prepareRow(row);
     return <TableRowRenderer key={index} row={row} TableCellRenderer={TableCellRenderer} />;
   });

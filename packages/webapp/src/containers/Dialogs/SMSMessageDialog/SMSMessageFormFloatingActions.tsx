@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Button } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -19,7 +18,7 @@ import { compose } from '@/utils';
 function SMSMessageFormFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Formik context.
   const { isSubmitting } = useFormikContext();
 

@@ -6,7 +6,7 @@ import {
   useSettingSMSNotification,
 } from '@/hooks/query';
 
-const SMSMessageDialogContext = React.createContext();
+const SMSMessageDialogContext = React.createContext<any>(undefined);
 
 /**
  * SMS Message dialog provider.

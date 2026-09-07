@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useAuditLogContext } from './AuditLogProvider';
 import FinancialLoadingBar from '../FinancialLoadingBar';

@@ -3,7 +3,7 @@ import React from 'react';
 import { DashboardInsider } from '@/components';
 import { useProject } from '../../hooks';
 
-const ProjectDetailContext = React.createContext();
+const ProjectDetailContext = React.createContext<any>(undefined);
 
 /**
  * Project detail provider.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { first } from 'lodash';
@@ -11,7 +10,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: any) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);

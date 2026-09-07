@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { FastField } from 'formik';
 import React from 'react';
 import ExpenseFormEntriesTable from './ExpenseFormEntriesTable';
@@ -23,11 +22,11 @@ export default function ExpenseFormEntriesField({ linesNumber = 4 }) {
         form: { values, setFieldValue },
         field: { value },
         meta: { error, touched },
-      }) => (
+      }: any) => (
         <ExpenseFormEntriesTable
           entries={value}
           error={error}
-          onChange={(entries) => {
+          onChange={(entries: any) => {
             setFieldValue('categories', entries);
           }}
           defaultEntry={defaultExpenseEntry}

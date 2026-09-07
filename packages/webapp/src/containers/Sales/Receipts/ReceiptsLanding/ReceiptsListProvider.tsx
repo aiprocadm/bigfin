@@ -7,7 +7,7 @@ import { DashboardInsider } from '@/components/Dashboard';
 import { useResourceMeta, useResourceViews, useReceipts } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const ReceiptsListContext = createContext();
+const ReceiptsListContext = createContext<any>(undefined);
 
 // Receipts list provider.
 function ReceiptsListProvider({ query, tableStateChanged, ...props }) {

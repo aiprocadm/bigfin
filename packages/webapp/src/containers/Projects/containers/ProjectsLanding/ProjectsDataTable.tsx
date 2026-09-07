@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -32,7 +31,7 @@ function ProjectsDataTable({
 
   // #withSettings
   projectsTableSize,
-}) {
+}: any) {
   const history = useHistory();
 
   // Projects list context.
@@ -47,17 +46,17 @@ function ProjectsDataTable({
     useMemorizedColumnsWidths(TABLES.PROJECTS);
 
   // Handle delete project.
-  const handleDeleteProject = ({ id }) => {
+  const handleDeleteProject = ({ id }: any) => {
     openAlert('project-delete', { projectId: id });
   };
 
   // Handle project's status button click.
-  const handleProjectStatus = ({ id, status_formatted }) => {
+  const handleProjectStatus = ({ id, status_formatted }: any) => {
     openAlert('project-status', { projectId: id, status: status_formatted });
   };
 
   // Handle cell click.
-  const handleCellClick = ({ row: { original } }) => {
+  const handleCellClick = ({ row: { original } }: any) => {
     return history.push(`/projects/${original?.id}/details`, {
       projectId: original.id,
       projectName: original.name,
@@ -65,20 +64,20 @@ function ProjectsDataTable({
   };
 
   // Handle edit project.
-  const handleEditProject = (project) => {
+  const handleEditProject = (project: any) => {
     openDialog('project-form', {
       projectId: project.id,
       action: 'edit',
     });
   };
   // Handle new task button click.
-  const handleNewTaskButtonClick = (project) => {
+  const handleNewTaskButtonClick = (project: any) => {
     openDialog('project-task-form', {
       projectId: project.id,
     });
   };
   // Handle view detail project.
-  const handleViewDetailProject = (project) => {
+  const handleViewDetailProject = (project: any) => {
     return history.push(`/projects/${project.id}/details`, {
       projectId: project.id,
       projectName: project.name,
@@ -123,7 +122,7 @@ export default compose(
   withDialogActions,
   withAlertActions,
   withProjectsActions,
-  withSettings(({ projectSettings }) => ({
+  withSettings(({ projectSettings }: any) => ({
     projectsTableSize: projectSettings?.tableSize,
   })),
 )(ProjectsDataTable);

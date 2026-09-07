@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 
@@ -19,7 +18,7 @@ function EstimateViewTabs({
 
   // #withEstimates
   estimatesCurrentView,
-}) {
+}: any) {
   // Estimates list context.
   const { estimatesViews } = useEstimatesListContext();
  
@@ -27,7 +26,7 @@ function EstimateViewTabs({
   const tabs = transfromViewsToTabs(estimatesViews);
 
   // Handle tab change.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setEstimatesTableState({ viewSlug: viewSlug || null });
   };
 
@@ -47,7 +46,7 @@ function EstimateViewTabs({
 
 export default compose(
   withEstimatesActions,
-  withEstimates(({ estimatesTableState }) => ({
+  withEstimates(({ estimatesTableState }: any) => ({
     estimatesCurrentView: estimatesTableState.viewSlug
   })),
 )(EstimateViewTabs);

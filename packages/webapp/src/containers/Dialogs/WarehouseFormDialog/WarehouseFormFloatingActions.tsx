@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Intent, Button, Classes } from '@blueprintjs/core';
@@ -16,7 +15,7 @@ import { compose } from '@/utils';
 function WarehouseFormFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Formik context.
   const { isSubmitting } = useFormikContext();
 

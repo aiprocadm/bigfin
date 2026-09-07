@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, NavbarGroup, Classes, Intent } from '@blueprintjs/core';
 
@@ -20,7 +19,7 @@ import { compose } from '@/utils';
 function RefundVendorCreditDetailActionsBar({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const { refundTransactionId } = useRefundVendorCreditNoteDrawerContext();
 
   // Handle delete refund vendor credit.

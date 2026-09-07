@@ -4,7 +4,7 @@ import { DashboardInsider } from '@/components';
 import { useItemsCategories, useResourceMeta } from '@/hooks/query';
 import { transformTableStateToQuery, getFieldsFromResourceMeta } from '@/utils';
 
-const ItemsCategoriesContext = createContext();
+const ItemsCategoriesContext = createContext<any>(undefined);
 
 /**
  * Items categories provider.

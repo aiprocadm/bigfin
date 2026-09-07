@@ -12,7 +12,7 @@ import {
 import { useWatchItemError } from './utils';
 import { useTaxRates } from '@/hooks/query/taxRates';
 
-const ItemFormContext = createContext();
+const ItemFormContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

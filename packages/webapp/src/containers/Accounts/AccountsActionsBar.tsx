@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { isEmpty, isUndefined } from 'lodash';
 import {
@@ -68,7 +67,7 @@ function AccountsActionsBar({
 
   // #withSettingsActions
   addSetting,
-}) {
+}: any) {
   const history = useHistory();
 
   const { resourceViews, fields } = useAccountsChartContext();
@@ -100,11 +99,11 @@ function AccountsActionsBar({
     });
   };
   // Handle tab changing.
-  const handleTabChange = (view) => {
+  const handleTabChange = (view: any) => {
     setAccountsTableState({ viewSlug: view ? view.slug : null });
   };
   // Handle inactive switch changing.
-  const handleInactiveSwitchChange = (event) => {
+  const handleInactiveSwitchChange = (event: any) => {
     const checked = event.target.checked;
     setAccountsTableState({ inactiveMode: checked });
   };
@@ -113,7 +112,7 @@ function AccountsActionsBar({
     refresh();
   };
   // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
+  const handleTableRowSizeChange = (size: any) => {
     addSetting('accounts', 'tableSize', size);
   };
   // handle the import button click.
@@ -186,7 +185,7 @@ function AccountsActionsBar({
             conditions: accountsFilterConditions,
             defaultFieldKey: 'name',
             fields: fields,
-            onFilterChange: (filterConditions) => {
+            onFilterChange: (filterConditions: any) => {
               setAccountsTableState({ filterRoles: filterConditions });
             },
           }}
@@ -245,12 +244,12 @@ export default compose(
   withDialogActions,
   withAlertActions,
   withSettingsActions,
-  withAccounts(({ accountsSelectedRows, accountsTableState }) => ({
+  withAccounts(({ accountsSelectedRows, accountsTableState }: any) => ({
     accountsSelectedRows,
     accountsInactiveMode: accountsTableState.inactiveMode,
     accountsFilterConditions: accountsTableState.filterRoles,
   })),
-  withSettings(({ accountsSettings }) => ({
+  withSettings(({ accountsSettings }: any) => ({
     accountsTableSize: accountsSettings.tableSize,
   })),
   withAccountsTableActions,

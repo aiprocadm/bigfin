@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
@@ -12,7 +11,7 @@ import { saveInvoke } from '@/utils';
 /**
  * Item form floating actions.
  */
-export default function ItemFormFloatingActions({ onCancel }) {
+export default function ItemFormFloatingActions({ onCancel }: any) {
   // Item form context.
   const { setSubmitPayload, isNewMode } = useItemFormContext();
 
@@ -20,17 +19,17 @@ export default function ItemFormFloatingActions({ onCancel }) {
   const { isSubmitting, submitForm } = useFormikContext();
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     saveInvoke(onCancel, event);
   };
 
   // Handle submit button click.
-  const handleSubmitBtnClick = (event) => {
+  const handleSubmitBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true });
   };
 
   // Handle submit & new button click.
-  const handleSubmitAndNewBtnClick = (event) => {
+  const handleSubmitAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false });
     submitForm();
   };
@@ -69,7 +68,7 @@ export default function ItemFormFloatingActions({ onCancel }) {
 
       {/*----------- Active ----------*/}
       <FastField name={'active'} type={'checkbox'}>
-        {({ field }) => (
+        {({ field }: any) => (
           <FormGroup inline={true} className={'form-group--active'}>
             <Checkbox
               inline={true}

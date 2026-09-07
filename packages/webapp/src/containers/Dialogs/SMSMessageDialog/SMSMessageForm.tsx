@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik } from 'formik';
@@ -28,7 +27,7 @@ const defaultInitialValues = {
 function SMSMessageForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { dialogName, smsNotification, editSMSNotificationMutate } =
     useSMSMessageDialogContext();
 
@@ -41,13 +40,13 @@ function SMSMessageForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const form = {
       ...omit(values, ['is_notification_enabled', 'sms_message']),
       notification_key: smsNotification.key,
     };
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('sms_message.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -59,7 +58,7 @@ function SMSMessageForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setErrors });
       }

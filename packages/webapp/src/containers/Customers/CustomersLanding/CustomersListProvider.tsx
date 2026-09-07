@@ -7,7 +7,7 @@ import { useResourceMeta, useResourceViews, useCustomers } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 import { transformCustomersStateToQuery } from './utils';
 
-const CustomersListContext = createContext();
+const CustomersListContext = createContext<any>(undefined);
 
 function CustomersListProvider({ tableState, tableStateChanged, ...props }) {
   // Transformes the table state to fetch query.

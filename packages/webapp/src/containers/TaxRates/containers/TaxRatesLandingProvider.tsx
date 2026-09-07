@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { DashboardInsider } from '@/components/Dashboard';
 import { useTaxRates } from '@/hooks/query/taxRates';
 
-const TaxRatesLandingContext = React.createContext();
+const TaxRatesLandingContext = React.createContext<any>(undefined);
 
 /**
  * Cash Flow data provider.

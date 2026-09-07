@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import intl from 'react-intl-universal';
 
@@ -34,7 +33,7 @@ function InventoryAdjustmentDataTable({
 
   // #ownProps
   tableProps,
-}) {
+}: any) {
   const {
     isAdjustmentsLoading,
     isAdjustmentsFetching,
@@ -44,16 +43,16 @@ function InventoryAdjustmentDataTable({
   } = useInventoryAdjustmentsContext();
 
   // Handle delete inventory adjustment transaction.
-  const handleDeleteAdjustment = ({ id }) => {
+  const handleDeleteAdjustment = ({ id }: any) => {
     openAlert('inventory-adjustment-delete', { inventoryId: id });
   };
 
   // Handle the inventory adjustment publish action.
-  const handlePublishInventoryAdjustment = ({ id }) => {
+  const handlePublishInventoryAdjustment = ({ id }: any) => {
     openAlert('inventory-adjustment-publish', { inventoryId: id });
   };
   // Handle view detail inventory adjustment.
-  const handleViewDetailInventoryAdjustment = ({ id }) => {
+  const handleViewDetailInventoryAdjustment = ({ id }: any) => {
     openDrawer(DRAWERS.INVENTORY_ADJUSTMENT_DETAILS, { inventoryId: id });
   };
 
@@ -65,7 +64,7 @@ function InventoryAdjustmentDataTable({
 
   // Handle the table fetch data once states changing.
   const handleDataTableFetchData = useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setInventoryAdjustmentTableState({
         pageSize,
         pageIndex,
@@ -75,7 +74,7 @@ function InventoryAdjustmentDataTable({
     [setInventoryAdjustmentTableState],
   );
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.INVENTORY_ADJUSTMENT_DETAILS, {
       inventoryId: cell.row.original.id,
     });
@@ -115,7 +114,7 @@ export default compose(
   withAlertActions,
   withInventoryAdjustmentActions,
   withDrawerActions,
-  withInventoryAdjustments(({ inventoryAdjustmentTableState }) => ({
+  withInventoryAdjustments(({ inventoryAdjustmentTableState }: any) => ({
     inventoryAdjustmentTableState,
   })),
 )(InventoryAdjustmentDataTable);

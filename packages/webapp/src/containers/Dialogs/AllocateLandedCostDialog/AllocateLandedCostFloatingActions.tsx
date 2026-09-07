@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { Intent, Button } from '@blueprintjs/core';
@@ -20,7 +19,7 @@ import { compose } from '@/utils';
 function AllocateLandedCostFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Formik context.
   const { isSubmitting } = useFormikContext();
 
@@ -29,7 +28,7 @@ function AllocateLandedCostFloatingActions({
     useAllocateLandedConstDialogContext();
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     closeDialog(dialogName);
   };
 

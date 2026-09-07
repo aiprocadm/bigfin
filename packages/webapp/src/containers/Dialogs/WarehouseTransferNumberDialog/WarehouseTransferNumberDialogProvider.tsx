@@ -3,7 +3,7 @@ import React, { createContext } from 'react';
 import { DialogContent } from '@/components';
 import { useSettingsWarehouseTransfers } from '@/hooks/query';
 
-const WarehouseTransferNumberDilaogContext = createContext();
+const WarehouseTransferNumberDilaogContext = createContext<any>(undefined);
 
 /**
  * Warehouse transfer number dialog provier.

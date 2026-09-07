@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -48,7 +47,7 @@ function BillsDataTable({
 
   // #withSettings
   billsTableSize,
-}) {
+}: any) {
   // Bills list context.
   const { bills, pagination, isBillsLoading, isBillsFetching, isEmptyStatus } =
     useBillsListContext();
@@ -59,7 +58,7 @@ function BillsDataTable({
   const columns = useBillsTableColumns();
 
   const handleFetchData = useCallback(
-    ({ pageIndex, pageSize, sortBy }) => {
+    ({ pageIndex, pageSize, sortBy }: any) => {
       setBillsTableState({
         pageIndex,
         pageSize,
@@ -70,48 +69,48 @@ function BillsDataTable({
   );
 
   // Handle bill edit action.
-  const handleEditBill = (bill) => {
+  const handleEditBill = (bill: any) => {
     history.push(`/bills/${bill.id}/edit`);
   };
 
   // Handle convert to vendor credit.
-  const handleConvertToVendorCredit = ({ id }) => {
+  const handleConvertToVendorCredit = ({ id }: any) => {
     history.push(`/vendor-credits/new?from_bill_id=${id}`, { billId: id });
   };
 
   // Handle bill delete action.
-  const handleDeleteBill = (bill) => {
+  const handleDeleteBill = (bill: any) => {
     openAlert('bill-delete', { billId: bill.id });
   };
 
   // Handle bill open action.
-  const handleOpenBill = (bill) => {
+  const handleOpenBill = (bill: any) => {
     openAlert('bill-open', { billId: bill.id });
   };
 
   // Handle quick payment made action.
-  const handleQuickPaymentMade = ({ id }) => {
+  const handleQuickPaymentMade = ({ id }: any) => {
     openDialog('quick-payment-made', { billId: id });
   };
 
   // handle allocate landed cost.
-  const handleAllocateLandedCost = ({ id }) => {
+  const handleAllocateLandedCost = ({ id }: any) => {
     openDialog('allocate-landed-cost', { billId: id });
   };
 
   // Handle view detail bill.
-  const handleViewDetailBill = ({ id }) => {
+  const handleViewDetailBill = ({ id }: any) => {
     openDrawer(DRAWERS.BILL_DETAILS, { billId: id });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.BILL_DETAILS, { billId: cell.row.original.id });
   };
 
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selectedFlatRows) => {
-    const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedFlatRows: any) => {
+    const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
     setBillsSelectedRows(selectedIds);
   };
 
@@ -162,12 +161,12 @@ function BillsDataTable({
 }
 
 export default compose(
-  withBills(({ billsTableState }) => ({ billsTableState })),
+  withBills(({ billsTableState }: any) => ({ billsTableState })),
   withBillsActions,
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withSettings(({ billsettings }) => ({
+  withSettings(({ billsettings }: any) => ({
     billsTableSize: billsettings?.tableSize,
   })),
 )(BillsDataTable);

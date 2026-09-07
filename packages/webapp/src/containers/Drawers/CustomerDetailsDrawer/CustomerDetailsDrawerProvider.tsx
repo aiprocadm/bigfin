@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React from 'react';
 import { useCustomer } from '@/hooks/query';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { DRAWERS } from '@/constants/drawers';
 
-const ContactDetailDrawerContext = React.createContext();
+const ContactDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Contact detail provider.
  */
-function CustomerDetailsDrawerProvider({ customerId, ...props }) {
+function CustomerDetailsDrawerProvider({ customerId, ...props }: any) {
   // Handle fetch customer details.
   const { data: customer, isLoading: isCustomerLoading } = useCustomer(
     customerId,

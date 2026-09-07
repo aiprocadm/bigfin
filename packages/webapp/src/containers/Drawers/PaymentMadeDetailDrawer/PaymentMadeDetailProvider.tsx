@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -6,12 +5,12 @@ import { usePaymentMade } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 
-const PaymentMadeDetailContext = React.createContext();
+const PaymentMadeDetailContext = React.createContext<any>(undefined);
 
 /**
  * Payment made detail provider.
  */
-function PaymentMadeDetailProvider({ paymentMadeId, ...props }) {
+function PaymentMadeDetailProvider({ paymentMadeId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

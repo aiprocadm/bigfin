@@ -18,7 +18,7 @@ import {
   useBill,
 } from '@/hooks/query';
 
-const VendorCreditNoteFormContext = React.createContext();
+const VendorCreditNoteFormContext = React.createContext<any>(undefined);
 
 /**
  * Vendor Credit note data provider.

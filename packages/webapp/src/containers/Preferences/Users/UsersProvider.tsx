@@ -2,7 +2,7 @@
 import React, { createContext } from 'react';
 import { useUsers } from '@/hooks/query';
 
-const UsersListContext = createContext();
+const UsersListContext = createContext<any>(undefined);
 
 /**
  * Users list provider.

@@ -15,7 +15,7 @@ import {
 } from '@/hooks/query';
 import { useProjects } from '@/containers/Projects/hooks';
 
-const ExpenseFormPageContext = createContext();
+const ExpenseFormPageContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

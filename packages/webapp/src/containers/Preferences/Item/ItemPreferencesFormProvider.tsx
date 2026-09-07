@@ -8,7 +8,7 @@ import { Card } from '@/components';
 import { useSettingsItems, useAccounts, useSaveSettings } from '@/hooks/query';
 import PreferencesPageLoader from '../PreferencesPageLoader';
 
-const ItemFormContext = createContext();
+const ItemFormContext = createContext<any>(undefined);
 
 /**
  * Item data provider.

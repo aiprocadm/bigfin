@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -34,7 +33,7 @@ function JournalActionsBar({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const { refetchSheet } = useJournalSheetContext();
 
   // Handle filter toggle click.
@@ -102,7 +101,7 @@ function JournalActionsBar({
 }
 
 export default compose(
-  withJournal(({ journalSheetDrawerFilter }) => ({
+  withJournal(({ journalSheetDrawerFilter }: any) => ({
     isFilterDrawerOpen: journalSheetDrawerFilter,
   })),
   withJournalActions,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useContext } from 'react';
 import { If, Pagination } from '@/components';
 import TableContext from './TableContext';
@@ -19,7 +18,7 @@ export default function TablePagination() {
   } = useContext(TableContext);
 
   const triggerOnPaginationChange = useCallback(
-    (payload) => {
+    (payload: any) => {
       saveInvoke(onPaginationChange, payload);
     },
     [onPaginationChange],
@@ -27,7 +26,7 @@ export default function TablePagination() {
 
   // Handles the page changing.
   const handlePageChange = useCallback(
-    ({ page, pageSize }) => {
+    ({ page, pageSize }: any) => {
       const pageIndex = page - 1;
 
       gotoPage(pageIndex);
@@ -38,7 +37,7 @@ export default function TablePagination() {
 
   // Handles the page size changing.
   const handlePageSizeChange = useCallback(
-    ({ pageSize, page }) => {
+    ({ pageSize, page }: any) => {
       const pageIndex = 0;
 
       gotoPage(pageIndex);

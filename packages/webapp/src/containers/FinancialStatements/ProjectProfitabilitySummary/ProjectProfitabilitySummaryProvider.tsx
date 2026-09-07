@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useMemo, useContext } from 'react';
 
 import FinancialReportPage from '../FinancialReportPage';
@@ -8,9 +7,9 @@ import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants/features';
 import { transformFilterFormToQuery } from '../common';
 
-const ProjectProfitabilitySummaryContext = createContext();
+const ProjectProfitabilitySummaryContext = createContext<any>(undefined);
 
-function ProjectProfitabilitySummaryProvider({ filter, ...props }) {
+function ProjectProfitabilitySummaryProvider({ filter, ...props }: any) {
   // Transformes the given filter to query.
   const query = useMemo(() => transformFilterFormToQuery(filter), [filter]);
 

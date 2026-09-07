@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -43,7 +42,7 @@ function PaymentMadesTable({
 
   // #withSettings
   paymentMadesTableSize,
-}) {
+}: any) {
   // Payment mades table columns.
   const columns = usePaymentMadesTableColumns();
 
@@ -60,22 +59,22 @@ function PaymentMadesTable({
   const history = useHistory();
 
   // Handles the edit payment made action.
-  const handleEditPaymentMade = (paymentMade) => {
+  const handleEditPaymentMade = (paymentMade: any) => {
     history.push(`/payments-made/${paymentMade.id}/edit`);
   };
 
   // Handles the delete payment made action.
-  const handleDeletePaymentMade = (paymentMade) => {
+  const handleDeletePaymentMade = (paymentMade: any) => {
     openAlert('payment-made-delete', { paymentMadeId: paymentMade.id });
   };
 
   // Handle view detail  payment made.
-  const handleViewDetailPaymentMade = ({ id }) => {
+  const handleViewDetailPaymentMade = ({ id }: any) => {
     openDrawer(DRAWERS.PAYMENT_MADE_DETAILS, { paymentMadeId: id });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.PAYMENT_MADE_DETAILS, {
       paymentMadeId: cell.row.original.id,
     });
@@ -87,7 +86,7 @@ function PaymentMadesTable({
 
   // Handle datatable fetch data once the table state change.
   const handleDataTableFetchData = useCallback(
-    ({ pageIndex, pageSize, sortBy }) => {
+    ({ pageIndex, pageSize, sortBy }: any) => {
       setPaymentMadesTableState({ pageIndex, pageSize, sortBy });
     },
     [setPaymentMadesTableState],
@@ -135,11 +134,11 @@ function PaymentMadesTable({
 
 export default compose(
   withPaymentMadeActions,
-  withPaymentMade(({ paymentMadesTableState }) => ({ paymentMadesTableState })),
+  withPaymentMade(({ paymentMadesTableState }: any) => ({ paymentMadesTableState })),
   withAlertActions,
   withDrawerActions,
   withCurrentOrganization(),
-  withSettings(({ billPaymentSettings }) => ({
+  withSettings(({ billPaymentSettings }: any) => ({
     paymentMadesTableSize: billPaymentSettings?.tableSize,
   })),
 )(PaymentMadesTable);

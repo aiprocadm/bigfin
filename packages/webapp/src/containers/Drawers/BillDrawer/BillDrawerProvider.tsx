@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -7,12 +6,12 @@ import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 import { DRAWERS } from '@/constants/drawers';
 
-const BillDrawerContext = React.createContext();
+const BillDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Bill drawer provider.
  */
-function BillDrawerProvider({ billId, ...props }) {
+function BillDrawerProvider({ billId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

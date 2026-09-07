@@ -111,7 +111,7 @@ export const TransactionLockingItemSkeleton = ({ }) => {
   );
 };
 
-const TransactionsLockingItemContext = React.createContext();
+const TransactionsLockingItemContext = React.createContext<any>(undefined);
 
 const useTransactionsLockingItemContext = () =>
   React.useContext(TransactionsLockingItemContext);

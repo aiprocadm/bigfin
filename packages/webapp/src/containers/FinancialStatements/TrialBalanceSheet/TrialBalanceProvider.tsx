@@ -4,7 +4,7 @@ import FinancialReportPage from '../FinancialReportPage';
 import { useTrialBalanceSheet } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const TrialBalanceSheetContext = createContext();
+const TrialBalanceSheetContext = createContext<any>(undefined);
 
 function TrialBalanceSheetProvider({ query, ...props }) {
   const httpQuery = useMemo(() => transformFilterFormToQuery(query), [query]);

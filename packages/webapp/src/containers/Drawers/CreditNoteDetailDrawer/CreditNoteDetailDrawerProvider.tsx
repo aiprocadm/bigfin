@@ -12,7 +12,7 @@ import { useFeatureCan } from '@/hooks/state';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { DRAWERS } from '@/constants/drawers';
 
-const CreditNoteDetailDrawerContext = React.createContext();
+const CreditNoteDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Credit note detail drawer provider.

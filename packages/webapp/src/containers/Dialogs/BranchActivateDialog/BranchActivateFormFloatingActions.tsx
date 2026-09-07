@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Button, Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -14,7 +13,7 @@ import { compose } from '@/utils';
 function BranchActivateFormFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // branch activate dialog context.
   const { dialogName } = useBranchActivateContext();
 

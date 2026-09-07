@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
@@ -7,12 +6,12 @@ import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 import { isEmpty } from 'lodash';
 
-const BranchesContext = React.createContext();
+const BranchesContext = React.createContext<any>(undefined);
 
 /**
  * Branches data provider.
  */
-function BranchesProvider({ query, ...props }) {
+function BranchesProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

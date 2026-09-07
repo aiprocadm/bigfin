@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -24,7 +23,7 @@ function ItemsCategoryTable({
 
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   // Items categories context.
   const { isCategoriesLoading, isCategoriesFetching, itemsCategories } =
     useItemsCategoriesContext();
@@ -33,12 +32,12 @@ function ItemsCategoryTable({
   const columns = useItemsCategoriesTableColumns();
 
   // Handle delete Item.
-  const handleDeleteCategory = ({ id }) => {
+  const handleDeleteCategory = ({ id }: any) => {
     openAlert('item-category-delete', { itemCategoryId: id });
   };
 
   // Handle Edit item category.
-  const handleEditCategory = (category) => {
+  const handleEditCategory = (category: any) => {
     openDialog('item-category-form', { action: 'edit', id: category.id });
   };
 

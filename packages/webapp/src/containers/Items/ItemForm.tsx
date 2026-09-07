@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -35,7 +34,7 @@ function ItemFormDashboardTitle() {
  * Item form page loading state indicator.
  * @returns {JSX}
  */
-function ItemFormPageLoading({ children }) {
+function ItemFormPageLoading({ children }: any) {
   const { isFormLoading } = useItemFormContext();
 
   return (
@@ -49,12 +48,12 @@ function ItemFormPageLoading({ children }) {
  * Item form of the page.
  * @returns {JSX}
  */
-export default function ItemForm({ itemId }) {
+export default function ItemForm({ itemId }: any) {
   // History context.
   const history = useHistory();
 
   // Handle the form submit success.
-  const handleSubmitSuccess = (values, form, submitPayload) => {
+  const handleSubmitSuccess = (values: any, form: any, submitPayload: any) => {
     if (submitPayload.redirect) {
       history.push('/items');
     }

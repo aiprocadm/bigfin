@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 import { DashboardViewsTabs } from '@/components';
@@ -19,14 +18,14 @@ function ItemsViewsTabs({
 
   // #withItems
   itemsCurrentView,
-}) {
+}: any) {
   const { itemsViews } = useItemsListContext();
 
   // Mapped items views.
   const tabs = transfromViewsToTabs(itemsViews);
 
   // Handles the active tab change.
-  const handleTabChange = (viewSlug) => {
+  const handleTabChange = (viewSlug: any) => {
     setItemsTableState({ viewSlug });
   };
 
@@ -46,7 +45,7 @@ function ItemsViewsTabs({
 
 export default compose(
   withRouter,
-  withItems(({ itemsTableState }) => ({
+  withItems(({ itemsTableState }: any) => ({
     itemsCurrentView: itemsTableState?.viewSlug,
   })),
   withItemsActions,

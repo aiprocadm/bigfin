@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -33,7 +32,7 @@ function ManualJournalDrawerActionBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
   const { manualJournalId } = useManualJournalDrawerContext();
 

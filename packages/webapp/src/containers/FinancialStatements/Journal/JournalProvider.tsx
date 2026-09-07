@@ -1,16 +1,15 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useJournalSheet } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 import { showApiError } from '@/utils/showApiError';
 
-const JournalSheetContext = createContext();
+const JournalSheetContext = createContext<any>(undefined);
 
 /**
  * Journal sheet provider.
  */
-function JournalSheetProvider({ query, ...props }) {
+function JournalSheetProvider({ query, ...props }: any) {
   // Transforms the sheet query to request query.
   const httpQuery = React.useMemo(
     () => transformFilterFormToQuery(query),

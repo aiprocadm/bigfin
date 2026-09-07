@@ -11,7 +11,7 @@ import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 import { pick } from 'lodash';
 
-const QuickPaymentMadeContext = React.createContext();
+const QuickPaymentMadeContext = React.createContext<any>(undefined);
 
 /**
  * Quick payment made dialog provider.

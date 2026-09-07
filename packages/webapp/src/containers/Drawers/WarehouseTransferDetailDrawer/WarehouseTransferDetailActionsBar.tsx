@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -28,7 +27,7 @@ function WarehouseTransferDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   const { warehouseTransferId } = useWarehouseDetailDrawerContext();

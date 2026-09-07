@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -23,8 +22,8 @@ export const defaultPaymentMade = {
   branch_id: '',
 };
 
-export const transformErrors = (errors, { setFieldError }) => {
-  const getError = (errorType) => errors.find((e) => e.type === errorType);
+export const transformErrors = (errors: any, { setFieldError }: any) => {
+  const getError = (errorType: any) => errors.find((e: any) => e.type === errorType);
 
   if (getError(PAYMENT_MADE_ERRORS.PAYMENT_NUMBER_NOT_UNIQUE)) {
     setFieldError('payment_number', intl.get('payment_number_is_not_unique'));
@@ -51,7 +50,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: any) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);
@@ -60,7 +59,7 @@ export const useSetPrimaryBranchToForm = () => {
   }, [isBranchesSuccess, setFieldValue, branches]);
 };
 
-export const transformBillToForm = (bill) => {
+export const transformBillToForm = (bill: any) => {
   return {
     ...pick(bill, ['vendor_id', 'currency_code']),
     amount: bill.due_amount,

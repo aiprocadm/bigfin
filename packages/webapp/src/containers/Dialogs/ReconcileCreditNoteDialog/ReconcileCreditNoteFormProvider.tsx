@@ -8,7 +8,7 @@ import {
 } from '@/hooks/query';
 import { isEmpty } from 'lodash';
 
-const ReconcileCreditNoteDialogContext = React.createContext();
+const ReconcileCreditNoteDialogContext = React.createContext<any>(undefined);
 
 /**
  * Reconcile credit note provider.

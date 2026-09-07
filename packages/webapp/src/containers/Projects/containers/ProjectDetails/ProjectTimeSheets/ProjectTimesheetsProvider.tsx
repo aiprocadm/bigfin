@@ -3,7 +3,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useProject, useProjectTimeEntries } from '../../../hooks';
 
-const ProjectTimesheetContext = React.createContext();
+const ProjectTimesheetContext = React.createContext<any>(undefined);
 
 /**
  * Project timesheets data provider.

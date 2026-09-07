@@ -13,7 +13,7 @@ import {
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 
-const VendorFormContext = createContext();
+const VendorFormContext = createContext<any>(undefined);
 
 /**
  * Vendor form provider.

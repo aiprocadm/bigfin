@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
@@ -9,12 +8,12 @@ import { isEmpty } from 'lodash';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 
-const WarehousesContext = React.createContext();
+const WarehousesContext = React.createContext<any>(undefined);
 
 /**
  * Warehouses data provider.
  */
-function WarehousesProvider({ query, ...props }) {
+function WarehousesProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);

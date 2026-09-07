@@ -8,7 +8,7 @@ import { useAccountUncategorizedTransactionsInfinity } from '@/hooks/query';
 import { useAccountTransactionsContext } from './AccountTransactionsProvider';
 import { withBanking } from '../withBanking';
 
-const AccountUncategorizedTransactionsContext = React.createContext();
+const AccountUncategorizedTransactionsContext = React.createContext<any>(undefined);
 
 function flattenInfinityPagesData(data) {
   return flatten(map(data.pages, (page) => page.data));

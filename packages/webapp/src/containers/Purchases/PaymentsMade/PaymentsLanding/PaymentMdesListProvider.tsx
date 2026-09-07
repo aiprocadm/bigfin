@@ -7,7 +7,7 @@ import {
   usePaymentMades,
 } from '@/hooks/query';
 
-const PaymentMadesContext = createContext();
+const PaymentMadesContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

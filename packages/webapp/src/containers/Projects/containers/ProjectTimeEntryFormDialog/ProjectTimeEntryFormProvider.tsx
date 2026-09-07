@@ -11,7 +11,7 @@ import { DialogContent } from '@/components';
 import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants/features';
 
-const ProjecctTimeEntryFormContext = React.createContext();
+const ProjecctTimeEntryFormContext = React.createContext<any>(undefined);
 
 /**
  * Project time entry form provider.

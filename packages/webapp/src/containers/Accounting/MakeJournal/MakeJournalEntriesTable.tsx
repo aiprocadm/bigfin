@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DataTableEditable } from '@/components';
 import {
@@ -25,7 +24,7 @@ export default function MakeJournalEntriesTable({
   initialLinesNumber = 1,
   minLinesNumber = 1,
   currencyCode,
-}) {
+}: any) {
   const { accounts, contacts, branches, projects } =
     useMakeJournalFormContext();
 
@@ -33,7 +32,7 @@ export default function MakeJournalEntriesTable({
   const columns = useJournalTableEntriesColumns();
 
   // Handles update datatable data.
-  const handleUpdateData = (rowIndex, columnId, value) => {
+  const handleUpdateData = (rowIndex: any, columnId: any, value: any) => {
     const newRows = compose(
       // Auto-adding new lines.
       updateAutoAddNewLine(defaultEntry, ['account_id', 'credit', 'debit']),
@@ -47,7 +46,7 @@ export default function MakeJournalEntriesTable({
   };
 
   // Handle remove datatable row.
-  const handleRemoveRow = (rowIndex) => {
+  const handleRemoveRow = (rowIndex: any) => {
     const newRows = compose(
       // Ensure minimum lines count.
       updateMinEntriesLines(minLinesNumber, defaultEntry),

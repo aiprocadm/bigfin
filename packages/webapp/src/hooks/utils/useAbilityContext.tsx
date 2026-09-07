@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useAbility } from '@casl/react';
 import { AbilityContext } from '@/components';
@@ -12,9 +11,9 @@ export const useAbilitiesFilter = () => {
   const ability = useAbilityContext();
 
   return React.useCallback(
-    (items) => {
+    (items: any) => {
       return items.filter(
-        (item) =>
+        (item: any) =>
           !item.permission ||
           ability.can(item.permission.ability, item.permission.subject),
       );

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 
@@ -20,7 +19,7 @@ function CustomersViewsTabs({
 
   // #withCustomers
   customersCurrentView,
-}) {
+}: any) {
   // Customers list context.
   const { customersViews } = useCustomersListContext();
 
@@ -28,7 +27,7 @@ function CustomersViewsTabs({
   const tabs = transfromViewsToTabs(customersViews);
 
   // Handle tabs change.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setCustomersTableState({ viewSlug: viewSlug || null });
   };
 
@@ -49,7 +48,7 @@ function CustomersViewsTabs({
 export default compose(
   withDashboardActions,
   withCustomersActions,
-  withCustomers(({ customersTableState }) => ({
+  withCustomers(({ customersTableState }: any) => ({
     customersCurrentView: customersTableState.viewSlug,
   })),
 )(CustomersViewsTabs);

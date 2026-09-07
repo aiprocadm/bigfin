@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import {
@@ -26,7 +25,7 @@ import { compose } from '@/utils';
 function CashflowTransactionDrawerActionBar({
   // #withAlertsDialog
   openAlert,
-}) {
+}: any) {
   const { referenceId, cashflowTransaction } =
     useCashflowTransactionDrawerContext();
 

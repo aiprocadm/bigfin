@@ -1,15 +1,14 @@
-// @ts-nocheck
 import { useMemo, createContext, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useARAgingSummaryReport } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const ARAgingSummaryContext = createContext();
+const ARAgingSummaryContext = createContext<any>(undefined);
 
 /**
  * A/R aging summary provider.
  */
-function ARAgingSummaryProvider({ filter, ...props }) {
+function ARAgingSummaryProvider({ filter, ...props }: any) {
   // Transformes the filter from to the url query.
   const httpQuery = useMemo(() => transformFilterFormToQuery(filter), [filter]);
 

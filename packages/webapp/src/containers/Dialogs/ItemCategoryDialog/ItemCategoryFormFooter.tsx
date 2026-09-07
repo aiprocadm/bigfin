@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Classes, Button, Intent } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
@@ -15,7 +14,7 @@ import { compose } from '@/utils';
 function ItemCategoryFormFooter({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Item category context.
   const { isNewMode, dialogName } = useItemCategoryContext();
 

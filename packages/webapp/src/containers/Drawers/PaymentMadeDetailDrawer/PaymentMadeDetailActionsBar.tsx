@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -35,7 +34,7 @@ function PaymentMadeDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   const { paymentMadeId } = usePaymentMadeDetailContext();

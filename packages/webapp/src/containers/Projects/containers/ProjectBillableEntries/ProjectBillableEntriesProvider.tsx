@@ -4,7 +4,7 @@ import React from 'react';
 import { useProjectBillableEntries } from '../../hooks';
 import { DialogContent } from '@/components';
 
-const ProjectBillableEntriesContext = React.createContext();
+const ProjectBillableEntriesContext = React.createContext<any>(undefined);
 
 /**
  * Project billable entries provider.

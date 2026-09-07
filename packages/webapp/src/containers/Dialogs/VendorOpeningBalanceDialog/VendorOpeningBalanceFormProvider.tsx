@@ -10,7 +10,7 @@ import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 import { transfromVendorToForm } from './utils';
 
-const VendorOpeningBalanceContext = React.createContext();
+const VendorOpeningBalanceContext = React.createContext<any>(undefined);
 
 /**
  * Vendor Opening balance provider.

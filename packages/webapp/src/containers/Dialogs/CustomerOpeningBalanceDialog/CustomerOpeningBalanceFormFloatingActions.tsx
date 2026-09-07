@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Button, Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -15,7 +14,7 @@ import { compose } from '@/utils';
 function CustomerOpeningBalanceFormFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // dialog context.
   const { dialogName } = useCustomerOpeningBalanceContext();
 

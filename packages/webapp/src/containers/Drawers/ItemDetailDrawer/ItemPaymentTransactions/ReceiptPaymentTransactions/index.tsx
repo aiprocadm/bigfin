@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -23,7 +22,7 @@ function ReceiptPaymentTransactions({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   const columns = useReceiptTransactionsColumns();
@@ -40,14 +39,14 @@ function ReceiptPaymentTransactions({
   });
 
   // Handles delete payment transactions.
-  const handleDeletePaymentTransactons = ({ receipt_id }) => {
+  const handleDeletePaymentTransactons = ({ receipt_id }: any) => {
     openAlert('receipt-delete', {
       receiptId: receipt_id,
     });
   };
 
   // Handles edit payment transactions.
-  const handleEditPaymentTransactions = ({ receipt_id }) => {
+  const handleEditPaymentTransactions = ({ receipt_id }: any) => {
     history.push(`/receipts/${receipt_id}/edit`);
     closeDrawer(DRAWERS.ITEM_DETAILS);
   };

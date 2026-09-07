@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { first, pick } from 'lodash';
@@ -11,7 +10,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: any) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('opening_balance_branch_id', primaryBranch.id);
@@ -20,7 +19,7 @@ export const useSetPrimaryBranchToForm = () => {
   }, [isBranchesSuccess, setFieldValue, branches]);
 };
 
-export function transfromVendorToForm(values) {
+export function transfromVendorToForm(values: any) {
   return {
     ...pick(values, [
       'id',

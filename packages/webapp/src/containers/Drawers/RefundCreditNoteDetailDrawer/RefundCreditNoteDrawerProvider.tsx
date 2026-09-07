@@ -5,7 +5,7 @@ import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { useRefundCreditTransaction } from '@/hooks/query';
 import { DRAWERS } from '@/constants/drawers';
 
-const RefundCreditNoteDrawerContext = React.createContext();
+const RefundCreditNoteDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Refund credit note drawer provider.

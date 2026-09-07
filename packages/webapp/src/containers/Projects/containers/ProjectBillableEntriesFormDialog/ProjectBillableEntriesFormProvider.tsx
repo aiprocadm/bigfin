@@ -1,11 +1,10 @@
-// @ts-nocheck
 
 import React from 'react';
 import { isEmpty } from 'lodash';
 import { useProjectBillableEntries } from '../../hooks';
 import { DialogContent } from '@/components';
 
-const ProjectBillableEntriesFormContext = React.createContext();
+const ProjectBillableEntriesFormContext = React.createContext<any>(undefined);
 
 /**
  * Project billable entries form provider.
@@ -16,7 +15,7 @@ function ProjectBillableEntriesFormProvider({
   dialogName,
   projectId,
   ...props
-}) {
+}: any) {
   // Handle fetch project billable entries.
   const { data: billableEntries, isLoading: isProjectBillableEntriesLoading } =
     useProjectBillableEntries(

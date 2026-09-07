@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -19,20 +18,20 @@ import { compose } from '@/utils';
 function BranchActivateForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { activateBranches, dialogName } = useBranchActivateContext();
 
   // Initial form values
   const initialValues = {};
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const form = {
       ...values,
     };
     setSubmitting(true);
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('branch_activate.dialog_success_message'),
         intent: Intent.SUCCESS,
@@ -45,7 +44,7 @@ function BranchActivateForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
       }
       setSubmitting(false);

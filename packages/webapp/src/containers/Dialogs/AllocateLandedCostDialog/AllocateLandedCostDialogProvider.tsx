@@ -13,7 +13,7 @@ import {
   getTransactionEntryById,
 } from './utils';
 
-const AllocateLandedCostDialogContext = React.createContext();
+const AllocateLandedCostDialogContext = React.createContext<any>(undefined);
 
 /**
  * Allocate landed cost provider.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { useWarehouses, useBranches } from '@/hooks/query';
@@ -6,7 +5,7 @@ import { useFeatureCan } from '@/hooks/state';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 import { Features } from '@/constants';
 
-const InventoryItemDetailsHeaderDimensionsPanelContext = React.createContext();
+const InventoryItemDetailsHeaderDimensionsPanelContext = React.createContext<any>(undefined);
 
 /**
  * Inventory Item details header provider.

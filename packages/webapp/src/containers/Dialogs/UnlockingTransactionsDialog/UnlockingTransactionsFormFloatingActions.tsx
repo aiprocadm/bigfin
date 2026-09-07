@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Button, Classes } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -14,14 +13,14 @@ import { compose } from '@/utils';
 function UnlockingTransactionsFormFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Formik context.
   const { isSubmitting } = useFormikContext();
 
   const { dialogName } = useUnlockingTransactionsContext();
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     closeDialog(dialogName);
   };
 

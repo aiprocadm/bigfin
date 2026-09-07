@@ -11,7 +11,7 @@ import {
   useCreateInventoryAdjustment,
 } from '@/hooks/query';
 
-const InventoryAdjustmentContext = createContext();
+const InventoryAdjustmentContext = createContext<any>(undefined);
 
 /**
  * Inventory adjustment dialog provider.

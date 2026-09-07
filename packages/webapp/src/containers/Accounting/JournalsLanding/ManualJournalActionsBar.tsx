@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Button,
@@ -55,7 +54,7 @@ function ManualJournalActionsBar({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   // History context.
   const history = useHistory();
 
@@ -82,7 +81,7 @@ function ManualJournalActionsBar({
   };
 
   // Handle tab change.
-  const handleTabChange = (view) => {
+  const handleTabChange = (view: any) => {
     setManualJournalsTableState({ viewSlug: view ? view.slig : null });
   };
   // Handle click a refresh Journals
@@ -95,7 +94,7 @@ function ManualJournalActionsBar({
   };
 
   // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
+  const handleTableRowSizeChange = (size: any) => {
     addSetting('manualJournals', 'tableSize', size);
   };
 
@@ -149,7 +148,7 @@ function ManualJournalActionsBar({
             conditions: manualJournalsFilterConditions,
             defaultFieldKey: 'journal_number',
             fields,
-            onFilterChange: (filterConditions) => {
+            onFilterChange: (filterConditions: any) => {
               setManualJournalsTableState({ filterRoles: filterConditions });
             },
           }}
@@ -210,11 +209,11 @@ export default compose(
   withDialogActions,
   withManualJournalsActions,
   withSettingsActions,
-  withManualJournals(({ manualJournalsTableState, manualJournalsSelectedRows }) => ({
+  withManualJournals(({ manualJournalsTableState, manualJournalsSelectedRows }: any) => ({
     manualJournalsFilterConditions: manualJournalsTableState.filterRoles,
     manualJournalsSelectedRows,
   })),
-  withSettings(({ manualJournalsSettings }) => ({
+  withSettings(({ manualJournalsSettings }: any) => ({
     manualJournalsTableSize: manualJournalsSettings?.tableSize,
   })),
 )(ManualJournalActionsBar);

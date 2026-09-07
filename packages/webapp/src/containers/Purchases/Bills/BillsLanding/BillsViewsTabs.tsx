@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
@@ -19,12 +18,12 @@ function BillViewTabs({
 
   // #withBills
   billsCurrentView,
-}) {
+}: any) {
   // Bills list context.
   const { billsViews } = useBillsListContext();
 
   // Handle tab chaging.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setBillsTableState({
       viewSlug: viewSlug || null,
     });
@@ -48,7 +47,7 @@ function BillViewTabs({
 
 export default compose(
   withBillsActions,
-  withBills(({ billsTableState }) => ({
+  withBills(({ billsTableState }: any) => ({
     billsCurrentView: billsTableState.viewSlug,
   })),
 )(BillViewTabs);

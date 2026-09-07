@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 import { useVendorsListContext } from './VendorsListProvider';
@@ -18,14 +17,14 @@ function VendorViewsTabs({
 
   // #withVendors
   vendorsCurrentView,
-}) {
+}: any) {
   const { vendorsViews } = useVendorsListContext();
 
   // Transformes the resource views to tabs.
   const tabs = transfromViewsToTabs(vendorsViews);
 
   // Handle dashboard tabs change.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setVendorsTableState({ viewSlug });
   };
 
@@ -45,7 +44,7 @@ function VendorViewsTabs({
 
 export default compose(
   withVendorsActions,
-  withVendors(({ vendorsTableState }) => ({
+  withVendors(({ vendorsTableState }: any) => ({
     vendorsCurrentView: vendorsTableState.viewSlug,
   })),
 )(VendorViewsTabs);

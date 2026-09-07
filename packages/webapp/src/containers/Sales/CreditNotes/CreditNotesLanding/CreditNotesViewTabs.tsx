@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 
@@ -18,14 +17,14 @@ function CreditNotesViewTabs({
 
   // #withCreditNotesActions
   setCreditNotesTableState,
-}) {
+}: any) {
   // Credit note list context.
   const { CreditNotesView } = useCreditNoteListContext();
 
   const tabs = transfromViewsToTabs(CreditNotesView);
 
   // Handle tab change.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setCreditNotesTableState({ viewSlug });
   };
 
@@ -45,7 +44,7 @@ function CreditNotesViewTabs({
 
 export default compose(
   withCreditNotesActions,
-  withCreditNotes(({ creditNoteTableState }) => ({
+  withCreditNotes(({ creditNoteTableState }: any) => ({
     creditNoteCurrentView: creditNoteTableState.viewSlug,
   })),
 )(CreditNotesViewTabs);

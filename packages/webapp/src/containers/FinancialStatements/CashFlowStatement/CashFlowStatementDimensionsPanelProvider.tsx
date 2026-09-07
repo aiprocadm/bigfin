@@ -1,17 +1,16 @@
-// @ts-nocheck
 import React from 'react';
 import { Features } from '@/constants';
 import { useBranches } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const CashFlowStatementDimensionsPanelContext = React.createContext();
+const CashFlowStatementDimensionsPanelContext = React.createContext<any>(undefined);
 
 /**
  * cash flow statement dimensions panel provider.
  * @returns
  */
-function CashFlowStatementDimensionsPanelProvider({ query, ...props }) {
+function CashFlowStatementDimensionsPanelProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

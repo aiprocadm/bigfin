@@ -14,7 +14,7 @@ import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 import { ITEMS_FILTER_ROLES_QUERY } from './utils';
 
-const WarehouseFormContext = createContext();
+const WarehouseFormContext = createContext<any>(undefined);
 
 /**
  * Warehouse transfer form provider.

@@ -3,7 +3,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateUnlockingPartialTransactions } from '@/hooks/query';
 
-const UnlockingPartialTransactionsContext = React.createContext();
+const UnlockingPartialTransactionsContext = React.createContext<any>(undefined);
 
 /**
  * Unlocking partial transactions form provider.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { TABLES } from '@/constants/tables';
@@ -22,7 +21,7 @@ import { compose } from '@/utils';
 function CashFlowAccountsDataTable({
   // #withSettings
   cashflowTableSize,
-}) {
+}: any) {
   // Retrieve list context.
   const {
     cashflowAccounts,
@@ -61,7 +60,7 @@ function CashFlowAccountsDataTable({
 }
 
 export default compose(
-  withSettings(({ cashflowSettings }) => ({
+  withSettings(({ cashflowSettings }: any) => ({
     cashflowTableSize: cashflowSettings?.tableSize,
   })),
 )(CashFlowAccountsDataTable);

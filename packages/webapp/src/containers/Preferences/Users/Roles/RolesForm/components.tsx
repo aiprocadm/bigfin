@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { Field } from 'formik';
@@ -18,8 +17,8 @@ import {
 } from './utils';
 
 // Module permissions context.
-const ModulePermissionsContext = React.createContext();
-const ModuleServiceContext = React.createContext();
+const ModulePermissionsContext = React.createContext<any>(undefined);
+const ModuleServiceContext = React.createContext<any>(undefined);
 
 /**
  * Retrieves the module permissions provider.
@@ -38,7 +37,7 @@ const useModulePermissionsServiceProvider = () =>
  * Module permissions context state provider.
  * @returns {React.JSX}
  */
-function ModulePermissionsProvider({ module, children }) {
+function ModulePermissionsProvider({ module, children }: any) {
   return (
     <ModulePermissionsContext.Provider value={{ module }}>
       {children}
@@ -50,7 +49,7 @@ function ModulePermissionsProvider({ module, children }) {
  * Module permissions service context state provider.
  * @returns {React.JSX}
  */
-function ModulePermissionsServiceProvider({ service, children }) {
+function ModulePermissionsServiceProvider({ service, children }: any) {
   return (
     <ModuleServiceContext.Provider value={{ service }}>
       {children}
@@ -62,7 +61,7 @@ function ModulePermissionsServiceProvider({ service, children }) {
  * Permissions body columns.
  * @returns {React.JSX}
  */
-function PermissionBodyColumn({ column }) {
+function PermissionBodyColumn({ column }: any) {
   // Module permssions service context.
   const { service } = useModulePermissionsServiceProvider();
 
@@ -79,7 +78,7 @@ function PermissionBodyColumn({ column }) {
         name={`permissions.${service.subject}/${permission.key}`}
         type="checkbox"
       >
-        {({ field, form }) => (
+        {({ field, form }: any) => (
           <PermissionCheckbox
             inline={true}
             {...field}
@@ -95,8 +94,8 @@ function PermissionBodyColumn({ column }) {
  *
  * @returns {React.JSX}
  */
-function ModulePermissionsTableColumns({ columns }) {
-  return columns.map((column) => <PermissionBodyColumn column={column} />);
+function ModulePermissionsTableColumns({ columns }: any) {
+  return columns.map((column: any) => <PermissionBodyColumn column={column} />);
 }
 
 /**
@@ -116,12 +115,12 @@ function ModuleExtraPermissionsPopover() {
       </MorePermissionsLink>
 
       <ExtraPermissionsRoot>
-        {extraPermissions.map((permission) => (
+        {extraPermissions.map((permission: any) => (
           <Field
             name={`permissions.${service.subject}/${permission.key}`}
             type="checkbox"
           >
-            {({ form, field }) => (
+            {({ form, field }: any) => (
               <PermissionCheckbox
                 inline={true}
                 label={permission.label}
@@ -177,7 +176,7 @@ function ModulePermissionsTableHead() {
             <T id={'permissions.column.full_access'} />
           </th>
         </If>
-        {columns.map((column) => (
+        {columns.map((column: any) => (
           <th className={'permission'}>{column.label}</th>
         ))}
         <th></th>
@@ -201,7 +200,7 @@ function ModulePermissionsServiceFullAccess() {
     <If condition={module.serviceFullAccess}>
       <td className="full-access-permission">
         <Field name={`serviceFullAccess.${service.subject}`} type="checkbox">
-          {({ form, field }) => (
+          {({ form, field }: any) => (
             <PermissionCheckbox
               inline={true}
               {...field}
@@ -228,7 +227,7 @@ function ModulePermissionsTableBody() {
 
   return (
     <tbody>
-      {services.map((service) => (
+      {services.map((service: any) => (
         <ModulePermissionsServiceProvider service={service}>
           <tr>
             <td className="service-label">{service.label} </td>
@@ -265,13 +264,13 @@ function ModuleVerticalTableCells() {
 
   return (
     <td className={'permissions'}>
-      {service.permissions.map((permission) => (
+      {service.permissions.map((permission: any) => (
         <div>
           <Field
             name={`permissions.${service.subject}/${permission.key}`}
             type="checkbox"
           >
-            {({ form, field }) => (
+            {({ form, field }: any) => (
               <PermissionCheckbox
                 inline={true}
                 label={permission.label}
@@ -301,7 +300,7 @@ function ModulePermissionsVerticalServices() {
     <ModulePermissionsVerticalServicesRoot>
       <ModulePermissionsVerticalTable>
         <tbody>
-          {module.services.map((service) => (
+          {module.services.map((service: any) => (
             <ModulePermissionsServiceProvider service={service}>
               <tr>
                 <td className={'service-label'}>{service.label} </td>
@@ -343,7 +342,7 @@ function ModulePermissionsBody() {
  * Permissions module.
  * @returns {React.JSX}
  */
-function ModulePermissions({ module }) {
+function ModulePermissions({ module }: any) {
   return (
     <ModulePermissionsRoot>
       <ModulePermissionsProvider module={module}>

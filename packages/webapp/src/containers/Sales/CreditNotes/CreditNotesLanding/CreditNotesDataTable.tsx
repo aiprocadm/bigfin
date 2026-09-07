@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -49,7 +48,7 @@ function CreditNotesDataTable({
 
   // #withCreditNotes
   creditNoteTableState
-}) {
+}: any) {
   const history = useHistory();
 
   // Credit note list context.
@@ -70,7 +69,7 @@ function CreditNotesDataTable({
 
   // Handles fetch data once the table state change.
   const handleDataTableFetchData = React.useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setCreditNotesTableState({
         pageSize,
         pageIndex,
@@ -82,8 +81,8 @@ function CreditNotesDataTable({
 
   // Handle selected rows change.
   const handleSelectedRowsChange = React.useCallback(
-    (selectedFlatRows) => {
-      const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+    (selectedFlatRows: any) => {
+      const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
       setCreditNotesSelectedRows(selectedIds);
     },
     [setCreditNotesSelectedRows],
@@ -94,43 +93,43 @@ function CreditNotesDataTable({
     return <CreditNoteEmptyStatus />;
   }
 
-  const handleViewDetailCreditNote = ({ id }) => {
+  const handleViewDetailCreditNote = ({ id }: any) => {
     openDrawer(DRAWERS.CREDIT_NOTE_DETAILS, { creditNoteId: id });
   };
 
   // Отправка кредит-ноты по email (Р3б карты v18).
-  const handleSendMailCreditNote = ({ id }) => {
+  const handleSendMailCreditNote = ({ id }: any) => {
     openDrawer(DRAWERS.CREDIT_NOTE_SEND_MAIL, { creditNoteId: id });
   };
 
   // Handle delete credit note.
-  const handleDeleteCreditNote = ({ id }) => {
+  const handleDeleteCreditNote = ({ id }: any) => {
     openAlert('credit-note-delete', { creditNoteId: id });
   };
 
   // Handle edit credit note.
-  const hanldeEditCreditNote = (creditNote) => {
+  const hanldeEditCreditNote = (creditNote: any) => {
     history.push(`/credit-notes/${creditNote.id}/edit`);
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.CREDIT_NOTE_DETAILS, {
       creditNoteId: cell.row.original.id,
     });
   };
 
-  const handleRefundCreditNote = ({ id }) => {
+  const handleRefundCreditNote = ({ id }: any) => {
     openDialog('refund-credit-note', { creditNoteId: id });
   };
 
   // Handle cancel/confirm crdit note open.
-  const handleOpenCreditNote = ({ id }) => {
+  const handleOpenCreditNote = ({ id }: any) => {
     openAlert('credit-note-open', { creditNoteId: id });
   };
 
   // Handle reconcile credit note.
-  const handleReconcileCreditNote = ({ id }) => {
+  const handleReconcileCreditNote = ({ id }: any) => {
     openDialog('reconcile-credit-note', { creditNoteId: id });
   };
 
@@ -179,8 +178,8 @@ export default compose(
   withDrawerActions,
   withAlertActions,
   withDialogActions,
-  withSettings(({ creditNoteSettings }) => ({
+  withSettings(({ creditNoteSettings }: any) => ({
     creditNoteTableSize: creditNoteSettings?.tableSize,
   })),
-  withCreditNotes(({ creditNoteTableState }) => ({ creditNoteTableState }))
+  withCreditNotes(({ creditNoteTableState }: any) => ({ creditNoteTableState }))
 )(CreditNotesDataTable);

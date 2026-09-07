@@ -3,7 +3,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useSettingsCreditNotes } from '@/hooks/query';
 
-const CreditNoteNumberDialogContext = React.createContext();
+const CreditNoteNumberDialogContext = React.createContext<any>(undefined);
 
 /**
  *Credit Note number dialog provider

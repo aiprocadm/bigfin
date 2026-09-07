@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import * as Yup from 'yup';
@@ -17,7 +16,7 @@ import { compose } from '@/utils';
 function ContactDuplicateForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const history = useHistory();
 
   const { dialogName, contactId } = useContactDuplicateFromContext();
@@ -38,7 +37,7 @@ function ContactDuplicateForm({
   };
 
   // Handle form submit.
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = (values: any) => {
     closeDialog(dialogName);
     history.push(`${values.contact_type}/new?duplicate=${contactId}`, {
       action: contactId,

@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useAccount } from '@/hooks/query';
 import { useMoneyInDailogContext } from './MoneyInDialogProvider';
 
-const MoneyInFieldsContext = React.createContext();
+const MoneyInFieldsContext = React.createContext<any>(undefined);
 
 /**
  * Money in dialog provider.

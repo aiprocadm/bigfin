@@ -1,17 +1,16 @@
-// @ts-nocheck
 import React from 'react';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 import { useBranches } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const ARAgingSummaryHeaderDimensonsContext = React.createContext();
+const ARAgingSummaryHeaderDimensonsContext = React.createContext<any>(undefined);
 
 /**
  * ARAging summary header dismensions provider.
  * @returns {JSX.Element}
  */
-function ARAgingSummaryHeaderDimensionsProvider({ query, ...props }) {
+function ARAgingSummaryHeaderDimensionsProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

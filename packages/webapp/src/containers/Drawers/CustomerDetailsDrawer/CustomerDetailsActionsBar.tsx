@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -52,7 +51,7 @@ function CustomerDetailsActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const { contact, customerId } = useCustomerDetailsDrawerContext();
   const history = useHistory();
 

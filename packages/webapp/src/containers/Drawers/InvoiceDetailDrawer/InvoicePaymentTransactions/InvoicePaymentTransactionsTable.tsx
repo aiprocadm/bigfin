@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { DataTable, Card, TableSkeletonRows } from '@/components';
@@ -27,7 +26,7 @@ function InvoicePaymentTransactionsTable({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   // Invoice payment transactions table columns.
@@ -46,14 +45,14 @@ function InvoicePaymentTransactionsTable({
   });
 
   // Handles delete payment transactions.
-  const handleDeletePaymentTransactons = ({ payment_receive_id }) => {
+  const handleDeletePaymentTransactons = ({ payment_receive_id }: any) => {
     openAlert('payment-received-delete', {
       paymentReceiveId: payment_receive_id,
     });
   };
 
   // Handles edit payment transactions.
-  const handleEditPaymentTransactions = ({ payment_receive_id }) => {
+  const handleEditPaymentTransactions = ({ payment_receive_id }: any) => {
     history.push(`/payments-received/${payment_receive_id}/edit`);
     closeDrawer(DRAWERS.INVOICE_DETAILS);
   };

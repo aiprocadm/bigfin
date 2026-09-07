@@ -5,7 +5,7 @@ import { IntersectionObserver } from '@/components';
 import { useAccountTransactionsContext } from '../AccountTransactionsProvider';
 import { usePendingBankTransactionsInfinity } from '@/hooks/query/bank-rules';
 
-const PendingTransactionsContext = React.createContext();
+const PendingTransactionsContext = React.createContext<any>(undefined);
 
 function flattenInfinityPagesData(data) {
   return flatten(map(data.pages, (page) => page.data));

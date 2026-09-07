@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { DrawerLoading } from '@/components';
 import { useTaxRate } from '@/hooks/query/taxRates';
 
-const TaxRateDetailsContext = createContext();
+const TaxRateDetailsContext = createContext<any>(undefined);
 
 interface TaxRateDetailsContentBootProps {
   taxRateId: number;

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 
@@ -19,12 +18,12 @@ function ExpenseViewTabs({
 
   // #withExpenses
   expensesCurrentView,
-}) {
+}: any) {
   // Expenses list context.
   const { expensesViews } = useExpensesListContext();
 
   // Handle the tabs change.
-  const handleTabChange = (viewSlug) => {
+  const handleTabChange = (viewSlug: any) => {
     setExpensesTableState({
       viewSlug: viewSlug || null,
     });
@@ -52,7 +51,7 @@ function ExpenseViewTabs({
 
 export default compose(
   withExpensesActions,
-  withExpenses(({ expensesTableState }) => ({
+  withExpenses(({ expensesTableState }: any) => ({
     expensesCurrentView: expensesTableState.viewSlug,
   })),
 )(ExpenseViewTabs);

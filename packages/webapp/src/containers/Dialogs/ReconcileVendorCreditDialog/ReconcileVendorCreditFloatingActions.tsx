@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Intent, Button, Classes } from '@blueprintjs/core';
@@ -11,14 +10,14 @@ import { compose } from '@/utils';
 function ReconcileVendorCreditFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Formik context.
   const { isSubmitting } = useFormikContext();
 
   const { dialogName } = useReconcileVendorCreditContext();
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     closeDialog(dialogName);
   };
 

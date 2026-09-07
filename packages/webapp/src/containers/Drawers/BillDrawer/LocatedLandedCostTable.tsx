@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   DataTable,
@@ -27,7 +26,7 @@ function LocatedLandedCostTable({
 
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   // Located landed cost table columns.
   const columns = useLocatedLandedCostColumns();
 
@@ -35,12 +34,12 @@ function LocatedLandedCostTable({
   const { transactions, billId } = useBillDrawerContext();
 
   // Handle the transaction delete action.
-  const handleDeleteTransaction = ({ id }) => {
+  const handleDeleteTransaction = ({ id }: any) => {
     openAlert('bill-located-cost-delete', { BillId: id });
   };
 
   // Handle from transaction link click.
-  const handleFromTransactionClick = (original) => {
+  const handleFromTransactionClick = (original: any) => {
     const { from_transaction_type, from_transaction_id } = original;
 
     switch (from_transaction_type) {

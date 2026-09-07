@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -8,12 +7,12 @@ import { useReceipt } from '@/hooks/query';
 import { DRAWERS } from '@/constants/drawers';
 
 // useTransactionsByReference
-const ReceiptDetailDrawerContext = React.createContext();
+const ReceiptDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Receipt detail provider.
  */
-function ReceiptDetailDrawerProvider({ receiptId, ...props }) {
+function ReceiptDetailDrawerProvider({ receiptId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

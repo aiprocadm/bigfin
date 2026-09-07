@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik } from 'formik';
@@ -23,7 +22,7 @@ const defaultInitialValues = {
 function ProjectTaskForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // task form dialog context.
   const {
     taskId,
@@ -42,11 +41,11 @@ function ProjectTaskForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const form = {...values};
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get(
           isNewMode
@@ -64,7 +63,7 @@ function ProjectTaskForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
     if (isNewMode) {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -13,17 +12,17 @@ import { FormattedMessage as T } from '@/components';
 import { useItemDetailDrawerContext } from '../ItemDetailDrawerProvider';
 import { useGetItemPaymentTransactionsMenu } from '@/constants/itemPaymentTranactionsOption';
 
-export const ItemManuTransaction = ({ onChange }) => {
+export const ItemManuTransaction = ({ onChange }: any) => {
   const { value, setValue } = useItemDetailDrawerContext();
   const itemTransactionMenu = useGetItemPaymentTransactionsMenu();
 
   if (itemTransactionMenu.length === 0) {
     return null;
   }
-  const handleClickItem = (item) => {
+  const handleClickItem = (item: any) => {
     onChange && onChange(item);
   };
-  const content = itemTransactionMenu.map(({ name, label }) => (
+  const content = itemTransactionMenu.map(({ name, label }: any) => (
     <MenuItem onClick={() => handleClickItem(name)} text={label} />
   ));
 

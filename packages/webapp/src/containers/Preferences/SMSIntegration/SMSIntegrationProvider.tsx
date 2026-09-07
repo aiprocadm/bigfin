@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
 import { useSettings, useSettingSMSNotifications } from '@/hooks/query';
 
-const SMSIntegrationContext = React.createContext();
+const SMSIntegrationContext = React.createContext<any>(undefined);
 
 /**
  * SMS Integration provider.

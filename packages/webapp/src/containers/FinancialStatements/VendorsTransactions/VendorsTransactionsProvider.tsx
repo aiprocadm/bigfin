@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React, { createContext, useContext, useMemo } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useVendorsTransactionsReport } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const VendorsTransactionsContext = createContext();
+const VendorsTransactionsContext = createContext<any>(undefined);
 
 /**
  * Vendors transactions provider.
  */
-function VendorsTransactionsProvider({ filter, ...props }) {
+function VendorsTransactionsProvider({ filter, ...props }: any) {
   const httpQuery = useMemo(() => transformFilterFormToQuery(filter), [filter]);
 
   // Fetch vendors transactions based on the given query.

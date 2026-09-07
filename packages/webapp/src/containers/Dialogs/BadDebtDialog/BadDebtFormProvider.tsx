@@ -4,7 +4,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useAccounts, useInvoice, useCreateBadDebt } from '@/hooks/query';
 
-const BadDebtContext = React.createContext();
+const BadDebtContext = React.createContext<any>(undefined);
 
 /**
  * Bad debt provider.

@@ -6,7 +6,7 @@ import {
   useCreateNotifyEstimateBySMS,
 } from '@/hooks/query';
 
-const NotifyEstimateViaSMSContext = React.createContext();
+const NotifyEstimateViaSMSContext = React.createContext<any>(undefined);
 
 function NotifyEstimateViaSMSFormProvider({
   estimateId,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 import { DashboardViewsTabs } from '@/components';
@@ -17,7 +16,7 @@ function WarehouseTransfersViewTabs({
 
   // #withWarehouseTransfersActions
   setWarehouseTransferTableState,
-}) {
+}: any) {
   const { WarehouseTransferView } = useWarehouseTranfersListContext();
 
   const tabs = transfromViewsToTabs(WarehouseTransferView);
@@ -26,7 +25,7 @@ function WarehouseTransfersViewTabs({
   const handleClickNewView = () => {};
 
   // Handles the active tab chaing.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setWarehouseTransferTableState({ viewSlug });
   };
 
@@ -47,7 +46,7 @@ function WarehouseTransfersViewTabs({
 
 export default compose(
   withWarehouseTransfersActions,
-  withWarehouseTransfers(({ warehouseTransferTableState }) => ({
+  withWarehouseTransfers(({ warehouseTransferTableState }: any) => ({
     warehouseTransferCurrentView: warehouseTransferTableState?.viewSlug,
   })),
 )(WarehouseTransfersViewTabs);

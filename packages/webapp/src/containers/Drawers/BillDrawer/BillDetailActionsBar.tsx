@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -42,7 +41,7 @@ function BillDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   const { billId, bill } = useBillDrawerContext();

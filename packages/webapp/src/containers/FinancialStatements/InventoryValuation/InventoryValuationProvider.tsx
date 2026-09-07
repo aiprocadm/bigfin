@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useInventoryValuationTable } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const InventoryValuationContext = React.createContext();
+const InventoryValuationContext = React.createContext<any>(undefined);
 
 /**
  * Inventory valuation sheet provider.
  */
-function InventoryValuationProvider({ query, ...props }) {
+function InventoryValuationProvider({ query, ...props }: any) {
   // Transformes the filter form query to request query.
   const httpQuery = React.useMemo(
     () => transformFilterFormToQuery(query),

@@ -5,7 +5,7 @@ import { useWarehouseTransfer } from '@/hooks/query';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { DRAWERS } from '@/constants/drawers';
 
-const WarehouseTransferDetailDrawerContext = React.createContext();
+const WarehouseTransferDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Warehouse transfer detail drawer provider.

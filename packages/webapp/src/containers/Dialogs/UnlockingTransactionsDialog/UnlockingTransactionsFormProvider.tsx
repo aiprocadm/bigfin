@@ -3,7 +3,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useCancelLockingTransaction } from '@/hooks/query';
 
-const UnlockingTransactionsContext = React.createContext();
+const UnlockingTransactionsContext = React.createContext<any>(undefined);
 
 /**
  * Unlocking transactions form provider.

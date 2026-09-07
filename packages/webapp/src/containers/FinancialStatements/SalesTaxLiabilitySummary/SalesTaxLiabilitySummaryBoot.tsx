@@ -1,16 +1,15 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { transformFilterFormToQuery } from '../common';
 import { useSalesTaxLiabilitySummary } from '@/hooks/query';
 
-const SalesTaxLiabilitySummaryContext = createContext();
+const SalesTaxLiabilitySummaryContext = createContext<any>(undefined);
 
 /**
  * Sales tax liability summary boot.
  * @returns {JSX.Element}
  */
-function SalesTaxLiabilitySummaryBoot({ filter, ...props }) {
+function SalesTaxLiabilitySummaryBoot({ filter, ...props }: any) {
   // Transformes the given filter to query.
   const query = React.useMemo(
     () => transformFilterFormToQuery(filter),

@@ -13,7 +13,7 @@ import {
 } from '@/hooks/query';
 import PreferencesPageLoader from '../PreferencesPageLoader';
 
-const GeneralFormContext = createContext();
+const GeneralFormContext = createContext<any>(undefined);
 
 /**
  * General form provider.

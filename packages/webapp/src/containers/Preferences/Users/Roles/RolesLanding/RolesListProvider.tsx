@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
 import { useRoles } from '@/hooks/query';
 
-const RolesListContext = React.createContext();
+const RolesListContext = React.createContext<any>(undefined);
 
 /**
  * Roles list provider.

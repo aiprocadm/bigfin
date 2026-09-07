@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Features } from '@/constants';
@@ -6,13 +5,13 @@ import { useBranches } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const BalanceSheetHeaderDimensionsPanelContext = React.createContext();
+const BalanceSheetHeaderDimensionsPanelContext = React.createContext<any>(undefined);
 
 /**
  * BL sheet header provider.
  * @returns
  */
-function BalanceSheetHeaderDimensionsProvider({ query, ...props }) {
+function BalanceSheetHeaderDimensionsProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

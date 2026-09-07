@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Button } from '@blueprintjs/core';
 import { Form, useFormikContext } from 'formik';
@@ -18,7 +17,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 function InviteUserFormContent({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isSubmitting } = useFormikContext();
   const { isEditMode, dialogName, roles } = useInviteUserFormContext();
 

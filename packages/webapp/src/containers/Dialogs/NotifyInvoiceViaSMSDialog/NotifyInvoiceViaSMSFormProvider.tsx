@@ -3,7 +3,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateNotifyInvoiceBySMS, useInvoiceSMSDetail } from '@/hooks/query';
 
-const NotifyInvoiceViaSMSContext = React.createContext();
+const NotifyInvoiceViaSMSContext = React.createContext<any>(undefined);
 
 /**
  * Invoice SMS notification provider.

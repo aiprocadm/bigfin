@@ -8,7 +8,7 @@ import { useResourceViews, useResourceMeta, useEstimates } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
 // Estimates list context.
-const EstimatesListContext = createContext();
+const EstimatesListContext = createContext<any>(undefined);
 
 /**
  * Sale estimates data provider.

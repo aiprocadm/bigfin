@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useVendorsBalanceSummaryReport } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const VendorsBalanceSummaryContext = React.createContext();
+const VendorsBalanceSummaryContext = React.createContext<any>(undefined);
 
 /**
  * Vendors balance summary provider.
  */
-function VendorsBalanceSummaryProvider({ filter, ...props }) {
+function VendorsBalanceSummaryProvider({ filter, ...props }: any) {
   const httpQuery = React.useMemo(
     () => transformFilterFormToQuery(filter),
     [filter],

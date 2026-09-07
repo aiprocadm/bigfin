@@ -3,7 +3,7 @@ import React from 'react';
 import { DrawerHeaderContent, DashboardInsider } from '@/components';
 import { useContact } from '@/hooks/query';
 
-const ContactDetailDrawerContext = React.createContext();
+const ContactDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Contact detail provider.

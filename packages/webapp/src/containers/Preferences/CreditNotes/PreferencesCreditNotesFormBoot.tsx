@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import classNames from 'classnames';
@@ -7,7 +6,7 @@ import { useSettings } from '@/hooks/query';
 import PreferencesPageLoader from '../PreferencesPageLoader';
 import { Card } from '@/components';
 
-const PreferencesCreditNotesFormContext = React.createContext();
+const PreferencesCreditNotesFormContext = React.createContext<any>(undefined);
 
 function PreferencesCreditNotesBoot({ ...props }) {
   // Fetches organization settings.

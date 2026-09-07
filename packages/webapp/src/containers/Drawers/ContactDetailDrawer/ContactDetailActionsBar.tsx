@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
@@ -28,7 +27,7 @@ function ContactDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const { contact, contactId } = useContactDetailDrawerContext();
   const history = useHistory();
 
@@ -52,7 +51,7 @@ function ContactDetailActionsBar({
     const fromDate = new Date();
     fromDate.setMonth(fromDate.getMonth() - 3);
 
-    const iso = (date) => date.toISOString().slice(0, 10);
+    const iso = (date: any) => date.toISOString().slice(0, 10);
 
     apiRequest
       .http({

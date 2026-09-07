@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik, Form } from 'formik';
@@ -37,7 +36,7 @@ function WarehouseTransferForm({
   warehouseTransferNextNumber,
   warehouseTransferNumberPrefix,
   warehouseTransferIncrementMode,
-}) {
+}: any) {
   const history = useHistory();
 
   const {
@@ -71,7 +70,7 @@ function WarehouseTransferForm({
   );
 
   // Handles form submit.
-  const handleSubmit = (values, { setSubmitting, setErrors, resetForm }) => {
+  const handleSubmit = (values: any, { setSubmitting, setErrors, resetForm }: any) => {
     setSubmitting(true);
     // Transformes the values of the form to request.
     const form = {
@@ -105,7 +104,7 @@ function WarehouseTransferForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setErrors });
       }
@@ -151,7 +150,7 @@ function WarehouseTransferForm({
 
 export default compose(
   withDashboardActions,
-  withSettings(({ warehouseTransferSettings }) => ({
+  withSettings(({ warehouseTransferSettings }: any) => ({
     warehouseTransferNextNumber: warehouseTransferSettings?.nextNumber,
     warehouseTransferNumberPrefix: warehouseTransferSettings?.numberPrefix,
     warehouseTransferIncrementMode: warehouseTransferSettings?.autoIncrement,

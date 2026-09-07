@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import styled from 'styled-components';
@@ -7,7 +6,7 @@ import { useSettings } from '@/hooks/query';
 import PreferencesPageLoader from '../PreferencesPageLoader';
 import { Card } from '@/components';
 
-const PreferencesInvoiceFormContext = React.createContext();
+const PreferencesInvoiceFormContext = React.createContext<any>(undefined);
 
 function PreferencesInvoicesBoot({ ...props }) {
   // Fetches organization settings.

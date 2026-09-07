@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik } from 'formik';
@@ -20,27 +19,27 @@ import { defaultInitialValues } from './utils';
 function AllocateLandedCostForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { dialogName, bill, billId, createLandedCostMutate } =
     useAllocateLandedConstDialogContext();
 
   // Initial form values.
   const initialValues = {
     ...defaultInitialValues,
-    items: bill.entries.map((entry) => ({
+    items: bill.entries.map((entry: any) => ({
       ...entry,
       entry_id: entry.id,
       cost: '',
     })),
   };
   // Handle form submit.
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = (values: any, { setSubmitting }: any) => {
     setSubmitting(true);
 
     // Filters the entries has no cost.
     const entries = values.items
-      .filter((entry) => entry.entry_id && entry.cost)
-      .map((entry) => transformToForm(entry, defaultInitialValues.items[0]));
+      .filter((entry: any) => entry.entry_id && entry.cost)
+      .map((entry: any) => transformToForm(entry, defaultInitialValues.items[0]));
 
     if (entries.length <= 0) {
       AppToaster.show({
@@ -54,7 +53,7 @@ function AllocateLandedCostForm({
       items: entries,
     };
     // Handle the request success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('the_landed_cost_has_been_created_successfully'),
         intent: Intent.SUCCESS,
@@ -63,13 +62,13 @@ function AllocateLandedCostForm({
       closeDialog(dialogName);
     };
     // Handle the request error.
-    const onError = (res) => {
+    const onError = (res: any) => {
       const { errors } = res.response.data;
       setSubmitting(false);
 
       if (
         errors.some(
-          (e) => e.type === 'COST_AMOUNT_BIGGER_THAN_UNALLOCATED_AMOUNT',
+          (e: any) => e.type === 'COST_AMOUNT_BIGGER_THAN_UNALLOCATED_AMOUNT',
         )
       ) {
         AppToaster.show({

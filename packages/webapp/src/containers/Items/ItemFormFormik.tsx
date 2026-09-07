@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Formik, Form } from 'formik';
 import { Intent } from '@blueprintjs/core';
@@ -32,7 +31,7 @@ export default function ItemFormFormik({
   onSubmitError,
   onCancel,
   className,
-}) {
+}: any) {
   // Item form context.
   const {
     itemId,
@@ -52,14 +51,14 @@ export default function ItemFormFormik({
   );
 
   // Handles the form submit.
-  const handleFormSubmit = (values, form) => {
+  const handleFormSubmit = (values: any, form: any) => {
     const { setSubmitting, resetForm, setErrors } = form;
     const formValues = { ...values };
 
     setSubmitting(true);
 
     // Handle response succes.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get(
           isNewMode
@@ -77,7 +76,7 @@ export default function ItemFormFormik({
       safeInvoke(onSubmitSuccess, values, form, submitPayload, response);
     };
     // Handle response error.
-    const onError = (errors) => {
+    const onError = (errors: any) => {
       setSubmitting(false);
 
       if (errors) {

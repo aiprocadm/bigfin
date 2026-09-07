@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { TABLES } from '@/constants/tables';
@@ -50,7 +49,7 @@ function ItemsDataTable({
 
   // #ownProps
   tableProps,
-}) {
+}: any) {
   // Items list context.
   const { items, pagination, isItemsLoading, isEmptyStatus, isItemsFetching } =
     useItemsListContext();
@@ -62,7 +61,7 @@ function ItemsDataTable({
   const history = useHistory();
 
   // Table row class names.
-  const rowClassNames = (row) => ({
+  const rowClassNames = (row: any) => ({
     inactive: !row.original.active,
   });
 
@@ -72,7 +71,7 @@ function ItemsDataTable({
 
   // Handle fetch data once the page index, size or sort by of the table change.
   const handleFetchData = React.useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setItemsTableState({
         pageIndex,
         pageSize,
@@ -84,45 +83,45 @@ function ItemsDataTable({
 
   // Handle selected rows change.
   const handleSelectedRowsChange = React.useCallback(
-    (selectedFlatRows) => {
-      const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+    (selectedFlatRows: any) => {
+      const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
       setItemsSelectedRows(selectedIds);
     },
     [setItemsSelectedRows],
   );
 
   // Handle delete action Item.
-  const handleDeleteItem = ({ id }) => {
+  const handleDeleteItem = ({ id }: any) => {
     openAlert('item-delete', { itemId: id });
   };
 
   // Handle cancel/confirm item inactive.
-  const handleInactiveItem = ({ id }) => {
+  const handleInactiveItem = ({ id }: any) => {
     openAlert('item-inactivate', { itemId: id });
   };
 
   // Handle cancel/confirm item activate.
-  const handleActivateItem = ({ id }) => {
+  const handleActivateItem = ({ id }: any) => {
     openAlert('item-activate', { itemId: id });
   };
 
   // Handle Edit item.
-  const handleEditItem = ({ id }) => {
+  const handleEditItem = ({ id }: any) => {
     history.push(`/items/${id}/edit`);
   };
 
   // Handle item make adjustment.
-  const handleMakeAdjustment = ({ id }) => {
+  const handleMakeAdjustment = ({ id }: any) => {
     openDialog('inventory-adjustment', { itemId: id });
   };
 
   // Display empty status instead of the table.
-  const handleDuplicate = ({ id }) => {
+  const handleDuplicate = ({ id }: any) => {
     history.push(`/items/new?duplicate=${id}`, { action: id });
   };
 
   // Handle view detail item.
-  const handleViewDetailItem = ({ id }) => {
+  const handleViewDetailItem = ({ id }: any) => {
     openDrawer(DRAWERS.ITEM_DETAILS, { itemId: id });
   };
 
@@ -132,7 +131,7 @@ function ItemsDataTable({
   }
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.ITEM_DETAILS, { itemId: cell.row.original.id });
   };
 
@@ -188,8 +187,8 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withSettings(({ itemsSettings }) => ({
+  withSettings(({ itemsSettings }: any) => ({
     itemsTableSize: itemsSettings.tableSize,
   })),
-  withItems(({ itemsTableState }) => ({ itemsTableState }))
+  withItems(({ itemsTableState }: any) => ({ itemsTableState }))
 )(ItemsDataTable);

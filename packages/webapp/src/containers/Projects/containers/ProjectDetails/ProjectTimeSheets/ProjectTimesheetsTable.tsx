@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -30,18 +29,18 @@ function ProjectTimesheetsTableRoot({
   openDialog,
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const { projectTimeEntries } = useProjectTimesheetContext();
 
   // Retrieve project timesheet table columns.
   const columns = useProjectTimesheetColumns();
 
   // Handle delete timesheet.
-  const handleDeleteTimesheet = ({ id }) => {
+  const handleDeleteTimesheet = ({ id }: any) => {
     openAlert('project-timesheet-delete', { timesheetId: id });
   };
   // Handle edit timesheet.
-  const handleEditTimesheet = ({ id }) => {
+  const handleEditTimesheet = ({ id }: any) => {
     openDialog('project-time-entry-form', { timesheetId: id, action: 'edit' });
   };
   // Local storage memorizing columns widths.
@@ -72,7 +71,7 @@ function ProjectTimesheetsTableRoot({
 export const ProjectTimesheetsTable = compose(
   withAlertActions,
   withDialogActions,
-  withSettings(({ timesheetsSettings }) => ({
+  withSettings(({ timesheetsSettings }: any) => ({
     timesheetsTableSize: timesheetsSettings?.tableSize,
   })),
 )(ProjectTimesheetsTableRoot);

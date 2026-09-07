@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -22,8 +21,8 @@ export const defaultInitialValues = {
   branch_id: '',
 };
 
-export const transformErrors = (errors, { setFieldError }) => {
-  const getError = (errorType) => errors.find((e) => e.type === errorType);
+export const transformErrors = (errors: any, { setFieldError }: any) => {
+  const getError = (errorType: any) => errors.find((e: any) => e.type === errorType);
 
   if (getError('PAYMENT_RECEIVE_NO_EXISTS')) {
     setFieldError(
@@ -67,7 +66,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: any) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);
@@ -76,7 +75,7 @@ export const useSetPrimaryBranchToForm = () => {
   }, [isBranchesSuccess, setFieldValue, branches]);
 };
 
-export const transformInvoiceToForm = (invoice) => {
+export const transformInvoiceToForm = (invoice: any) => {
   return {
     ...pick(invoice, ['customer_id', 'currency_code']),
     amount: invoice.due_amount,

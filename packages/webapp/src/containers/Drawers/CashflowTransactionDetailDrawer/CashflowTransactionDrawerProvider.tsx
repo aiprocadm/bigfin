@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useCashflowTransaction } from '@/hooks/query';
@@ -6,12 +5,12 @@ import { useCashflowTransaction } from '@/hooks/query';
 import { DrawerLoading, DrawerHeaderContent } from '@/components';
 import { DRAWERS } from '@/constants/drawers';
 
-const CashflowTransactionDrawerContext = React.createContext();
+const CashflowTransactionDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Cashflow transaction drawer provider.
  */
-function CashflowTransactionDrawerProvider({ referenceId, ...props }) {
+function CashflowTransactionDrawerProvider({ referenceId, ...props }: any) {
   // Fetch the specific cashflow transaction details.
   const {
     data: cashflowTransaction,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Classes, NavbarGroup, NavbarDivider } from '@blueprintjs/core';
 import classNames from 'classnames';
@@ -11,7 +10,7 @@ import { useAuditLogContext } from './AuditLogProvider';
 function AuditLogActionsBar({
   isFilterDrawerOpen,
   toggleFilterDrawer,
-}) {
+}: any) {
   const { sheetRefresh } = useAuditLogContext();
 
   const handleCustomizeClick = () => {

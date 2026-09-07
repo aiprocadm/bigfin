@@ -17,7 +17,7 @@ import {
 } from '@/hooks/query';
 import { useTaxRates } from '@/hooks/query/taxRates';
 
-const BillFormContext = createContext();
+const BillFormContext = createContext<any>(undefined);
 
 // Filter all purchasable items only.
 const stringifiedFilterRoles = JSON.stringify([

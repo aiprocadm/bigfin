@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -48,7 +47,7 @@ function CustomersTable({
 
   // #withSettings
   customersTableSize,
-}) {
+}: any) {
   const history = useHistory();
 
   // Customers table columns.
@@ -69,7 +68,7 @@ function CustomersTable({
 
   // Handle fetch data once the page index, size or sort by of the table change.
   const handleFetchData = React.useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setCustomersTableState({
         pageIndex,
         pageSize,
@@ -80,36 +79,36 @@ function CustomersTable({
   );
 
   const handleSelectedRowsChange = React.useCallback(
-    (selectedFlatRows) => {
-      const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+    (selectedFlatRows: any) => {
+      const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
       setCustomersSelectedRows(selectedIds);
     },
     [setCustomersSelectedRows],
   );
 
   // Handles the customer delete action.
-  const handleCustomerDelete = ({ id }) => {
+  const handleCustomerDelete = ({ id }: any) => {
     openAlert('customer-delete', { contactId: id });
   };
 
   // Handle the customer edit action.
-  const handleCustomerEdit = (customer) => {
+  const handleCustomerEdit = (customer: any) => {
     history.push(`/customers/${customer.id}/edit`);
   };
 
-  const handleContactDuplicate = ({ id }) => {
+  const handleContactDuplicate = ({ id }: any) => {
     openDialog('contact-duplicate', { contactId: id });
   };
 
   // Handle cancel/confirm inactive.
-  const handleInactiveCustomer = ({ id, contact_service }) => {
+  const handleInactiveCustomer = ({ id, contact_service }: any) => {
     openAlert('customer-inactivate', {
       customerId: id,
     });
   };
 
   // Handle cancel/confirm  activate.
-  const handleActivateCustomer = ({ id, contact_service }) => {
+  const handleActivateCustomer = ({ id, contact_service }: any) => {
     openAlert('customer-activate', {
       customerId: id,
       service: contact_service,
@@ -117,12 +116,12 @@ function CustomersTable({
   };
 
   // Handle view detail contact.
-  const handleViewDetailCustomer = ({ id }) => {
+  const handleViewDetailCustomer = ({ id }: any) => {
     openDrawer(DRAWERS.CUSTOMER_DETAILS, { customerId: id });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.CUSTOMER_DETAILS, { customerId: cell.row.original.id });
   };
 
@@ -178,8 +177,8 @@ export default compose(
   withDialogActions,
   withCustomersActions,
   withDrawerActions,
-  withCustomers(({ customersTableState }) => ({ customersTableState })),
-  withSettings(({ customersSettings }) => ({
+  withCustomers(({ customersTableState }: any) => ({ customersTableState })),
+  withSettings(({ customersSettings }: any) => ({
     customersTableSize: customersSettings?.tableSize,
   })),
 )(CustomersTable);

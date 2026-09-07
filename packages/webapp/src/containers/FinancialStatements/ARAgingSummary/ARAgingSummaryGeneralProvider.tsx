@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { useCustomers } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const ARAgingSummaryGeneralContext = createContext();
+const ARAgingSummaryGeneralContext = createContext<any>(undefined);
 
 /**
  * A/R aging summary general tab provider.

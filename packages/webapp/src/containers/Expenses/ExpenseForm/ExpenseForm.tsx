@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
@@ -41,7 +40,7 @@ function ExpenseForm({
   preferredPaymentAccount,
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   // Expense form context.
   const {
     editExpenseMutate,
@@ -73,7 +72,7 @@ function ExpenseForm({
   );
 
   //  Handle form submit.
-  const handleSubmit = (values, { setSubmitting, setErrors, resetForm }) => {
+  const handleSubmit = (values: any, { setSubmitting, setErrors, resetForm }: any) => {
     setSubmitting(true);
     const totalAmount = sumBy(values.categories, 'amount');
 
@@ -94,7 +93,7 @@ function ExpenseForm({
       publish: currentSubmitPayload.publish,
     };
     // Handle request success.
-    const handleSuccess = (response) => {
+    const handleSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get(
           isNewMode
@@ -119,7 +118,7 @@ function ExpenseForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       transformErrors(errors, { setErrors });
       setSubmitting(false);
     };
@@ -170,7 +169,7 @@ function ExpenseForm({
 
 export default compose(
   withDashboardActions,
-  withSettings(({ expenseSettings }) => ({
+  withSettings(({ expenseSettings }: any) => ({
     preferredPaymentAccount: parseInt(
       expenseSettings?.preferredPaymentAccount,
       10,

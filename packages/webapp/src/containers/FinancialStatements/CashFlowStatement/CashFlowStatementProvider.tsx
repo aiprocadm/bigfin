@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useCashFlowStatementReport } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const CashFLowStatementContext = React.createContext();
+const CashFLowStatementContext = React.createContext<any>(undefined);
 
 /**
  * Cash flow statement provider.
  */
-function CashFlowStatementProvider({ filter, ...props }) {
+function CashFlowStatementProvider({ filter, ...props }: any) {
   // Transforms the given state query to http query.
   const httpQuery = React.useMemo(
     () => transformFilterFormToQuery(filter),

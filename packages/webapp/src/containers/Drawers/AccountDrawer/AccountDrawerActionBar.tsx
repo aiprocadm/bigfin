@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import {
@@ -40,7 +39,7 @@ function AccountDrawerActionBar({
 
   // #withAlertsDialog
   openAlert,
-}) {
+}: any) {
   // Account drawer context.
   const { account } = useAccountDrawerContext();
 

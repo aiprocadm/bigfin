@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 
@@ -18,14 +17,14 @@ function ReceiptViewTabs({
 
   // #withReceipts
   receiptsCurrentView,
-}) {
+}: any) {
   // Receipts list context.
   const { receiptsViews } = useReceiptsListContext();
 
   const tabs = transfromViewsToTabs(receiptsViews);
 
   // Handles the active tab chaning.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: any) => {
     setReceiptsTableState({
       viewSlug: viewSlug || null,
     });
@@ -47,7 +46,7 @@ function ReceiptViewTabs({
 
 export default compose(
   withReceiptsActions,
-  withReceipts(({ receiptTableState }) => ({
+  withReceipts(({ receiptTableState }: any) => ({
     receiptsCurrentView: receiptTableState.viewSlug,
   })),
 )(ReceiptViewTabs);

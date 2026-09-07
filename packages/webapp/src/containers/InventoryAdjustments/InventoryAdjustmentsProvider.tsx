@@ -1,14 +1,13 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { DashboardInsider } from '@/components/Dashboard';
 import { useInventoryAdjustments } from '@/hooks/query';
 
-const InventoryAdjustmentsContext = createContext();
+const InventoryAdjustmentsContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.
  */
-function InventoryAdjustmentsProvider({ query, ...props }) {
+function InventoryAdjustmentsProvider({ query, ...props }: any) {
   // Handles the inventory adjustments fethcing of the given query.
   const {
     isLoading: isAdjustmentsLoading,

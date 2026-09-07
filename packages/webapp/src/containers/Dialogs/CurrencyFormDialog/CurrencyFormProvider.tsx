@@ -3,7 +3,7 @@ import React, { createContext } from 'react';
 import { useEditCurrency, useCreateCurrency } from '@/hooks/query';
 import { DialogContent } from '@/components';
 
-const CurrencyFormContext = createContext();
+const CurrencyFormContext = createContext<any>(undefined);
 
 /**
  * Currency Form page provider.

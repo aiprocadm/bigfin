@@ -4,7 +4,7 @@ import React, { createContext, useContext } from 'react';
 import { useAccounts } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const GLHeaderGeneralPanelContext = createContext();
+const GLHeaderGeneralPanelContext = createContext<any>(undefined);
 
 /**
  * General ledger provider.

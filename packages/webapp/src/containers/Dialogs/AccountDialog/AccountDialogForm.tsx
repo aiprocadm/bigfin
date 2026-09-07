@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
@@ -39,7 +38,7 @@ const defaultInitialValues = {
 function AccountFormDialogContent({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Account form context.
   const {
     editAccountMutate,
@@ -57,7 +56,7 @@ function AccountFormDialogContent({
     : EditAccountFormSchema;
 
   // Callbacks handles form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const form = transformFormToReq(values);
     const toastAccountName = values.code
       ? `${values.code} - ${values.name}`
@@ -81,7 +80,7 @@ function AccountFormDialogContent({
       });
     };
     // Handle request error.
-    const handleError = (error) => {
+    const handleError = (error: any) => {
       const {
         response: {
           data: { errors },

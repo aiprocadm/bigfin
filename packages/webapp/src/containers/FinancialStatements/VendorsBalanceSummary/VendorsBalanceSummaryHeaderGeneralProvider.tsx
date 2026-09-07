@@ -4,7 +4,7 @@ import React from 'react';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 import { useVendors } from '@/hooks/query';
 
-const VendorsBalanceSummaryGeneralPanelContext = React.createContext();
+const VendorsBalanceSummaryGeneralPanelContext = React.createContext<any>(undefined);
 
 /**
  * Vendors balance summary provider.

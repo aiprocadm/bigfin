@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -35,7 +34,7 @@ function ItemDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   // Item readonly drawer context.
   const { itemId } = useItemDetailDrawerContext();
 

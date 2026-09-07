@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import {
@@ -44,7 +43,7 @@ function AccountsDataTable({
 
   // #withAccountsTableActions
   setAccountsSelectedRows,
-}) {
+}: any) {
   const { isAccountsLoading, isAccountsFetching, accounts } =
     useAccountsChartContext();
 
@@ -52,22 +51,22 @@ function AccountsDataTable({
   const columns = useAccountsTableColumns();
 
   // Handle delete action account.
-  const handleDeleteAccount = (account) => {
+  const handleDeleteAccount = (account: any) => {
     openAlert('account-delete', { accountId: account.id });
   };
 
   // Handle activate action account.
-  const handleActivateAccount = (account) => {
+  const handleActivateAccount = (account: any) => {
     openAlert('account-activate', { accountId: account.id });
   };
 
   // Handle inactivate action account.
-  const handleInactivateAccount = (account) => {
+  const handleInactivateAccount = (account: any) => {
     openAlert('account-inactivate', { accountId: account.id });
   };
 
   // Handle edit account action.
-  const handleEditAccount = (account) => {
+  const handleEditAccount = (account: any) => {
     openDialog(DialogsName.AccountForm, {
       action: AccountDialogAction.Edit,
       accountId: account.id,
@@ -75,12 +74,12 @@ function AccountsDataTable({
   };
 
   // Handle view detail account.
-  const handleViewDetailAccount = ({ id }) => {
+  const handleViewDetailAccount = ({ id }: any) => {
     openDrawer(DRAWERS.ACCOUNT_DETAILS, { accountId: id });
   };
 
   // Handle new child button click.
-  const handleNewChildAccount = (account) => {
+  const handleNewChildAccount = (account: any) => {
     openDialog(DialogsName.AccountForm, {
       action: AccountDialogAction.NewChild,
       parentAccountId: account.id,
@@ -88,7 +87,7 @@ function AccountsDataTable({
     });
   };
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.ACCOUNT_DETAILS, { accountId: cell.row.original.id });
   };
   // Local storage memorizing columns widths.
@@ -96,8 +95,8 @@ function AccountsDataTable({
     useMemorizedColumnsWidths(TABLES.ACCOUNTS);
 
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selectedFlatRows) => {
-    const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedFlatRows: any) => {
+    const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
     setAccountsSelectedRows(selectedIds);
   };
 
@@ -149,7 +148,7 @@ export default compose(
   withDrawerActions,
   withDialogActions,
   withAccountsTableActions,
-  withSettings(({ accountsSettings }) => ({
+  withSettings(({ accountsSettings }: any) => ({
     accountsTableSize: accountsSettings.tableSize,
   })),
 )(AccountsDataTable);

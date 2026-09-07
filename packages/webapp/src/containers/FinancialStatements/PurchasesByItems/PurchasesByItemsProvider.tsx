@@ -1,12 +1,11 @@
-// @ts-nocheck
 import React, { createContext, useContext, useMemo } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { usePurchasesByItemsTable } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const PurchasesByItemsContext = createContext();
+const PurchasesByItemsContext = createContext<any>(undefined);
 
-function PurchasesByItemsProvider({ query, ...props }) {
+function PurchasesByItemsProvider({ query, ...props }: any) {
   // Transformes the report query to http query.
   const httpQuery = useMemo(() => transformFilterFormToQuery(query), [query]);
 

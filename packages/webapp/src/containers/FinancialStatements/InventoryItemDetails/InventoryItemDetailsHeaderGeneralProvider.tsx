@@ -3,7 +3,7 @@ import React from 'react';
 import { useItems } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const InventoryItemDetailsHeaderGeneralContext = React.createContext();
+const InventoryItemDetailsHeaderGeneralContext = React.createContext<any>(undefined);
 
 /**
  * Inventory item details provider.

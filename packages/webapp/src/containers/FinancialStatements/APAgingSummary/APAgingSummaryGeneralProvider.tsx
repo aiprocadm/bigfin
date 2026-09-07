@@ -4,7 +4,7 @@ import React, { createContext, useContext } from 'react';
 import { useVendors } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const APAgingSummaryGeneralContext = createContext();
+const APAgingSummaryGeneralContext = createContext<any>(undefined);
 
 /**
  * A/P aging summary provider.

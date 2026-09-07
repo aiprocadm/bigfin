@@ -11,7 +11,7 @@ import {
 
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const WarehouseTransfersListContext = React.createContext();
+const WarehouseTransfersListContext = React.createContext<any>(undefined);
 
 /**
  * WarehouseTransfer data provider

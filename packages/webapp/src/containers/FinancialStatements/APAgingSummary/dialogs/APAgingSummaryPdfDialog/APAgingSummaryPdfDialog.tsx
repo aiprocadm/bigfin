@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
@@ -16,7 +15,7 @@ const APAgingSummaryPdfDialogContent = lazy(
  * A/P aging summary pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function APAgingSummaryPdfDialogRoot({ dialogName, payload, isOpen }) {
+function APAgingSummaryPdfDialogRoot({ dialogName, payload, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Drawer, DrawerSuspense } from '@/components';
@@ -19,7 +18,7 @@ function RefundCreditNoteDetailDrawer({
   // #withDrawer
   isOpen,
   payload: { refundTransactionId },
-}) {
+}: any) {
   return (
     <Drawer
       isOpen={isOpen}

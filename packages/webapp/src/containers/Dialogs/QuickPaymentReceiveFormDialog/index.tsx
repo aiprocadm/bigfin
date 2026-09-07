@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
@@ -16,7 +15,7 @@ function QuickPaymentReceiveFormDialog({
   dialogName,
   payload = { invoiceId: null },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Drawer, DrawerSuspense } from '@/components';
@@ -18,7 +17,7 @@ function InventoryAdjustmentDetailDrawer({
   // #withDrawer
   isOpen,
   payload: { inventoryId },
-}) {
+}: any) {
   return (
     <Drawer
       isOpen={isOpen}

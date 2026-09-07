@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
@@ -13,7 +12,7 @@ function NotifyInvoiceViaSMSDialog({
   dialogName,
   payload: { invoiceId },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

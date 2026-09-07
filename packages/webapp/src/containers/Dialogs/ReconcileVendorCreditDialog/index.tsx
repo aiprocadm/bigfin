@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FormattedMessage as T, Dialog, DialogSuspense } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -15,7 +14,7 @@ function ReconcileVendorCreditDialog({
   dialogName,
   payload: { vendorCreditId },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

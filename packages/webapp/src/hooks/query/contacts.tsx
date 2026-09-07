@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import useApiRequest from '../useRequest';
 import { useQueryTenant } from '../useQueryRequest';
 import t from './types';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate vendors.
   queryClient.invalidateQueries(t.VENDORS);
   // Invalidate customers.
@@ -15,14 +14,14 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Retrieve the contact duplicate.
  */
-export function useContact(id, props) {
+export function useContact(id: any, props: any) {
   const apiRequest = useApiRequest();
 
   return useQueryTenant(
     ['CONTACT', id],
     () => apiRequest.get(`contacts/${id}`),
     {
-      select: (res) => res.data.customer,
+      select: (res: any) => res.data.customer,
       ...props,
     },
   );
@@ -31,14 +30,14 @@ export function useContact(id, props) {
 /**
  * Retrieve the auto-complete contacts.
  */
-export function useAutoCompleteContacts(props) {
+export function useAutoCompleteContacts(props: any) {
   const apiRequest = useApiRequest();
 
   return useQueryTenant(
     ['CONTACTS', 'AUTO-COMPLETE'],
     () => apiRequest.get('contacts/auto-complete'),
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -48,7 +47,7 @@ export function useAutoCompleteContacts(props) {
 /**
  * Activate the given Contact.
  */
-export function useActivateContact(props) {
+export function useActivateContact(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -67,7 +66,7 @@ export function useActivateContact(props) {
 /**
  * Inactivate the given contact.
  */
-export function useInactivateContact(props) {
+export function useInactivateContact(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

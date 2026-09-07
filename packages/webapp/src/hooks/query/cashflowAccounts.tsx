@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useMutation, useQueryClient, useInfiniteQuery } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
 import { BANK_QUERY_KEY } from '@/constants/query-keys/banking';
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate settings.
   queryClient.invalidateQueries([t.SETTING, t.SETTING_CASHFLOW]);
 
@@ -34,12 +33,12 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Retrieve accounts list.
  */
-export function useCashflowAccounts(query, props) {
+export function useCashflowAccounts(query: any, props: any) {
   return useRequestQuery(
     [t.CASH_FLOW_ACCOUNTS, query],
     { method: 'get', url: 'banking/accounts', params: query },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -49,7 +48,7 @@ export function useCashflowAccounts(query, props) {
 /**
  * Create Money in owner contribution .
  */
-export function useCreateCashflowTransaction(props) {
+export function useCreateCashflowTransaction(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -70,12 +69,12 @@ export function useCreateCashflowTransaction(props) {
 /**
  * Retrieve account transactions list.
  */
-export function useCashflowTransaction(id, props) {
+export function useCashflowTransaction(id: any, props: any) {
   return useRequestQuery(
     [t.CASH_FLOW_TRANSACTIONS, id],
     { method: 'get', url: `banking/transactions/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -85,7 +84,7 @@ export function useCashflowTransaction(id, props) {
 /**
  * Deletes the given sale invoice.
  */
-export function useDeleteCashflowTransaction(props) {
+export function useDeleteCashflowTransaction(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -105,10 +104,10 @@ export function useDeleteCashflowTransaction(props) {
  * @returns
  */
 export function useAccountTransactionsInfinity(
-  accountId,
-  query,
-  infinityProps,
-  axios,
+  accountId: any,
+  query: any,
+  infinityProps: any,
+  axios: any,
 ) {
   const apiRequest = useApiRequest();
 
@@ -144,10 +143,10 @@ export function useAccountTransactionsInfinity(
  * @returns
  */
 export function useAccountUncategorizedTransactionsInfinity(
-  accountId,
-  query,
-  infinityProps,
-  axios,
+  accountId: any,
+  query: any,
+  infinityProps: any,
+  axios: any,
 ) {
   const apiRequest = useApiRequest();
 
@@ -225,7 +224,7 @@ export function useRefreshCashflowTransactions() {
  */
 export function useUncategorizedTransaction(
   uncategorizedTranasctionId: number,
-  props,
+  props: any,
 ) {
   return useRequestQuery(
     [t.CASHFLOW_UNCAATEGORIZED_TRANSACTION, uncategorizedTranasctionId],
@@ -234,7 +233,7 @@ export function useUncategorizedTransaction(
       url: `banking/uncategorized/${uncategorizedTranasctionId}`,
     },
     {
-      select: (res) => res.data?.data,
+      select: (res: any) => res.data?.data,
       ...props,
     },
   );
@@ -243,7 +242,7 @@ export function useUncategorizedTransaction(
 /**
  * Categorize the cashflow transaction.
  */
-export function useCategorizeTransaction(props) {
+export function useCategorizeTransaction(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -269,7 +268,7 @@ export function useCategorizeTransaction(props) {
 /**
  * Uncategorize the cashflow transaction.
  */
-export function useUncategorizeTransaction(props) {
+export function useUncategorizeTransaction(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

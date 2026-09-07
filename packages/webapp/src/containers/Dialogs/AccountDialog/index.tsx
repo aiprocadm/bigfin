@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import { FormattedMessage as T } from '@/components';
 import { Dialog, DialogSuspense } from '@/components';
@@ -14,7 +13,7 @@ function AccountFormDialog({
   dialogName,
   payload = { action: '', id: null },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

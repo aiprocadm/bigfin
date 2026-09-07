@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { Drawer, DrawerSuspense } from '@/components';
@@ -17,7 +16,7 @@ function PaymentReceivedCustomizeDrawerRoot({
   // #withDrawer
   isOpen,
   payload
-}) {
+}: any) {
   return (
     <Drawer isOpen={isOpen} name={name} size={'100%'} payload={payload}>
       <DrawerSuspense>

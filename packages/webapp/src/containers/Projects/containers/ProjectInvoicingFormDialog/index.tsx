@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
@@ -13,7 +12,7 @@ const ProjectInvoicingDialogContent = React.lazy(
  * Project invoicing form dialog.
  * @returns
  */
-function ProjectInvoicingFormDialog({ dialogName, payload: {}, isOpen }) {
+function ProjectInvoicingFormDialog({ dialogName, payload: {}, isOpen }: any) {
 
   return (
     <ProjectInvoicingFormDialogRoot

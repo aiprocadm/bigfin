@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
@@ -17,7 +16,7 @@ function ProjectTimeEntryFormDialog({
   dialogName,
   isOpen,
   payload: { timesheetId = null, projectId = null, action },
-}) {
+}: any) {
   return (
     <ProjectTimeEntryFormDialogRoot
       name={dialogName}

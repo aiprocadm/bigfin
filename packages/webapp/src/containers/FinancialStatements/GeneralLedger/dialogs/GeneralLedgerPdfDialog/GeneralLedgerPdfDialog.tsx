@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
@@ -18,7 +17,7 @@ const GeneralLedgerPdfDialogContent = lazy(
  * General ledger pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function GeneralLedgerPdfDialogRoot({ dialogName, payload, isOpen }) {
+function GeneralLedgerPdfDialogRoot({ dialogName, payload, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

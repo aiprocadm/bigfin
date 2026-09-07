@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -18,7 +17,7 @@ function ProjectTaskFormDialog({
   dialogName,
   payload: { taskId = null, projectId = null, action },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
@@ -18,7 +17,7 @@ function ChangeSubscriptionPlanDrawer({
   name,
   // #withDrawer
   isOpen,
-}) {
+}: any) {
   return (
     <Drawer
       isOpen={isOpen}

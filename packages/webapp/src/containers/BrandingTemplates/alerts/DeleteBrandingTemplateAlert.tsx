@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { AppToaster } from '@/components';
@@ -23,7 +22,7 @@ function DeleteBrandingTemplateAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: any) {
   const { mutateAsync: deleteBrandingTemplateMutate } = useDeletePdfTemplate();
 
   const handleConfirmDelete = () => {
@@ -43,7 +42,7 @@ function DeleteBrandingTemplateAlert({
         }) => {
           if (
             errors.find(
-              (error) => error.type === 'CANNOT_DELETE_PREDEFINED_PDF_TEMPLATE',
+              (error: any) => error.type === 'CANNOT_DELETE_PREDEFINED_PDF_TEMPLATE',
             )
           ) {
             AppToaster.show({

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { batch } from 'react-redux';
 import { omit } from 'lodash';
@@ -15,12 +14,12 @@ const OrganizationRoute = {
 /**
  * Retrieve organizations of the authenticated user.
  */
-export function useOrganizations(props) {
+export function useOrganizations(props: any) {
   return useRequestQuery(
     [t.ORGANIZATIONS],
     { method: 'get', url: `organization/all` },
     {
-      select: (res) => res.data.organizations,
+      select: (res: any) => res.data.organizations,
       initialDataUpdatedAt: 0,
       initialData: {
         data: {
@@ -35,7 +34,7 @@ export function useOrganizations(props) {
 /**
  * Retrieve the current organization metadata.
  */
-export function useCurrentOrganization(props) {
+export function useCurrentOrganization(props: any) {
   const setOrganizations = useSetOrganizations();
   const setSubscriptions = useSetSubscriptions();
 
@@ -43,9 +42,9 @@ export function useCurrentOrganization(props) {
     [t.ORGANIZATION_CURRENT],
     { method: 'get', url: OrganizationRoute.Current },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         const organization = omit(data, ['subscriptions']);
 
         batch(() => {
@@ -98,12 +97,12 @@ export function useUpdateOrganization(props = {}) {
   );
 }
 
-export function useOrgBaseCurrencyMutateAbilities(props) {
+export function useOrgBaseCurrencyMutateAbilities(props: any) {
   return useRequestQuery(
     [t.ORGANIZATION_MUTATE_BASE_CURRENCY_ABILITIES],
     { method: 'get', url: `organization/base-currency-mutate` },
     {
-      select: (res) => res.data.abilities,
+      select: (res: any) => res.data.abilities,
       defaultData: [],
       ...props,
     },

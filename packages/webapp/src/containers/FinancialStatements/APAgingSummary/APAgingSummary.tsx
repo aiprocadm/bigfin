@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect } from 'react';
 import moment from 'moment';
 
@@ -29,12 +28,12 @@ function APAgingSummary({
 
   // #withAPAgingSummaryActions
   toggleAPAgingSummaryFilterDrawer: toggleDisplayFilterDrawer,
-}) {
+}: any) {
   const { query, setLocationQuery } = useAPAgingSummaryQuery();
 
   // Handle filter submit.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: any) => {
       const _filter = {
         ...filter,
         asDate: moment(filter.asDate).format('YYYY-MM-DD'),
@@ -44,7 +43,7 @@ function APAgingSummary({
     [setLocationQuery],
   );
   // Handle number format submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: any) => {
     setLocationQuery({ ...query, numberFormat });
   };
   // Hide the report filter drawer once the page unmount.

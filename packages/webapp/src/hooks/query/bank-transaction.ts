@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import useApiRequest from '../useRequest';
 import { BANK_QUERY_KEY } from '@/constants/query-keys/banking';

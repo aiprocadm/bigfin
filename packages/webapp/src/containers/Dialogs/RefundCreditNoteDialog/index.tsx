@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 
@@ -16,7 +15,7 @@ function RefundCreditNoteDialog({
   dialogName,
   payload: { creditNoteId },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

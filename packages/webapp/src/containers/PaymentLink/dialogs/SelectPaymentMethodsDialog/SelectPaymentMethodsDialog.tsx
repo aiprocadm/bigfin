@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
@@ -14,7 +13,7 @@ const SelectPaymentMethodsDialogContent = React.lazy(() =>
 /**
  * Select payment methods dialogs.
  */
-function SelectPaymentMethodsDialogRoot({ dialogName, payload, isOpen }) {
+function SelectPaymentMethodsDialogRoot({ dialogName, payload, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

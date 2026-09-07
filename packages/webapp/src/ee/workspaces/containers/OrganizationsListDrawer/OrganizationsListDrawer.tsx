@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { Position } from '@blueprintjs/core';
@@ -22,7 +21,7 @@ function OrganizationsListDrawerRoot({
   // #withDrawer
   isOpen,
   payload,
-}) {
+}: any) {
   return (
     <OrganizationsDrawer
       isOpen={isOpen}

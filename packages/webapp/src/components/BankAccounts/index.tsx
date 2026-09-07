@@ -46,7 +46,7 @@ function BankAccountTypeIcon({ type }) {
   const icon = ACCOUNT_TYPE_PAIR_ICON[type];
 
   if (!icon) {
-    return;
+    return null;
   }
   return (
     <AccountIconWrap>

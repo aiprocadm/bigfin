@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { castArray, includes } from 'lodash';
@@ -61,7 +60,7 @@ function NotifyViaSMSForm({
   onValuesChange,
   calloutCodes,
   formikProps,
-}) {
+}: any) {
   // Initial form values
   const initialValues = {
     ...defaultInitialValues,
@@ -104,7 +103,7 @@ function NotifyViaSMSForm({
 /**
  * Observes the values change of notify form.
  */
-function NotifyObserveValuesChange({ onChange }) {
+function NotifyObserveValuesChange({ onChange }: any) {
   const { values } = useFormikContext<any>();
 
   // Handle the form change observe.
@@ -117,19 +116,24 @@ function NotifyObserveValuesChange({ onChange }) {
 /**
  * Notify via SMS form alerts.
  */
-function NotifyViaSMSAlerts({ calloutCodes }) {
-  return [
-    includes(calloutCodes, 100) && (
-      <Callout icon={null} intent={Intent.DANGER}>
-        {intl.get('notify_Via_sms.dialog.customer_phone_number_does_not_eixst')}
-      </Callout>
-    ),
-    includes(calloutCodes, 200) && (
-      <Callout icon={null} intent={Intent.DANGER}>
-        {intl.get('notify_Via_sms.dialog.customer_phone_number_invalid')}
-      </Callout>
-    ),
-  ];
+function NotifyViaSMSAlerts({ calloutCodes }: any) {
+  // Возвращаем элемент, а не список (Д2 карты v66).
+  return (
+    <>
+      {includes(calloutCodes, 100) && (
+        <Callout icon={null} intent={Intent.DANGER}>
+          {intl.get(
+            'notify_Via_sms.dialog.customer_phone_number_does_not_eixst',
+          )}
+        </Callout>
+      )}
+      {includes(calloutCodes, 200) && (
+        <Callout icon={null} intent={Intent.DANGER}>
+          {intl.get('notify_Via_sms.dialog.customer_phone_number_invalid')}
+        </Callout>
+      )}
+    </>
+  );
 }
 
 export default NotifyViaSMSForm;

@@ -11,7 +11,8 @@ export function FormattedMessage({ id, values }: FormattedMessageProps) {
 }
 
 export function FormattedHTMLMessage({ ...args }) {
-  return intl.formatHTMLMessage({ ...args });
+  // Как и у соседнего FormattedMessage: возвращаем элемент, а не строку.
+  return <>{intl.formatHTMLMessage({ ...args })}</>;
 }
 
 export const T = FormattedMessage;

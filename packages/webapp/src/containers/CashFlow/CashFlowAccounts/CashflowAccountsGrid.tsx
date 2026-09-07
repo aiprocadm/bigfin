@@ -37,15 +37,21 @@ const CASHFLOW_SKELETON_N = 4;
  * Cashflow accounts skeleton for loading state.
  */
 function CashflowAccountsSkeleton() {
-  return [...Array(CASHFLOW_SKELETON_N)].map((e, i) => (
-    <BankAccount
-      title={'XXXXX'}
-      code={'XXXXX'}
-      balance={'XXXXXX'}
-      cash={'cash'}
-      loading={true}
-    />
-  ));
+  // Список нужно завернуть: компонент обязан вернуть элемент (Д2 карты v66).
+  return (
+    <>
+      {[...Array(CASHFLOW_SKELETON_N)].map((e, i) => (
+        <BankAccount
+          key={i}
+          title={'XXXXX'}
+          code={'XXXXX'}
+          balance={'XXXXXX'}
+          cash={'cash'}
+          loading={true}
+        />
+      ))}
+    </>
+  );
 }
 
 /**
@@ -207,9 +213,17 @@ function CashflowAccountMoneyInContextMenu({ onClick }) {
   // Retreives the add money in button options.
   const addMoneyInOptions = useMemo(() => getAddMoneyInOptions(), []);
 
-  return addMoneyInOptions.map((option) => (
-    <MenuItem text={option.name} onClick={handleItemClick(option.value)} />
-  ));
+  return (
+    <>
+      {addMoneyInOptions.map((option) => (
+        <MenuItem
+          key={option.value}
+          text={option.name}
+          onClick={handleItemClick(option.value)}
+        />
+      ))}
+    </>
+  );
 }
 
 /**
@@ -222,9 +236,17 @@ function CashflowAccountMoneyOutContextMenu({ onClick }) {
   // Retreives the add money out button options.
   const addMoneyOutOptions = useMemo(() => getAddMoneyOutOptions(), []);
 
-  return addMoneyOutOptions.map((option) => (
-    <MenuItem text={option.name} onClick={handleItemClick(option.value)} />
-  ));
+  return (
+    <>
+      {addMoneyOutOptions.map((option) => (
+        <MenuItem
+          key={option.value}
+          text={option.name}
+          onClick={handleItemClick(option.value)}
+        />
+      ))}
+    </>
+  );
 }
 
 /**

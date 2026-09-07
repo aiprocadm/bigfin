@@ -30,7 +30,25 @@ export function TotalLines({
   );
 }
 
-export function TotalLine({ title, value, borderStyle, textStyle, className }) {
+/**
+ * Свойства строки итога. Все необязательные (Д1 карты v59): раньше типа не
+ * было, и проверка требовала передавать сразу все пять.
+ */
+export interface TotalLineProps {
+  title?: React.ReactNode;
+  value?: React.ReactNode;
+  borderStyle?: string;
+  textStyle?: string;
+  className?: string;
+}
+
+export function TotalLine({
+  title,
+  value,
+  borderStyle,
+  textStyle,
+  className,
+}: TotalLineProps) {
   return (
     <TotalLinePrimitive
       borderStyle={borderStyle}

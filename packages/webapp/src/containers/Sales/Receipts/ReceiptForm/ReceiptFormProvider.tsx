@@ -26,6 +26,35 @@ const ReceiptFormContext = createContext<ReceiptFormProviderValue>(
 interface ReceiptFormProviderValue {
   isSaleReceiptStateLoading: boolean;
   saleReceiptState: IGetReceiptStateResponse;
+  // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
+  // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
+  receiptId: any;
+  receipt: any;
+  accounts: any;
+  customers: any;
+  items: any;
+  branches: any;
+  warehouses: any;
+  projects: any;
+  submitPayload: any;
+  isNewMode: any;
+  isReceiptLoading: any;
+  isAccountsLoading: any;
+  isCustomersLoading: any;
+  isItemsLoading: any;
+  isWarehouesLoading: any;
+  isBranchesLoading: any;
+  isFeatureLoading: any;
+  isSettingLoading: any;
+  isBranchesSuccess: any;
+  isWarehousesSuccess: any;
+  createReceiptMutate: any;
+  editReceiptMutate: any;
+  setSubmitPayload: any;
+  brandingTemplates: any;
+  isBrandingTemplatesLoading: any;
+  isBootLoading: any;
+
 }
 
 /**

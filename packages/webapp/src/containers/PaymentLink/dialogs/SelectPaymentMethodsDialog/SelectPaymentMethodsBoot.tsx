@@ -1,7 +1,10 @@
 import { useGetPaymentServices } from '@/hooks/query/payment-services';
 import React, { createContext, useContext, ReactNode } from 'react';
 
-interface SelectPaymentMethodsContextType {}
+interface SelectPaymentMethodsContextType {
+  paymentServices: any;
+  isPaymentServicesLoading: boolean;
+}
 
 const SelectPaymentMethodsContext =
   createContext<SelectPaymentMethodsContextType>(

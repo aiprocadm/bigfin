@@ -4,6 +4,7 @@ import { useGetSubscriptions } from '@/hooks/query/subscription';
 interface BillingBootContextValues {
   isSubscriptionsLoading: boolean;
   subscriptions: any;
+  mainSubscription: any;
 }
 
 const BillingBoot = createContext<BillingBootContextValues>(

@@ -5,6 +5,7 @@ interface OneClickDemoContextType {
   authMeta: any;
   /** Демо включено на сервере: поле приходит ПЛОСКО (Д1 карты v18). */
   isDemoEnabled: boolean;
+  isAuthMetaLoading: boolean;
 }
 
 const OneClickDemoContext = createContext<OneClickDemoContextType>(

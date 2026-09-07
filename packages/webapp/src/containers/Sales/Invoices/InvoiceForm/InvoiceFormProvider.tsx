@@ -27,6 +27,39 @@ import { useGetPaymentServices } from '@/hooks/query/payment-services';
 interface InvoiceFormContextValue {
   saleInvoiceState: GetSaleInvoiceStateResponse | null;
   isInvoiceStateLoading: boolean;
+  // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
+  // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
+  invoice: any;
+  items: any;
+  customers: any;
+  newInvoice: any;
+  estimateId: any;
+  invoiceId: any;
+  submitPayload: any;
+  branches: any;
+  warehouses: any;
+  projects: any;
+  taxRates: any;
+  brandingTemplates: any;
+  isInvoiceLoading: any;
+  isItemsLoading: any;
+  isCustomersLoading: any;
+  isSettingsLoading: any;
+  isWarehouesLoading: any;
+  isBranchesLoading: any;
+  isFeatureLoading: any;
+  isBranchesSuccess: any;
+  isWarehousesSuccess: any;
+  isTaxRatesLoading: any;
+  isBrandingTemplatesLoading: any;
+  createInvoiceMutate: any;
+  editInvoiceMutate: any;
+  setSubmitPayload: any;
+  isNewMode: any;
+  paymentServices: any;
+  isPaymentServicesLoading: any;
+  isBootLoading: any;
+
 }
 
 const InvoiceFormContext = createContext<InvoiceFormContextValue>(

@@ -163,7 +163,6 @@ function VendorOpeningBalanceExchangeRateField() {
         fromCurrency={values.currency_code}
         toCurrency={currentOrganization.base_currency}
         name={'opening_balance_exchange_rate'}
-        fastField
       />
     </FFormGroup>
   );

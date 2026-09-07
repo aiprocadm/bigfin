@@ -38,6 +38,10 @@ const UNKNOWN_PROPS: Record<string, string[]> = {
   // @blueprintjs-formik/datetime не упоминает fastField ни в объявлениях, ни
   // в собранном коде
   FDateInput: ['fastField'],
+  // Размер значка — свойство самого значка, а не кнопки: слова `iconSize` нет
+  // ни в объявлениях кнопки, ни в её собранном коде (Д3 карты v68). Размер
+  // задаётся вложенному `<Icon iconSize={…} />`.
+  Button: ['iconSize'],
 };
 
 const sourceFiles = (): string[] =>

@@ -31,7 +31,6 @@ export default function ProjectProfitabilitySummaryTable({
       sheetType={intl.get('project_profitability_summary')}
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
       basis={query.basis}
-      name="project-profitability-summary"
     >
       <ProjectProfitabilitySummaryDataTable
         columns={tableColumns}

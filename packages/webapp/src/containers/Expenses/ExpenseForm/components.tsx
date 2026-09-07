@@ -61,7 +61,6 @@ const ActionsCellRenderer = ({
     <Popover2 content={exampleMenu} placement="left-start">
       <Button
         icon={<Icon icon={'more-13'} iconSize={13} />}
-        iconSize={14}
         className="m12"
         minimal={true}
       />

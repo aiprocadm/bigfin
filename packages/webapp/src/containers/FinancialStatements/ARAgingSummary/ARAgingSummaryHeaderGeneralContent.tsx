@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Position } from '@blueprintjs/core';
 import FinancialStatementsFilter from '../FinancialStatementsFilter';
 import {
@@ -30,7 +31,7 @@ export default function ARAgingSummaryHeaderGeneralContent() {
           <FFormGroup
             name={'asDate'}
             label={<T id={'as_date'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
             fill
           >
             <FDateInput
@@ -50,7 +51,7 @@ export default function ARAgingSummaryHeaderGeneralContent() {
           <FFormGroup
             name={'agingDaysBefore'}
             label={<T id={'aging_before_days'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('aging_before_days.hint')} />}
           >
             <FInputGroup name={'agingDaysBefore'} medium={true} fastField />
           </FFormGroup>
@@ -62,7 +63,7 @@ export default function ARAgingSummaryHeaderGeneralContent() {
           <FFormGroup
             name={'agingPeriods'}
             label={<T id={'aging_periods'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('aging_periods.hint')} />}
           >
             <FInputGroup name={'agingPeriods'} medium={true} />
           </FFormGroup>

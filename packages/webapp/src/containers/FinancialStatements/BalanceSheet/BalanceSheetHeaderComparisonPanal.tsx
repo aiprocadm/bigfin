@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { useFormikContext } from 'formik';
 import {
@@ -28,7 +29,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
   return (
     <>
       {/**----------- Previous Year -----------*/}
-      <FFormGroup name={'previousYear'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'previousYear'} labelInfo={<FieldHint content={intl.get('balance_sheet.previous_year.hint')} />}>
         <FCheckbox
           inline={true}
           label={<T id={'balance_sheet.previous_year'} />}
@@ -41,7 +42,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousYearAmountChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('balance_sheet.total_change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -56,7 +57,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousYearPercentageChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('balance_sheet.change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -69,7 +70,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
       </FlexSubFields>
 
       {/*------------ Previous Period -----------*/}
-      <FFormGroup name={'previousPeriod'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'previousPeriod'} labelInfo={<FieldHint content={intl.get('balance_sheet.previous_period.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -83,7 +84,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousPeriodAmountChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('balance_sheet.total_change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -98,7 +99,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousPeriodPercentageChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('balance_sheet.change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -111,7 +112,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
       </FlexSubFields>
 
       {/**----------- % of Column -----------*/}
-      <FFormGroup name={'percentageOfColumn'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'percentageOfColumn'} labelInfo={<FieldHint content={intl.get('balance_sheet.percentage_of_column.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -121,7 +122,7 @@ function BalanceSheetHeaderComparisonPanalFields() {
       </FFormGroup>
 
       {/**----------- % of Row -----------*/}
-      <FFormGroup name={'percentageOfRow'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'percentageOfRow'} labelInfo={<FieldHint content={intl.get('balance_sheet.percentage_of_row.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}

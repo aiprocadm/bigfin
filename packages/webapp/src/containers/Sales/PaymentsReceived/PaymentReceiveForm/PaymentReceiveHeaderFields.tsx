@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useMemo } from 'react';
+import intl from 'react-intl-universal';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import styled from 'styled-components';
@@ -139,7 +140,7 @@ export default function PaymentReceiveHeaderFields() {
         name={'amount'}
         label={<T id={'full_amount'} />}
         inline={true}
-        labelInfo={<Hint />}
+        labelInfo={<Hint content={intl.get('payment_receive.full_amount.hint')} />}
       >
         <ControlGroup>
           <InputPrependText text={currency_code} />

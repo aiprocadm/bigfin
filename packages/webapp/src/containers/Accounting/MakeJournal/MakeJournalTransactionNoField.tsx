@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import * as R from 'ramda';
@@ -61,7 +62,7 @@ export const MakeJournalTransactionNoField = R.compose(
         labelInfo={
           <>
             <FieldRequiredHint />
-            <FieldHint />
+            <FieldHint content={intl.get('journal_no.hint')} />
           </>
         }
         fill={true}

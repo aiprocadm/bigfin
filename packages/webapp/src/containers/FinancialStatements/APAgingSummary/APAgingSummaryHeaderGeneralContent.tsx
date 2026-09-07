@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { Position } from '@blueprintjs/core';
 import {
   FormattedMessage as T,
@@ -29,7 +30,7 @@ export default function APAgingSummaryHeaderGeneralContent() {
           <FFormGroup
             name={'asDate'}
             label={<T id={'as_date'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
             fill
           >
             <FDateInput
@@ -49,7 +50,7 @@ export default function APAgingSummaryHeaderGeneralContent() {
           <FFormGroup
             name={'agingDaysBefore'}
             label={<T id={'aging_before_days'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('aging_before_days.hint')} />}
           >
             <FInputGroup name={'agingDaysBefore'} />
           </FFormGroup>
@@ -61,7 +62,7 @@ export default function APAgingSummaryHeaderGeneralContent() {
           <FFormGroup
             name={'agingPeriods'}
             label={<T id={'aging_periods'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('aging_periods.hint')} />}
           >
             <FInputGroup name={'agingPeriods'} />
           </FFormGroup>

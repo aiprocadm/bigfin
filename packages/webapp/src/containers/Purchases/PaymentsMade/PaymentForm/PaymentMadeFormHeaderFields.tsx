@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useMemo } from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import classNames from 'classnames';
 import { isEmpty, toSafeInteger } from 'lodash';
@@ -140,7 +141,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         name={'amount'}
         label={<T id={'full_amount'} />}
         inline={true}
-        labelInfo={<Hint />}
+        labelInfo={<Hint content={intl.get('payment_made.full_amount.hint')} />}
       >
         <ControlGroup>
           <InputPrependText text={currency_code} />

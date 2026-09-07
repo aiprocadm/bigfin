@@ -2,7 +2,7 @@
 import React, { createContext, useContext } from 'react';
 import { useItems } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
-const PurchasesByItemsGeneralPanelContext = createContext();
+const PurchasesByItemsGeneralPanelContext = createContext<any>(undefined);
 
 function PurchasesByItemsGeneralPanelProvider({ ...props }) {
   // Handle fetching the items based on the given query.

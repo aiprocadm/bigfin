@@ -6,7 +6,7 @@ import {
   useEditTransactionsLocking,
 } from '@/hooks/query';
 
-const LockingTransactionsContext = React.createContext();
+const LockingTransactionsContext = React.createContext<any>(undefined);
 
 /**
  * Locking transactions form provider.

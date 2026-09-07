@@ -5,7 +5,7 @@ import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { useInventoryAdjustment } from '@/hooks/query';
 import { DRAWERS } from '@/constants/drawers';
 
-const InventoryAdjustmentDrawerContext = React.createContext();
+const InventoryAdjustmentDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Inventory adjustment drawer provider.

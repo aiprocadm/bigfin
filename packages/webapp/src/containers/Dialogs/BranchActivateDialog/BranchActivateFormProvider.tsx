@@ -4,7 +4,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useActivateBranches } from '@/hooks/query';
 
-const BranchActivateContext = React.createContext();
+const BranchActivateContext = React.createContext<any>(undefined);
 
 /**
  * Branch activate form provider.

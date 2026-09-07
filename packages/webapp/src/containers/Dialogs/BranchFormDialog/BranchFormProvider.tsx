@@ -3,7 +3,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateBranch, useEditBranch, useBranch } from '@/hooks/query';
 
-const BranchFormContext = React.createContext();
+const BranchFormContext = React.createContext<any>(undefined);
 
 /**
  * Branch form dialog provider.

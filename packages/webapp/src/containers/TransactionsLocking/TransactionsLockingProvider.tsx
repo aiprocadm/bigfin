@@ -4,7 +4,7 @@ import { DashboardInsider } from '@/components/Dashboard';
 import { useTransactionsLocking } from '@/hooks/query';
 import { useWatchImmediate } from '@/hooks/utils/useWatch';
 
-const TransactionsLockingContext = React.createContext();
+const TransactionsLockingContext = React.createContext<any>(undefined);
 
 /**
  * Transactions locking data provider.

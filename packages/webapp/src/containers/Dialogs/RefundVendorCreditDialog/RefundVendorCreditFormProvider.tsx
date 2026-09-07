@@ -11,7 +11,7 @@ import {
   useCreateRefundVendorCredit,
 } from '@/hooks/query';
 
-const RefundVendorCreditContext = React.createContext();
+const RefundVendorCreditContext = React.createContext<any>(undefined);
 
 function RefundVendorCreditFormProvider({
   vendorCreditId,

@@ -10,7 +10,7 @@ import {
 } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const PaymentMadesListContext = createContext();
+const PaymentMadesListContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

@@ -7,7 +7,7 @@ import { useInvoice } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { DRAWERS } from '@/constants/drawers';
 
-const InvoiceDetailDrawerContext = React.createContext();
+const InvoiceDetailDrawerContext = React.createContext<any>(undefined);
 /**
  * Invoice detail provider.
  */

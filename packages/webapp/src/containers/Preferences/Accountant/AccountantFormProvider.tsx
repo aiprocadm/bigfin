@@ -8,7 +8,7 @@ import { CLASSES } from '@/constants/classes';
 import { useAccounts, useSaveSettings, useSettings } from '@/hooks/query';
 import PreferencesPageLoader from '../PreferencesPageLoader';
 
-const AccountantFormContext = React.createContext();
+const AccountantFormContext = React.createContext<any>(undefined);
 
 /**
  * Accountant data provider.

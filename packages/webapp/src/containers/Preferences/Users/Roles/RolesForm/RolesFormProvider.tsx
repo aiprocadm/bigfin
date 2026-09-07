@@ -11,7 +11,7 @@ import {
 } from '@/hooks/query';
 import PreferencesPageLoader from '@/containers/Preferences/PreferencesPageLoader';
 
-const RolesFormContext = React.createContext();
+const RolesFormContext = React.createContext<any>(undefined);
 
 /**
  * Roles Form page provider.

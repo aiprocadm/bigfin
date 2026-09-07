@@ -11,7 +11,7 @@ import {
   useCreateRefundCreditNote,
 } from '@/hooks/query';
 
-const RefundCreditNoteContext = React.createContext();
+const RefundCreditNoteContext = React.createContext<any>(undefined);
 
 /**
  * Refund credit note form provider.

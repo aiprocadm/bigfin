@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 import { useCustomers } from '@/hooks/query';
 
-const CustomersTransactionsGeneralPanelContext = createContext();
+const CustomersTransactionsGeneralPanelContext = createContext<any>(undefined);
 
 /**
  * Customers transactions provider.

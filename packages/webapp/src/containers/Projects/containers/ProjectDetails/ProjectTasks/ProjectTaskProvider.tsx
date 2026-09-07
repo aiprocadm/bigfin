@@ -3,7 +3,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useProjectTasks, useProject } from '../../../hooks';
 
-const ProjectTaskContext = React.createContext();
+const ProjectTaskContext = React.createContext<any>(undefined);
 
 /**
  * Project task data provider.

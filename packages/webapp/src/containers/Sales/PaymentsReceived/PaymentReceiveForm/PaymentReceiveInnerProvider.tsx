@@ -5,7 +5,7 @@ import { useDueInvoices } from '@/hooks/query';
 import { transformInvoicesNewPageEntries } from './utils';
 import { usePaymentReceiveFormContext } from './PaymentReceiveFormProvider';
 
-const PaymentReceiveInnerContext = createContext();
+const PaymentReceiveInnerContext = createContext<any>(undefined);
 
 /**
  * Payment receive inner form provider.

@@ -14,7 +14,7 @@ export interface AuthMetaBootValue {
   oneClickDemoUrl: string;
 }
 
-const AuthMetaBootContext = createContext();
+const AuthMetaBootContext = createContext<any>(undefined);
 
 /**
  * Boots the authentication page metadata.

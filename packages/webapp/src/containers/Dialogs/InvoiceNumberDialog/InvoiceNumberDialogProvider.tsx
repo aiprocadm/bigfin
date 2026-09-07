@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { DialogContent } from '@/components';
 import { useSettingsInvoices } from '@/hooks/query';
 
-const InvoiceNumberDialogContext = createContext();
+const InvoiceNumberDialogContext = createContext<any>(undefined);
 
 /**
  * Invoice number dialog provider.

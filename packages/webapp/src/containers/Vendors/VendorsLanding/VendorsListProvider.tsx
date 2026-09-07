@@ -7,7 +7,7 @@ import { useResourceMeta, useResourceViews, useVendors } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 import { transformVendorsStateToQuery } from './utils';
 
-const VendorsListContext = createContext();
+const VendorsListContext = createContext<any>(undefined);
 
 function VendorsListProvider({ tableState, tableStateChanged, ...props }) {
   // Transformes the vendors table state to fetch query.

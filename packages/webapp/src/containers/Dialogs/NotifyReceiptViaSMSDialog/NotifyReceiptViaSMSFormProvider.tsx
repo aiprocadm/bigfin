@@ -3,7 +3,7 @@ import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateNotifyReceiptBySMS, useReceiptSMSDetail } from '@/hooks/query';
 
-const NotifyReceiptViaSMSContext = React.createContext();
+const NotifyReceiptViaSMSContext = React.createContext<any>(undefined);
 
 /**
  * 

@@ -10,7 +10,7 @@ import {
 } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const PaymentsReceivedListContext = createContext();
+const PaymentsReceivedListContext = createContext<any>(undefined);
 
 /**
  * Payment receives list data provider.

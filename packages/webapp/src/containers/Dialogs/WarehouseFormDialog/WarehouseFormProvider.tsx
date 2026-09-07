@@ -7,7 +7,7 @@ import {
   useWarehouse,
 } from '@/hooks/query';
 
-const WarehouseFormContext = React.createContext();
+const WarehouseFormContext = React.createContext<any>(undefined);
 
 /**
  * Warehouse form provider.

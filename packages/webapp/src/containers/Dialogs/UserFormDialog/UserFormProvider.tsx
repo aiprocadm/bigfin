@@ -9,7 +9,7 @@ import {
 
 import { DialogContent } from '@/components';
 
-const UserFormContext = createContext();
+const UserFormContext = createContext<any>(undefined);
 
 /**
  * User Form provider.

@@ -10,7 +10,7 @@ import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 import { transfromCustomertoForm } from './utils';
 
-const CustomerOpeningBalanceContext = React.createContext();
+const CustomerOpeningBalanceContext = React.createContext<any>(undefined);
 
 /**
  * Customer opening balance provider.

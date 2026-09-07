@@ -4,7 +4,7 @@ import FinancialReportPage from '../FinancialReportPage';
 import { useSalesByItemsTable } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const SalesByItemsContext = createContext();
+const SalesByItemsContext = createContext<any>(undefined);
 
 function SalesByItemProvider({ query, ...props }) {
   // Transformes the sheet query to http query.

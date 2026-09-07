@@ -4,7 +4,7 @@ import { DashboardInsider } from '@/components';
 import { useResourceViews, useResourceMeta, useAccounts } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const AccountsChartContext = createContext();
+const AccountsChartContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

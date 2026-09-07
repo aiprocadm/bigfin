@@ -15,7 +15,7 @@ import {
 import { DashboardInsider } from '@/components';
 
 // Payment made form context.
-const PaymentMadeFormContext = createContext();
+const PaymentMadeFormContext = createContext<any>(undefined);
 
 /**
  * Payment made form provider.

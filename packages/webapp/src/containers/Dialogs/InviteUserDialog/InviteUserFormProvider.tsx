@@ -3,7 +3,7 @@ import React, { createContext } from 'react';
 import { useCreateInviteUser, useUsers, useRoles } from '@/hooks/query';
 import { DialogContent } from '@/components';
 
-const InviteUserFormContext = createContext();
+const InviteUserFormContext = createContext<any>(undefined);
 
 /**
  * Invite user Form page provider.

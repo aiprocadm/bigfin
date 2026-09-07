@@ -15,7 +15,7 @@ import {
 } from '@/hooks/query';
 import { useProjects } from '@/containers/Projects/hooks';
 
-const MakeJournalFormContext = createContext();
+const MakeJournalFormContext = createContext<any>(undefined);
 
 /**
  * Make journal form provider.

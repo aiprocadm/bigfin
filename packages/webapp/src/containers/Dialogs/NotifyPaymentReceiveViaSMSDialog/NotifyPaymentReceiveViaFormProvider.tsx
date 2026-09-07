@@ -6,7 +6,7 @@ import {
   usePaymentReceiveSMSDetail,
 } from '@/hooks/query';
 
-const NotifyPaymentReceiveViaSMSContext = React.createContext();
+const NotifyPaymentReceiveViaSMSContext = React.createContext<any>(undefined);
 
 function NotifyPaymentReceiveViaFormProvider({
   paymentReceiveId,

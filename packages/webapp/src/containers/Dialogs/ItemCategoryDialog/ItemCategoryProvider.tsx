@@ -7,7 +7,7 @@ import {
   useCreateItemCategory,
 } from '@/hooks/query';
 
-const ItemCategoryContext = createContext();
+const ItemCategoryContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

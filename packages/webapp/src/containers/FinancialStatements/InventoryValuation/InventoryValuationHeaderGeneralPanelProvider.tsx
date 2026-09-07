@@ -3,7 +3,7 @@ import React from 'react';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 import { useItems } from '@/hooks/query';
 
-const InventoryValuationGeneralPanelContext = React.createContext();
+const InventoryValuationGeneralPanelContext = React.createContext<any>(undefined);
 
 function InventoryValuationGeneralPanelProvider({ query, ...props }) {
   // Handle fetching the items based on the given query.

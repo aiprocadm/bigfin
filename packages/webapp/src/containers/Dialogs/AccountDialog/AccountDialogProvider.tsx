@@ -11,7 +11,7 @@ import {
 } from '@/hooks/query';
 import { AccountDialogAction, getDisabledFormFields } from './utils';
 
-const AccountDialogContext = createContext();
+const AccountDialogContext = createContext<any>(undefined);
 
 /**
  * Account form provider.

@@ -5,7 +5,7 @@ import { usePaymentMadeNewPageEntries } from '@/hooks/query';
 import { usePaymentMadeFormContext } from './PaymentMadeFormProvider';
 import { transformToNewPageEntries } from './utils';
 
-const PaymentMadeInnerContext = createContext();
+const PaymentMadeInnerContext = createContext<any>(undefined);
 
 /**
  * Payment made inner form provider.

@@ -12,7 +12,7 @@ import {
   useCreatePaymentReceive,
 } from '@/hooks/query';
 
-const QuickPaymentReceiveContext = createContext();
+const QuickPaymentReceiveContext = createContext<any>(undefined);
 
 /**
  * Quick payment receive dialog provider.

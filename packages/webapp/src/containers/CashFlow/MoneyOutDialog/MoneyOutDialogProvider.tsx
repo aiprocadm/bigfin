@@ -11,7 +11,7 @@ import {
   useSettingCashFlow,
 } from '@/hooks/query';
 
-const MoneyInDialogContent = React.createContext();
+const MoneyInDialogContent = React.createContext<any>(undefined);
 
 /**
  * Money out dialog provider.

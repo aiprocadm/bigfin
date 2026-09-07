@@ -7,7 +7,7 @@ import {
 } from '../../hooks';
 import { DialogContent } from '@/components';
 
-const ProjectTaskFormContext = React.createContext();
+const ProjectTaskFormContext = React.createContext<any>(undefined);
 
 /**
  * Project task form provider.

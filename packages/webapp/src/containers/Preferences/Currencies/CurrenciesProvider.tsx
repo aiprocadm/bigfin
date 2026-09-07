@@ -2,7 +2,7 @@
 import React, { createContext, useContext } from 'react';
 import { useCurrencies } from '@/hooks/query';
 
-const CurrenciesContext = createContext();
+const CurrenciesContext = createContext<any>(undefined);
 
 /**
  * currencies provider.

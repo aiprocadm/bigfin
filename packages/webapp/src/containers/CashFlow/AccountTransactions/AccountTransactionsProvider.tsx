@@ -6,7 +6,7 @@ import { useCashflowAccounts, useAccount } from '@/hooks/query';
 import { useAppQueryString } from '@/hooks';
 import { useGetBankAccountSummaryMeta } from '@/hooks/query/bank-rules';
 
-const AccountTransactionsContext = React.createContext();
+const AccountTransactionsContext = React.createContext<any>(undefined);
 
 /**
  * Account transctions provider.

@@ -12,7 +12,7 @@ import {
 
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const VendorsCreditNoteListContext = React.createContext();
+const VendorsCreditNoteListContext = React.createContext<any>(undefined);
 
 /**
  * Vendors Credit note data provider.

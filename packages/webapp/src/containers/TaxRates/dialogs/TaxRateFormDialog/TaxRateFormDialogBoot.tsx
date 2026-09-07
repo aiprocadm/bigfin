@@ -4,7 +4,7 @@ import { DialogContent } from '@/components';
 import { useTaxRate } from '@/hooks/query/taxRates';
 import { DialogsName } from '@/constants/dialogs';
 
-const TaxRateFormDialogContext = React.createContext();
+const TaxRateFormDialogContext = React.createContext<any>(undefined);
 
 interface TaxRateFormDialogBootProps {
   taxRateId: number;

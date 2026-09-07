@@ -4,7 +4,7 @@ import { useCustomers } from '@/hooks/query';
 import { useCreateProject, useEditProject, useProject } from '../../hooks';
 import { DialogContent } from '@/components';
 
-const ProjectFormContext = React.createContext();
+const ProjectFormContext = React.createContext<any>(undefined);
 
 /**
  * Project form provider.

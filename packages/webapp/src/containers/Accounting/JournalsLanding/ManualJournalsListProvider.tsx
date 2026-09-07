@@ -6,7 +6,7 @@ import { DashboardInsider } from '@/components';
 import { useResourceViews, useResourceMeta, useJournals } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const ManualJournalsContext = createContext();
+const ManualJournalsContext = createContext<any>(undefined);
 
 function ManualJournalsListProvider({ query, tableStateChanged, ...props }) {
   // Fetches accounts resource views and fields.

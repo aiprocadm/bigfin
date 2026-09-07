@@ -9,7 +9,7 @@ function flattenInfinityPagesData(data) {
 }
 
 // Context for Audit Log
-const AuditLogContext = React.createContext();
+const AuditLogContext = React.createContext<any>(undefined);
 
 const useAuditLogContext = () => useContext(AuditLogContext);
 

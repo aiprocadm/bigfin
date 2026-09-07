@@ -8,7 +8,7 @@ import {
 } from '@/hooks/query';
 import { isEmpty } from 'lodash';
 
-const ReconcileVendorCreditFormContext = React.createContext();
+const ReconcileVendorCreditFormContext = React.createContext<any>(undefined);
 
 /**
  * Reconcile vendor credit provider.

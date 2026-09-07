@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { useItems } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const SalesByItemGeneralPanelContext = createContext();
+const SalesByItemGeneralPanelContext = createContext<any>(undefined);
 
 /**
  * Sales by items - General panel - Booting.

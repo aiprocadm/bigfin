@@ -11,7 +11,7 @@ import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
 import { DRAWERS } from '@/constants/drawers';
 
-const VendorCreditDetailDrawerContext = React.createContext();
+const VendorCreditDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Vendor credit drawer provider.

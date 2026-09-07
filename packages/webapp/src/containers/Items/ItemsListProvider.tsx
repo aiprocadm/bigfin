@@ -10,7 +10,7 @@ import { DashboardInsider } from '@/components';
 import { useResourceViews, useResourceMeta, useItems } from '@/hooks/query';
 
 
-const ItemsContext = createContext();
+const ItemsContext = createContext<any>(undefined);
 
 /**
  * Items list provider.

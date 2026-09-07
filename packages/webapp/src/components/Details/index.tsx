@@ -9,7 +9,7 @@ const DIRECTION = {
   HORIZANTAL: 'horizantal',
 };
 
-const DetailsMenuContext = React.createContext();
+const DetailsMenuContext = React.createContext<any>(undefined);
 const useDetailsMenuContext = () => React.useContext(DetailsMenuContext);
 
 /**

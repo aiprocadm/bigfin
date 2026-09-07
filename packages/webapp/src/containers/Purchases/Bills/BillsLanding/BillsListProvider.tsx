@@ -7,7 +7,7 @@ import { useResourceViews, useResourceMeta, useBills } from '@/hooks/query';
 
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const BillsListContext = createContext();
+const BillsListContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

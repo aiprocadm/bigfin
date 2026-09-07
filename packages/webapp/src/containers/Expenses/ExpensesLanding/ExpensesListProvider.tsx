@@ -6,7 +6,7 @@ import { DashboardInsider } from '@/components/Dashboard';
 import { useExpenses, useResourceMeta, useResourceViews } from '@/hooks/query';
 import { getFieldsFromResourceMeta } from '@/utils';
 
-const ExpensesListContext = createContext();
+const ExpensesListContext = createContext<any>(undefined);
 
 /**
  * Accounts chart data provider.

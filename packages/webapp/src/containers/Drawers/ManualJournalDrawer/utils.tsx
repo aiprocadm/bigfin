@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Tag, Intent } from '@blueprintjs/core';
@@ -17,7 +16,7 @@ import { useManualJournalDrawerContext } from './ManualJournalDrawerProvider';
 /**
  * Publish column accessor.
  */
-export function ManualJournalDetailsStatus({ manualJournal }) {
+export function ManualJournalDetailsStatus({ manualJournal }: any) {
   return (
     <Choose>
       <Choose.When condition={!!manualJournal.is_published}>

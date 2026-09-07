@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Tag, Menu, MenuItem, MenuDivider } from '@blueprintjs/core';
@@ -14,7 +13,7 @@ import {
 export function ActionsMenu({
   payload: { onEdit, onDelete, onViewDetails, onInitate, onTransfer },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -58,7 +57,7 @@ export function ActionsMenu({
 /**
  * Status accessor.
  */
-export function StatusAccessor(warehouse) {
+export function StatusAccessor(warehouse: any) {
   return (
     <Choose>
       <Choose.When

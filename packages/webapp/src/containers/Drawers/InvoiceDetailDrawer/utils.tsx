@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -107,7 +106,7 @@ export const useInvoiceReadonlyEntriesColumns = () => {
  */
 export const BadDebtMenuItem = ({
   payload: { onCancelBadDebt, onBadDebt, onNotifyViaSMS, onConvert, onDeliver },
-}) => {
+}: any) => {
   const { invoice } = useInvoiceDetailDrawerContext();
 
   return (
@@ -164,7 +163,7 @@ export const BadDebtMenuItem = ({
  * Invoice details status.
  * @returns {React.JSX}
  */
-export function InvoiceDetailsStatus({ invoice }) {
+export function InvoiceDetailsStatus({ invoice }: any) {
   return (
     <Choose>
       <Choose.When condition={invoice.is_fully_paid && invoice.is_delivered}>

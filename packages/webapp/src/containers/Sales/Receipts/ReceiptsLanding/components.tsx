@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -26,7 +25,7 @@ import { SaleReceiptAction, AbilitySubject } from '@/constants/abilityOption';
 export function ActionsMenu({
   payload: { onEdit, onDelete, onClose, onSendMail, onViewDetails, onPrint },
   row: { original: receipt },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -78,7 +77,7 @@ export function ActionsMenu({
 /**
  * Actions cell.
  */
-export function ActionsCell(props) {
+export function ActionsCell(props: any) {
   return (
     <Popover
       content={<ActionsMenu {...props} />}
@@ -92,7 +91,7 @@ export function ActionsCell(props) {
 /**
  * Status accessor.
  */
-export function StatusAccessor(receipt) {
+export function StatusAccessor(receipt: any) {
   return (
     <Choose>
       <Choose.When condition={receipt.is_closed}>
@@ -155,7 +154,7 @@ export function useReceiptsTableColumns() {
       {
         id: 'amount',
         Header: intl.get('amount'),
-        accessor: (r) => <Money amount={r.amount} currency={r.currency_code} />,
+        accessor: (r: any) => <Money amount={r.amount} currency={r.currency_code} />,
         width: 140,
         align: 'right',
         clickable: true,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Tag, Menu, MenuItem, MenuDivider } from '@blueprintjs/core';
 import intl from 'react-intl-universal';
@@ -20,7 +19,7 @@ import {
   AbilitySubject,
 } from '@/constants/abilityOption';
 
-export function InvoiceStatus({ invoice }) {
+export function InvoiceStatus({ invoice }: any) {
   return (
     <Choose>
       <Choose.When condition={invoice.is_fully_paid && invoice.is_delivered}>
@@ -58,7 +57,7 @@ export function InvoiceStatus({ invoice }) {
   );
 }
 
-export const statusAccessor = (row) => {
+export const statusAccessor = (row: any) => {
   return (
     <div className={'status-accessor'}>
       <InvoiceStatus invoice={row} />
@@ -66,10 +65,10 @@ export const statusAccessor = (row) => {
   );
 };
 
-export const handleDeleteErrors = (errors) => {
+export const handleDeleteErrors = (errors: any) => {
   if (
     errors.find(
-      (error) => error.type === 'INVOICE_HAS_ASSOCIATED_PAYMENT_ENTRIES',
+      (error: any) => error.type === 'INVOICE_HAS_ASSOCIATED_PAYMENT_ENTRIES',
     )
   ) {
     AppToaster.show({
@@ -79,7 +78,7 @@ export const handleDeleteErrors = (errors) => {
   }
   if (
     errors.find(
-      (error) => error.type === 'INVOICE_AMOUNT_SMALLER_THAN_PAYMENT_AMOUNT',
+      (error: any) => error.type === 'INVOICE_AMOUNT_SMALLER_THAN_PAYMENT_AMOUNT',
     )
   ) {
     AppToaster.show({
@@ -89,7 +88,7 @@ export const handleDeleteErrors = (errors) => {
   }
   if (
     errors.find(
-      (error) => error.type === 'SALE_INVOICE_HAS_APPLIED_TO_CREDIT_NOTES',
+      (error: any) => error.type === 'SALE_INVOICE_HAS_APPLIED_TO_CREDIT_NOTES',
     )
   ) {
     AppToaster.show({
@@ -99,7 +98,7 @@ export const handleDeleteErrors = (errors) => {
       intent: Intent.DANGER,
     });
   }
-  if (errors.find((e) => e.type === 'CANNOT_DELETE_TRANSACTION_MATCHED')) {
+  if (errors.find((e: any) => e.type === 'CANNOT_DELETE_TRANSACTION_MATCHED')) {
     AppToaster.show({
       intent: Intent.DANGER,
       message: intl.get('invoices.error.cannot_delete_transaction_matched_with_bank'),
@@ -119,7 +118,7 @@ export function ActionsMenu({
     onSendMail,
   },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -228,7 +227,7 @@ export function useInvoicesTableColumns() {
       {
         id: 'status',
         Header: intl.get('status'),
-        accessor: (row) => statusAccessor(row),
+        accessor: (row: any) => statusAccessor(row),
         width: 160,
         className: 'status',
         clickable: true,

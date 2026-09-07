@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Tag } from '@blueprintjs/core';
@@ -59,7 +58,7 @@ export const useWarehouseTransferReadOnlyEntriesColumns = () => {
  * Warehouses transfer details status.
  * @returns {React.JSX}
  */
-export function WarehouseTransferDetailsStatus({ warehouseTransfer }) {
+export function WarehouseTransferDetailsStatus({ warehouseTransfer }: any) {
   return (
     <Choose>
       <Choose.When

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -102,7 +101,7 @@ export const useBillReadonlyEntriesTableColumns = () => {
  * Bill details status.
  * @returns {React.JSX}
  */
-export function BillDetailsStatus({ bill }) {
+export function BillDetailsStatus({ bill }: any) {
   return (
     <Choose>
       <Choose.When condition={bill.is_fully_paid && bill.is_open}>
@@ -136,7 +135,7 @@ export function BillDetailsStatus({ bill }) {
 
 export const BillMenuItem = ({
   payload: { onConvert, onAllocateLandedCost },
-}) => {
+}: any) => {
   return (
     <Popover
       minimal={true}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Button,
@@ -17,7 +16,7 @@ import { Icon, Choose, T } from '@/components';
  * Receipt details status.
  * @returns {React.JSX}
  */
-export function ReceiptDetailsStatus({ receipt }) {
+export function ReceiptDetailsStatus({ receipt }: any) {
   return (
     <Choose>
       <Choose.When condition={receipt.is_closed}>
@@ -35,7 +34,7 @@ export function ReceiptDetailsStatus({ receipt }) {
   );
 }
 
-export function ReceiptMoreMenuItems({ payload: { onNotifyViaSMS } }) {
+export function ReceiptMoreMenuItems({ payload: { onNotifyViaSMS } }: any) {
   return (
     <Popover
       minimal={true}

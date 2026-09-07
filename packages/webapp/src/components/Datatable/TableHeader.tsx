@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { ScrollSyncPane } from 'react-scroll-sync';
 import { If, MaterialProgressBar } from '@/components';
 import TableContext from './TableContext';
 
-function TableHeaderCell({ column, index }) {
+function TableHeaderCell({ column, index }: any) {
   const {
     table: { getToggleAllRowsExpandedProps, isAllRowsExpanded },
     props: { expandable, expandToggleColumn },
@@ -64,10 +63,10 @@ function TableHeaderCell({ column, index }) {
   );
 }
 
-function TableHeaderGroup({ headerGroup }) {
+function TableHeaderGroup({ headerGroup }: any) {
   return (
     <div {...headerGroup.getHeaderGroupProps()} className="tr">
-      {headerGroup.headers.map((column, index) => (
+      {headerGroup.headers.map((column: any, index: any) => (
         <TableHeaderCell key={index} column={column} index={index} />
       ))}
     </div>
@@ -100,7 +99,7 @@ export default function TableHeader() {
     <ScrollSyncPane>
       <div className="thead">
         <div className={'thead-inner'}>
-          {headerGroups.map((headerGroup, index) => (
+          {headerGroups.map((headerGroup: any, index: any) => (
             <TableHeaderGroup key={index} headerGroup={headerGroup} />
           ))}
           <If condition={progressBarLoading}>

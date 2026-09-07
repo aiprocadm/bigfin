@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Choose } from '@/components';
 import BigfinLoading from './BigfinLoading';
@@ -10,7 +9,7 @@ export default function DashboardLoadingIndicator({
   isLoading = false,
   className,
   children,
-}) {
+}: any) {
   return (
     <Choose>
       <Choose.When condition={isLoading}>

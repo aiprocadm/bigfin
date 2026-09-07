@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -25,7 +24,7 @@ import { safeCallback, firstLettersArgs, calculateStatus } from '@/utils';
 /**
  * project status.
  */
-export function ProjectStatus({ row }) {
+export function ProjectStatus({ row }: any) {
   return (
     <ProjectStatusRoot>
       <ProjectStatusTaskAmount>{row.total_expenses_formatted}</ProjectStatusTaskAmount>
@@ -42,7 +41,7 @@ export function ProjectStatus({ row }) {
 /**
  * status accessor.
  */
-export const StatusAccessor = (row) => {
+export const StatusAccessor = (row: any) => {
   return (
     <ProjectStatus row={row} />
   );
@@ -54,7 +53,7 @@ export const StatusAccessor = (row) => {
 export const ActionsMenu = ({
   row: { original },
   payload: { onEdit, onDelete, onViewDetails, onNewTask, onStatus },
-}) => (
+}: any) => (
   <Menu>
     <MenuItem
       icon={<Icon icon="reader-18" />}
@@ -107,7 +106,7 @@ export const ActionsMenu = ({
 /**
  * Projects accessor.
  */
-export const ProjectsAccessor = (row) => (
+export const ProjectsAccessor = (row: any) => (
   <ProjectName>
     <ProjectAvatar data-size="medium">
       {firstLettersArgs(row?.contact_display_name, row?.name)}

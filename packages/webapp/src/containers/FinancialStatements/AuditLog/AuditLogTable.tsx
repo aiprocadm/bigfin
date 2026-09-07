@@ -104,7 +104,6 @@ function AuditLogTable() {
 
   return (
     <FinancialSheet
-      loading={isLoading}
       fullWidth={true}
       currentDate={false}
     >

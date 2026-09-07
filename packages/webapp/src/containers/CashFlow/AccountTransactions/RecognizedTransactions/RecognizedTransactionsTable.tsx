@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
@@ -56,13 +55,13 @@ function RecognizedTransactionsTableRoot({
   const { scrollableRef } = useAccountTransactionsContext();
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     setTransactionsToCategorizeSelected(
       cell.row.original.uncategorized_transaction_id,
     );
   };
   // Handle exclude button click.
-  const handleExcludeClick = (transaction) => {
+  const handleExcludeClick = (transaction: any) => {
     excludeBankTransaction(transaction.uncategorized_transaction_id)
       .then(() => {
         AppToaster.show({
@@ -74,7 +73,7 @@ function RecognizedTransactionsTableRoot({
   };
 
   // Handles categorize button click.
-  const handleCategorizeClick = (transaction) => {
+  const handleCategorizeClick = (transaction: any) => {
     setTransactionsToCategorizeSelected(
       transaction.uncategorized_transaction_id,
     );

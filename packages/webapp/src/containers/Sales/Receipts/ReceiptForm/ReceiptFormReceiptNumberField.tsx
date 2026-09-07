@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -20,7 +19,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
  */
 export const ReceiptFormReceiptNumberField = R.compose(
   withDialogActions,
-  withSettings(({ receiptSettings }) => ({
+  withSettings(({ receiptSettings }: any) => ({
     receiptAutoIncrement: receiptSettings?.autoIncrement,
   })),
 )(
@@ -30,14 +29,14 @@ export const ReceiptFormReceiptNumberField = R.compose(
 
     // #withSettings
     receiptAutoIncrement,
-  }) => {
+  }: any) => {
     const { values, setFieldValue } = useFormikContext<any>();
 
     const handleReceiptNumberChange = () => {
       openDialog('receipt-number-form', {});
     };
 
-    const handleReceiptNoBlur = (event) => {
+    const handleReceiptNoBlur = (event: any) => {
       const newValue = event.target.value;
 
       // Show the confirmation dialog if the value has changed and auto-increment
@@ -84,9 +83,6 @@ export const ReceiptFormReceiptNumberField = R.compose(
                 <T id={'setting_your_auto_generated_payment_receive_number'} />
               ),
               position: Position.BOTTOM_LEFT,
-            }}
-            inputProps={{
-              leftIcon: <Icon icon={'date-range'} />,
             }}
           />
         </ControlGroup>

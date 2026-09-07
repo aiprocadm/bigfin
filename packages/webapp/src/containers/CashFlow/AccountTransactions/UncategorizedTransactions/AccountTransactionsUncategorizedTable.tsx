@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import clsx from 'classnames';
@@ -45,7 +44,7 @@ function AccountTransactionsDataTable({
 
   addTransactionsToCategorizeSelected,
   setTransactionsToCategorizeSelected,
-}) {
+}: any) {
   // Retrieve table columns.
   const columns = useAccountUncategorizedTransactionsColumns();
   const { scrollableRef } = useAccountTransactionsContext();
@@ -65,7 +64,7 @@ function AccountTransactionsDataTable({
     useMemorizedColumnsWidths(TABLES.UNCATEGORIZED_BANK_TRANSACTION);
 
   // Handle cell click.
-  const handleCellClick = (cell) => {
+  const handleCellClick = (cell: any) => {
     if (enableMultipleCategorization) {
       addTransactionsToCategorizeSelected(cell.row.original.id);
     } else {
@@ -73,16 +72,16 @@ function AccountTransactionsDataTable({
     }
   };
   // Handles categorize button click.
-  const handleCategorizeBtnClick = (transaction) => {
+  const handleCategorizeBtnClick = (transaction: any) => {
     setUncategorizedTransactionIdForMatching(transaction.id);
   };
   // handles table selected rows change.
-  const handleSelectedRowsChange = (selected) => {
-    const transactionIds = selected.map((r) => r.original.id);
+  const handleSelectedRowsChange = (selected: any) => {
+    const transactionIds = selected.map((r: any) => r.original.id);
     setUncategorizedTransactionsSelected(transactionIds);
   };
   // Handle exclude transaction.
-  const handleExcludeTransaction = (transaction) => {
+  const handleExcludeTransaction = (transaction: any) => {
     excludeTransaction(transaction.id)
       .then(() => {
         AppToaster.show({
@@ -134,12 +133,12 @@ function AccountTransactionsDataTable({
 }
 
 export default compose(
-  withSettings(({ cashflowTransactionsSettings }) => ({
+  withSettings(({ cashflowTransactionsSettings }: any) => ({
     cashflowTansactionsTableSize: cashflowTransactionsSettings?.tableSize,
   })),
   withBankingActions,
   withBanking(
-    ({ openMatchingTransactionAside, enableMultipleCategorization }) => ({
+    ({ openMatchingTransactionAside, enableMultipleCategorization }: any) => ({
       openMatchingTransactionAside,
       enableMultipleCategorization,
     }),

@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import React from 'react';
 import { flatten, map } from 'lodash';
@@ -10,7 +9,7 @@ import { withBanking } from '../withBanking';
 
 const AccountUncategorizedTransactionsContext = React.createContext<any>(undefined);
 
-function flattenInfinityPagesData(data) {
+function flattenInfinityPagesData(data: any) {
   return flatten(map(data.pages, (page) => page.data));
 }
 
@@ -23,7 +22,7 @@ function AccountUncategorizedTransactionsBootRoot({
 
   // #ownProps
   children,
-}) {
+}: any) {
   const { accountId } = useAccountTransactionsContext();
 
   // Fetches the uncategorized transactions.
@@ -80,7 +79,7 @@ function AccountUncategorizedTransactionsBootRoot({
 }
 
 const AccountUncategorizedTransactionsBoot = R.compose(
-  withBanking(({ uncategorizedTransactionsFilter }) => ({
+  withBanking(({ uncategorizedTransactionsFilter }: any) => ({
     uncategorizedTransactionsFilter,
   })),
 )(AccountUncategorizedTransactionsBootRoot);

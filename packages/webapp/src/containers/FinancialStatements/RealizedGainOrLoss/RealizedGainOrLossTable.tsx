@@ -13,7 +13,6 @@ export default function RealizedGainOrLossTable({
 }) {
   return (
     <FinancialSheet
-      name="realized-gain-loss"
       companyName={companyName}
       sheetType={intl.get('realized_gain_or_loss.label')}
     ></FinancialSheet>

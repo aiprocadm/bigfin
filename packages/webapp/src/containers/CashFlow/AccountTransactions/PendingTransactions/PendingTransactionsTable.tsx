@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   TableFastCell,
@@ -22,7 +21,7 @@ import { compose } from '@/utils';
 function PendingTransactionsDataTableRoot({
   // #withSettings
   cashflowTansactionsTableSize,
-}) {
+}: any) {
   // Retrieve table columns.
   const columns = usePendingTransactionsTableColumns();
   const { scrollableRef } = useAccountTransactionsContext();
@@ -57,7 +56,7 @@ function PendingTransactionsDataTableRoot({
 }
 
 export const PendingTransactionsDataTable = compose(
-  withSettings(({ cashflowTransactionsSettings }) => ({
+  withSettings(({ cashflowTransactionsSettings }: any) => ({
     cashflowTansactionsTableSize: cashflowTransactionsSettings?.tableSize,
   })),
   withBankingActions,

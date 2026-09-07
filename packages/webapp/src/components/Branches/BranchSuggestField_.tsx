@@ -3,6 +3,8 @@ import { FSuggest } from '../Forms';
 
 interface BranchSuggestFieldProps {
   items: any[];
+  /** Остальное уходит в `FSuggest` как есть — например `name` поля формы. */
+  [key: string]: any;
 }
 
 export function BranchSuggestField({ ...props }: BranchSuggestFieldProps) {

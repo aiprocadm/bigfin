@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { FFormGroup, FeatureCan } from '@/components';
 import { useCategorizeTransactionBoot } from './CategorizeTransactionBoot';

@@ -7,7 +7,9 @@ interface CategorizeTransactionTabsValue {
 }
 
 interface CategorizeTransactionTabsBootProps {
-  uncategorizedTransactionIds: number | Array<number>;
+  // Имя было во множественном числе, а компонент читает и вызывающие
+  // передают единственное (Д1 карты v68).
+  uncategorizedTransactionId: number | Array<number>;
   children: React.ReactNode;
 }
 

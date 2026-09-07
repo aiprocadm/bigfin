@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Intent,
@@ -31,7 +30,7 @@ import { safeCallback } from '@/utils';
 /**
  * Amount accessor.
  */
-export const AmountAccessor = (r) => (
+export const AmountAccessor = (r: any) => (
   <Tooltip
     content={
       <AmountPopoverContent
@@ -49,7 +48,7 @@ export const AmountAccessor = (r) => (
 /**
  * Amount popover content line.
  */
-export const AmountPopoverContentLine = ({ journalEntry, currencyCode }) => {
+export const AmountPopoverContentLine = ({ journalEntry, currencyCode }: any) => {
   const isCredit = !!journalEntry.credit;
   const isDebit = !!journalEntry.debit;
   const { account } = journalEntry;
@@ -76,18 +75,17 @@ export const AmountPopoverContentLine = ({ journalEntry, currencyCode }) => {
 /**
  * Amount popover content.
  */
-export function AmountPopoverContent({ journalEntries, currencyCode }) {
-  const journalLinesProps = journalEntries.map((journalEntry) => ({
+export function AmountPopoverContent({ journalEntries, currencyCode }: any) {
+  const journalLinesProps = journalEntries.map((journalEntry: any) => ({
     journalEntry,
     accountId: journalEntry.account_id,
   }));
 
   return (
     <div>
-      {journalLinesProps.map(({ journalEntry, accountId }) => (
+      {journalLinesProps.map(({ journalEntry, accountId }: any) => (
         <AmountPopoverContentLine
           journalEntry={journalEntry}
-          accountId={accountId}
           currencyCode={currencyCode}
         />
       ))}
@@ -98,7 +96,7 @@ export function AmountPopoverContent({ journalEntries, currencyCode }) {
 /**
  * Publish column accessor.
  */
-export const StatusAccessor = (row) => {
+export const StatusAccessor = (row: any) => {
   return (
     <Choose>
       <Choose.When condition={!!row.is_published}>
@@ -119,7 +117,7 @@ export const StatusAccessor = (row) => {
 /**
  * Note column accessor.
  */
-export function NoteAccessor(row) {
+export function NoteAccessor(row: any) {
   return (
     <If condition={row.description}>
       <Tooltip
@@ -137,7 +135,7 @@ export function NoteAccessor(row) {
 /**
  * Table actions cell.
  */
-export const ActionsCell = (props) => {
+export const ActionsCell = (props: any) => {
   return (
     <Popover
       content={<ActionsMenu {...props} />}
@@ -154,7 +152,7 @@ export const ActionsCell = (props) => {
 export const ActionsMenu = ({
   payload: { onPublish, onEdit, onDelete, onViewDetails },
   row: { original },
-}) => {
+}: any) => {
   return (
     <Menu>
       <MenuItem

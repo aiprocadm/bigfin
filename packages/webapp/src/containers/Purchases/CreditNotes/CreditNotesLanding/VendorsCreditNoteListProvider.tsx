@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { isEmpty } from 'lodash';
 
@@ -17,7 +16,7 @@ const VendorsCreditNoteListContext = React.createContext<any>(undefined);
 /**
  * Vendors Credit note data provider.
  */
-function VendorsCreditNoteListProvider({ query, tableStateChanged, ...props }) {
+function VendorsCreditNoteListProvider({ query, tableStateChanged, ...props }: any) {
   // Vendor Credits refresh action.
   const { refresh } = useRefreshVendorCredits();
 

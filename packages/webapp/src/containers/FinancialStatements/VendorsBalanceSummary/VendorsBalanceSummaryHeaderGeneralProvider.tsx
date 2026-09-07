@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
@@ -9,7 +8,7 @@ const VendorsBalanceSummaryGeneralPanelContext = React.createContext<any>(undefi
 /**
  * Vendors balance summary provider.
  */
-function VendorsBalanceSummaryGeneralPanelProvider({ filter, ...props }) {
+function VendorsBalanceSummaryGeneralPanelProvider({ filter, ...props }: any) {
   // Fetch vendors list with pagination meta.
   const {
     data: { vendors },

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useState } from 'react';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
@@ -40,7 +39,7 @@ const stringifiedFilterRoles = JSON.stringify([
 /**
  * Bill form provider.
  */
-function BillFormProvider({ billId, ...props }) {
+function BillFormProvider({ billId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);

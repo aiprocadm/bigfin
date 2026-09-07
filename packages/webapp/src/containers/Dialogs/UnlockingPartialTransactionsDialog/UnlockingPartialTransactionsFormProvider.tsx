@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateUnlockingPartialTransactions } from '@/hooks/query';
@@ -12,7 +11,7 @@ function UnlockingPartialTransactionsFormProvider({
   moduleName,
   dialogName,
   ...props
-}) {
+}: any) {
   // Create unlocking partial transactions mutations.
   const { mutateAsync: createUnlockingPartialTransactionsMutate } =
     useCreateUnlockingPartialTransactions();

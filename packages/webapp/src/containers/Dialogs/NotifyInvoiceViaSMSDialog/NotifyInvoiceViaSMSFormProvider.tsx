@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateNotifyInvoiceBySMS, useInvoiceSMSDetail } from '@/hooks/query';
@@ -8,7 +7,7 @@ const NotifyInvoiceViaSMSContext = React.createContext<any>(undefined);
 /**
  * Invoice SMS notification provider.
  */
-function NotifyInvoiceViaSMSFormProvider({ invoiceId, dialogName, ...props }) {
+function NotifyInvoiceViaSMSFormProvider({ invoiceId, dialogName, ...props }: any) {
   const [notificationType, setNotificationType] = React.useState('details');
 
   // Retrieve the invoice sms notification message details.

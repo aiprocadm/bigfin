@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -15,7 +14,7 @@ const PaymentsReceivedListContext = createContext<any>(undefined);
 /**
  * Payment receives list data provider.
  */
-function PaymentsReceivedListProvider({ query, tableStateChanged, ...props }) {
+function PaymentsReceivedListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetch payment receives resource views and fields.
   const { data: paymentReceivesViews, isLoading: isViewsLoading } =
     useResourceViews('payment-received');

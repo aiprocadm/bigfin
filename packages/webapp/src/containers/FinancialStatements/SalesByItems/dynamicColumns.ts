@@ -1,12 +1,11 @@
-// @ts-nocheck
 import { getColumnWidth } from '@/utils';
 import * as R from 'ramda';
 import { Align } from '@/constants';
 import { useSalesByItemsContext } from './SalesByItemProvider';
 
-const getTableCellValueAccessor = (index) => `cells[${index}].value`;
+const getTableCellValueAccessor = (index: any) => `cells[${index}].value`;
 
-const getReportColWidth = (data, accessor, headerText) => {
+const getReportColWidth = (data: any, accessor: any, headerText: any) => {
   return getColumnWidth(
     data,
     accessor,

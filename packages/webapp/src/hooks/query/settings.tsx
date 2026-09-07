@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
@@ -9,7 +8,7 @@ import { useEffect } from 'react';
 /**
  * Saves the settings.
  */
-export function useSaveSettings(props) {
+export function useSaveSettings(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -21,14 +20,14 @@ export function useSaveSettings(props) {
   });
 }
 
-function useSettingsQuery(key, query, props) {
+function useSettingsQuery(key: any, query: any, props?: any) {
   const setSettings = useSetSettings();
 
   const settingsQuery = useRequestQuery(
     key,
     { method: 'get', url: 'settings', params: query },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -53,7 +52,7 @@ export function useSettings() {
 /**
  * Retrieve invoices settings.
  */
-export function useSettingsInvoices(props) {
+export function useSettingsInvoices(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_INVOICES],
     { group: 'sale_invoices' },
@@ -64,7 +63,7 @@ export function useSettingsInvoices(props) {
 /**
  * Retrieve invoices settings.
  */
-export function useSettingsEstimates(props) {
+export function useSettingsEstimates(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_ESTIMATES],
     { group: 'sale_estimates' },
@@ -75,7 +74,7 @@ export function useSettingsEstimates(props) {
 /**
  * Retrieve payment receives settings.
  */
-export function useSettingsPaymentReceives(props) {
+export function useSettingsPaymentReceives(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_PAYMENT_RECEIVES],
     { group: 'payment_receives' },
@@ -87,7 +86,7 @@ export function useSettingsPaymentReceives(props) {
  * Retrieve sale receipts settings.
  * @param {*} props
  */
-export function useSettingsReceipts(props) {
+export function useSettingsReceipts(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_RECEIPTS],
     { group: 'sale_receipts' },
@@ -99,7 +98,7 @@ export function useSettingsReceipts(props) {
  * Retrieve sale receipts settings.
  * @param {*} props
  */
-export function useSettingsManualJournals(props) {
+export function useSettingsManualJournals(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_MANUAL_JOURNALS],
     { group: 'manual_journals' },
@@ -111,7 +110,7 @@ export function useSettingsManualJournals(props) {
  * Retrieve sale receipts settings.
  * @param {*} props
  */
-export function useSettingsItems(props) {
+export function useSettingsItems(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_ITEMS],
     { group: 'items' },
@@ -122,7 +121,7 @@ export function useSettingsItems(props) {
 /**
  * Retrieve cashflow settings.
  */
-export function useSettingCashFlow(props) {
+export function useSettingCashFlow(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_CASHFLOW],
     { group: 'cashflow' },
@@ -133,7 +132,7 @@ export function useSettingCashFlow(props) {
 /**
  * Retrieve credit notes settings.
  */
-export function useSettingsCreditNotes(props) {
+export function useSettingsCreditNotes(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_CREDIT_NOTES],
     { group: 'credit_note' },
@@ -143,7 +142,7 @@ export function useSettingsCreditNotes(props) {
 /**
  * Retrieve vendor credit settings.
  */
-export function useSettingsVendorCredits(props) {
+export function useSettingsVendorCredits(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_VENDOR_CREDITS],
     { group: 'vendor_credit' },
@@ -154,7 +153,7 @@ export function useSettingsVendorCredits(props) {
 /**
  * Retrieve warehouse transfer settings.
  */
-export function useSettingsWarehouseTransfers(props) {
+export function useSettingsWarehouseTransfers(props?: any) {
   return useSettingsQuery(
     [t.SETTING, t.SETTING_WAREHOUSE_TRANSFERS],
     { group: 'warehouse_transfers' },
@@ -165,12 +164,12 @@ export function useSettingsWarehouseTransfers(props) {
 /**
  * Retrieve SMS Notifications settings.
  */
-export function useSettingSMSNotifications(props) {
+export function useSettingSMSNotifications(props?: any) {
   return useRequestQuery(
     [t.SETTING_SMS_NOTIFICATIONS],
     { method: 'get', url: `settings/sms-notifications` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -180,7 +179,7 @@ export function useSettingSMSNotifications(props) {
 /**
  * Retrieve Specific SMS Notification settings.
  */
-export function useSettingSMSNotification(key, props) {
+export function useSettingSMSNotification(key: any, props?: any) {
   return useRequestQuery(
     [t.SETTING_SMS_NOTIFICATIONS, key],
     {
@@ -188,7 +187,7 @@ export function useSettingSMSNotification(key, props) {
       url: `settings/sms-notification/${key}`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {
         smsNotification: [],
       },
@@ -200,7 +199,7 @@ export function useSettingSMSNotification(key, props) {
 /**
  * Retrieve Edit SMS Notification settings.
  */
-export function useSettingEditSMSNotification(props) {
+export function useSettingEditSMSNotification(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

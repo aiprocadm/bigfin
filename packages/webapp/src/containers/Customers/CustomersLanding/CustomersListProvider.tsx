@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -9,7 +8,7 @@ import { transformCustomersStateToQuery } from './utils';
 
 const CustomersListContext = createContext<any>(undefined);
 
-function CustomersListProvider({ tableState, tableStateChanged, ...props }) {
+function CustomersListProvider({ tableState, tableStateChanged, ...props }: any) {
   // Transformes the table state to fetch query.
   const tableQuery = transformCustomersStateToQuery(tableState);
 

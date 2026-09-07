@@ -1,9 +1,8 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { getColumnWidth } from '@/utils';
 import { Align } from '@/constants';
 
-const getTableCellValueAccessor = (index) => `cells[${index}].value`;
+const getTableCellValueAccessor = (index: any) => `cells[${index}].value`;
 
 const contactNameAccessor = R.curry((data, column) => ({
   key: column.key,
@@ -71,6 +70,6 @@ const dynamicColumnMapper = R.curry((data, column) => {
   )(column);
 });
 
-export const agingSummaryDynamicColumns = (columns, data) => {
+export const agingSummaryDynamicColumns = (columns: any, data: any) => {
   return R.map(dynamicColumnMapper(data), columns);
 };

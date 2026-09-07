@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext, useState } from 'react';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
@@ -20,7 +19,7 @@ const PaymentMadeFormContext = createContext<any>(undefined);
 /**
  * Payment made form provider.
  */
-function PaymentMadeFormProvider({ query, paymentMadeId, ...props }) {
+function PaymentMadeFormProvider({ query, paymentMadeId, ...props }: any) {
   const [submitPayload, setSubmitPayload] = React.useState({});
   const [paymentVendorId, setPaymentVendorId] = React.useState(null);
 

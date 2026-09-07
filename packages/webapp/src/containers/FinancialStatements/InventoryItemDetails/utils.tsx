@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 
 import { getColumnWidth } from '@/utils';
@@ -49,8 +48,8 @@ const columnsMapper = R.curry((data, index, column) => ({
 /**
  * Inventory item details columns.
  */
-export const dynamicColumns = (columns, data) => {
-  const mapper = (column, index) => {
+export const dynamicColumns = (columns: any, data: any) => {
+  const mapper = (column: any, index: any) => {
     return R.compose(
       R.cond([
         [R.pathEq(['key'], 'date'), itemNameOrDateColumn(data, index)],

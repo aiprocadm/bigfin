@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DialogContent } from '@/components';
@@ -9,7 +8,7 @@ const WarehouseActivateContext = React.createContext<any>(undefined);
 /**
  * warehouse activate form provider.
  */
-function WarehouseActivateFormProvider({ dialogName, ...props }) {
+function WarehouseActivateFormProvider({ dialogName, ...props }: any) {
   const { mutateAsync: activateWarehouses } = useActivateWarehouses();
 
   // State provider.

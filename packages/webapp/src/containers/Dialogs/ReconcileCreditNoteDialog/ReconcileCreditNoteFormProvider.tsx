@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -17,7 +16,7 @@ function ReconcileCreditNoteFormProvider({
   creditNoteId,
   dialogName,
   ...props
-}) {
+}: any) {
   // Handle fetch reconcile credit note details.
   const { isLoading: isReconcileCreditLoading, data: reconcileCreditNotes } =
     useReconcileCreditNote(creditNoteId, {

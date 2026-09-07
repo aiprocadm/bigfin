@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DialogContent } from '@/components';
@@ -9,7 +8,7 @@ const BranchActivateContext = React.createContext<any>(undefined);
 /**
  * Branch activate form provider.
  */
-function BranchActivateFormProvider({ dialogName, ...props }) {
+function BranchActivateFormProvider({ dialogName, ...props }: any) {
   const { mutateAsync: activateBranches } = useActivateBranches();
 
   // State provider.

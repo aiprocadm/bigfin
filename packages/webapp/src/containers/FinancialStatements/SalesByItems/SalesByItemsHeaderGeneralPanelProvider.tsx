@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import { useItems } from '@/hooks/query';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
@@ -8,7 +7,7 @@ const SalesByItemGeneralPanelContext = createContext<any>(undefined);
 /**
  * Sales by items - General panel - Booting.
  */
-function SalesByItemGeneralPanelProvider({ query, ...props }) {
+function SalesByItemGeneralPanelProvider({ query, ...props }: any) {
   // Handle fetching the items based on the given query.
   const {
     data: { items },

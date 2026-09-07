@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import BalanceSheetTable from './BalanceSheetTable';
@@ -16,7 +15,7 @@ import { compose } from '@/utils';
 function BalanceSheetBodyJSX({
   // #withCurrentOrganization
   organizationName,
-}) {
+}: any) {
   const { isLoading } = useBalanceSheetContext();
 
   return (
@@ -31,7 +30,7 @@ function BalanceSheetBodyJSX({
 }
 
 export const BalanceSheetBody = compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(BalanceSheetBodyJSX);

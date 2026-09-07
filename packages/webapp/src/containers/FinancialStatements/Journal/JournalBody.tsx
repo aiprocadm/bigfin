@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -16,7 +15,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function JournalBodyJSX({
   // #withCurrentOrganization
   organizationName,
-}) {
+}: any) {
   const { isLoading } = useJournalSheetContext();
 
   return (
@@ -31,7 +30,7 @@ function JournalBodyJSX({
 }
 
 export const JournalBody = R.compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(JournalBodyJSX);

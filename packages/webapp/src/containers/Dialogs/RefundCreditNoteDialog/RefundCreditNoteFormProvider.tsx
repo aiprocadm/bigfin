@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { pick } from 'lodash';
@@ -21,7 +20,7 @@ function RefundCreditNoteFormProvider({
   dialogName,
   query,
   ...props
-}) {
+}: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

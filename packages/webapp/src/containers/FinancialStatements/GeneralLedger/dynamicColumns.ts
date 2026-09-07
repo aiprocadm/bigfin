@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { getColumnWidth } from '@/utils';
 import * as R from 'ramda';
@@ -8,7 +7,7 @@ import { Align, CLASSES } from '@/constants';
 /**
  * Description cell – wraps value in a div with muted text class.
  */
-function DescriptionCell({ cell: { value } }) {
+function DescriptionCell({ cell: { value } }: any) {
   return React.createElement(
     'div',
     { className: `cell ${CLASSES.TEXT_MUTED}` },
@@ -16,9 +15,9 @@ function DescriptionCell({ cell: { value } }) {
   );
 }
 
-const getTableCellValueAccessor = (index) => `cells[${index}].value`;
+const getTableCellValueAccessor = (index: any) => `cells[${index}].value`;
 
-const getReportColWidth = (data, accessor, headerText) => {
+const getReportColWidth = (data: any, accessor: any, headerText: any) => {
   return getColumnWidth(
     data,
     accessor,
@@ -70,7 +69,7 @@ const dateColumnAccessor = R.curry((column) => {
 /**
  * Transaction type column accessor.
  */
-const transactionTypeColumnAccessor = (column) => {
+const transactionTypeColumnAccessor = (column: any) => {
   return {
     ...column,
     width: 125,
@@ -80,7 +79,7 @@ const transactionTypeColumnAccessor = (column) => {
 /**
  * Transaction number column accessor.
  */
-const transactionIdColumnAccessor = (column) => {
+const transactionIdColumnAccessor = (column: any) => {
   return {
     ...column,
     width: 80,
@@ -90,7 +89,7 @@ const transactionIdColumnAccessor = (column) => {
 /**
  * Description column accessor (muted text in wrapped cell).
  */
-const descriptionColumnAccessor = (column) => {
+const descriptionColumnAccessor = (column: any) => {
   return {
     ...column,
     Cell: DescriptionCell,

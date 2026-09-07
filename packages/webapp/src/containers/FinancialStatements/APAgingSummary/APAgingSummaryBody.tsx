@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -17,7 +16,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function APAgingSummaryBodyJSX({
   // #withCurrentOrganization
   organizationName,
-}) {
+}: any) {
   const { isAPAgingLoading } = useAPAgingSummaryContext();
 
   return (
@@ -32,7 +31,7 @@ function APAgingSummaryBodyJSX({
 }
 
 export const APAgingSummaryBody = R.compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization?.name,
   })),
 )(APAgingSummaryBodyJSX);

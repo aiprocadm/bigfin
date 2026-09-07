@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Align, CLASSES } from '@/constants';
 import { getColumnWidth } from '@/utils';
@@ -8,7 +7,7 @@ import { useJournalSheetContext } from './JournalProvider';
 /**
  * Description cell – wraps value in a div with muted text class.
  */
-function DescriptionCell({ cell: { value } }) {
+function DescriptionCell({ cell: { value } }: any) {
   return React.createElement(
     'span',
     { className: `cell ${CLASSES.TEXT_MUTED}` },
@@ -16,9 +15,9 @@ function DescriptionCell({ cell: { value } }) {
   );
 }
 
-const getTableCellValueAccessor = (index) => `cells[${index}].value`;
+const getTableCellValueAccessor = (index: any) => `cells[${index}].value`;
 
-const getReportColWidth = (data, accessor, headerText) => {
+const getReportColWidth = (data: any, accessor: any, headerText: any) => {
   return getColumnWidth(
     data,
     accessor,
@@ -61,7 +60,7 @@ const numericColumnAccessor = R.curry((data, column) => {
 /**
  * Date column accessor.
  */
-const dateColumnAccessor = (column) => {
+const dateColumnAccessor = (column: any) => {
   return {
     ...column,
     width: 100,
@@ -71,7 +70,7 @@ const dateColumnAccessor = (column) => {
 /**
  * Transaction type column accessor.
  */
-const transactionTypeColumnAccessor = (column) => {
+const transactionTypeColumnAccessor = (column: any) => {
   return {
     ...column,
     width: 120,
@@ -81,7 +80,7 @@ const transactionTypeColumnAccessor = (column) => {
 /**
  * Transaction number column accessor.
  */
-const transactionNumberColumnAccessor = (column) => {
+const transactionNumberColumnAccessor = (column: any) => {
   return {
     ...column,
     width: 70,
@@ -91,7 +90,7 @@ const transactionNumberColumnAccessor = (column) => {
 /**
  * Account code column accessor.
  */
-const accountCodeColumnAccessor = (column) => {
+const accountCodeColumnAccessor = (column: any) => {
   return {
     ...column,
     width: 70,
@@ -101,7 +100,7 @@ const accountCodeColumnAccessor = (column) => {
 /**
  * Description column accessor (muted text in wrapped cell).
  */
-const descriptionColumnAccessor = (column) => {
+const descriptionColumnAccessor = (column: any) => {
   return {
     ...column,
     Cell: DescriptionCell,
@@ -139,7 +138,7 @@ const dynamicColumnMapper = R.curry((data, column) => {
  * Composes the fetched dynamic columns from the server to the columns to pass it
  * to the table component.
  */
-export const dynamicColumns = (columns, data) => {
+export const dynamicColumns = (columns: any, data: any) => {
   return R.map(dynamicColumnMapper(data), columns);
 };
 

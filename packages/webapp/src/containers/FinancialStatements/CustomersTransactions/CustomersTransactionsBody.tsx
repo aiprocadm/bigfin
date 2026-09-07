@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -16,7 +15,7 @@ import { useCustomersTransactionsContext } from './CustomersTransactionsProvider
 function CustomersTransactionsBodyJSX({
   // #withCurrentOrganization
   organizationName,
-}) {
+}: any) {
   const { isCustomersTransactionsLoading } = useCustomersTransactionsContext();
 
   return (
@@ -31,7 +30,7 @@ function CustomersTransactionsBodyJSX({
 }
 
 export const CustomersTransactionsBody = R.compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(CustomersTransactionsBodyJSX);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
@@ -46,7 +45,7 @@ function AccountTransactionsDataTable({
 
   // #withBankingActions
   setCategorizedTransactionsSelected,
-}) {
+}: any) {
   // Retrieve table columns.
   const columns = useAccountTransactionsColumns();
 
@@ -68,16 +67,16 @@ function AccountTransactionsDataTable({
   const { scrollableRef } = useAccountTransactionsContext();
 
   // Handle view details action.
-  const handleViewDetailCashflowTransaction = (referenceType) => {
+  const handleViewDetailCashflowTransaction = (referenceType: any) => {
     handleCashFlowTransactionType(referenceType, openDrawer);
   };
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     const referenceType = cell.row.original;
     handleCashFlowTransactionType(referenceType, openDrawer);
   };
   // Handles the unmatching the matched transaction.
-  const handleUnmatchTransaction = (transaction) => {
+  const handleUnmatchTransaction = (transaction: any) => {
     unmatchTransaction({ id: transaction.uncategorized_transaction_id })
       .then(() => {
         AppToaster.show({
@@ -88,7 +87,7 @@ function AccountTransactionsDataTable({
       .catch(showApiError);
   };
   // Handle uncategorize transaction.
-  const handleUncategorizeTransaction = (transaction) => {
+  const handleUncategorizeTransaction = (transaction: any) => {
     uncategorizeTransaction(transaction.uncategorized_transaction_id)
       .then(() => {
         AppToaster.show({
@@ -100,10 +99,10 @@ function AccountTransactionsDataTable({
   };
 
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selected) => {
+  const handleSelectedRowsChange = (selected: any) => {
     const selectedIds = selected
-      ?.filter((row) => row.original.uncategorized_transaction_id)
-      ?.map((row) => row.original.uncategorized_transaction_id);
+      ?.filter((row: any) => row.original.uncategorized_transaction_id)
+      ?.map((row: any) => row.original.uncategorized_transaction_id);
 
     setCategorizedTransactionsSelected(selectedIds);
   };
@@ -146,7 +145,7 @@ function AccountTransactionsDataTable({
 }
 
 export default compose(
-  withSettings(({ cashflowTransactionsSettings }) => ({
+  withSettings(({ cashflowTransactionsSettings }: any) => ({
     cashflowTansactionsTableSize: cashflowTransactionsSettings?.tableSize,
   })),
   withAlertActions,

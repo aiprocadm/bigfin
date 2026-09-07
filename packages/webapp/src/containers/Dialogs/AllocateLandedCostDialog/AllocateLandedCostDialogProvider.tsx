@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { defaultTo, get } from 'lodash';
 import { DialogContent } from '@/components';
@@ -23,7 +22,7 @@ function AllocateLandedCostDialogProvider({
   query,
   dialogName,
   ...props
-}) {
+}: any) {
   const [transactionsType, setTransactionsType] = React.useState('Bill');
   const [transactionId, setTransactionId] = React.useState(null);
   const [transactionEntryId, setTransactionEntryId] = React.useState(null);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -12,7 +11,7 @@ function NotifyPaymentReceiveViaFormProvider({
   paymentReceiveId,
   dialogName,
   ...props
-}) {
+}: any) {
   // Create notfiy receipt via sms mutations.
   const { mutateAsync: createNotifyPaymentReceivetBySMSMutate } =
     useCreateNotifyPaymentReceiveBySMS();

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -11,7 +10,7 @@ const InvoicesListContext = createContext<any>(undefined);
 /**
  * Accounts chart data provider.
  */
-function InvoicesListProvider({ query, tableStateChanged, ...props }) {
+function InvoicesListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetch accounts resource views and fields.
   const { data: invoicesViews, isLoading: isViewsLoading } =
     useResourceViews('sale_invoices');

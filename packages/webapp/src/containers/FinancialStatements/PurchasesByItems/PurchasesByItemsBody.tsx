@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -16,7 +15,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function PurchasesByItemsBodyJSX({
   // #withPreferences
   organizationName,
-}) {
+}: any) {
   const { isLoading } = usePurchaseByItemsContext();
 
   return (
@@ -31,7 +30,7 @@ function PurchasesByItemsBodyJSX({
 }
 
 export const PurchasesByItemsBody = R.compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(PurchasesByItemsBodyJSX);

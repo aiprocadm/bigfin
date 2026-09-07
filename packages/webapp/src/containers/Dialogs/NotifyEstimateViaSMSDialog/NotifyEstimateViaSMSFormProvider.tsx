@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -12,7 +11,7 @@ function NotifyEstimateViaSMSFormProvider({
   estimateId,
   dialogName,
   ...props
-}) {
+}: any) {
   const { data: estimateSMSDetail, isLoading: isEstimateSMSDetailLoading } =
     useEstimateSMSDetail(estimateId, {
       enabled: !!estimateId,

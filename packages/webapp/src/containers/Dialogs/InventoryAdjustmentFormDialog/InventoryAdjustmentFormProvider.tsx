@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, createContext } from 'react';
 import { DialogContent } from '@/components';
 import { Features } from '@/constants';
@@ -16,7 +15,7 @@ const InventoryAdjustmentContext = createContext<any>(undefined);
 /**
  * Inventory adjustment dialog provider.
  */
-function InventoryAdjustmentFormProvider({ itemId, dialogName, ...props }) {
+function InventoryAdjustmentFormProvider({ itemId, dialogName, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);

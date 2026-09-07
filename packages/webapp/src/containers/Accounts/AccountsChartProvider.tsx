@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { DashboardInsider } from '@/components';
 import { useResourceViews, useResourceMeta, useAccounts } from '@/hooks/query';
@@ -9,7 +8,7 @@ const AccountsChartContext = createContext<any>(undefined);
 /**
  * Accounts chart data provider.
  */
-function AccountsChartProvider({ query, tableStateChanged, ...props }) {
+function AccountsChartProvider({ query, tableStateChanged, ...props }: any) {
   // Fetch accounts resource views and fields.
   const { data: resourceViews, isLoading: isViewsLoading } =
     useResourceViews('accounts');

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Formik, Form } from 'formik';
 import { Intent } from '@blueprintjs/core';
@@ -23,7 +22,7 @@ import { showApiError } from '@/utils/showApiError';
 function CategorizeTransactionFormRoot({
   // #withBankingActions
   closeMatchingTransactionAside,
-}) {
+}: any) {
   const { uncategorizedTransactionIds } = useCategorizeTransactionTabsBoot();
   const { mutateAsync: categorizeTransaction } = useCategorizeTransaction();
 
@@ -31,7 +30,7 @@ function CategorizeTransactionFormRoot({
   const initialValues = useCategorizeTransactionFormInitialValues();
 
   // Callbacks handles form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const _values = tranformToRequest(values, uncategorizedTransactionIds);
 
     setSubmitting(true);
@@ -49,7 +48,7 @@ function CategorizeTransactionFormRoot({
         setSubmitting(false);
         if (
           err.response?.data?.errors?.some(
-            (e) => e.type === 'BRANCH_ID_REQUIRED',
+            (e: any) => e.type === 'BRANCH_ID_REQUIRED',
           )
         ) {
           setErrors({

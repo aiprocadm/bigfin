@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { useCreateInviteUser, useUsers, useRoles } from '@/hooks/query';
 import { DialogContent } from '@/components';
@@ -8,7 +7,7 @@ const InviteUserFormContext = createContext<any>(undefined);
 /**
  * Invite user Form page provider.
  */
-function InviteUserFormProvider({ userId, isEditMode, dialogName, ...props }) {
+function InviteUserFormProvider({ userId, isEditMode, dialogName, ...props }: any) {
   // Create and edit item currency mutations.
   const { mutateAsync: inviteUserMutate } = useCreateInviteUser();
 

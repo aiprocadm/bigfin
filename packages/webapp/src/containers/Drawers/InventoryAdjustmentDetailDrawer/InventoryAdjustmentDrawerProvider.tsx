@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -10,7 +9,7 @@ const InventoryAdjustmentDrawerContext = React.createContext<any>(undefined);
 /**
  * Inventory adjustment drawer provider.
  */
-function InventoryAdjustmentDrawerProvider({ inventoryId, ...props }) {
+function InventoryAdjustmentDrawerProvider({ inventoryId, ...props }: any) {
   // Handle fetch inventory adjustment .
   const { data: inventoryAdjustment, isLoading: isAdjustmentsLoading } =
     useInventoryAdjustment(inventoryId, {

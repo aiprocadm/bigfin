@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -10,7 +9,7 @@ const RefundCreditNoteDrawerContext = React.createContext<any>(undefined);
 /**
  * Refund credit note drawer provider.
  */
-function RefundCreditNoteDrawerProvider({ refundTransactionId, ...props }) {
+function RefundCreditNoteDrawerProvider({ refundTransactionId, ...props }: any) {
   // Handle fetch refund credit note transaction.
   const {
     data: refundCreditTransaction,

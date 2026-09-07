@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { isEmpty } from 'lodash';
 import { DashboardInsider } from '@/components/Dashboard';
@@ -20,7 +19,7 @@ function WarehouseTransfersListProvider({
   query,
   tableStateChanged,
   ...props
-}) {
+}: any) {
   // warehouse transfers refresh action.
   const { refresh } = useRefreshWarehouseTransfers();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { css } from '@emotion/css';
 import { DashboardInsider } from '@/components/Dashboard';
@@ -20,7 +19,7 @@ const ExpenseFormPageContext = createContext<any>(undefined);
 /**
  * Accounts chart data provider.
  */
-function ExpenseFormPageProvider({ query, expenseId, ...props }) {
+function ExpenseFormPageProvider({ query, expenseId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);
@@ -63,7 +62,7 @@ function ExpenseFormPageProvider({ query, expenseId, ...props }) {
   const submitPayloadRef = React.useRef({});
 
   // Setter to update the ref.
-  const setSubmitPayload = React.useCallback((payload) => {
+  const setSubmitPayload = React.useCallback((payload: any) => {
     submitPayloadRef.current = payload;
   }, []);
 

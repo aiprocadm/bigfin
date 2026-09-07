@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { useEditCurrency, useCreateCurrency } from '@/hooks/query';
 import { DialogContent } from '@/components';
@@ -8,7 +7,7 @@ const CurrencyFormContext = createContext<any>(undefined);
 /**
  * Currency Form page provider.
  */
-function CurrencyFormProvider({ isEditMode, currency, dialogName, ...props }) {
+function CurrencyFormProvider({ isEditMode, currency, dialogName, ...props }: any) {
   // Create and edit item currency mutations.
   const { mutateAsync: createCurrencyMutate } = useCreateCurrency();
   const { mutateAsync: editCurrencyMutate } = useEditCurrency();

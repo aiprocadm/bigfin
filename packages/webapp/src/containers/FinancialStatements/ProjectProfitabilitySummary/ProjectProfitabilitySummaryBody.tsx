@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import ProjectProfitabilitySummaryTable from './ProjectProfitabilitySummaryTable';
@@ -17,7 +16,7 @@ import { compose } from '@/utils';
 function ProjectProfitabilitySummaryBodyJSX({
   // #withCurrentOrganization
   organizationName,
-}) {
+}: any) {
   const { isProjectProfitabilitySummaryLoading } =
     useProjectProfitabilitySummaryContext();
 
@@ -33,7 +32,7 @@ function ProjectProfitabilitySummaryBodyJSX({
 }
 
 export const ProjectProfitabilitySummaryBody = compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization?.name,
   })),
 )(ProjectProfitabilitySummaryBodyJSX);

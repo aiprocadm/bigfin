@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -16,7 +15,7 @@ const VendorCreditDetailDrawerContext = React.createContext<any>(undefined);
 /**
  * Vendor credit drawer provider.
  */
-function VendorCreditDetailDrawerProvider({ vendorCreditId, ...props }) {
+function VendorCreditDetailDrawerProvider({ vendorCreditId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useWarehouseTransfer } from '@/hooks/query';
@@ -13,7 +12,7 @@ const WarehouseTransferDetailDrawerContext = React.createContext<any>(undefined)
 function WarehouseTransferDetailDrawerProvider({
   warehouseTransferId,
   ...props
-}) {
+}: any) {
   // Handle fetch warehouse transfer detail.
   const { data: warehouseTransfer, isLoading: isWarehouseTransferLoading } =
     useWarehouseTransfer(warehouseTransferId, {

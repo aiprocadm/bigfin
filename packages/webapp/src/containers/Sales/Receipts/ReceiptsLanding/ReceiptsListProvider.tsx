@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -10,7 +9,7 @@ import { getFieldsFromResourceMeta } from '@/utils';
 const ReceiptsListContext = createContext<any>(undefined);
 
 // Receipts list provider.
-function ReceiptsListProvider({ query, tableStateChanged, ...props }) {
+function ReceiptsListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetch receipts resource views and fields.
   const { data: receiptsViews, isLoading: isViewsLoading } =
     useResourceViews('sale_receipt');

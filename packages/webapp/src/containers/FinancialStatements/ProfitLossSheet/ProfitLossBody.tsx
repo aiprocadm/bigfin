@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import ProfitLossSheetTable from './ProfitLossSheetTable';
@@ -16,7 +15,7 @@ import { compose } from '@/utils';
 function ProfitLossBodyJSX({
   // #withPreferences
   organizationName,
-}) {
+}: any) {
   const { isLoading } = useProfitLossSheetContext();
 
   return (
@@ -31,7 +30,7 @@ function ProfitLossBodyJSX({
 }
 
 export const ProfitLossBody = compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(ProfitLossBodyJSX);

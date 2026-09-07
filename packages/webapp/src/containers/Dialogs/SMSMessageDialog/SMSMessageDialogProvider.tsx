@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -11,7 +10,7 @@ const SMSMessageDialogContext = React.createContext<any>(undefined);
 /**
  * SMS Message dialog provider.
  */
-function SMSMessageDialogProvider({ notificationkey, dialogName, ...props }) {
+function SMSMessageDialogProvider({ notificationkey, dialogName, ...props }: any) {
   // Edit SMS message notification mutations.
   const { mutateAsync: editSMSNotificationMutate } =
     useSettingEditSMSNotification();

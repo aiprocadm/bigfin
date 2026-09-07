@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { DialogContent } from '@/components';
@@ -9,7 +8,7 @@ const BadDebtContext = React.createContext<any>(undefined);
 /**
  * Bad debt provider.
  */
-function BadDebtFormProvider({ invoiceId, dialogName, ...props }) {
+function BadDebtFormProvider({ invoiceId, dialogName, ...props }: any) {
   // Handle fetch accounts data.
   const { data: accounts, isLoading: isAccountsLoading } = useAccounts();
 

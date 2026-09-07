@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { getColumnWidth } from '@/utils';
 import { useExcludedTransactionsBoot } from './ExcludedTransactionsTableBoot';
 import { CLASSES } from '@/constants';
 
-const getReportColWidth = (data, accessor, headerText) => {
+const getReportColWidth = (data: any, accessor: any, headerText: any) => {
   return getColumnWidth(
     data,
     accessor,
@@ -14,7 +13,7 @@ const getReportColWidth = (data, accessor, headerText) => {
   );
 };
 
-const descriptionAccessor = (transaction) => {
+const descriptionAccessor = (transaction: any) => {
   return <span className={CLASSES.TEXT_MUTED}>{transaction.description}</span>;
 };
 

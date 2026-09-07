@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { Align } from '@/constants';
 import { getColumnWidth } from '@/utils';
@@ -52,6 +51,6 @@ const dynamicColumnMapper = R.curry((data, column) => {
   )(column);
 });
 
-export const trialBalancesheetDynamicColumns = (columns, data) => {
+export const trialBalancesheetDynamicColumns = (columns: any, data: any) => {
   return R.map(dynamicColumnMapper(data), columns);
 };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -24,7 +23,7 @@ import { firstLettersArgs, compose } from '@/utils';
 function DashboardTopbarUser({
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const history = useHistory();
   const { setLogout } = useAuthActions();
 

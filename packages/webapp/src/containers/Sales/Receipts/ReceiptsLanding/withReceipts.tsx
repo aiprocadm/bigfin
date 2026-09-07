@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getReceiptsSelectedRowsFactory,
@@ -6,16 +5,16 @@ import {
   receiptsTableStateChangedFactory,
 } from '@/store/receipts/receipts.selector';
 
-export const withReceipts = (mapState) => {
+export const withReceipts = (mapState: any) => {
   const getReceiptsTableState = getReceiptsTableStateFactory();
   const receiptsTableStateChanged = receiptsTableStateChangedFactory();
   const getSelectedRows = getReceiptsSelectedRowsFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       receiptTableState: getReceiptsTableState(state, props),
-      receiptsTableStateChanged: receiptsTableStateChanged(state, props),
-      receiptSelectedRows: getSelectedRows(state, props),
+      receiptsTableStateChanged: receiptsTableStateChanged(state),
+      receiptSelectedRows: getSelectedRows(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

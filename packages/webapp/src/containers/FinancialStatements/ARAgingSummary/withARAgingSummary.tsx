@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getARAgingSummaryFilterDrawer,
 } from '@/store/financial-statement/financial-statements.selectors';
 
-export const withARAgingSummary = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withARAgingSummary = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
-      ARAgingSummaryFilterDrawer: getARAgingSummaryFilterDrawer(state, props),
+      ARAgingSummaryFilterDrawer: getARAgingSummaryFilterDrawer(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Menu } from '@blueprintjs/core';
 
@@ -10,7 +9,7 @@ import { useIsSidebarMenuItemActive } from './hooks';
  * Sidebar menu item.
  * @returns {JSX.Element}
  */
-function SidebarMenuItem({ item, index }) {
+function SidebarMenuItem({ item, index }: any) {
   // Detarmine whether the item is active.
   const isActive = useIsSidebarMenuItemActive(item);
 
@@ -37,7 +36,7 @@ SidebarMenuItem.ItemTypes = [
  * Detarmines which sidebar menu item type should display.
  * @returns {JSX.Element}
  */
-function SidebarMenuItemComposer({ item, index }) {
+function SidebarMenuItemComposer({ item, index }: any) {
   // Link item type.
   return SidebarMenuItem.ItemTypes.indexOf(item.type) !== -1 ? (
     <SidebarMenuItem item={item} index={index} />
@@ -51,11 +50,11 @@ function SidebarMenuItemComposer({ item, index }) {
  * Sidebar menu.
  * @returns {JSX.Element}
  */
-export function SidebarMenu({ menu }) {
+export function SidebarMenu({ menu }: any) {
   return (
     <div>
       <Menu className="sidebar-menu">
-        {menu.map((item, index) => (
+        {menu.map((item: any, index: any) => (
           <SidebarMenuItemComposer key={index} index={index} item={item} />
         ))}
       </Menu>

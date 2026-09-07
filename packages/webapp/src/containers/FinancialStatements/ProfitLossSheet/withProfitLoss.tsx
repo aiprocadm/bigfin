@@ -1,13 +1,12 @@
-// @ts-nocheck
 import {connect} from 'react-redux';
 import {
   getProfitLossFilterDrawer,
 } from '@/store/financial-statement/financial-statements.selectors';
 
-export const withProfitLoss = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withProfitLoss = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
-      profitLossDrawerFilter: getProfitLossFilterDrawer(state, props),
+      profitLossDrawerFilter: getProfitLossFilterDrawer(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

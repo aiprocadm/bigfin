@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -20,7 +19,7 @@ const notificationType = {
 function NotifyEstimateViaSMSForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const {
     estimateId,
     dialogName,
@@ -31,11 +30,11 @@ function NotifyEstimateViaSMSForm({
   const [calloutCode, setCalloutCode] = React.useState([]);
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     setSubmitting(true);
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('notify_estimate_via_sms.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -48,7 +47,7 @@ function NotifyEstimateViaSMSForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setErrors, setCalloutCode });
       }

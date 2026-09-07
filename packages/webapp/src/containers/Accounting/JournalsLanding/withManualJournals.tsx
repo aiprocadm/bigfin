@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getManualJournalsSelectedRowsFactory,
@@ -6,20 +5,19 @@ import {
   manualJournalTableStateChangedFactory,
 } from '@/store/manual-journals/manual-journals.selectors';
 
-export const withManualJournals = (mapState) => {
+export const withManualJournals = (mapState: any) => {
   const getJournalsTableQuery = getManualJournalsTableStateFactory();
   const manualJournalTableStateChanged =
     manualJournalTableStateChangedFactory();
   const getSelectedRows = getManualJournalsSelectedRowsFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       manualJournalsTableState: getJournalsTableQuery(state, props),
       manualJournalTableStateChanged: manualJournalTableStateChanged(
         state,
-        props,
       ),
-      manualJournalsSelectedRows: getSelectedRows(state, props),
+      manualJournalsSelectedRows: getSelectedRows(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

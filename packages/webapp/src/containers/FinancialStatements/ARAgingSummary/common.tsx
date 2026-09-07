@@ -1,4 +1,3 @@
-// @ts-nocheck
 import moment from 'moment';
 import * as Yup from 'yup';
 import { transformToCamelCase, flatObject, transformToForm } from '@/utils';
@@ -6,7 +5,7 @@ import { useAppQueryString } from '@/hooks';
 import { useMemo } from 'react';
 import { castArray } from 'lodash';
 
-export const transfromFilterFormToQuery = (form) => {
+export const transfromFilterFormToQuery = (form: any) => {
   return flatObject(transformToCamelCase(form));
 };
 
@@ -52,7 +51,7 @@ export const getARAgingSummaryQuerySchema = () => {
 /**
  * Parses the AR aging summary state.
  */
-const parseARAgingSummaryQuery = (locationQuery) => {
+const parseARAgingSummaryQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultARAgingSummaryQuery();
   const transformed = {
     ...defaultQuery,

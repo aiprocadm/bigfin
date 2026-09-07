@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { transformPagination } from '@/utils';
 import { useRequestQuery } from '../useQueryRequest';
@@ -6,7 +5,7 @@ import useApiRequest from '../useRequest';
 import t from './types';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate warehouses.
   queryClient.invalidateQueries(t.WAREHOUSES);
   queryClient.invalidateQueries(t.WAREHOUSE);
@@ -20,7 +19,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Create a new warehouse.
  */
-export function useCreateWarehouse(props) {
+export function useCreateWarehouse(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -36,12 +35,12 @@ export function useCreateWarehouse(props) {
 /**
  * Edits the given warehouse.
  */
-export function useEditWarehouse(props) {
+export function useEditWarehouse(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`warehouses/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`warehouses/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific sale invoice.
@@ -58,7 +57,7 @@ export function useEditWarehouse(props) {
 /**
  * Deletes the given warehouse.
  */
-export function useDeleteWarehouse(props) {
+export function useDeleteWarehouse(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -77,12 +76,12 @@ export function useDeleteWarehouse(props) {
 /**
  * Retrieve Warehoues list.
  */
-export function useWarehouses(query, props) {
+export function useWarehouses(query: any, props: any) {
   return useRequestQuery(
     [t.WAREHOUSES, query],
     { method: 'get', url: 'warehouses', params: query },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -93,12 +92,12 @@ export function useWarehouses(query, props) {
  * Retrieve the warehouse details.
  * @param {number}
  */
-export function useWarehouse(id, props, requestProps) {
+export function useWarehouse(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.WAREHOUSE, id],
     { method: 'get', url: `warehouses/${id}`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -108,7 +107,7 @@ export function useWarehouse(id, props, requestProps) {
 /**
  * Activate the given warehouse.
  */
-export function useActivateWarehouses(props) {
+export function useActivateWarehouses(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -124,7 +123,7 @@ export function useActivateWarehouses(props) {
 /**
  * Mark primary the given branch.
  */
-export function useMarkWarehouseAsPrimary(props) {
+export function useMarkWarehouseAsPrimary(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

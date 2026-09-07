@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext, useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import { useDueInvoices } from '@/hooks/query';
@@ -17,7 +16,7 @@ function PaymentReceiveInnerProvider({ ...props }) {
   const {
     values: { customer_id: customerId },
     setFieldValue,
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Fetches customer receivable invoices.
   const {

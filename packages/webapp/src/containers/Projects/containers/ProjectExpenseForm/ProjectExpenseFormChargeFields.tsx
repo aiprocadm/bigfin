@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Classes, ControlGroup } from '@blueprintjs/core';
@@ -40,7 +39,7 @@ function CustomPirceField() {
  * @returns
  */
 export default function ExpenseFormChargeFields() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return (
     <Choose>

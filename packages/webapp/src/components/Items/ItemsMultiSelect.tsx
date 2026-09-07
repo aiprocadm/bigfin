@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FMultiSelect } from '@/components/Forms';
 
@@ -11,7 +10,7 @@ import { FMultiSelect } from '@/components/Forms';
  * (Д2 карты v60); её никто и не включал — ни один вызывающий не передаёт
  * `allowCreate`.
  */
-export function ItemsMultiSelect(multiSelectProps) {
+export function ItemsMultiSelect(multiSelectProps: any) {
   return (
     <FMultiSelect
       valueAccessor={'id'}

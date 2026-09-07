@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { ExchangeRateMutedField } from '@/components';
 import { useForeignAccount } from './utils';
@@ -7,7 +6,7 @@ import { useMoneyInFieldsContext } from './MoneyInFieldsProvider';
 
 export function MoneyInExchangeRateField() {
   const { account } = useMoneyInFieldsContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeigAccount = useForeignAccount();
 

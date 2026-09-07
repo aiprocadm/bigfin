@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -59,9 +58,9 @@ export const ITEMS_FILTER_ROLES_QUERY = JSON.stringify([
 /**
  * Transform warehouse transfer to initial values in edit mode.
  */
-export function transformToEditForm(warehouse) {
+export function transformToEditForm(warehouse: any) {
   const initialEntries = [
-    ...warehouse.entries.map((warehouse) => ({
+    ...warehouse.entries.map((warehouse: any) => ({
       ...transformToForm(warehouse, defaultWarehouseTransferEntry),
     })),
     ...repeatValue(
@@ -83,8 +82,8 @@ export function transformToEditForm(warehouse) {
 /**
  * Syncs transfer no. settings with form.
  */
-export const useObserveTransferNoSettings = (prefix, nextNumber) => {
-  const { setFieldValue } = useFormikContext();
+export const useObserveTransferNoSettings = (prefix: any, nextNumber: any) => {
+  const { setFieldValue } = useFormikContext<any>();
 
   React.useEffect(() => {
     const transferNo = transactionNumber(prefix, nextNumber);
@@ -95,7 +94,7 @@ export const useObserveTransferNoSettings = (prefix, nextNumber) => {
 /**
  * Detarmines warehouse entries field when should update.
  */
-export const entriesFieldShouldUpdate = (newProps, oldProps) => {
+export const entriesFieldShouldUpdate = (newProps: any, oldProps: any) => {
   return (
     newProps.items !== oldProps.items ||
     newProps.formik.values.from_warehouse_id !==
@@ -109,13 +108,13 @@ export const entriesFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Transformes the form values to request body values.
  */
-export function transformValueToRequest(values) {
+export function transformValueToRequest(values: any) {
   const entries = values.entries.filter(
-    (item) => item.item_id && item.quantity,
+    (item: any) => item.item_id && item.quantity,
   );
   return {
     ...values,
-    entries: entries.map((entry) => ({
+    entries: entries.map((entry: any) => ({
       ...omit(entry, [
         'warehouses',
         'destination_warehouse',
@@ -129,9 +128,9 @@ export function transformValueToRequest(values) {
 /**
  * Transformes the response errors types.
  */
-export const transformErrors = (errors, { setErrors }) => {
+export const transformErrors = (errors: any, { setErrors }: any) => {
   if (
-    errors.some(({ type }) => type === 'WAREHOUSES_TRANSFER_SHOULD_NOT_BE_SAME')
+    errors.some(({ type }: any) => type === 'WAREHOUSES_TRANSFER_SHOULD_NOT_BE_SAME')
   ) {
     AppToaster.show({
       message: intl.get(
@@ -191,7 +190,7 @@ export function useWatchItemsCostSetCostEntries() {
   const {
     setFieldValue,
     values: { entries },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Transformes items cost map by item id.
   const itemsCostByItemId = React.useMemo(
@@ -203,7 +202,7 @@ export function useWatchItemsCostSetCostEntries() {
   useWatch(() => {
     if (!isItemsCostSuccess) return;
 
-    const newEntries = entries.map((entry) => {
+    const newEntries = entries.map((entry: any) => {
       const costEntry = itemsCostByItemId[entry.item_id];
 
       return entry.item_id

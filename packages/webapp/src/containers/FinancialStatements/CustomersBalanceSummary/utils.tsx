@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo } from 'react';
 import { castArray } from 'lodash';
 import moment from 'moment';
@@ -31,7 +30,7 @@ export const getCustomersBalanceQuerySchema = () => {
 /**
  * Parses the customer balance summary query.
  */
-const parseCustomersBalanceSummaryQuery = (locationQuery) => {
+const parseCustomersBalanceSummaryQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultARAgingSummaryQuery();
 
   const transformed = {

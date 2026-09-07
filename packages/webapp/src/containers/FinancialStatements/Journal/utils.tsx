@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 
@@ -19,7 +18,7 @@ export const getDefaultJournalQuery = () => {
 /**
  * Parses balance sheet query.
  */
-const parseJournalQuery = (locationQuery) => {
+const parseJournalQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultJournalQuery();
 
   return {

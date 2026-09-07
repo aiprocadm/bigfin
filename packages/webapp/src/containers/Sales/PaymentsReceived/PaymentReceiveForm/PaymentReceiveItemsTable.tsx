@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { CloudLoadingIndicator } from '@/components';
@@ -18,7 +17,7 @@ export default function PaymentReceiveItemsTable({
   entries,
   onUpdateData,
   currencyCode,
-}) {
+}: any) {
   // Payment receive form context.
   const { isDueInvoicesFetching } = usePaymentReceiveInnerContext();
 
@@ -29,7 +28,7 @@ export default function PaymentReceiveItemsTable({
   const {
     values: { customer_id },
     errors,
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // No results message.
   const noResultsMessage = customer_id ? (
@@ -40,7 +39,7 @@ export default function PaymentReceiveItemsTable({
 
   // Handle update data.
   const handleUpdateData = useCallback(
-    (rowIndex, columnId, value) => {
+    (rowIndex: any, columnId: any, value: any) => {
       const newRows = compose(updateTableCell(rowIndex, columnId, value))(
         entries,
       );

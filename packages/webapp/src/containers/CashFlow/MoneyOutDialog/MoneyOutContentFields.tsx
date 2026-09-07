@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import { useFormikContext } from 'formik';
 
@@ -13,7 +12,7 @@ import { MoneyOutFieldsProvider } from './MoneyOutFieldsProvider';
  * @returns {JSX.Element}
  */
 function MoneyOutContentFields() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const transactionType = useMemo(() => {
     switch (values.transaction_type) {

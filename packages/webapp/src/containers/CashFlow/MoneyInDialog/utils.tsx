@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useFormikContext } from 'formik';
@@ -8,8 +7,8 @@ import { isEqual, isNull, first } from 'lodash';
 import { useMoneyInDailogContext } from './MoneyInDialogProvider';
 import { useMoneyInFieldsContext } from './MoneyInFieldsProvider';
 
-export const useObserveTransactionNoSettings = (prefix, nextNumber) => {
-  const { setFieldValue } = useFormikContext();
+export const useObserveTransactionNoSettings = (prefix: any, nextNumber: any) => {
+  const { setFieldValue } = useFormikContext<any>();
 
   React.useEffect(() => {
     const TransactionNo = transactionNumber(prefix, nextNumber);
@@ -18,12 +17,12 @@ export const useObserveTransactionNoSettings = (prefix, nextNumber) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess } = useMoneyInDailogContext();
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: any) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);
@@ -33,7 +32,7 @@ export const useSetPrimaryBranchToForm = () => {
 };
 
 export const useForeignAccount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const { account } = useMoneyInFieldsContext();
 
   return (

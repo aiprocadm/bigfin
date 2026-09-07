@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { transformPagination, transformResponse, transformToCamelCase } from '@/utils';
 import { useRequestQuery } from '../useQueryRequest';
@@ -12,7 +11,7 @@ const DEFAULT_PAGINATION = {
 };
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate items.
   queryClient.invalidateQueries(t.ITEMS);
 
@@ -23,7 +22,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new item.
  */
-export function useCreateItem(props) {
+export function useCreateItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -38,11 +37,11 @@ export function useCreateItem(props) {
 /**
  * Edits the given item.
  */
-export function useEditItem(props) {
+export function useEditItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation(([id, values]) => apiRequest.put(`items/${id}`, values), {
+  return useMutation(([id, values]: [any, any]) => apiRequest.put(`items/${id}`, values), {
     onSuccess: (res, [id, values]) => {
       // Invalidate specific item.
       queryClient.invalidateQueries([t.ITEM, id]);
@@ -57,7 +56,7 @@ export function useEditItem(props) {
 /**
  * Deletes the given item.
  */
-export function useDeleteItem(props) {
+export function useDeleteItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -76,7 +75,7 @@ export function useDeleteItem(props) {
 /**
  * Deletes multiple items in bulk.
  */
-export function useBulkDeleteItems(props) {
+export function useBulkDeleteItems(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -105,7 +104,7 @@ export function useBulkDeleteItems(props) {
 /**
  * Validates which items can be deleted in bulk.
  */
-export function useValidateBulkDeleteItems(props) {
+export function useValidateBulkDeleteItems(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -120,7 +119,7 @@ export function useValidateBulkDeleteItems(props) {
 /**
  * Activate the given item.
  */
-export function useActivateItem(props) {
+export function useActivateItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -139,7 +138,7 @@ export function useActivateItem(props) {
 /**
  * Inactivate the given item.
  */
-export function useInactivateItem(props) {
+export function useInactivateItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -156,7 +155,7 @@ export function useInactivateItem(props) {
 }
 
 // Transformes items response.
-const transformItemsResponse = (response) => {
+const transformItemsResponse = (response: any) => {
   return {
     items: response.data.items,
     pagination: transformPagination(
@@ -169,7 +168,7 @@ const transformItemsResponse = (response) => {
 /**
  * Retrieves items list.
  */
-export function useItems(query, props) {
+export function useItems(query: any, props: any) {
   return useRequestQuery(
     [t.ITEMS, query],
     {
@@ -203,7 +202,7 @@ export function useRefreshItems() {
  * Retrieve details of the given item.
  * @param {number} id - Item id.
  */
-export function useItem(id, props) {
+export function useItem(id: any, props: any) {
   return useRequestQuery(
     [t.ITEM, id],
     {
@@ -211,14 +210,14 @@ export function useItem(id, props) {
       url: `items/${id}`,
     },
     {
-      select: (response) => response.data,
+      select: (response: any) => response.data,
       defaultData: {},
       ...props,
     },
   );
 }
 
-export function useItemAssociatedInvoiceTransactions(id, props) {
+export function useItemAssociatedInvoiceTransactions(id: any, props: any) {
   return useRequestQuery(
     [t.ITEM_ASSOCIATED_WITH_INVOICES, id],
     {
@@ -226,14 +225,14 @@ export function useItemAssociatedInvoiceTransactions(id, props) {
       url: `items/${id}/invoices`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
   );
 }
 
-export function useItemAssociatedEstimateTransactions(id, props) {
+export function useItemAssociatedEstimateTransactions(id: any, props: any) {
   return useRequestQuery(
     [t.ITEM_ASSOCIATED_WITH_ESTIMATES, id],
     {
@@ -241,14 +240,14 @@ export function useItemAssociatedEstimateTransactions(id, props) {
       url: `items/${id}/estimates`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
   );
 }
 
-export function useItemAssociatedReceiptTransactions(id, props) {
+export function useItemAssociatedReceiptTransactions(id: any, props: any) {
   return useRequestQuery(
     [t.ITEM_ASSOCIATED_WITH_RECEIPTS, id],
     {
@@ -256,13 +255,13 @@ export function useItemAssociatedReceiptTransactions(id, props) {
       url: `items/${id}/receipts`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
   );
 }
-export function useItemAssociatedBillTransactions(id, props) {
+export function useItemAssociatedBillTransactions(id: any, props: any) {
   return useRequestQuery(
     [t.ITEMS_ASSOCIATED_WITH_BILLS, id],
     {
@@ -270,14 +269,14 @@ export function useItemAssociatedBillTransactions(id, props) {
       url: `items/${id}/bills`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
   );
 }
 
-export function useItemWarehouseLocation(id, props) {
+export function useItemWarehouseLocation(id: any, props: any) {
   return useRequestQuery(
     [t.ITEM_WAREHOUSES_LOCATION, id],
     {
@@ -285,7 +284,7 @@ export function useItemWarehouseLocation(id, props) {
       url: `items/${id}/warehouses`,
     },
     {
-      select: (res) => res.data.item_warehouses,
+      select: (res: any) => res.data.item_warehouses,
       defaultData: [],
       ...props,
     },
@@ -299,7 +298,7 @@ export function useItemWarehouseLocation(id, props) {
  * @param {*} props
  * @returns
  */
-export function useItemInventoryCost(query, props) {
+export function useItemInventoryCost(query: any, props: any) {
   return useRequestQuery(
     [t.ITEM_INVENTORY_COST, query],
     {
@@ -308,7 +307,7 @@ export function useItemInventoryCost(query, props) {
       params: { ...query },
     },
     {
-      select: (res) => res.data.costs,
+      select: (res: any) => res.data.costs,
       defaultData: [],
       ...props,
     },

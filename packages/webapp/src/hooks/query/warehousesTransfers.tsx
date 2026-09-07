@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { transformPagination } from '@/utils';
 import { useRequestQuery } from '../useQueryRequest';
@@ -7,7 +6,7 @@ import t from './types';
 import { unwrapData } from '@/utils/unwrapData';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate warehouses transfers.
   queryClient.invalidateQueries(t.WAREHOUSE_TRANSFERS);
 
@@ -22,7 +21,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Create a new warehouse transfer.
  */
-export function useCreateWarehouseTransfer(props) {
+export function useCreateWarehouseTransfer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -41,12 +40,12 @@ export function useCreateWarehouseTransfer(props) {
 /**
  * Edits the given warehouse transfer.
  */
-export function useEditWarehouseTransfer(props) {
+export function useEditWarehouseTransfer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`warehouse-transfers/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`warehouse-transfers/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific sale invoice.
@@ -63,7 +62,7 @@ export function useEditWarehouseTransfer(props) {
 /**
  * Deletes the given warehouse Transfer.
  */
-export function useDeleteWarehouseTransfer(props) {
+export function useDeleteWarehouseTransfer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -76,7 +75,7 @@ export function useDeleteWarehouseTransfer(props) {
   });
 }
 
-const transformWarehousesTransfer = (res) => ({
+const transformWarehousesTransfer = (res: any) => ({
   warehousesTransfers: unwrapData(res),
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter,
@@ -85,7 +84,7 @@ const transformWarehousesTransfer = (res) => ({
 /**
  * Retrieve Warehoues list.
  */
-export function useWarehousesTransfers(query, props) {
+export function useWarehousesTransfers(query: any, props: any) {
   return useRequestQuery(
     [t.WAREHOUSE_TRANSFERS, query],
     { method: 'get', url: 'warehouse-transfers', params: query },
@@ -109,12 +108,12 @@ export function useWarehousesTransfers(query, props) {
  * Retrieve the warehouse transfer details.
  * @param {number}
  */
-export function useWarehouseTransfer(id, props, requestProps) {
+export function useWarehouseTransfer(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.WAREHOUSE_TRANSFER, id],
     { method: 'get', url: `warehouse-transfers/${id}`, ...requestProps },
     {
-      select: (res) => unwrapData(res),
+      select: (res: any) => unwrapData(res),
       defaultData: {},
       ...props,
     },
@@ -126,7 +125,7 @@ export function useWarehouseTransfer(id, props, requestProps) {
  * @param {*} props
  * @returns
  */
-export function useInitiateWarehouseTransfer(props) {
+export function useInitiateWarehouseTransfer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -149,7 +148,7 @@ export function useInitiateWarehouseTransfer(props) {
  * @param {*} props
  * @returns
  */
-export function useTransferredWarehouseTransfer(props) {
+export function useTransferredWarehouseTransfer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

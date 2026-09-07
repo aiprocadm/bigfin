@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import useApiRequest from '../useRequest';
 import { useRequestQuery } from '../useQueryRequest';
 
 import t from './types';
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate bills.
   queryClient.invalidateQueries(t.BILLS);
   queryClient.invalidateQueries(t.BILL);
@@ -17,12 +16,12 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new landed cost.
  */
-export function useCreateLandedCost(props) {
+export function useCreateLandedCost(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`landed-cost/bills/${id}/allocate`, values),
     {
       onSuccess: (res, id) => {
@@ -37,7 +36,7 @@ export function useCreateLandedCost(props) {
 /**
  * Deletes the given landed cost.
  */
-export function useDeleteLandedCost(props) {
+export function useDeleteLandedCost(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -57,7 +56,7 @@ export function useDeleteLandedCost(props) {
 /**
  * Retrieve the landed cost transactions.
  */
-export function useLandedCostTransaction(query, props) {
+export function useLandedCostTransaction(query: any, props: any) {
   return useRequestQuery(
     [t.LANDED_COST, query],
     {
@@ -66,7 +65,7 @@ export function useLandedCostTransaction(query, props) {
       params: { transaction_type: query },
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       ...props,
     },
   );
@@ -75,12 +74,12 @@ export function useLandedCostTransaction(query, props) {
 /**
  * Retrieve the bill located landed cost transactions.
  */
-export function useBillLocatedLandedCost(id, props) {
+export function useBillLocatedLandedCost(id: any, props: any) {
   return useRequestQuery(
     [t.LANDED_COST_TRANSACTION, id],
     { method: 'get', url: `landed-cost/bills/${id}/transactions` },
     {
-      select: (res) => res.data?.data,
+      select: (res: any) => res.data?.data,
       defaultData: [],
       ...props,
     },

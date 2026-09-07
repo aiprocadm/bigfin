@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import { castArray } from 'lodash';
@@ -38,7 +37,7 @@ export const getInventoryItemDetailsQuerySchema = () => {
 /**
  * Parses inventory item details browser location query.
  */
-const parseInventoryItemDetailsQuery = (locationQuery) => {
+const parseInventoryItemDetailsQuery = (locationQuery: any) => {
   const defaultQuery = getInventoryItemDetailsDefaultQuery();
 
   const transformed = {

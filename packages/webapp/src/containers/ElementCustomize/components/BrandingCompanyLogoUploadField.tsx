@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { useFormikContext } from 'formik';
 import { FFormGroup } from '@/components';
 import { CompanyLogoUpload } from './CompanyLogoUpload';
 
 export function BrandingCompanyLogoUploadField() {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
 
   return (
     <FFormGroup name={'companyLogo'} label={''}>

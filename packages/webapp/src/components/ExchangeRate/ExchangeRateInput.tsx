@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -64,7 +63,7 @@ export function ExchangeRateInputGroup({
     finalValue: false,
     onChange: onConfirmPopoverOpen,
   });
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
   const [oldExchangeRate, setOldExchangeRate] = useState<string>('');
 
   const exchangeRate = values[name];

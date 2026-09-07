@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
@@ -24,10 +23,10 @@ export function InvoiceFormActions() {
  * Invoice exclusive/inclusive select.
  * @returns {React.ReactNode}
  */
-export function InvoiceExclusiveInclusiveSelect(props) {
-  const { values, setFieldValue } = useFormikContext();
+export function InvoiceExclusiveInclusiveSelect(props: any) {
+  const { values, setFieldValue } = useFormikContext<any>();
 
-  const handleItemSelect = (item) => {
+  const handleItemSelect = (item: any) => {
     const newEntries = composeEntriesOnEditInclusiveTax(
       item.key,
       values.entries,

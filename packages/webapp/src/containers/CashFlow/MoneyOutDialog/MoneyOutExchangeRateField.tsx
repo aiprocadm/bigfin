@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { useForeignAccount } from './utils';
@@ -10,7 +9,7 @@ import { useMoneyOutFieldsContext } from './MoneyOutFieldsProvider';
  * @returns {JSX.Element}
  */
 export function MoneyOutExchangeRateField() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const { account } = useMoneyOutFieldsContext();
   const isForeigAccount = useForeignAccount();

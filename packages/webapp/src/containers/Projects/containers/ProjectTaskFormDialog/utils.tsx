@@ -1,12 +1,11 @@
-// @ts-nocheck
 import React from 'react';
 import _ from 'lodash';
 import { useFormikContext } from 'formik';
 import styled from 'styled-components';
 import { Choose, Money, FormattedMessage as T } from '@/components';
 
-export function EstimateAmount({ baseCurrency }) {
-  const { values } = useFormikContext();
+export function EstimateAmount({ baseCurrency }: any) {
+  const { values } = useFormikContext<any>();
 
   // Calculate estimate amount.
   const estimatedAmount = _.multiply(values.rate, values.estimate_hours);

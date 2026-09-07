@@ -1,4 +1,3 @@
-// @ts-nocheck
 import moment from 'moment';
 import * as Yup from 'yup';
 import { transformToCamelCase, flatObject, transformToForm } from '@/utils';
@@ -6,7 +5,7 @@ import { useAppQueryString } from '@/hooks';
 import { useMemo } from 'react';
 import { castArray } from 'lodash';
 
-export const transformFilterFormToQuery = (form) => {
+export const transformFilterFormToQuery = (form: any) => {
   return flatObject(transformToCamelCase(form));
 };
 
@@ -55,7 +54,7 @@ export const getAPAgingSummaryQuerySchema = () => {
  * @param locationQuery
  * @returns
  */
-const parseAPAgingSummaryQuery = (locationQuery) => {
+const parseAPAgingSummaryQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultAPAgingSummaryQuery();
 
   const transformed = {

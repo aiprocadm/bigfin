@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { Classes, ControlGroup } from '@blueprintjs/core';
@@ -21,9 +20,9 @@ import { compose } from '@/utils';
 function ProjectTaskFormFields({
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   // Formik context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return (
     <div className={Classes.DIALOG_BODY}>

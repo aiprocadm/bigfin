@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import {
@@ -20,7 +19,7 @@ export default function PaymentMadeEntriesTable({
   onUpdateData,
   entries,
   currencyCode,
-}) {
+}: any) {
   // Payment made inner context.
   const { isNewEntriesFetching } = usePaymentMadeInnerContext();
 
@@ -31,11 +30,11 @@ export default function PaymentMadeEntriesTable({
   const {
     values: { vendor_id },
     errors,
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Handle update data.
   const handleUpdateData = useCallback(
-    (rowIndex, columnId, value) => {
+    (rowIndex: any, columnId: any, value: any) => {
       const newRows = compose(updateTableCell(rowIndex, columnId, value))(
         entries,
       );

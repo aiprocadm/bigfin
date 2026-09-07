@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import t from './types';
 import { transformPagination, transformToCamelCase } from '@/utils';
@@ -6,7 +5,7 @@ import useApiRequest from '../useRequest';
 import { useRequestQuery } from '../useQueryRequest';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate vendors list.
   queryClient.invalidateQueries(t.VENDORS);
 
@@ -22,7 +21,7 @@ const commonInvalidateQueries = (queryClient) => {
 };
 
 // Transformes vendors response.
-const transformVendorsResponse = (res) => ({
+const transformVendorsResponse = (res: any) => ({
   vendors: res.data.vendors,
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
@@ -31,7 +30,7 @@ const transformVendorsResponse = (res) => ({
 /**
  * Retrieve vendors list.
  */
-export function useVendors(query, props) {
+export function useVendors(query: any, props: any) {
   return useRequestQuery(
     [t.VENDORS, query],
     { method: 'get', url: `vendors`, params: query },
@@ -50,12 +49,12 @@ export function useVendors(query, props) {
 /**
  * Edits details of the given vendor.
  */
-export function useEditVendor(props) {
+export function useEditVendor(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`vendors/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`vendors/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific vendor.
@@ -72,7 +71,7 @@ export function useEditVendor(props) {
 /**
  * Deletes the given vendor.
  */
-export function useDeleteVendor(props) {
+export function useDeleteVendor(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -91,7 +90,7 @@ export function useDeleteVendor(props) {
 /**
  * Deletes multiple vendors in bulk.
  */
-export function useBulkDeleteVendors(props) {
+export function useBulkDeleteVendors(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -119,7 +118,7 @@ export function useBulkDeleteVendors(props) {
 /**
  * Validates which vendors can be deleted in bulk.
  */
-export function useValidateBulkDeleteVendors(props) {
+export function useValidateBulkDeleteVendors(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -134,7 +133,7 @@ export function useValidateBulkDeleteVendors(props) {
 /**
  * Creates a new vendor.
  */
-export function useCreateVendor(props) {
+export function useCreateVendor(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -150,24 +149,24 @@ export function useCreateVendor(props) {
 /**
  * Retrieve vendor details.
  */
-export function useVendor(id, props) {
+export function useVendor(id: any, props: any) {
   return useRequestQuery(
     [t.VENDOR, id],
     { method: 'get', url: `vendors/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
   );
 }
 
-export function useEditVendorOpeningBalance(props) {
+export function useEditVendorOpeningBalance(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`vendors/${id}/opening-balance`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`vendors/${id}/opening-balance`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific vendor.

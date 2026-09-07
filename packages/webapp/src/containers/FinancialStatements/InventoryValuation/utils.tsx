@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import { castArray } from 'lodash';
@@ -30,7 +29,7 @@ export const getInventoryValuationQuery = () => ({
 /**
  * Parses inventory valuation location query to report query.
  */
-const parseInventoryValuationQuery = (locationQuery) => {
+const parseInventoryValuationQuery = (locationQuery: any) => {
   const defaultQuery = getInventoryValuationQuery();
 
   const transformed = {

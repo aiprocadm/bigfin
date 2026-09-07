@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import * as R from 'ramda';
@@ -11,11 +10,11 @@ import { usePaymentReceivedTotalExceededAmount } from '../../utils';
 
 interface ExcessPaymentValues {}
 
-export function ExcessPaymentDialogContentRoot({ dialogName, closeDialog }) {
+export function ExcessPaymentDialogContentRoot({ dialogName, closeDialog }: any) {
   const {
     submitForm,
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
   const { setIsExcessConfirmed } = usePaymentReceiveFormContext();
   const exceededAmount = usePaymentReceivedTotalExceededAmount();
 
@@ -53,8 +52,8 @@ export const ExcessPaymentDialogContent = R.compose(withDialogActions)(
   ExcessPaymentDialogContentRoot,
 );
 
-function ExcessPaymentDialogContentForm({ onClose, exceededAmount }) {
-  const { submitForm, isSubmitting } = useFormikContext();
+function ExcessPaymentDialogContentForm({ onClose, exceededAmount }: any) {
+  const { submitForm, isSubmitting } = useFormikContext<any>();
 
   const handleCloseBtn = () => {
     onClose && onClose();

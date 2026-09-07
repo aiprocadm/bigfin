@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import * as Yup from 'yup';
@@ -34,7 +33,7 @@ export const getPurchasesByItemsQuerySchema = () => {
 /**
  * Parses the purchases by items query.
  */
-const parsePurchasesByItemsQuery = (locationQuery) => {
+const parsePurchasesByItemsQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultPurchasesByItemsQuery();
 
   const transformed = {

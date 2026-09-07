@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination, transformToCamelCase } from '@/utils';
 import useApiRequest from '../useRequest';
 import t from './types';
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate vendor credit.
   queryClient.invalidateQueries(t.VENDOR_CREDITS);
   queryClient.invalidateQueries(t.VENDOR_CREDIT);
@@ -53,7 +52,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Create a new vendor credit.
  */
-export function useCreateVendorCredit(props) {
+export function useCreateVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -72,12 +71,12 @@ export function useCreateVendorCredit(props) {
 /**
  * Edit the given vendor credit.
  */
-export function useEditVendorCredit(props) {
+export function useEditVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`vendor-credits/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`vendor-credits/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.
@@ -94,7 +93,7 @@ export function useEditVendorCredit(props) {
 /**
  * Delete the given vendor credit.
  */
-export function useDeleteVendorCredit(props) {
+export function useDeleteVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -116,7 +115,7 @@ export function useDeleteVendorCredit(props) {
 /**
  * Deletes multiple vendor credits in bulk.
  */
-export function useBulkDeleteVendorCredits(props) {
+export function useBulkDeleteVendorCredits(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -142,7 +141,7 @@ export function useBulkDeleteVendorCredits(props) {
   );
 }
 
-export function useValidateBulkDeleteVendorCredits(props) {
+export function useValidateBulkDeleteVendorCredits(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -156,7 +155,7 @@ export function useValidateBulkDeleteVendorCredits(props) {
   );
 }
 
-const transformVendorCreditsResponse = (response) => ({
+const transformVendorCreditsResponse = (response: any) => ({
   vendorCredits: response.data.vendor_credits,
   pagination: transformPagination(response.data.pagination),
   filterMeta: response.data.filter_meta,
@@ -165,7 +164,7 @@ const transformVendorCreditsResponse = (response) => ({
 /**
  * Retrieve vendor credit notes list with pagination meta.
  */
-export function useVendorCredits(query, props) {
+export function useVendorCredits(query: any, props: any) {
   return useRequestQuery(
     [t.VENDOR_CREDITS, query],
     {
@@ -194,12 +193,12 @@ export function useVendorCredits(query, props) {
  * @param {number} id
  *
  */
-export function useVendorCredit(id, props, requestProps) {
+export function useVendorCredit(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.VENDOR_CREDIT, id],
     { method: 'get', url: `vendor-credits/${id}`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -219,12 +218,12 @@ export function useRefreshVendorCredits() {
 /**
  * Create Round vendor creidt
  */
-export function useCreateRefundVendorCredit(props) {
+export function useCreateRefundVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`vendor-credits/${id}/refund`, values),
     {
       onSuccess: (res, [id, values]) => {
@@ -242,7 +241,7 @@ export function useCreateRefundVendorCredit(props) {
 /**
  * Delete the given refund vendor credit.
  */
-export function useDeleteRefundVendorCredit(props) {
+export function useDeleteRefundVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -266,7 +265,7 @@ export function useDeleteRefundVendorCredit(props) {
  * @param {number} id
  *
  */
-export function useRefundVendorCredit(id, props, requestProps) {
+export function useRefundVendorCredit(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.REFUND_VENDOR_CREDIT, id],
     {
@@ -275,7 +274,7 @@ export function useRefundVendorCredit(id, props, requestProps) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -285,7 +284,7 @@ export function useRefundVendorCredit(id, props, requestProps) {
 /**
  * Mark the given vendor credit  as opened.
  */
-export function useOpenVendorCredit(props) {
+export function useOpenVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -307,12 +306,12 @@ export function useOpenVendorCredit(props) {
 /**
  * Create Reconcile vendor credit.
  */
-export function useCreateReconcileVendorCredit(props) {
+export function useCreateReconcileVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`vendor-credits/${id}/apply-to-bills`, values),
     {
       onSuccess: (res, [id, values]) => {
@@ -332,7 +331,7 @@ export function useCreateReconcileVendorCredit(props) {
  * @param {number} id
  *
  */
-export function useReconcileVendorCredit(id, props, requestProps) {
+export function useReconcileVendorCredit(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.RECONCILE_VENDOR_CREDIT, id],
     {
@@ -341,7 +340,7 @@ export function useReconcileVendorCredit(id, props, requestProps) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -351,7 +350,7 @@ export function useReconcileVendorCredit(id, props, requestProps) {
 /**
  * Retrieve reconcile credit notes.
  */
-export function useReconcileVendorCredits(id, props, requestProps) {
+export function useReconcileVendorCredits(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.RECONCILE_VENDOR_CREDITS, id],
     {
@@ -360,7 +359,7 @@ export function useReconcileVendorCredits(id, props, requestProps) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -369,7 +368,7 @@ export function useReconcileVendorCredits(id, props, requestProps) {
 /**
  * Delete the given reconcile vendor credit.
  */
-export function useDeleteReconcileVendorCredit(props) {
+export function useDeleteReconcileVendorCredit(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -393,7 +392,7 @@ export function useDeleteReconcileVendorCredit(props) {
  * @param {number} id
  *
  */
-export function useRefundVendorCreditTransaction(id, props, requestProps) {
+export function useRefundVendorCreditTransaction(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.REFUND_VENDOR_CREDIT_TRANSACTION, id],
     {
@@ -402,7 +401,7 @@ export function useRefundVendorCreditTransaction(id, props, requestProps) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },

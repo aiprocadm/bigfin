@@ -7,7 +7,12 @@ import { useFeatureCan } from '@/hooks/state';
 interface MatchingReconcileTransactionBootProps {
   children: React.ReactNode;
 }
-interface MatchingReconcileTransactionBootValue {}
+interface MatchingReconcileTransactionBootValue {
+  accounts: any;
+  branches: any;
+  isAccountsLoading: boolean;
+  isBranchesLoading: boolean;
+}
 
 const MatchingReconcileTransactionBootContext =
   React.createContext<MatchingReconcileTransactionBootValue>(

@@ -25,6 +25,30 @@ import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
 interface CreditNoteFormProviderValue {
   creditNoteState: CreditNoteStateResponse;
   isCreditNoteStateLoading: boolean;
+  // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
+  // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
+  items: any;
+  customers: any;
+  creditNote: any;
+  branches: any;
+  warehouses: any;
+  submitPayload: any;
+  isNewMode: any;
+  newCreditNote: any;
+  isItemsLoading: any;
+  isCustomersLoading: any;
+  isFeatureLoading: any;
+  isBranchesLoading: any;
+  isBranchesSuccess: any;
+  isWarehouesLoading: any;
+  isWarehousesSuccess: any;
+  createCreditNoteMutate: any;
+  editCreditNoteMutate: any;
+  setSubmitPayload: any;
+  brandingTemplates: any;
+  isBrandingTemplatesLoading: any;
+  isBootLoading: any;
+
 }
 
 const CreditNoteFormContext = React.createContext<CreditNoteFormProviderValue>(
@@ -134,7 +158,9 @@ function CreditNoteFormProvider({ creditNoteId, ...props }) {
     isItemsLoading,
     isCustomersLoading,
     isFeatureLoading,
+    isBranchesLoading,
     isBranchesSuccess,
+    isWarehouesLoading,
     isWarehousesSuccess,
 
     createCreditNoteMutate,

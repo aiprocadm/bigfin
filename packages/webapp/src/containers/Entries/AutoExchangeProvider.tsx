@@ -13,6 +13,13 @@ interface AutoExchangeRateProviderValue {
   autoExRateCurrency: string;
   isAutoExchangeRateLoading: boolean;
   isAutoExchangeRateStale: boolean;
+  // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
+  // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
+  setAutoExRateCurrency: any;
+  autoExRateDate: any;
+  setAutoExRateDate: any;
+  autoExchangeRate: any;
+
 }
 
 const AutoExchangeRateContext = React.createContext(

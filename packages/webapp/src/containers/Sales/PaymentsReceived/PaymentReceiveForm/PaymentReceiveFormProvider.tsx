@@ -20,6 +20,33 @@ import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
 interface PaymentReceivedFormContextValue {
   isPaymentReceivedStateLoading: boolean;
   paymentReceivedState: PaymentReceivedStateResponse;
+  // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
+  // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
+  paymentReceiveId: any;
+  paymentReceiveEditPage: any;
+  paymentEntriesEditPage: any;
+  accounts: any;
+  customers: any;
+  branches: any;
+  projects: any;
+  isPaymentLoading: any;
+  isAccountsLoading: any;
+  isPaymentFetching: any;
+  isCustomersLoading: any;
+  isFeatureLoading: any;
+  isBranchesLoading: any;
+  isBranchesSuccess: any;
+  isNewMode: any;
+  submitPayload: any;
+  setSubmitPayload: any;
+  editPaymentReceiveMutate: any;
+  createPaymentReceiveMutate: any;
+  isExcessConfirmed: any;
+  setIsExcessConfirmed: any;
+  brandingTemplates: any;
+  isBrandingTemplatesLoading: any;
+  isBootLoading: any;
+
 }
 
 // Payment receive form context.
@@ -119,6 +146,7 @@ function PaymentReceiveFormProvider({ query, paymentReceiveId, ...props }) {
     isPaymentFetching,
     isCustomersLoading,
     isFeatureLoading,
+    isBranchesLoading,
     isBranchesSuccess,
     isNewMode,
 

@@ -23,6 +23,34 @@ import { ITEMS_FILTER_ROLES } from './utils';
 interface EstimateFormProviderValues {
   saleEstimateState: ISaleEstimatesStateResponse;
   isSaleEstimateStateLoading: boolean;
+  // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
+  // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
+  estimateId: any;
+  estimate: any;
+  items: any;
+  customers: any;
+  branches: any;
+  warehouses: any;
+  projects: any;
+  isNewMode: any;
+  isItemsFetching: any;
+  isEstimateFetching: any;
+  isCustomersLoading: any;
+  isItemsLoading: any;
+  isEstimateLoading: any;
+  isFeatureLoading: any;
+  isBranchesLoading: any;
+  isBranchesSuccess: any;
+  isWarehouesLoading: any;
+  isWarehousesSuccess: any;
+  submitPayload: any;
+  setSubmitPayload: any;
+  createEstimateMutate: any;
+  editEstimateMutate: any;
+  brandingTemplates: any;
+  isBrandingTemplatesLoading: any;
+  isBootLoading: any;
+
 }
 
 const EstimateFormContext = createContext({} as EstimateFormProviderValues);
@@ -128,7 +156,9 @@ function EstimateFormProvider({ query, estimateId, ...props }) {
     isItemsLoading,
     isEstimateLoading,
     isFeatureLoading,
+    isBranchesLoading,
     isBranchesSuccess,
+    isWarehouesLoading,
     isWarehousesSuccess,
     submitPayload,
     setSubmitPayload,

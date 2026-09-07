@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as Yup from 'yup';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -6,6 +5,7 @@ import { transformToForm } from '@/utils';
 import { castArray } from 'lodash';
 import { useMemo } from 'react';
 import { useAppQueryString } from '@/hooks';
+import type { QueryStringResult } from '@/hooks/useQueryString';
 
 export const getCustomersTransactionsQuerySchema = () => {
   return Yup.object().shape({
@@ -24,7 +24,7 @@ export const getCustomersTransactionsDefaultQuery = () => ({
   filterByOption: 'with-transactions',
 });
 
-const parseCustomersTransactionsQuery = (query) => {
+const parseCustomersTransactionsQuery = (query: any) => {
   const defaultQuery = getCustomersTransactionsDefaultQuery();
 
   const transformedQuery = {
@@ -37,7 +37,7 @@ const parseCustomersTransactionsQuery = (query) => {
   };
 };
 
-export const useCustomersTransactionsQuery = () => {
+export const useCustomersTransactionsQuery = (): QueryStringResult => {
   const [locationQuery, setLocationQuery] = useAppQueryString();
 
   const query = useMemo(

@@ -1,10 +1,10 @@
-// @ts-nocheck
 import * as Yup from 'yup';
 import intl from 'react-intl-universal';
 import moment from 'moment';
 import { useMemo } from 'react';
 import { transformToForm } from '@/utils';
 import { useAppQueryString } from '@/hooks';
+import type { QueryStringResult } from '@/hooks/useQueryString';
 
 /**
  * The validation schema of vendors transactions.
@@ -31,7 +31,7 @@ export const getVendorsTransactionsDefaultQuery = () => ({
 /**
  * Parses the query of vendors transactions.
  */
-const parseVendorsTransactionsQuery = (query) => {
+const parseVendorsTransactionsQuery = (query: any) => {
   const defaultQuery = getVendorsTransactionsDefaultQuery();
   const transformed = {
     ...defaultQuery,
@@ -46,7 +46,7 @@ const parseVendorsTransactionsQuery = (query) => {
 /**
  * Retrieves the query of vendors transactions.
  */
-export const useVendorsTransactionsQuery = () => {
+export const useVendorsTransactionsQuery = (): QueryStringResult => {
   const [locationQuery, setLocationQuery] = useAppQueryString();
 
   const query = useMemo(

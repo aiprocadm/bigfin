@@ -3,10 +3,19 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import * as qs from 'qs';
 import { useHistory } from 'react-router';
 
-export interface QueryStringResult {
-  [0]: Record<string, any>;
-  [1]: Dispatch<SetStateAction<Record<string, any>>>;
-}
+/**
+ * Что возвращает крючок разбора строки запроса.
+ *
+ * Это **пара**, а не объект: `return [state, setQuery]`. Раньше тип был
+ * записан объектом с номерными ключами — по форме похоже, но для проверки
+ * типов это не одно и то же: объект нельзя разобрать как массив. Из-за этого
+ * каждое `const [query, setQuery] = useAppQueryString()` считалось ошибкой
+ * (Д1 карты v61).
+ */
+export type QueryStringResult = [
+  Record<string, any>,
+  Dispatch<SetStateAction<Record<string, any>>>,
+];
 
 type NavigateCallback = (
   pathnameWithParams: string,

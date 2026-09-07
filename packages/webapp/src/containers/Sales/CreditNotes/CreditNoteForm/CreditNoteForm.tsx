@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
@@ -57,7 +56,7 @@ function CreditNoteForm({
 
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const history = useHistory();
 
   // Credit note form context.
@@ -94,8 +93,8 @@ function CreditNoteForm({
 
   // Handles form submit.
   const handleFormSubmit = (
-    values,
-    { setSubmitting, setErrors, resetForm },
+    values: any,
+    { setSubmitting, setErrors, resetForm }: any,
   ) => {
     const entries = filterNonZeroEntries(values.entries);
     const totalQuantity = safeSumBy(entries, 'quantity');
@@ -136,7 +135,7 @@ function CreditNoteForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
     if (isNewMode) {
@@ -188,7 +187,7 @@ function CreditNoteForm({
   );
 }
 export default compose(
-  withSettings(({ creditNoteSettings }) => ({
+  withSettings(({ creditNoteSettings }: any) => ({
     creditAutoIncrement: creditNoteSettings?.autoIncrement,
     creditNextNumber: creditNoteSettings?.nextNumber,
     creditNumberPrefix: creditNoteSettings?.numberPrefix,

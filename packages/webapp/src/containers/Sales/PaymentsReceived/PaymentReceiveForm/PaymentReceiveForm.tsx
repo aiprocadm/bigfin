@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { isEmpty, defaultTo } from 'lodash';
 import intl from 'react-intl-universal';
@@ -55,7 +54,7 @@ function PaymentReceiveFormRoot({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const history = useHistory();
 
   // Payment receive form context.
@@ -100,8 +99,8 @@ function PaymentReceiveFormRoot({
   };
   // Handle form submit.
   const handleSubmitForm = (
-    values,
-    { setSubmitting, resetForm, setFieldError },
+    values: any,
+    { setSubmitting, resetForm, setFieldError }: any,
   ) => {
     setSubmitting(true);
     const exceededAmount = getExceededAmountFromValues(values);
@@ -149,7 +148,7 @@ function PaymentReceiveFormRoot({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setFieldError });
       }
@@ -210,7 +209,7 @@ function PaymentReceiveFormRoot({
 }
 
 export const PaymentReceivedForm = compose(
-  withSettings(({ paymentReceiveSettings }) => ({
+  withSettings(({ paymentReceiveSettings }: any) => ({
     paymentReceiveSettings,
     paymentReceiveNextNumber: paymentReceiveSettings?.nextNumber,
     paymentReceiveNumberPrefix: paymentReceiveSettings?.numberPrefix,

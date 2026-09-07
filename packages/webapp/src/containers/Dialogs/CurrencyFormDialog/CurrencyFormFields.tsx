@@ -18,7 +18,7 @@ import { currenciesOptions } from '@/utils';
 export default function CurrencyFormFields() {
   const currencyNameFieldRef = useAutofocus();
   const { isEditMode } = useCurrencyFormContext();
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Filter currency code
   const filterCurrencyCode = (query, currency, _index, exactMatch) => {

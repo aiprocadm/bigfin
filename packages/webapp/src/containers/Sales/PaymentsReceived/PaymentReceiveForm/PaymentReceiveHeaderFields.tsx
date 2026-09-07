@@ -81,7 +81,7 @@ export default function PaymentReceiveHeaderFields() {
   const {
     values: { entries, currency_code },
     setFieldValue,
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Calculates the full-amount received.
   const totalDueAmount = useMemo(
@@ -250,7 +250,7 @@ function PaymentReceiveCustomerSelect() {
   const { customers, isNewMode } = usePaymentReceiveFormContext();
 
   // Formik form context.
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   return (
     <FFormGroup

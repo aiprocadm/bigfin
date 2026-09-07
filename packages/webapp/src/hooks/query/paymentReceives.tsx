@@ -111,7 +111,7 @@ export function useEditPaymentReceive(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`payments-received/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`payments-received/${id}`, values),
     {
       onSuccess: (data, [id, values]) => {
         // Invalidate specific payment receive.
@@ -237,7 +237,7 @@ export function useCreateNotifyPaymentReceiveBySMS(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`payments-received/${id}/notify-by-sms`, values),
     {
       onSuccess: (res, [id, values]) => {

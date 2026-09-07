@@ -1,4 +1,3 @@
-// @ts-nocheck
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
@@ -20,10 +19,10 @@ export function BillFormEntriesActions() {
  * Bill exclusive/inclusive select.
  * @returns {React.ReactNode}
  */
-export function BillExclusiveInclusiveSelect(props) {
-  const { values, setFieldValue } = useFormikContext();
+export function BillExclusiveInclusiveSelect(props: any) {
+  const { values, setFieldValue } = useFormikContext<any>();
 
-  const handleItemSelect = (item) => {
+  const handleItemSelect = (item: any) => {
     const newEntries = composeEntriesOnEditInclusiveTax(
       item.key,
       values.entries,

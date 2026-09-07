@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -41,7 +40,7 @@ export const getDefaultProfitLossQuery = () => ({
 /**
  * Parses the profit/loss sheet query.
  */
-const parseProfitLossQuery = (locationQuery) => {
+const parseProfitLossQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultProfitLossQuery();
 
   const transformed = {

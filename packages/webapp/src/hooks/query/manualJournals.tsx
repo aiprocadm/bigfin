@@ -56,7 +56,7 @@ export function useEditJournal(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`manual-journals/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`manual-journals/${id}`, values),
     {
       onSuccess: (res, [id]) => {
         // Invalidate specific manual journal.

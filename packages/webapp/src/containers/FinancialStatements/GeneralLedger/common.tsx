@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -51,7 +50,7 @@ export const getGeneralLedgerQuerySchema = () => {
 /**
  * Parses general ledger query of browser location.
  */
-const parseGeneralLedgerQuery = (locationQuery) => {
+const parseGeneralLedgerQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultGeneralLedgerQuery();
 
   const transformed = {

@@ -21,7 +21,7 @@ function AllocateLandedCostFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Allocate landed cost dialog context.
   const { dialogName, costTransactionEntry, formattedUnallocatedCostAmount } =

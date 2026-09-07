@@ -27,7 +27,7 @@ function VendorsSelectRoot({
   const maybeCreateNewItemFromQuery = allowCreate
     ? createNewItemFromQuery
     : null;
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Creates a new autofill listener once the quick vendor drawer submits the form.
   const autofillRef = useCreateAutofillListener((payload: any) => {

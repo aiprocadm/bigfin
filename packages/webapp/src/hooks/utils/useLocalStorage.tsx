@@ -1,7 +1,18 @@
 import React from 'react';
 
 // Hook
-export function useLocalStorage(key: any, initialValue: any) {
+/**
+ * Хранение значения в localStorage.
+ *
+ * Возвращает **пару** «значение и то, чем его менять» — как `useState`.
+ * Тип объявлен явно: без него проверка выводит «массив из значения ИЛИ
+ * функции», и тогда ни прочитать значение, ни вызвать установщик нельзя
+ * (Д4 карты v61).
+ */
+export function useLocalStorage(
+  key: any,
+  initialValue: any,
+): [any, (value: any) => void] {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = React.useState(() => {

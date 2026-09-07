@@ -50,7 +50,7 @@ export function PaymentMethodSelectField({
   name,
   ...props
 }: PaymentMethodSelectFieldProps) {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
   const value = useMemo(() => get(values, name), [values, name]);
 
   const handleChange = (newValue: boolean) => {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import React from 'react';
 import intl from 'react-intl-universal';
@@ -10,11 +9,11 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { usePaymentMadeExcessAmount } from '../../utils';
 
 interface ExcessPaymentValues {}
-function ExcessPaymentDialogContentRoot({ dialogName, closeDialog }) {
+function ExcessPaymentDialogContentRoot({ dialogName, closeDialog }: any) {
   const {
     submitForm,
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
   const { setIsExcessConfirmed } = usePaymentMadeFormContext();
 
   // Handles the form submitting.
@@ -63,7 +62,7 @@ function ExcessPaymentDialogContentForm({
   excessAmount,
   onClose,
 }: ExcessPaymentDialogContentFormProps) {
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { submitForm, isSubmitting } = useFormikContext<any>();
 
   const handleCloseBtn = () => {
     onClose && onClose();

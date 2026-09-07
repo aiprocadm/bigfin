@@ -15,7 +15,7 @@ import { DiscountTotalLine } from '../../Invoices/InvoiceForm/DiscountTotalLine'
 export function EstimateFormFooterRight() {
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
   const subtotalFormatted = useEstimateSubtotalFormatted();
   const totalFormatted = useEstimateTotalFormatted();
   const discountAmountFormatted = useEstimateDiscountFormatted();

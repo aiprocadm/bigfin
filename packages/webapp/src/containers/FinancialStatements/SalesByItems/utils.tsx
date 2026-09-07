@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import * as Yup from 'yup';
@@ -34,7 +33,7 @@ export const getDefaultSalesByItemsQuery = () => ({
 /**
  * Parses sales by items query of browser location.
  */
-const parseSalesByItemsQuery = (locationQuery) => {
+const parseSalesByItemsQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultSalesByItemsQuery();
 
   const transformed = {

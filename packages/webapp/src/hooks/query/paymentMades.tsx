@@ -83,7 +83,7 @@ export function useEditPaymentMade(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`bill-payments/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`bill-payments/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidation queries.

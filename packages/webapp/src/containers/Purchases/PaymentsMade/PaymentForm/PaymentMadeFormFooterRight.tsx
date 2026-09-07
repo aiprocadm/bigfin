@@ -17,7 +17,7 @@ export function PaymentMadeFormFooterRight() {
   const excessAmount = usePaymentMadeExcessAmount();
   const {
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return (
     <PaymentMadeTotalLines labelColWidth={'180px'} amountColWidth={'180px'}>

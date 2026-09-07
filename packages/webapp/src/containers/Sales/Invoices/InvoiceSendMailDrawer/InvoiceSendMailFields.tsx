@@ -38,7 +38,7 @@ export function InvoiceSendMailFields() {
 }
 
 function InvoiceSendMailFooter() {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
   const { name } = useDrawerContext();
   const { closeDrawer } = useDrawerActions();
   const isDarkMode = useIsDarkMode();

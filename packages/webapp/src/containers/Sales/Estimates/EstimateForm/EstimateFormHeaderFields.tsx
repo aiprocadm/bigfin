@@ -137,7 +137,7 @@ export default function EstimateFormHeader() {
  * @returns {React.ReactNode}
  */
 function EstimateFormCustomerSelect() {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
   const { customers } = useEstimateFormContext();
 
   const updateEntries = useCustomerUpdateExRate();

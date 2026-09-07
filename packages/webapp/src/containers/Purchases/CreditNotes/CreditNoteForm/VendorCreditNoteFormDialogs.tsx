@@ -14,7 +14,7 @@ export default function VendorCreditNoteFormDialogs() {
     setFieldValue('vendor_credit_number', incrementNumber || '');
     setFieldValue('vendor_credit_no_manually', manually);
   };
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   return (
     <React.Fragment>

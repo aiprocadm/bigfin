@@ -35,7 +35,7 @@ function CustomerOpeningBalanceFields({
   organization: { base_currency },
 }) {
   // Formik context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const { branches, customer } = useCustomerOpeningBalanceContext();
 

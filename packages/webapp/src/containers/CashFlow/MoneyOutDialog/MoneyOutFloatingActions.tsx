@@ -17,7 +17,7 @@ function MoneyOutFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting, submitForm } = useFormikContext();
+  const { isSubmitting, submitForm } = useFormikContext<any>();
   //  money in  dialog context.
   const { dialogName, setSubmitPayload, submitPayload } =
     useMoneyOutDialogContext();

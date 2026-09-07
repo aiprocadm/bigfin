@@ -45,7 +45,7 @@ function PaymentReceiveFormBigTotal() {
   // Formik form context.
   const {
     values: { currency_code, amount },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return (
     <div className={classNames(CLASSES.PAGE_FORM_HEADER_BIG_NUMBERS)}>

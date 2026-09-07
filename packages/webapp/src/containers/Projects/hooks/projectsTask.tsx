@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '@/hooks/useQueryRequest';
 import useApiRequest from '@/hooks/useRequest';
 import t from './type';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate projects.
   queryClient.invalidateQueries(t.PROJECTS);
   // Invalidate project tasks.
@@ -16,12 +15,12 @@ const commonInvalidateQueries = (queryClient) => {
  * Create a new project task.
  *  @param props
  */
-export function useCreateProjectTask(props) {
+export function useCreateProjectTask(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`/projects/${id}/tasks`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`/projects/${id}/tasks`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.
@@ -37,11 +36,11 @@ export function useCreateProjectTask(props) {
  * @param props
  * @returns
  */
-export function useEditProjectTask(props) {
+export function useEditProjectTask(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation(([id, values]) => apiRequest.put(`tasks/${id}`, values), {
+  return useMutation(([id, values]: [any, any]) => apiRequest.put(`tasks/${id}`, values), {
     onSuccess: (res, [id, values]) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -57,7 +56,7 @@ export function useEditProjectTask(props) {
  * Delete the given project task.
  * @param props
  */
-export function useDeleteProjectTask(props) {
+export function useDeleteProjectTask(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -80,19 +79,19 @@ export function useDeleteProjectTask(props) {
  * @param requestProps
  * @returns
  */
-export function useProjectTask(taskId, props, requestProps) {
+export function useProjectTask(taskId: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.PROJECT_TASK, taskId],
     { method: 'get', url: `tasks/${taskId}`, ...requestProps },
     {
-      select: (res) => res.data.task,
+      select: (res: any) => res.data.task,
       defaultData: {},
       ...props,
     },
   );
 }
 
-const transformProjectTasks = (res) => ({
+const transformProjectTasks = (res: any) => ({
   projectTasks: res.data.tasks,
 });
 
@@ -103,7 +102,7 @@ const transformProjectTasks = (res) => ({
  * @param requestProps
  * @returns
  */
-export function useProjectTasks(projectId, props, requestProps) {
+export function useProjectTasks(projectId: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.PROJECT_TASKS, projectId],
     { method: 'get', url: `projects/${projectId}/tasks`, ...requestProps },

@@ -31,7 +31,7 @@ function AdvancedFilterDropdownProvider({
  * Filter condition row context provider.
  */
 function FilterConditionProvider({ conditionIndex, ...props }) {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
   const { getFieldMetaByKey } = useAdvancedFilterContext();
 
   // Condition value path.

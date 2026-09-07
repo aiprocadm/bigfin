@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import { castArray } from 'lodash';
@@ -24,7 +23,7 @@ export const getDefaultCashFlowSheetQuery = () => {
 /**
  * Parses the cashflow query from browser location.
  */
-const parseCashflowQuery = (query) => {
+const parseCashflowQuery = (query: any) => {
   const defaultQuery = getDefaultCashFlowSheetQuery();
 
   const transformed = {

@@ -113,7 +113,7 @@ export function AccountTransactionsDateFilterForm({
 }
 
 function AccountTransactionsDateFilterFooter() {
-  const { submitForm, setValues } = useFormikContext();
+  const { submitForm, setValues } = useFormikContext<any>();
 
   const handleFilterBtnClick = () => {
     submitForm();
@@ -149,7 +149,7 @@ function AccountTransactionsDateFilterFooter() {
 }
 
 function AccountTransactionDatePeriodField() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   const handleItemChange = (item) => {
     const { fromDate, toDate } = getDateRangePeriod(item.value);

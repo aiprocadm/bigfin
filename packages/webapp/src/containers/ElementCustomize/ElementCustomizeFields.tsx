@@ -50,7 +50,7 @@ export function ElementCustomizeFieldsMain() {
 
 function ElementCustomizeFooterActionsRoot({ closeDrawer }) {
   const { name } = useDrawerContext();
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { submitForm, isSubmitting } = useFormikContext<any>();
 
   const handleSubmitBtnClick = () => {
     submitForm();

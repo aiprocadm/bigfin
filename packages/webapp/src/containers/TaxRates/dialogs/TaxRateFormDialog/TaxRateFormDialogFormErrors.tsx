@@ -5,7 +5,7 @@ import { Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 
 export function TaxRateFormDialogFormErrors() {
-  const { errors } = useFormikContext();
+  const { errors } = useFormikContext<any>();
 
   if (!errors.confirm_edit) return null;
 

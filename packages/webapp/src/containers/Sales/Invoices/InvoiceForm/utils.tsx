@@ -263,7 +263,7 @@ const transformPaymentMethodsToForm = (
 };
 
 export const useSetPrimaryWarehouseToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { warehouses, isWarehousesSuccess, isNewMode } = useInvoiceFormContext();
 
   React.useEffect(() => {
@@ -279,7 +279,7 @@ export const useSetPrimaryWarehouseToForm = () => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = useInvoiceFormContext();
 
   React.useEffect(() => {
@@ -300,7 +300,7 @@ export const useSetPrimaryBranchToForm = () => {
 export const useInvoiceSubtotal = () => {
   const {
     values: { entries },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Calculate the total due amount of invoice entries.
   return React.useMemo(() => getEntriesTotal(entries), [entries]);
@@ -312,7 +312,7 @@ export const useInvoiceSubtotal = () => {
  */
 export const useInvoiceSubtotalFormatted = () => {
   const subtotal = useInvoiceSubtotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(subtotal, values.currency_code);
 };
@@ -322,7 +322,7 @@ export const useInvoiceSubtotalFormatted = () => {
  * @returns {number}
  */
 export const useInvoiceDiscountAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const subtotal = useInvoiceSubtotal();
   const discount = toSafeNumber(values.discount);
 
@@ -339,7 +339,7 @@ export const useInvoiceDiscountAmountFormatted = () => {
   const discountAmount = useInvoiceDiscountAmount();
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(discountAmount, currency_code);
 };
@@ -349,7 +349,7 @@ export const useInvoiceDiscountAmountFormatted = () => {
  * @returns {number}
  */
 export const useInvoiceAdjustmentAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const adjustment = toSafeNumber(values.adjustment);
 
   return adjustment;
@@ -363,7 +363,7 @@ export const useInvoiceAdjustmentAmountFormatted = () => {
   const adjustmentAmount = useInvoiceAdjustmentAmount();
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(adjustmentAmount, currency_code);
 };
@@ -373,7 +373,7 @@ export const useInvoiceAdjustmentAmountFormatted = () => {
  * @returns {boolean}
  */
 export const useInvoiceIsForeignCustomer = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignCustomer = React.useMemo(
@@ -415,7 +415,7 @@ export const composeEntriesOnEditInclusiveTax = (
  * @returns {Array}
  */
 export const useInvoiceAggregatedTaxRates = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const { taxRates } = useInvoiceFormContext();
 
   const aggregateTaxRates = React.useMemo(
@@ -433,7 +433,7 @@ export const useInvoiceAggregatedTaxRates = () => {
  * @returns {number}
  */
 export const useInvoiceTotalTaxAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return React.useMemo(() => {
     const filteredEntries = values.entries.filter((entry) => entry.tax_amount);
@@ -465,7 +465,7 @@ export const useInvoiceTotal = () => {
  */
 export const useInvoiceTotalFormatted = () => {
   const total = useInvoiceTotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(total, values.currency_code);
 };
@@ -486,7 +486,7 @@ export const useInvoicePaidAmount = () => {
  */
 export const useInvoicePaidAmountFormatted = () => {
   const paidAmount = useInvoicePaidAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(paidAmount, values.currency_code);
 };
@@ -508,7 +508,7 @@ export const useInvoiceDueAmount = () => {
  */
 export const useInvoiceDueAmountFormatted = () => {
   const dueAmount = useInvoiceDueAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(dueAmount, values.currency_code);
 };
@@ -518,7 +518,7 @@ export const useInvoiceDueAmountFormatted = () => {
  * @returns {boolean}
  */
 export const useIsInvoiceTaxInclusive = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return values.inclusive_exclusive_tax === TaxType.Inclusive;
 };
@@ -528,7 +528,7 @@ export const useIsInvoiceTaxInclusive = () => {
  * @returns {boolean}
  */
 export const useIsInvoiceTaxExclusive = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return values.inclusive_exclusive_tax === TaxType.Exclusive;
 };
@@ -538,7 +538,7 @@ export const useIsInvoiceTaxExclusive = () => {
  * @returns {string}
  */
 export const useInvoiceCurrencyCode = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return values.currency_code;
 };

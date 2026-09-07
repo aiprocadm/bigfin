@@ -15,7 +15,7 @@ function ProjectFormFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   return (
     <div className={Classes.DIALOG_FOOTER}>

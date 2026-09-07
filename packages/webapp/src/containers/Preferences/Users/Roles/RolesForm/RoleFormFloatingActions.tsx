@@ -12,7 +12,7 @@ import { FormattedMessage as T } from '@/components';
  */
 export function RoleFormFloatingActions() {
   // Formik form context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // History context.
   const history = useHistory();

@@ -31,7 +31,7 @@ export const ReceiptFormReceiptNumberField = R.compose(
     // #withSettings
     receiptAutoIncrement,
   }) => {
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext<any>();
 
     const handleReceiptNumberChange = () => {
       openDialog('receipt-number-form', {});

@@ -19,7 +19,7 @@ import { useVendorFormContext } from './VendorFormProvider';
  */
 export function VendorFloatingActions() {
   // Formik context.
-  const { isSubmitting, submitForm } = useFormikContext();
+  const { isSubmitting, submitForm } = useFormikContext<any>();
 
   // Vendor form context.
   const { isNewMode, setSubmitPayload } = useVendorFormContext();

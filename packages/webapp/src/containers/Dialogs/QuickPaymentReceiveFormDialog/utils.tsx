@@ -61,7 +61,7 @@ export const transformErrors = (errors: any, { setFieldError }: any) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess } = useQuickPaymentReceiveContext();
 
   React.useEffect(() => {

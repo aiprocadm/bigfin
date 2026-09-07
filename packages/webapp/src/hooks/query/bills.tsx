@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination, transformToCamelCase } from '@/utils';
 import useApiRequest from '../useRequest';
 import t from './types';
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate bills.
   queryClient.invalidateQueries(t.BILLS);
 
@@ -48,7 +47,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale invoice.
  */
-export function useCreateBill(props) {
+export function useCreateBill(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -64,7 +63,7 @@ export function useCreateBill(props) {
 /**
  * Дублирует расход в черновик-копию (О2 карты v13).
  */
-export function useDuplicateBill(props?) {
+export function useDuplicateBill(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -82,12 +81,12 @@ export function useDuplicateBill(props?) {
 /**
  * Edits the given sale invoice.
  */
-export function useEditBill(props) {
+export function useEditBill(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`bills/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`bills/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.
@@ -104,7 +103,7 @@ export function useEditBill(props) {
 /**
  * Marks the given bill as open.
  */
-export function useOpenBill(props) {
+export function useOpenBill(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -123,7 +122,7 @@ export function useOpenBill(props) {
 /**
  * Deletes the given sale invoice.
  */
-export function useDeleteBill(props) {
+export function useDeleteBill(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -142,7 +141,7 @@ export function useDeleteBill(props) {
 /**
  * Deletes multiple bills in bulk.
  */
-export function useBulkDeleteBills(props) {
+export function useBulkDeleteBills(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -158,7 +157,7 @@ export function useBulkDeleteBills(props) {
   );
 }
 
-export function useValidateBulkDeleteBills(props) {
+export function useValidateBulkDeleteBills(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -172,7 +171,7 @@ export function useValidateBulkDeleteBills(props) {
   );
 }
 
-const transformBillsResponse = (response) => ({
+const transformBillsResponse = (response: any) => ({
   bills: response.data.bills,
   pagination: transformPagination(response.data.pagination),
   filterMeta: response.data.filter_meta,
@@ -181,7 +180,7 @@ const transformBillsResponse = (response) => ({
 /**
  * Retrieve sale invoices list with pagination meta.
  */
-export function useBills(query, props) {
+export function useBills(query: any, props: any) {
   return useRequestQuery(
     [t.BILLS, query],
     {
@@ -209,12 +208,12 @@ export function useBills(query, props) {
  * Retrieve bill details of the given bill id.
  * @param {number} id - Bill id.
  */
-export function useBill(id, props) {
+export function useBill(id: any, props: any) {
   return useRequestQuery(
     [t.BILL, id],
     { method: 'get', url: `/bills/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -225,7 +224,7 @@ export function useBill(id, props) {
  * Retrieve the due bills of the given vendor id.
  * @param {number} vendorId -
  */
-export function useDueBills(vendorId, props) {
+export function useDueBills(vendorId: any, props: any) {
   return useRequestQuery(
     [t.BILLS, t.BILLS_DUE, vendorId],
     {
@@ -234,7 +233,7 @@ export function useDueBills(vendorId, props) {
       params: { vendor_id: vendorId },
     },
     {
-      select: (res) => res.data.bills,
+      select: (res: any) => res.data.bills,
       defaultData: [],
       ...props,
     },
@@ -251,7 +250,7 @@ export function useRefreshBills() {
   };
 }
 
-export function useBillPaymentTransactions(id, props) {
+export function useBillPaymentTransactions(id: any, props: any) {
   return useRequestQuery(
     [t.BILLS_PAYMENT_TRANSACTIONS, id],
     {
@@ -259,7 +258,7 @@ export function useBillPaymentTransactions(id, props) {
       url: `bills/${id}/payment-transactions`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },

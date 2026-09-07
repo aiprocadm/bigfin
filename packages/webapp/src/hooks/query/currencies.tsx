@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
@@ -7,7 +6,7 @@ import t from './types';
 /**
  * Create a new currency.
  */
-export function useCreateCurrency(props) {
+export function useCreateCurrency(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -23,12 +22,12 @@ export function useCreateCurrency(props) {
 /**
  * Edits the given currency by ID.
  */
-export function useEditCurrency(props) {
+export function useEditCurrency(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([currencyId, values]) =>
+    ([currencyId, values]: [any, any]) =>
       apiRequest.put(`currencies/${currencyId}`, values),
     {
       onSuccess: () => {
@@ -43,7 +42,7 @@ export function useEditCurrency(props) {
 /**
  * Deletes the given currency.
  */
-export function useDeleteCurrency(props) {
+export function useDeleteCurrency(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -62,12 +61,12 @@ export function useDeleteCurrency(props) {
 /**
  * Retrieve the currencies list.
  */
-export function useCurrencies(props) {
+export function useCurrencies(props: any) {
   return useRequestQuery(
     [t.CURRENCIES],
     { method: 'get', url: 'currencies' },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props
     },

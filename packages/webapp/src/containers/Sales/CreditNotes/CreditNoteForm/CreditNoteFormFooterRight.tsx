@@ -21,7 +21,7 @@ import { AdjustmentTotalLine } from '../../Invoices/InvoiceForm/AdjustmentTotalL
 export function CreditNoteFormFooterRight() {
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const subtotalFormatted = useCreditNoteSubtotalFormatted();
   const totalFormatted = useCreditNoteTotalFormatted();

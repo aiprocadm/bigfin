@@ -75,7 +75,7 @@ export function usePaymentMadeEntriesTableColumns() {
  */
 export function PaymentMadeExchangeRateInputField({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeignCustomer = usePaymentMadeIsForeignCustomer();
 

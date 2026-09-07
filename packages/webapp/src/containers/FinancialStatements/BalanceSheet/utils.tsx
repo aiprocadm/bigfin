@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import moment from 'moment';
@@ -39,7 +38,7 @@ export const getDefaultBalanceSheetQuery = () => ({
 /**
  * Parses balance sheet query.
  */
-const parseBalanceSheetQuery = (locationQuery) => {
+const parseBalanceSheetQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultBalanceSheetQuery();
 
   const transformed = {

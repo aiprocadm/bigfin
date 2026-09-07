@@ -25,7 +25,7 @@ export default function PaymentMadeFloatingActions() {
   const history = useHistory();
 
   // Formik context.
-  const { isSubmitting, resetForm, submitForm } = useFormikContext();
+  const { isSubmitting, resetForm, submitForm } = useFormikContext<any>();
 
   // Payment made form context.
   const { setSubmitPayload, paymentMadeId } = usePaymentMadeFormContext();

@@ -188,7 +188,7 @@ export const useJournalTableEntriesColumns = () => {
  */
 export function JournalExchangeRateInputField({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeignJouranl = useJournalIsForeign();
 
@@ -216,7 +216,7 @@ export const JournalSyncIncrementSettingsToForm = R.compose(
     journalNumberPrefix: manualJournalsSettings?.numberPrefix,
   })),
 )(({ journalAutoIncrement, journalNextNumber, journalNumberPrefix }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   useUpdateEffect(() => {
     // Do not update if the journal auto-increment mode is disabled.

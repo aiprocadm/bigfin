@@ -133,7 +133,7 @@ const MatchingBankTransactionFormContent = R.compose(
     refType: string;
   }>(null);
 
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // This effect is responsible for automatically marking a transaction as matched
   // when the matching process is successful and not currently fetching.
@@ -304,7 +304,7 @@ const MatchTransactionFooter = R.compose(withBankingActions)(({
   closeMatchingTransactionAside,
   openReconcileMatchingTransaction,
 }: MatchTransctionFooterProps) => {
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { submitForm, isSubmitting } = useFormikContext<any>();
   const totalPending = useGetPendingAmountMatched();
   const showReconcileLink = useIsShowReconcileTransactionLink();
   const submitDisabled = totalPending !== 0;

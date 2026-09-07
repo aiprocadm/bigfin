@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '@/hooks/useQueryRequest';
 import { transformPagination } from '@/utils';
@@ -6,7 +5,7 @@ import useApiRequest from '@/hooks/useRequest';
 import t from './type';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate projects.
   queryClient.invalidateQueries(t.PROJECT);
   queryClient.invalidateQueries(t.PROJECTS);
@@ -16,7 +15,7 @@ const commonInvalidateQueries = (queryClient) => {
  * Create a new project
  * @param props
  */
-export function useCreateProject(props) {
+export function useCreateProject(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -34,12 +33,12 @@ export function useCreateProject(props) {
  * @param props
  * @returns
  */
-export function useEditProject(props) {
+export function useEditProject(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`/projects/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`/projects/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific project.
@@ -56,7 +55,7 @@ export function useEditProject(props) {
  * Delete the given project
  * @param props
  */
-export function useDeleteProject(props) {
+export function useDeleteProject(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -79,19 +78,19 @@ export function useDeleteProject(props) {
  * @param requestProps
  * @returns
  */
-export function useProject(projectId, props, requestProps) {
+export function useProject(projectId: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.PROJECT, projectId],
     { method: 'get', url: `projects/${projectId}`, ...requestProps },
     {
-      select: (res) => res.data.project,
+      select: (res: any) => res.data.project,
       defaultData: {},
       ...props,
     },
   );
 }
 
-const transformProjects = (res) => ({
+const transformProjects = (res: any) => ({
   projects: res.data.data,
 });
 
@@ -100,7 +99,7 @@ const transformProjects = (res) => ({
  * @param query
  * @param props
  */
-export function useProjects(query, props) {
+export function useProjects(query: any, props: any) {
   return useRequestQuery(
     [t.PROJECTS, query],
     { method: 'get', url: 'deals', params: query },
@@ -119,12 +118,12 @@ export function useProjects(query, props) {
  * @param props
  * @returns
  */
-export function useProjectStatus(props) {
+export function useProjectStatus(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.patch(`projects/${id}/status`, values),
+    ([id, values]: [any, any]) => apiRequest.patch(`projects/${id}/status`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific project.

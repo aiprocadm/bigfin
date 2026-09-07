@@ -42,7 +42,7 @@ export default function ReferenceNumberFormContent() {
 }
 
 function ReferenceNumberAutoIncrement() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   if (values.incrementMode !== 'auto') return null;
 
   return (
@@ -73,7 +73,7 @@ function ReferenceNumberAutoIncrement() {
 }
 
 function ReferenceNumberManualOnce() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Do not show the field if the one manual transaction number is not presented.
   if (!values.onceManualNumber) return null;

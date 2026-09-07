@@ -19,7 +19,7 @@ function ItemCategoryFormFooter({
   const { isNewMode, dialogName } = useItemCategoryContext();
 
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Handle close button click.
   const handleCloseBtnClick = () => {

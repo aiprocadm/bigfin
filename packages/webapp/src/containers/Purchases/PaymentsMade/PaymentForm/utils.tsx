@@ -114,7 +114,7 @@ export const transformFormToRequest = (form) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = usePaymentMadeFormContext();
 
   React.useEffect(() => {
@@ -150,7 +150,7 @@ export const transformErrors = (errors, { setFieldError }) => {
 export const usePaymentMadeTotals = () => {
   const {
     values: { entries, currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Retrieves the invoice entries total.
   const total = React.useMemo(
@@ -179,7 +179,7 @@ export const usePaymentMadeTotals = () => {
 export const usePaymentmadeTotalAmount = () => {
   const {
     values: { amount },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return amount;
 };
@@ -187,7 +187,7 @@ export const usePaymentmadeTotalAmount = () => {
 export const usePaymentMadeAppliedAmount = () => {
   const {
     values: { entries },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Retrieves the invoice entries total.
   return React.useMemo(() => sumBy(entries, 'payment_amount'), [entries]);
@@ -205,7 +205,7 @@ export const usePaymentMadeExcessAmount = () => {
  * @returns {boolean}
  */
 export const usePaymentMadeIsForeignCustomer = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignCustomer = React.useMemo(

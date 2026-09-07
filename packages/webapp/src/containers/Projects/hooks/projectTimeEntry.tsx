@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useQueryClient, useMutation } from 'react-query';
 import { useRequestQuery } from '@/hooks/useQueryRequest';
 import useApiRequest from '@/hooks/useRequest';
 import t from './type';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate projects.
   queryClient.invalidateQueries(t.PROJECTS);
   // Invalidate project entries.
@@ -17,12 +16,12 @@ const commonInvalidateQueries = (queryClient) => {
  * @param props
  * @returns
  */
-export function useCreateProjectTimeEntry(props) {
+export function useCreateProjectTimeEntry(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`/projects/tasks/${id}/times`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`/projects/tasks/${id}/times`, values),
     {
       onSuccess: () => {
         // Common invalidate queries.
@@ -38,12 +37,12 @@ export function useCreateProjectTimeEntry(props) {
  * @param props
  * @returns
  */
-export function useEditProjectTimeEntry(props) {
+export function useEditProjectTimeEntry(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`projects/times/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`projects/times/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific project time entry.
@@ -60,7 +59,7 @@ export function useEditProjectTimeEntry(props) {
  * Delete the given project time entry
  * @param props
  */
-export function useDeleteProjectTimeEntry(props) {
+export function useDeleteProjectTimeEntry(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -83,19 +82,19 @@ export function useDeleteProjectTimeEntry(props) {
  * @param requestProps
  * @returns
  */
-export function useProjectTimeEntry(timeId, props, requestProps) {
+export function useProjectTimeEntry(timeId: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.PROJECT_TIME_ENTRY, timeId],
     { method: 'get', url: `projects/times/${timeId}`, ...requestProps },
     {
-      select: (res) => res.data.time_entry,
+      select: (res: any) => res.data.time_entry,
       defaultData: {},
       ...props,
     },
   );
 }
 
-const transformProjectTimeEntries = (res) => ({
+const transformProjectTimeEntries = (res: any) => ({
   projectTimeEntries: res.data.timeline,
 });
 
@@ -106,7 +105,7 @@ const transformProjectTimeEntries = (res) => ({
  * @param requestProps
  * @returns
  */
-export function useProjectTimeEntries(id, props, requestProps) {
+export function useProjectTimeEntries(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.PROJECT_TIME_ENTRIES, id],
     { method: 'get', url: `projects/${id}/times`, ...requestProps },

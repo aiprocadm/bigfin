@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination, transformToCamelCase } from '@/utils';
@@ -11,7 +10,7 @@ const defaultPagination = {
   pagesCount: 0,
 };
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate customers.
   queryClient.invalidateQueries(t.CUSTOMERS);
 
@@ -33,7 +32,7 @@ const commonInvalidateQueries = (queryClient) => {
 };
 
 // Customers response selector.
-const customersSelector = (response) => ({
+const customersSelector = (response: any) => ({
   customers: response.data.customers,
   pagination: transformPagination(response.data.pagination),
   filterMeta: response.data.filter_meta,
@@ -42,7 +41,7 @@ const customersSelector = (response) => ({
 /**
  * Retrieve customers list with pagination meta.
  */
-export function useCustomers(query, props) {
+export function useCustomers(query: any, props: any) {
   return useRequestQuery(
     [t.CUSTOMERS, query],
     { method: 'get', url: `customers`, params: query },
@@ -62,12 +61,12 @@ export function useCustomers(query, props) {
  * Edits the given customer details.
  * @param {*} props
  */
-export function useEditCustomer(props) {
+export function useEditCustomer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`customers/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`customers/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific customer.
@@ -84,7 +83,7 @@ export function useEditCustomer(props) {
 /**
  * Deletes the given customer.
  */
-export function useDeleteCustomer(props) {
+export function useDeleteCustomer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -103,7 +102,7 @@ export function useDeleteCustomer(props) {
 /**
  * Deletes multiple customers in bulk.
  */
-export function useBulkDeleteCustomers(props) {
+export function useBulkDeleteCustomers(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -131,7 +130,7 @@ export function useBulkDeleteCustomers(props) {
 /**
  * Validates which customers can be deleted in bulk.
  */
-export function useValidateBulkDeleteCustomers(props) {
+export function useValidateBulkDeleteCustomers(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -146,7 +145,7 @@ export function useValidateBulkDeleteCustomers(props) {
 /**
  * Creates a new customer.
  */
-export function useCreateCustomer(props) {
+export function useCreateCustomer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -162,24 +161,24 @@ export function useCreateCustomer(props) {
 /**
  * Retrieve the customer details.
  */
-export function useCustomer(id, props) {
+export function useCustomer(id: any, props: any) {
   return useRequestQuery(
     [t.CUSTOMER, id],
     { method: 'get', url: `customers/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
   );
 }
 
-export function useEditCustomerOpeningBalance(props) {
+export function useEditCustomerOpeningBalance(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.put(`customers/${id}/opening-balance`, values),
     {
       onSuccess: (res, [id, values]) => {

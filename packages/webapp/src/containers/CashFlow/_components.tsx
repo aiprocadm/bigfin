@@ -33,7 +33,7 @@ export const MoneyInOutSyncIncrementSettingsToForm = R.compose(
     transactionNextNumber,
     transactionNumberPrefix,
   }) => {
-    const { setFieldValue } = useFormikContext();
+    const { setFieldValue } = useFormikContext<any>();
 
     useUpdateEffect(() => {
       // Do not update if the invoice auto-increment is disabled.
@@ -68,7 +68,7 @@ export const MoneyInOutTransactionNoField = R.compose(
     // #withSettings
     transactionAutoIncrement,
   }) => {
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext<any>();
 
     // Handle tranaction number changing.
     const handleTransactionNumberChange = () => {

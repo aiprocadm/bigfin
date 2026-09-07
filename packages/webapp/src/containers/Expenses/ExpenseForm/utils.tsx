@@ -151,7 +151,7 @@ export const transformFormValuesToRequest = (values) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = useExpenseFormContext();
 
   React.useEffect(() => {
@@ -172,7 +172,7 @@ export const useSetPrimaryBranchToForm = () => {
 export const useExpenseSubtotal = () => {
   const {
     values: { categories },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Calculates the expense entries amount.
   return React.useMemo(() => sumBy(categories, 'amount'), [categories]);
@@ -186,7 +186,7 @@ export const useExpenseSubtotalFormatted = () => {
   const subtotal = useExpenseSubtotal();
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(subtotal, currency_code);
 };
@@ -209,7 +209,7 @@ export const useExpenseTotalFormatted = () => {
   const total = useExpenseTotal();
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(total, currency_code);
 };
@@ -219,7 +219,7 @@ export const useExpenseTotalFormatted = () => {
  * @returns {boolean}
  */
 export const useExpensesIsForeign = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignExpenses = React.useMemo(

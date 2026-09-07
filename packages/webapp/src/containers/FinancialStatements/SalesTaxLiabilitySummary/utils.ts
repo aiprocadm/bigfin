@@ -6,6 +6,7 @@ import { castArray } from 'lodash';
 import intl from 'react-intl-universal';
 import { transformToForm } from '@/utils';
 import { useAppQueryString } from '@/hooks';
+import type { QueryStringResult } from '@/hooks/useQueryString';
 import { salesTaxLiabilitySummaryDynamicColumns } from './dynamicColumns';
 import { useSalesTaxLiabilitySummaryContext } from './SalesTaxLiabilitySummaryBoot';
 
@@ -40,7 +41,7 @@ const parseSalesTaxLiabilitySummaryQuery = (locationQuery) => {
 /**
  * Retrieves the sales tax liability summary query.
  */
-export const useSalesTaxLiabilitySummaryQuery = () => {
+export const useSalesTaxLiabilitySummaryQuery = (): QueryStringResult => {
   // Retrieves location query.
   const [locationQuery, setLocationQuery] = useAppQueryString();
 

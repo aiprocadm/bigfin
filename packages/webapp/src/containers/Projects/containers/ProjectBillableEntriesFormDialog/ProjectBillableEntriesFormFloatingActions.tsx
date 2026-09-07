@@ -17,7 +17,7 @@ function ProjectEntriesFormFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting, values } = useFormikContext();
+  const { isSubmitting, values } = useFormikContext<any>();
 
   const { dialogName } = useProjectBillableEntriesFormContext();
 

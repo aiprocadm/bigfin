@@ -16,7 +16,7 @@ export default function ItemFormFloatingActions({ onCancel }: any) {
   const { setSubmitPayload, isNewMode } = useItemFormContext();
 
   // Formik context.
-  const { isSubmitting, submitForm } = useFormikContext();
+  const { isSubmitting, submitForm } = useFormikContext<any>();
 
   // Handle cancel button click.
   const handleCancelBtnClick = (event: any) => {

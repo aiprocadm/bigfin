@@ -15,7 +15,7 @@ function UnlockingPartialTransactionsFormFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const { dialogName } = useUnlockingPartialTransactionsContext();
 

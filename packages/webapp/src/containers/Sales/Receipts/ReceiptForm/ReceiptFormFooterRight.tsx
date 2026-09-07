@@ -23,7 +23,7 @@ import { AdjustmentTotalLine } from '../../Invoices/InvoiceForm/AdjustmentTotalL
 export function ReceiptFormFooterRight() {
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const paidAmountFormatted = useReceiptPaidAmountFormatted();
   const dueAmountFormatted = useReceiptDueAmountFormatted();

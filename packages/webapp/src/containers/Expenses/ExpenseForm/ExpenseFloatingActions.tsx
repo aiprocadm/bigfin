@@ -23,7 +23,7 @@ export default function ExpenseFloatingFooter() {
   const history = useHistory();
 
   // Formik context.
-  const { isSubmitting, submitForm, resetForm } = useFormikContext();
+  const { isSubmitting, submitForm, resetForm } = useFormikContext<any>();
 
   // Expense form context.
   const { setSubmitPayload, isNewMode } = useExpenseFormContext();

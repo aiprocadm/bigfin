@@ -13,7 +13,7 @@ import { useBillIsForeignCustomer } from './utils';
  */
 export function BillExchangeRateInputField({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeignCustomer = useBillIsForeignCustomer();
 

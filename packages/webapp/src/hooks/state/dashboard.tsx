@@ -34,7 +34,12 @@ export const useDashboardPageTitle = () => {
 /**
  * Splash loading screen actions.
  */
-export const useSplashLoading = () => {
+// Возвращает пару «начать» и «закончить»; тип объявлен явно, иначе проверка
+// выводит массив из объединения и обе части перестают быть вызываемыми.
+export const useSplashLoading = (): [
+  (payload?: any) => void,
+  (payload?: any) => void,
+] => {
   return [
     useDispatchAction(splashStartLoading),
     useDispatchAction(splashStopLoading),

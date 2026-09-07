@@ -15,7 +15,7 @@ import { decrementQuantity, incrementQuantity } from './utils';
 
 export default function IncrementAdjustmentFields() {
   const incrementFieldRef = useAutofocus();
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   return (
     <Row>

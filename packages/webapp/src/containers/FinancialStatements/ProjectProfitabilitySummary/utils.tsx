@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import moment from 'moment';
 import { castArray } from 'lodash';
@@ -38,7 +37,7 @@ export const getDefaultProjectProfitabilitySummaryQuery = () => ({
 /**
  * Parses project profitability summary query.
  */
-const parseProjectProfitabilityQuery = (locationQuery) => {
+const parseProjectProfitabilityQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultProjectProfitabilitySummaryQuery();
 
   const transformed = {

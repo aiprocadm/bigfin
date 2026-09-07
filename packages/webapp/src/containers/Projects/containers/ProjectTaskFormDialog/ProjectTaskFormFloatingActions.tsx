@@ -15,7 +15,7 @@ function ProjectTaskFormFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Task form dialog context.
   const { dialogName } = useProjectTaskFormContext();

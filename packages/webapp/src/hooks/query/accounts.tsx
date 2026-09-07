@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
@@ -6,11 +5,11 @@ import t from './types';
 import { transformToCamelCase } from '@/utils';
 
 // Transform the account.
-const transformAccount = (response) => {
+const transformAccount = (response: any) => {
   return response.data;
 };
 
-const commonInvalidateQueries = (query) => {
+const commonInvalidateQueries = (query: any) => {
   // Invalidate accounts.
   query.invalidateQueries(t.ACCOUNTS);
   query.invalidateQueries(t.ACCOUNT);
@@ -25,12 +24,12 @@ const commonInvalidateQueries = (query) => {
 /**
  * Retrieve accounts list.
  */
-export function useAccounts(query, props) {
+export function useAccounts(query: any, props: any) {
   return useRequestQuery(
     [t.ACCOUNTS, query],
     { method: 'get', url: 'accounts', params: query },
     {
-      select: (res) => res.data.accounts,
+      select: (res: any) => res.data.accounts,
       defaultData: [],
       ...props,
     },
@@ -41,7 +40,7 @@ export function useAccounts(query, props) {
  * Retrieve the given account details.
  * @param {number} id - Account id.
  */
-export function useAccount(id, props) {
+export function useAccount(id: any, props: any) {
   return useRequestQuery(
     [t.ACCOUNT, id],
     { method: 'get', url: `accounts/${id}` },
@@ -56,12 +55,12 @@ export function useAccount(id, props) {
 /**
  * Retrieve accounts types list.
  */
-export function useAccountsTypes(props) {
+export function useAccountsTypes(props: any) {
   return useRequestQuery(
     [t.ACCOUNTS_TYPES],
     { method: 'get', url: 'accounts/types' },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -71,7 +70,7 @@ export function useAccountsTypes(props) {
 /**
  * Creates account.
  */
-export function useCreateAccount(props) {
+export function useCreateAccount(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -87,12 +86,12 @@ export function useCreateAccount(props) {
 /**
  * Edits the given account.
  */
-export function useEditAccount(props) {
+export function useEditAccount(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`accounts/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`accounts/${id}`, values),
     {
       onSuccess: () => {
         // Common invalidate queries.
@@ -106,7 +105,7 @@ export function useEditAccount(props) {
 /**
  * Edits the given account.
  */
-export function useDeleteAccount(props) {
+export function useDeleteAccount(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -122,7 +121,7 @@ export function useDeleteAccount(props) {
 /**
  * Activate the give account.
  */
-export function useActivateAccount(props) {
+export function useActivateAccount(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -138,7 +137,7 @@ export function useActivateAccount(props) {
 /**
  * Inactivate the given account.
  */
-export function useInactivateAccount(props) {
+export function useInactivateAccount(props: any) {
   const query = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -155,7 +154,7 @@ export function useInactivateAccount(props) {
  * Activates multiple accounts in bulk. Сервер не имеет отдельного
  * bulk-эндпоинта активации, поэтому шлём параллельные одиночные запросы.
  */
-export function useBulkActivateAccounts(props) {
+export function useBulkActivateAccounts(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -174,7 +173,7 @@ export function useBulkActivateAccounts(props) {
 /**
  * Inactivates multiple accounts in bulk (параллельные одиночные запросы).
  */
-export function useBulkInactivateAccounts(props) {
+export function useBulkInactivateAccounts(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -193,7 +192,7 @@ export function useBulkInactivateAccounts(props) {
 /**
  * Deletes multiple accounts in bulk.
  */
-export function useBulkDeleteAccounts(props) {
+export function useBulkDeleteAccounts(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -222,7 +221,7 @@ export function useBulkDeleteAccounts(props) {
 /**
  * Validates which accounts can be deleted in bulk.
  */
-export function useValidateBulkDeleteAccounts(props) {
+export function useValidateBulkDeleteAccounts(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -239,12 +238,12 @@ export function useValidateBulkDeleteAccounts(props) {
 /**
  * Retrieve account transactions.
  */
-export function useAccountTransactions(id, props) {
+export function useAccountTransactions(id: any, props: any) {
   return useRequestQuery(
     [t.ACCOUNT_TRANSACTION, id],
     { method: 'get', url: `accounts/transactions?account_id=${id}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },

@@ -56,7 +56,7 @@ function RefundCreditNoteFormFields({
   organization: { base_currency },
 }) {
   const { accounts, branches } = useRefundCreditNoteContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const amountFieldRef = useAutofocus();
 

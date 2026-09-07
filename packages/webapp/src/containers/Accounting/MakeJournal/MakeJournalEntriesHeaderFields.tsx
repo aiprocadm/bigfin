@@ -46,7 +46,7 @@ const getFieldsStyle = (theme: Theme) => css`
  */
 export default function MakeJournalEntriesHeader({}) {
   const { currencies } = useMakeJournalFormContext();
-  const form = useFormikContext();
+  const form = useFormikContext<any>();
   const theme = useTheme();
   const fieldsClassName = getFieldsStyle(theme);
 

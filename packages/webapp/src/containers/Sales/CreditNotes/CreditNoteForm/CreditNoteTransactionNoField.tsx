@@ -32,7 +32,7 @@ export const CreditNoteTransactionNoField = R.compose(
     // #withSettings
     creditAutoIncrement,
   }) => {
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext<any>();
 
     // Handle credit number changing.
     const handleCreditNumberChange = () => {

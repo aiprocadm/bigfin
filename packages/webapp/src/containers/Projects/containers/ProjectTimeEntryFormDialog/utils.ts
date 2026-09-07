@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import { isNull } from 'lodash';
 import { useFormikContext } from 'formik';
 import { useProjectTimeEntryFormContext } from './ProjectTimeEntryFormProvider';
 
 export const useSetProjectToForm = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const { setProjectPayload, projectId } = useProjectTimeEntryFormContext();
 
   React.useEffect(() => {

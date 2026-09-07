@@ -24,7 +24,7 @@ import { DialogsName } from '@/constants/dialogs';
  */
 function EstimateExchangeRateInputFieldRoot({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const isForeignCustomer = useEstimateIsForeignCustomer();
 
   // Can't continue if the customer is not foreign.
@@ -72,7 +72,7 @@ export const EstimateIncrementSyncSettingsToForm = R.compose(
     estimateAutoIncrement: estimatesSettings?.autoIncrement,
   })),
 )(({ estimateNextNumber, estimateNumberPrefix, estimateAutoIncrement }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   useUpdateEffect(() => {
     // Do not update if the estimate auto-increment mode is disabled.

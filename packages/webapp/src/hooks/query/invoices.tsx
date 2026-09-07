@@ -85,7 +85,7 @@ export function useEditInvoice(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`sale-invoices/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`sale-invoices/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific sale invoice.
@@ -340,7 +340,7 @@ export function useCreateBadDebt(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`sale-invoices/${id}/writeoff`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`sale-invoices/${id}/writeoff`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate
@@ -378,7 +378,7 @@ export function useCreateNotifyInvoiceBySMS(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`sale-invoices/${id}/notify-by-sms`, values),
     {
       onSuccess: (res, [id, values]) => {

@@ -32,7 +32,7 @@ export const InvoiceFormInvoiceNumberField = R.compose(
     invoiceAutoIncrement,
   }) => {
     // Formik context.
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext<any>();
 
     // Handle invoice number changing.
     const handleInvoiceNumberChange = () => {

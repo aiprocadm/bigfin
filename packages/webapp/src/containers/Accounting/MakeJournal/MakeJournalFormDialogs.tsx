@@ -6,7 +6,7 @@ import JournalNumberDialog from '@/containers/Dialogs/JournalNumberDialog';
  * Make journal form dialogs.
  */
 export default function MakeJournalFormDialogs() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Update the form once the journal number form submit confirm.
   const handleConfirm = (settings: any) => {

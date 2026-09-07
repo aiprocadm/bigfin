@@ -7,7 +7,7 @@ import TransactionNumberDialog from '@/containers/Dialogs/TransactionNumberDialo
  * Moneny in / transaction number form dialog.
  */
 export default function MoneyInFormDialog() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Update the form once the transaction number form submit confirm.
   const handleTransactionNumberFormConfirm = (settings: any) => {

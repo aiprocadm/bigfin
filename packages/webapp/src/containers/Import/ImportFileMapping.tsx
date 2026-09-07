@@ -186,7 +186,7 @@ function ImportFileMappingFieldRow({ column }: ImportFileMappingFieldRowProps) {
 
 /** Панель действий шага сопоставления: «Назад» + primary «Далее» (submit). */
 function ImportFileMappingFloatingActions() {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
   const { setStep } = useImportFileContext();
 
   const handleCancelBtnClick = () => {

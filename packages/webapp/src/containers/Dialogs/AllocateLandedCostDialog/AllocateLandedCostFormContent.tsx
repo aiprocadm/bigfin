@@ -9,7 +9,7 @@ import AllocateLandedCostFormFields from './AllocateLandedCostFormFields';
  * Allocate landed cost form content.
  */
 export default function AllocateLandedCostFormContent() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Allocate landed cost dialog context.
   const { setTransactionsType, setTransactionId, setTransactionEntryId } =

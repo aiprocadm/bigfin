@@ -21,7 +21,7 @@ import { DialogsName } from '@/constants/dialogs';
  */
 function CreditNoteExchangeRateInputFieldRoot({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const isForeignCustomer = useCreditNoteIsForeignCustomer();
 
   // Can't continue if the customer is not foreign.
@@ -56,7 +56,7 @@ export const CreditNoteSyncIncrementSettingsToForm = R.compose(
     creditNumberPrefix: creditNoteSettings?.numberPrefix,
   })),
 )(({ creditAutoIncrement, creditNextNumber, creditNumberPrefix }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
     // Do not update if the credit note auto-increment mode is disabled.

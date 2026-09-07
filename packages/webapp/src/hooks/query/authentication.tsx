@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation } from 'react-query';
 import { batch } from 'react-redux';
 import useApiRequest, { useAuthApiRequest } from '../useRequest';
@@ -26,7 +25,7 @@ const AuthRoute = {
 /**
  * Saves the response data to cookies.
  */
-export function setAuthLoginCookies(data) {
+export function setAuthLoginCookies(data: any) {
   setCookie('token', data.access_token);
   setCookie('authenticated_user_id', data.user_id);
   setCookie('organization_id', data.organization_id);
@@ -38,7 +37,7 @@ export function setAuthLoginCookies(data) {
 /**
  * Authentication login.
  */
-export const useAuthLogin = (props) => {
+export const useAuthLogin = (props: any) => {
   const apiRequest = useAuthApiRequest();
 
   const setAuthToken = useSetAuthToken();
@@ -76,7 +75,7 @@ export const useAuthLogin = (props) => {
 /**
  * Второй шаг входа: обмен полу-токена и кода 2FA на обычный access-токен.
  */
-export const useAuthSigninTwoFactor = (props) => {
+export const useAuthSigninTwoFactor = (props: any) => {
   const apiRequest = useAuthApiRequest();
 
   const setAuthToken = useSetAuthToken();
@@ -104,7 +103,7 @@ export const useAuthSigninTwoFactor = (props) => {
 /**
  * Authentication register.
  */
-export const useAuthRegister = (props) => {
+export const useAuthRegister = (props: any) => {
   const apiRequest = useAuthApiRequest();
 
   return useMutation(
@@ -116,7 +115,7 @@ export const useAuthRegister = (props) => {
 /**
  * Authentication send reset password.
  */
-export const useAuthSendResetPassword = (props) => {
+export const useAuthSendResetPassword = (props: any) => {
   const apiRequest = useAuthApiRequest();
 
   return useMutation(
@@ -128,11 +127,11 @@ export const useAuthSendResetPassword = (props) => {
 /**
  * Authentication reset password.
  */
-export const useAuthResetPassword = (props) => {
+export const useAuthResetPassword = (props: any) => {
   const apiRequest = useAuthApiRequest();
 
   return useMutation(
-    ([token, values]) => apiRequest.post(`auth/reset/${token}`, values),
+    ([token, values]: [any, any]) => apiRequest.post(`auth/reset/${token}`, values),
     props,
   );
 };
@@ -148,7 +147,7 @@ export const useAuthMetadata = (props = {}) => {
       url: AuthRoute.AuthMeta,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -158,7 +157,7 @@ export const useAuthMetadata = (props = {}) => {
 /**
  * Resend the mail of signup verification.
  */
-export const useAuthSignUpVerifyResendMail = (props) => {
+export const useAuthSignUpVerifyResendMail = (props: any) => {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -175,7 +174,7 @@ interface AuthSignUpVerifyValues {
 /**
  * Signup verification.
  */
-export const useAuthSignUpVerify = (props) => {
+export const useAuthSignUpVerify = (props: any) => {
   const apiRequest = useAuthApiRequest();
 
   return useMutation(

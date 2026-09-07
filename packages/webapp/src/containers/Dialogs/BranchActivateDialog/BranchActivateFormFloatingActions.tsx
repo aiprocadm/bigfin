@@ -18,7 +18,7 @@ function BranchActivateFormFloatingActions({
   const { dialogName } = useBranchActivateContext();
 
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Handle close button click.
   const handleCancelBtnClick = () => {

@@ -19,7 +19,7 @@ export const diffQuantity = (newQuantity: any, quantityOnHand: any, type: any) =
 };
 
 export const useSetPrimaryWarehouseToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { warehouses, isWarehousesSuccess } = useInventoryAdjContext();
 
   React.useEffect(() => {
@@ -35,7 +35,7 @@ export const useSetPrimaryWarehouseToForm = () => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess } = useInventoryAdjContext();
 
   React.useEffect(() => {

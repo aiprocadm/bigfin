@@ -20,7 +20,7 @@ import { compose } from '@/utils';
  */
 function ItemFormInventorySection({ organization: { base_currency } }) {
   const { accounts } = useItemFormContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Складской счёт нужен только товару со складским учётом — услуге эта
   // секция лишь мешала (линия 5 карты v17).

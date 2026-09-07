@@ -20,7 +20,7 @@ import { decrementQuantity } from './utils';
  */
 function DecrementAdjustmentFields() {
   const decrementFieldRef = useAutofocus();
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   return (
     <Row className={'row--decrement-fields'}>

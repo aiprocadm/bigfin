@@ -18,7 +18,7 @@ export default function SMSMessageFormFields() {
   const { smsNotification } = useSMSMessageDialogContext();
 
   // Form formik context.
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Handle the button click.
   const handleBtnClick = () => {

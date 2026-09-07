@@ -6,7 +6,7 @@ import EstimateNumberDialog from '@/containers/Dialogs/EstimateNumberDialog';
  * Estimate form dialogs.
  */
 export default function EstimateFormDialogs() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Update the form once the estimate number form submit confirm.
   const handleEstimateNumberFormConfirm = (settings: any) => {

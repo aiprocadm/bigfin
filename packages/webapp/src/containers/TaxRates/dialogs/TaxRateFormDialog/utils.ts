@@ -51,7 +51,7 @@ export const isTaxRateChange = (initialValues, formValues) => {
  * @returns {boolean}
  */
 export const useIsTaxRateChanged = () => {
-  const { initialValues, values } = useFormikContext();
+  const { initialValues, values } = useFormikContext<any>();
 
   return isTaxRateChange(initialValues, values);
 };

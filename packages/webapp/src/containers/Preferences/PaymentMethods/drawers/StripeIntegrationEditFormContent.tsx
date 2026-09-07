@@ -57,7 +57,7 @@ export function StripeIntegrationEditFormContent() {
 export function StripeIntegrationEditFormFooter() {
   const { name } = useDrawerContext();
   const { closeDrawer } = useDrawerActions();
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { submitForm, isSubmitting } = useFormikContext<any>();
 
   const handleSubmitBtnClick = () => {
     submitForm();

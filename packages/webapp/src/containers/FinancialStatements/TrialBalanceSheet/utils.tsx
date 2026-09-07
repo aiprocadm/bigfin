@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import { castArray } from 'lodash';
@@ -24,7 +23,7 @@ export function getDefaultTrialBalanceQuery() {
 /**
  * Parses the trial balance sheet query of browser location.
  */
-const parseTrialBalanceSheetQuery = (locationQuery) => {
+const parseTrialBalanceSheetQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultTrialBalanceQuery();
 
   const transformed = {

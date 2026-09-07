@@ -19,7 +19,7 @@ function BadDebtFormFloatingActions({
   const { dialogName } = useBadDebtContext();
 
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Handle close button click.
   const handleCancelBtnClick = () => {

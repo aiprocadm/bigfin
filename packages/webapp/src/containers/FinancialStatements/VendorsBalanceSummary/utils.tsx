@@ -1,4 +1,3 @@
-// @ts-nocheck
 import moment from 'moment';
 import { useMemo } from 'react';
 import * as Yup from 'yup';
@@ -20,7 +19,7 @@ export const getVendorsBalanceQuerySchema = () => {
   });
 };
 
-export const parseVendorsBalanceSummaryQuery = (locationQuery) => {
+export const parseVendorsBalanceSummaryQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultVendorsBalanceQuery();
 
   const transformed = {

@@ -7,7 +7,7 @@ import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 
 function TaxRateFormDialogFormFooterRoot({ closeDialog }: any) {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const handleClose = () => {
     closeDialog(DialogsName.TaxRateForm);

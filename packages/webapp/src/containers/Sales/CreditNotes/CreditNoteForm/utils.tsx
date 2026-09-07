@@ -147,7 +147,7 @@ export const entriesFieldShouldUpdate = (newProps, oldProps) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = useCreditNoteFormContext();
 
   React.useEffect(() => {
@@ -162,7 +162,7 @@ export const useSetPrimaryBranchToForm = () => {
 };
 
 export const useSetPrimaryWarehouseToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { warehouses, isWarehousesSuccess, isNewMode } = useCreditNoteFormContext();
 
   React.useEffect(() => {
@@ -184,7 +184,7 @@ export const useSetPrimaryWarehouseToForm = () => {
 export const useCreditNoteSubtotal = () => {
   const {
     values: { entries },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const total = React.useMemo(() => getEntriesTotal(entries), [entries]);
 
@@ -199,7 +199,7 @@ export const useCreditNoteSubtotalFormatted = () => {
   const subtotal = useCreditNoteSubtotal();
   const {
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(subtotal, currencyCode, { money: true });
 };
@@ -209,7 +209,7 @@ export const useCreditNoteSubtotalFormatted = () => {
  * @returns {number}
  */
 export const useCreditNoteDiscountAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const subtotal = useCreditNoteSubtotal();
   const discount = toSafeNumber(values.discount);
 
@@ -226,7 +226,7 @@ export const useCreditNoteDiscountAmountFormatted = () => {
   const discountAmount = useCreditNoteDiscountAmount();
   const {
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(discountAmount, currencyCode, { money: true });
 };
@@ -236,7 +236,7 @@ export const useCreditNoteDiscountAmountFormatted = () => {
  * @returns {number}
  */
 export const useCreditNoteAdjustmentAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return toSafeNumber(values.adjustment);
 };
@@ -249,7 +249,7 @@ export const useCreditNoteAdjustmentFormatted = () => {
   const adjustmentAmount = useCreditNoteAdjustmentAmount();
   const {
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(adjustmentAmount, currencyCode, { money: true });
 };
@@ -277,7 +277,7 @@ export const useCreditNoteTotalFormatted = () => {
   const total = useCreditNoteTotal();
   const {
     values: { currency_code: currencyCode },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   return formattedAmount(total, currencyCode, { money: true });
 };
@@ -287,7 +287,7 @@ export const useCreditNoteTotalFormatted = () => {
  * @returns {boolean}
  */
 export const useCreditNoteIsForeignCustomer = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignCustomer = React.useMemo(

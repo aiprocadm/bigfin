@@ -6,7 +6,7 @@ import { DialogsName } from '@/constants/dialogs';
  * Invoice form dialogs.
  */
 export default function InvoiceFormDialogs() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Update the form once the invoice number form submit confirm.
   const handleInvoiceNumberFormConfirm = (settings: any) => {

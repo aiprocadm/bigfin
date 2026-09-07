@@ -33,7 +33,7 @@ export default function PaymentReceiveFormFloatingActions() {
   const { setSubmitPayload, isNewMode } = usePaymentReceiveFormContext();
 
   // Formik form context.
-  const { isSubmitting, submitForm, resetForm } = useFormikContext();
+  const { isSubmitting, submitForm, resetForm } = useFormikContext<any>();
 
   // History context.
   const history = useHistory();

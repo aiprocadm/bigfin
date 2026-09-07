@@ -169,7 +169,7 @@ export function useExpenseFormTableColumns({ landedCost }) {
  */
 export function ExpensesExchangeRateInputField({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeignJouranl = useExpensesIsForeign();
 

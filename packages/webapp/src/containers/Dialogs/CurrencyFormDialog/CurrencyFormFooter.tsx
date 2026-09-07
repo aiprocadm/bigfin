@@ -15,7 +15,7 @@ function CurrencyFormFooter({
   // #withDialogActions
   closeDialog,
 }: any) {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const { dialogName, isEditMode } = useCurrencyFormContext();
 

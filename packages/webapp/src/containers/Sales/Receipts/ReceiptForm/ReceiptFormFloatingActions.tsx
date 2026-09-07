@@ -36,7 +36,7 @@ export default function ReceiptFormFloatingActions() {
   const { openDrawer } = useDrawerActions();
 
   // Formik context.
-  const { resetForm, submitForm, isSubmitting } = useFormikContext();
+  const { resetForm, submitForm, isSubmitting } = useFormikContext<any>();
 
   // Receipt form context.
   const { receipt, setSubmitPayload } = useReceiptFormContext();

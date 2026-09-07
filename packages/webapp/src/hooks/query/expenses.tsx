@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import useApiRequest from '../useRequest';
 import { useRequestQuery } from '../useQueryRequest';
@@ -12,7 +11,7 @@ const defaultPagination = {
 };
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate expenses.
   queryClient.invalidateQueries(t.EXPENSES);
 
@@ -35,7 +34,7 @@ const commonInvalidateQueries = (queryClient) => {
   queryClient.invalidateQueries(t.ORGANIZATION_MUTATE_BASE_CURRENCY_ABILITIES);
 };
 
-const transformExpenses = (response) => ({
+const transformExpenses = (response: any) => ({
   expenses: response.data.expenses,
   pagination: transformPagination(response.data.pagination),
   filterMeta: response.data.filter_meta,
@@ -44,7 +43,7 @@ const transformExpenses = (response) => ({
 /**
  * Retrieve the expenses list.
  */
-export function useExpenses(query, props) {
+export function useExpenses(query: any, props: any) {
   return useRequestQuery(
     [t.EXPENSES, query],
     {
@@ -68,7 +67,7 @@ export function useExpenses(query, props) {
  * Retrieve the expense details.
  * @param {number} id - Expense id.
  */
-export function useExpense(id, props) {
+export function useExpense(id: any, props: any) {
   return useRequestQuery(
     [t.EXPENSE, id],
     {
@@ -76,7 +75,7 @@ export function useExpense(id, props) {
       url: `expenses/${id}`,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
@@ -86,7 +85,7 @@ export function useExpense(id, props) {
 /**
  * Deletes the given expense.
  */
-export function useDeleteExpense(props) {
+export function useDeleteExpense(props: any) {
   const apiRequest = useApiRequest();
   const queryClient = useQueryClient();
 
@@ -105,7 +104,7 @@ export function useDeleteExpense(props) {
 /**
  * Deletes multiple expenses in bulk.
  */
-export function useBulkDeleteExpenses(props) {
+export function useBulkDeleteExpenses(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -131,7 +130,7 @@ export function useBulkDeleteExpenses(props) {
   );
 }
 
-export function useValidateBulkDeleteExpenses(props) {
+export function useValidateBulkDeleteExpenses(props: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -148,12 +147,12 @@ export function useValidateBulkDeleteExpenses(props) {
 /**
  * Edits the given expense.
  */
-export function useEditExpense(props) {
+export function useEditExpense(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`expenses/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`expenses/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific expense.
@@ -170,7 +169,7 @@ export function useEditExpense(props) {
 /**
  * Creates the new expense.
  */
-export function useCreateExpense(props) {
+export function useCreateExpense(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -186,7 +185,7 @@ export function useCreateExpense(props) {
 /**
  * Publishes the given expense.
  */
-export function usePublishExpense(props) {
+export function usePublishExpense(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
@@ -8,14 +7,14 @@ import t from './types';
 import { useSetAuthEmailConfirmed } from '../state';
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   queryClient.invalidateQueries(t.USERS);
 };
 
 /**
  * Create a new invite user.
  */
-export function useCreateInviteUser(props) {
+export function useCreateInviteUser(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -31,7 +30,7 @@ export function useCreateInviteUser(props) {
 /**
  * Bulk invite users.
  */
-export function useBulkCreateInviteUsers(props) {
+export function useBulkCreateInviteUsers(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -47,11 +46,11 @@ export function useBulkCreateInviteUsers(props) {
 /**
  * Edits the given user.
  */
-export function useEditUser(props) {
+export function useEditUser(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation(([id, values]) => apiRequest.put(`users/${id}`, values), {
+  return useMutation(([id, values]: [any, any]) => apiRequest.put(`users/${id}`, values), {
     onSuccess: (res, [id, values]) => {
       queryClient.invalidateQueries([t.USER, id]);
 
@@ -62,7 +61,7 @@ export function useEditUser(props) {
   });
 }
 
-export function useInactivateUser(props) {
+export function useInactivateUser(props: any) {
   const apiRequest = useApiRequest();
   const queryClient = useQueryClient();
 
@@ -77,7 +76,7 @@ export function useInactivateUser(props) {
   });
 }
 
-export function useActivateUser(props) {
+export function useActivateUser(props: any) {
   const apiRequest = useApiRequest();
   const queryClient = useQueryClient();
 
@@ -95,7 +94,7 @@ export function useActivateUser(props) {
 /**
  * Deletes the given user.
  */
-export function useDeleteUser(props) {
+export function useDeleteUser(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -113,7 +112,7 @@ export function useDeleteUser(props) {
 /**
  * Retrieves users list.
  */
-export function useUsers(props) {
+export function useUsers(props: any) {
   return useRequestQuery(
     [t.USERS],
     {
@@ -121,7 +120,7 @@ export function useUsers(props) {
       url: 'users',
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: [],
       ...props,
     },
@@ -131,7 +130,7 @@ export function useUsers(props) {
 /**
  * Retrieve details of the given user.
  */
-export function useUser(id, props) {
+export function useUser(id: any, props: any) {
   return useRequestQuery(
     [t.USER, id],
     {
@@ -139,14 +138,14 @@ export function useUser(id, props) {
       url: `users/${id}`,
     },
     {
-      select: (response) => response.data,
+      select: (response: any) => response.data,
       defaultData: {},
       ...props,
     },
   );
 }
 
-export function useAuthenticatedAccount(props) {
+export function useAuthenticatedAccount(props: any) {
   const setEmailConfirmed = useSetAuthEmailConfirmed();
 
   return useRequestQuery(
@@ -156,9 +155,9 @@ export function useAuthenticatedAccount(props) {
       url: `auth/account`,
     },
     {
-      select: (response) => response.data,
+      select: (response: any) => response.data,
       defaultData: {},
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         setEmailConfirmed(data.verified, data.email);
       },
       ...props,
@@ -169,14 +168,14 @@ export function useAuthenticatedAccount(props) {
 /**
  * Fetches the dashboard meta.
  */
-export const useDashboardMeta = (props) => {
+export const useDashboardMeta = (props: any) => {
   const setFeatureDashboardMeta = useSetFeatureDashboardMeta();
 
   const state = useRequestQuery(
     [t.DASHBOARD_META],
     { method: 'get', url: 'dashboard/boot' },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -58,7 +57,7 @@ export default function SMSMessageFormContent() {
 function SMSMessagePreviewSection() {
   const {
     values: { message_text: message },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const messagesUnits = getSMSUnits(message);
 

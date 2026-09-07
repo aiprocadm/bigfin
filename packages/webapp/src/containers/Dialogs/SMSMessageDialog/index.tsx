@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
@@ -17,7 +16,7 @@ function SMSMessageDialog({
   dialogName,
   payload: { notificationkey },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

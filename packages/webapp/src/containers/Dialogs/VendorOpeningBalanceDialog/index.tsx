@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
@@ -17,7 +16,7 @@ function VendorOpeningBalanceDialog({
   dialogName,
   payload: { vendorId },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

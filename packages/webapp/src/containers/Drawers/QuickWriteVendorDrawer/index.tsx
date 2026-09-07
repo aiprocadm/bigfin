@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -18,7 +17,7 @@ function QuickWriteVendorDrawer({
   // #withDrawer
   isOpen,
   payload: { displayName, autofillRef },
-}) {
+}: any) {
   return (
     <Drawer
       isOpen={isOpen}

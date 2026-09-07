@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import React from 'react';
 import styled from 'styled-components';
@@ -18,7 +17,7 @@ function ProjectBillableEntriesFormDialog({
   dialogName,
   payload: { projectId },
   isOpen,
-}) {
+}: any) {
   return (
     <ProjectBillableEntriesFormDialogRoot
       name={dialogName}

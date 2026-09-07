@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -13,7 +12,7 @@ import { useGLEntriesTableColumns } from './utils';
 /**
  * Journal entries table.
  */
-export default function JournalEntriesTable({ transactions, ...restProps }) {
+export default function JournalEntriesTable({ transactions, ...restProps }: any) {
   const columns = useGLEntriesTableColumns();
 
   return (
@@ -33,7 +32,7 @@ export default function JournalEntriesTable({ transactions, ...restProps }) {
  */
 export function AmountDisplayedBaseCurrencyMessageJSX({
   organization: { base_currency: baseCurrency },
-}) {
+}: any) {
   return (
     <Message>
       {intl.get('journal_entries.amount_displayed_base_currency')}

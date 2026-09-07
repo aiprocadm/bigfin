@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -12,7 +11,7 @@ const BranchActivateDialogContent = React.lazy(
 /**
  * Branch activate dialog.
  */
-function BranchActivateDialog({ dialogName, payload: {}, isOpen }) {
+function BranchActivateDialog({ dialogName, payload: {}, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

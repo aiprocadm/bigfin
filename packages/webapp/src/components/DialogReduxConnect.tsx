@@ -4,7 +4,7 @@ import {
   getDialogPayloadFactory,
 } from '@/store/dashboard/dashboard.selectors';
 
-export default (mapState: any) => {
+export default (mapState?: any) => {
   const isDialogOpen = isDialogOpenFactory();
   const getDialogPayload = getDialogPayloadFactory();
 

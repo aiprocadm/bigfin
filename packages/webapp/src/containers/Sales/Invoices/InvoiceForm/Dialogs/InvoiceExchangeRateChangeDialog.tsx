@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -14,7 +13,7 @@ function InvoiceExchangeRateChangeDialog({
   isOpen,
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const handleConfirm = () => {
     closeDialog(dialogName);
   };

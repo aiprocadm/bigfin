@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { Position } from '@blueprintjs/core';
@@ -15,7 +14,7 @@ function PaymentInvoicePreviewDrawerRoot({
   // #withDrawer
   isOpen,
   payload,
-}) {
+}: any) {
   return (
     <Drawer
       isOpen={isOpen}

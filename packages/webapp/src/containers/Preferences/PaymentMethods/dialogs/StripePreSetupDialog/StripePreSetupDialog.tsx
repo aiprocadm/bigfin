@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
@@ -9,7 +8,7 @@ import { StripePreSetupDialogContent } from './StripePreSetupDialogContent';
 /**
  * Select payment methods dialogs.
  */
-function StripePreSetupDialogRoot({ dialogName, payload, isOpen }) {
+function StripePreSetupDialogRoot({ dialogName, payload, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

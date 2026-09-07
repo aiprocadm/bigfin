@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Drawer, DrawerSuspense } from '@/components';
 import { withDrawers } from '@/containers/Drawer/withDrawers';
@@ -18,7 +17,7 @@ function ContactDetailDrawer({
   // #withDrawer
   isOpen,
   payload: { contactId },
-}) {
+}: any) {
   return (
     <Drawer isOpen={isOpen} name={name} size={'750px'}>
       <DrawerSuspense>

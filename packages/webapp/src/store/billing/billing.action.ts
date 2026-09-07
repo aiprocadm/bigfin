@@ -1,8 +1,7 @@
-// @ts-nocheck
 import ApiService from '@/services/ApiService';
 
-export const submitBilling = ({ form }) => {
-  return (dispatch) =>
+export const submitBilling = ({ form }: any) => {
+  return (dispatch: any) =>
     new Promise((resolve, reject) => {
       ApiService.post('subscription/license/payment', form)
         .then((response) => {

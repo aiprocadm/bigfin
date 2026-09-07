@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { Suggest } from '@blueprintjs-formik/select';
 import { FormGroup, Intent } from '@blueprintjs/core';
@@ -9,12 +8,12 @@ export function TaxRatesSuggestInputCell({
   row: { index },
   cell: { value: cellValue },
   payload: { errors, updateData, taxRates },
-}) {
+}: any) {
   const error = errors?.[index]?.[id];
 
   // Handle the item selected.
   const handleItemSelected = useCallback(
-    (value, taxRate) => {
+    (value: any, taxRate: any) => {
       updateData(index, id, taxRate.id);
     },
     [updateData, index, id],

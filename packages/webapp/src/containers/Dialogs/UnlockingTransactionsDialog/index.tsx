@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -15,7 +14,7 @@ function UnlockingTransactionsDialog({
   dialogName,
   payload: { module },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

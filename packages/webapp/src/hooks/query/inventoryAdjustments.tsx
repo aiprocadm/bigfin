@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination } from '@/utils';
 import useApiRequest from '../useRequest';
 import t from './types';
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: any) => {
   // Invalidate inventory adjustments.
   queryClient.invalidateQueries(t.INVENTORY_ADJUSTMENTS);
   queryClient.invalidateQueries(t.INVENTORY_ADJUSTMENT);
@@ -28,7 +27,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates the inventory adjustment to the given item.
  */
-export function useCreateInventoryAdjustment(props) {
+export function useCreateInventoryAdjustment(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -47,7 +46,7 @@ export function useCreateInventoryAdjustment(props) {
 /**
  * Deletes the inventory adjustment transaction.
  */
-export function useDeleteInventoryAdjustment(props) {
+export function useDeleteInventoryAdjustment(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -60,7 +59,7 @@ export function useDeleteInventoryAdjustment(props) {
   });
 }
 
-const inventoryAdjustmentsTransformer = (response) => {
+const inventoryAdjustmentsTransformer = (response: any) => {
   return {
     inventoryAdjustments: response.data.data,
     pagination: transformPagination(response.data.pagination),
@@ -70,7 +69,7 @@ const inventoryAdjustmentsTransformer = (response) => {
 /**
  * Retrieve inventory adjustment list with pagination meta.
  */
-export function useInventoryAdjustments(query, props) {
+export function useInventoryAdjustments(query: any, props: any) {
   return useRequestQuery(
     ['inventory-adjustments', query],
     { url: 'inventory-adjustments', params: query },
@@ -93,7 +92,7 @@ export function useInventoryAdjustments(query, props) {
 /**
  * Publishes the given inventory adjustment.
  */
-export function usePublishInventoryAdjustment(props) {
+export function usePublishInventoryAdjustment(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -115,12 +114,12 @@ export function usePublishInventoryAdjustment(props) {
  * Retrieve the inventory adjustment details.
  * @param {number} id - inventory adjustment id.
  */
-export function useInventoryAdjustment(id, props, requestProps) {
+export function useInventoryAdjustment(id: any, props: any, requestProps: any) {
   return useRequestQuery(
     [t.INVENTORY_ADJUSTMENT, id],
     { method: 'get', url: `inventory-adjustments/${id}`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },

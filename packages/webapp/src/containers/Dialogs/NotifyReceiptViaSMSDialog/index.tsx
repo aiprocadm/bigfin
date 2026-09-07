@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FormattedMessage as T } from '@/components';
 import { Dialog, DialogSuspense } from '@/components';
@@ -13,7 +12,7 @@ function NotifyReceiptViaSMSDialog({
   dialogName,
   payload: { receiptId },
   isOpen,
-}) {
+}: any) {
   return (
     <Dialog
       name={dialogName}

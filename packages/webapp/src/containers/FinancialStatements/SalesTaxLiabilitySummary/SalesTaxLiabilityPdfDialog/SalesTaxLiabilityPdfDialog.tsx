@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
@@ -18,7 +17,7 @@ const SalesTaxLiabilityPdfDialogContent = lazy(
  * Cashflow sheet pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function SalesTaxLiabilityPdfDialogRoot({ dialogName, payload, isOpen }) {
+function SalesTaxLiabilityPdfDialogRoot({ dialogName, payload, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
@@ -14,7 +13,7 @@ const ExcessPaymentDialogContent = React.lazy(() =>
 /**
  * Exess payment dialog of the payment made form.
  */
-function ExcessPaymentDialogRoot({ dialogName, isOpen }) {
+function ExcessPaymentDialogRoot({ dialogName, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

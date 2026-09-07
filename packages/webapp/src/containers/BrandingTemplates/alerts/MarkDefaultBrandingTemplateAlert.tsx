@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { AppToaster } from '@/components';
@@ -23,7 +22,7 @@ function MarkDefaultBrandingTemplateAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: any) {
   const { mutateAsync: assignPdfTemplateAsDefault } =
     useAssignPdfTemplateAsDefault();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
@@ -10,7 +9,7 @@ const BadDebtDialogContent = React.lazy(() => import('./BadDebtDialogContent'));
 /**
  * Bad debt dialog.
  */
-function BadDebtDialog({ dialogName, payload: { invoiceId = null }, isOpen }) {
+function BadDebtDialog({ dialogName, payload: { invoiceId = null }, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}

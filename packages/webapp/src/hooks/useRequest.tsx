@@ -123,27 +123,27 @@ export default function useApiRequest() {
     () => ({
       http,
 
-      get(resource: any, params: any) {
+      get(resource: any, params?: any) {
         return http.get(`/api/${normalizeApiPath(resource)}`, params);
       },
 
-      post(resource: any, params: any, config: any) {
+      post(resource: any, params?: any, config?: any) {
         return http.post(`/api/${normalizeApiPath(resource)}`, params, config);
       },
 
-      update(resource: any, slug: any, params: any) {
+      update(resource: any, slug: any, params?: any) {
         return http.put(`/api/${normalizeApiPath(resource)}/${slug}`, params);
       },
 
-      put(resource: any, params: any) {
+      put(resource: any, params?: any) {
         return http.put(`/api/${normalizeApiPath(resource)}`, params);
       },
 
-      patch(resource: any, params: any, config: any) {
+      patch(resource: any, params?: any, config?: any) {
         return http.patch(`/api/${normalizeApiPath(resource)}`, params, config);
       },
 
-      delete(resource: any, params: any) {
+      delete(resource: any, params?: any) {
         return http.delete(`/api/${normalizeApiPath(resource)}`, params);
       },
     }),
@@ -160,22 +160,22 @@ export function useAuthApiRequest() {
   return React.useMemo(
     () => ({
       http,
-      get(resource: any, params: any) {
+      get(resource: any, params?: any) {
         return http.get(`/api/${normalizeApiPath(resource)}`, params);
       },
-      post(resource: any, params: any, config: any) {
+      post(resource: any, params?: any, config?: any) {
         return http.post(`/api/${normalizeApiPath(resource)}`, params, config);
       },
-      update(resource: any, slug: any, params: any) {
+      update(resource: any, slug: any, params?: any) {
         return http.put(`/api/${normalizeApiPath(resource)}/${slug}`, params);
       },
-      put(resource: any, params: any) {
+      put(resource: any, params?: any) {
         return http.put(`/api/${normalizeApiPath(resource)}`, params);
       },
-      patch(resource: any, params: any, config: any) {
+      patch(resource: any, params?: any, config?: any) {
         return http.patch(`/api/${normalizeApiPath(resource)}`, params, config);
       },
-      delete(resource: any, params: any) {
+      delete(resource: any, params?: any) {
         return http.delete(`/api/${normalizeApiPath(resource)}`, params);
       },
     }),

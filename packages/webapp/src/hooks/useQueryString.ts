@@ -132,7 +132,7 @@ export function useQueryString(
  * @returns {QueryStringResult}
  */
 export const useAppQueryString = (
-  navigate: NavigateCallback,
+  navigate?: NavigateCallback,
   parseOptions: ParseOptions = {},
 ): QueryStringResult => {
   const history = useHistory();

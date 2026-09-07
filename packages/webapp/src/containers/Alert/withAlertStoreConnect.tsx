@@ -4,7 +4,7 @@ import {
   getAlertPayloadFactory,
 } from '@/store/dashboard/dashboard.selectors';
 
-export const withAlertStoreConnect = (mapState: any) => {
+export const withAlertStoreConnect = (mapState?: any) => {
   const isAlertOpen = isAlertOpenFactory();
   const getAlertPayload = getAlertPayloadFactory();
 

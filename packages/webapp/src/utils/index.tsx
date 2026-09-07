@@ -483,10 +483,21 @@ export function isBlank(value) {
   return (_.isEmpty(value) && !_.isNumber(value)) || _.isNaN(value);
 }
 
+/**
+ * Настройки подбора ширины столбца. Все необязательные: вызывающие передают
+ * то одну границу, то другую. Раньше тип выводился из разбора и требовал
+ * сразу обе — 68 замечаний (Д1 карты v62).
+ */
+export interface ColumnWidthOptions {
+  maxWidth?: number;
+  minWidth?: number;
+  magicSpacing?: number;
+}
+
 export const getColumnWidth = (
-  rows,
-  accessor,
-  { maxWidth, minWidth, magicSpacing = 14 },
+  rows: any,
+  accessor: any,
+  { maxWidth, minWidth, magicSpacing = 14 }: ColumnWidthOptions = {},
   headerText = '',
 ) => {
   const cellLength = Math.max(

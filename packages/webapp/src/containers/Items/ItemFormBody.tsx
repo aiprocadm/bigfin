@@ -71,7 +71,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             name={'sell_price'}
             label={<T id={'selling_price'} />}
             inline
-            fastField
           >
             <ControlGroup>
               <InputPrependText text={base_currency} />
@@ -105,7 +104,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             inline={true}
             sellable={values.sellable}
             shouldUpdate={sellDescriptionFieldShouldUpdate}
-            fastField
           >
             <FTextArea
               name={'sell_description'}
@@ -141,7 +139,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             name={'cost_price'}
             label={<T id={'cost_price'} />}
             inline
-            fastField
           >
             <ControlGroup>
               <InputPrependText text={base_currency} />
@@ -162,7 +159,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             name={'purchase_tax_rate_id'}
             label={<T id={'tax_rate'} />}
             inline={true}
-            fastField={true}
             shouldUpdateDeps={{ taxRates }}
             shouldUpdate={taxRateFieldShouldUpdate}
           >
@@ -246,7 +242,6 @@ function ItemFormAccountingSection({ accounts }) {
               items={accounts}
               sellable={values.sellable}
               shouldUpdate={sellAccountFieldShouldUpdate}
-              fastField={true}
             >
               <AccountsSelect
                 name={'sell_account_id'}
@@ -273,7 +268,6 @@ function ItemFormAccountingSection({ accounts }) {
                 <Hint content={<T id={'item.field.cost_account.hint'} />} />
               }
               inline={true}
-              fastField={true}
             >
               <AccountsSelect
                 name={'cost_account_id'}

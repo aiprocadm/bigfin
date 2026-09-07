@@ -81,7 +81,6 @@ export function SharePaymentLinkFormContent() {
             helperText={
               'By default, the link is set to expire 90 days from today.'
             }
-            fastField
           >
             <FDateInput
               name={'expiryDate'}

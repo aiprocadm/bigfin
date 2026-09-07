@@ -37,7 +37,6 @@ export function UploadAttachmentButton() {
       name={'attachments'}
       label={intl.get('attachments.label.attachments')}
       className={styles.attachmentField}
-      fastField={true}
     >
       <Popover
         interactionKind={PopoverInteractionKind.CLICK}

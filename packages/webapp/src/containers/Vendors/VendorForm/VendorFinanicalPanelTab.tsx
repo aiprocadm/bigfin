@@ -43,7 +43,6 @@ export function VendorFinanicalPanelTab() {
           <FFormGroup
             name={'currency_code'}
             label={<T id={'currency'} />}
-            fastField
             inline
           >
             <CurrencySelectList
@@ -98,7 +97,6 @@ function VendorOpeningBalanceField() {
       shouldUpdate={openingBalanceFieldShouldUpdate}
       shouldUpdateDeps={{ currencyCode: values.currency_code }}
       inline
-      fastField
     >
       <ControlGroup>
         <InputPrependText text={values.currency_code} />
@@ -128,7 +126,6 @@ function VendorOpeningBalanceAtField() {
       label={<T id={'opening_balance_at'} />}
       helperText={<ErrorMessage name="opening_balance_at" />}
       inline
-      fastField
     >
       <FDateInput
         name={'opening_balance_at'}
@@ -162,7 +159,6 @@ function VendorOpeningBalanceExchangeRateField() {
       label={' '}
       name={'opening_balance_exchange_rate'}
       inline
-      fastField
     >
       <ExchangeRateInputGroup
         fromCurrency={values.currency_code}

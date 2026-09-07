@@ -64,7 +64,6 @@ export default function CreditNoteFormHeaderFields() {
         label={<T id={'credit_note.label_credit_note_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FDateInput
           name={'credit_note_date'}
@@ -116,7 +115,6 @@ function CreditNoteCustomersSelect() {
       label={<T id={'customer_name'} />}
       labelInfo={<FieldRequiredHint />}
       inline={true}
-      fastField={true}
       shouldUpdate={customerNameFieldShouldUpdate}
       shouldUpdateDeps={{ items: customers }}
     >

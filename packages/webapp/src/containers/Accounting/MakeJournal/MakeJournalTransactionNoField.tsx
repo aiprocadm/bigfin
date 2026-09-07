@@ -66,7 +66,6 @@ export const MakeJournalTransactionNoField = R.compose(
         }
         fill={true}
         inline={true}
-        fastField={true}
       >
         <ControlGroup fill={true}>
           <FInputGroup

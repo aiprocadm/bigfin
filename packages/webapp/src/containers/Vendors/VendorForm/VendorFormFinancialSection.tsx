@@ -40,7 +40,6 @@ export function VendorFormFinancialSection() {
       <FFormGroup
         name={'currency_code'}
         label={<T id={'currency'} />}
-        fastField
         inline
         fill
       >
@@ -121,7 +120,6 @@ function VendorOpeningBalanceField() {
       inline
       shouldUpdate={openingBalanceFieldShouldUpdate}
       shouldUpdateDeps={{ currencyCode: values.currency_code }}
-      fastField={true}
       fill
     >
       <ControlGroup fill>

@@ -32,7 +32,6 @@ export default function ARAgingSummaryHeaderGeneralContent() {
             label={<T id={'as_date'} />}
             labelInfo={<FieldHint />}
             fill
-            fastField
           >
             <FDateInput
               name={'asDate'}
@@ -52,7 +51,6 @@ export default function ARAgingSummaryHeaderGeneralContent() {
             name={'agingDaysBefore'}
             label={<T id={'aging_before_days'} />}
             labelInfo={<FieldHint />}
-            fastField
           >
             <FInputGroup name={'agingDaysBefore'} medium={true} fastField />
           </FFormGroup>

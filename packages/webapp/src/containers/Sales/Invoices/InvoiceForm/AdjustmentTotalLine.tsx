@@ -51,7 +51,6 @@ export function AdjustmentTotalLine({
             name={'adjustment'}
             label={''}
             inline
-            fastField
             className={formGroupCss}
           >
             <FInputGroup

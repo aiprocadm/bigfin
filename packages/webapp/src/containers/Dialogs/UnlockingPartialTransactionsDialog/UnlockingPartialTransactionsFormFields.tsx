@@ -32,7 +32,6 @@ export default function UnlockingPartialTransactionsFormFields() {
             labelInfo={<FieldRequiredHint />}
             fill
             minimal
-            fastField
           >
             <FDateInput
               name={'unlock_from_date'}
@@ -54,7 +53,6 @@ export default function UnlockingPartialTransactionsFormFields() {
             labelInfo={<FieldRequiredHint />}
             minimal={true}
             fill
-            fastField
           >
             <FDateInput
               name={'unlock_to_date'}
@@ -74,7 +72,6 @@ export default function UnlockingPartialTransactionsFormFields() {
         name={'reason'}
         label={<T id={'unlocking_partial_transactions.dialog.reason'} />}
         labelInfo={<FieldRequiredHint />}
-        fastField
       >
         <FTextArea
           name={'reason'}

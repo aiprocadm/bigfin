@@ -24,7 +24,6 @@ export default function IncrementAdjustmentFields() {
         <FFormGroup
           name={'quantity_on_hand'}
           label={<T id={'qty_on_hand'} />}
-          fastField
         >
           <FInputGroup
             name={'quantity_on_hand'}
@@ -46,7 +45,6 @@ export default function IncrementAdjustmentFields() {
           name={'quantity'}
           label={<T id={'increment'} />}
           fill
-          fastField
         >
           <FMoneyInputGroup
             name={'quantity'}
@@ -69,7 +67,7 @@ export default function IncrementAdjustmentFields() {
 
       {/*------------ Cost -----------*/}
       <Col className={'col--cost'}>
-        <FFormGroup name={'cost'} label={<T id={'cost'} />} fastField>
+        <FFormGroup name={'cost'} label={<T id={'cost'} />}>
           <FMoneyInputGroup name={'cost'} fastField />
         </FFormGroup>
       </Col>
@@ -84,7 +82,6 @@ export default function IncrementAdjustmentFields() {
         <FFormGroup
           name={'new_quantity'}
           label={<T id={'new_quantity'} />}
-          fastField
         >
           <FMoneyInputGroup
             name={'new_quantity'}

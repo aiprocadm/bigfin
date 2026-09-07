@@ -64,7 +64,6 @@ export default function FinancialStatementDateRange() {
             label={intl.get('from_date')}
             labelInfo={<Hint />}
             fill
-            fastField
           >
             <FDateInput
               name={'fromDate'}
@@ -84,7 +83,6 @@ export default function FinancialStatementDateRange() {
             label={intl.get('to_date')}
             labelInfo={<Hint />}
             fill
-            fastField
           >
             <FDateInput
               name={'toDate'}

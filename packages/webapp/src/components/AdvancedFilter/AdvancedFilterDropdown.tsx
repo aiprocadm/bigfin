@@ -99,7 +99,6 @@ function FilterCompatatorFilter() {
     <FFormGroup
       name={comparatorFieldPath}
       className={'form-group--comparator'}
-      fastField
     >
       <AdvancedFilterCompatatorField
         name={comparatorFieldPath}

@@ -7,7 +7,7 @@ export function BrandingCompanyLogoUploadField() {
   const { setFieldValue, values } = useFormikContext();
 
   return (
-    <FFormGroup name={'companyLogo'} label={''} fastField>
+    <FFormGroup name={'companyLogo'} label={''}>
       <CompanyLogoUpload
         initialPreview={values.companyLogoUri}
         onChange={(file) => {

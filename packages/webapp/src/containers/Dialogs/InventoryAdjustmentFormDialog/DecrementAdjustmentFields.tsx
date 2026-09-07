@@ -69,7 +69,6 @@ function DecrementAdjustmentFields() {
           name={'new_quantity'}
           label={<T id={'new_quantity'} />}
           fill
-          fastField
         >
           <FMoneyInputGroup
             name={'new_quantity'}

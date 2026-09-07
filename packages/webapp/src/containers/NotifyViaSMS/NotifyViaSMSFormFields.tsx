@@ -21,7 +21,6 @@ export default function NotifyViaSMSFormFields({ notificationTypes }) {
         name={'notification_key'}
         label={<T id={'notify_via_sms.dialog.notification_type'} />}
         className={classNames(CLASSES.FILL)}
-        fastField
       >
         <FSelect
           name={'notification_key'}

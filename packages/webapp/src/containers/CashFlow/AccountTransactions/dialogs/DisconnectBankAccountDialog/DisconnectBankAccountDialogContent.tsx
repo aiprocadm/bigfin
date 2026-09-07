@@ -83,7 +83,6 @@ function DisconnectBankAccountDialogContent({
               phrase: intl.get('banking.disconnect.phrase'),
             })}
             name={'label'}
-            fastField
           >
             <FInputGroup name={'label'} fastField />
           </FFormGroup>

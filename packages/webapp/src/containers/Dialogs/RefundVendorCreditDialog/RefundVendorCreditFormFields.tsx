@@ -72,7 +72,6 @@ function RefundVendorCreditFormFields({
             label={<T id={'refund_vendor_credit.dialog.refund_date'} />}
             labelInfo={<FieldRequiredHint />}
             fill
-            fastField
           >
             <FDateInput
               name={'refund_date'}
@@ -116,7 +115,6 @@ function RefundVendorCreditFormFields({
         label={<T id={'refund_vendor_credit.dialog.amount'} />}
         labelInfo={<FieldRequiredHint />}
         fill
-        fastField
       >
         <ControlGroup>
           <InputPrependText text={values.currency_code} />
@@ -146,13 +144,12 @@ function RefundVendorCreditFormFields({
         name={'reference_no'}
         label={<T id={'reference_no'} />}
         fill
-        fastField
       >
         <FInputGroup name={'reference_no'} minimal={true} fastField />
       </FFormGroup>
 
       {/* --------- Statement --------- */}
-      <FFormGroup name={'description'} label={<T id={'refund_vendor_credit.dialog.description'} />} fill fastField>
+      <FFormGroup name={'description'} label={<T id={'refund_vendor_credit.dialog.description'} />} fill>
         <FTextArea name={'description'} growVertically fill fastField />
       </FFormGroup>
     </div>

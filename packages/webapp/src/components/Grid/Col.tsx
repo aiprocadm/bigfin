@@ -60,6 +60,29 @@ const propTypes = {
   xl: rowColumns,
 };
 
+/**
+ * Свойства строки/столбца сетки.
+ *
+ * Все они необязательные: компонент читает четыре из них, остальное
+ * пересылает на элемент как есть. Раньше типа не было вовсе — проверка
+ * выводила его из разбора и считала КАЖДОЕ свойство обязательным, из-за чего
+ * любой `<Col md={8}>` был ошибкой (Д1 карты v59).
+ */
+export interface ColProps {
+  bsPrefix?: string;
+  className?: string;
+  noGutters?: boolean;
+  as?: React.ElementType;
+  xs?: number | string | { cols?: number | string };
+  sm?: number | string | { cols?: number | string };
+  md?: number | string | { cols?: number | string };
+  lg?: number | string | { cols?: number | string };
+  xl?: number | string | { cols?: number | string };
+  children?: React.ReactNode;
+  /** Остальное уходит на элемент без изменений. */
+  [key: string]: any;
+}
+
 const defaultProps = {
   noGutters: false,
 };
@@ -72,7 +95,7 @@ export function Col ({
   // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
   as: Component = 'div',
   ...props
-}) {
+}: ColProps) {
   const decoratedBsPrefix = '';
   const sizePrefix = `col`;
   const classes = [];

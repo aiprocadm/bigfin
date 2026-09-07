@@ -119,7 +119,6 @@ export default function PaymentReceiveHeaderFields() {
         label={<T id={'payment_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FDateInput
           name={'payment_date'}
@@ -141,7 +140,6 @@ export default function PaymentReceiveHeaderFields() {
         label={<T id={'full_amount'} />}
         inline={true}
         labelInfo={<Hint />}
-        fastField
       >
         <ControlGroup>
           <InputPrependText text={currency_code} />
@@ -192,7 +190,6 @@ export default function PaymentReceiveHeaderFields() {
         labelInfo={<FieldRequiredHint />}
         items={accounts}
         shouldUpdate={accountsFieldShouldUpdate}
-        fastField={true}
       >
         <AccountsSelect
           name={'deposit_account_id'}
@@ -215,7 +212,6 @@ export default function PaymentReceiveHeaderFields() {
         name={'reference_no'}
         label={<T id={'reference'} />}
         inline
-        fastField
       >
         <InputGroup name={'reference_no'} minimal fastField />
       </FFormGroup>
@@ -262,7 +258,6 @@ function PaymentReceiveCustomerSelect() {
       inline={true}
       labelInfo={<FieldRequiredHint />}
       name={'customer_id'}
-      fastField={true}
       shouldUpdate={customersFieldShouldUpdate}
       shouldUpdateDeps={{ items: customers }}
     >

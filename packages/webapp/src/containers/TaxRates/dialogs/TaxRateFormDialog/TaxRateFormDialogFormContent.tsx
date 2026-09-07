@@ -20,7 +20,6 @@ export default function TaxRateFormDialogContent() {
         label={intl.get('tax_rates.label.name')}
         labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
         subLabel={intl.get('tax_rates.form.name_hint')}
-        fastField={true}
       >
         <FInputGroup name={'name'} fastField={true} />
       </FFormGroup>
@@ -30,7 +29,6 @@ export default function TaxRateFormDialogContent() {
         name={'rate'}
         label={intl.get('tax_rates.label.rate')}
         labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-        fastField={true}
       >
         <RateFormGroup
           name={'rate'}
@@ -46,7 +44,6 @@ export default function TaxRateFormDialogContent() {
         labelInfo={
           <Hint content="This description is for internal use only and will not be visiable to your customers." />
         }
-        fastField={true}
       >
         <FInputGroup name={'description'} fastField={true} />
       </FFormGroup>
@@ -90,7 +87,6 @@ function TaxRateCodeField() {
       name={'code'}
       label={intl.get('code')}
       labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-      fastField={true}
     >
       <FInputGroup name={'code'} fastField={true} onChange={handleChange} />
     </FFormGroup>

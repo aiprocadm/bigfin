@@ -115,7 +115,6 @@ export default function InventoryAdjustmentFormDialogFields() {
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
             fill
-            fastField
           >
             <FDateInput
               name={'date'}
@@ -137,7 +136,6 @@ export default function InventoryAdjustmentFormDialogFields() {
             label={<T id={'adjustment_type'} />}
             labelInfo={<FieldRequiredHint />}
             fill
-            fastField
           >
             <FSelect
               name={'type'}
@@ -177,7 +175,6 @@ export default function InventoryAdjustmentFormDialogFields() {
       <FFormGroup
         name={'reference_no'}
         label={<T id={'reference_no'} />}
-        fastField
       >
         <FInputGroup name={'reference_no'} fastField />
       </FFormGroup>
@@ -188,7 +185,6 @@ export default function InventoryAdjustmentFormDialogFields() {
         label={<T id={'adjustment_reasons'} />}
         labelInfo={<FieldRequiredHint />}
         fill
-        fastField
       >
         <FTextArea name={'reason'} growVertically large fastField fill />
       </FFormGroup>

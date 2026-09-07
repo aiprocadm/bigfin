@@ -69,7 +69,6 @@ export default function EstimateFormHeader() {
         label={<T id={'estimate_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FDateInput
           name={'estimate_date'}
@@ -90,7 +89,6 @@ export default function EstimateFormHeader() {
         name={'expiration_date'}
         label={<T id={'expiration_date'} />}
         inline
-        fastField
       >
         <FDateInput
           name={'expiration_date'}
@@ -158,7 +156,6 @@ function EstimateFormCustomerSelect() {
       inline={true}
       labelInfo={<FieldRequiredHint />}
       name={'customer_id'}
-      fastField={true}
       shouldUpdate={customersFieldShouldUpdate}
       shouldUpdateDeps={{ items: customers }}
     >

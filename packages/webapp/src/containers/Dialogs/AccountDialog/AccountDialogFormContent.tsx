@@ -48,7 +48,6 @@ function AccountFormDialogFields({
           label={<T id={'account_type'} />}
           labelInfo={<FieldRequiredHint />}
           name={'account_type'}
-          fastField={true}
         >
           <AccountsTypesSelect
             name={'account_type'}
@@ -69,7 +68,6 @@ function AccountFormDialogFields({
           label={<T id={'account_name'} />}
           labelInfo={<FieldRequiredHint />}
           inline={true}
-          fastField={true}
         >
           <FInputGroup
             medium={true}
@@ -84,7 +82,6 @@ function AccountFormDialogFields({
           name={'code'}
           labelInfo={<Hint content={<T id="account_code_hint" />} />}
           inline={true}
-          fastField={true}
         >
           <FInputGroup medium={true} name={'code'} fastField={true} />
         </FFormGroup>
@@ -93,7 +90,6 @@ function AccountFormDialogFields({
           label={' '}
           name={'subaccount'}
           inline={true}
-          fastField={true}
         >
           <FCheckbox
             inline={true}
@@ -109,7 +105,6 @@ function AccountFormDialogFields({
             shouldUpdate={parentAccountShouldUpdate}
             label={<T id={'parent_account'} />}
             inline={true}
-            fastField={true}
           >
             <AccountsSelect
               name={'parent_account_id'}
@@ -131,7 +126,6 @@ function AccountFormDialogFields({
             label={<T id={'currency'} />}
             name={'currency_code'}
             inline={true}
-            fastField={true}
           >
             <CurrencySelect
               name={'currency_code'}
@@ -147,7 +141,6 @@ function AccountFormDialogFields({
           label={<T id={'description'} />}
           name={'description'}
           inline={true}
-          fastField={true}
         >
           <FTextArea
             name={'description'}

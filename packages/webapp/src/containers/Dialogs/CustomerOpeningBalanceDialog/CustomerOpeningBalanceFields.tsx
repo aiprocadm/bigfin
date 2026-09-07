@@ -64,7 +64,6 @@ function CustomerOpeningBalanceFields({
         name={'opening_balance_at'}
         label={<T id={'customer_opening_balance.label.opening_balance_at'} />}
         fill
-        fastField
       >
         <FDateInput
           name={'opening_balance_at'}
@@ -97,7 +96,6 @@ function CustomerOpeningBalanceFields({
           label={<T id={'branch'} />}
           name={'opening_balance_branch_id'}
           fill
-          fastField
         >
           <BranchSelect
             name={'opening_balance_branch_id'}

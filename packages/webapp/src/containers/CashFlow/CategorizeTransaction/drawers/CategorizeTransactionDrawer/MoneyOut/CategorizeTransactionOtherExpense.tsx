@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Position } from '@blueprintjs/core';
@@ -18,7 +17,7 @@ export default function CategorizeTransactionOtherExpense() {
 
   return (
     <>
-      <FFormGroup name={'date'} label={intl.get('date')} fastField inline>
+      <FFormGroup name={'date'} label={intl.get('date')}inline>
         <FDateInput
           name={'date'}
           popoverProps={{ position: Position.BOTTOM, minimal: true }}
@@ -31,7 +30,6 @@ export default function CategorizeTransactionOtherExpense() {
       <FFormGroup
         name={'debitAccountId'}
         label={intl.get('payment_account')}
-        fastField={true}
         inline
       >
         <AccountsSelect
@@ -47,7 +45,6 @@ export default function CategorizeTransactionOtherExpense() {
       <FFormGroup
         name={'creditAccountId'}
         label={intl.get('expense_account')}
-        fastField={true}
         inline
       >
         <AccountsSelect
@@ -60,11 +57,11 @@ export default function CategorizeTransactionOtherExpense() {
         />
       </FFormGroup>
 
-      <FFormGroup name={'referenceNo'} label={intl.get('reference_no')} fastField inline>
+      <FFormGroup name={'referenceNo'} label={intl.get('reference_no')}inline>
         <FInputGroup name={'reference_no'} fill />
       </FFormGroup>
 
-      <FFormGroup name={'description'} label={intl.get('description')} fastField inline>
+      <FFormGroup name={'description'} label={intl.get('description')}inline>
         <FTextArea
           name={'description'}
           growVertically={true}

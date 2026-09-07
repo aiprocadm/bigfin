@@ -87,7 +87,6 @@ export default function ExpenseFormHeader() {
         label={<T id={'payment_account'} />}
         labelInfo={<FieldRequiredHint />}
         inline={true}
-        fastField={true}
         shouldUpdate={accountsFieldShouldUpdate}
       >
         <AccountsSelect
@@ -107,7 +106,6 @@ export default function ExpenseFormHeader() {
         label={<T id={'currency'} />}
         className={classNames(Classes.FILL)}
         inline={true}
-        fastField={true}
       >
         <FSelect
           name={'currency_code'}
@@ -132,7 +130,6 @@ export default function ExpenseFormHeader() {
         name={'reference_no'}
         label={<T id={'reference_no'} />}
         inline={true}
-        fastField
       >
         <FInputGroup minimal={true} name={'reference_no'} fastField />
       </FFormGroup>

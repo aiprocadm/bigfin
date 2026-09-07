@@ -44,6 +44,20 @@ export function DetailsMenu({
 /**
  * Detail item.
  */
+/**
+ * Свойства пункта описи. Все необязательные: пункт может быть и без имени, и
+ * без выравнивания. Раньше типа не было вовсе — проверка считала каждое
+ * свойство обязательным, и `<DetailItem label={…}>` был ошибкой (Д1 карты v59).
+ */
+export interface DetailItemProps {
+  label?: React.ReactNode;
+  children?: React.ReactNode;
+  name?: string;
+  align?: string;
+  multiline?: boolean;
+  className?: string;
+}
+
 export function DetailItem({
   label,
   children,
@@ -51,7 +65,7 @@ export function DetailItem({
   align,
   multiline,
   className,
-}) {
+}: DetailItemProps) {
   const { minLabelSize } = useDetailsMenuContext();
 
   return (

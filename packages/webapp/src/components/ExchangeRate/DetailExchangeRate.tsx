@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
@@ -18,7 +17,7 @@ function DetailExchangeRate({
   toCurrency,
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   if (isEqual(base_currency, toCurrency)) {
     return null;
   }

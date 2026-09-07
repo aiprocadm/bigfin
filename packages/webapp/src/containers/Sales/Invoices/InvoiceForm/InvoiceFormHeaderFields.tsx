@@ -75,7 +75,6 @@ export default function InvoiceFormHeaderFields() {
         label={<T id={'invoice_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FDateInput
           name={'invoice_date'}
@@ -100,7 +99,6 @@ export default function InvoiceFormHeaderFields() {
         label={<T id={'due_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FDateInput
           name={'due_date'}
@@ -179,7 +177,6 @@ function InvoiceFormCustomerSelect() {
       label={<T id={'customer_name'} />}
       inline={true}
       labelInfo={<FieldRequiredHint />}
-      fastField={true}
       shouldUpdate={customerNameFieldShouldUpdate}
       shouldUpdateDeps={{ items: customers }}
     >

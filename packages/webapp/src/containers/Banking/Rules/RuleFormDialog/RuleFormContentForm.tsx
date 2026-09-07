@@ -98,7 +98,6 @@ function RuleFormContentFormRoot({
           label={intl.get('banking.rules.field.rule_name')}
           labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
           style={{ maxWidth: 300 }}
-          fastField
         >
           <FInputGroup name={'name'} fastField />
         </FFormGroup>
@@ -108,7 +107,6 @@ function RuleFormContentFormRoot({
           label={intl.get('banking.rules.field.apply_to_account')}
           labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
           style={{ maxWidth: 350 }}
-          fastField
         >
           <AccountsSelect
             name={'applyIfAccountId'}
@@ -123,7 +121,6 @@ function RuleFormContentFormRoot({
         <FFormGroup
           name={'conditionsType'}
           label={intl.get('banking.rules.field.categorize_when')}
-          fastField
         >
           <FRadioGroup name={'conditionsType'}>
             <Radio
@@ -149,7 +146,6 @@ function RuleFormContentFormRoot({
           name={'assignRef'}
           label={intl.get('banking.rules.field.reference')}
           style={{ maxWidth: 300 }}
-          fastField
         >
           <FInputGroup name={'assignRef'} fastField />
         </FFormGroup>
@@ -195,7 +191,6 @@ function RuleFormConditions() {
               name={`conditions[${index}].field`}
               label={intl.get('banking.rules.condition.field')}
               style={{ marginBottom: 0, flex: '1 0' }}
-              fastField
             >
               <FSelect
                 name={`conditions[${index}].field`}
@@ -210,7 +205,6 @@ function RuleFormConditions() {
               name={`conditions[${index}].comparator`}
               label={intl.get('banking.rules.condition.condition')}
               style={{ marginBottom: 0, flex: '1 0' }}
-              fastField
             >
               <FSelect
                 name={`conditions[${index}].comparator`}
@@ -229,7 +223,6 @@ function RuleFormConditions() {
               name={`conditions[${index}].value`}
               label={intl.get('value')}
               style={{ marginBottom: 0, flex: '1 0 ', width: '40%' }}
-              fastField
             >
               <FInputGroup name={`conditions[${index}].value`} fastField />
             </FFormGroup>
@@ -305,7 +298,6 @@ function RuleApplyIfTransactionTypeField() {
       name={'applyIfTransactionType'}
       label={intl.get('banking.rules.field.apply_to_transactions')}
       style={{ maxWidth: 350 }}
-      fastField
     >
       <FSelect
         name={'applyIfTransactionType'}
@@ -345,7 +337,6 @@ function RuleAssignCategoryField() {
       label={intl.get('transaction_type')}
       labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
       style={{ maxWidth: 300 }}
-      fastField
     >
       <FSelect
         name={'assignCategory'}
@@ -375,7 +366,6 @@ function RuleAssignCategoryAccountField() {
       label={intl.get('banking.rules.field.account_category')}
       labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
       style={{ maxWidth: 300 }}
-      fastField
       shouldUpdateDeps={{ accountRoot }}
     >
       <AccountsSelect

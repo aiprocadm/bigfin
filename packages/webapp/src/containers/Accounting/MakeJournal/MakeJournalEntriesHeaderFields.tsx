@@ -58,7 +58,6 @@ export default function MakeJournalEntriesHeader({}) {
         label={<T id={'posting_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FDateInput
           name={'date'}
@@ -91,7 +90,6 @@ export default function MakeJournalEntriesHeader({}) {
           />
         }
         inline
-        fastField
       >
         <FInputGroup name={'reference'} minimal fill />
       </FFormGroup>
@@ -101,7 +99,6 @@ export default function MakeJournalEntriesHeader({}) {
         name={'journal_type'}
         label={<T id={'journal_type'} />}
         inline
-        fastField
       >
         <FInputGroup name={'journal_type'} minimal fill />
       </FFormGroup>
@@ -111,7 +108,6 @@ export default function MakeJournalEntriesHeader({}) {
         name={'currency_code'}
         label={<T id={'currency'} />}
         inline
-        fastField
       >
         <FSelect
           name={'currency_code'}

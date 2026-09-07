@@ -30,7 +30,7 @@ export function MailNotificationForm({
   return (
     <Box>
       <HeaderBox>
-        <FFormGroup label={intl.get('mail_notification.label.from')} name={'from'} inline={true} fastField={true}>
+        <FFormGroup label={intl.get('mail_notification.label.from')} name={'from'} inline={true}>
           <FMultiSelect
             items={fromAddresses}
             name={'from'}
@@ -43,7 +43,7 @@ export function MailNotificationForm({
           />
         </FFormGroup>
 
-        <FFormGroup label={intl.get('mail_notification.label.to')} name={'to'} inline={true} fastField={true}>
+        <FFormGroup label={intl.get('mail_notification.label.to')} name={'to'} inline={true}>
           <FMultiSelect
             items={toAddresses}
             name={'to'}
@@ -61,7 +61,6 @@ export function MailNotificationForm({
           label={intl.get('mail_notification.label.subject')}
           name={'subject'}
           inline={true}
-          fastField={true}
         >
           <FInputGroup name={'subject'} fill={true} />
         </FFormGroup>

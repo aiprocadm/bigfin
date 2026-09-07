@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Button, ButtonGroup } from '@blueprintjs/core';
@@ -14,10 +13,9 @@ export function CustomerTypeRadioField() {
       name={'customer_type'}
       label={<T id={'customer_type'} />}
       inline
-      fill
     >
       <FastField name="customer_type">
-        {({ field, form }) => (
+        {({ field, form }: any) => (
           <ButtonGroup>
             <Button
               type="button"

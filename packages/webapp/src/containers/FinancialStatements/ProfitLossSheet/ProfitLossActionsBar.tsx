@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -39,7 +38,7 @@ function ProfitLossActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { sheetRefetch, isLoading } = useProfitLossSheetContext();
 
   const handleFilterClick = () => {
@@ -50,7 +49,7 @@ function ProfitLossActionsBar({
     sheetRefetch();
   };
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
   // Handles the print button click.
@@ -127,7 +126,7 @@ function ProfitLossActionsBar({
 }
 
 export default compose(
-  withProfitLoss(({ profitLossDrawerFilter }) => ({ profitLossDrawerFilter })),
+  withProfitLoss(({ profitLossDrawerFilter }: any) => ({ profitLossDrawerFilter })),
   withProfitLossActions,
   withDialogActions,
 )(ProfitLossActionsBar);

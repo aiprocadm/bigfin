@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import InviteUserForm from './InviteUserForm';
@@ -13,7 +12,7 @@ export default function InviteUserDialogContent({
   action,
   userId,
   dialogName,
-}) {
+}: any) {
   return (
     <InviteUserFormProvider isEditMode={action} dialogName={dialogName}>
       <InviteUserForm />

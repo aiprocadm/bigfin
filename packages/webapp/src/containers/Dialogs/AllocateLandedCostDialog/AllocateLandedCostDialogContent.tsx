@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { AllocateLandedCostDialogProvider } from './AllocateLandedCostDialogProvider';
 import AllocateLandedCostForm from './AllocateLandedCostForm';
@@ -10,7 +9,7 @@ export default function AllocateLandedCostDialogContent({
   // #ownProps
   dialogName,
   billId,
-}) {
+}: any) {
   return (
     <AllocateLandedCostDialogProvider billId={billId} dialogName={dialogName}>
       <AllocateLandedCostForm />

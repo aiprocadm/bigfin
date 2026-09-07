@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
 import {
@@ -55,7 +54,6 @@ function TransactionTypeFields() {
             name={'cashflow_account_id'}
             label={<T id={'cash_flow_transaction.label_current_account'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FAccountsSuggestField
               name={'cashflow_account_id'}

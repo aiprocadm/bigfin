@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { css } from '@emotion/css';
@@ -57,7 +56,6 @@ export function ContactRequisitesSection() {
         name={'legal_form'}
         label={intl.get('requisites.legal_form')}
         inline
-        fill
       >
         <FHTMLSelect
           name={'legal_form'}
@@ -73,7 +71,6 @@ export function ContactRequisitesSection() {
           label={intl.get(labelKey)}
           {...hintProps(name, hintKey)}
           inline
-          fill
         >
           <FInputGroup name={name} fill />
         </FFormGroup>

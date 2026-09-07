@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -38,7 +37,7 @@ function SalesTaxLiabilitySummaryActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { isLoading, refetchSalesTaxLiabilitySummary } =
     useSalesTaxLiabilitySummaryContext();
 
@@ -51,7 +50,7 @@ function SalesTaxLiabilitySummaryActionsBar({
     refetchSalesTaxLiabilitySummary();
   };
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
   // Handle the print button click.
@@ -130,7 +129,7 @@ function SalesTaxLiabilitySummaryActionsBar({
 }
 
 export default compose(
-  withSalesTaxLiabilitySummary(({ salesTaxLiabilitySummaryFilter }) => ({
+  withSalesTaxLiabilitySummary(({ salesTaxLiabilitySummaryFilter }: any) => ({
     salesTaxLiabilitySummaryFilter,
   })),
   withSalesTaxLiabilitySummaryActions,

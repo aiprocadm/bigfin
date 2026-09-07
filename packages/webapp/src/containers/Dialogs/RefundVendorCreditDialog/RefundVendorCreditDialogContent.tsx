@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/RefundVendorCredit/RefundVendorCredit.scss';
@@ -10,7 +9,7 @@ export default function RefundVendorCreditDialogContent({
   // #ownProps
   dialogName,
   vendorCreditId,
-}) {
+}: any) {
   return (
     <RefundVendorCreditFormProvider
       vendorCreditId={vendorCreditId}

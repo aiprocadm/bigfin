@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -35,7 +34,7 @@ function TrialBalanceActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { refetchSheet, isLoading } = useTrialBalanceSheetContext();
 
   // Handle filter toggle click.
@@ -49,7 +48,7 @@ function TrialBalanceActionsBar({
   };
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -127,7 +126,7 @@ function TrialBalanceActionsBar({
 }
 
 export default compose(
-  withTrialBalance(({ trialBalanceDrawerFilter }) => ({
+  withTrialBalance(({ trialBalanceDrawerFilter }: any) => ({
     trialBalanceDrawerFilter,
   })),
   withTrialBalanceActions,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   NavbarGroup,
   Button,
@@ -37,7 +36,7 @@ function BalanceSheetActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { isLoading, refetchBalanceSheet } = useBalanceSheetContext();
 
   // Handle filter toggle click.
@@ -51,7 +50,7 @@ function BalanceSheetActionsBar({
   };
 
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -129,7 +128,7 @@ function BalanceSheetActionsBar({
 }
 
 export default compose(
-  withBalanceSheet(({ balanceSheetDrawerFilter }) => ({
+  withBalanceSheet(({ balanceSheetDrawerFilter }: any) => ({
     balanceSheetDrawerFilter,
   })),
   withBalanceSheetActions,

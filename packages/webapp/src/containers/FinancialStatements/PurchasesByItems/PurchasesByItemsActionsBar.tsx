@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -35,7 +34,7 @@ function PurchasesByItemsActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { refetchSheet, isLoading } = usePurchaseByItemsContext();
 
   // Handle re-calc button click.
@@ -49,7 +48,7 @@ function PurchasesByItemsActionsBar({
   };
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -125,7 +124,7 @@ function PurchasesByItemsActionsBar({
 }
 
 export default compose(
-  withPurchasesByItems(({ purchasesByItemsDrawerFilter }) => ({
+  withPurchasesByItems(({ purchasesByItemsDrawerFilter }: any) => ({
     purchasesByItemsDrawerFilter,
   })),
   withPurchasesByItemsActions,

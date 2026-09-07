@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -32,7 +31,7 @@ function RealizedGainOrLossActionsBar({
   //#ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   // Handle filter toggle click.
   const handleFilterToggleClick = () => {
     toggleRealizedGainOrLossFilterDrawer();
@@ -42,7 +41,7 @@ function RealizedGainOrLossActionsBar({
   const handleRecalculateReport = () => {};
 
   // handle number format form submit.
-  const handleNumberFormatSubmit = (values) =>
+  const handleNumberFormatSubmit = (values: any) =>
     saveInvoke(onNumberFormatSubmit, values);
 
   return (
@@ -109,7 +108,7 @@ function RealizedGainOrLossActionsBar({
 }
 
 export default compose(
-  withRealizedGainOrLoss(({ realizedGainOrLossDrawerFilter }) => ({
+  withRealizedGainOrLoss(({ realizedGainOrLossDrawerFilter }: any) => ({
     isFilterDrawerOpen: realizedGainOrLossDrawerFilter,
   })),
   withRealizedGainOrLossActions,

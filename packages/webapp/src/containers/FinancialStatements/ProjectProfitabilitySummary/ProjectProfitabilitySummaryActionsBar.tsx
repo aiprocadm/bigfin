@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -32,7 +31,7 @@ function ProjectProfitabilitySummaryActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { isLoading, refetchProjectProfitabilitySummary } =
     useProjectProfitabilitySummaryContext();
 
@@ -47,7 +46,7 @@ function ProjectProfitabilitySummaryActionsBar({
   };
 
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -113,7 +112,7 @@ function ProjectProfitabilitySummaryActionsBar({
 
 export default compose(
   withProjectProfitabilitySummary(
-    ({ projectProfitabilitySummaryDrawerFilter }) => ({
+    ({ projectProfitabilitySummaryDrawerFilter }: any) => ({
       isFilterDrawerOpen: projectProfitabilitySummaryDrawerFilter,
     }),
   ),

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { Icon } from '@/components';
@@ -9,7 +8,7 @@ import { useIsDarkMode } from '@/hooks/useDarkMode';
 /**
  * Bigfin logo loading.
  */
-export default function BigfinLoading({ className }) {
+export default function BigfinLoading({ className }: any) {
   const isDarkmode = useIsDarkMode();
 
   return (

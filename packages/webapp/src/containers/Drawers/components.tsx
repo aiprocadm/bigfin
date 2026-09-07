@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import { Icon, If, Money } from '@/components';
 
-export const TemplateHeader = ({ defaultLabels }) => (
+export const TemplateHeader = ({ defaultLabels }: any) => (
   <div className={'template__header'}>
     <div className={'template__header--title'}>
       <h1>{defaultLabels.name}</h1>
@@ -22,7 +21,7 @@ export const TemplateContent = ({
   billedFrom,
   dueDate,
   currencyCode,
-}) => (
+}: any) => (
   <div className="template__content">
     <div className="template__content__info">
       <span> {defaultLabels.billedTo} </span>

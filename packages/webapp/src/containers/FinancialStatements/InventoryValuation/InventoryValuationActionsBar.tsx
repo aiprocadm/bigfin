@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -36,7 +35,7 @@ function InventoryValuationActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { refetchSheet, isLoading } = useInventoryValuationContext();
 
   // Handles filter toggle click.
@@ -50,7 +49,7 @@ function InventoryValuationActionsBar({
   };
 
   // Handles number format submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: any) => {
     saveInvoke(onNumberFormatSubmit, numberFormat);
   };
 
@@ -127,7 +126,7 @@ function InventoryValuationActionsBar({
 }
 
 export default compose(
-  withInventoryValuation(({ inventoryValuationDrawerFilter }) => ({
+  withInventoryValuation(({ inventoryValuationDrawerFilter }: any) => ({
     isFilterDrawerOpen: inventoryValuationDrawerFilter,
   })),
   withInventoryValuationActions,

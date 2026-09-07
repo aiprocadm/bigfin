@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -38,7 +37,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function RefundVendorCreditFormFields({
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const { accounts, branches } = useRefundVendorCreditContext();
   const { values } = useFormikContext<any>();
 
@@ -52,7 +51,7 @@ function RefundVendorCreditFormFields({
       <FeatureCan feature={Features.Branches}>
         <Row>
           <Col xs={5}>
-            <FFormGroup name={'branch_id'} label={<T id={'branch'} />} fill>
+            <FFormGroup name={'branch_id'} label={<T id={'branch'} />}>
               <BranchSelect
                 name={'branch_id'}
                 branches={branches}
@@ -71,7 +70,6 @@ function RefundVendorCreditFormFields({
             name={'refund_date'}
             label={<T id={'refund_vendor_credit.dialog.refund_date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'refund_date'}
@@ -80,7 +78,6 @@ function RefundVendorCreditFormFields({
               inputProps={{
                 leftIcon: <Icon icon={'date-range'} />,
               }}
-              fastField
             />
           </FFormGroup>
         </Col>
@@ -91,7 +88,6 @@ function RefundVendorCreditFormFields({
             name={'deposit_account_id'}
             label={<T id={'refund_vendor_credit.dialog.deposit_to_account'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FAccountsSuggestField
               name={'deposit_account_id'}
@@ -114,14 +110,13 @@ function RefundVendorCreditFormFields({
         name={'amount'}
         label={<T id={'refund_vendor_credit.dialog.amount'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <ControlGroup>
           <InputPrependText text={values.currency_code} />
           <FMoneyInputGroup
             name={'amount'}
             minimal={true}
-            inputRef={(ref) => (amountFieldRef.current = ref)}
+            inputRef={(ref: any) => (amountFieldRef.current = ref)}
             fastField
           />
         </ControlGroup>
@@ -143,13 +138,12 @@ function RefundVendorCreditFormFields({
       <FFormGroup
         name={'reference_no'}
         label={<T id={'reference_no'} />}
-        fill
       >
-        <FInputGroup name={'reference_no'} minimal={true} fastField />
+        <FInputGroup name={'reference_no'} fastField />
       </FFormGroup>
 
       {/* --------- Statement --------- */}
-      <FFormGroup name={'description'} label={<T id={'refund_vendor_credit.dialog.description'} />} fill>
+      <FFormGroup name={'description'} label={<T id={'refund_vendor_credit.dialog.description'} />}>
         <FTextArea name={'description'} growVertically fill fastField />
       </FFormGroup>
     </div>

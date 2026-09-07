@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { CommercialDocEntriesTable } from '@/components';
@@ -25,7 +24,7 @@ export default function VendorCreditDetailTable() {
       data={entries}
       initialHiddenColumns={
         // If any entry has no discount, hide the discount column.
-        entries?.some((e) => e.discount_formatted) ? [] : ['discount']
+        entries?.some((e: any) => e.discount_formatted) ? [] : ['discount']
       }
       styleName={TableStyle.Constrant}
     />

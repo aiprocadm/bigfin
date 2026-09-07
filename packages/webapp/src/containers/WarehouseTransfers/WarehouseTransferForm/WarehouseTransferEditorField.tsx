@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField } from 'formik';
 import classNames from 'classnames';
@@ -31,10 +30,10 @@ export default function WarehouseTransferEditorField() {
           form: { values, setFieldValue },
           field: { value },
           meta: { error, touched },
-        }) => (
+        }: any) => (
           <WarehouseTransferFormEntriesTable
             entries={value}
-            onUpdateData={(entries) => {
+            onUpdateData={(entries: any) => {
               setFieldValue('entries', entries);
             }}
             items={items}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { Features } from '@/constants';
@@ -6,13 +5,13 @@ import { useBranches } from '@/hooks/query';
 import { useFeatureCan } from '@/hooks/state';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 
-const ProfitLossSheetHeaderDimensionsPanelContext = React.createContext();
+const ProfitLossSheetHeaderDimensionsPanelContext = React.createContext<any>(undefined);
 
 /**
  * profit loss sheet header provider.
  * @returns
  */
-function ProfitLossSheetHeaderDimensionsProvider({ query, ...props }) {
+function ProfitLossSheetHeaderDimensionsProvider({ query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

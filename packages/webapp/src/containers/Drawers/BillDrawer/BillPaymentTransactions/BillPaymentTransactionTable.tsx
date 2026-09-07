@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { DataTable, Card, TableSkeletonRows } from '@/components';
@@ -23,7 +22,7 @@ function BillPaymentTransactionTable({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   const columns = useBillPaymentTransactionsColumns();
@@ -40,14 +39,14 @@ function BillPaymentTransactionTable({
   });
 
   // Handles delete bill payment transactions.
-  const handleDeleteBillPaymentTransactons = ({ bill_payment_id }) => {
+  const handleDeleteBillPaymentTransactons = ({ bill_payment_id }: any) => {
     openAlert('payment-made-delete', {
       paymentMadeId: bill_payment_id,
     });
   };
 
   // Handles edit  bill payment transactions.
-  const handleEditBillPaymentTransactions = ({ bill_payment_id }) => {
+  const handleEditBillPaymentTransactions = ({ bill_payment_id }: any) => {
     history.push(`/payments-made/${bill_payment_id}/edit`);
     closeDrawer(DRAWERS.BILL_DETAILS);
   };

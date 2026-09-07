@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Intent,
@@ -31,48 +30,48 @@ export default function MakeJournalFloatingAction() {
   const { setSubmitPayload, manualJournal } = useMakeJournalFormContext();
 
   // Handle submit & publish button click.
-  const handleSubmitPublishBtnClick = (event) => {
+  const handleSubmitPublishBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, publish: true });
     submitForm();
   };
 
   // Handle submit, publish & new button click.
-  const handleSubmitPublishAndNewBtnClick = (event) => {
+  const handleSubmitPublishAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, publish: true, resetForm: true });
     submitForm();
   };
 
   // Handle submit, publish & edit button click.
-  const handleSubmitPublishContinueEditingBtnClick = (event) => {
+  const handleSubmitPublishContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, publish: true });
     submitForm();
   };
 
   // Handle submit as draft button click.
-  const handleSubmitDraftBtnClick = (event) => {
+  const handleSubmitDraftBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, publish: false });
     submitForm();
   };
 
   // Handle submit as draft & new button click.
-  const handleSubmitDraftAndNewBtnClick = (event) => {
+  const handleSubmitDraftAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, publish: false, resetForm: true });
     submitForm();
   };
 
   // Handle submit as draft & continue editing button click.
-  const handleSubmitDraftContinueEditingBtnClick = (event) => {
+  const handleSubmitDraftContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, publish: false });
     submitForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 
   // Handle clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 

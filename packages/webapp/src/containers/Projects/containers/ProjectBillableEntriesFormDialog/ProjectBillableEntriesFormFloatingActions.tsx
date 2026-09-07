@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import React from 'react';
 import styled from 'styled-components';
@@ -16,7 +15,7 @@ import { compose } from '@/utils';
 function ProjectEntriesFormFloatingActions({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   // Formik context.
   const { isSubmitting, values } = useFormikContext();
 

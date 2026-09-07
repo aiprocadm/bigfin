@@ -1,16 +1,15 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { useItem } from '@/hooks/query';
 import { inactiveStatus } from './utlis';
 import { DRAWERS } from '@/constants/drawers';
 
-const ItemDetailDrawerContext = React.createContext();
+const ItemDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Item detail provider
  */
-function ItemDetailDrawerProvider({ itemId, ...props }) {
+function ItemDetailDrawerProvider({ itemId, ...props }: any) {
   // transaction type payload.
   const [value, setValue] = React.useState('invoices');
 

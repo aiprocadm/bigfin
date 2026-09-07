@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -49,7 +48,7 @@ function ManualJournalsDataTable({
 
   // #withSettings
   manualJournalsTableSize,
-}) {
+}: any) {
   // Manual journals context.
   const {
     manualJournals,
@@ -65,25 +64,25 @@ function ManualJournalsDataTable({
   const columns = useManualJournalsColumns();
 
   // Handles the journal publish action.
-  const handlePublishJournal = ({ id }) => {
+  const handlePublishJournal = ({ id }: any) => {
     openAlert('journal-publish', { manualJournalId: id });
   };
   // Handle the journal edit action.
-  const handleEditJournal = ({ id }) => {
+  const handleEditJournal = ({ id }: any) => {
     history.push(`/manual-journals/${id}/edit`);
   };
   // Handle the journal delete action.
-  const handleDeleteJournal = ({ id }) => {
+  const handleDeleteJournal = ({ id }: any) => {
     openAlert('journal-delete', { manualJournalId: id });
   };
   // Handle view detail journal.
-  const handleViewDetailJournal = ({ id }) => {
+  const handleViewDetailJournal = ({ id }: any) => {
     openDrawer(DRAWERS.JOURNAL_DETAILS, {
       manualJournalId: id,
     });
   };
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.JOURNAL_DETAILS, {
       manualJournalId: cell.row.original.id,
     });
@@ -94,7 +93,7 @@ function ManualJournalsDataTable({
 
   // Handle fetch data once the page index, size or sort by of the table change.
   const handleFetchData = React.useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setManualJournalsTableState({
         pageIndex,
         pageSize,
@@ -104,8 +103,8 @@ function ManualJournalsDataTable({
     [setManualJournalsTableState],
   );
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selectedFlatRows) => {
-    const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedFlatRows: any) => {
+    const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
     setManualJournalsSelectedRows(selectedIds);
   };
 
@@ -154,12 +153,12 @@ function ManualJournalsDataTable({
 
 export default compose(
   withManualJournalsActions,
-  withManualJournals(({ manualJournalsTableState }) => ({
+  withManualJournals(({ manualJournalsTableState }: any) => ({
     manualJournalsTableState,
   })),
   withAlertActions,
   withDrawerActions,
-  withSettings(({ manualJournalsSettings }) => ({
+  withSettings(({ manualJournalsSettings }: any) => ({
     manualJournalsTableSize: manualJournalsSettings?.tableSize,
   })),
 )(ManualJournalsDataTable);

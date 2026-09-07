@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -46,7 +45,7 @@ function VendorCreditNoteForm({
 
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const history = useHistory();
 
   // Vendor Credit note form context.
@@ -86,8 +85,8 @@ function VendorCreditNoteForm({
 
   // Handles form submit.
   const handleFormSubmit = (
-    values,
-    { setSubmitting, setErrors, resetForm },
+    values: any,
+    { setSubmitting, setErrors, resetForm }: any,
   ) => {
     const entries = filterNonZeroEntries(values.entries);
     const totalQuantity = safeSumBy(entries, 'quantity');
@@ -105,7 +104,7 @@ function VendorCreditNoteForm({
       open: submitPayload.open,
     };
     // Handle the request success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get(
           isNewMode
@@ -128,7 +127,7 @@ function VendorCreditNoteForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
     if (isNewMode) {
@@ -181,7 +180,7 @@ function VendorCreditNoteForm({
 }
 
 export default compose(
-  withSettings(({ vendorsCreditNoteSetting }) => ({
+  withSettings(({ vendorsCreditNoteSetting }: any) => ({
     vendorcreditAutoIncrement: vendorsCreditNoteSetting?.autoIncrement,
     vendorcreditNextNumber: vendorsCreditNoteSetting?.nextNumber,
     vendorcreditNumberPrefix: vendorsCreditNoteSetting?.numberPrefix,

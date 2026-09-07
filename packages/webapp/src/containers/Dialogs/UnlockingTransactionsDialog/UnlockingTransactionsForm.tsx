@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
@@ -26,7 +25,7 @@ const defaultInitialValues = {
 function UnlockingTransactionsForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const {
     dialogName,
     moduleName,
@@ -41,11 +40,11 @@ function UnlockingTransactionsForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     setSubmitting(true);
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('unlocking_transactions.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -58,7 +57,7 @@ function UnlockingTransactionsForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
 

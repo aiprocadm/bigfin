@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -41,7 +40,7 @@ function CreditNoteDetailActionsBar({
   // #withDrawerActions
   closeDrawer,
   openDrawer,
-}) {
+}: any) {
   const { creditNoteId, creditNote } = useCreditNoteDetailDrawerContext();
 
   const history = useHistory();

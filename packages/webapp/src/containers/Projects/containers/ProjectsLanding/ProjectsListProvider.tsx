@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { isEmpty } from 'lodash';
 import { useResourceViews, useResourceMeta } from '@/hooks/query';
@@ -7,13 +6,13 @@ import { useProjects } from '../../hooks';
 import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants/features';
 
-const ProjectsListContext = React.createContext();
+const ProjectsListContext = React.createContext<any>(undefined);
 
 /**
  * Projects list data provider.
  * @returns
  */
-function ProjectsListProvider({ query, tableStateChanged, ...props }) {
+function ProjectsListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetch accounts resource views and fields.
   const { data: projectsViews, isLoading: isViewsLoading } =
     useResourceViews('projects');

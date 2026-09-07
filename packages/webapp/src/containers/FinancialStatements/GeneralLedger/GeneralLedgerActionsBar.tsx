@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -33,7 +32,7 @@ function GeneralLedgerActionsBar({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const { sheetRefresh } = useGeneralLedgerContext();
 
   // Handle customize button click.
@@ -101,7 +100,7 @@ function GeneralLedgerActionsBar({
 }
 
 export default compose(
-  withGeneralLedger(({ generalLedgerFilterDrawer }) => ({
+  withGeneralLedger(({ generalLedgerFilterDrawer }: any) => ({
     isFilterDrawerOpen: generalLedgerFilterDrawer,
   })),
   withGeneralLedgerActions,

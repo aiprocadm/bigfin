@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import {
@@ -32,28 +31,28 @@ export default function PaymentMadeFloatingActions() {
   const { setSubmitPayload, paymentMadeId } = usePaymentMadeFormContext();
 
   // Handle submit button click.
-  const handleSubmitBtnClick = (event) => {
+  const handleSubmitBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true });
   };
 
   // Handle clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 
   // Handle submit & new button click.
-  const handleSubmitAndNewClick = (event) => {
+  const handleSubmitAndNewClick = (event: any) => {
     setSubmitPayload({ redirect: false, resetForm: true });
     submitForm();
   };
 
   // Handle submit & continue editing button click.
-  const handleSubmitContinueEditingBtnClick = (event) => {
+  const handleSubmitContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, publish: true });
     submitForm();
   };

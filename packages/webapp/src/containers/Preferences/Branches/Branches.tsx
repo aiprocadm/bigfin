@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -13,7 +12,7 @@ import { compose } from '@/utils';
 function Branches({
   // #withDashboardActions
   changePreferencesPageTitle,
-}) {
+}: any) {
   const { isEmptyStatus } = useBranchesContext();
 
   React.useEffect(() => {

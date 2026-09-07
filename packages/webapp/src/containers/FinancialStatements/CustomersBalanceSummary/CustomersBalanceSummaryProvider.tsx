@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useCustomerBalanceSummaryReport } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const CustomersBalanceSummaryContext = createContext();
+const CustomersBalanceSummaryContext = createContext<any>(undefined);
 
 /**
  * Customers balance summary provider.
  */
-function CustomersBalanceSummaryProvider({ filter, ...props }) {
+function CustomersBalanceSummaryProvider({ filter, ...props }: any) {
   const query = React.useMemo(
     () => transformFilterFormToQuery(filter),
     [filter],

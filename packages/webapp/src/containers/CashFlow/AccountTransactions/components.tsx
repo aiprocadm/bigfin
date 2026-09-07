@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Menu, MenuItem, Tag } from '@blueprintjs/core';
@@ -28,7 +27,7 @@ export function AccountTransactionsLoadingBar() {
 export function ActionsMenu({
   payload: { onUncategorize, onUnmatch },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       {original.status === 'categorized' && (
@@ -49,7 +48,7 @@ export function ActionsMenu({
   );
 }
 
-const allTransactionsStatusAccessor = (transaction) => {
+const allTransactionsStatusAccessor = (transaction: any) => {
   return (
     <Tag
       intent={

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DataTable, Card } from '@/components';
 
@@ -19,14 +18,14 @@ import { compose } from '@/utils';
 function RefundCreditNoteTransactionsTable({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const { refundCreditNote } = useCreditNoteDetailDrawerContext();
 
   // Refund credit transactions table columns.
   const columns = useRefundCreditTransactionsTableColumns();
 
   // Handle delete refund credit.
-  const handleDeleteRefundCreditNote = ({ id }) => {
+  const handleDeleteRefundCreditNote = ({ id }: any) => {
     openAlert('refund-credit-delete', { creditNoteId: id });
   };
 

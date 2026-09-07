@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
@@ -22,7 +21,7 @@ export default function ReconcileVendorCreditEntriesTable({
   onUpdateData,
   entries,
   errors,
-}) {
+}: any) {
   // Reconcile vendor credit table columns.
   const columns = useReconcileVendorCreditTableColumns();
 
@@ -33,7 +32,7 @@ export default function ReconcileVendorCreditEntriesTable({
 
   // Handle update data.
   const handleUpdateData = React.useCallback(
-    (rowIndex, columnId, value) => {
+    (rowIndex: any, columnId: any, value: any) => {
       const newRows = compose(updateTableCell(rowIndex, columnId, value))(
         entries,
       );

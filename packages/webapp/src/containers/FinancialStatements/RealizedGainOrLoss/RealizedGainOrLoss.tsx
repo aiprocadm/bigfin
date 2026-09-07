@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import { FinancialStatement, DashboardPageContent } from '@/components';
@@ -22,9 +21,9 @@ function RealizedGainOrLoss({
 
   //#withRealizedGainOrLossActions
   toggleRealizedGainOrLossFilterDrawer,
-}) {
+}: any) {
   // Handle refetch realized Gain or Loss after filter change.
-  const handleFilterSubmit = (filter) => {};
+  const handleFilterSubmit = (filter: any) => {};
 
   React.useEffect(
     () => () => {
@@ -51,7 +50,7 @@ function RealizedGainOrLoss({
 }
 
 export default compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
   withRealizedGainOrLossActions,

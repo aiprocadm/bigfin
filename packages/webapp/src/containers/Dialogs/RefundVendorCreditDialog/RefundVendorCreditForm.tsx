@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -29,7 +28,7 @@ const defaultInitialValues = {
 function RefundVendorCreditForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { vendorCredit, dialogName, createRefundVendorCreditMutate } =
     useRefundVendorCreditContext();
 
@@ -40,13 +39,13 @@ function RefundVendorCreditForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setFieldError }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setFieldError }: any) => {
     const form = {
       ...omit(values, ['currency_code', 'credits_remaining']),
     };
 
     // Handle request response success.
-    const onSaved = (response) => {
+    const onSaved = (response: any) => {
       AppToaster.show({
         message: intl.get('refund_vendor_credit.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -58,7 +57,7 @@ function RefundVendorCreditForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
 

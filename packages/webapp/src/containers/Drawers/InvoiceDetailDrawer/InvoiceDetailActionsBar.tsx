@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -53,7 +52,7 @@ function InvoiceDetailActionsBar({
   // #withDrawerActions
   openDrawer,
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   // Invoice detail drawer context.
@@ -66,7 +65,7 @@ function InvoiceDetailActionsBar({
   };
 
   // Hanlde deliver sale invoice.
-  const handleDeliverInvoice = ({ id }) => {
+  const handleDeliverInvoice = ({ id }: any) => {
     openAlert('invoice-deliver', { invoiceId });
   };
 
@@ -91,7 +90,7 @@ function InvoiceDetailActionsBar({
   const apiRequest = useApiRequest();
 
   // Печатные формы РФ (за флагом ru_print_forms): открывает PDF в новой вкладке.
-  const openRuPrintForm = (form) => {
+  const openRuPrintForm = (form: any) => {
     apiRequest
       .http({
         method: 'get',

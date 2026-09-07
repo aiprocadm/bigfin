@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -48,7 +47,7 @@ function PaymentsReceivedDataTable({
 
   // #withSettings
   paymentReceivesTableSize,
-}) {
+}: any) {
   const history = useHistory();
 
   // Payment receives list context.
@@ -65,27 +64,27 @@ function PaymentsReceivedDataTable({
   const columns = usePaymentReceivesColumns();
 
   // Handles edit payment receive.
-  const handleEditPaymentReceive = ({ id }) => {
+  const handleEditPaymentReceive = ({ id }: any) => {
     history.push(`/payments-received/${id}/edit`);
   };
 
   // Handles delete payment receive.
-  const handleDeletePaymentReceive = ({ id }) => {
+  const handleDeletePaymentReceive = ({ id }: any) => {
     openAlert('payment-received-delete', { paymentReceiveId: id });
   };
 
   // Handle view detail  payment receive..
-  const handleViewDetailPaymentReceive = ({ id }) => {
+  const handleViewDetailPaymentReceive = ({ id }: any) => {
     openDrawer(DRAWERS.PAYMENT_RECEIVED_DETAILS, { paymentReceiveId: id });
   };
 
   // Handle mail send payment receive.
-  const handleSendMailPayment = ({ id }) => {
+  const handleSendMailPayment = ({ id }: any) => {
     openDrawer(DRAWERS.PAYMENT_RECEIVED_SEND_MAIL, { paymentReceivedId: id });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.PAYMENT_RECEIVED_DETAILS, {
       paymentReceiveId: cell.row.original.id,
     });
@@ -97,7 +96,7 @@ function PaymentsReceivedDataTable({
 
   // Handle datatable fetch once the table's state changing.
   const handleDataTableFetchData = useCallback(
-    ({ pageIndex, pageSize, sortBy }) => {
+    ({ pageIndex, pageSize, sortBy }: any) => {
       setPaymentReceivesTableState({
         pageIndex,
         pageSize,
@@ -108,8 +107,8 @@ function PaymentsReceivedDataTable({
   );
 
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selectedRows) => {
-    const selectedIds = selectedRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedRows: any) => {
+    const selectedIds = selectedRows?.map((row: any) => row.original.id) || [];
     setPaymentReceivesSelectedRows(selectedIds);
   };
 
@@ -160,10 +159,10 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withPaymentsReceived(({ paymentReceivesTableState }) => ({
+  withPaymentsReceived(({ paymentReceivesTableState }: any) => ({
     paymentReceivesTableState,
   })),
-  withSettings(({ paymentReceiveSettings }) => ({
+  withSettings(({ paymentReceiveSettings }: any) => ({
     paymentReceivesTableSize: paymentReceiveSettings?.tableSize,
   })),
 )(PaymentsReceivedDataTable);

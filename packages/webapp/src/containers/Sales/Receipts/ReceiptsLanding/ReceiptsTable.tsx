@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -48,7 +47,7 @@ function ReceiptsDataTable({
 
   // #withSettings
   receiptsTableSize,
-}) {
+}: any) {
   const history = useHistory();
 
   // Receipts list context.
@@ -64,32 +63,32 @@ function ReceiptsDataTable({
   const columns = useReceiptsTableColumns();
 
   // Handle receipt edit action.
-  const handleEditReceipt = ({ id }) => {
+  const handleEditReceipt = ({ id }: any) => {
     history.push(`/receipts/${id}/edit`);
   };
 
   // Handles receipt delete action.
-  const handleDeleteReceipt = (receipt) => {
+  const handleDeleteReceipt = (receipt: any) => {
     openAlert('receipt-delete', { receiptId: receipt.id });
   };
 
   // Handles receipt close action.
-  const handleCloseReceipt = (receipt) => {
+  const handleCloseReceipt = (receipt: any) => {
     openAlert('receipt-close', { receiptId: receipt.id });
   };
 
   // Handle view detail receipt.
-  const handleViewDetailReceipt = ({ id }) => {
+  const handleViewDetailReceipt = ({ id }: any) => {
     openDrawer(DRAWERS.RECEIPT_DETAILS, { receiptId: id });
   };
 
   // Handle print receipt.
-  const handlePrintInvoice = ({ id }) => {
+  const handlePrintInvoice = ({ id }: any) => {
     openDialog('receipt-pdf-preview', { receiptId: id });
   };
 
   // Handle send mail receipt.
-  const handleSendMailReceipt = ({ id }) => {
+  const handleSendMailReceipt = ({ id }: any) => {
     openDrawer(DRAWERS.RECEIPT_SEND_MAIL, { receiptId: id });
   };
 
@@ -99,7 +98,7 @@ function ReceiptsDataTable({
 
   // Handles the datable fetch data once the state changing.
   const handleDataTableFetchData = useCallback(
-    ({ sortBy, pageIndex, pageSize }) => {
+    ({ sortBy, pageIndex, pageSize }: any) => {
       setReceiptsTableState({
         pageIndex,
         pageSize,
@@ -109,12 +108,12 @@ function ReceiptsDataTable({
     [setReceiptsTableState],
   );
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.RECEIPT_DETAILS, { receiptId: cell.row.original.id });
   };
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selectedRows) => {
-    const selectedIds = selectedRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedRows: any) => {
+    const selectedIds = selectedRows?.map((row: any) => row.original.id) || [];
     setReceiptsSelectedRows(selectedIds);
   };
 
@@ -167,8 +166,8 @@ export default compose(
   withReceiptsActions,
   withDrawerActions,
   withDialogActions,
-  withReceipts(({ receiptTableState }) => ({ receiptTableState })),
-  withSettings(({ receiptSettings }) => ({
+  withReceipts(({ receiptTableState }: any) => ({ receiptTableState })),
+  withSettings(({ receiptSettings }: any) => ({
     receiptsTableSize: receiptSettings?.tableSize,
   })),
 )(ReceiptsDataTable);

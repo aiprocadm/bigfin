@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React, { createContext, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useInviteMetaByToken, useAuthInviteAccept } from '@/hooks/query';
 import { InviteAcceptLoading } from './components';
 
-const InviteAcceptContext = createContext();
+const InviteAcceptContext = createContext<any>(undefined);
 
 /**
  * Invite accept provider.
  */
-function InviteAcceptProvider({ token, ...props }) {
+function InviteAcceptProvider({ token, ...props }: any) {
   // Invite meta by token.
   const {
     data: inviteMeta,

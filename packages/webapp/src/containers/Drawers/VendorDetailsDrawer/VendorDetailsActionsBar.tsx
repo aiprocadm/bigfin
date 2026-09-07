@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -49,7 +48,7 @@ function VendorDetailsActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const { vendorId } = useVendorDetailsDrawerContext();
   const history = useHistory();
 

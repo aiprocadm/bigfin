@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -32,23 +31,23 @@ export default function WarehouseTransferFloatingActions() {
     useWarehouseTransferFormContext();
 
   // Handle submit initiate button click.
-  const handleSubmitInitiateBtnClick = (event) => {
+  const handleSubmitInitiateBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, initiate: true, deliver: false });
   };
 
   // Handle submit transferred button click.
-  const handleSubmitTransferredBtnClick = (event) => {
+  const handleSubmitTransferredBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, initiate: true, deliver: true });
     submitForm();
   };
 
   // Handle submit as draft button click.
-  const handleSubmitDraftBtnClick = (event) => {
+  const handleSubmitDraftBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, initiate: false, deliver: false });
     submitForm();
   };
   // Handle submit as draft & new button click.
-  const handleSubmitDraftAndNewBtnClick = (event) => {
+  const handleSubmitDraftAndNewBtnClick = (event: any) => {
     setSubmitPayload({
       redirect: false,
       initiate: false,
@@ -59,18 +58,18 @@ export default function WarehouseTransferFloatingActions() {
   };
 
   // Handle submit as draft & continue editing button click.
-  const handleSubmitDraftContinueEditingBtnClick = (event) => {
+  const handleSubmitDraftContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, deliver: false, initiate: false });
     submitForm();
   };
 
   // Handle clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 

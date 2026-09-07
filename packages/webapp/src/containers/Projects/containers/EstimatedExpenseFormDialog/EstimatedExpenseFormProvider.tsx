@@ -1,8 +1,7 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 
-const EstimatedExpenseFormContext = React.createContext();
+const EstimatedExpenseFormContext = React.createContext<any>(undefined);
 
 /**
  * Estimated expense form provider.
@@ -13,7 +12,7 @@ function EstimatedExpenseFormProvider({
   dialogName,
   estimatedExpenseId,
   ...props
-}) {
+}: any) {
   // state provider.
   const provider = {
     dialogName,

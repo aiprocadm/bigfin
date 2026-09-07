@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -24,7 +23,7 @@ function EstimatePaymentTransactions({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
 
   // Estimate transactions table columns.
@@ -42,14 +41,14 @@ function EstimatePaymentTransactions({
   });
 
   // Handles delete payment transactions.
-  const handleDeletePaymentTransactons = ({ estimate_id }) => {
+  const handleDeletePaymentTransactons = ({ estimate_id }: any) => {
     openAlert('estimate-delete', {
       estimateId: estimate_id,
     });
   };
 
   // Handles edit payment transactions.
-  const handleEditPaymentTransactions = ({ estimate_id }) => {
+  const handleEditPaymentTransactions = ({ estimate_id }: any) => {
     history.push(`/estimates/${estimate_id}/edit`);
     closeDrawer(DRAWERS.ITEM_DETAILS);
   };

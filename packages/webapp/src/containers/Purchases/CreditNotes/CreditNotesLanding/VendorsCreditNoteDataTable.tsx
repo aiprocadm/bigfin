@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -48,7 +47,7 @@ function VendorsCreditNoteDataTable({
 
   // #withSettings
   creditNoteTableSize,
-}) {
+}: any) {
   const history = useHistory();
 
   // Vendor credits context.
@@ -69,7 +68,7 @@ function VendorsCreditNoteDataTable({
 
   // Handles fetch data once the table state change.
   const handleDataTableFetchData = React.useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setVendorsCreditNoteTableState({
         pageSize,
         pageIndex,
@@ -85,43 +84,43 @@ function VendorsCreditNoteDataTable({
   }
 
   // Handle view vendor credit details.
-  const handleViewDetailVendorCredit = ({ id }) => {
+  const handleViewDetailVendorCredit = ({ id }: any) => {
     openDrawer(DRAWERS.VENDOR_CREDIT_DETAILS, { vendorCreditId: id });
   };
 
   // Handle delete credit note.
-  const handleDeleteVendorCreditNote = ({ id }) => {
+  const handleDeleteVendorCreditNote = ({ id }: any) => {
     openAlert('vendor-credit-delete', { vendorCreditId: id });
   };
 
   // Handle edit credit note.
-  const hanldeEditVendorCreditNote = (vendorCredit) => {
+  const hanldeEditVendorCreditNote = (vendorCredit: any) => {
     history.push(`/vendor-credits/${vendorCredit.id}/edit`);
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.VENDOR_CREDIT_DETAILS, {
       vendorCreditId: cell.row.original.id,
     });
   };
 
-  const handleRefundCreditVendor = ({ id }) => {
+  const handleRefundCreditVendor = ({ id }: any) => {
     openDialog('refund-vendor-credit', { vendorCreditId: id });
   };
 
   // Handle cancel/confirm vendor credit open.
-  const handleOpenCreditNote = ({ id }) => {
+  const handleOpenCreditNote = ({ id }: any) => {
     openAlert('vendor-credit-open', { vendorCreditId: id });
   };
 
   // Handle reconcile credit note.
-  const handleReconcileVendorCredit = ({ id }) => {
+  const handleReconcileVendorCredit = ({ id }: any) => {
     openDialog('reconcile-vendor-credit', { vendorCreditId: id });
   };
 
-  const handleSelectedRowsChange = (selectedFlatRows) => {
-    const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedFlatRows: any) => {
+    const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
     setVendorsCreditNoteSelectedRows(selectedIds);
   };
 
@@ -168,10 +167,10 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withSettings(({ vendorsCreditNoteSetting }) => ({
+  withSettings(({ vendorsCreditNoteSetting }: any) => ({
     creditNoteTableSize: vendorsCreditNoteSetting?.tableSize,
   })),
-  withVendorsCreditNotes(({ vendorsCreditNoteTableState }) => ({
+  withVendorsCreditNotes(({ vendorsCreditNoteTableState }: any) => ({
     vendorsCreditNoteTableState,
   })),
 )(VendorsCreditNoteDataTable);

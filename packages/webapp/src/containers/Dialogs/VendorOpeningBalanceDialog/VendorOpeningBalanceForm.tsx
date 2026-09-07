@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -29,7 +28,7 @@ const defaultInitialValues = {
 function VendorOpeningBalanceForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { dialogName, vendor, editVendorOpeningBalanceMutate } =
     useVendorOpeningBalanceContext();
 
@@ -42,14 +41,14 @@ function VendorOpeningBalanceForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const formValues = {
       ...values,
       opening_balance_at: moment(values.opening_balance_at).format('YYYY-MM-DD'),
     };
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('vendor_opening_balance.success_message'),
         intent: Intent.SUCCESS,
@@ -62,7 +61,7 @@ function VendorOpeningBalanceForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
       }
       setSubmitting(false);

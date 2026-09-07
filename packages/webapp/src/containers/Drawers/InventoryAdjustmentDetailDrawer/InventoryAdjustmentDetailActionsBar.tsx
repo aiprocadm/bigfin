@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, NavbarGroup, Classes, Intent } from '@blueprintjs/core';
 
@@ -25,7 +24,7 @@ import { compose } from '@/utils';
 function InventoryAdjustmentDetailActionsBar({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const { inventoryId } = useInventoryAdjustmentDrawerContext();
 
   // Handle delete inventory adjustment.

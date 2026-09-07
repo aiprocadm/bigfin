@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DataTable, Card } from '@/components';
 
@@ -18,13 +17,13 @@ import { compose } from '@/utils';
 function ReconcileVendorCreditTransactionsTable({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const columns = useReconcileVendorCreditTransactionsTableColumns();
 
   const { reconcileVendorCredits } = useVendorCreditDetailDrawerContext();
 
   // Handle delete reconile credit.
-  const handleDeleteReconcileVendorCredit = ({ id }) => {
+  const handleDeleteReconcileVendorCredit = ({ id }: any) => {
     openAlert('reconcile-vendor-delete', { vendorCreditId: id });
   };
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -25,18 +24,18 @@ function ProjectTaskTableRoot({
   openDialog,
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const { projectTasks } = useProjectTaskContext();
 
   // Retrieve project task table columns.
   const columns = useProjectTaskColumns();
 
   // Handle delete task.
-  const handleDeleteTask = ({ id }) => {
+  const handleDeleteTask = ({ id }: any) => {
     openAlert('project-task-delete', { taskId: id });
   };
 
-  const handleEditTask = ({ id }) => {
+  const handleEditTask = ({ id }: any) => {
     openDialog('project-task-form', {
       taskId: id,
       action: 'edit',
@@ -72,7 +71,7 @@ function ProjectTaskTableRoot({
 export const ProjectTasksTable = compose(
   withAlertActions,
   withDialogActions,
-  withSettings(({ projectTasksSettings }) => ({
+  withSettings(({ projectTasksSettings }: any) => ({
     projectTasksTableSize: projectTasksSettings?.tableSize,
   })),
 )(ProjectTaskTableRoot);

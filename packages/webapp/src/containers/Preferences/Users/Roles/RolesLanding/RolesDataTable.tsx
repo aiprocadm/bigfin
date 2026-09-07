@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -19,7 +18,7 @@ import { compose } from '@/utils';
 function RolesDataTable({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   // History context.
   const history = useHistory();
 
@@ -30,7 +29,7 @@ function RolesDataTable({
   const { roles, isRolesFetching, isRolesLoading } = useRolesContext();
 
   // handles delete the given role.
-  const handleDeleteRole = ({ id, predefined }) => {
+  const handleDeleteRole = ({ id, predefined }: any) => {
     if (predefined) {
       AppToaster.show({
         message: intl.get('roles.error.you_cannot_delete_predefined_roles'),
@@ -41,7 +40,7 @@ function RolesDataTable({
     }
   };
   // Handles the edit of the given role.
-  const handleEditRole = ({ id, predefined }) => {
+  const handleEditRole = ({ id, predefined }: any) => {
     if (predefined) {
       AppToaster.show({
         message: intl.get('roles.error.you_cannot_edit_predefined_roles'),

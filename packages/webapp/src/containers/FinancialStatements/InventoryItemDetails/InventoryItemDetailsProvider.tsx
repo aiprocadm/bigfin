@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useInventoryItemDetailsReport } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const InventoryItemDetailsContext = React.createContext();
+const InventoryItemDetailsContext = React.createContext<any>(undefined);
 
 /**
  * Inventory item details provider.
  */
-function InventoryItemDetailsProvider({ query, ...props }) {
+function InventoryItemDetailsProvider({ query, ...props }: any) {
   const requestQuery = React.useMemo(
     () => transformFilterFormToQuery(query),
     [query],

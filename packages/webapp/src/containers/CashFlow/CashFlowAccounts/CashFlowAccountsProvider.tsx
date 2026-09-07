@@ -1,16 +1,15 @@
-// @ts-nocheck
 import React from 'react';
 import { DashboardInsider } from '@/components/Dashboard';
 
 import { useCashflowAccounts } from '@/hooks/query';
 import { transformAccountsStateToQuery } from './utils';
 
-const CashFlowAccountsContext = React.createContext();
+const CashFlowAccountsContext = React.createContext<any>(undefined);
 
 /**
  * Cash Flow data provider.
  */
-function CashFlowAccountsProvider({ tableState, ...props }) {
+function CashFlowAccountsProvider({ tableState, ...props }: any) {
   const query = transformAccountsStateToQuery(tableState);
 
   // Fetch cash flow list .

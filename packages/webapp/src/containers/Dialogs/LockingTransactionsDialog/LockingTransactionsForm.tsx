@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -28,7 +27,7 @@ const defaultInitialValues = {
 function LockingTransactionsForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const {
     dialogName,
     moduleName,
@@ -54,11 +53,11 @@ function LockingTransactionsForm({
   );
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     setSubmitting(true);
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('locking_transactions.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -71,7 +70,7 @@ function LockingTransactionsForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
 

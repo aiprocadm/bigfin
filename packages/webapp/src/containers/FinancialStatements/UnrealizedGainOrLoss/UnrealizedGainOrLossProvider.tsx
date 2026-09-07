@@ -1,14 +1,13 @@
-// @ts-nocheck
 import React from 'react';
 
 import FinancialReportPage from '../FinancialReportPage';
 
-const UnrealizedGainOrLossContext = React.createContext();
+const UnrealizedGainOrLossContext = React.createContext<any>(undefined);
 
 /**
  * Unrealized Gain or Loss provider.
  */
-function UnrealizedGainOrLossProvider({ filter, ...props }) {
+function UnrealizedGainOrLossProvider({ filter, ...props }: any) {
   const provider = {};
   return (
     <FinancialReportPage name="unrealized-gain-loss">

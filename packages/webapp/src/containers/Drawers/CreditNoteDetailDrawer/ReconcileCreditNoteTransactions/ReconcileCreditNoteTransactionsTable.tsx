@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DataTable, Card } from '@/components';
 
@@ -19,7 +18,7 @@ import { compose } from '@/utils';
 function RefundCreditNoteTransactionsTable({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   // Credit note drawer context.
   const { reconcileCreditNotes } = useCreditNoteDetailDrawerContext();
 
@@ -27,7 +26,7 @@ function RefundCreditNoteTransactionsTable({
   const columns = useReconcileCreditTransactionsTableColumns();
 
   // Handle delete reconile credit.
-  const handleDeleteReconcileCreditNote = ({ id }) => {
+  const handleDeleteReconcileCreditNote = ({ id }: any) => {
     openAlert('reconcile-credit-delete', { creditNoteId: id });
   };
 

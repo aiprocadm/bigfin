@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -40,7 +39,7 @@ function ReceiptDetailActionBar({
   // #withDrawerActions
   closeDrawer,
   openDrawer
-}) {
+}: any) {
   const history = useHistory();
   const { receiptId } = useReceiptDetailDrawerContext();
 

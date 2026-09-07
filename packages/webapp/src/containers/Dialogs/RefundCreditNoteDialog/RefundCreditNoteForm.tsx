@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -29,7 +28,7 @@ const defaultInitialValues = {
 function RefundCreditNoteForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { dialogName, creditNote, createRefundCreditNoteMutate } =
     useRefundCreditNoteContext();
 
@@ -40,13 +39,13 @@ function RefundCreditNoteForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = (values: any, { setSubmitting }: any) => {
     const form = {
       ...omit(values, ['currency_code', 'credits_remaining']),
     };
 
     // Handle request response success.
-    const onSaved = (response) => {
+    const onSaved = (response: any) => {
       AppToaster.show({
         message: intl.get('refund_credit_note.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -58,7 +57,7 @@ function RefundCreditNoteForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
     };
     createRefundCreditNoteMutate([creditNote.id, form])

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import styled from 'styled-components';
@@ -27,12 +26,12 @@ function QuickCreateItemDrawerForm({
 
   // #withDashboardActions
   addQuickActionEvent,
-}) {
+}: any) {
   // Drawer context.
   const { payload } = useDrawerContext();
 
   // Handle the form submit request success.
-  const handleSubmitSuccess = (values, form, submitPayload, response) => {
+  const handleSubmitSuccess = (values: any, form: any, submitPayload: any, response: any) => {
     if (submitPayload.redirect) {
       closeDrawer(DRAWERS.QUICK_CREATE_ITEM);
     }
@@ -66,7 +65,7 @@ function QuickCreateItemDrawerForm({
  * Drawer item form loading.
  * @returns {JSX}
  */
-function DrawerItemFormLoading({ children }) {
+function DrawerItemFormLoading({ children }: any) {
   const { isFormLoading } = useItemFormContext();
 
   return <DrawerLoading loading={isFormLoading}>{children}</DrawerLoading>;

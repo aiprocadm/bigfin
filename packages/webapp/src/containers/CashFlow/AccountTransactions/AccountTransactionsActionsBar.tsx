@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React, { useMemo } from 'react';
 import {
@@ -75,7 +74,7 @@ function AccountTransactionsActionsBar({
 
   // #withAlerts
   openAlert,
-}) {
+}: any) {
   const history = useHistory();
   const { accountId, currentAccount } = useAccountTransactionsContext();
 
@@ -93,11 +92,11 @@ function AccountTransactionsActionsBar({
   const isSyncingOwner = currentAccount.is_syncing_owner;
 
   // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
+  const handleTableRowSizeChange = (size: any) => {
     addSetting('cashflowTransactions', 'tableSize', size);
   };
   // Handle money in form
-  const handleMoneyInFormTransaction = (account) => {
+  const handleMoneyInFormTransaction = (account: any) => {
     openDialog('money-in', {
       account_id: accountId,
       account_type: account.value,
@@ -105,7 +104,7 @@ function AccountTransactionsActionsBar({
     });
   };
   // Handle money out form
-  const handlMoneyOutFormTransaction = (account) => {
+  const handlMoneyOutFormTransaction = (account: any) => {
     openDialog('money-out', {
       account_id: accountId,
       account_type: account.value,
@@ -186,7 +185,7 @@ function AccountTransactionsActionsBar({
   };
 
   // Handle multi select transactions for categorization or matching.
-  const handleMultipleCategorizingSwitch = (event) => {
+  const handleMultipleCategorizingSwitch = (event: any) => {
     enableMultipleCategorization(event.currentTarget.checked);
   };
   // Handle resume bank feeds syncing.
@@ -441,7 +440,7 @@ export default compose(
   withDialogActions,
   withAlertActions,
   withSettingsActions,
-  withSettings(({ cashflowTransactionsSettings }) => ({
+  withSettings(({ cashflowTransactionsSettings }: any) => ({
     cashflowTansactionsTableSize: cashflowTransactionsSettings?.tableSize,
   })),
   withBanking(
@@ -450,7 +449,7 @@ export default compose(
       excludedTransactionsIdsSelected,
       openMatchingTransactionAside,
       categorizedTransactionsSelected,
-    }) => ({
+    }: any) => ({
       uncategorizedTransationsIdsSelected,
       excludedTransactionsIdsSelected,
       openMatchingTransactionAside,

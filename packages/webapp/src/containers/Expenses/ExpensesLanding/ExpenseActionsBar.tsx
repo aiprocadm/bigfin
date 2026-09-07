@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Button,
@@ -58,7 +57,7 @@ function ExpensesActionsBar({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   // History context.
   const history = useHistory();
 
@@ -86,7 +85,7 @@ function ExpensesActionsBar({
   };
 
   // Handles the tab chaning.
-  const handleTabChange = (view) => {
+  const handleTabChange = (view: any) => {
     setExpensesTableState({
       viewSlug: view ? view.slug : null,
     });
@@ -100,7 +99,7 @@ function ExpensesActionsBar({
     history.push('/expenses/import');
   };
   // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
+  const handleTableRowSizeChange = (size: any) => {
     addSetting('expenses', 'tableSize', size);
   };
   // Handle the export button click.
@@ -152,7 +151,7 @@ function ExpensesActionsBar({
             conditions: expensesFilterConditions,
             defaultFieldKey: 'reference_no',
             fields: fields,
-            onFilterChange: (filterConditions) => {
+            onFilterChange: (filterConditions: any) => {
               setExpensesTableState({ filterRoles: filterConditions });
             },
           }}
@@ -212,11 +211,11 @@ export default compose(
   withDialogActions,
   withExpensesActions,
   withSettingsActions,
-  withExpenses(({ expensesTableState, expensesSelectedRows }) => ({
+  withExpenses(({ expensesTableState, expensesSelectedRows }: any) => ({
     expensesFilterConditions: expensesTableState.filterRoles,
     expensesSelectedRows,
   })),
-  withSettings(({ expenseSettings }) => ({
+  withSettings(({ expenseSettings }: any) => ({
     expensesTableSize: expenseSettings?.tableSize,
   })),
 )(ExpensesActionsBar);

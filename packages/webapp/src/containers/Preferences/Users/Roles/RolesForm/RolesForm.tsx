@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
@@ -34,7 +33,7 @@ const defaultValues = {
 function RolesForm({
   // #withDashboardActions
   changePreferencesPageTitle,
-}) {
+}: any) {
   // History context.
   const history = useHistory();
 
@@ -60,7 +59,7 @@ function RolesForm({
   }, [changePreferencesPageTitle]);
 
   // Handle the form submit.
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = (values: any, { setSubmitting }: any) => {
     const permission = transformToArray(values);
     const form = {
       ...values,
@@ -84,7 +83,7 @@ function RolesForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       setSubmitting(false);
       handleDeleteErrors(errors);
     };

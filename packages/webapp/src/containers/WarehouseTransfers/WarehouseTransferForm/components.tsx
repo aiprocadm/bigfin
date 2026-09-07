@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { chain } from 'lodash';
 import { FormikObserver } from '@/components';
@@ -8,7 +7,7 @@ export function WarehouseTransferObserveItemsCost() {
   const { setItemCostQuery } = useWarehouseTransferFormContext();
 
   // Handle the form change.
-  const handleFormChange = (values) => {
+  const handleFormChange = (values: any) => {
     const { date } = values;
     const itemsIds = chain(values.entries)
       .filter((e) => e.item_id)

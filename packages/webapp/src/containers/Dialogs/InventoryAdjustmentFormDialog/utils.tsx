@@ -1,19 +1,18 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import { useInventoryAdjContext } from './InventoryAdjustmentFormProvider';
 import { first } from 'lodash';
 
-export const decrementQuantity = (newQuantity, quantityOnHand) => {
+export const decrementQuantity = (newQuantity: any, quantityOnHand: any) => {
   return quantityOnHand - newQuantity;
 };
 
-export const incrementQuantity = (newQuantity, quantityOnHand) => {
+export const incrementQuantity = (newQuantity: any, quantityOnHand: any) => {
   return quantityOnHand + newQuantity;
 };
 
-export const diffQuantity = (newQuantity, quantityOnHand, type) => {
+export const diffQuantity = (newQuantity: any, quantityOnHand: any, type: any) => {
   return type === 'decrement'
     ? decrementQuantity(newQuantity, quantityOnHand)
     : incrementQuantity(newQuantity, quantityOnHand);
@@ -26,7 +25,7 @@ export const useSetPrimaryWarehouseToForm = () => {
   React.useEffect(() => {
     if (isWarehousesSuccess) {
       const primaryWarehouse =
-        warehouses.find((b) => b.primary) || first(warehouses);
+        warehouses.find((b: any) => b.primary) || first(warehouses);
 
       if (primaryWarehouse) {
         setFieldValue('warehouse_id', primaryWarehouse.id);
@@ -41,7 +40,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: any) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);

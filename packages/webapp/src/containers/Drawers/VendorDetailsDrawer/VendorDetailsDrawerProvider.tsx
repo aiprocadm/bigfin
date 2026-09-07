@@ -1,15 +1,14 @@
-// @ts-nocheck
 import React from 'react';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { useVendor } from '@/hooks/query';
 import { DRAWERS } from '@/constants/drawers';
 
-const VendorDetailDrawerContext = React.createContext();
+const VendorDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Contact detail provider.
  */
-function VendorDetailsDrawerProvider({ vendorId, ...props }) {
+function VendorDetailsDrawerProvider({ vendorId, ...props }: any) {
   // Handle fetch vendor details.
   const { data: vendor, isLoading: isVendorLoading } = useVendor(vendorId, {
     enabled: !!vendorId,

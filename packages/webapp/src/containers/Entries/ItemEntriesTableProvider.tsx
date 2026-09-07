@@ -1,9 +1,8 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 
-const ItemEntriesTableContext = createContext();
+const ItemEntriesTableContext = createContext<any>(undefined);
 
-function ItemEntriesTableProvider({ children, value }) {
+function ItemEntriesTableProvider({ children, value }: any) {
   const provider = {
     ...value,
   };

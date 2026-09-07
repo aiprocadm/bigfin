@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Link } from 'react-router-dom';
@@ -20,7 +19,7 @@ import { compose } from '@/utils';
 /**
  * account drawer table.
  */
-function AccountDrawerTable({ closeDrawer }) {
+function AccountDrawerTable({ closeDrawer }: any) {
   const { accounts, drawerName } = useAccountDrawerContext();
 
   // Handle view more link click.

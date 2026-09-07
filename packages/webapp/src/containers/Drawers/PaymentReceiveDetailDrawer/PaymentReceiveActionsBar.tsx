@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -43,7 +42,7 @@ function PaymentsReceivedActionsBar({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const history = useHistory();
 
   // Retrieve the payment receive drawer context.

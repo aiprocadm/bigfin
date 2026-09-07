@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Form, useFormikContext } from 'formik';
 import { FormObserver } from '@/components';
@@ -17,7 +16,7 @@ export default function AllocateLandedCostFormContent() {
     useAllocateLandedConstDialogContext();
 
   // Handle the form change.
-  const handleFormChange = (values) => {
+  const handleFormChange = (values: any) => {
     if (values.transaction_type) {
       setTransactionsType(values.transaction_type);
     }

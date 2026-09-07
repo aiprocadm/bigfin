@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { createContext, useContext, useMemo } from 'react';
 
 import FinancialReportPage from '../FinancialReportPage';
 import { useBalanceSheet } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 
-const BalanceSheetContext = createContext();
+const BalanceSheetContext = createContext<any>(undefined);
 
-function BalanceSheetProvider({ filter, ...props }) {
+function BalanceSheetProvider({ filter, ...props }: any) {
   // Transformes the given filter to query.
   const httpQuery = useMemo(() => transformFilterFormToQuery(filter), [filter]);
 

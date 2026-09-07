@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -47,7 +46,7 @@ function MoneyInForm({
   transactionNextNumber,
   transactionNumberPrefix,
   transactionIncrementMode,
-}) {
+}: any) {
   const {
     dialogName,
     accountId,
@@ -72,7 +71,7 @@ function MoneyInForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = (values: any, { setSubmitting }: any) => {
     const form = {
       ...omit(values, ['currency_code']),
       publish: true,
@@ -106,7 +105,7 @@ function MoneyInForm({
 export default compose(
   withDialogActions,
   withCurrentOrganization(),
-  withSettings(({ cashflowSetting }) => ({
+  withSettings(({ cashflowSetting }: any) => ({
     transactionNextNumber: cashflowSetting?.nextNumber,
     transactionNumberPrefix: cashflowSetting?.numberPrefix,
     transactionIncrementMode: cashflowSetting?.autoIncrement,

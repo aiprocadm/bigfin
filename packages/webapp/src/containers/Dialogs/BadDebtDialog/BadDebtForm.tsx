@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -31,7 +30,7 @@ function BadDebtForm({
 
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const { invoice, dialogName, createBadDebtMutate } = useBadDebtContext();
 
   // Initial form values
@@ -41,13 +40,13 @@ function BadDebtForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const form = {
       ...omit(values, ['currency_code']),
     };
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('bad_debt.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -60,7 +59,7 @@ function BadDebtForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setErrors });
       }

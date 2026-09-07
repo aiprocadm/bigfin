@@ -1,13 +1,12 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 
-const ContactDuplicateContext = React.createContext();
+const ContactDuplicateContext = React.createContext<any>(undefined);
 
 /**
  *  contact duplicate provider.
  */
-function ContactDuplicateProvider({ contactId, dialogName, ...props }) {
+function ContactDuplicateProvider({ contactId, dialogName, ...props }: any) {
   // Provider state.
   const provider = {
     dialogName,

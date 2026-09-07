@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { useCurrencyFormContext } from './CurrencyFormProvider';
@@ -15,7 +14,7 @@ import { compose } from '@/utils';
 function CurrencyFormFooter({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isSubmitting } = useFormikContext();
 
   const { dialogName, isEditMode } = useCurrencyFormContext();

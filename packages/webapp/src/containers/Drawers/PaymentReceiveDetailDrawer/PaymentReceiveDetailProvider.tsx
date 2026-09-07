@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -7,12 +6,12 @@ import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 import { DRAWERS } from '@/constants/drawers';
 
-const PaymentReceiveDetailContext = React.createContext();
+const PaymentReceiveDetailContext = React.createContext<any>(undefined);
 
 /**
  * Payment receive detail provider.
  */
-function PaymentReceiveDetailProvider({ paymentReceiveId, ...props }) {
+function PaymentReceiveDetailProvider({ paymentReceiveId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 
@@ -27,7 +26,7 @@ export function ItemTransactionsHeader() {
   const { setValue } = useItemDetailDrawerContext();
 
   // handle item change.
-  const handleItemChange = (item) => {
+  const handleItemChange = (item: any) => {
     setValue(item);
   };
   return (

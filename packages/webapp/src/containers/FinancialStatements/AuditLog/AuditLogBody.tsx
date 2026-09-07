@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Spinner } from '@blueprintjs/core';
 import { FinancialReportBody } from '../FinancialReportPage';

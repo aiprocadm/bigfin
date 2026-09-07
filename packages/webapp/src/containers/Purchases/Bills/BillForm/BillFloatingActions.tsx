@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Intent,
@@ -32,47 +31,47 @@ export default function BillFloatingActions() {
   const { bill, setSubmitPayload } = useBillFormContext();
 
   // Handle submit as open button click.
-  const handleSubmitOpenBtnClick = (event) => {
+  const handleSubmitOpenBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, status: true });
     submitForm();
   };
 
   // Handle submit, open and another new button click.
-  const handleSubmitOpenAndNewBtnClick = (event) => {
+  const handleSubmitOpenAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: true, resetForm: true });
     submitForm();
   };
 
   // Handle submit as open & continue editing button click.
-  const handleSubmitOpenContinueEditingBtnClick = (event) => {
+  const handleSubmitOpenContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: true });
     submitForm();
   };
 
   // Handle submit as draft button click.
-  const handleSubmitDraftBtnClick = (event) => {
+  const handleSubmitDraftBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, status: false });
     submitForm();
   };
 
   // handle submit as draft & new button click.
-  const handleSubmitDraftAndNewBtnClick = (event) => {
+  const handleSubmitDraftAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: false, resetForm: true });
     submitForm();
   };
 
   // Handle submit as draft & continue editing button click.
-  const handleSubmitDraftContinueEditingBtnClick = (event) => {
+  const handleSubmitDraftContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: false });
     submitForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 

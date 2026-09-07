@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useExpense } from '@/hooks/query';
@@ -7,12 +6,12 @@ import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 import { DRAWERS } from '@/constants/drawers';
 
-const ExpenseDrawerDrawerContext = React.createContext();
+const ExpenseDrawerDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Expense drawer provider.
  */
-function ExpenseDrawerProvider({ expenseId, ...props }) {
+function ExpenseDrawerProvider({ expenseId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

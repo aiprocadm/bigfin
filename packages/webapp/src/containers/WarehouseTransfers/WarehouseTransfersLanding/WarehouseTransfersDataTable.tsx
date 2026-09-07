@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -41,7 +40,7 @@ function WarehouseTransfersDataTable({
 
   // #withSettings
   warehouseTransferTableSize,
-}) {
+}: any) {
   const history = useHistory();
 
   // Warehouse transfers list context.
@@ -62,7 +61,7 @@ function WarehouseTransfersDataTable({
 
   // Handles fetch data once the table state change.
   const handleDataTableFetchData = React.useCallback(
-    ({ pageSize, pageIndex, sortBy }) => {
+    ({ pageSize, pageIndex, sortBy }: any) => {
       setWarehouseTransferTableState({
         pageSize,
         pageIndex,
@@ -78,31 +77,31 @@ function WarehouseTransfersDataTable({
   }
 
   // Handle view detail.
-  const handleViewDetailWarehouseTransfer = ({ id }) => {
+  const handleViewDetailWarehouseTransfer = ({ id }: any) => {
     openDrawer(DRAWERS.WAREHOUSE_TRANSFER_DETAILS, { warehouseTransferId: id });
   };
 
   // Handle edit warehouse transfer.
-  const handleEditWarehouseTransfer = ({ id }) => {
+  const handleEditWarehouseTransfer = ({ id }: any) => {
     history.push(`/warehouses-transfers/${id}/edit`);
   };
 
   // Handle delete warehouse transfer.
-  const handleDeleteWarehouseTransfer = ({ id }) => {
+  const handleDeleteWarehouseTransfer = ({ id }: any) => {
     openAlert('warehouse-transfer-delete', { warehouseTransferId: id });
   };
 
   // Handle initiate warehouse transfer.
-  const handleInitateWarehouseTransfer = ({ id }) => {
+  const handleInitateWarehouseTransfer = ({ id }: any) => {
     openAlert('warehouse-transfer-initate', { warehouseTransferId: id });
   };
   // Handle transferred warehouse transfer.
-  const handleTransferredWarehouseTransfer = ({ id }) => {
+  const handleTransferredWarehouseTransfer = ({ id }: any) => {
     openAlert('transferred-warehouse-transfer', { warehouseTransferId: id });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.WAREHOUSE_TRANSFER_DETAILS, {
       warehouseTransferId: cell.row.original.id,
     });
@@ -150,7 +149,7 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withSettings(({ warehouseTransferSettings }) => ({
+  withSettings(({ warehouseTransferSettings }: any) => ({
     warehouseTransferTableSize: warehouseTransferSettings?.tableSize,
   })),
 )(WarehouseTransfersDataTable);

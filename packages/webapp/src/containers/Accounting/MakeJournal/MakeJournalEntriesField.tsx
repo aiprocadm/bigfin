@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField } from 'formik';
 import classNames from 'classnames';
@@ -32,9 +31,9 @@ export default function MakeJournalEntriesField() {
           form: { values, setFieldValue },
           field: { value },
           meta: { error, touched },
-        }) => (
+        }: any) => (
           <MakeJournalEntriesTable
-            onChange={(entries) => {
+            onChange={(entries: any) => {
               setFieldValue('entries', entries);
             }}
             entries={value}

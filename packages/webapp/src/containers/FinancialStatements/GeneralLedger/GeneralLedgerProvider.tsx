@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 
 import FinancialReportPage from '../FinancialReportPage';
@@ -6,12 +5,12 @@ import { useGeneralLedgerSheet } from '@/hooks/query';
 import { transformFilterFormToQuery } from '../common';
 import { showApiError } from '@/utils/showApiError';
 
-const GeneralLedgerContext = createContext();
+const GeneralLedgerContext = createContext<any>(undefined);
 
 /**
  * General ledger provider.
  */
-function GeneralLedgerProvider({ query, ...props }) {
+function GeneralLedgerProvider({ query, ...props }: any) {
   // Transformes the report query to request query.
   const httpQuery = React.useMemo(
     () => transformFilterFormToQuery(query),

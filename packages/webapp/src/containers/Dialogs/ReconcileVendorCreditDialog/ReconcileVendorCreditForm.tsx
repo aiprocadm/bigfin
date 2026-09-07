@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik } from 'formik';
@@ -29,7 +28,7 @@ const defaultInitialValues = {
 function ReconcileVendorCreditForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const {
     dialogName,
     reconcileVendorCredits,
@@ -39,7 +38,7 @@ function ReconcileVendorCreditForm({
 
   // Initial form values.
   const initialValues = {
-    entries: reconcileVendorCredits.map((entry) => ({
+    entries: reconcileVendorCredits.map((entry: any) => ({
       ...entry,
       bill_id: entry.id,
       amount: '',
@@ -47,12 +46,12 @@ function ReconcileVendorCreditForm({
   };
 
   // Handle form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     setSubmitting(true);
     // Filters the entries.
     const entries = values.entries
-      .filter((entry) => entry.bill_id && entry.amount)
-      .map((entry) => transformToForm(entry, defaultInitialValues.entries[0]));
+      .filter((entry: any) => entry.bill_id && entry.amount)
+      .map((entry: any) => transformToForm(entry, defaultInitialValues.entries[0]));
 
     const form = {
       ...values,
@@ -60,7 +59,7 @@ function ReconcileVendorCreditForm({
     };
 
     // Handle the request success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('reconcile_vendor_credit.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -74,7 +73,7 @@ function ReconcileVendorCreditForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       // if (errors) {
       //   transformErrors(errors, { setErrors });
       // }

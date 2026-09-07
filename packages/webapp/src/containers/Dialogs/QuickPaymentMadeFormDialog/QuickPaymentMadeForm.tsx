@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik } from 'formik';
@@ -19,7 +18,7 @@ import { compose } from '@/utils';
 function QuickPaymentMadeForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { bill, dialogName, createPaymentMadeMutate } =
     useQuickPaymentMadeContext();
 
@@ -29,7 +28,7 @@ function QuickPaymentMadeForm({
     ...transformBillToForm(bill),
   };
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setFieldError }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setFieldError }: any) => {
     const entries = [
       {
         payment_amount: values.amount,
@@ -54,7 +53,7 @@ function QuickPaymentMadeForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setFieldError });
       }

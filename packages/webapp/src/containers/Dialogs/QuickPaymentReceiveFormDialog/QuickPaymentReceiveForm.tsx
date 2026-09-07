@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Formik } from 'formik';
@@ -31,7 +30,7 @@ function QuickPaymentReceiveForm({
   paymentReceiveNumberPrefix,
   paymentReceiveNextNumber,
   preferredDepositAccount,
-}) {
+}: any) {
   const { dialogName, invoice, createPaymentReceiveMutate } =
     useQuickPaymentReceiveContext();
 
@@ -52,7 +51,7 @@ function QuickPaymentReceiveForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setFieldError }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setFieldError }: any) => {
     const entries = [
       {
         invoice_id: values.invoice_id,
@@ -68,7 +67,7 @@ function QuickPaymentReceiveForm({
     };
 
     // Handle request response success.
-    const onSaved = (response) => {
+    const onSaved = (response: any) => {
       AppToaster.show({
         message: intl.get('the_payment_received_transaction_has_been_created'),
         intent: Intent.SUCCESS,
@@ -80,7 +79,7 @@ function QuickPaymentReceiveForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setFieldError });
       }
@@ -101,7 +100,7 @@ function QuickPaymentReceiveForm({
 
 export default compose(
   withDialogActions,
-  withSettings(({ paymentReceiveSettings }) => ({
+  withSettings(({ paymentReceiveSettings }: any) => ({
     paymentReceiveNextNumber: paymentReceiveSettings?.nextNumber,
     paymentReceiveNumberPrefix: paymentReceiveSettings?.numberPrefix,
     paymentReceiveAutoIncrement: paymentReceiveSettings?.autoIncrement,

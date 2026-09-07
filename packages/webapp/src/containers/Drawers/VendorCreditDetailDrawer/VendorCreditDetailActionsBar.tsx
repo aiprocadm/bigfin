@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -39,7 +38,7 @@ function VendorCreditDetailActionsBar({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   const history = useHistory();
   const { vendorCreditId, vendorCredit } = useVendorCreditDetailDrawerContext();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DataTable, Card } from '@/components';
 
@@ -19,13 +18,13 @@ import { compose } from '@/utils';
 function RefundVendorCreditTransactionsTable({
   // #withAlertActions
   openAlert,
-}) {
+}: any) {
   const { refundVendorCredit } = useVendorCreditDetailDrawerContext();
 
   const columns = useRefundCreditTransactionsTableColumns();
 
   // Handle delete refund vendor credit.
-  const handleDeleteRefundVendorCredit = ({ id }) => {
+  const handleDeleteRefundVendorCredit = ({ id }: any) => {
     openAlert('refund-vendor-delete', { vendorCreditId: id });
   };
 

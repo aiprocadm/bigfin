@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Features } from '@/constants';
@@ -7,12 +6,12 @@ import { useFeatureCan } from '@/hooks/state';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
 import { DRAWERS } from '@/constants/drawers';
 
-const EstimateDetailDrawerContext = React.createContext();
+const EstimateDetailDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Estimate detail provider.
  */
-function EstimateDetailDrawerProvider({ estimateId, ...props }) {
+function EstimateDetailDrawerProvider({ estimateId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

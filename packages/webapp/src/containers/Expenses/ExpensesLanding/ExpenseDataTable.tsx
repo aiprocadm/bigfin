@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -44,7 +43,7 @@ function ExpensesDataTable({
 
   // #withExpenses
   expensesTableState,
-}) {
+}: any) {
   // Expenses list context.
   const {
     expenses,
@@ -66,7 +65,7 @@ function ExpensesDataTable({
 
   // Handle fetch data of manual jouranls datatable.
   const handleFetchData = useCallback(
-    ({ pageIndex, pageSize, sortBy }) => {
+    ({ pageIndex, pageSize, sortBy }: any) => {
       setExpensesTableState({
         pageIndex,
         pageSize,
@@ -77,35 +76,35 @@ function ExpensesDataTable({
   );
 
   // Handle the expense publish action.
-  const handlePublishExpense = (expense) => {
+  const handlePublishExpense = (expense: any) => {
     openAlert('expense-publish', { expenseId: expense.id });
   };
 
   // Handle the expense edit action.
-  const handleEditExpense = ({ id }) => {
+  const handleEditExpense = ({ id }: any) => {
     history.push(`/expenses/${id}/edit`);
   };
 
   // Handle the expense delete action.
-  const handleDeleteExpense = (expense) => {
+  const handleDeleteExpense = (expense: any) => {
     openAlert('expense-delete', { expenseId: expense.id });
   };
 
   // Handle view detail expense.
-  const handleViewDetailExpense = ({ id }) => {
+  const handleViewDetailExpense = ({ id }: any) => {
     openDrawer(DRAWERS.EXPENSE_DETAILS, {
       expenseId: id,
     });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.EXPENSE_DETAILS, { expenseId: cell.row.original.id });
   };
 
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selectedFlatRows) => {
-    const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+  const handleSelectedRowsChange = (selectedFlatRows: any) => {
+    const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
     setExpensesSelectedRows(selectedIds);
   };
 
@@ -157,8 +156,8 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withExpensesActions,
-  withSettings(({ expenseSettings }) => ({
+  withSettings(({ expenseSettings }: any) => ({
     expensesTableSize: expenseSettings?.tableSize,
   })),
-  withExpenses(({ expensesTableState }) => ({ expensesTableState })),
+  withExpenses(({ expensesTableState }: any) => ({ expensesTableState })),
 )(ExpensesDataTable);

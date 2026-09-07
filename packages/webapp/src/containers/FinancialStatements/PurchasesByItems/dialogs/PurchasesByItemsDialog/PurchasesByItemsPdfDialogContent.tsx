@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { AnchorButton } from '@blueprintjs/core';
 import {
   DialogContent,

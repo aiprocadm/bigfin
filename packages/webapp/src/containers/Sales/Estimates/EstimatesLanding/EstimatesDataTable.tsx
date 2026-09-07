@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -47,7 +46,7 @@ function EstimatesDataTable({
 
   // #withEstimates
   estimatesTableState
-}) {
+}: any) {
   const history = useHistory();
 
   // Estimates list context.
@@ -63,51 +62,51 @@ function EstimatesDataTable({
   const columns = useEstiamtesTableColumns();
 
   // Handle estimate edit action.
-  const handleEditEstimate = (estimate) => {
+  const handleEditEstimate = (estimate: any) => {
     history.push(`/estimates/${estimate.id}/edit`);
   };
   // Handle estimate delete action.
-  const handleDeleteEstimate = ({ id }) => {
+  const handleDeleteEstimate = ({ id }: any) => {
     openAlert('estimate-delete', { estimateId: id });
   };
 
   // Handle cancel/confirm estimate deliver.
-  const handleDeliverEstimate = ({ id }) => {
+  const handleDeliverEstimate = ({ id }: any) => {
     openAlert('estimate-deliver', { estimateId: id });
   };
 
   // Handle cancel/confirm estimate approve.
-  const handleApproveEstimate = ({ id }) => {
+  const handleApproveEstimate = ({ id }: any) => {
     openAlert('estimate-Approve', { estimateId: id });
   };
 
   // Handle cancel/confirm estimate reject.
-  const handleRejectEstimate = ({ id }) => {
+  const handleRejectEstimate = ({ id }: any) => {
     openAlert('estimate-reject', { estimateId: id });
   };
 
   // Handle convent to invoice.
-  const handleConvertToInvoice = ({ id }) => {
+  const handleConvertToInvoice = ({ id }: any) => {
     history.push(`/invoices/new?from_estimate_id=${id}`, { action: id });
   };
 
   // Handle view detail estimate.
-  const handleViewDetailEstimate = ({ id }) => {
+  const handleViewDetailEstimate = ({ id }: any) => {
     openDrawer(DRAWERS.ESTIMATE_DETAILS, { estimateId: id });
   };
 
   // Handle print estimate.
-  const handlePrintEstimate = ({ id }) => {
+  const handlePrintEstimate = ({ id }: any) => {
     openDialog('estimate-pdf-preview', { estimateId: id });
   };
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.ESTIMATE_DETAILS, { estimateId: cell.row.original.id });
   };
 
   // Handle mail send estimate.
-  const handleMailSendEstimate = ({ id }) => {
+  const handleMailSendEstimate = ({ id }: any) => {
     openDrawer(DRAWERS.ESTIMATE_SEND_MAIL, { estimateId: id });
   }
 
@@ -117,7 +116,7 @@ function EstimatesDataTable({
 
   // Handles fetch data.
   const handleFetchData = useCallback(
-    ({ pageIndex, pageSize, sortBy }) => {
+    ({ pageIndex, pageSize, sortBy }: any) => {
       setEstimatesTableState({
         pageIndex,
         pageSize,
@@ -129,8 +128,8 @@ function EstimatesDataTable({
 
   // Handle selected rows change.
   const handleSelectedRowsChange = useCallback(
-    (selectedFlatRows) => {
-      const selectedIds = selectedFlatRows?.map((row) => row.original.id) || [];
+    (selectedFlatRows: any) => {
+      const selectedIds = selectedFlatRows?.map((row: any) => row.original.id) || [];
       setEstimatesSelectedRows(selectedIds);
     },
     [setEstimatesSelectedRows],
@@ -188,8 +187,8 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withSettings(({ estimatesSettings }) => ({
+  withSettings(({ estimatesSettings }: any) => ({
     estimatesTableSize: estimatesSettings?.tableSize,
   })),
-  withEstimates(({ estimatesTableState }) => ({ estimatesTableState }))
+  withEstimates(({ estimatesTableState }: any) => ({ estimatesTableState }))
 )(EstimatesDataTable);

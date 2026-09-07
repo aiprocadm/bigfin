@@ -1,16 +1,15 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useJournal } from '@/hooks/query';
 import { DrawerLoading, DrawerHeaderContent } from '@/components';
 import { DRAWERS } from '@/constants/drawers';
 
-const ManualJournalDrawerContext = React.createContext();
+const ManualJournalDrawerContext = React.createContext<any>(undefined);
 
 /**
  * Manual journal drawer provider.
  */
-function ManualJournalDrawerProvider({ manualJournalId, ...props }) {
+function ManualJournalDrawerProvider({ manualJournalId, ...props }: any) {
   // Fetch the specific manual journal details.
   const {
     data: manualJournal,

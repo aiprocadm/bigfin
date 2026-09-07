@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { useMemo } from 'react';
 import styled from 'styled-components';
@@ -13,7 +12,7 @@ export function AccountTransactionsFilterTabs() {
   const { filterTab, setFilterTab, bankAccountMetaSummary, currentAccount } =
     useAccountTransactionsContext();
 
-  const handleChange = (value) => {
+  const handleChange = (value: any) => {
     setFilterTab(value);
   };
 

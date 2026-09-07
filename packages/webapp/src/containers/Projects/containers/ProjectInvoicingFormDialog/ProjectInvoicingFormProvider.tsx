@@ -1,8 +1,7 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 
-const ProjectInvoicingFormContext = React.createContext();
+const ProjectInvoicingFormContext = React.createContext<any>(undefined);
 
 /**
  * Project invoicing form provider.
@@ -12,7 +11,7 @@ function ProjectInvoicingFormProvider({
   // #ownProps
   dialogName,
   ...props
-}) {
+}: any) {
   // State provider.
   const provider = {
     dialogName,

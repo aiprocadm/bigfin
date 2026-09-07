@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -38,7 +37,7 @@ const defaultInitialValues = {
 function InventoryAdjustmentForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { dialogName, item, itemId, submitPayload, createInventoryAdjMutate } =
     useInventoryAdjContext();
 
@@ -50,7 +49,7 @@ function InventoryAdjustmentForm({
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const form = {
       ...omit(values, ['quantity_on_hand', 'new_quantity', 'action']),
       publish: submitPayload.publish,

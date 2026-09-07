@@ -231,7 +231,7 @@ function CreateReconcileTransactionContent() {
 
 function MatchingReconcileCategoryField() {
   const { accounts } = useMatchingReconcileTransactionBoot();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return (
     <FFormGroup
@@ -258,7 +258,7 @@ function MatchingReconcileCategoryField() {
 }
 
 function MatchingReconcileTransactionFooter() {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   return (
     <Box className={styles.footer}>

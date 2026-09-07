@@ -18,7 +18,7 @@ function InviteUserFormContent({
   // #withDialogActions
   closeDialog,
 }: any) {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
   const { isEditMode, dialogName, roles } = useInviteUserFormContext();
 
   const handleClose = () => {

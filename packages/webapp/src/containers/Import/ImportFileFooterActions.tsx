@@ -7,7 +7,7 @@ import { useImportFileContext } from './ImportFileProvider';
 
 /** Панель действий шага загрузки: «Отмена» + primary «Далее» (submit). */
 export function ImportFileUploadFooterActions() {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
   const { onCancelClick } = useImportFileContext();
 
   const handleCancelBtnClick = () => {

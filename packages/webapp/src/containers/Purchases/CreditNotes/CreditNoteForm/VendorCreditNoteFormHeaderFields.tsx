@@ -75,7 +75,7 @@ function VendorCreditNoteFormHeaderFields({
 }) {
   const theme = useTheme();
   const fieldsClassName = getFieldsStyle(theme);
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Handle vendor credit number changing.
   const handleVendorCreditNumberChange = () => {
@@ -174,7 +174,7 @@ function VendorCreditNoteFormHeaderFields({
  * @returns {React.ReactNode}
  */
 function VendorCreditFormVendorSelect() {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   // Vendor Credit form context.
   const { vendors } = useVendorCreditNoteFormContext();

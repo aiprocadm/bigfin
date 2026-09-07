@@ -5,7 +5,7 @@ import { first } from 'lodash';
 import { useRefundVendorCreditContext } from './RefundVendorCreditFormProvider';
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess } = useRefundVendorCreditContext();
 
   React.useEffect(() => {

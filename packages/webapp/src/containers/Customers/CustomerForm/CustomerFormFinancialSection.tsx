@@ -104,7 +104,7 @@ function CustomerOpeningBalanceAtField() {
 
 function CustomerOpeningBalanceField() {
   const { customerId } = useCustomerFormContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Cannot continue if the customer id is defined.
   if (customerId) return null;
@@ -131,7 +131,7 @@ function CustomerOpeningBalanceField() {
 }
 
 function CustomerOpeningBalanceExchangeRateField() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const { customerId } = useCustomerFormContext();
   const currentOrganization = useCurrentOrganization();
 

@@ -14,7 +14,7 @@ import { useCurrentOrganization } from '@/hooks/state';
  */
 export const withExchangeRateItemEntriesPriceRecalc =
   (Component) => (props) => {
-    const { setFieldValue } = useFormikContext();
+    const { setFieldValue } = useFormikContext<any>();
     const updateChangeExRate = useUpdateEntriesOnExchangeRateChange();
 
     return (
@@ -53,7 +53,7 @@ export const withExchangeRateFetchingLoading = (Component) => (props) => {
  * then change the state to fetch the realtime exchange rate of the new selected currency.
  */
 export const useCustomerUpdateExRate = () => {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
   const { setAutoExRateCurrency } = useAutoExRateContext();
 
   const updateEntriesOnExChange = useUpdateEntriesOnExchangeRateChange();
@@ -110,7 +110,7 @@ const DOCUMENT_DATE_FIELDS = [
 ] as const;
 
 export const useSyncExRateToForm = ({ onSynced }: UseSyncExRateToFormProps) => {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
   const {
     autoExRateCurrency,
     autoExchangeRate,

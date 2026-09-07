@@ -19,7 +19,7 @@ function CustomerOpeningBalanceFormFloatingActions({
   const { dialogName } = useCustomerOpeningBalanceContext();
 
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Handle close button click.
   const handleCancelBtnClick = () => {

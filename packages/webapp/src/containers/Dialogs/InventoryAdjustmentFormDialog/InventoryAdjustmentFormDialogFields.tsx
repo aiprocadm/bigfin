@@ -51,7 +51,7 @@ export default function InventoryAdjustmentFormDialogFields() {
 
   // Inventory adjustment dialog context.
   const { accounts, branches, warehouses } = useInventoryAdjContext();
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   // Sets the primary warehouse to form.
   useSetPrimaryWarehouseToForm();

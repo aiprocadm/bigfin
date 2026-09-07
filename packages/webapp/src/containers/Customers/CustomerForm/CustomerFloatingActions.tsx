@@ -22,7 +22,7 @@ export function CustomerFloatingActions() {
   };
 
   // Formik context.
-  const { submitForm, isSubmitting } = useFormikContext();
+  const { submitForm, isSubmitting } = useFormikContext<any>();
 
   // Handle submit button click.
   const handleSubmitBtnClick = (_event: React.MouseEvent<HTMLElement>) => {

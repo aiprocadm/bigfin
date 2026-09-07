@@ -33,7 +33,7 @@ export default function AllocateLandedCostFormFields() {
   const { costTransactionEntries, landedCostTransactions, isLandedCostTransactionsLoading } =
     useAllocateLandedConstDialogContext();
 
-  const { values, setFieldValue, form } = useFormikContext();
+  const { values, setFieldValue, form } = useFormikContext<any>();
 
   // Handle transaction type select change.
   const handleTransactionTypeChange = (type) => {

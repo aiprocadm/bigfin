@@ -25,7 +25,7 @@ export default function BillFloatingActions() {
   const history = useHistory();
 
   // Formik context.
-  const { resetForm, submitForm, isSubmitting } = useFormikContext();
+  const { resetForm, submitForm, isSubmitting } = useFormikContext<any>();
 
   // Bill form context.
   const { bill, setSubmitPayload } = useBillFormContext();

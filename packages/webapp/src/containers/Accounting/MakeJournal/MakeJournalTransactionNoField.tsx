@@ -32,7 +32,7 @@ export const MakeJournalTransactionNoField = R.compose(
     // #withSettings
     journalAutoIncrement,
   }) => {
-    const { setFieldValue, values } = useFormikContext();
+    const { setFieldValue, values } = useFormikContext<any>();
 
     const handleJournalNumberChange = () => {
       openDialog('journal-number-form');

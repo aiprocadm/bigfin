@@ -29,7 +29,7 @@ import { useProjectBillableEntriesFormContext } from './ProjectBillableEntriesFo
  */
 export default function ProjectBillableEntriesFormFields() {
   // Formik context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const { billableEntries } = useProjectBillableEntriesFormContext();
 

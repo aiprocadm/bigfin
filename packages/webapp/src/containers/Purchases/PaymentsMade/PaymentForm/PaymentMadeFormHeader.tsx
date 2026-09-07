@@ -18,7 +18,7 @@ function PaymentMadeFormHeader() {
   // Formik form context.
   const {
     values: { currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const totalAmount = usePaymentmadeTotalAmount();
 

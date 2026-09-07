@@ -148,7 +148,7 @@ export default function ReceiptFormHeader() {
  * @returns {React.ReactNode}
  */
 function ReceiptFormCustomerSelect() {
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
   const { customers } = useReceiptFormContext();
 
   const updateEntries = useCustomerUpdateExRate();

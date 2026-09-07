@@ -15,7 +15,7 @@ function RefundCreditNoteFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // refund credit note dialog context.
   const { dialogName } = useRefundCreditNoteContext();

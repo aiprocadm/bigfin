@@ -30,7 +30,7 @@ const defaultInitialValues = {
 function SMSMessagePreviewSection() {
   const {
     values: { sms_message },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Calculates the SMS units of message.
   const messagesUnits = getSMSUnits(sms_message);
@@ -105,7 +105,7 @@ function NotifyViaSMSForm({
  * Observes the values change of notify form.
  */
 function NotifyObserveValuesChange({ onChange }) {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Handle the form change observe.
   const handleChange = () => {

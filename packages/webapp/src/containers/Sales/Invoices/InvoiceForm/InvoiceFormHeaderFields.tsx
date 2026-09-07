@@ -58,7 +58,7 @@ const getInvoiceFieldsStyle = (theme: Theme) => css`
 export default function InvoiceFormHeaderFields() {
   const theme = useTheme();
   const { projects } = useInvoiceFormContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const invoiceFieldsClassName = getInvoiceFieldsStyle(theme);
 
   return (
@@ -156,7 +156,7 @@ export default function InvoiceFormHeaderFields() {
  * @returns {React.ReactNode}
  */
 function InvoiceFormCustomerSelect() {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
   const { customers } = useInvoiceFormContext();
 
   const updateEntries = useCustomerUpdateExRate();

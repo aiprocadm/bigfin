@@ -22,7 +22,7 @@ export default function VendorCreditNoteFloatingActions() {
   const history = useHistory();
 
   // Formik context.
-  const { resetForm, submitForm, isSubmitting } = useFormikContext();
+  const { resetForm, submitForm, isSubmitting } = useFormikContext<any>();
 
   // Credit note form context.
   const { setSubmitPayload, vendorCredit } = useVendorCreditNoteFormContext();

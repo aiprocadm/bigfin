@@ -42,7 +42,7 @@ import { TaxRatesSelect } from '@/components/TaxRates/TaxRatesSelect';
  */
 function ItemFormBody({ organization: { base_currency } }) {
   const { accounts, taxRates } = useItemFormContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return (
     <div className="page-form__section page-form__section--selling-cost">
@@ -203,7 +203,7 @@ function ItemFormBody({ organization: { base_currency } }) {
  * или после сабмита в них ошибка (иначе ошибка была бы невидима).
  */
 function ItemFormAccountingSection({ accounts }) {
-  const { values, errors, submitCount } = useFormikContext();
+  const { values, errors, submitCount } = useFormikContext<any>();
 
   const hasEmptyAccount =
     (values.sellable && !values.sell_account_id) ||

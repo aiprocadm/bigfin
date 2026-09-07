@@ -13,7 +13,7 @@ import {
  */
 export default function NotifyViaSMSFormFloatingActions({ onCancel }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // Handle close button click.
   const handleCancelBtnClick = (event: any) => {

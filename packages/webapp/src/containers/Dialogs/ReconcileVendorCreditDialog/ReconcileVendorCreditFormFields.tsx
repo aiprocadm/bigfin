@@ -62,7 +62,7 @@ function ReconcileVendorCreditTotalLines() {
     vendorCredit: { currency_code, credits_remaining },
   } = useReconcileVendorCreditContext();
 
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Calculate the total amount of credit entries.
   const totalAmount = React.useMemo(

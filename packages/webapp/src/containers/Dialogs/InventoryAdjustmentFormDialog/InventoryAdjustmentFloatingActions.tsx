@@ -15,7 +15,7 @@ function InventoryAdjustmentFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting, submitForm } = useFormikContext();
+  const { isSubmitting, submitForm } = useFormikContext<any>();
 
   // Inventory adjustment dialog context.
   const { dialogName, setSubmitPayload, submitPayload } =

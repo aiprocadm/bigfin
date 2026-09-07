@@ -96,7 +96,7 @@ export default function CreditNoteFormHeaderFields() {
  */
 function CreditNoteCustomersSelect() {
   // Credit note form context.
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext<any>();
   const { customers } = useCreditNoteFormContext();
 
   const updateEntries = useCustomerUpdateExRate();

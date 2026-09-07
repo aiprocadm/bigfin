@@ -7,7 +7,7 @@ import { ExcessPaymentDialog } from './dialogs/ExcessPaymentDialog';
  * Payment receive form dialogs.
  */
 export default function PaymentReceiveFormDialogs() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   const handleUpdatePaymentNumber = (settings: any) => {
     // Set the payment transaction no. that cames from dialog to the form.

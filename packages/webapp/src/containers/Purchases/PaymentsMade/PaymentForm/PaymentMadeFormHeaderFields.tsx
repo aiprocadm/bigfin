@@ -77,7 +77,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
   const {
     values: { entries, currency_code },
     setFieldValue,
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const theme = useTheme();
   const fieldsClassName = getFieldsStyle(theme);
@@ -216,7 +216,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
  */
 function PaymentFormVendorSelect() {
   // Formik form context.
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   // Payment made form context.
   const { vendors, isNewMode, setPaymentVendorId } =

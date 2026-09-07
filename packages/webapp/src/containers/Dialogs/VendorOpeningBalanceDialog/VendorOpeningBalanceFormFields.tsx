@@ -35,7 +35,7 @@ function VendorOpeningBalanceFormFields({
   organization: { base_currency },
 }) {
   // Formik context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const { branches, vendor } = useVendorOpeningBalanceContext();
 

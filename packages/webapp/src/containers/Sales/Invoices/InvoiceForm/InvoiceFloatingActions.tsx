@@ -35,7 +35,7 @@ export default function InvoiceFloatingActions() {
   const { openDrawer } = useDrawerActions();
 
   // Formik context.
-  const { resetForm, submitForm, isSubmitting } = useFormikContext();
+  const { resetForm, submitForm, isSubmitting } = useFormikContext<any>();
 
   // Invoice form context.
   const { setSubmitPayload, invoice } = useInvoiceFormContext();

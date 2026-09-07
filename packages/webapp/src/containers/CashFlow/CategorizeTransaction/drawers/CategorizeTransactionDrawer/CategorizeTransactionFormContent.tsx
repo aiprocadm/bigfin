@@ -25,7 +25,7 @@ const Title = styled('h3')`
 
 export function CategorizeTransactionFormContent() {
   const { autofillCategorizeValues, contacts } = useCategorizeTransactionBoot();
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   const transactionTypes = autofillCategorizeValues?.isDepositTransaction
     ? MoneyInOptions
@@ -179,7 +179,7 @@ const SuggestionHint = styled('div')`
 `;
 
 function CategorizeTransactionFormSubContent() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Other expense.
   if (values.transactionType === 'other_expense') {

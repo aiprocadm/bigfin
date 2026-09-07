@@ -172,7 +172,7 @@ export const transformFormValuesToRequest = (values) => {
 };
 
 export const useSetPrimaryWarehouseToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { warehouses, isWarehousesSuccess, isNewMode } = useReceiptFormContext();
 
   React.useEffect(() => {
@@ -188,7 +188,7 @@ export const useSetPrimaryWarehouseToForm = () => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = useReceiptFormContext();
 
   React.useEffect(() => {
@@ -209,7 +209,7 @@ export const useSetPrimaryBranchToForm = () => {
 export const useReceiptSubtotal = () => {
   const {
     values: { entries },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Retrieves the invoice entries total.
   const subtotal = React.useMemo(() => getEntriesTotal(entries), [entries]);
@@ -223,7 +223,7 @@ export const useReceiptSubtotal = () => {
  */
 export const useReceiptSubtotalFormatted = () => {
   const subtotal = useReceiptSubtotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(subtotal, values.currency_code, { money: true });
 };
@@ -233,7 +233,7 @@ export const useReceiptSubtotalFormatted = () => {
  * @returns {number}
  */
 export const useReceiptDiscountAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const subtotal = useReceiptSubtotal();
   const discount = toSafeNumber(values.discount);
 
@@ -247,7 +247,7 @@ export const useReceiptDiscountAmount = () => {
  * @returns {string}
  */
 export const useReceiptDiscountAmountFormatted = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const discount = useReceiptDiscountAmount();
 
   return formattedAmount(discount, values.currency_code);
@@ -258,7 +258,7 @@ export const useReceiptDiscountAmountFormatted = () => {
  * @returns {number}
  */
 export const useReceiptAdjustmentAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const adjustment = toSafeNumber(values.adjustment);
 
   return adjustment;
@@ -269,7 +269,7 @@ export const useReceiptAdjustmentAmount = () => {
  * @returns {string}
  */
 export const useReceiptAdjustmentFormatted = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const adjustment = useReceiptAdjustmentAmount();
 
   return formattedAmount(adjustment, values.currency_code);
@@ -296,7 +296,7 @@ export const useReceiptTotal = () => {
  */
 export const useReceiptTotalFormatted = () => {
   const total = useReceiptTotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(total, values.currency_code);
 };
@@ -315,7 +315,7 @@ export const useReceiptPaidAmount = () => {
  */
 export const useReceiptPaidAmountFormatted = () => {
   const paidAmount = useReceiptPaidAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(paidAmount, values.currency_code);
 };
@@ -337,7 +337,7 @@ export const useReceiptDueAmount = () => {
  */
 export const useReceiptDueAmountFormatted = () => {
   const dueAmount = useReceiptDueAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(dueAmount, values.currency_code);
 };
@@ -347,7 +347,7 @@ export const useReceiptDueAmountFormatted = () => {
  * @returns {boolean}
  */
 export const useReceiptIsForeignCustomer = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignCustomer = React.useMemo(

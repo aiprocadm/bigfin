@@ -212,7 +212,7 @@ export const currenciesFieldShouldUpdate = (newProps, oldProps) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = useMakeJournalFormContext();
 
   React.useEffect(() => {
@@ -227,7 +227,7 @@ export const useSetPrimaryBranchToForm = () => {
 };
 
 export const useManualJournalCreditTotal = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const totalCredit = safeSumBy(values.entries, 'credit');
 
   return totalCredit;
@@ -235,13 +235,13 @@ export const useManualJournalCreditTotal = () => {
 
 export const useManualJournalCreditTotalFormatted = () => {
   const totalCredit = useManualJournalCreditTotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(totalCredit, values.currency_code);
 };
 
 export const useManualJournalDebitTotal = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const totalDebit = safeSumBy(values.entries, 'debit');
 
   return totalDebit;
@@ -249,7 +249,7 @@ export const useManualJournalDebitTotal = () => {
 
 export const useManualJournalDebitTotalFormatted = () => {
   const totalDebit = useManualJournalDebitTotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(totalDebit, values.currency_code);
 };
@@ -263,7 +263,7 @@ export const useManualJournalSubtotal = () => {
 
 export const useManualJournalSubtotalFormatted = () => {
   const subtotal = useManualJournalSubtotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(subtotal, values.currency_code);
 };
@@ -277,7 +277,7 @@ export const useManualJournalTotalDifference = () => {
 
 export const useManualJournalTotalDifferenceFormatted = () => {
   const difference = useManualJournalTotalDifference();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(difference, values.currency_code);
 };
@@ -290,7 +290,7 @@ export const useManualJournalTotal = () => {
 
 export const useManualJournalTotalFormatted = () => {
   const total = useManualJournalTotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(total, values.currency_code);
 };
@@ -300,7 +300,7 @@ export const useManualJournalTotalFormatted = () => {
  * @returns {boolean}
  */
 export const useJournalIsForeign = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignJournal = React.useMemo(

@@ -31,7 +31,7 @@ import {
  */
 const InvoiceExchangeRateInputFieldRoot = ({ ...props }) => {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const isForeignCustomer = useInvoiceIsForeignCustomer();
 
   // Can't continue if the customer is not foreign.
@@ -77,7 +77,7 @@ export const InvoiceNoSyncSettingsToForm = R.compose(
     invoiceNumberPrefix: invoiceSettings?.numberPrefix,
   })),
 )(({ invoiceAutoIncrement, invoiceNextNumber, invoiceNumberPrefix }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   useUpdateEffect(() => {
     // Do not update if the invoice auto-increment mode is disabled.

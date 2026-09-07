@@ -15,7 +15,7 @@ function ProjectInvoicingFormFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // project invoicing form dialog context.
   const { dialogName } = useProjectInvoicingFormContext();

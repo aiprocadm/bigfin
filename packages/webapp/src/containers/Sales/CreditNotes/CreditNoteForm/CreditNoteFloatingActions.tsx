@@ -39,7 +39,7 @@ export default function CreditNoteFloatingActions() {
   const { openDrawer } = useDrawerActions();
 
   // Formik context.
-  const { resetForm, submitForm, isSubmitting } = useFormikContext();
+  const { resetForm, submitForm, isSubmitting } = useFormikContext<any>();
 
   // Credit note form context.
   const { setSubmitPayload, creditNote } = useCreditNoteFormContext();

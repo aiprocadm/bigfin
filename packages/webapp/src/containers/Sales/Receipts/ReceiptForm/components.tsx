@@ -26,7 +26,7 @@ import { DialogsName } from '@/constants/dialogs';
 function ReceiptExchangeRateInputFieldRoot({ ...props }) {
   const currentOrganization = useCurrentOrganization();
   const isForeignCustomer = useReceiptIsForeignCustomer();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Can't continue if the customer is not foreign.
   if (!isForeignCustomer) {
@@ -68,7 +68,7 @@ export const ReceiptSyncIncrementSettingsToForm = R.compose(
     receiptNumberPrefix: receiptSettings?.numberPrefix,
   })),
 )(({ receiptAutoIncrement, receiptNextNumber, receiptNumberPrefix }) => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   useUpdateEffect(() => {
     // Do not update if the receipt auto-increment mode is disabled.

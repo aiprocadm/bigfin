@@ -42,7 +42,7 @@ export function CreditNoteSendMailFormFields() {
 }
 
 function CreditNoteSendMailFooter() {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
   const { name } = useDrawerContext();
   const { closeDrawer } = useDrawerActions();
   const isDarkmode = useIsDarkMode();

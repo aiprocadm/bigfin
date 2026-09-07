@@ -6,7 +6,7 @@ import ReceiptNumberDialog from '@/containers/Dialogs/ReceiptNumberDialog';
  * Receipt form dialogs.
  */
 export default function ReceiptFormDialogs() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Update the form once the receipt number form submit confirm.
   const handleReceiptNumberFormConfirm = (settings: any) => {

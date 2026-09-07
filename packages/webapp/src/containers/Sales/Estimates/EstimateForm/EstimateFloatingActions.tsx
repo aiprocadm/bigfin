@@ -31,7 +31,7 @@ import { DRAWERS } from '@/constants/drawers';
 export default function EstimateFloatingActions() {
   const history = useHistory();
   const { openDrawer } = useDrawerActions();
-  const { resetForm, submitForm, isSubmitting } = useFormikContext();
+  const { resetForm, submitForm, isSubmitting } = useFormikContext<any>();
 
   // Estimate form context.
   const { estimate, setSubmitPayload } = useEstimateFormContext();

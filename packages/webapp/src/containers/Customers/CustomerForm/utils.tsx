@@ -54,7 +54,7 @@ export const defaultInitialValues = {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess } = useCustomerFormContext();
 
   React.useEffect(() => {
@@ -74,7 +74,7 @@ export const useSetPrimaryBranchToForm = () => {
  */
 export const useIsCustomerForeignCurrency = () => {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return currentOrganization.base_currency !== values.currency_code;
 };

@@ -27,7 +27,7 @@ import { useProjectFormContext } from './ProjectFormProvider';
  */
 function ProjectFormFields() {
   // Formik context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return (
     <div className={Classes.DIALOG_BODY}>

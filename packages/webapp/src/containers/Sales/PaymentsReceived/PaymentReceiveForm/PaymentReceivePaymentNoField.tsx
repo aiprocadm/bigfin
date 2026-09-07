@@ -30,7 +30,7 @@ export const PaymentReceivePaymentNoField = R.compose(
   // #withSettings
   paymentReceiveAutoIncrement,
 }) => {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
 
   // Handle click open payment receive number dialog.
   const handleClickOpenDialog = () => {

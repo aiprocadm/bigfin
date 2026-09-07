@@ -32,7 +32,7 @@ function WarehouseTransferFormHeaderFields({
   warehouseTransferNumberPrefix,
 }) {
   const { warehouses } = useWarehouseTransferFormContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Handle warehouse transfer number changing.
   const handleTransferNumberChange = () => {

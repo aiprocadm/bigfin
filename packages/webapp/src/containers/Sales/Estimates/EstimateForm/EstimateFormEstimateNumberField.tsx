@@ -31,7 +31,7 @@ export const EstimateFormEstimateNumberField = R.compose(
     // #withSettings
     estimateAutoIncrement,
   }) => {
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue } = useFormikContext<any>();
 
     const handleEstimateNumberBtnClick = () => {
       openDialog('estimate-number-form', {});

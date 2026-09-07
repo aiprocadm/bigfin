@@ -24,7 +24,7 @@ export default function MakeJournalFloatingAction() {
   const history = useHistory();
 
   // Formik context.
-  const { submitForm, resetForm, isSubmitting } = useFormikContext();
+  const { submitForm, resetForm, isSubmitting } = useFormikContext<any>();
 
   // Make journal form context.
   const { setSubmitPayload, manualJournal } = useMakeJournalFormContext();

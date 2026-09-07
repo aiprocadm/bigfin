@@ -26,7 +26,7 @@ import {
  * @returns {JSX.Element}
  */
 function ProfitLossComaprsionPanelFields() {
-  const form = useFormikContext();
+  const form = useFormikContext<any>();
 
   return (
     <>

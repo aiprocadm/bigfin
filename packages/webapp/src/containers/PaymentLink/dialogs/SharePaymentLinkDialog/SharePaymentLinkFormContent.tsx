@@ -30,7 +30,7 @@ export function SharePaymentLinkFormContent() {
   const { url } = useSharePaymentLink();
   const { closeDialog } = useDialogActions();
   const { name } = useDialogContext();
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const clipboard = useClipboard();
 

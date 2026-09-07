@@ -24,7 +24,7 @@ import { DiscountTotalLine } from '@/containers/Sales/Invoices/InvoiceForm/Disco
 export function BillFormFooterRight() {
   const {
     values: { inclusive_exclusive_tax, currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const dueAmountFormatted = useBillDueAmountFormatted();
   const paidAmountFormatted = useBillPaidAmountFormatted();

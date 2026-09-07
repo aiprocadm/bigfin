@@ -12,7 +12,7 @@ function ExportDialogFormContentRoot({
   // #withDialogActions
   closeDialog,
 }: any) {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
   const handleCancelBtnClick = () => {
     closeDialog(DialogsName.Export);
   };

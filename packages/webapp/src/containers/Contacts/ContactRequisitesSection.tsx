@@ -34,7 +34,7 @@ const REQUISITE_TEXT_FIELDS = [
 ] as const;
 
 export function ContactRequisitesSection() {
-  const { errors, touched } = useFormikContext();
+  const { errors, touched } = useFormikContext<any>();
 
   // Явный helperText ПЕРЕКРЫВАЕТ сообщение об ошибке: FFormGroup подставляет
   // meta.error в то же место, но props кладутся поверх через Object.assign —

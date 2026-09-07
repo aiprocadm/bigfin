@@ -6,7 +6,7 @@ import CreditNoteNumberDialog from '@/containers/Dialogs/CreditNoteNumberDialog'
  * Credit note form dialogs.
  */
 export default function CreditNoteFormDialogs() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Update the form once the credit number form submit confirm.
   const handleCreditNumberFormConfirm = (settings: any) => {

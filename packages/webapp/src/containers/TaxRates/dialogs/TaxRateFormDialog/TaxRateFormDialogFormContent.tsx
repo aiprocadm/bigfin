@@ -74,7 +74,7 @@ export default function TaxRateFormDialogContent() {
  * @returns {JSX.Element}
  */
 function TaxRateCodeField() {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Handle the field change.
   const handleChange = (event) => {

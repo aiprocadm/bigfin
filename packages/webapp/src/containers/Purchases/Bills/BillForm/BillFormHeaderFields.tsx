@@ -153,7 +153,7 @@ function BillFormHeader() {
  * @returns {JSX.Element}
  */
 function BillFormVendorField() {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
   const { vendors } = useBillFormContext();
 
   return (

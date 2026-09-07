@@ -26,7 +26,7 @@ function CustomerSelectRoot({
   const maybeCreateNewItemFromQuery = allowCreate
     ? createNewItemFromQuery
     : null;
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
 
   // Creates autofill listener once the quick customer drawer submit the form.
   const autofillRef = useCreateAutofillListener((payload: any) => {

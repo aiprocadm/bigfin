@@ -23,7 +23,7 @@ import {
  * Balance sheet header - Comparison panal - Comparisons fields.
  */
 function BalanceSheetHeaderComparisonPanalFields() {
-  const form = useFormikContext();
+  const form = useFormikContext<any>();
 
   return (
     <>

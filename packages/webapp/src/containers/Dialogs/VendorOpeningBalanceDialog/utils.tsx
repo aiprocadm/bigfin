@@ -5,7 +5,7 @@ import { first, pick } from 'lodash';
 import { useVendorOpeningBalanceContext } from './VendorOpeningBalanceFormProvider';
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess } = useVendorOpeningBalanceContext();
 
   React.useEffect(() => {

@@ -91,7 +91,7 @@ export const usePaymentReceiveEntriesColumns = () => {
  */
 export function PaymentReceiveExchangeRateInputField({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeignCustomer = useEstimateIsForeignCustomer();
 
@@ -132,7 +132,7 @@ export const PaymentReceiveSyncIncrementSettingsToForm = R.compose(
     paymentReceiveNumberPrefix,
     paymentReceiveAutoIncrement,
   }) => {
-    const { setFieldValue } = useFormikContext();
+    const { setFieldValue } = useFormikContext<any>();
 
     useLayoutEffect(() => {
       if (!paymentReceiveAutoIncrement) return;

@@ -12,7 +12,7 @@ export default function WarehouseTransferFormDialog() {
     setFieldValue('transaction_no_manually', manually);
   };
 
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   return (
     <React.Fragment>
       <WarehouseTransferNumberDialog

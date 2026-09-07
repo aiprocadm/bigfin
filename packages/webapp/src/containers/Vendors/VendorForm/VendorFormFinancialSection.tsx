@@ -108,7 +108,7 @@ function VendorOpeningBalanceAtField() {
 
 function VendorOpeningBalanceField() {
   const { vendorId } = useVendorFormContext();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Cannot continue if the vendor id is defined.
   if (vendorId) return null;
@@ -135,7 +135,7 @@ function VendorOpeningBalanceField() {
 }
 
 function VendorOpeningBalanceExchangeRateField() {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const { vendorId } = useVendorFormContext();
   const currentOrganization = useCurrentOrganization();
 

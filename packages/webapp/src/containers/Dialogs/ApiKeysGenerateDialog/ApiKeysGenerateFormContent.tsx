@@ -24,7 +24,7 @@ function ApiKeysGenerateFormContent({
   // #withDialogActions
   closeDialog,
 }: any) {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const handleClose = () => {
     closeDialog(dialogName);

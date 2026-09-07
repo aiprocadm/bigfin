@@ -4,7 +4,7 @@ import { FInputGroup } from '@/components';
 import { useFormikContext } from 'formik';
 
 export function FInputGroupComponent({ toField, ...props }) {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext<any>();
   const { expenseQuantity, expenseUnitPrice } = values;
   const total = expenseQuantity * expenseUnitPrice;
 

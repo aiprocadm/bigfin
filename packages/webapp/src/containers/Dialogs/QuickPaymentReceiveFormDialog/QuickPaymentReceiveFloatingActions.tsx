@@ -12,7 +12,7 @@ function QuickPaymentReceiveFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   // quick payment receive dialog context.
   const { dialogName } = useQuickPaymentReceiveContext();

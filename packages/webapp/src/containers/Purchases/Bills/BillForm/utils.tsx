@@ -230,7 +230,7 @@ export const handleErrors = (errors, { setErrors }) => {
 };
 
 export const useSetPrimaryBranchToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { branches, isBranchesSuccess, isNewMode } = useBillFormContext();
 
   React.useEffect(() => {
@@ -245,7 +245,7 @@ export const useSetPrimaryBranchToForm = () => {
 };
 
 export const useSetPrimaryWarehouseToForm = () => {
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
   const { warehouses, isWarehousesSuccess, isNewMode } = useBillFormContext();
 
   React.useEffect(() => {
@@ -265,7 +265,7 @@ export const useSetPrimaryWarehouseToForm = () => {
  * @returns {boolean}
  */
 export const useBillIsForeignCustomer = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const currentOrganization = useCurrentOrganization();
 
   const isForeignCustomer = React.useMemo(
@@ -293,7 +293,7 @@ export const composeEntriesOnEditInclusiveTax = (
  * @returns {Array}
  */
 export const useBillAggregatedTaxRates = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const { taxRates } = useBillFormContext();
 
   const aggregateTaxRates = React.useMemo(
@@ -313,7 +313,7 @@ export const useBillAggregatedTaxRates = () => {
 export const useBillSubtotal = () => {
   const {
     values: { entries },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   // Calculate the total due amount of bill entries.
   return React.useMemo(() => getEntriesTotal(entries), [entries]);
@@ -325,7 +325,7 @@ export const useBillSubtotal = () => {
  */
 export const useBillSubtotalFormatted = () => {
   const subtotal = useBillSubtotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(subtotal, values.currency_code);
 };
@@ -335,7 +335,7 @@ export const useBillSubtotalFormatted = () => {
  * @returns {number}
  */
 export const useBillDiscountAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
   const subtotal = useBillSubtotal();
   const discount = toSafeNumber(values.discount);
 
@@ -350,7 +350,7 @@ export const useBillDiscountAmount = () => {
  */
 export const useBillDiscountAmountFormatted = () => {
   const discountAmount = useBillDiscountAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(discountAmount, values.currency_code);
 };
@@ -360,7 +360,7 @@ export const useBillDiscountAmountFormatted = () => {
  * @returns {number}
  */
 export const useBillAdjustmentAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return toSafeNumber(values.adjustment);
 };
@@ -371,7 +371,7 @@ export const useBillAdjustmentAmount = () => {
  */
 export const useBillAdjustmentAmountFormatted = () => {
   const adjustmentAmount = useBillAdjustmentAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(adjustmentAmount, values.currency_code);
 };
@@ -381,7 +381,7 @@ export const useBillAdjustmentAmountFormatted = () => {
  * @returns {number}
  */
 export const useBillTotalTaxAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return React.useMemo(() => {
     return chain(values.entries)
@@ -396,7 +396,7 @@ export const useBillTotalTaxAmount = () => {
  * @returns {boolean}
  */
 export const useIsBillTaxExclusive = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return values.inclusive_exclusive_tax === TaxType.Exclusive;
 };
@@ -425,7 +425,7 @@ export const useBillTotal = () => {
  */
 export const useBillTotalFormatted = () => {
   const total = useBillTotal();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(total, values.currency_code);
 };
@@ -435,7 +435,7 @@ export const useBillTotalFormatted = () => {
  * @returns {number}
  */
 export const useBillPaidAmount = () => {
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return toSafeNumber(0);
 };
@@ -446,7 +446,7 @@ export const useBillPaidAmount = () => {
  */
 export const useBillPaidAmountFormatted = () => {
   const paidAmount = useBillPaidAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(paidAmount, values.currency_code);
 };
@@ -468,7 +468,7 @@ export const useBillDueAmount = () => {
  */
 export const useBillDueAmountFormatted = () => {
   const dueAmount = useBillDueAmount();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   return formattedAmount(dueAmount, values.currency_code);
 };

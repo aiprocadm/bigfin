@@ -11,7 +11,7 @@ import { useVendorNoteIsForeignCustomer } from './utils';
  */
 export function VendorCreditNoteExchangeRateInputField({ ...props }) {
   const currentOrganization = useCurrentOrganization();
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const isForeignCustomer = useVendorNoteIsForeignCustomer();
 

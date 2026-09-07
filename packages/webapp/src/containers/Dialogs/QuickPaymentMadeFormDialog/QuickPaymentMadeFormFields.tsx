@@ -45,7 +45,7 @@ function QuickPaymentMadeFormFields({
   const { accounts, branches, baseCurrency } = useQuickPaymentMadeContext();
 
   // Intl context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   const paymentMadeFieldRef = useAutofocus();
 

@@ -9,7 +9,7 @@ function CategorizeTransactionFormFooterRoot({
   // #withBankingActions
   closeMatchingTransactionAside,
 }: any) {
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const handleClose = () => {
     closeMatchingTransactionAside();

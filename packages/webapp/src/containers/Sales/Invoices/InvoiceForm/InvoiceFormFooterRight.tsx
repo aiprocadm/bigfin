@@ -25,7 +25,7 @@ import { DiscountTotalLine } from './DiscountTotalLine';
 export function InvoiceFormFooterRight() {
   const {
     values: { inclusive_exclusive_tax, currency_code },
-  } = useFormikContext();
+  } = useFormikContext<any>();
 
   const taxEntries = useInvoiceAggregatedTaxRates();
   const adjustmentAmount = useInvoiceAdjustmentAmountFormatted();

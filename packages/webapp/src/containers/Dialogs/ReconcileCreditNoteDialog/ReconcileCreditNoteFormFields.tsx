@@ -64,7 +64,7 @@ function ReconcileCreditNoteTotalLines() {
   } = useReconcileCreditNoteContext();
 
   // Formik form context.
-  const { values } = useFormikContext();
+  const { values } = useFormikContext<any>();
 
   // Calculate the total amount of credit entries.
   const totalAmount = React.useMemo(

@@ -17,7 +17,7 @@ function WarehouseFormFloatingActions({
   closeDialog,
 }: any) {
   // Formik context.
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting } = useFormikContext<any>();
 
   const { dialogName } = useWarehouseFormContext();
 

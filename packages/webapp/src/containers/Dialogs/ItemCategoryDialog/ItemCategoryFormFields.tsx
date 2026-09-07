@@ -28,7 +28,6 @@ export default function ItemCategoryFormFields() {
       >
         <FInputGroup
           name={'name'}
-          medium={true}
           inputRef={(ref) => (categoryNameFieldRef.current = ref)}
           fastField
         />

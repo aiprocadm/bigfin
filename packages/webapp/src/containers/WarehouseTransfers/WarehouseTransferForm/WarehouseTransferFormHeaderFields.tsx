@@ -70,7 +70,6 @@ function WarehouseTransferFormHeaderFields({
         label={<T id={'date'} />}
         inline
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <FDateInput
           name={'date'}
@@ -80,7 +79,6 @@ function WarehouseTransferFormHeaderFields({
             leftIcon: <Icon icon={'date-range'} />,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -89,12 +87,10 @@ function WarehouseTransferFormHeaderFields({
         name={'transaction_number'}
         label={<T id={'warehouse_transfer.label.transfer_no'} />}
         inline
-        fill
       >
         <ControlGroup fill={true}>
           <FInputGroup
             name={'transaction_number'}
-            minimal={true}
             asyncControl={true}
             onBlur={handleTransferNoBlur}
           />

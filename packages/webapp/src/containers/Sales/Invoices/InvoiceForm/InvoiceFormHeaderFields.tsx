@@ -89,7 +89,6 @@ export default function InvoiceFormHeaderFields() {
             leftIcon: <Icon icon={'date-range'} />,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -114,7 +113,6 @@ export default function InvoiceFormHeaderFields() {
             fill: true,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -123,7 +121,7 @@ export default function InvoiceFormHeaderFields() {
 
       {/* ----------- Reference ----------- */}
       <FFormGroup name={'reference_no'} label={<T id={'reference'} />} inline>
-        <FInputGroup name={'reference_no'} minimal={true} />
+        <FInputGroup name={'reference_no'}/>
       </FFormGroup>
 
       {/*------------ Project name -----------*/}

@@ -29,7 +29,6 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
             name={'asDate'}
             label={<T id={'as_date'} />}
             labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
-            fill
           >
             <FDateInput
               name={'asDate'}
@@ -37,7 +36,6 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
               popoverProps={{ position: Position.BOTTOM, minimal: true }}
               minimal={true}
               fill={true}
-              fastField
             />
           </FFormGroup>
         </Col>

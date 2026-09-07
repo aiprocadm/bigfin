@@ -76,7 +76,6 @@ export default function AllocateLandedCostFormFields() {
         label={<T id={'transaction_type'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fill
       >
         <FSelect
           name={'transaction_type'}
@@ -96,7 +95,6 @@ export default function AllocateLandedCostFormFields() {
         label={<T id={'transaction_id'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fill
       >
         <x.div position="relative" w="100%">
           <FSelect
@@ -131,7 +129,6 @@ export default function AllocateLandedCostFormFields() {
           name={'transaction_entry_id'}
           label={<T id={'transaction_line'} />}
           inline
-          fill
         >
           <FSelect
             name={'transaction_entry_id'}

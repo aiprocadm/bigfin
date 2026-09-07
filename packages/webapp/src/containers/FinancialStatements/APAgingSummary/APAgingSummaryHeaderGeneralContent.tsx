@@ -31,7 +31,6 @@ export default function APAgingSummaryHeaderGeneralContent() {
             name={'asDate'}
             label={<T id={'as_date'} />}
             labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
-            fill
           >
             <FDateInput
               name={'asDate'}
@@ -39,7 +38,6 @@ export default function APAgingSummaryHeaderGeneralContent() {
               popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
               minimal
               fill
-              fastField
             />
           </FFormGroup>
         </Col>

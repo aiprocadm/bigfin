@@ -107,7 +107,6 @@ export default function ReceiptFormHeader() {
             fill: true,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -120,7 +119,7 @@ export default function ReceiptFormHeader() {
         inline={true}
         name={'reference_no'}
       >
-        <FInputGroup minimal={true} name={'reference_no'} />
+        <FInputGroup name={'reference_no'} />
       </FFormGroup>
 
       {/*------------ Project name -----------*/}

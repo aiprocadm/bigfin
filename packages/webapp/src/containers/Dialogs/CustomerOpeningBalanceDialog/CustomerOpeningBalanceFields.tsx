@@ -63,7 +63,6 @@ function CustomerOpeningBalanceFields({
       <FFormGroup
         name={'opening_balance_at'}
         label={<T id={'customer_opening_balance.label.opening_balance_at'} />}
-        fill
       >
         <FDateInput
           name={'opening_balance_at'}
@@ -74,7 +73,6 @@ function CustomerOpeningBalanceFields({
             leftIcon: <Icon icon={'date-range'} />,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -95,7 +93,6 @@ function CustomerOpeningBalanceFields({
         <FFormGroup
           label={<T id={'branch'} />}
           name={'opening_balance_branch_id'}
-          fill
         >
           <BranchSelect
             name={'opening_balance_branch_id'}

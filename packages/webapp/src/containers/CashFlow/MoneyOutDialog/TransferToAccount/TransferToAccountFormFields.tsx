@@ -66,7 +66,6 @@ export default function TransferToAccountFormFields() {
             name={'date'}
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}
@@ -75,7 +74,6 @@ export default function TransferToAccountFormFields() {
                 position: Position.BOTTOM_LEFT,
                 minimal: true,
               }}
-              fastField
             />
           </FFormGroup>
         </Col>

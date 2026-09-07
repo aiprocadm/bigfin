@@ -68,7 +68,6 @@ export const ReceiptFormReceiptNumberField = R.compose(
         <ControlGroup fill={true}>
           <FInputGroup
             name={'receipt_number'}
-            minimal={true}
             value={values.receipt_number}
             asyncControl={true}
             onBlur={handleReceiptNoBlur}

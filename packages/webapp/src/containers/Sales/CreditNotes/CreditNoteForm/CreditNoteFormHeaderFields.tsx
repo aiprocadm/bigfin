@@ -75,7 +75,6 @@ export default function CreditNoteFormHeaderFields() {
             fill: true
           }}
           fill
-          fastField
         />
       </FFormGroup>
 

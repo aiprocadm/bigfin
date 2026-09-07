@@ -41,7 +41,6 @@ export function VendorFormFinancialSection() {
         name={'currency_code'}
         label={<T id={'currency'} />}
         inline
-        fill
       >
         <CurrencySelectList
           name="currency_code"
@@ -60,7 +59,6 @@ export function VendorFormFinancialSection() {
           label={<T id={'vendor.label.opening_branch'} />}
           name={'opening_balance_branch_id'}
           inline
-          fill
         >
           <BranchSelect
             name={'opening_balance_branch_id'}
@@ -88,7 +86,6 @@ function VendorOpeningBalanceAtField() {
       name={'opening_balance_at'}
       label={<T id={'opening_balance_at'} />}
       inline
-      fill
       helperText={<ErrorMessage name="opening_balance_at" />}
     >
       <FDateInput
@@ -120,7 +117,6 @@ function VendorOpeningBalanceField() {
       inline
       shouldUpdate={openingBalanceFieldShouldUpdate}
       shouldUpdateDeps={{ currencyCode: values.currency_code }}
-      fill
     >
       <ControlGroup fill>
         <InputPrependText text={values.currency_code as string} />

@@ -80,7 +80,6 @@ export default function EstimateFormHeader() {
             fill: true,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -100,7 +99,6 @@ export default function EstimateFormHeader() {
             fill: true,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -108,8 +106,8 @@ export default function EstimateFormHeader() {
       <EstimateFormEstimateNumberField />
 
       {/* ----------- Reference ----------- */}
-      <FFormGroup name={'reference'} label={<T id={'reference'} />} inline fill>
-        <FInputGroup name={'reference'} minimal={true} />
+      <FFormGroup name={'reference'} label={<T id={'reference'} />} inline>
+        <FInputGroup name={'reference'}/>
       </FFormGroup>
 
       {/*------------ Project name -----------*/}

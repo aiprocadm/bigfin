@@ -131,7 +131,6 @@ export default function PaymentReceiveHeaderFields() {
             fill: true,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 

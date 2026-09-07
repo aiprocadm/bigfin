@@ -118,7 +118,6 @@ function VendorCreditNoteFormHeaderFields({
         label={<T id={'credit_note.label_credit_note_date'} />}
         inline
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <FDateInput
           name={'vendor_credit_date'}
@@ -126,7 +125,6 @@ function VendorCreditNoteFormHeaderFields({
           popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
           inputProps={{ leftIcon: <Icon icon={'date-range'} />, fill: true }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -140,7 +138,6 @@ function VendorCreditNoteFormHeaderFields({
         <ControlGroup fill={true}>
           <FInputGroup
             name={'vendor_credit_number'}
-            minimal={true}
             asyncControl={true}
             onBlur={handleVendorCreditNoBlur}
             fastField
@@ -163,7 +160,7 @@ function VendorCreditNoteFormHeaderFields({
 
       {/* ----------- Reference ----------- */}
       <FFormGroup name={'reference_no'} label={<T id={'reference_no'} />} inline={true}>
-        <FInputGroup name={'reference_no'} minimal={true} fastField />
+        <FInputGroup name={'reference_no'} fastField />
       </FFormGroup>
     </Stack>
   );

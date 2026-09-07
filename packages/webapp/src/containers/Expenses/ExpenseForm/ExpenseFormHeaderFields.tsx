@@ -132,7 +132,7 @@ export default function ExpenseFormHeader() {
         label={<T id={'reference_no'} />}
         inline={true}
       >
-        <FInputGroup minimal={true} name={'reference_no'} fastField />
+        <FInputGroup name={'reference_no'} fastField />
       </FFormGroup>
 
       {/* ----------- Customer ----------- */}

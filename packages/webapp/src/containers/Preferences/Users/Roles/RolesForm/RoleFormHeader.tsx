@@ -26,7 +26,6 @@ export function RoleFormHeader() {
       >
         <FInputGroup
           name={'role_name'}
-          medium={true}
           inputRef={(ref) => (roleNameFieldRef.current = ref)}
           fill
           fastField

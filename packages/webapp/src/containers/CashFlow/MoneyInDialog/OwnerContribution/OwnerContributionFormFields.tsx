@@ -71,7 +71,6 @@ export default function OwnerContributionFormFields() {
             name={'date'}
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}

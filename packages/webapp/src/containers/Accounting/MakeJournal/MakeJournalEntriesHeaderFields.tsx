@@ -72,7 +72,6 @@ export default function MakeJournalEntriesHeader({}) {
             leftIcon: <Icon icon={'date-range'} />,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -91,7 +90,7 @@ export default function MakeJournalEntriesHeader({}) {
         }
         inline
       >
-        <FInputGroup name={'reference'} minimal fill />
+        <FInputGroup name={'reference'} fill />
       </FFormGroup>
 
       {/*------------ Journal type  -----------*/}
@@ -100,7 +99,7 @@ export default function MakeJournalEntriesHeader({}) {
         label={<T id={'journal_type'} />}
         inline
       >
-        <FInputGroup name={'journal_type'} minimal fill />
+        <FInputGroup name={'journal_type'} fill />
       </FFormGroup>
 
       {/*------------ Currency  -----------*/}

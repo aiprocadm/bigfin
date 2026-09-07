@@ -77,7 +77,7 @@ function QuickPaymentReceiveFormFields({
             label={<T id={'customer_name'} />}
             labelInfo={<FieldRequiredHint />}
           >
-            <FInputGroup name={'customer_id'} minimal={true} disabled={true} />
+            <FInputGroup name={'customer_id'} disabled={true} />
           </FFormGroup>
         </Col>
 
@@ -89,7 +89,6 @@ function QuickPaymentReceiveFormFields({
           >
             <FInputGroup
               name={'payment_receive_no'}
-              minimal={true}
               disabled={paymentReceiveAutoIncrement}
             />
           </FFormGroup>
@@ -159,7 +158,7 @@ function QuickPaymentReceiveFormFields({
 
       {/* ------------ Reference No. ------------ */}
       <FFormGroup label={<T id={'reference'} />} name={'reference_no'}>
-        <FInputGroup name={'reference_no'} minimal={true} />
+        <FInputGroup name={'reference_no'}/>
       </FFormGroup>
 
       {/* --------- Statement --------- */}

@@ -67,7 +67,6 @@ export const PaymentReceivePaymentNoField = R.compose(
       <ControlGroup fill={true}>
         <FInputGroup
           name={'payment_receive_no'}
-          minimal={true}
           value={values.payment_receive_no}
           asyncControl={true}
           onBlur={handlePaymentNoBlur}

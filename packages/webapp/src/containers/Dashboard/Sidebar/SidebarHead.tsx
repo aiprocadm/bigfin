@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   Button,
   Popover,
@@ -77,14 +76,14 @@ function SidebarHeadJSX({
   organization,
   // #withDrawerActions
   openDrawer,
-}) {
+}: any) {
   const { data: user } = useAuthenticatedAccount();
   const { data: workspaces } = useWorkspaces();
   const currentOrganizationId = useAuthOrganizationId();
   const switchOrganization = useSwitchOrganization();
   const { setLogout } = useAuthActions();
 
-  const handleSwitchWorkspace = (organizationId) => {
+  const handleSwitchWorkspace = (organizationId: any) => {
     if (organizationId === currentOrganizationId) {
       return;
     }
@@ -143,7 +142,7 @@ function SidebarHeadJSX({
               <MenuDivider />
 
               <MenuItem
-                icon={<Icon icon={'list'} size={16} />}
+                icon={<Icon icon={'table-16'} iconSize={16} />}
                 text={
                   <T id={'workspaces.view_all_workspaces'} />
                 }
@@ -152,7 +151,7 @@ function SidebarHeadJSX({
               <MenuDivider />
 
               <x.div maxHeight="240px" overflowY="auto">
-                {workspaces?.map((workspace) => {
+                {workspaces?.map((workspace: any) => {
                   const name = workspace.metadata?.name || workspace.organizationId;
                   const initials = firstLettersArgs(...(name || '').split(' '));
                   const isActive = workspace.organizationId === currentOrganizationId;
@@ -223,13 +222,12 @@ function SidebarHeadJSX({
 
               <MenuDivider />
               <MenuItem
-                icon={<Icon icon={'plus'} size={16} />}
+                icon={<Icon icon={'plus'} iconSize={16} />}
                 text={<T id={'workspaces.create_workspace'} />}
                 onClick={() => openDrawer(DRAWERS.CREATE_WORKSPACE)}
               />
               <MenuDivider />
               <MenuItem
-                icon={<Icon icon={'log-out'} size={16} />}
                 text={<T id={'logout'} />}
                 onClick={handleLogout}
               />
@@ -240,7 +238,7 @@ function SidebarHeadJSX({
         >
           <Button
             className="title"
-            rightIcon={<Icon icon={'caret-down-16'} size={16} />}
+            rightIcon={<Icon icon={'caret-down-16'} iconSize={16} />}
           >
             {organization.name}
           </Button>
@@ -261,6 +259,6 @@ function SidebarHeadJSX({
 }
 
 export const SidebarHead = compose(
-  withCurrentOrganization(({ organization }) => ({ organization })),
+  withCurrentOrganization(({ organization }: any) => ({ organization })),
   withDrawerActions,
 )(SidebarHeadJSX);

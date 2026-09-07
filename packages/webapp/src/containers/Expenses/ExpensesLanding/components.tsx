@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -23,7 +22,7 @@ import { safeCallback } from '@/utils';
 /**
  * Description accessor.
  */
-export function DescriptionAccessor(row) {
+export function DescriptionAccessor(row: any) {
   // Описание печатается ТЕКСТОМ (Д2 карты v30). Раньше здесь стоял значок,
   // а текст показывался подсказкой при наведении — на телефоне наведения
   // нет, и столбец «Описание» не показывал описания вовсе. Длинную строку
@@ -49,7 +48,7 @@ export function DescriptionAccessor(row) {
 export function ActionsMenu({
   row: { original },
   payload: { onPublish, onEdit, onDelete, onViewDetails },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -61,7 +60,7 @@ export function ActionsMenu({
         <MenuDivider />
         <If condition={!original.is_published}>
           <MenuItem
-            icon={<Icon icon={'arrow-to-top'} size={16} />}
+            icon={<Icon icon={'arrow-to-top'} iconSize={16} />}
             text={intl.get('publish_expense')}
             onClick={safeCallback(onPublish, original)}
           />
@@ -90,7 +89,7 @@ export function ActionsMenu({
 /**
  * Actions cell.
  */
-export function ActionsCell(props) {
+export function ActionsCell(props: any) {
   return (
     <Popover
       content={<ActionsMenu {...props} />}
@@ -104,7 +103,7 @@ export function ActionsCell(props) {
 /**
  * Publish accessor.
  */
-export function PublishAccessor(row) {
+export function PublishAccessor(row: any) {
   return row.is_published ? (
     <Tag intent={Intent.SUCCESS} round minimal>
       <T id={'published'} />
@@ -119,7 +118,7 @@ export function PublishAccessor(row) {
 /**
  * Expense account accessor.
  */
-export function ExpenseAccountAccessor(expense) {
+export function ExpenseAccountAccessor(expense: any) {
   if (expense.categories.length === 1) {
     return expense.categories[0].expense_account.name;
   } else if (expense.categories.length > 1) {

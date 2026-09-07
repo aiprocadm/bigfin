@@ -30,7 +30,7 @@ const ExpenseCategoryHeaderCell = () => {
   return (
     <>
       <T id={'expense_category'} />
-      <Hint />
+      <Hint content={intl.get('expense_category.hint')} />
     </>
   );
 };

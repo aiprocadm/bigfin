@@ -23,7 +23,7 @@ export default function FinancialStatementDateRange() {
             {({ form: { setFieldValue }, field: { value } }) => (
               <FormGroup
                 label={intl.get('report_date_range')}
-                labelInfo={<Hint />}
+                labelInfo={<Hint content={intl.get('report_date_range.hint')} />}
                 minimal={true}
                 fill={true}
               >
@@ -62,7 +62,7 @@ export default function FinancialStatementDateRange() {
           <FFormGroup
             name={'fromDate'}
             label={intl.get('from_date')}
-            labelInfo={<Hint />}
+            labelInfo={<Hint content={intl.get('from_date.hint')} />}
             fill
           >
             <FDateInput
@@ -81,7 +81,7 @@ export default function FinancialStatementDateRange() {
           <FFormGroup
             name={'toDate'}
             label={intl.get('to_date')}
-            labelInfo={<Hint />}
+            labelInfo={<Hint content={intl.get('to_date.hint')} />}
             fill
           >
             <FDateInput

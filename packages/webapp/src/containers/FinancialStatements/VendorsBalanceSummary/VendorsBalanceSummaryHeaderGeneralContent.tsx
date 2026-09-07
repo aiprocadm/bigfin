@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { FastField } from 'formik';
 import { DateInput } from '@blueprintjs/datetime';
 import { FormGroup, Position, Checkbox } from '@blueprintjs/core';
@@ -36,7 +37,7 @@ export default function VendorsBalanceSummaryHeaderGeneralContent() {
             {({ form, field: { value }, meta: { error } }) => (
               <FormGroup
                 label={<T id={'as_date'} />}
-                labelInfo={<FieldHint />}
+                labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
                 fill={true}
                 intent={inputIntent({ error })}
               >
@@ -60,7 +61,7 @@ export default function VendorsBalanceSummaryHeaderGeneralContent() {
         <Col xs={5}>
           <FastField name={'percentage_column'} type={'checkbox'}>
             {({ field }) => (
-              <FormGroup labelInfo={<FieldHint />}>
+              <FormGroup labelInfo={<FieldHint content={intl.get('percentage_of_column.hint')} />}>
                 <Checkbox
                   inline={true}
                   small={true}

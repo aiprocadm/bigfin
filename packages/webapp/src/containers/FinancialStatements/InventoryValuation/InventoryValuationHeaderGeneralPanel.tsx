@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { FastField, Field } from 'formik';
 import { DateInput } from '@blueprintjs/datetime';
 import { FormGroup, Position } from '@blueprintjs/core';
@@ -50,7 +51,7 @@ function InventoryValuationHeaderGeneralPanelContent() {
             {({ form, field: { value }, meta: { error } }) => (
               <FormGroup
                 label={<T id={'as_date'} />}
-                labelInfo={<FieldHint />}
+                labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
                 fill={true}
                 intent={inputIntent({ error })}
               >

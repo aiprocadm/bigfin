@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { useFormikContext } from 'formik';
 
@@ -31,7 +32,7 @@ function ProfitLossComaprsionPanelFields() {
   return (
     <>
       {/**----------- Previous Year -----------*/}
-      <FFormGroup name={'previousYear'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'previousYear'} labelInfo={<FieldHint content={intl.get('profit_loss_sheet.previous_year.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -45,7 +46,7 @@ function ProfitLossComaprsionPanelFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousYearAmountChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('profit_loss_sheet.total_change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -59,7 +60,7 @@ function ProfitLossComaprsionPanelFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousYearPercentageChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('profit_loss_sheet.perentage_change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -73,7 +74,7 @@ function ProfitLossComaprsionPanelFields() {
       </FlexSubFields>
 
       {/**----------- Previous Period (PP) -----------*/}
-      <FFormGroup name={'previousPeriod'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'previousPeriod'} labelInfo={<FieldHint content={intl.get('profit_loss_sheet.previous_period.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -87,7 +88,7 @@ function ProfitLossComaprsionPanelFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousPeriodAmountChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('profit_loss_sheet.total_change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -101,7 +102,7 @@ function ProfitLossComaprsionPanelFields() {
         <FlexItem col={6}>
           <FFormGroup
             name={'previousPeriodPercentageChange'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('profit_loss_sheet.perentage_change.hint')} />}
           >
             <FCheckbox
               inline={true}
@@ -115,7 +116,7 @@ function ProfitLossComaprsionPanelFields() {
       </FlexSubFields>
 
       {/**----------- % of Column -----------*/}
-      <FFormGroup name={'percentageColumn'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'percentageColumn'} labelInfo={<FieldHint content={intl.get('profit_loss_sheet.percentage_of_column.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -125,7 +126,7 @@ function ProfitLossComaprsionPanelFields() {
       </FFormGroup>
 
       {/**----------- % of Row -----------*/}
-      <FFormGroup name={'percentageRow'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'percentageRow'} labelInfo={<FieldHint content={intl.get('profit_loss_sheet.percentage_of_row.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -135,7 +136,7 @@ function ProfitLossComaprsionPanelFields() {
       </FFormGroup>
 
       {/**----------- % of Expense -----------*/}
-      <FFormGroup name={'percentageExpense'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'percentageExpense'} labelInfo={<FieldHint content={intl.get('profit_loss_sheet.percentage_of_expense.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}
@@ -145,7 +146,7 @@ function ProfitLossComaprsionPanelFields() {
       </FFormGroup>
 
       {/**----------- % of Income -----------*/}
-      <FFormGroup name={'percentageIncome'} labelInfo={<FieldHint />}>
+      <FFormGroup name={'percentageIncome'} labelInfo={<FieldHint content={intl.get('profit_loss_sheet.percentage_of_income.hint')} />}>
         <FCheckbox
           inline={true}
           small={true}

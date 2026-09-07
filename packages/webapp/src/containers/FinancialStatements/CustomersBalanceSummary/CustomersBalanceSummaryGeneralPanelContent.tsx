@@ -28,7 +28,7 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
           <FFormGroup
             name={'asDate'}
             label={<T id={'as_date'} />}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
             fill
           >
             <FDateInput
@@ -47,7 +47,7 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
         <Col xs={5}>
           <FFormGroup
             name={'percentage_column'}
-            labelInfo={<FieldHint />}
+            labelInfo={<FieldHint content={intl.get('percentage_of_column.hint')} />}
           >
             <FCheckbox
               name={'percentage_column'}

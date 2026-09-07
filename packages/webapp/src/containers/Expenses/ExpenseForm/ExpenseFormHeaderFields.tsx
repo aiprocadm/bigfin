@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { FormGroup, Position, Classes } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { FastField, ErrorMessage } from 'formik';
@@ -63,7 +64,7 @@ export default function ExpenseFormHeader() {
         {({ form, field: { value }, meta: { error, touched } }) => (
           <FormGroup
             label={<T id={'payment_date'} />}
-            labelInfo={<Hint />}
+            labelInfo={<Hint content={intl.get('expense.payment_date.hint')} />}
             className={classNames('form-group--select-list', Classes.FILL)}
             intent={inputIntent({ error, touched })}
             helperText={<ErrorMessage name="payment_date" />}
@@ -150,7 +151,7 @@ function ExpenseFormCustomerSelect() {
   return (
     <FormGroup
       label={<T id={'customer'} />}
-      labelInfo={<Hint />}
+      labelInfo={<Hint content={intl.get('expense.customer.hint')} />}
       inline={true}
       name={'customer_id'}
       fastField={true}

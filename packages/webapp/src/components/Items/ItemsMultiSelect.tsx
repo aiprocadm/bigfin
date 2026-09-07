@@ -1,37 +1,17 @@
 // @ts-nocheck
 import React from 'react';
-import * as R from 'ramda';
 import { FMultiSelect } from '@/components/Forms';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { DialogsName } from '@/constants/dialogs';
-import {
-  createNewItemRenderer,
-  createNewItemFromQuery,
-} from '@/components/Customers/utils';
 
 /**
  * Items multi-select.
+ *
+ * Создания товара прямо из списка тут нет и не было: ветка `allowCreate`
+ * открывала диалог СЧЁТА (`DialogsName.AccountForm`) — диалога создания
+ * товара в продукте не существует вовсе. Ветка убрана как неработающая
+ * (Д2 карты v60); её никто и не включал — ни один вызывающий не передаёт
+ * `allowCreate`.
  */
-function ItemsMultiSelectRoot({
-  // #withDialogAction
-  openDialog,
-  closeDialog,
-
-  // #props
-  allowCreate,
-  ...multiSelectProps
-}) {
-  // Maybe inject new item props to select component.
-  const maybeCreateNewItemRenderer = allowCreate ? createNewItemRenderer : null;
-  const maybeCreateNewItemFromQuery = allowCreate
-    ? createNewItemFromQuery
-    : null;
-
-  // Handles the create item click.
-  const handleCreateItemClick = () => {
-    openDialog(DialogsName.AccountForm);
-  };
-
+export function ItemsMultiSelect(multiSelectProps) {
   return (
     <FMultiSelect
       valueAccessor={'id'}
@@ -41,13 +21,7 @@ function ItemsMultiSelectRoot({
       fill={true}
       popoverProps={{ minimal: true }}
       resetOnSelect={true}
-      createNewItemRenderer={maybeCreateNewItemRenderer}
-      createNewItemFromQuery={maybeCreateNewItemFromQuery}
-      onCreateItemSelect={handleCreateItemClick}
       {...multiSelectProps}
     />
   );
 }
-
-export const ItemsMultiSelect =
-  R.compose(withDialogActions)(ItemsMultiSelectRoot);

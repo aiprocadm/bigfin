@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Row, Col } from '@/components';
 import FinancialStatementDateRange from '../FinancialStatementDateRange';
 import FinancialStatementsFilter from '../FinancialStatementsFilter';

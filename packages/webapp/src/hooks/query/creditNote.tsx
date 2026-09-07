@@ -75,7 +75,7 @@ export function useEditCreditNote(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`credit-notes/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`credit-notes/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.
@@ -215,7 +215,7 @@ export function useCreateRefundCreditNote(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`credit-notes/${id}/refunds`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`credit-notes/${id}/refunds`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.
@@ -313,7 +313,7 @@ export function useCreateReconcileCreditNote(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`credit-notes/${id}/apply-invoices`, values),
     {
       onSuccess: (res, [id, values]) => {
@@ -401,7 +401,7 @@ export function useSendCreditNoteMail(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`credit-notes/${id}/mail`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`credit-notes/${id}/mail`, values),
     {
       onSuccess: () => {
         commonInvalidateQueries(queryClient);

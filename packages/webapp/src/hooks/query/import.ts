@@ -35,7 +35,7 @@ export function useImportFileMapping(props = {}) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([importId, values]) =>
+    ([importId, values]: [any, any]) =>
       apiRequest.post(`import/${importId}/mapping`, values),
     {
       onSuccess: (res, id) => {

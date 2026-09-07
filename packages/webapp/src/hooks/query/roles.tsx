@@ -18,7 +18,7 @@ export function useEditRolePermissionSchema(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation(([id, values]) => apiRequest.put(`roles/${id}`, values), {
+  return useMutation(([id, values]: [any, any]) => apiRequest.put(`roles/${id}`, values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

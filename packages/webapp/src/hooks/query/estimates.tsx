@@ -47,7 +47,7 @@ export function useEditEstimate(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`sale-estimates/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`sale-estimates/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.
@@ -252,7 +252,7 @@ export function useCreateNotifyEstimateBySMS(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`sale-estimates/${id}/notify-by-sms`, values),
     {
       onSuccess: (res, [id, values]) => {
@@ -295,7 +295,7 @@ export function useSendSaleEstimateMail(props = {}) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`sale-estimates/${id}/mail`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`sale-estimates/${id}/mail`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Common invalidate queries.

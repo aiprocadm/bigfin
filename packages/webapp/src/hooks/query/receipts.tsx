@@ -72,7 +72,7 @@ export function useEditReceipt(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.put(`sale-receipts/${id}`, values),
+    ([id, values]: [any, any]) => apiRequest.put(`sale-receipts/${id}`, values),
     {
       onSuccess: (res, [id, values]) => {
         // Invalidate specific receipt.
@@ -232,7 +232,7 @@ export function useCreateNotifyReceiptBySMS(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
   return useMutation(
-    ([id, values]) =>
+    ([id, values]: [any, any]) =>
       apiRequest.post(`sale-receipts/${id}/notify-by-sms`, values),
     {
       onSuccess: (res, [id, values]) => {
@@ -270,7 +270,7 @@ export function useSendSaleReceiptMail(props) {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    ([id, values]) => apiRequest.post(`sale-receipts/${id}/mail`, values),
+    ([id, values]: [any, any]) => apiRequest.post(`sale-receipts/${id}/mail`, values),
     {
       onSuccess: () => {
         // Invalidate queries.

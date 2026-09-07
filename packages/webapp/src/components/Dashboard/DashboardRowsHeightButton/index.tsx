@@ -12,8 +12,22 @@ import {
 } from '@blueprintjs/core';
 import clsx from 'classnames';
 import { Icon, T } from '@/components';
+import type { IconNames } from '@/components/Icon';
 
 import Style from './style.module.scss';
+
+/**
+ * Значок кнопки для каждой высоты строки.
+ *
+ * Раньше имя значка склеивалось строкой — `table-row-${localSize}`. Склейка
+ * даёт обычную строку, и опечатка в ней ничем не выдавала бы себя: значка
+ * просто не было бы. Явное соответствие проверяется по нашему набору значков
+ * (Д1 карты v64).
+ */
+const ROW_HEIGHT_ICONS: Record<string, IconNames> = {
+  small: 'table-row-small',
+  medium: 'table-row-medium',
+};
 
 /**
  * Dashboard rows height button control.
@@ -27,7 +41,7 @@ export function DashboardRowsHeightButton({ initialValue, value, onChange }: any
     onChange && onChange(size, event);
   };
   // Button icon name.
-  const btnIcon = `table-row-${localSize}`;
+  const btnIcon = ROW_HEIGHT_ICONS[localSize] ?? ROW_HEIGHT_ICONS.small;
 
   return (
     <Popover

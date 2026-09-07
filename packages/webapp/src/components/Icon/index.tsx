@@ -17,14 +17,31 @@
 
 import classNames from 'classnames';
 import * as React from 'react';
-import { Classes, Props } from '@blueprintjs/core';
+import { Classes, Intent, MaybeElement, Props } from '@blueprintjs/core';
 import IconSvgPaths from '@/static/json/icons';
 import PropTypes from 'prop-types';
+/** Имена значков, какие есть в нашем наборе. */
+export type IconNames = keyof typeof IconSvgPaths;
+
 export interface IconProps extends Props {
   color?: string;
   htmlTitle?: string;
-  icon: IconName | MaybeElement;
+  /**
+   * Имя значка из НАШЕГО набора (`static/json/icons`), а не из набора
+   * Blueprint: у них имена через дефис (`small-cross`), у нас слитно
+   * (`smallCross`). Раньше здесь стояло `IconName` — имя, которое в файле
+   * даже не было ввезено (Д1 карты v64).
+   */
+  icon: IconNames | MaybeElement;
   iconSize?: number;
+  /**
+   * Высота и ширина значка в пикселях. Если не заданы, берётся `iconSize`.
+   * Компонент их читает (`height || iconSize`), но в объявлении их не было —
+   * и каждый `<Icon height={…} width={…} />` считался ошибкой (Д1 карты v64).
+   */
+  height?: number | string;
+  width?: number | string;
+  intent?: Intent;
   style?: object;
   tagName?: keyof JSX.IntrinsicElements;
   title?: string;

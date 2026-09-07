@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import { Formik, Form } from 'formik';
@@ -34,7 +33,7 @@ function VendorFormFormikBase({
   onSubmitError,
   onCancel,
   className,
-}) {
+}: any) {
   // Vendor form context.
   const {
     vendorId,
@@ -59,7 +58,7 @@ function VendorFormFormikBase({
   );
 
   // Handles the form submit.
-  const handleFormSubmit = (values, form) => {
+  const handleFormSubmit = (values: any, form: any) => {
     const { setSubmitting, resetForm } = form;
     const requestForm = {
       ...values,
@@ -68,7 +67,7 @@ function VendorFormFormikBase({
 
     setSubmitting(true);
 
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get(
           isNewMode
@@ -107,7 +106,7 @@ function VendorFormFormikBase({
         >
         <Form>
           <VendorFormFields>
-            <VendorFormContent onCancel={onCancel} />
+            <VendorFormContent />
           </VendorFormFields>
         </Form>
       </Formik>    

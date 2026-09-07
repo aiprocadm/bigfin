@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { find, get } from 'lodash';
@@ -19,7 +18,7 @@ import {
 export function ActionsCellRenderer({
   row: { index },
   payload: { removeRow },
-}) {
+}: any) {
   const onRemoveRole = () => {
     removeRow(index);
   };
@@ -37,7 +36,6 @@ export function ActionsCellRenderer({
     <Popover2 content={exampleMenu} placement="left-start">
       <Button
         icon={<Icon icon={'more-13'} iconSize={13} />}
-        iconSize={14}
         className="m12"
         minimal={true}
       />
@@ -46,7 +44,7 @@ export function ActionsCellRenderer({
 }
 ActionsCellRenderer.cellType = CellType.Button;
 
-function SourceWarehouseAccessorCell({ row: { original }, payload }) {
+function SourceWarehouseAccessorCell({ row: { original }, payload }: any) {
   // Ignore display zero if the item not selected yet.
   if (!original.item_id) return '';
 
@@ -57,7 +55,7 @@ function SourceWarehouseAccessorCell({ row: { original }, payload }) {
   return get(warehouse, 'quantityOnHandFormatted', '0');
 }
 
-function DistentionWarehouseAccessorCell({ row: { original }, payload }) {
+function DistentionWarehouseAccessorCell({ row: { original }, payload }: any) {
   // Ignore display zero if the item not selected yet.
   if (!original.item_id) return '';
 

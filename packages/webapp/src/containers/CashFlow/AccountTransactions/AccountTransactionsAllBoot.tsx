@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { flatten, map } from 'lodash';
 import { IntersectionObserver } from '@/components';
@@ -7,7 +6,7 @@ import { useAccountTransactionsContext } from './AccountTransactionsProvider';
 
 const AccountTransactionsAllBootContext = React.createContext<any>(undefined);
 
-function flattenInfinityPages(data) {
+function flattenInfinityPages(data: any) {
   return flatten(map(data.pages, (page) => page.transactions));
 }
 

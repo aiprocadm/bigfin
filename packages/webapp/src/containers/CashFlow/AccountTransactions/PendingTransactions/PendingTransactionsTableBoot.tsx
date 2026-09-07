@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { flatten, map } from 'lodash';
 import { IntersectionObserver } from '@/components';
@@ -7,14 +6,14 @@ import { usePendingBankTransactionsInfinity } from '@/hooks/query/bank-rules';
 
 const PendingTransactionsContext = React.createContext<any>(undefined);
 
-function flattenInfinityPagesData(data) {
+function flattenInfinityPagesData(data: any) {
   return flatten(map(data.pages, (page) => page.data));
 }
 
 /**
  * Account pending transctions provider.
  */
-function PendingTransactionsBoot({ children }) {
+function PendingTransactionsBoot({ children }: any) {
   const { accountId } = useAccountTransactionsContext();
 
   // Fetches the pending transactions.

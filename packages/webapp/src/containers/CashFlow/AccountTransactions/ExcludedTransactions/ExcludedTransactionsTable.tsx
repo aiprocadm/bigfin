@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent } from '@blueprintjs/core';
@@ -53,10 +52,10 @@ function ExcludedTransactionsTableRoot({
     useMemorizedColumnsWidths(TABLES.UNCATEGORIZED_ACCOUNT_TRANSACTIONS);
 
   // Handle cell click.
-  const handleCellClick = (cell, event) => {};
+  const handleCellClick = (cell: any, event: any) => {};
 
   // Handle restore button click.
-  const handleRestoreClick = (transaction) => {
+  const handleRestoreClick = (transaction: any) => {
     unexcludeBankTransaction(transaction.id)
       .then(() => {
         AppToaster.show({
@@ -68,8 +67,8 @@ function ExcludedTransactionsTableRoot({
   };
 
   // Handle selected rows change.
-  const handleSelectedRowsChange = (selected) => {
-    const _selectedIds = selected?.map((row) => row.original.id);
+  const handleSelectedRowsChange = (selected: any) => {
+    const _selectedIds = selected?.map((row: any) => row.original.id);
     setExcludedTransactionsSelected(_selectedIds);
   };
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import TaxRateFormDialogForm from './TaxRateFormDialogForm';
 import { TaxRateFormDialogBoot } from './TaxRateFormDialogBoot';
@@ -16,7 +15,7 @@ export default function TaxRateFormDialogContent({
   taxRateId,
 }: TaxRateFormDialogContentProps) {
   return (
-    <TaxRateFormDialogBoot dialogName={dialogName} taxRateId={taxRateId}>
+    <TaxRateFormDialogBoot taxRateId={taxRateId}>
       <TaxRateFormDialogForm />
     </TaxRateFormDialogBoot>
   );

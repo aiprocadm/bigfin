@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -12,7 +11,7 @@ import { safeCallback, firstLettersArgs } from '@/utils';
 export function ActionsMenu({
   payload: { onDelete, onEdit },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -33,7 +32,7 @@ export function ActionsMenu({
 /**
  * Timesheet accessor.
  */
-export const TimesheetAccessor = (timesheet) => (
+export const TimesheetAccessor = (timesheet: any) => (
   <React.Fragment>
     <TimesheetHeader>
       <TimesheetTitle>{timesheet.customer_name}</TimesheetTitle>

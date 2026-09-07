@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alignment, Navbar, NavbarGroup } from '@blueprintjs/core';
 import { pick } from 'lodash';
@@ -20,18 +19,18 @@ function ManualJournalsViewTabs({
 
   // #withManualJournals
   journalsTableState
-}) {
+}: any) {
   // Manual journals context.
   const { journalsViews } = useManualJournalsContext();
 
-  const tabs = journalsViews.map((view) => ({
+  const tabs = journalsViews.map((view: any) => ({
     ...pick(view, ['name', 'id']),
   }));
 
   const handleClickNewView = () => {};
 
   // Handles the tab change.
-  const handleTabChange = (viewId) => {
+  const handleTabChange = (viewId: any) => {
     setManualJournalsTableState({
       customViewId: viewId || null,
     });
@@ -55,7 +54,7 @@ function ManualJournalsViewTabs({
 export default compose(
   withManualJournalsActions,
   withDashboardActions,
-  withManualJournals(({ manualJournalsTableState }) => ({
+  withManualJournals(({ manualJournalsTableState }: any) => ({
     journalsTableState: manualJournalsTableState,
   })),
 )(ManualJournalsViewTabs);

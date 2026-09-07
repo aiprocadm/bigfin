@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Intent,
@@ -24,7 +23,7 @@ function UserFormContent({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const { isSubmitting } = useFormikContext<any>();
   const { dialogName, roles, isAuth } = useUserFormContext();
 

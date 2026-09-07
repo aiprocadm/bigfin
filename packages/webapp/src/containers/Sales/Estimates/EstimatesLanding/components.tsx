@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent, Tag, Menu, MenuItem, MenuDivider } from '@blueprintjs/core';
 import intl from 'react-intl-universal';
@@ -19,7 +18,7 @@ import { safeCallback } from '@/utils';
 /**
  * Status accessor.
  */
-export const statusAccessor = (row) => (
+export const statusAccessor = (row: any) => (
   <Choose>
     <Choose.When condition={row.is_approved}>
       <Tag intent={Intent.SUCCESS} round minimal>
@@ -70,7 +69,7 @@ export function ActionsMenu({
     onPrint,
     onSendMail
   },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -158,7 +157,7 @@ export function ActionsMenu({
   );
 }
 
-function AmountAccessor({ amount, currency_code }) {
+function AmountAccessor({ amount, currency_code }: any) {
   return <Money amount={amount} currency={currency_code} />;
 }
 
@@ -196,7 +195,9 @@ export function useEstiamtesTableColumns() {
       {
         id: 'estimate_number',
         Header: intl.get('estimate_number'),
-        accessor: (row) =>
+        // Тип возврата указан явно: без него вывод зацикливается на самом
+        // столбце и даёт «неявный any» (Д4 карты v66).
+        accessor: (row: any): string | null =>
           row.estimate_number ? `${row.estimate_number}` : null,
         width: 140,
         className: 'estimate_number',
@@ -216,7 +217,7 @@ export function useEstiamtesTableColumns() {
       {
         id: 'status',
         Header: intl.get('status'),
-        accessor: (row) => statusAccessor(row),
+        accessor: (row: any) => statusAccessor(row),
         width: 140,
         className: 'status',
         clickable: true,

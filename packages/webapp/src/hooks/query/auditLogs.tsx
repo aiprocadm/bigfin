@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as qs from 'qs';
 import { useInfiniteQuery } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
@@ -9,7 +8,7 @@ import t from './types';
 const qsArrayOptions = { skipNulls: true, arrayFormat: 'repeat' as const };
 
 /** Normalize subject/action to a non-empty string[] or omit from query. */
-function auditLogStringListParam(value) {
+function auditLogStringListParam(value: any) {
   if (value == null || value === '') return undefined;
   if (Array.isArray(value)) return value.length ? value : undefined;
   return [value];
@@ -18,7 +17,7 @@ function auditLogStringListParam(value) {
 /**
  * Paginated audit log list (financial domain events).
  */
-export function useAuditLogsQuery(filters, props) {
+export function useAuditLogsQuery(filters: any, props: any) {
   const query = qs.stringify(
     {
       page: filters.page ?? 1,
@@ -36,7 +35,7 @@ export function useAuditLogsQuery(filters, props) {
     [t.AUDIT_LOGS, filters],
     { method: 'get', url: `audit-logs?${query}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       keepPreviousData: true,
       ...props,
     },
@@ -46,13 +45,13 @@ export function useAuditLogsQuery(filters, props) {
 /**
  * Distinct subject/action values for audit log filter dropdowns.
  */
-export function useAuditLogFilterOptionsQuery(props) {
+export function useAuditLogFilterOptionsQuery(props: any) {
   return useRequestQuery(
     [t.AUDIT_LOG_FILTER_OPTIONS],
     { method: 'get', url: 'audit-logs/filter-options' },
     {
       defaultData: { subjects: [], actions: [] },
-      select: (res) => ({
+      select: (res: any) => ({
         subjects: res.data?.subjects ?? [],
         actions: res.data?.actions ?? [],
       }),
@@ -65,7 +64,7 @@ export function useAuditLogFilterOptionsQuery(props) {
 /**
  * Infinite audit log list with page-based pagination.
  */
-export function useAuditLogsInfinityQuery(filters, infinityProps?) {
+export function useAuditLogsInfinityQuery(filters: any, infinityProps?: any) {
   const apiRequest = useApiRequest();
 
   return useInfiniteQuery(

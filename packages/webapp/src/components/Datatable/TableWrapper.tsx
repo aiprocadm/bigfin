@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext } from 'react';
 import clsx from 'classnames';
 import { ScrollSync } from 'react-scroll-sync';
@@ -7,7 +6,7 @@ import TableContext from './TableContext';
 /**
  * Table wrapper.
  */
-export default function TableWrapper({ children }) {
+export default function TableWrapper({ children }: any) {
   const {
     table: { getTableProps },
     props: {

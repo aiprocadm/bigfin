@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -42,7 +41,7 @@ export function ActionsMenu({
     onAllocateLandedCost,
   },
   row: { original },
-}) {
+}: any) {
   return (
     <Menu>
       <MenuItem
@@ -101,7 +100,7 @@ export function ActionsMenu({
 /**
  * Status accessor.
  */
-export function StatusAccessor(bill) {
+export function StatusAccessor(bill: any) {
   return (
     <div className={'status-accessor'}>
       <Choose>
@@ -168,7 +167,7 @@ export function useBillsTableColumns() {
       {
         id: 'bill_number',
         Header: intl.get('bill_number'),
-        accessor: (row) => (row.bill_number ? `${row.bill_number}` : null),
+        accessor: (row: any) => (row.bill_number ? `${row.bill_number}` : null),
         width: 100,
         className: 'bill_number',
         clickable: true,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useContext } from 'react';
 import { ContextMenu } from '@/components';
 import classNames from 'classnames';
@@ -10,7 +9,7 @@ import { saveInvoke, ConditionalWrapper } from '@/utils';
 /**
  * Table row context wrapper.
  */
-function TableRowContextMenu({ children, row }) {
+function TableRowContextMenu({ children, row }: any) {
   // Table context.
   const {
     props: { ContextMenu: ContextMenuContent },
@@ -51,7 +50,7 @@ function TableRowContextMenu({ children, row }) {
 /**
  * Table row.
  */
-export default function TableRow({ row, className, style }) {
+export default function TableRow({ row, className, style }: any) {
   const {
     props: {
       TableCellRenderer,
@@ -77,7 +76,7 @@ export default function TableRow({ row, className, style }) {
         wrapper={TableRowContextMenu}
         row={row}
       >
-        {row.cells.map((cell, index) => (
+        {row.cells.map((cell: any, index: any) => (
           <TableCellRenderer
             key={index}
             cell={cell}

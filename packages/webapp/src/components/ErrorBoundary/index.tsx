@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import PropTypes from 'prop-types';
@@ -7,7 +6,7 @@ function ErrorBoundary({
   error,
   errorInfo,
   children
-}) {
+}: any) {
 
   if (errorInfo) {
     return (

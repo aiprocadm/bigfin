@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { Intent, Tag } from '@blueprintjs/core';
@@ -8,7 +7,7 @@ import { Choose, FormattedMessage as T } from '@/components';
  * items inactive status.
  * @returns {React.JSX}
  */
-export function inactiveStatus(item) {
+export function inactiveStatus(item: any) {
   return (
     <Choose>
       <Choose.When condition={!item.active}>

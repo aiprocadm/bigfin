@@ -164,7 +164,7 @@ function CreateReconcileTransactionContent() {
     <Box className={styles.content}>
       <ReconcileMatchingType />
 
-      <FFormGroup label={intl.get('date')} name={'date'} fastField>
+      <FFormGroup label={intl.get('date')} name={'date'}>
         <FDateInput
           {...momentFormatter('YYYY/MM/DD')}
           name={'date'}
@@ -186,7 +186,6 @@ function CreateReconcileTransactionContent() {
         label={intl.get('amount')}
         name={'amount'}
         labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-        fastField
       >
         <FMoneyInputGroup name={'amount'} fastField />
       </FFormGroup>
@@ -197,12 +196,11 @@ function CreateReconcileTransactionContent() {
         label={intl.get('cashflow.label.memo')}
         name={'memo'}
         labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-        fastField
       >
         <FInputGroup name={'memo'} fastField />
       </FFormGroup>
 
-      <FFormGroup label={intl.get('reference_no')} name={'reference_no'} fastField>
+      <FFormGroup label={intl.get('reference_no')} name={'reference_no'}>
         <FInputGroup name={'reference_no'} />
       </FFormGroup>
 
@@ -211,7 +209,6 @@ function CreateReconcileTransactionContent() {
           name={'branchId'}
           label={intl.get('branch')}
           labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-          fastField
         >
           <BranchSelect
             name={'branchId'}
@@ -241,7 +238,6 @@ function MatchingReconcileCategoryField() {
       label={intl.get('category')}
       name={'category'}
       labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
-      fastField
     >
       <AccountsSelect
         name={'category'}

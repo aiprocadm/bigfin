@@ -73,7 +73,6 @@ export default function ReceiptFormHeader() {
         labelInfo={<FieldRequiredHint />}
         name={'deposit_account_id'}
         items={accounts}
-        fastField={true}
         shouldUpdate={accountsFieldShouldUpdate}
       >
         <AccountsSelect
@@ -97,7 +96,6 @@ export default function ReceiptFormHeader() {
         name={'receipt_date'}
         label={<T id={'receipt_date'} />}
         inline
-        fastField
       >
         <FDateInput
           name={'receipt_date'}
@@ -169,7 +167,6 @@ function ReceiptFormCustomerSelect() {
       label={<T id={'customer_name'} />}
       labelInfo={<FieldRequiredHint />}
       inline={true}
-      fastField={true}
       shouldUpdate={customersFieldShouldUpdate}
       shouldUpdateDeps={{ items: customers }}
     >

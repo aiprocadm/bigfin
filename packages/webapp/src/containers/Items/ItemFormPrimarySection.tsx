@@ -99,7 +99,6 @@ export default function ItemFormPrimarySection() {
             label={<T id={'item_name'} />}
             labelInfo={<FieldRequiredHint />}
             inline={true}
-            fastField
           >
             <FInputGroup
               name={'name'}
@@ -114,7 +113,6 @@ export default function ItemFormPrimarySection() {
             name={'code'}
             label={<T id={'item_code'} />}
             inline={true}
-            fastField
           >
             <FInputGroup name={'code'} medium={true} fastField />
           </FFormGroup>

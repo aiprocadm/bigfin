@@ -29,7 +29,6 @@ export function VendorFormBasicSection({}) {
         label={<T id={'contact_name'} />}
         inline
         fill
-        fastField
       >
         <ControlGroup fill>
           <SalutationList
@@ -59,7 +58,6 @@ export function VendorFormBasicSection({}) {
         helperText={intl.get('contact.form.hint.code')}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'code'} fill fastField />
       </FFormGroup>
@@ -70,7 +68,6 @@ export function VendorFormBasicSection({}) {
         label={<T id={'company_name'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'company_name'} fill fastField />
       </FFormGroup>
@@ -82,7 +79,6 @@ export function VendorFormBasicSection({}) {
         helperText={intl.get('contact.form.hint.display_name')}
         inline
         fill
-        fastField
       >
         <DisplayNameList
           name={'display_name'}
@@ -99,7 +95,6 @@ export function VendorFormBasicSection({}) {
         name={'email'}
         label={<T id={'vendor_email'} />}
         inline
-        fastField
       >
         <FInputGroup
           name={'email'}
@@ -114,7 +109,6 @@ export function VendorFormBasicSection({}) {
         className={'form-group--phone-number'}
         label={<T id={'phone_number'} />}
         inline
-        fastField
       >
         <Stack spacing={10}>
           <FInputGroup name={'work_phone'} placeholder={intl.get('work')} leftIcon="phone" fastField
@@ -128,7 +122,7 @@ export function VendorFormBasicSection({}) {
       </FFormGroup>
 
       {/*------------ Vendor website -----------*/}
-      <FFormGroup name={'website'} label={<T id={'website'} />} inline fastField>
+      <FFormGroup name={'website'} label={<T id={'website'} />} inline>
         <FInputGroup
           name={'website'}
           placeholder={'http://'}

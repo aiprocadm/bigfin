@@ -71,7 +71,6 @@ function WarehouseTransferFormHeaderFields({
         inline
         labelInfo={<FieldRequiredHint />}
         fill
-        fastField
       >
         <FDateInput
           name={'date'}

@@ -31,7 +31,6 @@ export default function APAgingSummaryHeaderGeneralContent() {
             label={<T id={'as_date'} />}
             labelInfo={<FieldHint />}
             fill
-            fastField
           >
             <FDateInput
               name={'asDate'}

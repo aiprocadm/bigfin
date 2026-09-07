@@ -95,7 +95,7 @@ export function CategorizeTransactionFormContent() {
         <Title>{formattedAmount}</Title>
       </FormGroup>
 
-      <FFormGroup name={'category'} label={intl.get('category')} fastField inline>
+      <FFormGroup name={'category'} label={intl.get('category')}inline>
         <FSelect
           name={'transactionType'}
           items={transactionTypes}

@@ -77,7 +77,6 @@ export default function AllocateLandedCostFormFields() {
         labelInfo={<FieldRequiredHint />}
         inline
         fill
-        fastField
       >
         <FSelect
           name={'transaction_type'}
@@ -133,7 +132,6 @@ export default function AllocateLandedCostFormFields() {
           label={<T id={'transaction_line'} />}
           inline
           fill
-          fastField
         >
           <FSelect
             name={'transaction_entry_id'}
@@ -157,7 +155,6 @@ export default function AllocateLandedCostFormFields() {
         name={'amount'}
         label={<T id={'amount'} />}
         inline={true}
-        fastField
       >
         <FInputGroup
           name={'amount'}
@@ -179,7 +176,6 @@ export default function AllocateLandedCostFormFields() {
         label={<T id={'allocation_method'} />}
         medium
         inline
-        fastField
       >
         <FRadioGroup
           name={'allocation_method'}

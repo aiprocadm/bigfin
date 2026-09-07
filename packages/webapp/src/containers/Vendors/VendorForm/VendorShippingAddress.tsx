@@ -19,7 +19,6 @@ export function VendorShippingAddress() {
         label={<T id={'country'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'shipping_address_country'} fill fastField />
       </FFormGroup>
@@ -29,7 +28,6 @@ export function VendorShippingAddress() {
         label={<T id={'address_line_1'} />}
         inline
         fill
-        fastField
       >
         <FTextArea name={'shipping_address1'} fill fastField />
       </FFormGroup>
@@ -39,7 +37,6 @@ export function VendorShippingAddress() {
         label={<T id={'address_line_2'} />}
         inline
         fill
-        fastField
       >
         <FTextArea name={'shipping_address2'} fill fastField />
       </FFormGroup>
@@ -49,7 +46,6 @@ export function VendorShippingAddress() {
         label={<T id={'city_town'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'shipping_address_city'} fill fastField />
       </FFormGroup>
@@ -59,7 +55,6 @@ export function VendorShippingAddress() {
         label={<T id={'state'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'shipping_address_state'} fill fastField />
       </FFormGroup>
@@ -69,7 +64,6 @@ export function VendorShippingAddress() {
         label={<T id={'zip_code'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'shipping_address_postcode'} fill fastField />
       </FFormGroup>
@@ -79,7 +73,6 @@ export function VendorShippingAddress() {
         label={<T id={'phone'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'shipping_address_phone'} fill fastField />
       </FFormGroup>

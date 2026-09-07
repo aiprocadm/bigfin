@@ -71,7 +71,6 @@ export function DiscountTotalLine({
             name={'discount'}
             className={formGroupCss}
             inline
-            fastField
           >
             <FInputGroup
               name={'discount'}

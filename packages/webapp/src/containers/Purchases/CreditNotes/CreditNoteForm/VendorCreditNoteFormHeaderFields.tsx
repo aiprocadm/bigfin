@@ -119,7 +119,6 @@ function VendorCreditNoteFormHeaderFields({
         inline
         labelInfo={<FieldRequiredHint />}
         fill
-        fastField
       >
         <FDateInput
           name={'vendor_credit_date'}
@@ -137,7 +136,6 @@ function VendorCreditNoteFormHeaderFields({
         label={<T id={'credit_note.label_credit_note'} />}
         inline={true}
         labelInfo={<FieldRequiredHint />}
-        fastField
       >
         <ControlGroup fill={true}>
           <FInputGroup
@@ -164,7 +162,7 @@ function VendorCreditNoteFormHeaderFields({
       </FFormGroup>
 
       {/* ----------- Reference ----------- */}
-      <FFormGroup name={'reference_no'} label={<T id={'reference_no'} />} inline={true} fastField>
+      <FFormGroup name={'reference_no'} label={<T id={'reference_no'} />} inline={true}>
         <FInputGroup name={'reference_no'} minimal={true} fastField />
       </FFormGroup>
     </Stack>
@@ -187,7 +185,6 @@ function VendorCreditFormVendorSelect() {
       label={<T id={'vendor_name'} />}
       inline={true}
       labelInfo={<FieldRequiredHint />}
-      fastField={true}
       shouldUpdate={vendorsFieldShouldUpdate}
       shouldUpdateDeps={{ items: vendors }}
     >

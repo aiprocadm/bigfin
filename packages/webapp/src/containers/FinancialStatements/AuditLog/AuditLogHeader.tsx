@@ -127,7 +127,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                   <FFormGroup
                     name="subject"
                     label={intl.get('audit_log.filter_subject')}
-                    fastField
                   >
                     <FMultiSelect
                       name="subject"
@@ -148,7 +147,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                   <FFormGroup
                     name="action"
                     label={intl.get('audit_log.filter_action')}
-                    fastField
                   >
                     <FMultiSelect
                       name="action"
@@ -169,7 +167,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                   <FFormGroup
                     name="fromDate"
                     label={intl.get('audit_log.filter_from')}
-                    fastField
                   >
                     <FDateInput
                       name="fromDate"
@@ -185,7 +182,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                     name="toDate"
                     label={intl.get('audit_log.filter_to')}
                     fill
-                    fastField
                   >
                     {/* Здесь стоял лишний проп системного поля даты: это
                         поле продукта, а не поле браузера — оно и так

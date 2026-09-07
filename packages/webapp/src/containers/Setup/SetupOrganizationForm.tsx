@@ -59,7 +59,6 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
       <FFormGroup
         name={'name'}
         label={<T id={'legal_organization_name'} />}
-        fastField
       >
         <FInputGroup name={'name'} large fastField />
       </FFormGroup>
@@ -68,7 +67,6 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
       <FFormGroup
         name={'location'}
         label={<T id={'business_location'} />}
-        fastField={true}
       >
         <FSelect
           name={'location'}
@@ -88,7 +86,6 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
           <FFormGroup
             name={'baseCurrency'}
             label={<T id={'base_currency'} />}
-            fastField={true}
           >
             <FSelect
               name={'baseCurrency'}
@@ -105,7 +102,7 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
 
         {/* ---------- Language ---------- */}
         <Col xs={6}>
-          <FFormGroup name={'language'} label={<T id={'language'} />} fastField>
+          <FFormGroup name={'language'} label={<T id={'language'} />}>
             <FSelect
               name={'language'}
               items={Languages}
@@ -124,7 +121,6 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
       <FFormGroup
         name={'fiscalYear'}
         label={<T id={'fiscal_year'} />}
-        fastField
       >
         <FSelect
           name={'fiscalYear'}
@@ -201,7 +197,6 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
         name={'interfaceMode'}
         label={<T id={'setup.organization.interface_mode'} />}
         helperText={<T id={'interface_mode.description'} />}
-        fastField
       >
         <FSelect
           name={'interfaceMode'}

@@ -53,7 +53,6 @@ function ReferenceNumberAutoIncrement() {
           name={'numberPrefix'}
           label={<T id={'prefix'} />}
           className={'form-group--'}
-          fastField
         >
           <FInputGroup name={'numberPrefix'} fastField />
         </FFormGroup>
@@ -65,7 +64,6 @@ function ReferenceNumberAutoIncrement() {
           name={'nextNumber'}
           label={<T id={'next_number'} />}
           className={'form-group--next-number'}
-          fastField
         >
           <FInputGroup name={'nextNumber'} fastField />
         </FFormGroup>
@@ -81,7 +79,7 @@ function ReferenceNumberManualOnce() {
   if (!values.onceManualNumber) return null;
 
   return (
-    <FFormGroup name={'incrementMode'} fastField>
+    <FFormGroup name={'incrementMode'}>
       <FRadioGroup name={'incrementMode'} fastField>
         <Radio
           label={<T id={'auto_increment.field.manual_this_transaction'} />}

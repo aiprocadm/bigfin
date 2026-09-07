@@ -78,7 +78,6 @@ function BillFormHeader() {
         inline
         labelInfo={<FieldRequiredHint />}
         className={classNames(CLASSES.FILL)}
-        fastField
       >
         <FDateInput
           name={'bill_date'}
@@ -96,7 +95,6 @@ function BillFormHeader() {
         label={<T id={'due_date'} />}
         inline
         fill
-        fastField
       >
         <FDateInput
           name={'due_date'}
@@ -116,7 +114,6 @@ function BillFormHeader() {
         label={<T id={'bill_number'} />}
         inline
         fill
-        fastField
       >
         <FInputGroup name={'bill_number'} minimal={true} fastField />
       </FFormGroup>
@@ -127,7 +124,6 @@ function BillFormHeader() {
         label={<T id={'reference'} />}
         inline={true}
         fill
-        fastField
       >
         <FInputGroup name={'reference_no'} minimal={true} fastField />
       </FFormGroup>
@@ -166,7 +162,6 @@ function BillFormVendorField() {
       label={<T id={'vendor_name'} />}
       inline={true}
       labelInfo={<FieldRequiredHint />}
-      fastField={true}
       shouldUpdate={vendorsFieldShouldUpdate}
       shouldUpdateDeps={{ items: vendors }}
     >

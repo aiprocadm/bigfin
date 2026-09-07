@@ -10,7 +10,7 @@ export function CategorizeTransactionBranchField() {
 
   return (
     <FeatureCan feature={Features.Branches}>
-      <FFormGroup name={'branchId'} label={intl.get('branch')} fastField inline>
+      <FFormGroup name={'branchId'} label={intl.get('branch')}inline>
         <BranchSuggestField
           name={'branchId'}
           items={branches}

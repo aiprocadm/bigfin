@@ -39,7 +39,6 @@ function ItemFormInventorySection({ organization: { base_currency } }) {
             label={<T id={'inventory_account'} />}
             name={'inventory_account_id'}
             items={accounts}
-            fastField={true}
             shouldUpdate={accountsFieldShouldUpdate}
             inline={true}
           >

@@ -15,7 +15,6 @@ export function CustomerTypeRadioField() {
       label={<T id={'customer_type'} />}
       inline
       fill
-      fastField
     >
       <FastField name="customer_type">
         {({ field, form }) => (

@@ -30,7 +30,6 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
             label={<T id={'as_date'} />}
             labelInfo={<FieldHint />}
             fill
-            fastField
           >
             <FDateInput
               name={'asDate'}
@@ -49,7 +48,6 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
           <FFormGroup
             name={'percentage_column'}
             labelInfo={<FieldHint />}
-            fastField
           >
             <FCheckbox
               name={'percentage_column'}

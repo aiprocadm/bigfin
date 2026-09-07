@@ -25,7 +25,6 @@ export default function ItemCategoryFormFields() {
         label={<T id={'category_name'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FInputGroup
           name={'name'}
@@ -40,7 +39,6 @@ export default function ItemCategoryFormFields() {
         name={'description'}
         label={<T id={'description'} />}
         inline
-        fastField
       >
         <FTextArea
           name={'description'}

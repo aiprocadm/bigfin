@@ -66,7 +66,6 @@ export const InvoiceFormInvoiceNumberField = R.compose(
         label={<T id={'invoice_no'} />}
         labelInfo={<FieldRequiredHint />}
         inline={true}
-        fastField={true}
       >
         <ControlGroup fill={true}>
           <FInputGroup

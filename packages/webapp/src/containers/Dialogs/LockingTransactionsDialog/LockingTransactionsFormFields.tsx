@@ -28,7 +28,6 @@ export default function LockingTransactionsFormFields() {
         labelInfo={<FieldRequiredHint />}
         minimal={true}
         className={classNames(CLASSES.FILL, 'form-group--date')}
-        fastField
       >
         <FDateInput
           name={'lock_to_date'}
@@ -46,7 +45,6 @@ export default function LockingTransactionsFormFields() {
         name={'reason'}
         label={<T id={'locking_transactions.dialog.reason'} />}
         labelInfo={<FieldRequiredHint />}
-        fastField
       >
         <FTextArea
           name={'reason'}

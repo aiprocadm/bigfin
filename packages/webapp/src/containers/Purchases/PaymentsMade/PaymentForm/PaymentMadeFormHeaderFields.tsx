@@ -124,7 +124,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         labelInfo={<FieldRequiredHint />}
         inline
         fill
-        fastField
       >
         <FDateInput
           name={'payment_date'}
@@ -142,7 +141,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         label={<T id={'full_amount'} />}
         inline={true}
         labelInfo={<Hint />}
-        fastField
       >
         <ControlGroup>
           <InputPrependText text={currency_code} />
@@ -171,7 +169,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         name={'payment_number'}
         label={<T id={'payment_no'} />}
         inline={true}
-        fastField
       >
         <FInputGroup name={'payment_number'} minimal={true} fastField />
       </FFormGroup>
@@ -184,7 +181,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         items={accounts}
         shouldUpdate={accountsFieldShouldUpdate}
         inline={true}
-        fastField={true}
       >
         <AccountsSelect
           name={'payment_account_id'}
@@ -207,7 +203,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         name={'reference'}
         label={<T id={'reference'} />}
         inline={true}
-        fastField
       >
         <FInputGroup name={'reference'} minimal={true} fastField />
       </FFormGroup>
@@ -233,7 +228,6 @@ function PaymentFormVendorSelect() {
       label={<T id={'vendor_name'} />}
       labelInfo={<FieldRequiredHint />}
       inline={true}
-      fastField={true}
       shouldUpdate={vendorsFieldShouldUpdate}
       shouldUpdateDeps={{ items: vendors }}
     >

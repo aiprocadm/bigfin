@@ -23,7 +23,6 @@ export function RoleFormHeader() {
         }
         labelInfo={<FieldRequiredHint />}
         inline
-        fastField
       >
         <FInputGroup
           name={'role_name'}
@@ -39,7 +38,6 @@ export function RoleFormHeader() {
         name={'role_description'}
         label={<T id={'description'} />}
         inline
-        fastField
       >
         <FTextArea
           name={'role_description'}

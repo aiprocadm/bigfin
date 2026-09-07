@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getCustomersTableStateFactory,
@@ -6,15 +5,15 @@ import {
 } from '@/store/customers/customers.selectors';
 
 
-export const withCustomers = (mapState) => {
+export const withCustomers = (mapState: any) => {
   const getCustomersTableState = getCustomersTableStateFactory();
   const customersTableStateChanged = customersTableStateChangedFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       customersSelectedRows: state.customers.selectedRows,
       customersTableState: getCustomersTableState(state, props),
-      customersTableStateChanged: customersTableStateChanged(state, props),
+      customersTableStateChanged: customersTableStateChanged(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

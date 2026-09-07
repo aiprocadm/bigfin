@@ -105,7 +105,9 @@ import {
 //     textClassName?: string;
 // }
 
-export class MenuItem extends AbstractPureComponent2 {
+// Доводы типа обязательны: без них тип экземпляра не считается элементом
+// JSX, и каждое использование <MenuItem/> — ошибка (Д2 карты v67).
+export class MenuItem extends AbstractPureComponent2<any, any> {
     static get defaultProps() {
       return {
         disabled: false,

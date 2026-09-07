@@ -826,7 +826,7 @@ export function nestedArrayToflatten(
 
   return collection.reduce((items, currentValue, index) => {
     let localItems = [...items];
-    const parsedItem = parseObject(currentValue, level);
+    const parsedItem = parseObject(currentValue);
     localItems.push(parsedItem);
 
     if (Array.isArray(currentValue[property])) {

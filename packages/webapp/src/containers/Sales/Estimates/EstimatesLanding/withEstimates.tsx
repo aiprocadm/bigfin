@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getEstimatesTableStateFactory,
@@ -6,16 +5,16 @@ import {
   getEstimatesSelectedRowsFactory,
 } from '@/store/estimate/estimates.selectors';
 
-export const withEstimates = (mapState) => {
+export const withEstimates = (mapState: any) => {
   const getEstimatesTableState = getEstimatesTableStateFactory();
   const getSelectedRows = getEstimatesSelectedRowsFactory();
   const isEstimatesTableStateChanged = isEstimatesTableStateChangedFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       estimatesTableState: getEstimatesTableState(state, props),
-      estimatesTableStateChanged: isEstimatesTableStateChanged(state, props),
-      estimatesSelectedRows: getSelectedRows(state, props),
+      estimatesTableStateChanged: isEstimatesTableStateChanged(state),
+      estimatesSelectedRows: getSelectedRows(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

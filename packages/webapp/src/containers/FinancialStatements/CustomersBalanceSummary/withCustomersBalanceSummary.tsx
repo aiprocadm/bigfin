@@ -1,13 +1,11 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import { getCustomersBalanceSummaryFilterDrawer } from '@/store/financial-statement/financial-statements.selectors';
 
-export const withCustomersBalanceSummary = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withCustomersBalanceSummary = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       customersBalanceDrawerFilter: getCustomersBalanceSummaryFilterDrawer(
         state,
-        props,
       ),
     };
     return mapState ? mapState(mapped, state, props) : mapped;

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   expensesTableStateChangedFactory,
@@ -6,16 +5,16 @@ import {
   getExpensesTableStateFactory,
 } from '@/store/expenses/expenses.selectors';
 
-export const withExpenses = (mapState) => {
+export const withExpenses = (mapState: any) => {
   const getExpensesTableState = getExpensesTableStateFactory();
   const expensesTableStateChanged = expensesTableStateChangedFactory();
   const getSelectedRows = getExpensesSelectedRowsFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       expensesTableState: getExpensesTableState(state, props),
-      expensesTableStateChanged: expensesTableStateChanged(state, props),
-      expensesSelectedRows: getSelectedRows(state, props),
+      expensesTableStateChanged: expensesTableStateChanged(state),
+      expensesSelectedRows: getSelectedRows(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

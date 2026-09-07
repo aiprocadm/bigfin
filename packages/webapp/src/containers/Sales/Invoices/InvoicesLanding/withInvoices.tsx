@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getInvoicesTableStateFactory,
@@ -6,16 +5,16 @@ import {
   getInvoicesSelectedRowsFactory,
 } from '@/store/invoice/invoices.selector';
 
-export const withInvoices = (mapState) => {
+export const withInvoices = (mapState: any) => {
   const getInvoicesTableState = getInvoicesTableStateFactory();
   const isInvoicesTableStateChanged = isInvoicesTableStateChangedFactory();
   const getSelectedRows = getInvoicesSelectedRowsFactory();
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
       invoicesTableState: getInvoicesTableState(state, props),
-      invoicesTableStateChanged: isInvoicesTableStateChanged(state, props),
-      invoicesSelectedRows: getSelectedRows(state, props),
+      invoicesTableStateChanged: isInvoicesTableStateChanged(state),
+      invoicesSelectedRows: getSelectedRows(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

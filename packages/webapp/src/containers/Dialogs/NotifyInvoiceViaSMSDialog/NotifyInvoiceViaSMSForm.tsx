@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { pick } from 'lodash';
@@ -12,7 +11,7 @@ import { transformErrors } from '@/containers/NotifyViaSMS/utils';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
-const transformFormValuesToRequest = (values) => {
+const transformFormValuesToRequest = (values: any) => {
   return pick(values, ['notification_key']);
 };
 
@@ -34,7 +33,7 @@ const notificationTypes = [
 function NotifyInvoiceViaSMSForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const {
     createNotifyInvoiceBySMSMutate,
     invoiceId,
@@ -47,11 +46,11 @@ function NotifyInvoiceViaSMSForm({
   const [calloutCode, setCalloutCode] = React.useState([]);
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     setSubmitting(true);
 
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get('notify_invoice_via_sms.dialog.success_message'),
         intent: Intent.SUCCESS,
@@ -64,7 +63,7 @@ function NotifyInvoiceViaSMSForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setErrors, setCalloutCode });
       }
@@ -88,7 +87,7 @@ function NotifyInvoiceViaSMSForm({
     ...invoiceSMSDetail,
   };
   // Handle form values change.
-  const handleValuesChange = (values) => {
+  const handleValuesChange = (values: any) => {
     if (values.notification_key !== notificationType) {
       setNotificationType(values.notification_key);
     }

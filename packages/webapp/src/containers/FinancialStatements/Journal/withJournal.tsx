@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { connect } from 'react-redux';
 import {
   getJournalFilterDrawer,
 } from '@/store/financial-statement/financial-statements.selectors';
 
-export const withJournal = (mapState) => {
-  const mapStateToProps = (state, props) => {
+export const withJournal = (mapState: any) => {
+  const mapStateToProps = (state: any, props: any) => {
     const mapped = {
-      journalSheetDrawerFilter: getJournalFilterDrawer(state, props),
+      journalSheetDrawerFilter: getJournalFilterDrawer(state),
     };
     return mapState ? mapState(mapped, state, props) : mapped;
   };

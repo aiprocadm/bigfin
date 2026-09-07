@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -23,7 +22,7 @@ const notificationType = {
 function NotifyPaymentReceiveViaSMSForm({
   // #withDialogActions
   closeDialog,
-}) {
+}: any) {
   const {
     dialogName,
     paymentReceiveId,
@@ -34,9 +33,9 @@ function NotifyPaymentReceiveViaSMSForm({
   const [calloutCode, setCalloutCode] = React.useState([]);
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     // Handle request response success.
-    const onSuccess = (response) => {
+    const onSuccess = (response: any) => {
       AppToaster.show({
         message: intl.get(
           'notify_payment_receive_via_sms.dialog.success_message',
@@ -51,7 +50,7 @@ function NotifyPaymentReceiveViaSMSForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setErrors, setCalloutCode });
       }

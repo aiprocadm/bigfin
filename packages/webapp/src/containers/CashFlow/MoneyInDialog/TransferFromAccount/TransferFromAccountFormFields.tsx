@@ -63,7 +63,6 @@ export default function TransferFromAccountFormFields() {
             name={'date'}
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}

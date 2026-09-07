@@ -134,7 +134,6 @@ function VendorOpeningBalanceAtField() {
         formatDate={formatOrganizationDate}
         parseDate={(str) => new Date(str)}
         fill
-        fastField
       />
     </FFormGroup>
   );

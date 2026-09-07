@@ -61,7 +61,6 @@ export default function OtherExpnseFormFields() {
             name={'date'}
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}
@@ -70,7 +69,6 @@ export default function OtherExpnseFormFields() {
                 position: Position.BOTTOM_LEFT,
                 minimal: true,
               }}
-              fastField
             />
           </FFormGroup>
         </Col>

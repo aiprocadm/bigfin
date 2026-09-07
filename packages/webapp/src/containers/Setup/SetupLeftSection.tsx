@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Text } from '@blueprintjs/core';
@@ -11,7 +10,7 @@ import { useAuthMetadata } from '@/hooks/query';
 /**
  * Footer item link.
  */
-function FooterLinkItem({ title, link }) {
+function FooterLinkItem({ title, link }: any) {
   return (
     <div className="content__links-item">
       <a href={link} target="_blank">

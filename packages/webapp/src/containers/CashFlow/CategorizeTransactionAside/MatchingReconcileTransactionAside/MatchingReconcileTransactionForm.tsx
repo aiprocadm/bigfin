@@ -178,7 +178,6 @@ function CreateReconcileTransactionContent() {
           }}
           inputProps={{ fill: true, leftElement: <Icon icon={'date-range'} /> }}
           fill
-          fastField
         />
       </FFormGroup>
 

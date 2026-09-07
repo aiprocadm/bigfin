@@ -36,7 +36,6 @@ export default function LockingTransactionsFormFields() {
             position: Position.BOTTOM,
             minimal: true,
           }}
-          fastField
         />
       </FFormGroup>
 

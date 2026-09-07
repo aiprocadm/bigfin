@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import '@/style/pages/PaymentReceive/QuickPaymentReceiveDialog.scss';
@@ -13,7 +12,7 @@ export default function QuickPaymentReceiveFormDialogContent({
   // #ownProps
   dialogName,
   invoice,
-}) {
+}: any) {
   return (
     <QuickPaymentReceiveFormProvider
       invoiceId={invoice}

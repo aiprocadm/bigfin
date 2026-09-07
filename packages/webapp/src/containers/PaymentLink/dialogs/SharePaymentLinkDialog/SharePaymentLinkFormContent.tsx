@@ -92,7 +92,6 @@ export function SharePaymentLinkFormContent() {
                 style: { minWidth: 260 },
                 leftElement: <Icon icon={'date-range'} />,
               }}
-              fastField
             />
           </FFormGroup>
 

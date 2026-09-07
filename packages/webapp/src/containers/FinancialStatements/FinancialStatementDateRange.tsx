@@ -25,7 +25,6 @@ export default function FinancialStatementDateRange() {
                 label={intl.get('report_date_range')}
                 labelInfo={<Hint content={intl.get('report_date_range.hint')} />}
                 minimal={true}
-                fill={true}
               >
                 <HTMLSelect
                   fill={true}
@@ -63,7 +62,6 @@ export default function FinancialStatementDateRange() {
             name={'fromDate'}
             label={intl.get('from_date')}
             labelInfo={<Hint content={intl.get('from_date.hint')} />}
-            fill
           >
             <FDateInput
               name={'fromDate'}
@@ -82,7 +80,6 @@ export default function FinancialStatementDateRange() {
             name={'toDate'}
             label={intl.get('to_date')}
             labelInfo={<Hint content={intl.get('to_date.hint')} />}
-            fill
           >
             <FDateInput
               name={'toDate'}

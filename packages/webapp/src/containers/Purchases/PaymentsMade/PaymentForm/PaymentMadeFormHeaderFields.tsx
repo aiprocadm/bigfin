@@ -124,7 +124,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         label={<T id={'payment_date'} />}
         labelInfo={<FieldRequiredHint />}
         inline
-        fill
       >
         <FDateInput
           name={'payment_date'}
@@ -132,7 +131,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
           popoverProps={{ position: Position.BOTTOM, minimal: true }}
           inputProps={{ leftIcon: <Icon icon={'date-range'} /> }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -171,7 +169,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         label={<T id={'payment_no'} />}
         inline={true}
       >
-        <FInputGroup name={'payment_number'} minimal={true} fastField />
+        <FInputGroup name={'payment_number'} fastField />
       </FFormGroup>
 
       {/* ------------ Payment account ------------ */}
@@ -205,7 +203,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         label={<T id={'reference'} />}
         inline={true}
       >
-        <FInputGroup name={'reference'} minimal={true} fastField />
+        <FInputGroup name={'reference'} fastField />
       </FFormGroup>
     </Stack>
   );

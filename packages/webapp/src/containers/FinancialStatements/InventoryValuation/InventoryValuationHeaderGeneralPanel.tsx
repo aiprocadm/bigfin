@@ -52,7 +52,6 @@ function InventoryValuationHeaderGeneralPanelContent() {
               <FormGroup
                 label={<T id={'as_date'} />}
                 labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
-                fill={true}
                 intent={inputIntent({ error })}
               >
                 <DateInput

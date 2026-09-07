@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { Position, ControlGroup } from '@blueprintjs/core';
@@ -18,7 +17,7 @@ import { withSettings } from '@/containers/Settings/withSettings';
  */
 export const EstimateFormEstimateNumberField = R.compose(
   withDialogActions,
-  withSettings(({ estimatesSettings }) => ({
+  withSettings(({ estimatesSettings }: any) => ({
     estimateNextNumber: estimatesSettings?.nextNumber,
     estimateNumberPrefix: estimatesSettings?.numberPrefix,
     estimateAutoIncrement: estimatesSettings?.autoIncrement,
@@ -30,14 +29,14 @@ export const EstimateFormEstimateNumberField = R.compose(
 
     // #withSettings
     estimateAutoIncrement,
-  }) => {
+  }: any) => {
     const { values, setFieldValue } = useFormikContext<any>();
 
     const handleEstimateNumberBtnClick = () => {
       openDialog('estimate-number-form', {});
     };
     // Handle estimate no. field blur.
-    const handleEstimateNoBlur = (event) => {
+    const handleEstimateNoBlur = (event: any) => {
       const newValue = event.target.value;
 
       // Show the confirmation dialog if the value has changed and auto-increment
@@ -67,7 +66,6 @@ export const EstimateFormEstimateNumberField = R.compose(
         <ControlGroup fill={true}>
           <FInputGroup
             name={'estimate_number'}
-            minimal={true}
             asyncControl={true}
             onBlur={handleEstimateNoBlur}
             onChange={() => {}}

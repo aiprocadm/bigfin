@@ -76,7 +76,6 @@ export default function OtherIncomeFormFields() {
             name={'date'}
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}

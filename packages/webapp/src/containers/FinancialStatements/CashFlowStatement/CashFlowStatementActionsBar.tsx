@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -39,7 +38,7 @@ function CashFlowStatementActionsBar({
   //#ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { isCashFlowLoading, refetchCashFlow } = useCashFlowStatementContext();
 
   // Handle filter toggle click.
@@ -53,7 +52,7 @@ function CashFlowStatementActionsBar({
   };
 
   // handle number format form submit.
-  const handleNumberFormatSubmit = (values) =>
+  const handleNumberFormatSubmit = (values: any) =>
     saveInvoke(onNumberFormatSubmit, values);
 
   // Handle print button click.
@@ -133,7 +132,7 @@ function CashFlowStatementActionsBar({
 }
 
 export default compose(
-  withCashFlowStatement(({ cashFlowStatementDrawerFilter }) => ({
+  withCashFlowStatement(({ cashFlowStatementDrawerFilter }: any) => ({
     isFilterDrawerOpen: cashFlowStatementDrawerFilter,
   })),
   withCashFlowStatementActions,

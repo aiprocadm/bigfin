@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -36,7 +35,7 @@ function SalesByItemsActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { refetchSheet, isLoading } = useSalesByItemsContext();
 
   // Handle filter toggle click.
@@ -49,7 +48,7 @@ function SalesByItemsActionsBar({
   };
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -126,7 +125,7 @@ function SalesByItemsActionsBar({
 }
 
 export default compose(
-  withSalesByItems(({ salesByItemsDrawerFilter }) => ({
+  withSalesByItems(({ salesByItemsDrawerFilter }: any) => ({
     salesByItemsDrawerFilter,
   })),
   withSalesByItemsActions,

@@ -30,7 +30,6 @@ export default function UnlockingPartialTransactionsFormFields() {
             name={'unlock_from_date'}
             label={<T id={'unlocking_partial_transactions.dialog.from_date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
             minimal
           >
             <FDateInput
@@ -40,7 +39,6 @@ export default function UnlockingPartialTransactionsFormFields() {
                 position: Position.BOTTOM,
                 minimal: true,
               }}
-              fastField
             />
           </FFormGroup>
         </Col>
@@ -52,7 +50,6 @@ export default function UnlockingPartialTransactionsFormFields() {
             label={<T id={'unlocking_partial_transactions.dialog.to_date'} />}
             labelInfo={<FieldRequiredHint />}
             minimal={true}
-            fill
           >
             <FDateInput
               name={'unlock_to_date'}
@@ -61,7 +58,6 @@ export default function UnlockingPartialTransactionsFormFields() {
                 position: Position.BOTTOM,
                 minimal: true,
               }}
-              fastField
             />
           </FFormGroup>
         </Col>

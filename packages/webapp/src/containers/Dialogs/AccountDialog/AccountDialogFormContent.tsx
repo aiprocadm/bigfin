@@ -70,7 +70,6 @@ function AccountFormDialogFields({
           inline={true}
         >
           <FInputGroup
-            medium={true}
             inputRef={(ref) => (accountNameFieldRef.current = ref)}
             name={'name'}
             fastField={true}
@@ -83,7 +82,7 @@ function AccountFormDialogFields({
           labelInfo={<Hint content={<T id="account_code_hint" />} />}
           inline={true}
         >
-          <FInputGroup medium={true} name={'code'} fastField={true} />
+          <FInputGroup name={'code'} fastField={true} />
         </FFormGroup>
 
         <FFormGroup

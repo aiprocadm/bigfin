@@ -30,7 +30,6 @@ function DecrementAdjustmentFields() {
           <FInputGroup
             name={'quantity_on_hand'}
             disabled={true}
-            medium={'true'}
           />
         </FFormGroup>
       </Col>
@@ -41,7 +40,7 @@ function DecrementAdjustmentFields() {
 
       {/*------------ Decrement -----------*/}
       <Col className={'col--decrement'}>
-        <FFormGroup name={'quantity'} label={<T id={'decrement'} />} fill>
+        <FFormGroup name={'quantity'} label={<T id={'decrement'} />}>
           <FMoneyInputGroup
             name={'quantity'}
             allowDecimals={false}
@@ -68,7 +67,6 @@ function DecrementAdjustmentFields() {
         <FFormGroup
           name={'new_quantity'}
           label={<T id={'new_quantity'} />}
-          fill
         >
           <FMoneyInputGroup
             name={'new_quantity'}

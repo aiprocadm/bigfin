@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -39,7 +38,7 @@ function VendorsTransactionsActionsBar({
 
   //#withDialogActions
   openDialog
-}) {
+}: any) {
   const { isVendorsTransactionsLoading, refetch } =
     useVendorsTransactionsContext();
 
@@ -54,7 +53,7 @@ function VendorsTransactionsActionsBar({
   };
 
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -131,7 +130,7 @@ function VendorsTransactionsActionsBar({
   );
 }
 export default compose(
-  withVendorsTransaction(({ vendorsTransactionsDrawerFilter }) => ({
+  withVendorsTransaction(({ vendorsTransactionsDrawerFilter }: any) => ({
     isFilterDrawerOpen: vendorsTransactionsDrawerFilter,
   })),
   withVendorsTransactionsActions,

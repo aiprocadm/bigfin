@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarDivider,
@@ -39,7 +38,7 @@ function ARAgingSummaryActionsBar({
   // #ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   const { isARAgingFetching, refetch } = useARAgingSummaryContext();
 
   const handleFilterToggleClick = () => {
@@ -52,7 +51,7 @@ function ARAgingSummaryActionsBar({
   };
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: any) => {
     safeInvoke(onNumberFormatSubmit, numberFormat);
   };
 
@@ -133,7 +132,7 @@ function ARAgingSummaryActionsBar({
 
 export default compose(
   withARAgingSummaryActions,
-  withARAgingSummary(({ ARAgingSummaryFilterDrawer }) => ({
+  withARAgingSummary(({ ARAgingSummaryFilterDrawer }: any) => ({
     isFilterDrawerOpen: ARAgingSummaryFilterDrawer,
   })),
   withDialogActions,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -39,7 +38,7 @@ function InventoryItemDetailsActionsBar({
 
   //#withInventoryItemDetailsActions
   toggleInventoryItemDetailsFilterDrawer: toggleFilterDrawer,
-}) {
+}: any) {
   const { isInventoryItemDetailsLoading, inventoryItemDetailsRefetch } =
     useInventoryItemDetailsContext();
 
@@ -52,7 +51,7 @@ function InventoryItemDetailsActionsBar({
     inventoryItemDetailsRefetch();
   };
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
   // Handle print button click.
@@ -128,7 +127,7 @@ function InventoryItemDetailsActionsBar({
 }
 
 export default compose(
-  withInventoryItemDetails(({ inventoryItemDetailDrawerFilter }) => ({
+  withInventoryItemDetails(({ inventoryItemDetailDrawerFilter }: any) => ({
     isFilterDrawerOpen: inventoryItemDetailDrawerFilter,
   })),
   withInventoryItemDetailsActions,

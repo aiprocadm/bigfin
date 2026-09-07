@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarDivider,
@@ -39,7 +38,7 @@ function VendorsBalanceSummaryActionsBar({
 
   // #withDialogActions
   openDialog,
-}) {
+}: any) {
   const { isVendorsBalanceLoading, refetch } =
     useVendorsBalanceSummaryContext();
 
@@ -53,7 +52,7 @@ function VendorsBalanceSummaryActionsBar({
   };
 
   // handle number format submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: any) => {
     saveInvoke(onNumberFormatSubmit, numberFormat);
   };
 
@@ -131,7 +130,7 @@ function VendorsBalanceSummaryActionsBar({
 }
 export default compose(
   withVendorsBalanceSummaryActions,
-  withVendorsBalanceSummary(({ VendorsSummaryFilterDrawer }) => ({
+  withVendorsBalanceSummary(({ VendorsSummaryFilterDrawer }: any) => ({
     isFilterDrawerOpen: VendorsSummaryFilterDrawer,
   })),
   withDialogActions,

@@ -42,7 +42,6 @@ export function CustomerFormFinancialSection() {
             name={'currency_code'}
             label={<T id={'currency'} />}
             inline
-            fill
             >
             <CurrencySelectList
               name="currency_code"
@@ -84,7 +83,6 @@ function CustomerOpeningBalanceAtField() {
       name={'opening_balance_at'}
       label={<T id={'opening_balance_at'} />}
       inline
-      fill
       helperText={<ErrorMessage name="opening_balance_at" />}
     >
       <FDateInput
@@ -116,7 +114,6 @@ function CustomerOpeningBalanceField() {
       inline
       shouldUpdate={openingBalanceFieldShouldUpdate}
       shouldUpdateDeps={{ currencyCode: values.currency_code }}
-      fill
     >
       <ControlGroup>
         <InputPrependText text={values.currency_code as string} />

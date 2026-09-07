@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { useAutofocus } from '@/hooks';
@@ -28,7 +27,6 @@ export default function IncrementAdjustmentFields() {
           <FInputGroup
             name={'quantity_on_hand'}
             disabled={true}
-            medium={'true'}
             fastField
           />
         </FFormGroup>
@@ -44,14 +42,13 @@ export default function IncrementAdjustmentFields() {
         <FFormGroup
           name={'quantity'}
           label={<T id={'increment'} />}
-          fill
         >
           <FMoneyInputGroup
             name={'quantity'}
             allowDecimals={false}
             allowNegativeValue={true}
-            inputRef={(ref) => (incrementFieldRef.current = ref)}
-            onBlurValue={(value) => {
+            inputRef={(ref: any) => (incrementFieldRef.current = ref)}
+            onBlurValue={(value: any) => {
               setFieldValue(
                 'new_quantity',
                 incrementQuantity(
@@ -87,7 +84,7 @@ export default function IncrementAdjustmentFields() {
             name={'new_quantity'}
             allowDecimals={false}
             allowNegativeValue={true}
-            onBlurValue={(value) => {
+            onBlurValue={(value: any) => {
               setFieldValue(
                 'quantity',
                 decrementQuantity(

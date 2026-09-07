@@ -28,7 +28,6 @@ export function VendorFormBasicSection({}) {
         name={'salutation'}
         label={<T id={'contact_name'} />}
         inline
-        fill
       >
         <ControlGroup fill>
           <SalutationList
@@ -57,7 +56,6 @@ export function VendorFormBasicSection({}) {
         label={intl.get('vendors.form.label.vendor_code')}
         helperText={intl.get('contact.form.hint.code')}
         inline
-        fill
       >
         <FInputGroup name={'code'} fill fastField />
       </FFormGroup>
@@ -67,7 +65,6 @@ export function VendorFormBasicSection({}) {
         name={'company_name'}
         label={<T id={'company_name'} />}
         inline
-        fill
       >
         <FInputGroup name={'company_name'} fill fastField />
       </FFormGroup>
@@ -78,7 +75,6 @@ export function VendorFormBasicSection({}) {
         label={<T id={'display_name'} />}
         helperText={intl.get('contact.form.hint.display_name')}
         inline
-        fill
       >
         <DisplayNameList
           name={'display_name'}

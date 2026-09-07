@@ -102,7 +102,6 @@ export default function ItemFormPrimarySection() {
           >
             <FInputGroup
               name={'name'}
-              medium={true}
               inputRef={(ref) => (nameFieldRef.current = ref)}
               fastField
             />
@@ -114,7 +113,7 @@ export default function ItemFormPrimarySection() {
             label={<T id={'item_code'} />}
             inline={true}
           >
-            <FInputGroup name={'code'} medium={true} fastField />
+            <FInputGroup name={'code'} fastField />
           </FFormGroup>
 
           {/*----------- Item category ----------*/}

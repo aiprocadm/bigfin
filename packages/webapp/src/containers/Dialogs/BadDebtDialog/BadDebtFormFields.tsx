@@ -51,7 +51,6 @@ function BadDebtFormFields() {
         name={'amount'}
         label={<T id={'bad_debt.dialog.written_off_amount'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <ControlGroup>
           <InputPrependText text={invoice?.currency_code || ''} />
@@ -68,7 +67,6 @@ function BadDebtFormFields() {
         name={'expense_account_id'}
         label={<T id={'expense_account_id'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <FAccountsSuggestField
           name={'expense_account_id'}
@@ -83,7 +81,6 @@ function BadDebtFormFields() {
         name={'reason'}
         label={<T id={'reason'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <FTextArea name={'reason'} growVertically={true} large={true} fill />
       </FFormGroup>

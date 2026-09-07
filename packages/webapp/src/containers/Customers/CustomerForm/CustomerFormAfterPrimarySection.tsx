@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { ControlGroup } from '@blueprintjs/core';
@@ -12,7 +11,6 @@ export default function CustomerFormAfterPrimarySection({}) {
         name={'email'}
         label={<T id={'customer_email'} />}
         inline
-        fill
       >
         <FInputGroup name={'email'} fill />
       </FFormGroup>
@@ -22,7 +20,6 @@ export default function CustomerFormAfterPrimarySection({}) {
         name={'personal_phone'}
         label={<T id={'phone_number'} />}
         inline
-        fill
       >
         <ControlGroup fill>
           <FInputGroup
@@ -43,7 +40,6 @@ export default function CustomerFormAfterPrimarySection({}) {
         name={'website'}
         label={<T id={'website'} />}
         inline
-        fill
       >
         <FInputGroup name={'website'} placeholder={'http://'} fill />
       </FFormGroup>

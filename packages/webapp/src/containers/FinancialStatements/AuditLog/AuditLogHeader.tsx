@@ -174,14 +174,12 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                       formatDate={formatOrganizationDate}
                       parseDate={(str) => new Date(str)}
                       inputProps={{ fill: true }}
-                      fastField
                     />
                   </FFormGroup>
 
                   <FFormGroup
                     name="toDate"
                     label={intl.get('audit_log.filter_to')}
-                    fill
                   >
                     {/* Здесь стоял лишний проп системного поля даты: это
                         поле продукта, а не поле браузера — оно и так
@@ -192,7 +190,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                       formatDate={formatOrganizationDate}
                       parseDate={(str) => new Date(str)}
                       inputProps={{ fill: true }}
-                      fastField
                     />
                   </FFormGroup>
                 </div>

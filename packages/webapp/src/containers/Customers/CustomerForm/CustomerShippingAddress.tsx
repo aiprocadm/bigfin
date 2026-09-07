@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Box } from '@/components';
 import {
@@ -19,7 +18,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address_country'}
         label={<T id={'country'} />}
         inline
-        fill
       >
         <FInputGroup name={'shipping_address_country'} fill />
       </FFormGroup>
@@ -28,7 +26,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address1'}
         label={<T id={'address_line_1'} />}
         inline
-        fill
       >
         <FTextArea name={'shipping_address1'} fill />
       </FFormGroup>
@@ -37,7 +34,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address2'}
         label={<T id={'address_line_2'} />}
         inline
-        fill
       >
         <FTextArea name={'shipping_address2'} fill />
       </FFormGroup>
@@ -46,7 +42,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address_city'}
         label={<T id={'city_town'} />}
         inline
-        fill
       >
         <FInputGroup name={'shipping_address_city'} fill />
       </FFormGroup>
@@ -55,7 +50,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address_state'}
         label={<T id={'state'} />}
         inline
-        fill
       >
         <FInputGroup name={'shipping_address_state'} fill />
       </FFormGroup>
@@ -64,7 +58,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address_postcode'}
         label={<T id={'zip_code'} />}
         inline
-        fill
       >
         <FInputGroup name={'shipping_address_postcode'} fill />
       </FFormGroup>
@@ -73,7 +66,6 @@ export function CustomerShippingAddress() {
         name={'shipping_address_phone'}
         label={<T id={'phone'} />}
         inline
-        fill
       >
         <FInputGroup name={'shipping_address_phone'} fill />
       </FFormGroup>

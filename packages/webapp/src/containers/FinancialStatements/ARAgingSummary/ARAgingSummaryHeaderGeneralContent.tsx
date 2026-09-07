@@ -32,7 +32,6 @@ export default function ARAgingSummaryHeaderGeneralContent() {
             name={'asDate'}
             label={<T id={'as_date'} />}
             labelInfo={<FieldHint content={intl.get('as_date.hint')} />}
-            fill
           >
             <FDateInput
               name={'asDate'}
@@ -40,7 +39,6 @@ export default function ARAgingSummaryHeaderGeneralContent() {
               popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
               minimal
               fill
-              fastField
             />
           </FFormGroup>
         </Col>
@@ -53,7 +51,7 @@ export default function ARAgingSummaryHeaderGeneralContent() {
             label={<T id={'aging_before_days'} />}
             labelInfo={<FieldHint content={intl.get('aging_before_days.hint')} />}
           >
-            <FInputGroup name={'agingDaysBefore'} medium={true} fastField />
+            <FInputGroup name={'agingDaysBefore'} fastField />
           </FFormGroup>
         </Col>
       </Row>
@@ -65,7 +63,7 @@ export default function ARAgingSummaryHeaderGeneralContent() {
             label={<T id={'aging_periods'} />}
             labelInfo={<FieldHint content={intl.get('aging_periods.hint')} />}
           >
-            <FInputGroup name={'agingPeriods'} medium={true} />
+            <FInputGroup name={'agingPeriods'}/>
           </FFormGroup>
         </Col>
       </Row>

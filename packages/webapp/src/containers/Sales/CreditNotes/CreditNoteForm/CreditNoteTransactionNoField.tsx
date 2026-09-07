@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { Position, ControlGroup } from '@blueprintjs/core';
@@ -19,7 +18,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
  */
 export const CreditNoteTransactionNoField = R.compose(
   withDialogActions,
-  withSettings(({ creditNoteSettings }) => ({
+  withSettings(({ creditNoteSettings }: any) => ({
     creditAutoIncrement: creditNoteSettings?.autoIncrement,
     creditNextNumber: creditNoteSettings?.nextNumber,
     creditNumberPrefix: creditNoteSettings?.numberPrefix,
@@ -31,7 +30,7 @@ export const CreditNoteTransactionNoField = R.compose(
 
     // #withSettings
     creditAutoIncrement,
-  }) => {
+  }: any) => {
     const { values, setFieldValue } = useFormikContext<any>();
 
     // Handle credit number changing.
@@ -39,7 +38,7 @@ export const CreditNoteTransactionNoField = R.compose(
       openDialog('credit-number-form');
     };
     // Handle credit note no. field blur.
-    const handleCreditNoBlur = (event) => {
+    const handleCreditNoBlur = (event: any) => {
       const newValue = event.target.value;
 
       // Show the confirmation dialog if the value has changed and auto-increment
@@ -70,7 +69,6 @@ export const CreditNoteTransactionNoField = R.compose(
         <ControlGroup fill={true}>
           <FInputGroup
             name={'credit_note_number'}
-            minimal={true}
             value={values.credit_note_number}
             asyncControl={true}
             onBlur={handleCreditNoBlur}

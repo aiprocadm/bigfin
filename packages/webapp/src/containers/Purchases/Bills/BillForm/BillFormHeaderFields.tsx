@@ -85,7 +85,6 @@ function BillFormHeader() {
           popoverProps={{ position: Position.BOTTOM, minimal: true }}
           inputProps={{ leftIcon: <Icon icon={'date-range'} /> }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -94,7 +93,6 @@ function BillFormHeader() {
         name={'due_date'}
         label={<T id={'due_date'} />}
         inline
-        fill
       >
         <FDateInput
           name={'due_date'}
@@ -104,7 +102,6 @@ function BillFormHeader() {
             leftIcon: <Icon icon={'date-range'} />,
           }}
           fill
-          fastField
         />
       </FFormGroup>
 
@@ -113,9 +110,8 @@ function BillFormHeader() {
         name={'bill_number'}
         label={<T id={'bill_number'} />}
         inline
-        fill
       >
-        <FInputGroup name={'bill_number'} minimal={true} fastField />
+        <FInputGroup name={'bill_number'} fastField />
       </FFormGroup>
 
       {/* ------- Reference ------- */}
@@ -123,9 +119,8 @@ function BillFormHeader() {
         name={'reference_no'}
         label={<T id={'reference'} />}
         inline={true}
-        fill
       >
-        <FInputGroup name={'reference_no'} minimal={true} fastField />
+        <FInputGroup name={'reference_no'} fastField />
       </FFormGroup>
 
       {/*------------ Project name -----------*/}

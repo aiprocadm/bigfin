@@ -77,7 +77,6 @@ export default function InventoryAdjustmentFormDialogFields() {
           <Col xs={5}>
             <FormGroup
               label={<T id={'branch'} />}
-              fill
             >
               <BranchSelect
                 name={'branch_id'}
@@ -91,7 +90,6 @@ export default function InventoryAdjustmentFormDialogFields() {
           <Col xs={5}>
             <FormGroup
               label={<T id={'warehouse'} />}
-              fill
             >
               <WarehouseSelect
                 name={'warehouse_id'}
@@ -114,7 +112,6 @@ export default function InventoryAdjustmentFormDialogFields() {
             name={'date'}
             label={<T id={'date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}
@@ -124,7 +121,6 @@ export default function InventoryAdjustmentFormDialogFields() {
                 minimal: true,
               }}
               inputRef={(ref) => (dateFieldRef.current = ref)}
-              fastField
             />
           </FFormGroup>
         </Col>
@@ -135,7 +131,6 @@ export default function InventoryAdjustmentFormDialogFields() {
             name={'type'}
             label={<T id={'adjustment_type'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FSelect
               name={'type'}
@@ -158,7 +153,6 @@ export default function InventoryAdjustmentFormDialogFields() {
         name={'adjustment_account_id'}
         label={<T id={'adjustment_account'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <FAccountsSuggestField
           name={'adjustment_account_id'}
@@ -184,7 +178,6 @@ export default function InventoryAdjustmentFormDialogFields() {
         name={'reason'}
         label={<T id={'adjustment_reasons'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <FTextArea name={'reason'} growVertically large fastField fill />
       </FFormGroup>

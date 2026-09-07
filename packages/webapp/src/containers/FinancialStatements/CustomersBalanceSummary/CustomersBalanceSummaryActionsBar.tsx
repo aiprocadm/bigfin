@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   NavbarGroup,
   Button,
@@ -37,7 +36,7 @@ function CustomersBalanceSummaryActionsBar({
 
   // #withDialogActions
   openDialog
-}) {
+}: any) {
   const { refetch, isCustomersBalanceLoading } =
     useCustomersBalanceSummaryContext();
 
@@ -52,7 +51,7 @@ function CustomersBalanceSummaryActionsBar({
   };
 
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (values) => {
+  const handleNumberFormatSubmit = (values: any) => {
     saveInvoke(onNumberFormatSubmit, values);
   };
 
@@ -129,7 +128,7 @@ function CustomersBalanceSummaryActionsBar({
   );
 }
 export default compose(
-  withCustomersBalanceSummary(({ customersBalanceDrawerFilter }) => ({
+  withCustomersBalanceSummary(({ customersBalanceDrawerFilter }: any) => ({
     isFilterDrawerOpen: customersBalanceDrawerFilter,
   })),
   withCustomersBalanceSummaryActions,

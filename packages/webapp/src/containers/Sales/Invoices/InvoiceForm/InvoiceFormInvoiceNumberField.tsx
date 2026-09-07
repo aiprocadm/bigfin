@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -20,7 +19,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
  */
 export const InvoiceFormInvoiceNumberField = R.compose(
   withDialogActions,
-  withSettings(({ invoiceSettings }) => ({
+  withSettings(({ invoiceSettings }: any) => ({
     invoiceAutoIncrement: invoiceSettings?.autoIncrement,
   })),
 )(
@@ -30,7 +29,7 @@ export const InvoiceFormInvoiceNumberField = R.compose(
 
     // #withSettings
     invoiceAutoIncrement,
-  }) => {
+  }: any) => {
     // Formik context.
     const { values, setFieldValue } = useFormikContext<any>();
 
@@ -39,7 +38,7 @@ export const InvoiceFormInvoiceNumberField = R.compose(
       openDialog(DialogsName.InvoiceNumberSettings);
     };
     // Handle invoice no. field blur.
-    const handleInvoiceNoBlur = (event) => {
+    const handleInvoiceNoBlur = (event: any) => {
       const newValue = event.target.value;
 
       // Show the confirmation dialog if the value has changed and auto-increment
@@ -70,7 +69,6 @@ export const InvoiceFormInvoiceNumberField = R.compose(
         <ControlGroup fill={true}>
           <FInputGroup
             name={'invoice_no'}
-            minimal={true}
             asyncControl={true}
             onBlur={handleInvoiceNoBlur}
             onChange={() => {}}

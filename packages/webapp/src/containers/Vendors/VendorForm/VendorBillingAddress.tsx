@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Box } from '@/components';
 import {
   FormattedMessage as T,
@@ -18,7 +17,6 @@ export function VendorBillingAddress() {
         name={'billing_address_country'}
         label={<T id={'country'} />}
         inline
-        fill
       >
         <FInputGroup name={'billing_address_country'} fill fastField />
       </FFormGroup>
@@ -27,7 +25,6 @@ export function VendorBillingAddress() {
         name={'billing_address1'}
         label={<T id={'address_line_1'} />}
         inline
-        fill
       >
         <FTextArea name={'billing_address1'} fill fastField />
       </FFormGroup>
@@ -36,7 +33,6 @@ export function VendorBillingAddress() {
         name={'billing_address2'}
         label={<T id={'address_line_2'} />}
         inline
-        fill
       >
         <FTextArea name={'billing_address2'} fill fastField />
       </FFormGroup>
@@ -45,7 +41,6 @@ export function VendorBillingAddress() {
         name={'billing_address_city'}
         label={<T id={'city_town'} />}
         inline
-        fill
       >
         <FInputGroup name={'billing_address_city'} fill fastField />
       </FFormGroup>
@@ -54,7 +49,6 @@ export function VendorBillingAddress() {
         name={'billing_address_state'}
         label={<T id={'state'} />}
         inline
-        fill
       >
         <FInputGroup name={'billing_address_state'} fill fastField />
       </FFormGroup>
@@ -63,7 +57,6 @@ export function VendorBillingAddress() {
         name={'billing_address_postcode'}
         label={<T id={'zip_code'} />}
         inline
-        fill
       >
         <FInputGroup name={'billing_address_postcode'} fill fastField />
       </FFormGroup>
@@ -72,7 +65,6 @@ export function VendorBillingAddress() {
         name={'billing_address_phone'}
         label={<T id={'phone'} />}
         inline
-        fill
       >
         <FInputGroup name={'billing_address_phone'} fill fastField />
       </FFormGroup>

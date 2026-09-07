@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   NavbarGroup,
@@ -33,7 +32,7 @@ function UnrealizedGainOrLossActionsBar({
   //#ownProps
   numberFormat,
   onNumberFormatSubmit,
-}) {
+}: any) {
   // Handle filter toggle click.
   const handleFilterToggleClick = () => {
     toggleUnrealizedGainOrLossFilterDrawer();
@@ -43,7 +42,7 @@ function UnrealizedGainOrLossActionsBar({
   const handleRecalculateReport = () => {};
 
   // handle number format form submit.
-  const handleNumberFormatSubmit = (values) =>
+  const handleNumberFormatSubmit = (values: any) =>
     saveInvoke(onNumberFormatSubmit, values);
 
   return (
@@ -110,7 +109,7 @@ function UnrealizedGainOrLossActionsBar({
 }
 
 export default compose(
-  withUnrealizedGainOrLoss(({ unrealizedGainOrLossDrawerFilter }) => ({
+  withUnrealizedGainOrLoss(({ unrealizedGainOrLossDrawerFilter }: any) => ({
     isFilterDrawerOpen: unrealizedGainOrLossDrawerFilter,
   })),
   withUnrealizedGainOrLossActions,

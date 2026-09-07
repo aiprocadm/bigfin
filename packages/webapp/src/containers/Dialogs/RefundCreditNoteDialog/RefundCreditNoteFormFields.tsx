@@ -87,7 +87,6 @@ function RefundCreditNoteFormFields({
             name={'date'}
             label={<T id={'refund_credit_note.dialog.refund_date'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FDateInput
               name={'date'}
@@ -106,7 +105,6 @@ function RefundCreditNoteFormFields({
             name={'from_account_id'}
             label={<T id={'refund_credit_note.dialog.from_account'} />}
             labelInfo={<FieldRequiredHint />}
-            fill
           >
             <FAccountsSuggestField
               name={'from_account_id'}
@@ -130,7 +128,6 @@ function RefundCreditNoteFormFields({
         name={'amount'}
         label={<T id={'refund_credit_note.dialog.amount'} />}
         labelInfo={<FieldRequiredHint />}
-        fill
       >
         <ControlGroup>
           <InputPrependText text={values.currency_code} />
@@ -156,15 +153,14 @@ function RefundCreditNoteFormFields({
       </If>
 
       {/* ------------ Reference No. ------------ */}
-      <FFormGroup name={'reference_no'} label={<T id={'reference_no'} />} fill>
-        <FInputGroup name={'reference_no'} minimal fill />
+      <FFormGroup name={'reference_no'} label={<T id={'reference_no'} />}>
+        <FInputGroup name={'reference_no'} fill />
       </FFormGroup>
 
       {/* --------- Statement --------- */}
       <FFormGroup
         name={'description'}
         label={<T id={'refund_credit_note.dialog.description'} />}
-        fill
       >
         <FTextArea name={'description'} growVertically fill fastField />
       </FFormGroup>

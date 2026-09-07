@@ -73,14 +73,14 @@ function QuickPaymentMadeFormFields({
         {/* ------------- Vendor name ------------- */}
         <Col xs={5}>
           <FFormGroup name={'vendor_id'} label={<T id={'vendor_name'} />}>
-            <FInputGroup name={'vendor_id'} minimal={true} disabled={true} />
+            <FInputGroup name={'vendor_id'} disabled={true} />
           </FFormGroup>
         </Col>
 
         {/* ------------ Payment number. ------------ */}
         <Col xs={5}>
           <FFormGroup name={'payment_number'} label={<T id={'payment_no'} />}>
-            <FInputGroup name={'payment_number'} minimal={true} />
+            <FInputGroup name={'payment_number'}/>
           </FFormGroup>
         </Col>
       </Row>
@@ -153,7 +153,7 @@ function QuickPaymentMadeFormFields({
 
       {/* ------------ Reference No. ------------ */}
       <FFormGroup name={'reference'} label={<T id={'reference'} />}>
-        <FInputGroup name={'reference'} minimal={true} />
+        <FInputGroup name={'reference'}/>
       </FFormGroup>
 
       {/* --------- Statement --------- */}

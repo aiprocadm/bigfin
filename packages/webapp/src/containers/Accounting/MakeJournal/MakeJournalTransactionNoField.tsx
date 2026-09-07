@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Position, ControlGroup } from '@blueprintjs/core';
@@ -22,7 +21,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
  */
 export const MakeJournalTransactionNoField = R.compose(
   withDialogActions,
-  withSettings(({ manualJournalsSettings }) => ({
+  withSettings(({ manualJournalsSettings }: any) => ({
     journalAutoIncrement: manualJournalsSettings?.autoIncrement,
   })),
 )(
@@ -32,13 +31,13 @@ export const MakeJournalTransactionNoField = R.compose(
 
     // #withSettings
     journalAutoIncrement,
-  }) => {
+  }: any) => {
     const { setFieldValue, values } = useFormikContext<any>();
 
     const handleJournalNumberChange = () => {
       openDialog('journal-number-form');
     };
-    const handleJournalNoBlur = (event) => {
+    const handleJournalNoBlur = (event: any) => {
       const newValue = event.target.value;
 
       if (values.journal_number !== newValue && journalAutoIncrement) {
@@ -65,7 +64,6 @@ export const MakeJournalTransactionNoField = R.compose(
             <FieldHint content={intl.get('journal_no.hint')} />
           </>
         }
-        fill={true}
         inline={true}
       >
         <ControlGroup fill={true}>

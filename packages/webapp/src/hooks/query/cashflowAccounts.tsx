@@ -48,7 +48,7 @@ export function useCashflowAccounts(query: any, props: any) {
 /**
  * Create Money in owner contribution .
  */
-export function useCreateCashflowTransaction(props: any) {
+export function useCreateCashflowTransaction(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -106,8 +106,8 @@ export function useDeleteCashflowTransaction(props: any) {
 export function useAccountTransactionsInfinity(
   accountId: any,
   query: any,
-  infinityProps: any,
-  axios: any,
+  infinityProps?: any,
+  axios?: any,
 ) {
   const apiRequest = useApiRequest();
 
@@ -145,8 +145,8 @@ export function useAccountTransactionsInfinity(
 export function useAccountUncategorizedTransactionsInfinity(
   accountId: any,
   query: any,
-  infinityProps: any,
-  axios: any,
+  infinityProps?: any,
+  axios?: any,
 ) {
   const apiRequest = useApiRequest();
 
@@ -242,7 +242,7 @@ export function useUncategorizedTransaction(
 /**
  * Categorize the cashflow transaction.
  */
-export function useCategorizeTransaction(props: any) {
+export function useCategorizeTransaction(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -268,7 +268,7 @@ export function useCategorizeTransaction(props: any) {
 /**
  * Uncategorize the cashflow transaction.
  */
-export function useUncategorizeTransaction(props: any) {
+export function useUncategorizeTransaction(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

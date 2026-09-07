@@ -14,7 +14,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Edit role .
  */
-export function useEditRolePermissionSchema(props) {
+export function useEditRolePermissionSchema(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -30,7 +30,7 @@ export function useEditRolePermissionSchema(props) {
 /**
  * Create a new roles
  */
-export function useCreateRolePermissionSchema(props) {
+export function useCreateRolePermissionSchema(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -64,7 +64,7 @@ export function useDeleteRole(props) {
 /**
  * Retrive the roles permissions schema.
  */
-export function usePermissionsSchema(query, props) {
+export function usePermissionsSchema(query?, props?) {
   return useRequestQuery(
     [t.ROLES_PERMISSIONS_SCHEMA, query],
     { method: 'get', url: 'roles/permissions/schema', params: query },
@@ -82,7 +82,7 @@ export function usePermissionsSchema(query, props) {
  * Retrieve the role permisstion schema.
  * @param {number} role_id - role id.
  */
-export function useRolePermission(role_id, props, requestProps) {
+export function useRolePermission(role_id, props, requestProps?) {
   return useRequestQuery(
     [t.ROLE, role_id],
     { method: 'get', url: `roles/${role_id}`, ...requestProps },
@@ -97,7 +97,7 @@ export function useRolePermission(role_id, props, requestProps) {
 /**
  * Retrieve the roles.
  */
-export function useRoles(props, query) {
+export function useRoles(props?, query?) {
   return useRequestQuery(
     [t.ROLES, query],
     { method: 'get', url: `roles`, params: query },

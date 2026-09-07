@@ -12,7 +12,7 @@ const commonInvalidateQueries = (queryClient: any) => {
  * Retrieves tax rates.
  * @param {number} customerId - Customer id.
  */
-export function useTaxRates(props: any) {
+export function useTaxRates(props?: any) {
   return useRequestQuery(
     [QUERY_TYPES.TAX_RATES],
     {
@@ -48,7 +48,7 @@ export function useTaxRate(taxRateId: string, props: any) {
 /**
  * Edit the given tax rate.
  */
-export function useEditTaxRate(props: any) {
+export function useEditTaxRate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -69,7 +69,7 @@ export function useEditTaxRate(props: any) {
 /**
  * Creates a new tax rate.
  */
-export function useCreateTaxRate(props: any) {
+export function useCreateTaxRate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -85,7 +85,7 @@ export function useCreateTaxRate(props: any) {
 /**
  * Delete the given tax rate.
  */
-export function useDeleteTaxRate(props: any) {
+export function useDeleteTaxRate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -101,7 +101,7 @@ export function useDeleteTaxRate(props: any) {
 /**
  * Activate the given tax rate.
  */
-export function useActivateTaxRate(props: any) {
+export function useActivateTaxRate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -117,7 +117,7 @@ export function useActivateTaxRate(props: any) {
 /**
  * Inactivate the given tax rate.
  */
-export function useInactivateTaxRate(props: any) {
+export function useInactivateTaxRate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

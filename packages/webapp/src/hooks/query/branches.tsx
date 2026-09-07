@@ -16,7 +16,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Create a new branch.
  */
-export function useCreateBranch(props: any) {
+export function useCreateBranch(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -32,7 +32,7 @@ export function useCreateBranch(props: any) {
 /**
  * Edits the given branch.
  */
-export function useEditBranch(props: any) {
+export function useEditBranch(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -89,7 +89,7 @@ export function useBranches(query: any, props: any) {
  * Retrieve the branch details.
  * @param {number}
  */
-export function useBranch(id: any, props: any, requestProps: any) {
+export function useBranch(id: any, props: any, requestProps?: any) {
   return useRequestQuery(
     [t.BRANCH, id],
     { method: 'get', url: `branches/${id}`, ...requestProps },
@@ -104,7 +104,7 @@ export function useBranch(id: any, props: any, requestProps: any) {
 /**
  * Activate the given branches.
  */
-export function useActivateBranches(props: any) {
+export function useActivateBranches(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

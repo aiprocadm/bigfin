@@ -47,7 +47,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Creates a new sale invoice.
  */
-export function useCreateBill(props: any) {
+export function useCreateBill(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -81,7 +81,7 @@ export function useDuplicateBill(props?: any) {
 /**
  * Edits the given sale invoice.
  */
-export function useEditBill(props: any) {
+export function useEditBill(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -141,7 +141,7 @@ export function useDeleteBill(props: any) {
 /**
  * Deletes multiple bills in bulk.
  */
-export function useBulkDeleteBills(props: any) {
+export function useBulkDeleteBills(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -157,7 +157,7 @@ export function useBulkDeleteBills(props: any) {
   );
 }
 
-export function useValidateBulkDeleteBills(props: any) {
+export function useValidateBulkDeleteBills(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(

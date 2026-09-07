@@ -624,8 +624,8 @@ export function useGetAutofillCategorizeTransaction(
  */
 export function useRecognizedBankTransactionsInfinity(
   query,
-  infinityProps,
-  axios,
+  infinityProps?,
+  axios?,
 ) {
   const apiRequest = useApiRequest();
 
@@ -655,8 +655,8 @@ export function useRecognizedBankTransactionsInfinity(
 
 export function useExcludedBankTransactionsInfinity(
   query,
-  infinityProps,
-  axios,
+  infinityProps?,
+  axios?,
 ) {
   const apiRequest = useApiRequest();
 
@@ -687,8 +687,8 @@ export function useExcludedBankTransactionsInfinity(
 
 export function usePendingBankTransactionsInfinity(
   query,
-  infinityProps,
-  axios,
+  infinityProps?,
+  axios?,
 ) {
   const apiRequest = useApiRequest();
 

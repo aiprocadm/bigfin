@@ -27,7 +27,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Creates the inventory adjustment to the given item.
  */
-export function useCreateInventoryAdjustment(props: any) {
+export function useCreateInventoryAdjustment(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -114,7 +114,7 @@ export function usePublishInventoryAdjustment(props: any) {
  * Retrieve the inventory adjustment details.
  * @param {number} id - inventory adjustment id.
  */
-export function useInventoryAdjustment(id: any, props: any, requestProps: any) {
+export function useInventoryAdjustment(id: any, props: any, requestProps?: any) {
   return useRequestQuery(
     [t.INVENTORY_ADJUSTMENT, id],
     { method: 'get', url: `inventory-adjustments/${id}`, ...requestProps },

@@ -21,7 +21,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Create a new warehouse transfer.
  */
-export function useCreateWarehouseTransfer(props: any) {
+export function useCreateWarehouseTransfer(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -40,7 +40,7 @@ export function useCreateWarehouseTransfer(props: any) {
 /**
  * Edits the given warehouse transfer.
  */
-export function useEditWarehouseTransfer(props: any) {
+export function useEditWarehouseTransfer(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -108,7 +108,7 @@ export function useWarehousesTransfers(query: any, props: any) {
  * Retrieve the warehouse transfer details.
  * @param {number}
  */
-export function useWarehouseTransfer(id: any, props: any, requestProps: any) {
+export function useWarehouseTransfer(id: any, props: any, requestProps?: any) {
   return useRequestQuery(
     [t.WAREHOUSE_TRANSFER, id],
     { method: 'get', url: `warehouse-transfers/${id}`, ...requestProps },

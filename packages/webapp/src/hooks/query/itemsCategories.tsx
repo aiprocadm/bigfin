@@ -15,7 +15,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Creates a new item category.
  */
-export function useCreateItemCategory(props: any) {
+export function useCreateItemCategory(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -31,7 +31,7 @@ export function useCreateItemCategory(props: any) {
 /**
  * Edits the item category.
  */
-export function useEditItemCategory(props: any) {
+export function useEditItemCategory(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -77,7 +77,7 @@ const transformCategories = (res: any) => ({
 /**
  * Retrieve the items categories.
  */
-export function useItemsCategories(query: any, props: any) {
+export function useItemsCategories(query?: any, props?: any) {
   return useRequestQuery(
     [t.ITEMS_CATEGORIES, query],
     { method: 'get', url: `item-categories`, params: query },

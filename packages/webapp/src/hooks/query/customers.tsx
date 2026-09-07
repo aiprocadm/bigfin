@@ -41,7 +41,7 @@ const customersSelector = (response: any) => ({
 /**
  * Retrieve customers list with pagination meta.
  */
-export function useCustomers(query: any, props: any) {
+export function useCustomers(query?: any, props?: any) {
   return useRequestQuery(
     [t.CUSTOMERS, query],
     { method: 'get', url: `customers`, params: query },
@@ -102,7 +102,7 @@ export function useDeleteCustomer(props: any) {
 /**
  * Deletes multiple customers in bulk.
  */
-export function useBulkDeleteCustomers(props: any) {
+export function useBulkDeleteCustomers(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -130,7 +130,7 @@ export function useBulkDeleteCustomers(props: any) {
 /**
  * Validates which customers can be deleted in bulk.
  */
-export function useValidateBulkDeleteCustomers(props: any) {
+export function useValidateBulkDeleteCustomers(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -145,7 +145,7 @@ export function useValidateBulkDeleteCustomers(props: any) {
 /**
  * Creates a new customer.
  */
-export function useCreateCustomer(props: any) {
+export function useCreateCustomer(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -173,7 +173,7 @@ export function useCustomer(id: any, props: any) {
   );
 }
 
-export function useEditCustomerOpeningBalance(props: any) {
+export function useEditCustomerOpeningBalance(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

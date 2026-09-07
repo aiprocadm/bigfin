@@ -51,7 +51,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale invoice.
  */
-export function useCreateReceipt(props) {
+export function useCreateReceipt(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -67,7 +67,7 @@ export function useCreateReceipt(props) {
 /**
  * Edits the given sale invoice.
  */
-export function useEditReceipt(props) {
+export function useEditReceipt(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -108,7 +108,7 @@ export function useDeleteReceipt(props) {
 /**
  * Deletes multiple receipts in bulk.
  */
-export function useBulkDeleteReceipts(props) {
+export function useBulkDeleteReceipts(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -134,7 +134,7 @@ export function useBulkDeleteReceipts(props) {
   );
 }
 
-export function useValidateBulkDeleteReceipts(props) {
+export function useValidateBulkDeleteReceipts(props?) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -228,7 +228,7 @@ export function useRefreshReceipts() {
   };
 }
 
-export function useCreateNotifyReceiptBySMS(props) {
+export function useCreateNotifyReceiptBySMS(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
   return useMutation(
@@ -246,7 +246,7 @@ export function useCreateNotifyReceiptBySMS(props) {
   );
 }
 
-export function useReceiptSMSDetail(receiptId, props, requestProps) {
+export function useReceiptSMSDetail(receiptId, props, requestProps?) {
   return useRequestQuery(
     [t.SALE_RECEIPT_SMS_DETAIL, receiptId],
     {
@@ -265,7 +265,7 @@ export function useReceiptSMSDetail(receiptId, props, requestProps) {
 /**
  *
  */
-export function useSendSaleReceiptMail(props) {
+export function useSendSaleReceiptMail(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

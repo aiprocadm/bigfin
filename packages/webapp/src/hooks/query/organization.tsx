@@ -34,7 +34,7 @@ export function useOrganizations(props: any) {
 /**
  * Retrieve the current organization metadata.
  */
-export function useCurrentOrganization(props: any) {
+export function useCurrentOrganization(props?: any) {
   const setOrganizations = useSetOrganizations();
   const setSubscriptions = useSetSubscriptions();
 
@@ -97,7 +97,7 @@ export function useUpdateOrganization(props = {}) {
   );
 }
 
-export function useOrgBaseCurrencyMutateAbilities(props: any) {
+export function useOrgBaseCurrencyMutateAbilities(props?: any) {
   return useRequestQuery(
     [t.ORGANIZATION_MUTATE_BASE_CURRENCY_ABILITIES],
     { method: 'get', url: `organization/base-currency-mutate` },

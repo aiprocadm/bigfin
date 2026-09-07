@@ -13,7 +13,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Create a locking transactions.
  */
-export function useCreateLockingTransactoin(props: any) {
+export function useCreateLockingTransactoin(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -32,7 +32,7 @@ export function useCreateLockingTransactoin(props: any) {
 /**
  * Create cancle locking transactions
  */
-export function useCancelLockingTransaction(props: any) {
+export function useCancelLockingTransaction(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -51,7 +51,7 @@ export function useCancelLockingTransaction(props: any) {
 /**
  * Create a unlocking partial transactions.
  */
-export function useCreateUnlockingPartialTransactions(props: any) {
+export function useCreateUnlockingPartialTransactions(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
   return useMutation(
@@ -88,7 +88,7 @@ export function useCancelUnlockingPartialTransactions(props: any) {
 /**
  * Retrive the transactions locking.
  */
-export function useTransactionsLocking(query: any, props: any) {
+export function useTransactionsLocking(query?: any, props?: any) {
   return useRequestQuery(
     [t.TRANSACTIONS_LOCKING, query],
     { method: 'get', url: 'transactions-locking', params: query },

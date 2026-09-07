@@ -23,7 +23,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale estimate.
  */
-export function useCreateEstimate(props) {
+export function useCreateEstimate(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -42,7 +42,7 @@ export function useCreateEstimate(props) {
 /**
  * Edits the given sale estimate.
  */
-export function useEditEstimate(props) {
+export function useEditEstimate(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -127,7 +127,7 @@ export function useDeleteEstimate(props) {
 /**
  * Deletes multiple sale estimates in bulk.
  */
-export function useBulkDeleteEstimates(props) {
+export function useBulkDeleteEstimates(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -153,7 +153,7 @@ export function useBulkDeleteEstimates(props) {
   );
 }
 
-export function useValidateBulkDeleteEstimates(props) {
+export function useValidateBulkDeleteEstimates(props?) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -247,7 +247,7 @@ export function useRefreshEstimates() {
 /**
  *
  */
-export function useCreateNotifyEstimateBySMS(props) {
+export function useCreateNotifyEstimateBySMS(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -274,7 +274,7 @@ export function useCreateNotifyEstimateBySMS(props) {
  * @param {*} requestProps
  * @returns
  */
-export function useEstimateSMSDetail(estimateId, props, requestProps) {
+export function useEstimateSMSDetail(estimateId, props, requestProps?) {
   return useRequestQuery(
     [t.SALE_ESTIMATE_SMS_DETAIL, estimateId],
     {

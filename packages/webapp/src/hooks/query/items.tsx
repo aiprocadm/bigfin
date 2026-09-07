@@ -22,7 +22,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Creates a new item.
  */
-export function useCreateItem(props: any) {
+export function useCreateItem(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -37,7 +37,7 @@ export function useCreateItem(props: any) {
 /**
  * Edits the given item.
  */
-export function useEditItem(props: any) {
+export function useEditItem(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -75,7 +75,7 @@ export function useDeleteItem(props: any) {
 /**
  * Deletes multiple items in bulk.
  */
-export function useBulkDeleteItems(props: any) {
+export function useBulkDeleteItems(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -104,7 +104,7 @@ export function useBulkDeleteItems(props: any) {
 /**
  * Validates which items can be deleted in bulk.
  */
-export function useValidateBulkDeleteItems(props: any) {
+export function useValidateBulkDeleteItems(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -168,7 +168,7 @@ const transformItemsResponse = (response: any) => {
 /**
  * Retrieves items list.
  */
-export function useItems(query: any, props: any) {
+export function useItems(query: any, props?: any) {
   return useRequestQuery(
     [t.ITEMS, query],
     {
@@ -202,7 +202,7 @@ export function useRefreshItems() {
  * Retrieve details of the given item.
  * @param {number} id - Item id.
  */
-export function useItem(id: any, props: any) {
+export function useItem(id: any, props?: any) {
   return useRequestQuery(
     [t.ITEM, id],
     {

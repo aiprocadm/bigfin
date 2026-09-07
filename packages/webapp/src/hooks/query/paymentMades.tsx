@@ -62,7 +62,7 @@ export function usePaymentMades(query, props) {
 /**
  * Creates payment made.
  */
-export function useCreatePaymentMade(props) {
+export function useCreatePaymentMade(props?) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -78,7 +78,7 @@ export function useCreatePaymentMade(props) {
 /**
  * Edits payment made.
  */
-export function useEditPaymentMade(props) {
+export function useEditPaymentMade(props?) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 

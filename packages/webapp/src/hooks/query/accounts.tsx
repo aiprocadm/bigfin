@@ -24,7 +24,7 @@ const commonInvalidateQueries = (query: any) => {
 /**
  * Retrieve accounts list.
  */
-export function useAccounts(query: any, props: any) {
+export function useAccounts(query?: any, props?: any) {
   return useRequestQuery(
     [t.ACCOUNTS, query],
     { method: 'get', url: 'accounts', params: query },
@@ -55,7 +55,7 @@ export function useAccount(id: any, props: any) {
 /**
  * Retrieve accounts types list.
  */
-export function useAccountsTypes(props: any) {
+export function useAccountsTypes(props?: any) {
   return useRequestQuery(
     [t.ACCOUNTS_TYPES],
     { method: 'get', url: 'accounts/types' },
@@ -70,7 +70,7 @@ export function useAccountsTypes(props: any) {
 /**
  * Creates account.
  */
-export function useCreateAccount(props: any) {
+export function useCreateAccount(props?: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -86,7 +86,7 @@ export function useCreateAccount(props: any) {
 /**
  * Edits the given account.
  */
-export function useEditAccount(props: any) {
+export function useEditAccount(props?: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -192,7 +192,7 @@ export function useBulkInactivateAccounts(props: any) {
 /**
  * Deletes multiple accounts in bulk.
  */
-export function useBulkDeleteAccounts(props: any) {
+export function useBulkDeleteAccounts(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -221,7 +221,7 @@ export function useBulkDeleteAccounts(props: any) {
 /**
  * Validates which accounts can be deleted in bulk.
  */
-export function useValidateBulkDeleteAccounts(props: any) {
+export function useValidateBulkDeleteAccounts(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(

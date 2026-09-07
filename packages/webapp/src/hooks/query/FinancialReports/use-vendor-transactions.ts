@@ -42,7 +42,7 @@ export const useVendorsTransactionsXlsxExport = (query: any, args: any) => {
   });
 };
 
-export const useVendorsTransactionsCsvExport = (query: any, args: any) => {
+export const useVendorsTransactionsCsvExport = (query: any, args?: any) => {
   return useDownloadFile({
     url: '/reports/transactions-by-vendors',
     config: {

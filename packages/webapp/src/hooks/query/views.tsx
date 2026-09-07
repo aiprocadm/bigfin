@@ -20,7 +20,7 @@ export function useResourceViews(resourceSlug) {
  * Retrieve the resource meta.
  * @param {string} resourceSlug - Resource slug.
  */
-export function useResourceMeta(resourceSlug, props) {
+export function useResourceMeta(resourceSlug, props?) {
   return useRequestQuery(
     ['RESOURCE_META', resourceSlug],
     { method: 'get', url: `resources/${resourceSlug}/meta` },

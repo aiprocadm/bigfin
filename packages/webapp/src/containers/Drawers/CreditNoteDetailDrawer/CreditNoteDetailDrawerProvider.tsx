@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -17,7 +16,7 @@ const CreditNoteDetailDrawerContext = React.createContext<any>(undefined);
 /**
  * Credit note detail drawer provider.
  */
-function CreditNoteDetailDrawerProvider({ creditNoteId, ...props }) {
+function CreditNoteDetailDrawerProvider({ creditNoteId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   

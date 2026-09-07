@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 
 import { useVendors } from '@/hooks/query';
@@ -9,7 +8,7 @@ const APAgingSummaryGeneralContext = createContext<any>(undefined);
 /**
  * A/P aging summary provider.
  */
-function APAgingSummaryGeneralProvider({ filter, ...props }) {
+function APAgingSummaryGeneralProvider({ filter, ...props }: any) {
   // Retrieve the vendors list.
   const {
     data: { vendors },

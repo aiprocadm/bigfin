@@ -65,7 +65,7 @@ export function useAuditLogFilterOptionsQuery(props) {
 /**
  * Infinite audit log list with page-based pagination.
  */
-export function useAuditLogsInfinityQuery(filters, infinityProps) {
+export function useAuditLogsInfinityQuery(filters, infinityProps?) {
   const apiRequest = useApiRequest();
 
   return useInfiniteQuery(

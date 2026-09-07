@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -12,7 +11,7 @@ const WarehouseFormContext = React.createContext<any>(undefined);
 /**
  * Warehouse form provider.
  */
-function WarehouseFormProvider({ dialogName, warehouseId, ...props }) {
+function WarehouseFormProvider({ dialogName, warehouseId, ...props }: any) {
   // Create and edit warehouse mutations.
   const { mutateAsync: createWarehouseMutate } = useCreateWarehouse();
   const { mutateAsync: editWarehouseMutate } = useEditWarehouse();

@@ -42,7 +42,7 @@ export function useDeleteAttachment(props) {
 /**
  * Uploads the given attachments.
  */
-export function useGetPresignedUrlAttachment(props) {
+export function useGetPresignedUrlAttachment(props?) {
   const apiRequest = useApiRequest();
 
   return useMutation(

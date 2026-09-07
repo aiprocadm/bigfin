@@ -57,7 +57,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale invoice.
  */
-export function useCreateInvoice(props) {
+export function useCreateInvoice(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -80,7 +80,7 @@ export function useCreateInvoice(props) {
 /**
  * Edits the given sale invoice.
  */
-export function useEditInvoice(props) {
+export function useEditInvoice(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -128,7 +128,7 @@ export function useDeleteInvoice(props) {
 /**
  * Deletes multiple sale invoices in bulk.
  */
-export function useBulkDeleteInvoices(props) {
+export function useBulkDeleteInvoices(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -192,7 +192,7 @@ const transformInvoices = (res) => ({
 /**
  * Retrieve sale invoices list with pagination meta.
  */
-export function useInvoices(query, props) {
+export function useInvoices(query, props?) {
   return useRequestQuery(
     [t.SALE_INVOICES, query],
     { method: 'get', url: 'sale-invoices', params: query },
@@ -256,7 +256,7 @@ export function useDeliverInvoice(props) {
  * Retrieve the sale invoice details.
  * @param {number} invoiceId - Invoice id.
  */
-export function useInvoice(invoiceId, props, requestProps) {
+export function useInvoice(invoiceId, props, requestProps?) {
   return useRequestQuery(
     [t.SALE_INVOICE, invoiceId],
     { method: 'get', url: `sale-invoices/${invoiceId}`, ...requestProps },
@@ -335,7 +335,7 @@ export function useRefreshInvoices() {
   };
 }
 
-export function useCreateBadDebt(props) {
+export function useCreateBadDebt(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -373,7 +373,7 @@ export function useCancelBadDebt(props) {
   );
 }
 
-export function useCreateNotifyInvoiceBySMS(props) {
+export function useCreateNotifyInvoiceBySMS(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

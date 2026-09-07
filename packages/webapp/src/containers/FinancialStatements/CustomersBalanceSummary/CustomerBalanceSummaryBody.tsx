@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -15,7 +14,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function CustomerBalanceSummaryBodyJSX({
   // #withPreferences
   organizationName,
-}) {
+}: any) {
   const { isCustomersBalanceLoading } = useCustomersBalanceSummaryContext();
 
   return (
@@ -30,7 +29,7 @@ function CustomerBalanceSummaryBodyJSX({
 }
 
 export const CustomerBalanceSummaryBody = R.compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(CustomerBalanceSummaryBodyJSX);

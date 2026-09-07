@@ -22,6 +22,20 @@ import {
  * Financial sheet paper skeleton.
  * @returns {React.JSX}
  */
+/**
+ * Свойства заглушки отчёта. Все необязательные: во всех местах продукта
+ * заглушка ставится как `<FinancialSheetSkeleton />` — без единого свойства
+ * (Д1 карты v62).
+ */
+export interface FinancialSheetSkeletonProps {
+  minimal?: boolean;
+  fullWidth?: boolean;
+  titleCharsLength?: number;
+  typeCharsLength?: number;
+  dateCharsLength?: number;
+  skeletonTableColumns?: any;
+}
+
 export function FinancialSheetSkeleton({
   minimal,
   fullWidth,
@@ -29,7 +43,7 @@ export function FinancialSheetSkeleton({
   typeCharsLength,
   dateCharsLength,
   skeletonTableColumns,
-}) {
+}: FinancialSheetSkeletonProps) {
   return (
     <FinancialSheetRoot minimal={minimal} fullWidth={fullWidth}>
       <FinancialSheetTitle>

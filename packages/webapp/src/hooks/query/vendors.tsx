@@ -30,7 +30,7 @@ const transformVendorsResponse = (res: any) => ({
 /**
  * Retrieve vendors list.
  */
-export function useVendors(query: any, props: any) {
+export function useVendors(query?: any, props?: any) {
   return useRequestQuery(
     [t.VENDORS, query],
     { method: 'get', url: `vendors`, params: query },
@@ -49,7 +49,7 @@ export function useVendors(query: any, props: any) {
 /**
  * Edits details of the given vendor.
  */
-export function useEditVendor(props: any) {
+export function useEditVendor(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -90,7 +90,7 @@ export function useDeleteVendor(props: any) {
 /**
  * Deletes multiple vendors in bulk.
  */
-export function useBulkDeleteVendors(props: any) {
+export function useBulkDeleteVendors(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -118,7 +118,7 @@ export function useBulkDeleteVendors(props: any) {
 /**
  * Validates which vendors can be deleted in bulk.
  */
-export function useValidateBulkDeleteVendors(props: any) {
+export function useValidateBulkDeleteVendors(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -133,7 +133,7 @@ export function useValidateBulkDeleteVendors(props: any) {
 /**
  * Creates a new vendor.
  */
-export function useCreateVendor(props: any) {
+export function useCreateVendor(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -161,7 +161,7 @@ export function useVendor(id: any, props: any) {
   );
 }
 
-export function useEditVendorOpeningBalance(props: any) {
+export function useEditVendorOpeningBalance(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

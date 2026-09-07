@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { getColumnWidth } from '@/utils';
 import { Align } from '@/constants';
 
-const getTableCellValueAccessor = (index) => `cells[${index}].value`;
+const getTableCellValueAccessor = (index: any) => `cells[${index}].value`;
 
 const taxNameAccessor = R.curry((data, column) => ({
   key: column.key,
@@ -43,6 +42,6 @@ const dynamicColumnMapper = R.curry((data, column) => {
   )(column);
 });
 
-export const salesTaxLiabilitySummaryDynamicColumns = (columns, data) => {
+export const salesTaxLiabilitySummaryDynamicColumns = (columns: any, data: any) => {
   return R.map(dynamicColumnMapper(data), columns);
 };

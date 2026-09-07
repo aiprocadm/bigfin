@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -13,7 +12,7 @@ const EstimatesListContext = createContext<any>(undefined);
 /**
  * Sale estimates data provider.
  */
-function EstimatesListProvider({ query, tableStateChanged, ...props }) {
+function EstimatesListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetches estimates resource views and fields.
   const { data: estimatesViews, isLoading: isViewsLoading } =
     useResourceViews('sale_estimates');

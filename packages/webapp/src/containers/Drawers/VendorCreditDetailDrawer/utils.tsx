@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -100,7 +99,7 @@ export const useVendorCreditReadonlyEntriesTableColumns = () => {
  * Vendor note more actions menu.
  * @returns {React.JSX}
  */
-export const VendorCreditMenuItem = ({ payload: { onReconcile } }) => {
+export const VendorCreditMenuItem = ({ payload: { onReconcile } }: any) => {
   return (
     <Popover
       minimal={true}
@@ -127,7 +126,7 @@ export const VendorCreditMenuItem = ({ payload: { onReconcile } }) => {
  * Vendor Credit details status.
  * @returns {React.JSX}
  */
-export function VendorCreditDetailsStatus({ vendorCredit }) {
+export function VendorCreditDetailsStatus({ vendorCredit }: any) {
   return (
     <Choose>
       <Choose.When condition={vendorCredit.is_open}>

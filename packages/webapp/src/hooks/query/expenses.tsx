@@ -104,7 +104,7 @@ export function useDeleteExpense(props: any) {
 /**
  * Deletes multiple expenses in bulk.
  */
-export function useBulkDeleteExpenses(props: any) {
+export function useBulkDeleteExpenses(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -130,7 +130,7 @@ export function useBulkDeleteExpenses(props: any) {
   );
 }
 
-export function useValidateBulkDeleteExpenses(props: any) {
+export function useValidateBulkDeleteExpenses(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -147,7 +147,7 @@ export function useValidateBulkDeleteExpenses(props: any) {
 /**
  * Edits the given expense.
  */
-export function useEditExpense(props: any) {
+export function useEditExpense(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -169,7 +169,7 @@ export function useEditExpense(props: any) {
 /**
  * Creates the new expense.
  */
-export function useCreateExpense(props: any) {
+export function useCreateExpense(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

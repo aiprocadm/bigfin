@@ -16,7 +16,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Creates a new landed cost.
  */
-export function useCreateLandedCost(props: any) {
+export function useCreateLandedCost(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

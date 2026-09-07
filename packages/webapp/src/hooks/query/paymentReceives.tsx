@@ -63,7 +63,7 @@ const transformPaymentReceives = (res) => ({
 /**
  * Retrieve accounts list.
  */
-export function usePaymentReceives(query, props) {
+export function usePaymentReceives(query, props?) {
   return useRequestQuery(
     [t.PAYMENT_RECEIVES, query],
     { method: 'get', url: 'payments-received', params: query },
@@ -82,7 +82,7 @@ export function usePaymentReceives(query, props) {
 /**
  * Creates payment receive.
  */
-export function useCreatePaymentReceive(props) {
+export function useCreatePaymentReceive(props?) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -106,7 +106,7 @@ export function useCreatePaymentReceive(props) {
 /**
  * Edits payment receive.
  */
-export function useEditPaymentReceive(props) {
+export function useEditPaymentReceive(props?) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -153,7 +153,7 @@ export function useDeletePaymentReceive(props) {
 /**
  * Deletes multiple payments received in bulk.
  */
-export function useBulkDeletePaymentReceives(props) {
+export function useBulkDeletePaymentReceives(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -179,7 +179,7 @@ export function useBulkDeletePaymentReceives(props) {
   );
 }
 
-export function useValidateBulkDeletePaymentReceives(props) {
+export function useValidateBulkDeletePaymentReceives(props?) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -232,7 +232,7 @@ export function useRefreshPaymentReceive() {
   };
 }
 
-export function useCreateNotifyPaymentReceiveBySMS(props) {
+export function useCreateNotifyPaymentReceiveBySMS(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -255,7 +255,7 @@ export function useCreateNotifyPaymentReceiveBySMS(props) {
 export function usePaymentReceiveSMSDetail(
   paymentReceiveId,
   props,
-  requestProps,
+  requestProps?,
 ) {
   return useRequestQuery(
     [t.PAYMENT_RECEIVE_SMS_DETAIL, paymentReceiveId],

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext, createContext, useMemo } from 'react';
 import { pick } from 'lodash';
 import { DialogContent } from '@/components';
@@ -23,7 +22,7 @@ function QuickPaymentReceiveFormProvider({
   dialogName,
   baseCurrency,
   ...props
-}) {
+}: any) {
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);
 

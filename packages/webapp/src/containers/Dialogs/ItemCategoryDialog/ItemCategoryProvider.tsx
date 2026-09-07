@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -12,7 +11,7 @@ const ItemCategoryContext = createContext<any>(undefined);
 /**
  * Accounts chart data provider.
  */
-function ItemCategoryProvider({ itemCategoryId, dialogName, ...props }) {
+function ItemCategoryProvider({ itemCategoryId, dialogName, ...props }: any) {
   const { data: itemCategory, isFetching: isItemCategoryLoading } = useItemCategory(
     itemCategoryId,
     {

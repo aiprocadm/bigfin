@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import { FinancialHeaderLoadingSkeleton } from '../FinancialHeaderLoadingSkeleton';
 import { useItems } from '@/hooks/query';
 
 const InventoryValuationGeneralPanelContext = React.createContext<any>(undefined);
 
-function InventoryValuationGeneralPanelProvider({ query, ...props }) {
+function InventoryValuationGeneralPanelProvider({ query, ...props }: any) {
   // Handle fetching the items based on the given query.
   const {
     data: { items },

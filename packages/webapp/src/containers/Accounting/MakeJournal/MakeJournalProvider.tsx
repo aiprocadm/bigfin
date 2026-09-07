@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useState } from 'react';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
@@ -20,7 +19,7 @@ const MakeJournalFormContext = createContext<any>(undefined);
 /**
  * Make journal form provider.
  */
-function MakeJournalProvider({ journalId, query, ...props }) {
+function MakeJournalProvider({ journalId, query, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

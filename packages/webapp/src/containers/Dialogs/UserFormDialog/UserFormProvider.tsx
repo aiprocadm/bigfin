@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import {
   useEditUser,
@@ -14,7 +13,7 @@ const UserFormContext = createContext<any>(undefined);
 /**
  * User Form provider.
  */
-function UserFormProvider({ userId, dialogName, ...props }) {
+function UserFormProvider({ userId, dialogName, ...props }: any) {
   //  edit user mutations.
   const { mutateAsync: EditUserMutate } = useEditUser();
 

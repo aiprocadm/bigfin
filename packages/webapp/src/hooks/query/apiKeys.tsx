@@ -25,7 +25,7 @@ export function useApiKeys(props: any) {
 /**
  * Generates a new API key.
  */
-export function useGenerateApiKey(props: any) {
+export function useGenerateApiKey(props?: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 

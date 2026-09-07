@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -8,7 +7,7 @@ import { getFieldsFromResourceMeta } from '@/utils';
 
 const ManualJournalsContext = createContext<any>(undefined);
 
-function ManualJournalsListProvider({ query, tableStateChanged, ...props }) {
+function ManualJournalsListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetches accounts resource views and fields.
   const { data: journalsViews, isLoading: isViewsLoading } =
     useResourceViews('manual_journals');

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
@@ -41,7 +40,7 @@ function TaxRatesDataTable({
 
   // #withDialogAction
   openDialog,
-}) {
+}: any) {
   // Invoices list context.
   const { taxRates, isTaxRatesLoading, isEmptyStatus } =
     useTaxRatesLandingContext();
@@ -53,23 +52,23 @@ function TaxRatesDataTable({
   const { mutateAsync: inactivateTaxRateMutate } = useInactivateTaxRate();
 
   // Handle delete tax rate.
-  const handleDeleteTaxRate = ({ id }) => {
+  const handleDeleteTaxRate = ({ id }: any) => {
     openAlert('tax-rate-delete', { taxRateId: id });
   };
   // Handle edit tax rate.
-  const handleEditTaxRate = (taxRate) => {
+  const handleEditTaxRate = (taxRate: any) => {
     openDialog(DialogsName.TaxRateForm, { id: taxRate.id });
   };
   // Handle view details tax rate.
-  const handleViewDetails = (taxRate) => {
+  const handleViewDetails = (taxRate: any) => {
     openDrawer(DRAWERS.TAX_RATE_DETAILS, { taxRateId: taxRate.id });
   };
   // Handle table cell click.
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     openDrawer(DRAWERS.TAX_RATE_DETAILS, { taxRateId: cell.row.original.id });
   };
   // Handles activating the given tax rate.
-  const handleActivateTaxRate = (taxRate) => {
+  const handleActivateTaxRate = (taxRate: any) => {
     activateTaxRateMutate(taxRate.id)
       .then(() => {
         AppToaster.show({
@@ -85,7 +84,7 @@ function TaxRatesDataTable({
       });
   };
   // Handles inactivating the given tax rate.
-  const handleInactivateTaxRate = (taxRate) => {
+  const handleInactivateTaxRate = (taxRate: any) => {
     inactivateTaxRateMutate(taxRate.id)
       .then(() => {
         AppToaster.show({
@@ -143,7 +142,7 @@ export default compose(
   withAlertActions,
   withDrawerActions,
   withDialogActions,
-  withSettings(({ invoiceSettings }) => ({
+  withSettings(({ invoiceSettings }: any) => ({
     invoicesTableSize: invoiceSettings?.tableSize,
   })),
 )(TaxRatesDataTable);

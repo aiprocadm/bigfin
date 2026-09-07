@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useSettingsVendorCredits } from '@/hooks/query';
@@ -8,7 +7,7 @@ const VendorCreditNumberDialogContext = React.createContext<any>(undefined);
 /**
  * Vendor credit number dialog provider
  */
-function VendorCreditNumberDilaogProvider({ query, ...props }) {
+function VendorCreditNumberDilaogProvider({ query, ...props }: any) {
   const { isLoading: isSettingsLoading } = useSettingsVendorCredits();
 
   // Provider payload.

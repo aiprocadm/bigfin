@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { DialogContent } from '@/components';
 import { Features } from '@/constants';
@@ -21,7 +20,7 @@ function MoneyInDialogProvider({
   accountType,
   dialogName,
   ...props
-}) {
+}: any) {
   // Holds the selected account id of the dialog.
   const [accountId, setAccountId] = useState<number | null>(defaultAccountId);
 

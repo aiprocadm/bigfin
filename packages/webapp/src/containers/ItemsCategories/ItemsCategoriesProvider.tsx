@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { DashboardInsider } from '@/components';
 import { useItemsCategories, useResourceMeta } from '@/hooks/query';
@@ -9,7 +8,7 @@ const ItemsCategoriesContext = createContext<any>(undefined);
 /**
  * Items categories provider.
  */
-function ItemsCategoriesProvider({ tableState, ...props }) {
+function ItemsCategoriesProvider({ tableState, ...props }: any) {
   // Transformes the table state to query.
   const query = transformTableStateToQuery(tableState);
 

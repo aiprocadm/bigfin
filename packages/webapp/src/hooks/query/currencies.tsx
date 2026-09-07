@@ -6,7 +6,7 @@ import t from './types';
 /**
  * Create a new currency.
  */
-export function useCreateCurrency(props: any) {
+export function useCreateCurrency(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -22,7 +22,7 @@ export function useCreateCurrency(props: any) {
 /**
  * Edits the given currency by ID.
  */
-export function useEditCurrency(props: any) {
+export function useEditCurrency(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -61,7 +61,7 @@ export function useDeleteCurrency(props: any) {
 /**
  * Retrieve the currencies list.
  */
-export function useCurrencies(props: any) {
+export function useCurrencies(props?: any) {
   return useRequestQuery(
     [t.CURRENCIES],
     { method: 'get', url: 'currencies' },

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -16,7 +15,7 @@ function LockingTransactionsFormProvider({
   isEnabled,
   dialogName,
   ...props
-}) {
+}: any) {
   // Create locking transactions mutations.
   const { mutateAsync: createLockingTransactionMutate } =
     useCreateLockingTransactoin();

@@ -1,10 +1,9 @@
-// @ts-nocheck
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { flatten, map } from 'lodash';
 import { useAuditLogsInfinityQuery } from '@/hooks/query';
 import { IntersectionObserver } from '@/components';
 
-function flattenInfinityPagesData(data) {
+function flattenInfinityPagesData(data: any) {
   return flatten(map(data.pages, (page) => page.data));
 }
 
@@ -16,13 +15,13 @@ const useAuditLogContext = () => useContext(AuditLogContext);
 /**
  * Audit Log Provider
  */
-function toHttpStringList(value) {
+function toHttpStringList(value: any) {
   if (value == null || value === '') return undefined;
   if (Array.isArray(value)) return value.length ? value : undefined;
   return [value];
 }
 
-function AuditLogProvider({ query, children }) {
+function AuditLogProvider({ query, children }: any) {
   const httpQuery = useMemo(() => {
     return {
       pageSize: 20,

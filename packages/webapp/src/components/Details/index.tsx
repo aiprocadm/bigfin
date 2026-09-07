@@ -15,13 +15,25 @@ const useDetailsMenuContext = () => React.useContext(DetailsMenuContext);
 /**
  * Details menu.
  */
+/**
+ * Свойства описи. Все необязательные: опись может быть без выравнивания и без
+ * заданной ширины подписи (Д1 карты v62).
+ */
+export interface DetailsMenuProps {
+  children?: React.ReactNode;
+  direction?: string;
+  textAlign?: string;
+  minLabelSize?: number | string;
+  className?: string;
+}
+
 export function DetailsMenu({
   children,
   direction = DIRECTION.VERTICAL,
   textAlign,
   minLabelSize,
   className,
-}) {
+}: DetailsMenuProps) {
   return (
     <div
       className={clsx(

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useSettingsCreditNotes } from '@/hooks/query';
@@ -8,7 +7,7 @@ const CreditNoteNumberDialogContext = React.createContext<any>(undefined);
 /**
  *Credit Note number dialog provider
  */
-function CreditNoteNumberDialogProvider({ query, ...props }) {
+function CreditNoteNumberDialogProvider({ query, ...props }: any) {
   const { isLoading: isSettingsLoading } = useSettingsCreditNotes();
 
   // Provider payload.

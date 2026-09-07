@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
@@ -16,7 +15,7 @@ const RolesFormContext = React.createContext<any>(undefined);
 /**
  * Roles Form page provider.
  */
-function RolesFormProvider({ roleId, ...props }) {
+function RolesFormProvider({ roleId, ...props }: any) {
   // Create and edit roles mutations.
   const { mutateAsync: createRolePermissionMutate } =
     useCreateRolePermissionSchema();

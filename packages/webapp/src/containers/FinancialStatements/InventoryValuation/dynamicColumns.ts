@@ -1,12 +1,11 @@
-// @ts-nocheck
 import { Align } from '@/constants';
 import { getColumnWidth } from '@/utils';
 import * as R from 'ramda';
 import { useInventoryValuationContext } from './InventoryValuationProvider';
 
-const getTableCellValueAccessor = (index) => `cells[${index}].value`;
+const getTableCellValueAccessor = (index: any) => `cells[${index}].value`;
 
-const getReportColWidth = (data, accessor, headerText) => {
+const getReportColWidth = (data: any, accessor: any, headerText: any) => {
   return getColumnWidth(
     data,
     accessor,
@@ -79,7 +78,7 @@ const dynamicColumnMapper = R.curry((data, column) => {
  * Composes the fetched dynamic columns from the server to the columns to pass it 
  * to the table component.
  */
-export const dynamicColumns = (columns, data) => {
+export const dynamicColumns = (columns: any, data: any) => {
   return R.map(dynamicColumnMapper(data), columns);
 };
 

@@ -19,7 +19,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Create a new warehouse.
  */
-export function useCreateWarehouse(props: any) {
+export function useCreateWarehouse(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -35,7 +35,7 @@ export function useCreateWarehouse(props: any) {
 /**
  * Edits the given warehouse.
  */
-export function useEditWarehouse(props: any) {
+export function useEditWarehouse(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -92,7 +92,7 @@ export function useWarehouses(query: any, props: any) {
  * Retrieve the warehouse details.
  * @param {number}
  */
-export function useWarehouse(id: any, props: any, requestProps: any) {
+export function useWarehouse(id: any, props: any, requestProps?: any) {
   return useRequestQuery(
     [t.WAREHOUSE, id],
     { method: 'get', url: `warehouses/${id}`, ...requestProps },
@@ -107,7 +107,7 @@ export function useWarehouse(id: any, props: any, requestProps: any) {
 /**
  * Activate the given warehouse.
  */
-export function useActivateWarehouses(props: any) {
+export function useActivateWarehouses(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

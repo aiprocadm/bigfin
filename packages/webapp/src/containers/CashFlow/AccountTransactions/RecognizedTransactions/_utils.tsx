@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
@@ -7,7 +6,7 @@ import { Group, Icon } from '@/components';
 import { getColumnWidth } from '@/utils';
 import { useRecognizedTransactionsBoot } from './RecognizedTransactionsTableBoot';
 
-const getReportColWidth = (data, accessor, headerText) => {
+const getReportColWidth = (data: any, accessor: any, headerText: any) => {
   return getColumnWidth(
     data,
     accessor,
@@ -16,7 +15,7 @@ const getReportColWidth = (data, accessor, headerText) => {
   );
 };
 
-const recognizeAccessor = (transaction) => {
+const recognizeAccessor = (transaction: any) => {
   return (
     <>
       <span>{transaction.assigned_category_formatted}</span>

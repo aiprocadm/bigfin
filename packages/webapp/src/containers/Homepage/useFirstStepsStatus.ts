@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useAccounts } from '@/hooks/query';
 import { useCustomers } from '@/hooks/query/customers';
 import { useInvoices } from '@/hooks/query/invoices';
@@ -25,7 +24,7 @@ export const useFirstStepsStatus = () => {
   const { data: accounts, isLoading: isAccountsLoading } = useAccounts();
 
   const userBankAccounts = (accounts ?? []).filter(
-    (account) =>
+    (account: any) =>
       account.account_type === ACCOUNT_TYPE.BANK && !account.predefined,
   );
 

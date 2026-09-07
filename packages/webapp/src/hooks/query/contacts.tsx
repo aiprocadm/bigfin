@@ -30,7 +30,7 @@ export function useContact(id: any, props: any) {
 /**
  * Retrieve the auto-complete contacts.
  */
-export function useAutoCompleteContacts(props: any) {
+export function useAutoCompleteContacts(props?: any) {
   const apiRequest = useApiRequest();
 
   return useQueryTenant(

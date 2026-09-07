@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useCancelLockingTransaction } from '@/hooks/query';
@@ -12,7 +11,7 @@ function UnlockingTransactionsFormProvider({
   moduleName,
   dialogName,
   ...props
-}) {
+}: any) {
   // Cancle locking transactions mutations.
   const { mutateAsync: cancelLockingTransactionMutate } =
     useCancelLockingTransaction();

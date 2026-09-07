@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 
@@ -15,7 +14,7 @@ const PaymentMadesListContext = createContext<any>(undefined);
 /**
  * Accounts chart data provider.
  */
-function PaymentMadesListProvider({ query, tableStateChanged, ...props }) {
+function PaymentMadesListProvider({ query, tableStateChanged, ...props }: any) {
   // Fetch accounts resource views and fields.
   const { data: paymentMadesViews, isLoading: isViewsLoading } =
     useResourceViews('bill_payments');

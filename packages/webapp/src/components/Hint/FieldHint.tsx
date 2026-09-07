@@ -7,7 +7,13 @@ import '@/style/components/Hint.scss';
 import { Tooltip2Props } from '@blueprintjs/popover2';
 
 interface HintProps {
-  content: string;
+  /**
+   * Текст подсказки. Необязателен: во всех 30 местах продукта `<FieldHint />`
+   * стоит вообще без текста, то есть значок висит, а под ним пусто. Тексты —
+   * отдельная работа (задел карты v62); объявление приведено в соответствие
+   * с тем, как компонент используют.
+   */
+  content?: React.ReactNode;
   position?: Position;
   iconSize?: number;
   tooltipProps?: Partial<Tooltip2Props>;

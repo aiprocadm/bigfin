@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 
@@ -16,7 +15,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function TrialBalanceSheetBodyJSX({
   // #withCurrentOrganization
   organizationName,
-}) {
+}: any) {
   const { isLoading } = useTrialBalanceSheetContext();
 
   return (
@@ -31,7 +30,7 @@ function TrialBalanceSheetBodyJSX({
 }
 
 export const TrialBalanceSheetBody = R.compose(
-  withCurrentOrganization(({ organization }) => ({
+  withCurrentOrganization(({ organization }: any) => ({
     organizationName: organization.name,
   })),
 )(TrialBalanceSheetBodyJSX);

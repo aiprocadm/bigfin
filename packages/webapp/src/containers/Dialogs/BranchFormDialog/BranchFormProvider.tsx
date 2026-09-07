@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { DialogContent } from '@/components';
 import { useCreateBranch, useEditBranch, useBranch } from '@/hooks/query';
@@ -8,7 +7,7 @@ const BranchFormContext = React.createContext<any>(undefined);
 /**
  * Branch form dialog provider.
  */
-function BranchFormProvider({ dialogName, branchId, ...props }) {
+function BranchFormProvider({ dialogName, branchId, ...props }: any) {
   // Create and edit warehouse mutations.
   const { mutateAsync: createBranchMutate } = useCreateBranch();
   const { mutateAsync: editBranchMutate } = useEditBranch();

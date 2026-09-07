@@ -14,7 +14,7 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Create a new invite user.
  */
-export function useCreateInviteUser(props: any) {
+export function useCreateInviteUser(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -30,7 +30,7 @@ export function useCreateInviteUser(props: any) {
 /**
  * Bulk invite users.
  */
-export function useBulkCreateInviteUsers(props: any) {
+export function useBulkCreateInviteUsers(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -46,7 +46,7 @@ export function useBulkCreateInviteUsers(props: any) {
 /**
  * Edits the given user.
  */
-export function useEditUser(props: any) {
+export function useEditUser(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -112,7 +112,7 @@ export function useDeleteUser(props: any) {
 /**
  * Retrieves users list.
  */
-export function useUsers(props: any) {
+export function useUsers(props?: any) {
   return useRequestQuery(
     [t.USERS],
     {
@@ -145,7 +145,7 @@ export function useUser(id: any, props: any) {
   );
 }
 
-export function useAuthenticatedAccount(props: any) {
+export function useAuthenticatedAccount(props?: any) {
   const setEmailConfirmed = useSetAuthEmailConfirmed();
 
   return useRequestQuery(

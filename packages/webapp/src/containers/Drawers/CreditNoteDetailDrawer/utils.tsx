@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -99,7 +98,7 @@ export const useCreditNoteReadOnlyEntriesColumns = () => {
  * Credit note more actions mneu.
  * @returns {React.JSX}
  */
-export function CreditNoteMenuItem({ payload: { onReconcile } }) {
+export function CreditNoteMenuItem({ payload: { onReconcile } }: any) {
   return (
     <Popover
       minimal={true}
@@ -126,7 +125,7 @@ export function CreditNoteMenuItem({ payload: { onReconcile } }) {
  * Credit note details status.
  * @returns {React.JSX}
  */
-export function CreditNoteDetailsStatus({ creditNote }) {
+export function CreditNoteDetailsStatus({ creditNote }: any) {
   return (
     <Choose>
       <Choose.When condition={creditNote.is_open}>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -16,7 +15,7 @@ const AccountDialogContext = createContext<any>(undefined);
 /**
  * Account form provider.
  */
-function AccountDialogProvider({ dialogName, payload, ...props }) {
+function AccountDialogProvider({ dialogName, payload, ...props }: any) {
   // Create and edit account mutations.
   const { mutateAsync: createAccountMutate } = useCreateAccount();
   const { mutateAsync: editAccountMutate } = useEditAccount();

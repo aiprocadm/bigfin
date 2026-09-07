@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import {
@@ -74,7 +73,7 @@ export const usePaymentReceiveEntriesColumns = () => {
   );
 };
 
-export function PaymentReceiveMoreMenuItems({ payload: { onNotifyViaSMS } }) {
+export function PaymentReceiveMoreMenuItems({ payload: { onNotifyViaSMS } }: any) {
   return (
     <Popover
       minimal={true}

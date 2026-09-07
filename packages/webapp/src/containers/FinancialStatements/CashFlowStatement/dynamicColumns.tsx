@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 
@@ -9,7 +8,7 @@ import { getColumnWidth } from '@/utils';
 /**
  * Account name column mapper.
  */
-const accountNameMapper = (column) => ({
+const accountNameMapper = (column: any) => ({
   id: column.key,
   key: column.key,
   Header: intl.get('account_name'),
@@ -24,7 +23,7 @@ const accountNameMapper = (column) => ({
 /**
  * Date range columns mapper.
  */
-const dateRangeMapper = (data, index, column) => ({
+const dateRangeMapper = (data: any, index: any, column: any) => ({
   id: column.key,
   Header: column.label,
   key: column.key,
@@ -43,7 +42,7 @@ const dateRangeMapper = (data, index, column) => ({
 /**
  * Total column mapper.
  */
-const totalMapper = (data, index, column) => ({
+const totalMapper = (data: any, index: any, column: any) => ({
   key: 'total',
   Header: intl.get('total'),
   accessor: `cells[${index}].value`,
@@ -62,13 +61,13 @@ const totalMapper = (data, index, column) => ({
 /**
  * Detarmines the given string starts with `date-range` string.
  */
-const isMatchesDateRange = (r) => R.match(/^date-range/g, r).length > 0;
+const isMatchesDateRange = (r: any) => R.match(/^date-range/g, r).length > 0;
 
 /**
  * Cash flow dynamic columns.
  */
-export const dynamicColumns = (columns, data) => {
-  const mapper = (column, index) => {
+export const dynamicColumns = (columns: any, data: any) => {
+  const mapper = (column: any, index: any) => {
     return R.compose(
       R.when(
         R.pathSatisfies(isMatchesDateRange, ['key']),

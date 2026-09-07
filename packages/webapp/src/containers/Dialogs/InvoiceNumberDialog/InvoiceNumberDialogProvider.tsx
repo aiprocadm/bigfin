@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import { DialogContent } from '@/components';
 import { useSettingsInvoices } from '@/hooks/query';
@@ -8,7 +7,7 @@ const InvoiceNumberDialogContext = createContext<any>(undefined);
 /**
  * Invoice number dialog provider.
  */
-function InvoiceNumberDialogProvider({ query, ...props }) {
+function InvoiceNumberDialogProvider({ query, ...props }: any) {
   const { isLoading: isSettingsLoading } = useSettingsInvoices();
 
   // Provider payload.

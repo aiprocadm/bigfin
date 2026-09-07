@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { DrawerHeaderContent, DrawerLoading } from '@/components';
@@ -11,7 +10,7 @@ const InvoiceDetailDrawerContext = React.createContext<any>(undefined);
 /**
  * Invoice detail provider.
  */
-function InvoiceDetailDrawerProvider({ invoiceId, ...props }) {
+function InvoiceDetailDrawerProvider({ invoiceId, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import { DialogContent } from '@/components';
 import {
@@ -16,7 +15,7 @@ const QuickPaymentMadeContext = React.createContext<any>(undefined);
 /**
  * Quick payment made dialog provider.
  */
-function QuickPaymentMadeFormProvider({ query, billId, dialogName, ...props }) {
+function QuickPaymentMadeFormProvider({ query, billId, dialogName, ...props }: any) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);

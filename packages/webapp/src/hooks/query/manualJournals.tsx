@@ -35,7 +35,7 @@ const commonInvalidateQueries = (client) => {
 /**
  * Creates a new manual journal.
  */
-export function useCreateJournal(props) {
+export function useCreateJournal(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -51,7 +51,7 @@ export function useCreateJournal(props) {
 /**
  * Edits the given manual journal.
  */
-export function useEditJournal(props) {
+export function useEditJournal(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -91,7 +91,7 @@ export function useDeleteJournal(props) {
 /**
  * Deletes multiple manual journals in bulk.
  */
-export function useBulkDeleteManualJournals(props) {
+export function useBulkDeleteManualJournals(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -117,7 +117,7 @@ export function useBulkDeleteManualJournals(props) {
   );
 }
 
-export function useValidateBulkDeleteManualJournals(props) {
+export function useValidateBulkDeleteManualJournals(props?) {
   const apiRequest = useApiRequest();
 
   return useMutation(

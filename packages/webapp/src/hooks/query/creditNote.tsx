@@ -54,7 +54,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Create a new credit note.
  */
-export function useCreateCreditNote(props) {
+export function useCreateCreditNote(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -70,7 +70,7 @@ export function useCreateCreditNote(props) {
 /**
  * Edit the given credit note.
  */
-export function useEditCreditNote(props) {
+export function useEditCreditNote(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -111,7 +111,7 @@ export function useDeleteCreditNote(props) {
 /**
  * Deletes multiple credit notes in bulk.
  */
-export function useBulkDeleteCreditNotes(props) {
+export function useBulkDeleteCreditNotes(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -137,7 +137,7 @@ export function useBulkDeleteCreditNotes(props) {
   );
 }
 
-export function useValidateBulkDeleteCreditNotes(props) {
+export function useValidateBulkDeleteCreditNotes(props?) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -185,7 +185,7 @@ export function useCreditNotes(query, props) {
  * @param {number} id
  *
  */
-export function useCreditNote(id, props, requestProps) {
+export function useCreditNote(id, props, requestProps?) {
   return useRequestQuery(
     [t.CREDIT_NOTE, id],
     { method: 'get', url: `credit-notes/${id}`, ...requestProps },
@@ -210,7 +210,7 @@ export function useRefreshCreditNotes() {
 /**
  * Create Round creidt note
  */
-export function useCreateRefundCreditNote(props) {
+export function useCreateRefundCreditNote(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -253,7 +253,7 @@ export function useDeleteRefundCreditNote(props) {
  * @param {number} id
  *
  */
-export function useRefundCreditNote(id, props, requestProps) {
+export function useRefundCreditNote(id, props, requestProps?) {
   return useRequestQuery(
     [t.REFUND_CREDIT_NOTE, id],
     { method: 'get', url: `credit-notes/${id}/refunds`, ...requestProps },
@@ -289,7 +289,7 @@ export function useOpenCreditNote(props) {
  * @param {number} id
  *
  */
-export function useReconcileCreditNote(id, props, requestProps) {
+export function useReconcileCreditNote(id, props, requestProps?) {
   return useRequestQuery(
     [t.RECONCILE_CREDIT_NOTE, id],
     {
@@ -308,7 +308,7 @@ export function useReconcileCreditNote(id, props, requestProps) {
 /**
  * Create Reconcile credit note.
  */
-export function useCreateReconcileCreditNote(props) {
+export function useCreateReconcileCreditNote(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -331,7 +331,7 @@ export function useCreateReconcileCreditNote(props) {
 /**
  * Retrieve reconcile credit notes.
  */
-export function useReconcileCreditNotes(id, props, requestProps) {
+export function useReconcileCreditNotes(id, props, requestProps?) {
   return useRequestQuery(
     [t.RECONCILE_CREDIT_NOTES, id],
     {
@@ -374,7 +374,7 @@ export function useDeleteReconcileCredit(props) {
  * @param {number} id
  *
  */
-export function useRefundCreditTransaction(id, props, requestProps) {
+export function useRefundCreditTransaction(id, props, requestProps?) {
   return useRequestQuery(
     [t.REFUND_CREDIT_NOTE_TRANSACTION, id],
     { method: 'get', url: `credit-notes/refunds/${id}`, ...requestProps },
@@ -396,7 +396,7 @@ export function usePdfCreditNote(creditNoteId) {
 /**
  * Отправляет письмо кредит-ноты (Р3б карты v18).
  */
-export function useSendCreditNoteMail(props) {
+export function useSendCreditNoteMail(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

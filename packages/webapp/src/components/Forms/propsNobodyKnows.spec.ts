@@ -63,6 +63,13 @@ const UNKNOWN_PROPS: Record<string, string[]> = {
   DateInput: ['minimal'],
   // Выборы живут в @blueprintjs-formik/select — там слова `fastField` нет
   // вовсе (в отличие от полей из /core, где он работает)
+  // Переключатель не знает `small`: ни обёртка над Formik, ни blueprint-овый
+  // Switch этого слова не содержат (Д9 карты v76)
+  FSwitch: ['small'],
+  // Поле цвета внутри собрано на обычном `Field`, а не на `FastField`: слова
+  // `fastField` в нём нет, и десять мест в пяти экранах настройки макета
+  // передавали его впустую (Д9 карты v76)
+  FColorInput: ['fastField'],
   FMultiSelect: ['fastField'],
   FAccountsSuggestField: ['fastField'],
   // Размер значка — свойство самого значка, а не кнопки: слова `iconSize` нет

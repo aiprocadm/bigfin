@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Classes } from '@blueprintjs/core';
 import {
@@ -48,7 +47,6 @@ export function PaymentReceivedCustomizeGeneralField() {
             <FColorInput
               name={'primaryColor'}
               inputProps={{ style: { maxWidth: 120 } }}
-              fastField
             />
           </FFormGroup>
 
@@ -61,7 +59,6 @@ export function PaymentReceivedCustomizeGeneralField() {
             <FColorInput
               name={'secondaryColor'}
               inputProps={{ style: { maxWidth: 120 } }}
-              fastField
             />
           </FFormGroup>
 

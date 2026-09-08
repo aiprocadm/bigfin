@@ -26,6 +26,12 @@ interface ItemsEntriesTableProps {
   taxRates?: any[];
   minLinesNumber?: number;
   enableTaxRates?: boolean;
+  /**
+   * Ошибки по строкам. В объявлении их не было, но компонент кладёт **все**
+   * свои свойства в контекст (`value={{ ...props, … }}`), а внутренняя
+   * таблица читает оттуда `errors` (Д1 карты v70).
+   */
+  errors?: any[];
 }
 
 /**

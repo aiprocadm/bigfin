@@ -1,7 +1,16 @@
-// @ts-nocheck
 import styled from 'styled-components';
 
-export const FinancialSheetRoot = styled.div`
+/**
+ * Свойства, которые сам шаблон и читает: `props.minimal` и `props.fullWidth`
+ * стоят в интерполяциях ниже. Без объявления styled-components о них не знает
+ * (Д1 карты v70).
+ */
+interface FinancialSheetRootProps {
+  minimal?: boolean;
+  fullWidth?: boolean;
+}
+
+export const FinancialSheetRoot = styled.div<FinancialSheetRootProps>`
   border: 2px solid var(--color-financial-sheet-card-border);
   border-radius: 10px;
   min-width: 640px;

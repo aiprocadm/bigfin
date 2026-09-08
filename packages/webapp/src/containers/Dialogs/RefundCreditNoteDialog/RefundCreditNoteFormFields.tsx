@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -54,7 +53,7 @@ import { withCurrentOrganization } from '@/containers/Organization/withCurrentOr
 function RefundCreditNoteFormFields({
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const { accounts, branches } = useRefundCreditNoteContext();
   const { values } = useFormikContext<any>();
 
@@ -133,7 +132,7 @@ function RefundCreditNoteFormFields({
           <FMoneyInputGroup
             name={'amount'}
             minimal={true}
-            inputRef={(ref) => (amountFieldRef.current = ref)}
+            inputRef={(ref: any) => (amountFieldRef.current = ref)}
 
           />
         </ControlGroup>

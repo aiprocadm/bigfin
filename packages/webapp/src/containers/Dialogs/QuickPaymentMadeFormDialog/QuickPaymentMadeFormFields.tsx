@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -41,7 +40,7 @@ import { compose } from '@/utils';
 function QuickPaymentMadeFormFields({
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const { accounts, branches, baseCurrency } = useQuickPaymentMadeContext();
 
   // Intl context.
@@ -92,7 +91,7 @@ function QuickPaymentMadeFormFields({
           <FMoneyInputGroup
             name={'amount'}
             minimal={true}
-            inputRef={(ref) => (paymentMadeFieldRef.current = ref)}
+            inputRef={(ref: any) => (paymentMadeFieldRef.current = ref)}
           />
         </ControlGroup>
       </FFormGroup>

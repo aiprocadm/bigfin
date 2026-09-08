@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -43,7 +42,11 @@ export default function EstimatedExpenseFormFields() {
         label={intl.get('estimated_expenses.dialog.quantity')}
         name={'quantity'}
       >
-        <FInputGroupComponent name="quantity" />
+        <FInputGroupComponent
+          name="quantity"
+          toField="expenseTotal"
+          fromFields={['quantity', 'unitPrice']}
+        />
       </FFormGroup>
 
       <MetaLineLabel>
@@ -55,10 +58,14 @@ export default function EstimatedExpenseFormFields() {
           name={'unitPrice'}
           label={intl.get('estimated_expenses.dialog.unit_price')}
         >
-          <FInputGroupComponent name="unitPrice" />
+          <FInputGroupComponent
+            name="unitPrice"
+            toField="expenseTotal"
+            fromFields={['quantity', 'unitPrice']}
+          />
         </FFormGroup>
         <FFormGroup
-          name={'unitPrice'}
+          name={'expenseTotal'}
           label={intl.get('estimated_expenses.dialog.total')}
         >
           <FInputGroup name="expenseTotal" />

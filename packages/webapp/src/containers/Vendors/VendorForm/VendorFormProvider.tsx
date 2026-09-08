@@ -18,7 +18,20 @@ const VendorFormContext = createContext<any>(undefined);
 /**
  * Vendor form provider.
  */
-function VendorFormProvider({ query, vendorId, ...props }) {
+/**
+ * Свойства поставщика. Все необязательные: вызывающие передают то одно,
+ * то другое. Без объявления проверка выводила тип из разбора и считала
+ * обязательными все (Д3 карты v71).
+ */
+interface VendorFormProviderProps {
+  query?: any;
+  vendorId?: any;
+  children?: React.ReactNode;
+  /** Остальное уходит в поставщика как есть. */
+  [key: string]: any;
+}
+
+function VendorFormProvider({ query, vendorId, ...props }: VendorFormProviderProps) {
   const { state } = useLocation();
   const contactId = state?.action;
 

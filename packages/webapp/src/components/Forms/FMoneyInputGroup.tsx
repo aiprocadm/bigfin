@@ -32,7 +32,23 @@ function FieldToMoneyInputGroup({ ...props }) {
   return <MoneyInputGroup {...fieldToMoneyInputGroup(props)} />;
 }
 
-export function FMoneyInputGroup({ fastField, ...props }) {
+interface FMoneyInputGroupProps {
+  /**
+   * Быстрое поле: не перерисовывать, пока не изменилось его собственное
+   * значение. Компонент признак читает — им он и выбирает между `FastField` и
+   * `Field`. Но без объявления свойств проверка считала его **обязательным**,
+   * и каждое `<FMoneyInputGroup name={…} />` без него было ошибкой
+   * (Д1 карты v71).
+   */
+  fastField?: boolean;
+  /** Остальное уходит в поле формы как есть. */
+  [key: string]: any;
+}
+
+export function FMoneyInputGroup({
+  fastField,
+  ...props
+}: FMoneyInputGroupProps) {
   const FieldComponent = fastField ? FastField : Field;
   return <FieldComponent {...props} component={FieldToMoneyInputGroup} />;
 }

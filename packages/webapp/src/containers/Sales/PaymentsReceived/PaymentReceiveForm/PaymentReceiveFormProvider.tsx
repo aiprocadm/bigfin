@@ -58,7 +58,20 @@ const PaymentReceiveFormContext =
 /**
  * Payment receive form provider.
  */
-function PaymentReceiveFormProvider({ query, paymentReceiveId, ...props }) {
+/**
+ * Свойства поставщика. Все необязательные: вызывающие передают то одно,
+ * то другое. Без объявления проверка выводила тип из разбора и считала
+ * обязательными все (Д3 карты v71).
+ */
+interface PaymentReceiveFormProviderProps {
+  query?: any;
+  paymentReceiveId?: any;
+  children?: React.ReactNode;
+  /** Остальное уходит в поставщика как есть. */
+  [key: string]: any;
+}
+
+function PaymentReceiveFormProvider({ query, paymentReceiveId, ...props }: PaymentReceiveFormProviderProps) {
   // Form state.
   const [submitPayload, setSubmitPayload] = React.useState({});
 

@@ -58,7 +58,20 @@ const EstimateFormContext = createContext({} as EstimateFormProviderValues);
 /**
  * Estimate form provider.
  */
-function EstimateFormProvider({ query, estimateId, ...props }) {
+/**
+ * Свойства поставщика. Все необязательные: вызывающие передают то одно,
+ * то другое. Без объявления проверка выводила тип из разбора и считала
+ * обязательными все (Д3 карты v71).
+ */
+interface EstimateFormProviderProps {
+  query?: any;
+  estimateId?: any;
+  children?: React.ReactNode;
+  /** Остальное уходит в поставщика как есть. */
+  [key: string]: any;
+}
+
+function EstimateFormProvider({ query, estimateId, ...props }: EstimateFormProviderProps) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);

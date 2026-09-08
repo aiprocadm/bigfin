@@ -11,7 +11,19 @@ const AccountTransactionsContext = React.createContext<any>(undefined);
 /**
  * Account transctions provider.
  */
-function AccountTransactionsProvider({ query, ...props }) {
+/**
+ * Свойства поставщика. Все необязательные: вызывающие передают то одно,
+ * то другое. Без объявления проверка выводила тип из разбора и считала
+ * обязательными все (Д3 карты v71).
+ */
+interface AccountTransactionsProviderProps {
+  query?: any;
+  children?: React.ReactNode;
+  /** Остальное уходит в поставщика как есть. */
+  [key: string]: any;
+}
+
+function AccountTransactionsProvider({ query, ...props }: AccountTransactionsProviderProps) {
   const { id } = useParams();
   const accountId = parseInt(id, 10);
 

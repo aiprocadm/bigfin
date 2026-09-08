@@ -23,7 +23,13 @@ const formGroupCss = css`
 
 interface DiscountTotalLineProps {
   currencyCode: string;
-  discountAmount: number;
+  /**
+   * Сумма УЖЕ отформатирована: все пять подвалов передают сюда результат
+   * `formattedAmount(...)` — строку с валютой, а не число. Компонент её
+   * просто печатает. Прежняя запись `number` описывала не то
+   * (Д1 карты v76).
+   */
+  discountAmount: string;
 }
 
 export function DiscountTotalLine({

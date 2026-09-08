@@ -140,7 +140,7 @@ export default function SetupOrganizationForm({ isSubmitting, values }) {
           name={'timezone'}
           valueDisplayFormat="composite"
           showLocalTimezone={true}
-          placeholder={<T id={'select_time_zone'} />}
+          placeholder={intl.get('select_time_zone')}
           popoverProps={{ minimal: true }}
           buttonProps={{
             alignText: 'left',

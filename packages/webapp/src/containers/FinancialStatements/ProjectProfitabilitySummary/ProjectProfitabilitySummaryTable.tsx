@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -8,6 +7,7 @@ import { ReportDataTable, FinancialSheet } from '@/components';
 import { useProjectProfitabilitySummaryContext } from './ProjectProfitabilitySummaryProvider';
 import { useProjectProfitabilitySummaryColumns } from './components';
 import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
+import { WithCompanyNameProps } from '@/components/FinancialSheet/FinancialSheet';
 
 /**
  * Project profitability summary table.
@@ -15,7 +15,7 @@ import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
 export default function ProjectProfitabilitySummaryTable({
   // #ownProps
   companyName,
-}) {
+}: WithCompanyNameProps) {
   // Project profitability summary context.
   const {
     projectProfitabilitySummary: { tableRows, meta },

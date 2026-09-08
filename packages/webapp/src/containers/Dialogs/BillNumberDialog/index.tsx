@@ -2,12 +2,13 @@
 import React, { lazy } from 'react';
 import { FormattedMessage as T } from '@/components';
 import { Dialog, DialogSuspense } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { compose } from '@/utils';
-
 const BillNumberDialogContent = lazy(() => import('./BillNumberDialogContent'));
 
-function BillNumberDialog({ dialogName, payload = { id: null }, isOpen }) {
+function BillNumberDialog({ dialogName, payload = { id: null }, isOpen }: DialogReduxProps<{ id: number | null }>) {
   return (
     <Dialog
       name={dialogName}

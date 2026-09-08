@@ -4,7 +4,12 @@ import styled from 'styled-components';
 import { Icon } from '../Icon';
 
 interface StepperStepProps {
-  label: string;
+  /**
+   * Подпись шага. Чаще всего это `<T id={…} />`, то есть элемент, а не строка —
+   * компонент её просто печатает. Прежняя запись `string` делала ошибкой все
+   * места, где подпись переводят через разметку (Д2 карты v76).
+   */
+  label: React.ReactNode;
   description?: string;
   children: React.ReactNode;
   step?: number;

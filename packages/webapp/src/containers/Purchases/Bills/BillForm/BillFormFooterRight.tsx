@@ -1,4 +1,3 @@
-// @ts-nocheck
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';

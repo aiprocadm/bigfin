@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react';
 
 interface IfProps {
-  condition: boolean;
+  /** Рисовать или нет. Отсутствие считается «нет» — так работает и код ниже. */
+  condition?: boolean;
   children?: ReactNode;
   render?: () => ReactNode;
 }

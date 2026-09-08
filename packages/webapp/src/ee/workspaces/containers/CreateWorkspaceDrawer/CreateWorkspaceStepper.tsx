@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { css } from '@emotion/css';
 import { Stepper } from '@/components/Stepper';

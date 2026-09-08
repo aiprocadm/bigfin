@@ -219,7 +219,7 @@ export const taxRateFieldShouldUpdate = (newProps, oldProps) => {
   );
 };
 
-export function transformItemsTableState(tableState) {
+export function transformItemsTableState(tableState: any): Record<string, any> {
   return {
     ...transformTableStateToQuery(tableState),
     inactive_mode: tableState.inactiveMode,

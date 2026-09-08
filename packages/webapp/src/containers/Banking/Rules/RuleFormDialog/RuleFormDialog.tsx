@@ -2,7 +2,9 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Dialog, DialogSuspense } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { compose } from '@/utils';
 
 const RuleFormContent = React.lazy(() => import('./RuleFormContent'));
@@ -12,9 +14,11 @@ const RuleFormContent = React.lazy(() => import('./RuleFormContent'));
  */
 function RuleFormDialogRoot({
   dialogName,
-  payload: { bankRuleId = null },
+  // Значение по умолчанию обязательно: обёртка отдаёт «ничего», пока окно не
+  // открывали, и разбор без него падал бы (Д3 карты v76).
+  payload: { bankRuleId = null } = { bankRuleId: null },
   isOpen,
-}) {
+}: DialogReduxProps<{ bankRuleId?: number | null }>) {
   return (
     <Dialog
       name={dialogName}

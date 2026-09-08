@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { FSelect, FFormGroup, FSwitch } from '@/components';
 import { FormattedMessage as T } from '@/components';
 import {
@@ -56,8 +56,7 @@ export default function NumberFormatFields() {
           <FSwitch
             name={'showZero'}
             inline={true}
-            small={true}
-            label={<T id={'show_zero'} />}
+            label={intl.get('show_zero')}
           />
         </FFormGroup>
 
@@ -66,7 +65,7 @@ export default function NumberFormatFields() {
           <FSwitch
             name={'showInRed'}
             inline={true}
-            label={<T id={'show_negative_in_red'} />}
+            label={intl.get('show_negative_in_red')}
           />
         </FFormGroup>
 
@@ -75,7 +74,7 @@ export default function NumberFormatFields() {
           <FSwitch
             name={'divideOn1000'}
             inline={true}
-            label={<T id={'divide_on_1000'} />}
+            label={intl.get('divide_on_1000')}
           />
         </FFormGroup>
       </div>

@@ -82,7 +82,7 @@ export function useDeleteProjectTimeEntry(props: any) {
  * @param requestProps
  * @returns
  */
-export function useProjectTimeEntry(timeId: any, props: any, requestProps: any) {
+export function useProjectTimeEntry(timeId: any, props?: any, requestProps?: any) {
   return useRequestQuery(
     [t.PROJECT_TIME_ENTRY, timeId],
     { method: 'get', url: `projects/times/${timeId}`, ...requestProps },
@@ -105,7 +105,7 @@ const transformProjectTimeEntries = (res: any) => ({
  * @param requestProps
  * @returns
  */
-export function useProjectTimeEntries(id: any, props: any, requestProps: any) {
+export function useProjectTimeEntries(id: any, props?: any, requestProps?: any) {
   return useRequestQuery(
     [t.PROJECT_TIME_ENTRIES, id],
     { method: 'get', url: `projects/${id}/times`, ...requestProps },

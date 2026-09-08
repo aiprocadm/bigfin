@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   Classes,
@@ -17,11 +16,19 @@ import { AppToaster } from '@/components';
 /**
  * API Key Display view component (used within the generate dialog).
  */
+interface ApiKeyDisplayViewProps {
+  /** Имя окна — нужно, чтобы закрыть его после копирования. */
+  dialogName: string;
+  /** Сам ключ. Показывается один раз и больше нигде не хранится. */
+  apiKey?: string;
+  onClose?: () => void;
+}
+
 function ApiKeyDisplayView({
   dialogName,
   apiKey,
   onClose,
-}) {
+}: ApiKeyDisplayViewProps) {
   const clipboard = useClipboard();
 
   const handleCopy = () => {

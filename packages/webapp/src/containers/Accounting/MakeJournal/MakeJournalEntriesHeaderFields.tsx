@@ -23,6 +23,7 @@ import {
 import { useMakeJournalFormContext } from './MakeJournalProvider';
 import { JournalExchangeRateInputField } from './components';
 import { MakeJournalTransactionNoField } from './MakeJournalTransactionNoField';
+import { Theme } from '@xstyled/emotion';
 
 const getFieldsStyle = (theme: Theme) => css`
   .${theme.bpPrefix}-form-group {

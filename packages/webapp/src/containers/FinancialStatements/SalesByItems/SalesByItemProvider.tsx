@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createContext, useContext, useMemo } from 'react';
 import FinancialReportPage from '../FinancialReportPage';
 import { useSalesByItemsTable } from '@/hooks/query';
@@ -6,7 +5,14 @@ import { transformFilterFormToQuery } from '../common';
 
 const SalesByItemsContext = createContext<any>(undefined);
 
-function SalesByItemProvider({ query, ...props }) {
+function SalesByItemProvider({
+  query,
+  ...props
+}: {
+  /** Настройки отчёта из шапки: период, отбор, колонки. */
+  query?: any;
+  children?: React.ReactNode;
+}) {
   // Transformes the sheet query to http query.
   const httpQuery = useMemo(() => transformFilterFormToQuery(query), [query]);
 

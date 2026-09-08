@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Classes, Text } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
@@ -54,7 +53,6 @@ export function InvoiceCustomizeGeneralField() {
             <FColorInput
               name={'primaryColor'}
               inputProps={{ style: { maxWidth: 120 } }}
-              fastField
             />
           </FFormGroup>
 
@@ -67,7 +65,6 @@ export function InvoiceCustomizeGeneralField() {
             <FColorInput
               name={'secondaryColor'}
               inputProps={{ style: { maxWidth: 120 } }}
-              fastField
             />
           </FFormGroup>
 

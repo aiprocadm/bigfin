@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import clsx from 'classnames';
 import styled from 'styled-components';
@@ -28,7 +27,8 @@ export function Alert({
   );
 }
 
-const AlertRoot = styled.div`
+/** Обёртка читает `intent` — значит, его надо объявить (Д8 карты v76). */
+const AlertRoot = styled.div<{ intent?: string }>`
   border: 1px solid rgb(223, 227, 230);
   background: var(--color-alert-default-background);
   padding: 12px;

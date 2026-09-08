@@ -5,7 +5,9 @@ import classNames from 'classnames';
 import { T, Dialog, DialogSuspense } from '@/components';
 import { CLASSES } from '@/constants/classes';
 
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 
 import { compose } from '@/utils';
 
@@ -21,7 +23,7 @@ function EstimatePdfPreviewDialog({
   dialogName,
   payload = { estimateId: null },
   isOpen,
-}) {
+}: DialogReduxProps<{ estimateId: number | null }>) {
   return (
     <Dialog
       name={dialogName}

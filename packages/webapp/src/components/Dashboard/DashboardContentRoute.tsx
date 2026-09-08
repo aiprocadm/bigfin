@@ -10,7 +10,27 @@ import { AccountantOnly } from '@/components/ui/accountant-only';
 /**
  * Dashboard inner route content.
  */
-function DashboardContentRouteContent({ route }) {
+/** Один маршрут раздела: путь, экран и подписи к нему. */
+export interface DashboardRoute {
+  path: string;
+  component: React.ComponentType<any>;
+  name?: string;
+  pageTitle?: React.ReactNode;
+  backLink?: boolean;
+  hint?: React.ReactNode;
+  sidebarExpand?: boolean;
+  pageType?: string;
+  defaultSearchResource?: string;
+  /**
+   * Требовать точного совпадения адреса. Ни один из ста одиннадцати маршрутов
+   * его сегодня не задаёт, но экран его читает (Д11 карты v76).
+   */
+  exact?: boolean;
+  breadcrumb?: React.ReactNode;
+  [key: string]: any;
+}
+
+function DashboardContentRouteContent({ route }: { route: DashboardRoute }) {
   return (
     <DashboardPage
       name={route.name}
@@ -39,8 +59,10 @@ export default function DashboardContentRoute() {
     return <AccountantOnly />;
   }
 
+  // Было `<Route pathname="/">` — свойства с таким именем у маршрута нет
+  // (Д10 карты v76). Путь «/» и есть то, что имелось в виду.
   return (
-    <Route pathname="/">
+    <Route path="/">
       <Switch>
         {routes.map((route, index) => (
           <Route exact={route.exact} key={index} path={`${route.path}`}>

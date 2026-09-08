@@ -3,7 +3,9 @@ import React from 'react';
 import { T, Dialog, DialogSuspense } from '@/components';
 import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 
 import { compose } from '@/utils';
 
@@ -19,7 +21,7 @@ function ReceiptPdfPreviewDialog({
   dialogName,
   payload = { receiptId: null },
   isOpen,
-}) {
+}: DialogReduxProps<{ receiptId: number | null }>) {
   return (
     <Dialog
       name={dialogName}

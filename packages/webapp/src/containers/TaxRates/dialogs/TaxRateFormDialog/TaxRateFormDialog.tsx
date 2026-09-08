@@ -3,7 +3,9 @@ import intl from 'react-intl-universal';
 import React, { lazy } from 'react';
 import styled from 'styled-components';
 import { Dialog, DialogSuspense } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { compose } from '@/utils';
 
 const TaxRateFormDialogContent = lazy(
@@ -17,7 +19,7 @@ function TaxRateFormDialog({
   dialogName,
   payload = { action: '', id: null },
   isOpen,
-}) {
+}: DialogReduxProps<{ action: string; id: number | null }>) {
   return (
     <TaxRateDialog
       name={dialogName}

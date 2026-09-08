@@ -26,6 +26,7 @@ import { useCreditNoteFormContext } from './CreditNoteFormProvider';
 import { CreditNoteExchangeRateInputField } from './components';
 import { CreditNoteTransactionNoField } from './CreditNoteTransactionNoField';
 import { useCustomerUpdateExRate } from '@/containers/Entries/withExRateItemEntriesPriceRecalc';
+import { Theme } from '@xstyled/emotion';
 
 const getCreditNoteFieldsStyle = (theme: Theme) => css`
   .${theme.bpPrefix}-form-group {

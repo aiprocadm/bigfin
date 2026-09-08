@@ -14,6 +14,7 @@ import { momentFormatter } from '@/utils';
 import { filterCustomersOptions } from '../constants';
 import { useCustomersBalanceSummaryGeneralContext } from './CustomersBalanceSummaryGeneralProvider';
 import FinancialStatementsFilter from '../FinancialStatementsFilter';
+import intl from 'react-intl-universal';
 
 /**
  * Customers balance header - General panel - Content

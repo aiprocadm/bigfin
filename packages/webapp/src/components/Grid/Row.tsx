@@ -1,4 +1,3 @@
-// @ts-nocheck
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -97,7 +96,7 @@ export function Row ({
 }: RowProps) {
   const decoratedBsPrefix = 'row';
   const sizePrefix = `${decoratedBsPrefix}-cols`;
-  const classes = [];
+  const classes: string[] = [];
 
   DEVICE_SIZES.forEach((brkPoint) => {
     const propValue = props[brkPoint];

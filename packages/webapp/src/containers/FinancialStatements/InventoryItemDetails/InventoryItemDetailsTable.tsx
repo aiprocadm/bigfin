@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -9,6 +8,7 @@ import { useInventoryItemDetailsContext } from './InventoryItemDetailsProvider';
 
 import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
 import { TableStyle } from '@/constants';
+import { WithCompanyNameProps } from '@/components/FinancialSheet/FinancialSheet';
 
 /**
  * Inventory item detail table.
@@ -16,7 +16,7 @@ import { TableStyle } from '@/constants';
 export function InventoryItemDetailsTable({
   // #ownProps
   companyName,
-}) {
+}: WithCompanyNameProps) {
   const {
     inventoryItemDetails: { tableRows, meta },
     isInventoryItemDetailsLoading,

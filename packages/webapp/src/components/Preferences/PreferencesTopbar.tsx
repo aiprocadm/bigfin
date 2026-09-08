@@ -19,7 +19,14 @@ import '@/style/pages/Preferences/Topbar.scss';
 /**
  * Preferences topbar.
  */
-function PreferencesTopbar({ preferencesPageTitle }) {
+interface PreferencesTopbarProps {
+  /** Заголовок раздела настроек. Подставляет обёртка `withDashboard`. */
+  preferencesPageTitle?: React.ReactNode;
+}
+
+function PreferencesTopbar({
+  preferencesPageTitle,
+}: PreferencesTopbarProps) {
   return (
     <div
       className={classNames(
@@ -31,7 +38,10 @@ function PreferencesTopbar({ preferencesPageTitle }) {
         <h2>{preferencesPageTitle}</h2>
       </div>
       <div className="preferences-topbar__actions">
-        <Route pathname="/preferences">
+        {/* Было `pathname` — такого свойства у маршрута нет. То же самое
+            карта v75 нашла в содержимом настроек; здесь второе место
+            (Д10 карты v76). */}
+        <Route path="/preferences">
           <Switch>
             <Route exact path={'/preferences/users'} component={UsersActions} />
             <Route

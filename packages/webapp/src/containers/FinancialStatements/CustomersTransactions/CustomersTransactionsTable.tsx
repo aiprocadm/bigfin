@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -10,6 +9,7 @@ import { useCustomersTransactionsContext } from './CustomersTransactionsProvider
 
 import { defaultExpanderReducer, tableRowTypesToClassnames } from '@/utils';
 import { TableStyle } from '@/constants';
+import { WithCompanyNameProps } from '@/components/FinancialSheet/FinancialSheet';
 
 /**
  * Customers transactions table.
@@ -17,7 +17,7 @@ import { TableStyle } from '@/constants';
 export default function CustomersTransactionsTable({
   // #ownProps
   companyName,
-}) {
+}: WithCompanyNameProps) {
   // Customers transactions context.
   const {
     customersTransactions: { tableRows, meta },

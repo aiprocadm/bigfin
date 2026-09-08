@@ -4,7 +4,9 @@ import classNames from 'classnames';
 
 import { T, Dialog, DialogSuspense } from '@/components';
 
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
@@ -21,7 +23,7 @@ function PaymentReceivePdfPreviewDialog({
   dialogName,
   payload = { paymentReceiveId: null },
   isOpen,
-}) {
+}: DialogReduxProps<{ paymentReceiveId: number | null }>) {
   return (
     <Dialog
       name={dialogName}

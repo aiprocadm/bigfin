@@ -5,6 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
+import { AxiosError } from 'axios';
 import useApiRequest from '../useRequest';
 import { transformToCamelCase } from '@/utils';
 import { downloadFile, useDownloadFile } from '../useDownloadFile';
@@ -104,7 +105,9 @@ interface SampleSheetImportQuery {
 export const useSampleSheetImport = () => {
   const apiRequest = useApiRequest();
 
-  return useMutation<void, AxiosError, IArgs>(
+  // Было `IArgs` — такого типа нет вовсе. Настоящий вид довода виден
+  // строкой ниже (Д5 карты v76).
+  return useMutation<void, AxiosError, SampleSheetImportQuery>(
     (data: SampleSheetImportQuery) => {
       return apiRequest
         .get('/import/sample', {

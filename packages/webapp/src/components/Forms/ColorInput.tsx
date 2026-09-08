@@ -19,7 +19,13 @@ export interface ColorInputProps {
   initialValue?: string;
   onChange?: (value: string) => void;
   popoverProps?: Partial<IPopoverProps>;
-  inputProps?: Partial<IInputGroupProps>;
+  /**
+   * Свойства самого поля ввода. `style` добавлен отдельно: в старом объявлении
+   * blueprint его нет (оно перечисляет только свои свойства), а поле ввода его
+   * принимает — и пять экранов настройки макета задают им ширину
+   * (Д6 карты v76).
+   */
+  inputProps?: Partial<IInputGroupProps> & { style?: React.CSSProperties };
   pickerProps?: Partial<BoxProps>;
   pickerWrapProps?: Partial<BoxProps>;
 }

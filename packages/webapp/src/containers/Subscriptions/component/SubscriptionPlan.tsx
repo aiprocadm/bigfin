@@ -27,7 +27,9 @@ interface SubscriptionPricingProps {
   annuallyPrice: string;
   annuallyPriceLabel: string;
   onSubscribe?: (variantId: number) => void;
-  subscribeButtonProps?: Optional<ButtonProps>;
+  // Типа `Optional` в продукте нет вовсе; по смыслу — «часть свойств
+  // кнопки», то есть `Partial` (Д5 карты v76).
+  subscribeButtonProps?: Partial<ButtonProps>;
 }
 
 interface SubscriptionPricingCombinedProps

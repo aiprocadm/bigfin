@@ -1,10 +1,11 @@
-// @ts-nocheck
 import {
   useMutation,
   useQuery,
   useQueryClient,
   UseQueryOptions,
   UseQueryResult,
+  UseMutationOptions,
+  UseMutationResult,
 } from 'react-query';
 import useApiRequest from '../useRequest';
 import { transformToCamelCase, transfromToSnakeCase } from '@/utils';
@@ -92,12 +93,23 @@ interface UpdatePaymentMethodResponse {
   id: number;
   message: string;
 }
+/**
+ * Что уходит на сервер при правке способа оплаты.
+ *
+ * Описание сверено с серверным `EditPaymentMethodDTO`: настройки лежат
+ * **вложенно, под `options`**, и все поля необязательные. Прежняя запись
+ * требовала три поля вровень — и окно настройки Stripe считалось ошибкой,
+ * хотя отправляло ровно то, что сервер и ждёт (Д17 карты v76).
+ */
 interface UpdatePaymentMethodValues {
-  paymentMethodId: string | number;
+  paymentMethodId?: string | number | null;
   values: {
-    name: string;
-    bankAccountId: number;
-    clearingAccountId: number;
+    name?: string;
+    options?: {
+      bankAccountId?: number | string;
+      clearingAccountId?: number | string;
+      [key: string]: any;
+    };
   };
 }
 /**

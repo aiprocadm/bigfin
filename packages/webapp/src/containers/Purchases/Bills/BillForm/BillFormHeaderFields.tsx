@@ -32,6 +32,7 @@ import {
 } from '@/utils';
 import { Features } from '@/constants';
 import { useTheme } from '@emotion/react';
+import { Theme } from '@xstyled/emotion';
 
 const getBillFieldsStyle = (theme: Theme) => css`
   .${theme.bpPrefix}-form-group {

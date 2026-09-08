@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Field, ErrorMessage, FastField, useFormikContext } from 'formik';
 import { FormGroup, InputGroup } from '@blueprintjs/core';
@@ -45,8 +44,8 @@ function DecrementAdjustmentFields() {
             name={'quantity'}
             allowDecimals={false}
             allowNegativeValue={true}
-            inputRef={(ref) => (decrementFieldRef.current = ref)}
-            onBlurValue={(value) => {
+            inputRef={(ref: any) => (decrementFieldRef.current = ref)}
+            onBlurValue={(value: any) => {
               setFieldValue(
                 'new_quantity',
                 decrementQuantity(
@@ -72,7 +71,7 @@ function DecrementAdjustmentFields() {
             name={'new_quantity'}
             allowDecimals={false}
             allowNegativeValue={true}
-            onBlurValue={(value) => {
+            onBlurValue={(value: any) => {
               setFieldValue(
                 'quantity',
                 decrementQuantity(

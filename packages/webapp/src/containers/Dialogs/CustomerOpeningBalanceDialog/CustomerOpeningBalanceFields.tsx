@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Classes, Position, FormGroup, ControlGroup } from '@blueprintjs/core';
@@ -33,7 +32,7 @@ import { compose } from '@/utils';
 function CustomerOpeningBalanceFields({
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   // Formik context.
   const { values } = useFormikContext<any>();
 

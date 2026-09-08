@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField, ErrorMessage } from 'formik';
 import {
@@ -57,7 +56,7 @@ function BadDebtFormFields() {
           <FMoneyInputGroup
             name={'amount'}
             minimal={true}
-            inputRef={(ref) => (amountfieldRef.current = ref)}
+            inputRef={(ref: any) => (amountfieldRef.current = ref)}
           />
         </ControlGroup>
       </FFormGroup>

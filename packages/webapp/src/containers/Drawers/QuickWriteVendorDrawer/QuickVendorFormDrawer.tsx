@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import styled from 'styled-components';
@@ -23,7 +22,7 @@ import { DRAWERS } from '@/constants/drawers';
  * Drawer vendor form loading wrapper.
  * @returns {JSX}
  */
-function DrawerVendorFormLoading({ children }) {
+function DrawerVendorFormLoading({ children }: any) {
   const { isFormLoading } = useVendorFormContext();
 
   return <DrawerLoading loading={isFormLoading}>{children}</DrawerLoading>;
@@ -38,12 +37,12 @@ function QuickVendorFormDrawer({
   vendorId,
   addQuickActionEvent,
   autofillRef,
-}) {
+}: any) {
   const { payload } = useDrawerContext();
   const addAutofillRef = useAddAutofillRef();
 
   // Handle the form submit request success.
-  const handleSubmitSuccess = (values, form, submitPayload, res) => {
+  const handleSubmitSuccess = (values: any, form: any, submitPayload: any, res: any) => {
     if (!submitPayload.noRedirect) {
       closeDrawer(DRAWERS.QUICK_WRITE_VENDOR);
     }

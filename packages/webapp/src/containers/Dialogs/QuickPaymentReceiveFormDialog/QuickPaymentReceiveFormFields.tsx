@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
@@ -41,7 +40,7 @@ function QuickPaymentReceiveFormFields({
 
   // #withCurrentOrganization
   organization: { base_currency },
-}) {
+}: any) {
   const { accounts, branches, baseCurrency } = useQuickPaymentReceiveContext();
 
   // Intl context.
@@ -102,7 +101,7 @@ function QuickPaymentReceiveFormFields({
           <FMoneyInputGroup
             name={'amount'}
             minimal={true}
-            inputRef={(ref) => (paymentReceiveFieldRef.current = ref)}
+            inputRef={(ref: any) => (paymentReceiveFieldRef.current = ref)}
           />
         </ControlGroup>
       </FFormGroup>
@@ -174,7 +173,7 @@ function QuickPaymentReceiveFormFields({
 }
 
 export default compose(
-  withSettings(({ paymentReceiveSettings }) => ({
+  withSettings(({ paymentReceiveSettings }: any) => ({
     paymentReceiveAutoIncrement: paymentReceiveSettings?.autoIncrement,
   })),
   withCurrentOrganization(),

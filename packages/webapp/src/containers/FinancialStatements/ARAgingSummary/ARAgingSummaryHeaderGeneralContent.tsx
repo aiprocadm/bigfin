@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Position } from '@blueprintjs/core';
@@ -37,7 +36,6 @@ export default function ARAgingSummaryHeaderGeneralContent() {
               name={'asDate'}
               {...momentFormatter('YYYY/MM/DD')}
               popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
-              minimal
               fill
             />
           </FFormGroup>

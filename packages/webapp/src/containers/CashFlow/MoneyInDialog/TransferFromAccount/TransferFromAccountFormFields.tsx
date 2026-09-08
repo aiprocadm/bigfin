@@ -128,7 +128,7 @@ export default function TransferFromAccountFormFields() {
       </Row>
 
       {/*------------ Description -----------*/}
-      <FormGroup name={'description'} label={<T id={'description'} />}>
+      <FormGroup label={<T id={'description'} />}>
         <FTextArea
           name={'description'}
           growVertically={true}

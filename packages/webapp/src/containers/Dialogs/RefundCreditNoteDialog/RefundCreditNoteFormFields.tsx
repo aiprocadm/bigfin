@@ -117,7 +117,6 @@ function RefundCreditNoteFormFields({
                 ACCOUNT_TYPE.CASH,
                 ACCOUNT_TYPE.FIXED_ASSET,
               ]}
-              fastField
             />
           </FFormGroup>
         </Col>

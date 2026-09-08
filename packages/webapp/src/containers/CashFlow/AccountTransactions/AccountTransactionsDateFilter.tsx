@@ -88,7 +88,6 @@ export function AccountTransactionsDateFilterForm({
 
             <FormGroup
               label={intl.get('to_date')}
-              name={'toDate'}
               style={{ marginBottom: 0, flex: '1' }}
             >
               <FDateInput

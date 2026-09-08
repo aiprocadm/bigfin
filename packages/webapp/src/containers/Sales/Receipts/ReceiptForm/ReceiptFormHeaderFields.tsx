@@ -72,8 +72,6 @@ export default function ReceiptFormHeader() {
         inline={true}
         labelInfo={<FieldRequiredHint />}
         name={'deposit_account_id'}
-        items={accounts}
-        shouldUpdate={accountsFieldShouldUpdate}
       >
         <AccountsSelect
           items={accounts}
@@ -166,8 +164,6 @@ function ReceiptFormCustomerSelect() {
       label={<T id={'customer_name'} />}
       labelInfo={<FieldRequiredHint />}
       inline={true}
-      shouldUpdate={customersFieldShouldUpdate}
-      shouldUpdateDeps={{ items: customers }}
     >
       <CustomersSelect
         name={'customer_id'}

@@ -84,11 +84,9 @@ export default function ExpenseFormHeader() {
 
       <FFormGroup
         name={'payment_account_id'}
-        items={accounts}
         label={<T id={'payment_account'} />}
         labelInfo={<FieldRequiredHint />}
         inline={true}
-        shouldUpdate={accountsFieldShouldUpdate}
       >
         <AccountsSelect
           name={'payment_account_id'}
@@ -153,7 +151,6 @@ function ExpenseFormCustomerSelect() {
       label={<T id={'customer'} />}
       labelInfo={<Hint content={intl.get('expense.customer.hint')} />}
       inline={true}
-      name={'customer_id'}
       fastField={true}
       shouldUpdateDeps={{ items: customers }}
       shouldUpdate={customersFieldShouldUpdate}

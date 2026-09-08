@@ -34,7 +34,6 @@ export default function CustomersBalanceSummaryGeneralPanelContent() {
               name={'asDate'}
               {...momentFormatter('YYYY/MM/DD')}
               popoverProps={{ position: Position.BOTTOM, minimal: true }}
-              minimal={true}
               fill={true}
             />
           </FFormGroup>

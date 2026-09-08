@@ -94,8 +94,6 @@ function VendorOpeningBalanceField() {
     <FFormGroup
       name={'opening_balance'}
       label={<T id={'opening_balance'} />}
-      shouldUpdate={openingBalanceFieldShouldUpdate}
-      shouldUpdateDeps={{ currencyCode: values.currency_code }}
       inline
     >
       <ControlGroup>

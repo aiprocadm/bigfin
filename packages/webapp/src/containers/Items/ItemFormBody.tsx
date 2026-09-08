@@ -103,7 +103,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             label={<T id={'description'} />}
             inline={true}
             sellable={values.sellable}
-            shouldUpdate={sellDescriptionFieldShouldUpdate}
           >
             <FTextArea
               name={'sell_description'}
@@ -159,8 +158,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             name={'purchase_tax_rate_id'}
             label={<T id={'tax_rate'} />}
             inline={true}
-            shouldUpdateDeps={{ taxRates }}
-            shouldUpdate={taxRateFieldShouldUpdate}
           >
             <TaxRatesSelect
               name={'purchase_tax_rate_id'}
@@ -178,7 +175,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             helperText={<ErrorMessage name={'description'} />}
             inline={true}
             purchasable={values.purchasable}
-            shouldUpdate={purchaseDescFieldShouldUpdate}
           >
             <FTextArea
               name={'purchase_description'}
@@ -239,9 +235,7 @@ function ItemFormAccountingSection({ accounts }) {
                 <Hint content={<T id={'item.field.sell_account.hint'} />} />
               }
               inline={true}
-              items={accounts}
               sellable={values.sellable}
-              shouldUpdate={sellAccountFieldShouldUpdate}
             >
               <AccountsSelect
                 name={'sell_account_id'}
@@ -261,8 +255,6 @@ function ItemFormAccountingSection({ accounts }) {
             <FFormGroup
               name={'cost_account_id'}
               purchasable={values.purchasable}
-              items={accounts}
-              shouldUpdate={costAccountFieldShouldUpdate}
               label={<T id={'item.form.cost_account'} />}
               labelInfo={
                 <Hint content={<T id={'item.field.cost_account.hint'} />} />

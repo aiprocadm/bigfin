@@ -188,8 +188,6 @@ export default function PaymentReceiveHeaderFields() {
         label={<T id={'deposit_to'} />}
         inline={true}
         labelInfo={<FieldRequiredHint />}
-        items={accounts}
-        shouldUpdate={accountsFieldShouldUpdate}
       >
         <AccountsSelect
           name={'deposit_account_id'}
@@ -213,7 +211,7 @@ export default function PaymentReceiveHeaderFields() {
         label={<T id={'reference'} />}
         inline
       >
-        <InputGroup name={'reference_no'} minimal fastField />
+        <InputGroup name={'reference_no'} fastField />
       </FFormGroup>
 
       {/*------------ Project name -----------*/}
@@ -258,8 +256,6 @@ function PaymentReceiveCustomerSelect() {
       inline={true}
       labelInfo={<FieldRequiredHint />}
       name={'customer_id'}
-      shouldUpdate={customersFieldShouldUpdate}
-      shouldUpdateDeps={{ items: customers }}
     >
       <CustomersSelect
         name={'customer_id'}

@@ -154,8 +154,6 @@ function EstimateFormCustomerSelect() {
       inline={true}
       labelInfo={<FieldRequiredHint />}
       name={'customer_id'}
-      shouldUpdate={customersFieldShouldUpdate}
-      shouldUpdateDeps={{ items: customers }}
     >
       <CustomersSelect
         name={'customer_id'}

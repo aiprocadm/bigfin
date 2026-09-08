@@ -29,19 +29,28 @@ const SRC = path.resolve(__dirname, '..', '..');
 
 /** Тег → свойства, которые он не читает, и почему это проверено. */
 const UNKNOWN_PROPS: Record<string, string[]> = {
-  // blueprint-овый FormGroup разбирает только свои свойства; слова `fill` в
-  // его исходнике нет вовсе
-  FFormGroup: ['fill', 'fastField'],
-  FormGroup: ['fill'],
-  // InputGroup знает large / small / fill / round; `minimal` и `medium` — нет
+  // Группа полей — единственный компонент пакета, собранный НЕ через `Field`:
+  // она не читает ни `fastField`, ни `shouldUpdate*`. А `fill` и `items` не
+  // знает и blueprint-овый FormGroup, в который она всё пересылает.
+  FFormGroup: ['fill', 'fastField', 'items', 'shouldUpdate', 'shouldUpdateDeps'],
+  // blueprint-овый FormGroup разбирает только свои свойства; `fill`, `name` и
+  // `minimal` в его исходнике не упоминаются вовсе
+  FormGroup: ['fill', 'name', 'minimal'],
+  // InputGroup знает large / small / fill / round; этих — нет
   FInputGroup: ['minimal', 'medium'],
+  InputGroup: ['minimal'],
   // @blueprintjs-formik/datetime не упоминает fastField ни в объявлениях, ни
-  // в собранном коде
-  FDateInput: ['fastField'],
+  // в собранном коде; `minimal` не упоминает и blueprint-овый DateInput
+  FDateInput: ['fastField', 'minimal'],
+  DateInput: ['minimal'],
+  // Выборы живут в @blueprintjs-formik/select — там слова `fastField` нет
+  // вовсе (в отличие от полей из /core, где он работает)
+  FMultiSelect: ['fastField'],
+  FAccountsSuggestField: ['fastField'],
   // Размер значка — свойство самого значка, а не кнопки: слова `iconSize` нет
-  // ни в объявлениях кнопки, ни в её собранном коде (Д3 карты v68). Размер
-  // задаётся вложенному `<Icon iconSize={…} />`.
-  Button: ['iconSize'],
+  // ни в объявлениях кнопки, ни в её собранном коде (Д3 карты v68). А `inline`
+  // не упоминается в исходниках кнопки ни разу.
+  Button: ['iconSize', 'inline'],
 };
 
 const sourceFiles = (): string[] =>

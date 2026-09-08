@@ -157,8 +157,6 @@ function BillFormVendorField() {
       label={<T id={'vendor_name'} />}
       inline={true}
       labelInfo={<FieldRequiredHint />}
-      shouldUpdate={vendorsFieldShouldUpdate}
-      shouldUpdateDeps={{ items: vendors }}
     >
       <VendorsSelect
         name={'vendor_id'}

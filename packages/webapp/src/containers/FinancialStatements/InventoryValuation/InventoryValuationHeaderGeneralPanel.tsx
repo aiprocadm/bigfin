@@ -61,7 +61,6 @@ function InventoryValuationHeaderGeneralPanelContent() {
                     form.setFieldValue('asDate', selectedDate);
                   })}
                   popoverProps={{ position: Position.BOTTOM, minimal: true }}
-                  minimal={true}
                   fill={true}
                 />
               </FormGroup>

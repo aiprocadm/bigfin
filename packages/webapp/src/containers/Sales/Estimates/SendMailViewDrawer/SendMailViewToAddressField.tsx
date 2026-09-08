@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { useMemo, useState } from 'react';
 import { Button, MenuItem } from '@blueprintjs/core';
@@ -156,7 +155,6 @@ export function SendMailViewToAddressField({
           resetOnQuery
           resetOnSelect
           fill
-          fastField
           {...toMultiSelectProps}
         />
         {showCCField && (
@@ -178,7 +176,6 @@ export function SendMailViewToAddressField({
             resetOnQuery
             resetOnSelect
             fill
-            fastField
             {...ccMultiSelectProps}
           />
         )}
@@ -201,7 +198,6 @@ export function SendMailViewToAddressField({
             resetOnQuery
             resetOnSelect
             fill
-            fastField
             {...bccMultiSelectProps}
           />
         )}

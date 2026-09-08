@@ -177,8 +177,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         name={'payment_account_id'}
         label={<T id={'payment_account'} />}
         labelInfo={<FieldRequiredHint />}
-        items={accounts}
-        shouldUpdate={accountsFieldShouldUpdate}
         inline={true}
       >
         <AccountsSelect
@@ -227,8 +225,6 @@ function PaymentFormVendorSelect() {
       label={<T id={'vendor_name'} />}
       labelInfo={<FieldRequiredHint />}
       inline={true}
-      shouldUpdate={vendorsFieldShouldUpdate}
-      shouldUpdateDeps={{ items: vendors }}
     >
       <VendorsSelect
         name={'vendor_id'}

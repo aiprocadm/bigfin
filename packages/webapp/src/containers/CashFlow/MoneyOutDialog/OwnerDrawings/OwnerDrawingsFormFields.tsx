@@ -84,7 +84,6 @@ export default function OwnerDrawingsFormFields() {
       <Row>
         <Col xs={10}>
           <FormGroup
-            name={'amount'}
             label={<T id={'amount'} />}
             labelInfo={<FieldRequiredHint />}
           >

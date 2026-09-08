@@ -82,8 +82,8 @@ export default function CreditNoteFormHeaderFields() {
       <CreditNoteTransactionNoField />
 
       {/* ----------- Reference ----------- */}
-      <FormGroup label={<T id={'reference_no'} />} name={'reference_no'} inline>
-        <InputGroup name={'reference_no'} minimal />
+      <FormGroup label={<T id={'reference_no'} />} inline>
+        <InputGroup name={'reference_no'} />
       </FormGroup>
     </Stack>
   );
@@ -114,8 +114,6 @@ function CreditNoteCustomersSelect() {
       label={<T id={'customer_name'} />}
       labelInfo={<FieldRequiredHint />}
       inline={true}
-      shouldUpdate={customerNameFieldShouldUpdate}
-      shouldUpdateDeps={{ items: customers }}
     >
       <CustomersSelect
         name={'customer_id'}

@@ -56,7 +56,12 @@ jobs:
 
       - uses: pnpm/action-setup@v6
         with:
-          version: 9
+          # Только 10: настройки проекта (overrides bcrypt→bcryptjs,
+          # supportedArchitectures, allowBuilds) лежат в pnpm-workspace.yaml,
+          # а его читает лишь pnpm 10+. На девятке установка падает с
+          # ERR_PNPM_LOCKFILE_CONFIG_MISMATCH — файл замков помнит overrides,
+          # а взять их девятке неоткуда (карта v72).
+          version: 10
 
       - name: Get pnpm store directory
         shell: bash

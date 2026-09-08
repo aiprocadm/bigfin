@@ -27,7 +27,10 @@ Shared пакеты в `shared/`: `email-components`, `pdf-templates`, `sdk-ts`,
 
 ## Dev окружение
 
-- **Node.js**: 18.16.1 — **обязательно**. Используйте `fnm use 18.16.1` или `nvm use 18.16.1` перед командами.
+- **Node.js**: 20.19.0 (см. `.nvmrc`) — **не ниже 20**. Используйте `fnm use` или `nvm use` перед командами.
+  Раньше здесь стояло 18.16.1; версия поднята картой v72: платформенные бинарники
+  `@tailwindcss/oxide` объявляют `engines: node >= 20`, и на 18 pnpm молча их
+  не ставил — сборка витрины падала на «Cannot find native binding».
 - **Package manager**: только `pnpm` (не `npm`, не `yarn`).
 - **ОС**: Windows для локальной разработки, Ubuntu для CI, Alpine для production (Docker).
 - **Локальный backend не настроен по умолчанию** — нет `.env`, нет Docker-compose. UI после авторизации не откроется. Для i18n-задач полагайтесь на `typecheck` + `lang-check.js`.

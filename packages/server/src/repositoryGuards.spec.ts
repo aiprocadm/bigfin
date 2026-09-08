@@ -59,13 +59,20 @@ describe('проверки, которые должны выполняться',
     // откатилось, и стенд встал на старой версии (карта v50).
     const build = read('.github/workflows/build.yml');
 
-    expect(build).toContain('@bigfin/server build');
-    expect(build).toContain('@bigfin/webapp build');
+    // Собирается через корневые скрипты, а не `--filter @bigfin/…`: сервер и
+    // витрина ввозят общие пакеты из `shared/`, и в чистой копии тех ещё нет.
+    // Раньше здесь стояли имена пакетов — но первый же настоящий запуск
+    // процесса показал, что так собрать нельзя (карта v72).
+    expect(build).toContain('pnpm build:server');
+    expect(build).toContain('pnpm build:webapp');
   });
 
   it('процессы CI берут версию Node из .nvmrc, а не пишут свою', () => {
-    // Два источника правды разъезжаются молча: `.nvmrc` фиксирует 18.16.1,
-    // а «18» в процессе — это любая свежая 18.x.
+    // Два источника правды разъезжаются молча: `.nvmrc` фиксирует точную
+    // версию, а «20» в процессе — это любая свежая 20.x. Версия сейчас
+    // 20.19.0: платформенные бинарники `@tailwindcss/oxide` требуют Node ≥ 20,
+    // и на 18.16.1 pnpm молча их не ставил, а сборка витрины падала на
+    // «Cannot find native binding» (карта v72).
     const workflows = fs
       .readdirSync(path.join(ROOT, '.github/workflows'))
       .filter((name) => name.endsWith('.yml'));

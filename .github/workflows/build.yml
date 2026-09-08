@@ -64,8 +64,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Собираем корневыми скриптами, а не `--filter @bigfin/server`: сервер и
+      # витрина ввозят общие пакеты из `shared/`, и в чистой копии тех ещё нет.
+      # `build:server` и `build:webapp` собирают их в правильном порядке
+      # (карта v72).
       - name: Сборка сервера
-        run: pnpm --filter @bigfin/server build
+        run: pnpm build:server
 
       - name: Сборка витрины
-        run: pnpm --filter @bigfin/webapp build
+        run: pnpm build:webapp

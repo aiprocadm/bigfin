@@ -69,6 +69,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Тесты сервера ввозят общие пакеты из `shared/`; в чистой копии их надо
+      # сначала собрать, иначе jest не находит модули (карта v72).
+      - name: Сборка общих пакетов
+        run: pnpm --filter "@bigfin/utils" --filter "@bigfin/pdf-templates" --filter "@bigfin/email-components" build
+
       - name: Server unit tests
         run: pnpm --filter @bigfin/server test
 

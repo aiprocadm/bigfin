@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -11,7 +10,8 @@ export function ReceiptFormFooterLeft() {
       <ReceiptMsgFormGroup
         name={'receipt_message'}
         label={<T id={'receipt_form.label.receipt_message'} />}
-        hintText={'Will be displayed on the Receipt'}
+        // Было `hintText` — такого свойства у группы полей нет (Д22 карты v75).
+        helperText={intl.get('receipt_form.customer_note.hint')}
       >
         <FEditableText
           name={'receipt_message'}

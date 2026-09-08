@@ -1,12 +1,18 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { useCallback, useRef } from 'react';
 import { useFormikContext } from 'formik';
-import { Button, Icon, Position } from '@blueprintjs/core';
+import { Button, Position } from '@blueprintjs/core';
 import { SelectOptionProps } from '@blueprintjs-formik/select';
 import { FormGroupProps, TextAreaProps } from '@blueprintjs-formik/core';
 import { css } from '@emotion/css';
-import { FFormGroup, FSelect, FTextArea, Group, Stack } from '@/components';
+import {
+  FFormGroup,
+  FSelect,
+  FTextArea,
+  Group,
+  Icon,
+  Stack,
+} from '@/components';
 import { InvoiceSendMailFormValues } from '../../Invoices/InvoiceSendMailDrawer/_types';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 
@@ -81,9 +87,12 @@ export function SendMailViewMessageField({
             input={() => (
               <Button
                 minimal
+                // Значок берётся из НАШЕГО набора: `caret-down-16` есть только
+                // там. Раньше `Icon` приходил из чужого набора, где такого
+                // имени нет, и значок просто не рисовался (Д7 карты v75).
                 rightIcon={<Icon icon={'caret-down-16'} color={'#8F99A8'} />}
               >
-                Insert Variable
+                {intl.get('send_mail.insert_variable')}
               </Button>
             )}
             fill={false}

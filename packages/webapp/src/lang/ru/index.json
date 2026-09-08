@@ -4267,5 +4267,10 @@
   "payment_receive.full_amount.hint": "Сколько денег вы получили. Эту сумму нужно разнести по счетам ниже.",
   "payment_made.full_amount.hint": "Сколько денег вы заплатили. Эту сумму нужно разнести по счетам ниже.",
   "change_full_amount.confirm": "Если изменить полную сумму, все разнесённые оплаты и зачёты пересчитаются заново. Продолжить?",
-  "excluded_transactions.empty": "Исключённых банковских операций нет."
+  "excluded_transactions.empty": "Исключённых банковских операций нет.",
+  "send_mail.insert_variable": "Вставить переменную",
+  "estimate_form.customer_note.hint": "Будет показано в коммерческом предложении",
+  "receipt_form.customer_note.hint": "Будет показано в чеке",
+  "branch.suggest.placeholder": "Выберите подразделение",
+  "project_billable_type.select.placeholder": "Выберите вид…"
 }

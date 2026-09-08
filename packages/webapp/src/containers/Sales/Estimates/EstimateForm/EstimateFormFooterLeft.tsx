@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -11,7 +10,9 @@ export function EstimateFormFooterLeft() {
       <EstimateMsgFormGroup
         name={'note'}
         label={<T id={'estimate_form.label.customer_note'} />}
-        hintText={'Will be displayed on the invoice'}
+        // Было `hintText` — такого свойства у группы полей нет, и подсказка
+        // не показывалась ни разу. Верное имя — `helperText` (Д22 карты v75).
+        helperText={intl.get('estimate_form.customer_note.hint')}
       >
         <FEditableText
           name={'note'}

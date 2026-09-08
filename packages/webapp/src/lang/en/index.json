@@ -4267,5 +4267,10 @@
   "payment_receive.full_amount.hint": "How much money you received. This amount has to be allocated to the invoices below.",
   "payment_made.full_amount.hint": "How much money you paid. This amount has to be allocated to the bills below.",
   "change_full_amount.confirm": "Changing the full amount will recalculate every allocated payment and credit. Continue?",
-  "excluded_transactions.empty": "There are no excluded bank transactions."
+  "excluded_transactions.empty": "There are no excluded bank transactions.",
+  "send_mail.insert_variable": "Insert variable",
+  "estimate_form.customer_note.hint": "Will be shown on the estimate",
+  "receipt_form.customer_note.hint": "Will be shown on the receipt",
+  "branch.suggest.placeholder": "Select a branch",
+  "project_billable_type.select.placeholder": "Select a type..."
 }

@@ -47,13 +47,27 @@ export const resolveImport = (spec: string, from: string): string | null => {
   return null;
 };
 
-const IMPORT_RE = /(?:from|import|require)\s*\(?\s*['"]([^'"]+)['"]/g;
+/**
+ * Ввозы, записанные строкой целиком.
+ *
+ * Границы слова (`\b`) и обязательные скобки — не украшение. Без них слово
+ * `import` внутри обычной строки (ключ перевода `'accounts_import'`) считалось
+ * началом ввоза, разбор сбивался с кавычек и **дальше по файлу читал мусор**.
+ * Файл маршрутов из-за этого «терял» половину экранов, и они попадали в сироты
+ * (Д1 карты v79).
+ */
+const IMPORT_RE =
+  /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+|\brequire\s*\(\s*)['"]([^'"]+)['"]/g;
+
+/** Пути ввозов, найденные в тексте. Вынесено отдельно ради проверки разбора. */
+export const importSpecifiers = (code: string): string[] =>
+  [...code.matchAll(IMPORT_RE)].map((m) => m[1]);
 
 export const importsOf = (file: string): string[] => {
   const code = fs.readFileSync(file, 'utf8');
   const out: string[] = [];
-  for (const m of code.matchAll(IMPORT_RE)) {
-    const target = resolveImport(m[1], file);
+  for (const spec of importSpecifiers(code)) {
+    const target = resolveImport(spec, file);
     if (target) out.push(target);
   }
   return out;

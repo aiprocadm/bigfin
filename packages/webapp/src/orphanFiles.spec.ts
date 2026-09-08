@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { orphanFiles, ENTRY, SRC, reachableFrom } from './orphanFiles';
+import {
+  orphanFiles,
+  ENTRY,
+  SRC,
+  reachableFrom,
+  importSpecifiers,
+} from './orphanFiles';
 
 /**
  * Д2 карты v77. Сколько в витрине файлов, до которых нельзя добраться.
@@ -25,8 +31,13 @@ import { orphanFiles, ENTRY, SRC, reachableFrom } from './orphanFiles';
  * v77: 828 → 759 (удалено 69 остатков от перехода на V2).
  * v78: 759 → 354 (удалены 405 файлов — замкнутые мёртвые кусты ящиков,
  * отчётов, окон и экранов продаж и закупок).
+ * v79: 354 → 187. Из них 42 файла сиротами вовсе не были: разбор ввозов
+ * спотыкался о слово `import` внутри строк (см. пояснение к `IMPORT_RE`), и
+ * файл маршрутов «терял» половину экранов. Остальное — удалённые 125 файлов
+ * целиком мёртвых папок: «Проекты», три отчёта без серверных ручек, интеграция
+ * с СМС, ящик деталей контакта.
  */
-const ORPHANS_CEILING = 354;
+const ORPHANS_CEILING = 187;
 
 describe('файлы, до которых нельзя добраться', () => {
   // Сторож читает все файлы витрины, и под общей нагрузкой пять секунд по
@@ -47,5 +58,46 @@ describe('файлы, до которых нельзя добраться', () =
     expect(live.size).toBeGreaterThan(2000);
     // И она видит заведомо живой файл.
     expect(live.has(path.join(SRC, 'components', 'App.tsx'))).toBe(true);
+  });
+
+  /**
+   * Проверка на ошибку, которая уже случилась (Д1 карты v79).
+   *
+   * Разбор искал `from|import|require`, не требуя ни границы слова, ни скобок.
+   * Из-за этого слово `import` внутри обычной строки — ключ перевода
+   * `'accounts_import'` — считалось началом ввоза. Разбор сбивался с кавычек и
+   * дальше по файлу читал мусор: файл маршрутов «терял» половину экранов, и
+   * они попадали в сироты.
+   *
+   * Сорок два файла числились мёртвыми, не будучи мёртвыми.
+   */
+  it('слово «import» внутри строки не считается ввозом', () => {
+    const sample = `
+      import intl from 'react-intl-universal';
+      export default [
+        {
+          path: '/accounts/import',
+          component: lazy(() => import('@/containers/Accounts/AccountsImport')),
+          breadcrumb: intl.get('accounts_import'),
+        },
+        {
+          path: '/accounts',
+          component: lazy(() => import('@/containers/Accounts/AccountsChart')),
+          pageTitle: intl.get('accounts_chart'),
+        },
+      ];
+    `;
+
+    expect(importSpecifiers(sample)).toEqual([
+      'react-intl-universal',
+      '@/containers/Accounts/AccountsImport',
+      '@/containers/Accounts/AccountsChart',
+    ]);
+  });
+
+  it('ввоз ради побочного действия тоже виден', () => {
+    expect(importSpecifiers("import '@/style/main.scss';")).toEqual([
+      '@/style/main.scss',
+    ]);
   });
 });

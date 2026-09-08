@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Box, Group } from '@/components';
 import { Spinner, Text } from '@blueprintjs/core';
 import { Subscription } from './BillingSubscription';

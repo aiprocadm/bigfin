@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { FFormGroup, FEditableText, FormattedMessage as T } from '@/components';
 
@@ -13,7 +13,7 @@ export function ExpenseFormFooterLeft() {
       >
         <FEditableText
           name={'description'}
-          placeholder={<T id={'expenses.decscrption.placeholder'} />}
+          placeholder={intl.get('expenses.decscrption.placeholder')}
           multiline
           fastField
         />

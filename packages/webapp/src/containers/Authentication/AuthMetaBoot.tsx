@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { useAuthMetadata } from '@/hooks/query';
 import { Spinner } from '@blueprintjs/core';
@@ -37,7 +36,7 @@ function AuthMetaBootProvider({ ...props }) {
   if (isAuthMetaLoading) {
     return (
       <SpinnerRoot>
-        <Spinner size={30} value={null} />
+        <Spinner size={30} value={undefined} />
       </SpinnerRoot>
     );
   }

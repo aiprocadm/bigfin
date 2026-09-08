@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 
@@ -47,6 +46,6 @@ export const withSubscriptionPlanMapper = <
       annuallyVariantId: plan.annuallyVariantId,
       onSubscribe,
     };
-    return <WrappedComponent {...mappedProps} {...(restProps as P)} />;
+    return <WrappedComponent {...mappedProps} {...(restProps as unknown as P)} />;
   };
 };

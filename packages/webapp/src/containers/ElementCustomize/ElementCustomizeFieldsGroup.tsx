@@ -21,19 +21,33 @@ export function ElementCustomizeFieldsGroup({
   );
 }
 
+/**
+ * Строка настройки макета: слева переключатель «показывать ли», справа — поле
+ * с подписью, которую надо напечатать.
+ *
+ * **Имена были перепутаны местами.** `inputGroupProps` уходили в переключатель,
+ * а `switchProps` — в поле ввода. Работало это правильно только потому, что
+ * все четыре экрана передавали их так же наоборот. Но объявленные типы при
+ * этом описывали не то, и `name` в них не помещался — четыре экрана считались
+ * ошибкой (Д8 карты v75).
+ *
+ * Теперь имена совпадают с тем, куда свойства идут. Поведение не изменилось.
+ */
 export function ElementCustomizeContentItemFieldGroup({
-  inputGroupProps,
   switchProps,
+  inputGroupProps,
 }: {
-  inputGroupProps: InputGroupProps;
-  switchProps?: SwitchProps;
+  /** Переключатель «показывать ли». Обязательно поле формы — значит, `name`. */
+  switchProps: SwitchProps & { name: string; label?: React.ReactNode };
+  /** Поле подписи. Рисуется, только если оно задано. */
+  inputGroupProps?: InputGroupProps & { name?: string };
 }) {
   return (
     <Group spacing={14} position={'apart'}>
-      <FSwitch {...inputGroupProps} fastField />
+      <FSwitch {...switchProps} fastField />
 
-      {switchProps?.name && (
-        <FInputGroup {...switchProps} style={{ maxWidth: 150 }} fastField />
+      {inputGroupProps?.name && (
+        <FInputGroup {...inputGroupProps} style={{ maxWidth: 150 }} fastField />
       )}
     </Group>
   );

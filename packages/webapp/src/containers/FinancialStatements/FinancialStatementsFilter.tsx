@@ -22,11 +22,29 @@ const SUBMENU_POPOVER_MODIFIERS = {
   preventOverflow: { boundariesElement: 'viewport', padding: 40 },
 };
 
+/** Один вариант отбора в шапке отчёта. */
+export interface FinancialStatementsFilterOption {
+  key: string;
+  name: string;
+  /**
+   * Пояснение во всплывашке. Необязательно: у варианта «только действующие»
+   * его нет. Раньше тип брался из значения по умолчанию, где пояснение есть
+   * везде, — и два отчёта по товарам считались ошибкой (Д28 карты v75).
+   */
+  hint?: string;
+}
+
+interface FinancialStatementsFilterProps {
+  items?: FinancialStatementsFilterOption[];
+  label?: React.ReactNode;
+  [key: string]: any;
+}
+
 export default function FinancialStatementsFilter({
   items = filterAccountsOptions,
   label = <T id={'filter_accounts'} />,
   ...restProps
-}) {
+}: FinancialStatementsFilterProps) {
   const filterRenderer = (item, { handleClick, modifiers, query }) => {
     return (
       <Tooltip

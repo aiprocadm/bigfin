@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import clsx from 'classnames';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FormGroup, Position, ControlGroup } from '@blueprintjs/core';
 import classNames from 'classnames';
@@ -109,7 +108,7 @@ export default function OwnerDrawingsFormFields() {
             <FAccountsSuggestField
               name={'credit_account_id'}
               items={accounts}
-              filterByTypes={ACCOUNT_TYPE.EQUITY}
+              filterByTypes={[ACCOUNT_TYPE.EQUITY]}
             />
           </FFormGroup>
         </Col>

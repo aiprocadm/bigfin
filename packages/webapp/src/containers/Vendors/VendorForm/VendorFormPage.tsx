@@ -25,7 +25,7 @@ function VendorFormPageLoading({ children }) {
  */
 export function VendorFormPage() {
   const history = useHistory();
-  const { id } = useParams();
+  const { id } = useParams<{ id?: string }>();
 
   // Handle the form submit success.
   const handleSubmitSuccess = (values, formArgs, submitPayload) => {

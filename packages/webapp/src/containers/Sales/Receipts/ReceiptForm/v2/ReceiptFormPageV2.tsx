@@ -13,7 +13,7 @@ import { ReceiptFormV2 } from './ReceiptFormV2';
  */
 export default function ReceiptFormPageV2() {
   const { id } = useParams<{ id?: string }>();
-  const receiptId = id ? Number.parseInt(id, 10) : undefined;
+  const receiptId = id ? Number.parseInt(id ?? '', 10) : undefined;
 
   return (
     <ReceiptFormProviderLoose receiptId={receiptId}>

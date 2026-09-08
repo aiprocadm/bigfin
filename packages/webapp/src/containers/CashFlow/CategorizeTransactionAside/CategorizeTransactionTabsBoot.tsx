@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import { castArray, uniq } from 'lodash';
 
@@ -35,10 +34,15 @@ export function CategorizeTransactionTabsBoot({
   };
   // Use a key prop to force re-render of children when `uncategorizedTransactionIds` changes
   const childrenPerKey = React.useMemo(() => {
+    // Проверка на элемент обязательна: среди детей могут оказаться строки,
+    // числа и пустоты, а копировать с новым ключом можно только элемент
+    // (Д41 карты v75).
     return React.Children.map(children, (child) =>
-      React.cloneElement(child, {
-        key: uncategorizedTransactionIds?.join(','),
-      }),
+      React.isValidElement(child)
+        ? React.cloneElement(child, {
+            key: uncategorizedTransactionIds?.join(','),
+          })
+        : child,
     );
   }, [children, uncategorizedTransactionIds]);
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import axios from 'axios';
 import { store } from '@/store/create-store';
 import { getRequestLocale } from './requestLocale';
@@ -7,7 +6,12 @@ const http = axios.create();
 
 http.interceptors.request.use((request) => {
   const state = store.getState();
-  const { token, organization } = state.authentication;
+  // Поле называется `organizationId`. Раньше здесь читали `organization` —
+  // такого поля в хранилище нет, значение всегда выходило пустым, и заголовок
+  // с организацией по этому пути **не отправлялся никогда**. Через него идут
+  // настройки, валюты и привязка данных; основной путь (`useRequest`) читает
+  // поле правильно, поэтому расхождение и не бросалось в глаза (Д21 карты v75).
+  const { token, organizationId } = state.authentication;
   // Язык запроса — тот, на котором человек смотрит продукт (тот же cookie
   // `locale`, что выбирает язык интерфейса). Раньше здесь стояла забытая
   // отладочная строка `'ar'`: арабского словаря у сервера нет, и он
@@ -19,8 +23,8 @@ http.interceptors.request.use((request) => {
   if (token) {
     request.headers.common['x-access-token'] = token;
   }
-  if (organization) {
-    request.headers.common['organization-id'] = organization;
+  if (organizationId) {
+    request.headers.common['organization-id'] = organizationId;
   }
   if (locale) {
     request.headers.common['Accept-Language'] = locale;

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { ControlGroup, Divider, Icon as BlueprintIcon } from '@blueprintjs/core';
 import {

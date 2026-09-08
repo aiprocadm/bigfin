@@ -14,8 +14,8 @@ import {
  * @returns {JSX}
  */
 export default function CustomerFormPage() {
-  const { id } = useParams();
-  const customerId = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const customerId = parseInt(id ?? '', 10);
   
   return (
     <CustomerFormProvider customerId={customerId}>

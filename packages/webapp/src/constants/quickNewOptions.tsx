@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import {
   AbilitySubject,
@@ -56,7 +55,11 @@ export const getQuickNewActions = () => [
     name: intl.get('vendor'),
     permission: {
       subject: AbilitySubject.Vendor,
-      ability: VendorAction.Vendor,
+      // Было `VendorAction.Vendor` — такого права нет вовсе (есть View,
+      // Create, Edit, Delete). Проверка всегда давала «нет», и пункт
+      // «Поставщик» не появлялся в меню быстрого создания ни у кого.
+      // Остальные восемь пунктов проверяют `Create` (Д17 карты v75).
+      ability: VendorAction.Create,
     },
   },
 ];

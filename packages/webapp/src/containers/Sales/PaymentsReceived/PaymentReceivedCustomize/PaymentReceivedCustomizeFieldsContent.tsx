@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import { Classes } from '@blueprintjs/core';
@@ -25,11 +24,11 @@ export function PaymentReceivedCustomizeContentFields() {
             {group.fields.map((item, index) => (
               <ElementCustomizeContentItemFieldGroup
                 key={index}
-                inputGroupProps={{
+                switchProps={{
                   name: item.enableKey,
                   label: item.label,
                 }}
-                switchProps={{
+                inputGroupProps={{
                   name: item.labelKey,
                 }}
               />

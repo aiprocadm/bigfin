@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { FormattedMessage as T, FieldRequiredHint, Card, FFormGroup, FInputGroup, FTextArea } from '@/components';

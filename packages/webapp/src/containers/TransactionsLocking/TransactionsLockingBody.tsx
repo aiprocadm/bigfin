@@ -68,7 +68,13 @@ function TransactionsLockingBodyJsx({
   );
 }
 
-export const TransactionsLockingBody = R.compose(
+/**
+ * Тип указан явно. `R.compose` из двух и более обёрток теряет знание о том, что
+ * на выходе компонент, и место применения получает «ничто» — отсюда «нельзя
+ * использовать как компонент». Обёртки сами подставляют всё, что нужно, поэтому
+ * снаружи компонент вызывается без свойств (Д9 карты v75).
+ */
+export const TransactionsLockingBody: React.FC = R.compose(
   withAlertActions,
   withDialogActions,
 )(TransactionsLockingBodyJsx);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRef } from 'react';
 import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';

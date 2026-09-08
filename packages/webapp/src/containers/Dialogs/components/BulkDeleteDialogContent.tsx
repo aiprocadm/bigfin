@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Classes, Intent, Tag } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
@@ -41,7 +40,9 @@ function BulkDeleteDialogContent({
       </x.div>
 
       <x.div display="flex" alignItems="center" gap={'12px'} mt={'8px'}>
-        <Tag intent={Intent.INFO} minimal>
+        {/* У набора окрасок нет INFO — было `undefined`, и ярлык выходил
+            бесцветным. Синяя — ближайшая по смыслу (Д20 карты v75). */}
+        <Tag intent={Intent.PRIMARY} minimal>
           {undeletableCount}
         </Tag>
         <x.div>

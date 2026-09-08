@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -36,7 +35,10 @@ function ProjectInvoicingFormFields() {
         />
       </FFormGroup>
 
+      {/* Три галочки завёрнуты в один узел: группа полей принимает РОВНО
+          одного ребёнка, а их здесь три (Д34 карты v75). */}
       <FFormGroup name={'time'}>
+        <div>
         {/*------------ All time entreis -----------*/}
         <FCheckbox
           name="time"
@@ -52,6 +54,7 @@ function ProjectInvoicingFormFields() {
           name="bills"
           label={intl.get('project_invoicing.dialog.all_bills')}
         />
+        </div>
       </FFormGroup>
     </div>
   );

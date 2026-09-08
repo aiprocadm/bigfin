@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import { ProgressBar, Intent } from '@blueprintjs/core';
 import { css } from '@emotion/css';
@@ -74,7 +73,7 @@ export default function BuildingWorkspaceStep({
   return (
     <x.div w="100%" maxW="700px" mx="auto" pt="80px">
       <x.div className={progressBarStyles}>
-        <ProgressBar intent={Intent.NONE} value={null} />
+        <ProgressBar intent={Intent.NONE} value={undefined} />
       </x.div>
 
       <x.div textAlign="center" mt={26}>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Alert } from '@/components';
 import { Intent } from '@blueprintjs/core';
@@ -9,5 +8,11 @@ export function TaxRateFormDialogFormErrors() {
 
   if (!errors.confirm_edit) return null;
 
-  return <Alert intent={Intent.DANGER}>{errors.confirm_edit}</Alert>;
+  // Formik отдаёт замечание строкой или списком строк — плашка рисует и то,
+  // и другое, поэтому приводим к узлу разметки (Д43 карты v75).
+  return (
+    <Alert intent={Intent.DANGER}>
+      {errors.confirm_edit as React.ReactNode}
+    </Alert>
+  );
 }

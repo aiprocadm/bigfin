@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FInputGroup } from '@/components';
 import { useFormikContext } from 'formik';
@@ -12,6 +11,11 @@ interface FInputGroupComponentProps {
    * явно (Д2 карты v71).
    */
   fromFields?: [string, string];
+  /**
+   * Имя поля формы. Обязательно: без него поле ввода не к чему привязать, и
+   * проверка видела здесь только `onBlur` (Д38 карты v75).
+   */
+  name: string;
   /** Остальное уходит в поле ввода как есть. */
   [key: string]: any;
 }

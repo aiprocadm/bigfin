@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { css } from '@emotion/css';
@@ -15,8 +14,8 @@ import { ReceiptForm } from './ReceiptForm';
  * Receipt form page.
  */
 export default function ReceiptFormPage() {
-  const { id } = useParams();
-  const receiptId = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const receiptId = parseInt(id ?? '', 10);
 
   return (
     <ReceiptFormProvider receiptId={receiptId}>

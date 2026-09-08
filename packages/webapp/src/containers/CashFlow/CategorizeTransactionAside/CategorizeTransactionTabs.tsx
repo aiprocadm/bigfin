@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Tab, Tabs } from '@blueprintjs/core';
 import { MatchingBankTransaction } from './MatchingTransaction';

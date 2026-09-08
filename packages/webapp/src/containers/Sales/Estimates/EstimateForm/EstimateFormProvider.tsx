@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 
 import { DashboardInsider } from '@/components/Dashboard';
@@ -21,7 +20,11 @@ import { useFeatureCan } from '@/hooks/state';
 import { ITEMS_FILTER_ROLES } from './utils';
 
 interface EstimateFormProviderValues {
-  saleEstimateState: ISaleEstimatesStateResponse;
+  /**
+   * Пока запрос идёт, значения ещё нет — поэтому «может отсутствовать».
+   * Все читающие экраны сначала смотрят признак загрузки (Д26 карты v75).
+   */
+  saleEstimateState?: ISaleEstimatesStateResponse;
   isSaleEstimateStateLoading: boolean;
   // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
   // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.

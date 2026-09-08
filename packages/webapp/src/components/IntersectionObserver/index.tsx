@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useIntersectionObserver } from '@/hooks/utils';
 
@@ -22,7 +21,7 @@ export function IntersectionObserver({
   onIntersect,
   enabled = true,
 }: IntersectionObserverProps) {
-  const loadMoreButtonRef = React.useRef();
+  const loadMoreButtonRef = React.useRef<HTMLDivElement>(null);
 
   useIntersectionObserver({
     enabled,
@@ -37,7 +36,8 @@ export function IntersectionObserver({
       ref={loadMoreButtonRef}
       style={{ opacity: 0, height: 0, width: 0, padding: 0, margin: 0 }}
     >
-      Load Newer
+      {/* Метка невидима: нулевой размер и прозрачность. Это якорь для
+          наблюдателя, а не надпись для человека — перевод ей не нужен. */}
     </div>
   );
 }

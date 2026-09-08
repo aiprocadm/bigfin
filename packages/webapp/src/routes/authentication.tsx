@@ -1,8 +1,19 @@
-import { lazy } from 'react';
+import { ComponentType, lazy } from 'react';
+
+/** Маршрут экрана входа. */
+export interface AuthenticationRoute {
+  path: string;
+  component: ComponentType<any>;
+  /**
+   * Требовать точного совпадения адреса. Сегодня его не задаёт ни один
+   * маршрут, но экран его читает — значит, объявить надо (Д32 карты v75).
+   */
+  exact?: boolean;
+}
 
 const BASE_URL = '/auth';
 
-export default [
+const routes: AuthenticationRoute[] = [
   {
     path: `${BASE_URL}/login`,
     component: lazy(() =>
@@ -65,3 +76,5 @@ export default [
     ),
   },
 ];
+
+export default routes;

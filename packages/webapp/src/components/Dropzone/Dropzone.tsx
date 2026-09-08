@@ -28,6 +28,15 @@ export type DropzoneCssVariables = {
 };
 
 export interface DropzoneProps {
+  /** Содержимое рамки. Компонент его рисует, но в объявлении его не было —
+   *  оба места применения считались ошибкой (Д29 карты v75). */
+  children?: React.ReactNode;
+
+  /** Свои имена стилей для рамки и содержимого. Компонент их читает
+   *  (`classNames?.root`, `classNames?.content`), но в объявлении строка
+   *  была закомментирована (Д29 карты v75). */
+  classNames?: { root?: string; content?: string; [key: string]: string | undefined };
+
   /** Key of `theme.colors` or any valid CSS color to set colors of `Dropzone.Accept`, `theme.primaryColor` by default */
   acceptColor?: MantineColor;
 

@@ -366,7 +366,6 @@ function RuleAssignCategoryAccountField() {
       label={intl.get('banking.rules.field.account_category')}
       labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
       style={{ maxWidth: 300 }}
-      shouldUpdateDeps={{ accountRoot }}
     >
       <AccountsSelect
         name={'assignAccountId'}

@@ -69,7 +69,6 @@ function SubscriptionRoot({ openAlert, openDrawer }) {
         <Button
           minimal
           small
-          inline
           intent={Intent.PRIMARY}
           onClick={handleUpgradeBtnClick}
         >
@@ -80,7 +79,6 @@ function SubscriptionRoot({ openAlert, openDrawer }) {
           <Button
             minimal
             small
-            inline
             intent={Intent.PRIMARY}
             onClick={handleResumeSubBtnClick}
           >
@@ -91,7 +89,6 @@ function SubscriptionRoot({ openAlert, openDrawer }) {
           <Button
             minimal
             small
-            inline
             intent={Intent.PRIMARY}
             onClick={handleCancelSubBtnClick}
           >
@@ -101,7 +98,6 @@ function SubscriptionRoot({ openAlert, openDrawer }) {
         <Button
           minimal
           small
-          inline
           intent={Intent.PRIMARY}
           onClick={handleUpdatePaymentMethod}
         >

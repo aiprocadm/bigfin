@@ -99,7 +99,6 @@ export const MoneyInOutTransactionNoField = R.compose(
       >
         <ControlGroup fill={true}>
           <InputGroup
-            minimal={true}
             value={values.transaction_number}
             asyncControl={true}
             onBlur={handleTransactionNoBlur}

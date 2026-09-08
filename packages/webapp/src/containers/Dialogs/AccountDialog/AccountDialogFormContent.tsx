@@ -101,7 +101,6 @@ function AccountFormDialogFields({
         {values.subaccount && (
           <FFormGroup
             name={'parent_account_id'}
-            shouldUpdate={parentAccountShouldUpdate}
             label={<T id={'parent_account'} />}
             inline={true}
           >

@@ -161,7 +161,6 @@ export default function InventoryAdjustmentFormDialogFields() {
             placeholder: intl.get('select_adjustment_account'),
           }}
           fill
-          fastField
         />
       </FFormGroup>
 

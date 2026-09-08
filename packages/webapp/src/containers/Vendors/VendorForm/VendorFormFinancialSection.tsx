@@ -115,8 +115,6 @@ function VendorOpeningBalanceField() {
       label={<T id={'opening_balance'} />}
       name={'opening_balance'}
       inline
-      shouldUpdate={openingBalanceFieldShouldUpdate}
-      shouldUpdateDeps={{ currencyCode: values.currency_code }}
     >
       <ControlGroup fill>
         <InputPrependText text={values.currency_code as string} />

@@ -94,7 +94,7 @@ function ProjectFormCustomerSelect() {
   const { customers } = useProjectFormContext();
 
   return (
-    <FormGroup name={'contact_id'} label={intl.get('projects.dialog.contact')}>
+    <FormGroup label={intl.get('projects.dialog.contact')}>
       <CustomersSelect
         name={'contact_id'}
         items={customers}

@@ -140,7 +140,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                       disabled={isFilterOptionsLoading}
                       fill
                       resetOnSelect
-                      fastField
                     />
                   </FFormGroup>
 
@@ -160,7 +159,6 @@ function AuditLogHeader({ onSubmitFilter, pageFilter, isFilterDrawerOpen, toggle
                       disabled={isFilterOptionsLoading}
                       fill
                       resetOnSelect
-                      fastField
                     />
                   </FFormGroup>
 

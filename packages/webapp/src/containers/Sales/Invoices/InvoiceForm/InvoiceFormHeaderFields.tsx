@@ -175,8 +175,6 @@ function InvoiceFormCustomerSelect() {
       label={<T id={'customer_name'} />}
       inline={true}
       labelInfo={<FieldRequiredHint />}
-      shouldUpdate={customerNameFieldShouldUpdate}
-      shouldUpdateDeps={{ items: customers }}
     >
       <CustomersSelect
         name={'customer_id'}

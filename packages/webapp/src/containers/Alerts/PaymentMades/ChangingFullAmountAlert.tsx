@@ -43,8 +43,7 @@ function ChangingFullAmountAlert({
       onConfirm={handleConfirm}
     >
       <p>
-        Changing full amount will change all credit and payment were applied, Is
-        this okay?
+        <T id={'change_full_amount.confirm'} />
       </p>
     </Alert>
   );

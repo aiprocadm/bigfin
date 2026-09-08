@@ -879,7 +879,7 @@
   "you_reached_conditions_limit": "You have reached to conditions limit.",
   "customer_name": "Customer Name",
   "as_date": "As Date",
-  "aging_before_days": "Aging before days",
+  "aging_before_days": "Period length, days",
   "aging_periods": "Aging periods",
   "name_": "name",
   "as": "As",
@@ -4265,5 +4265,7 @@
   "from_date.hint": "The day the report starts from.",
   "to_date.hint": "The day the report ends on.",
   "payment_receive.full_amount.hint": "How much money you received. This amount has to be allocated to the invoices below.",
-  "payment_made.full_amount.hint": "How much money you paid. This amount has to be allocated to the bills below."
+  "payment_made.full_amount.hint": "How much money you paid. This amount has to be allocated to the bills below.",
+  "change_full_amount.confirm": "Changing the full amount will recalculate every allocated payment and credit. Continue?",
+  "excluded_transactions.empty": "There are no excluded bank transactions."
 }

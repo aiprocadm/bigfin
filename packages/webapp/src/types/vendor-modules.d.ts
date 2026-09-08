@@ -21,15 +21,16 @@
 // ломается `useParams<{…}>()` в проверяемых файлах. Проверено правкой:
 // с заглушкой проверка типов падает в трёх местах. Их 12 замечаний остаются.
 
-// У этих пакетов есть готовые @types/*, просто не установлены.
-declare module 'prop-types';
-declare module 'qs';
-declare module 'js-cookie';
-declare module 'react-table';
-declare module 'react-virtualized';
-declare module 'accounting';
-declare module 'rtl-detect';
+// Здесь остался один пакет: у остальных восьми настоящие типы поставлены
+// зависимостями (карта v74), и заглушки убраны.
 
-// А у этих собственных объявлений нет и в @types.
-declare module 'react-scroll-sync';
+// У этих пакетов объявлений нет.
+//
+// `react-use-context-menu` — нет ни своих, ни в @types.
+//
+// `react-scroll-sync` — свои типы библиотека завела только в первой версии, а
+// у нас стоит 0.7.1. Пакет `@types/react-scroll-sync` ставить бесполезно: он
+// помечен устаревшим и внутри пустой — лишь сообщает, что типы есть в самой
+// библиотеке (карта v74). Переход на 1.x — отдельный разговор.
 declare module 'react-use-context-menu';
+declare module 'react-scroll-sync';

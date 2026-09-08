@@ -157,7 +157,6 @@
     "@storybook/blocks": "^8.6.18",
     "@storybook/react": "^8.6.18",
     "@storybook/react-vite": "^8.6.18",
-    "@tailwindcss/oxide-win32-x64-msvc": "4.3.0",
     "@tailwindcss/vite": "^4.3.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@vitejs/plugin-legacy": "^5.4.2",

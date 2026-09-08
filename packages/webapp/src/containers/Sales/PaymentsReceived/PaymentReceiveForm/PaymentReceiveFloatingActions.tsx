@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import {
@@ -41,24 +40,24 @@ export default function PaymentReceiveFormFloatingActions() {
   const { openDrawer } = useDrawerActions();
 
   // Handle submit button click.
-  const handleSubmitBtnClick = (event) => {
+  const handleSubmitBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true });
   };
   // Handle clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
   // Handle submit & new button click.
-  const handleSubmitAndNewClick = (event) => {
+  const handleSubmitAndNewClick = (event: any) => {
     setSubmitPayload({ redirect: false, resetForm: true });
     submitForm();
   };
   // Handle submit & continue editing button click.
-  const handleSubmitContinueEditingBtnClick = (event) => {
+  const handleSubmitContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, publish: true });
     submitForm();
   };
@@ -132,13 +131,12 @@ export default function PaymentReceiveFormFloatingActions() {
           name={'pdf_template_id'}
           label={intl.get('customize.label.branding')}
           inline
-          fastField
           style={{ marginLeft: 20 }}
         >
           <FSelect
             name={'pdf_template_id'}
             items={brandingTemplatesOpts}
-            input={({ activeItem, text, label, value }) => (
+            input={({ activeItem, text, label, value }: any) => (
               <BrandingThemeSelectButton text={text || 'Brand Theme'} minimal />
             )}
             filterable={false}

@@ -30,7 +30,6 @@ function InvoicePdfPreviewDialog({ dialogName, payload, isOpen }) {
     >
       <DialogSuspense>
         <PdfPreviewDialogContent
-          dialogName={dialogName}
           subscriptionForm={payload}
         />
       </DialogSuspense>

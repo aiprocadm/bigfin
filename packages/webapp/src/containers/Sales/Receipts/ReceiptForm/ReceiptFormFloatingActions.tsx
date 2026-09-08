@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import {
@@ -42,47 +41,47 @@ export default function ReceiptFormFloatingActions() {
   const { receipt, setSubmitPayload } = useReceiptFormContext();
 
   // Handle submit & close button click.
-  const handleSubmitCloseBtnClick = (event) => {
+  const handleSubmitCloseBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, status: true });
     submitForm();
   };
 
   // Handle submit, close & new button click.
-  const handleSubmitCloseAndNewBtnClick = (event) => {
+  const handleSubmitCloseAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: true, resetForm: true });
     submitForm();
   };
 
   // Handle submit, close & continue editing button click.
-  const handleSubmitCloseContinueEditingBtnClick = (event) => {
+  const handleSubmitCloseContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: true });
     submitForm();
   };
 
   // Handle submit & draft button click.
-  const handleSubmitDraftBtnClick = (event) => {
+  const handleSubmitDraftBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, status: false });
     submitForm();
   };
 
   // Handle submit, draft & new button click.
-  const handleSubmitDraftAndNewBtnClick = (event) => {
+  const handleSubmitDraftAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: false, resetForm: true });
     submitForm();
   };
 
-  const handleSubmitDraftContinueEditingBtnClick = (event) => {
+  const handleSubmitDraftContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, status: false });
     submitForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 
   // Handle the clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 
@@ -217,13 +216,12 @@ export default function ReceiptFormFloatingActions() {
           name={'pdf_template_id'}
           label={intl.get('customize.label.branding')}
           inline
-          fastField
           style={{ marginLeft: 20 }}
         >
           <FSelect
             name={'pdf_template_id'}
             items={brandingTemplatesOptions}
-            input={({ activeItem, text, label, value }) => (
+            input={({ activeItem, text, label, value }: any) => (
               <BrandingThemeSelectButton text={text || 'Brand Theme'} minimal />
             )}
             filterable={false}

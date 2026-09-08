@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import {
@@ -41,48 +40,48 @@ export default function InvoiceFloatingActions() {
   const { setSubmitPayload, invoice } = useInvoiceFormContext();
 
   // Handle submit & deliver button click.
-  const handleSubmitDeliverBtnClick = (event) => {
+  const handleSubmitDeliverBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, deliver: true });
     submitForm();
   };
 
   // Handle submit, deliver & new button click.
-  const handleSubmitDeliverAndNewBtnClick = (event) => {
+  const handleSubmitDeliverAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, deliver: true, resetForm: true });
     submitForm();
   };
 
   // Handle submit, deliver & continue editing button click.
-  const handleSubmitDeliverContinueEditingBtnClick = (event) => {
+  const handleSubmitDeliverContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, deliver: true });
     submitForm();
   };
 
   // Handle submit as draft button click.
-  const handleSubmitDraftBtnClick = (event) => {
+  const handleSubmitDraftBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, deliver: false });
     submitForm();
   };
 
   // Handle submit as draft & new button click.
-  const handleSubmitDraftAndNewBtnClick = (event) => {
+  const handleSubmitDraftAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, deliver: false, resetForm: true });
     submitForm();
   };
 
   // Handle submit as draft & continue editing button click.
-  const handleSubmitDraftContinueEditingBtnClick = (event) => {
+  const handleSubmitDraftContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, deliver: false });
     submitForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 
   // Handle clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 
@@ -218,13 +217,12 @@ export default function InvoiceFloatingActions() {
           name={'pdf_template_id'}
           label={intl.get('customize.label.branding')}
           inline
-          fastField
           style={{ marginLeft: 20 }}
         >
           <FSelect
             name={'pdf_template_id'}
             items={brandingTemplatesOptions}
-            input={({ activeItem, text, label, value }) => (
+            input={({ activeItem, text, label, value }: any) => (
               <BrandingThemeSelectButton text={text || 'Brand Theme'} />
             )}
             filterable={false}

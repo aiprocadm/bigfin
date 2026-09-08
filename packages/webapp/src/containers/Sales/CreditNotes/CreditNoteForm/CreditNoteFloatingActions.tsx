@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -45,47 +44,47 @@ export default function CreditNoteFloatingActions() {
   const { setSubmitPayload, creditNote } = useCreditNoteFormContext();
 
   // Handle submit as open button click.
-  const handleSubmitOpenBtnClick = (event) => {
+  const handleSubmitOpenBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, open: true });
     submitForm();
   };
 
   // Handle submit, open and another new button click.
-  const handleSubmitOpenAndNewBtnClick = (event) => {
+  const handleSubmitOpenAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, open: true, resetForm: true });
     submitForm();
   };
 
   // Handle submit as open & continue editing button click.
-  const handleSubmitOpenContinueEditingBtnClick = (event) => {
+  const handleSubmitOpenContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, open: true });
     submitForm();
   };
   // Handle submit as draft button click.
-  const handleSubmitDraftBtnClick = (event) => {
+  const handleSubmitDraftBtnClick = (event: any) => {
     setSubmitPayload({ redirect: true, open: false });
     submitForm();
   };
 
   // handle submit as draft & new button click.
-  const handleSubmitDraftAndNewBtnClick = (event) => {
+  const handleSubmitDraftAndNewBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, open: false, resetForm: true });
     submitForm();
   };
 
   // Handle submit as draft & continue editing button click.
-  const handleSubmitDraftContinueEditingBtnClick = (event) => {
+  const handleSubmitDraftContinueEditingBtnClick = (event: any) => {
     setSubmitPayload({ redirect: false, open: false });
     submitForm();
   };
 
   // Handle cancel button click.
-  const handleCancelBtnClick = (event) => {
+  const handleCancelBtnClick = (event: any) => {
     history.goBack();
   };
 
   // Handle clear button click.
-  const handleClearBtnClick = (event) => {
+  const handleClearBtnClick = (event: any) => {
     resetForm();
   };
 
@@ -218,13 +217,12 @@ export default function CreditNoteFloatingActions() {
           name={'pdf_template_id'}
           label={intl.get('customize.label.branding')}
           inline
-          fastField
           style={{ marginLeft: 20 }}
         >
           <FSelect
             name={'pdf_template_id'}
             items={brandingTemplatesOptions}
-            input={({ activeItem, text, label, value }) => (
+            input={({ activeItem, text, label, value }: any) => (
               <BrandingThemeSelectButton text={text || 'Brand Theme'} minimal />
             )}
             filterable={false}

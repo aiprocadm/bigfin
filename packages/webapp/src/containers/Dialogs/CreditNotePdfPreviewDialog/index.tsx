@@ -33,7 +33,6 @@ function CreditNotePdfPreviewDialog({
     >
       <DialogSuspense>
         <PdfPreviewDialogContent
-          dialogName={dialogName}
           subscriptionForm={payload}
         />
       </DialogSuspense>

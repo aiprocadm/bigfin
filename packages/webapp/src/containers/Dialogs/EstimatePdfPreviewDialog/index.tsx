@@ -34,7 +34,6 @@ function EstimatePdfPreviewDialog({
     >
       <DialogSuspense>
         <PdfPreviewDialogContent
-          dialogName={dialogName}
           subscriptionForm={payload}
         />
       </DialogSuspense>

@@ -95,7 +95,7 @@ function ExcludedTransactionsTableRoot({
       vListOverscanRowCount={0}
       initialColumnsWidths={initialColumnsWidths}
       onColumnResizing={handleColumnResizing}
-      noResults={'There is no excluded bank transactions.'}
+      noResults={intl.get('excluded_transactions.empty')}
       className="table-constrant"
       selectionColumn={true}
       onSelectedRowsChange={handleSelectedRowsChange}

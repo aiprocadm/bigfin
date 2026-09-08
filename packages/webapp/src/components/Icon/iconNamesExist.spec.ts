@@ -106,7 +106,10 @@ const problemsIn = (file: string, names: Set<string>): string[] => {
 };
 
 describe('значки нашего Icon существуют', () => {
-  it('нет ни одного значка не из нашего набора и ни одного size', () => {
+  // Сторож читает все файлы витрины, и под общей нагрузкой пять секунд по
+  // умолчанию ему малы — в одиночку идёт секунды, в полном прогоне вдвое
+  // дольше (карта v74).
+  it('нет ни одного значка не из нашего набора и ни одного size', { timeout: 30_000 }, () => {
     const names = ourIconNames();
     const problems: string[] = [];
     for (const file of sourceFiles()) problems.push(...problemsIn(file, names));
@@ -114,7 +117,10 @@ describe('значки нашего Icon существуют', () => {
     expect(problems).toEqual([]);
   });
 
-  it('набор значков и наши использования действительно читаются', () => {
+  // Сторож читает все файлы витрины, и под общей нагрузкой пять секунд по
+  // умолчанию ему малы — в одиночку идёт секунды, в полном прогоне вдвое
+  // дольше (карта v74).
+  it('набор значков и наши использования действительно читаются', { timeout: 30_000 }, () => {
     expect(ourIconNames().size).toBeGreaterThan(100);
     const ours = sourceFiles().filter((f) => {
       const code = fs.readFileSync(f, 'utf8');

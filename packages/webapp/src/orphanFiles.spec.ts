@@ -7,6 +7,13 @@ import {
   SRC,
   reachableFrom,
   importSpecifiers,
+  rootFiles,
+  storyRoots,
+  setupFiles,
+  isStoryFile,
+  isCheckFile,
+  brokenImports,
+  withoutComments,
 } from './orphanFiles';
 
 /**
@@ -36,8 +43,16 @@ import {
  * файл маршрутов «терял» половину экранов. Остальное — удалённые 125 файлов
  * целиком мёртвых папок: «Проекты», три отчёта без серверных ручек, интеграция
  * с СМС, ящик деталей контакта.
+ * v80: 187 → 99, и не удалён ни один файл. Сторож знал только один корень —
+ * `*.spec.*`. А запускаются сами ещё три вида: `*.test.*` (прогонщик берёт оба,
+ * см. `include` в `vite.config.mts`), истории Storybook и файл подготовки
+ * прогона. Плюс объявления `.d.ts`, которых ввоз не касается вовсе.
+ * Восемьдесят восемь живых файлов числились мёртвыми. Сверх того удалены 12:
+ * старый сайдбар панели вместе с накладкой (его место занял
+ * `components/ui/Sidebar.tsx` через `ConnectedSidebar`) и `setupTests.tsx` —
+ * остаток от прежней сборки, который не подключает никто. Итого 187 → 87.
  */
-const ORPHANS_CEILING = 187;
+const ORPHANS_CEILING = 87;
 
 describe('файлы, до которых нельзя добраться', () => {
   // Сторож читает все файлы витрины, и под общей нагрузкой пять секунд по
@@ -99,5 +114,74 @@ describe('файлы, до которых нельзя добраться', () =
     expect(importSpecifiers("import '@/style/main.scss';")).toEqual([
       '@/style/main.scss',
     ]);
+  });
+
+  /**
+   * Проверка на ошибку, которая уже случилась (Д1 карты v80).
+   *
+   * Сторож считал корнем только `spec`-файлы. Но поле `include` в
+   * `vite.config.mts` берёт оба вида — и `test`, и `spec`. Тридцать один
+   * проверочный файл числился сиротой, а с ними и то, что нужно только им.
+   */
+  it('проверочные файлы — корни, а не сироты', { timeout: 60_000 }, () => {
+    const roots = rootFiles();
+    const checks = roots.filter(isCheckFile);
+    // Файлов вида `.test.` в витрине не один десяток; если корни снова
+    // сузятся до `.spec.`, это число обвалится.
+    expect(checks.filter((f) => /\.test\./.test(f)).length).toBeGreaterThan(20);
+    expect(checks.filter((f) => /\.spec\./.test(f)).length).toBeGreaterThan(20);
+
+    expect(orphanFiles().filter(isCheckFile)).toEqual([]);
+  });
+
+  /**
+   * Истории Storybook собираются своей командой (`build-storybook`), и ввозить
+   * их продукту незачем. Список папок читается из `.storybook/main.ts`, чтобы
+   * не разойтись с ним при первой же новой папке.
+   */
+  it('истории Storybook — корни, а список папок берётся из настройки', () => {
+    const roots = storyRoots();
+
+    expect(roots).toContain('components/ui');
+    expect(roots.length).toBeGreaterThanOrEqual(4);
+
+    expect(
+      isStoryFile(path.join(SRC, 'components', 'ui', 'alert.stories.tsx'), roots),
+    ).toBe(true);
+    // Папка вне настройки историей-корнем не считается.
+    expect(
+      isStoryFile(path.join(SRC, 'containers', 'Nope', 'x.stories.tsx'), roots),
+    ).toBe(false);
+  });
+
+  it('файл подготовки прогона берётся из настройки и существует', () => {
+    const setup = setupFiles();
+
+    expect(setup.length).toBeGreaterThan(0);
+    setup.forEach((f) => expect(fs.existsSync(f)).toBe(true));
+  });
+
+  // Объявления типов подключает `tsconfig`; ввоза для них не бывает.
+  it('объявления .d.ts сиротами не считаются', { timeout: 60_000 }, () => {
+    expect(orphanFiles().filter((f) => /\.d\.ts$/.test(f))).toEqual([]);
+  });
+
+  /**
+   * Д2 карты v80. Сборка проверяет только то, что собирает сама, а истории в
+   * CI не собираются. Удаление файла, нужного только истории, не поймала бы ни
+   * одна проверка — поэтому ввозы проверяются отдельно.
+   */
+  it('внутренних ввозов в никуда нет', { timeout: 60_000 }, () => {
+    expect(brokenImports()).toEqual([]);
+  });
+
+  it('закомментированный ввоз ввозом не считается', () => {
+    const code = `
+      // import { A } from "../../common/props";
+      /* import { B } from './gone'; */
+      import { C } from './here';
+    `;
+
+    expect(importSpecifiers(withoutComments(code))).toEqual(['./here']);
   });
 });

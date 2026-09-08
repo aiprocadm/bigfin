@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -91,7 +90,6 @@ function ProjectTimeEntryFormFields() {
         >
           <DurationInputGroup
             name="duration"
-            inputProps={{}}
             placeholder={intl.get('project_time_entry.dialog.duration.placeholder')}
           />
         </FFormGroup>

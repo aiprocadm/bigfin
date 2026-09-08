@@ -53,7 +53,9 @@ const UNKNOWN_PROPS: Record<string, string[]> = {
   // `minimal` в его исходнике не упоминаются вовсе
   FormGroup: ['fill', 'name', 'minimal'],
   // InputGroup знает large / small / fill / round; этих — нет
-  FInputGroup: ['minimal', 'medium'],
+  // `inputProps` поле ввода тоже не читает: в его исходнике этого слова нет,
+  // и blueprint-овый InputGroup отбрасывает незнакомое (Д39 карты v75)
+  FInputGroup: ['minimal', 'medium', 'inputProps'],
   InputGroup: ['minimal'],
   // @blueprintjs-formik/datetime не упоминает fastField ни в объявлениях, ни
   // в собранном коде; `minimal` не упоминает и blueprint-овый DateInput
@@ -76,9 +78,42 @@ const sourceFiles = (): string[] =>
     .map((f) => path.join(SRC, f))
     .filter((f) => fs.statSync(f).isFile());
 
+/**
+ * Стилевые обёртки: `const TermsConditsFormGroup = styled(FFormGroup)\`…\``.
+ *
+ * Обёртка пересылает в исходный компонент **всё**, что ей дали, — значит,
+ * незнакомые свойства теряются в ней ровно так же. Раньше сторож их не видел:
+ * он сравнивал имя тега со списком буквально, а в списке лежали только два
+ * имени обёрток, вписанных руками. Через остальные восемь `fastField`
+ * проходил молча — и в двух подвалах он действительно стоял (Д23 карты v75).
+ *
+ * Теперь обёртки находятся в самом файле и наследуют запреты исходника.
+ */
+const wrappersIn = (code: string): Record<string, string> => {
+  const map: Record<string, string> = {};
+  const re = /(?:const|let)\s+(\w+)\s*=\s*styled\((\w+)\)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(code))) map[m[1]] = m[2];
+  return map;
+};
+
 const offendersIn = (file: string): string[] => {
   const code = fs.readFileSync(file, 'utf8');
-  if (!Object.keys(UNKNOWN_PROPS).some((tag) => code.includes(`<${tag}`))) return [];
+  const wrappers = wrappersIn(code);
+  // Свойства обёртки — это свойства того, во что она завёрнута (по цепочке).
+  const unknownFor = (tag: string): string[] => {
+    const seen = new Set<string>();
+    let cur: string | undefined = tag;
+    while (cur && !seen.has(cur)) {
+      if (UNKNOWN_PROPS[cur]) return UNKNOWN_PROPS[cur];
+      seen.add(cur);
+      cur = wrappers[cur];
+    }
+    return [];
+  };
+
+  const watched = [...Object.keys(UNKNOWN_PROPS), ...Object.keys(wrappers)];
+  if (!watched.some((tag) => code.includes(`<${tag}`))) return [];
 
   // Пометку не снимаем: на разбор она не влияет, а номера строк уезжают.
   const sf = ts.createSourceFile(file, code, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -93,7 +128,7 @@ const offendersIn = (file: string): string[] => {
 
     if (open) {
       const tag = open.tagName.getText(sf);
-      for (const prop of UNKNOWN_PROPS[tag] ?? []) {
+      for (const prop of unknownFor(tag)) {
         const has = open.attributes.properties.some(
           (p) => ts.isJsxAttribute(p) && p.name.getText(sf) === prop,
         );

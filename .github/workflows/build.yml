@@ -70,6 +70,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Диагностика платформенных бинарников (временно, карта v72)
+        run: |
+          echo "--- платформа:"; node -p "[process.platform, process.arch].join(' ')"
+          echo "--- oxide в хранилище:"; ls -d node_modules/.pnpm/@tailwindcss+oxide* 2>/dev/null || echo "нет"
+          echo "--- что оптионально у oxide:"; node -p "Object.keys(require('./node_modules/.pnpm/@tailwindcss+oxide@4.3.0/node_modules/@tailwindcss/oxide/package.json').optionalDependencies).join(' ')"
+          echo "--- пробуем доустановить нужный:"; pnpm why @tailwindcss/oxide-linux-x64-gnu 2>&1 | head -5 || true
+
       # Собираем корневыми скриптами, а не `--filter @bigfin/server`: сервер и
       # витрина ввозят общие пакеты из `shared/`, и в чистой копии тех ещё нет.
       # `build:server` и `build:webapp` собирают их в правильном порядке

@@ -70,6 +70,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Что поставилось из платформенных бинарников (временно, карта v72)
+        run: |
+          echo "--- oxide в хранилище:"
+          ls -d node_modules/.pnpm/@tailwindcss+oxide* 2>/dev/null || echo "нет ни одного"
+          echo "--- что видит pnpm:"
+          pnpm config list | grep -A8 supported-architectures || true
+
       # Собираем корневыми скриптами, а не `--filter @bigfin/server`: сервер и
       # витрина ввозят общие пакеты из `shared/`, и в чистой копии тех ещё нет.
       # `build:server` и `build:webapp` собирают их в правильном порядке

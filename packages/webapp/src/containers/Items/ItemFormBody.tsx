@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext, FastField, ErrorMessage } from 'formik';
 import {
@@ -40,7 +39,7 @@ import { TaxRatesSelect } from '@/components/TaxRates/TaxRatesSelect';
 /**
  * Item form body.
  */
-function ItemFormBody({ organization: { base_currency } }) {
+function ItemFormBody({ organization: { base_currency } }: any) {
   const { accounts, taxRates } = useItemFormContext();
   const { values } = useFormikContext<any>();
 
@@ -50,7 +49,7 @@ function ItemFormBody({ organization: { base_currency } }) {
         <Col xs={6}>
           {/*------------- Purchasable checbox ------------- */}
           <FastField name={'sellable'} type="checkbox">
-            {({ form, field }) => (
+            {({ form, field }: any) => (
               <FormGroup inline={true} className={'form-group--sellable'}>
                 <Checkbox
                   inline={true}
@@ -102,7 +101,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             name={'sell_description'}
             label={<T id={'description'} />}
             inline={true}
-            sellable={values.sellable}
           >
             <FTextArea
               name={'sell_description'}
@@ -118,7 +116,7 @@ function ItemFormBody({ organization: { base_currency } }) {
         <Col xs={6}>
           {/*------------- Sellable checkbox ------------- */}
           <FastField name={'purchasable'} type={'checkbox'}>
-            {({ field }) => (
+            {({ field }: any) => (
               <FormGroup inline={true} className={'form-group--purchasable'}>
                 <Checkbox
                   inline={true}
@@ -174,7 +172,6 @@ function ItemFormBody({ organization: { base_currency } }) {
             className={'form-group--purchase-description'}
             helperText={<ErrorMessage name={'description'} />}
             inline={true}
-            purchasable={values.purchasable}
           >
             <FTextArea
               name={'purchase_description'}
@@ -198,7 +195,7 @@ function ItemFormBody({ organization: { base_currency } }) {
  * поэтому по умолчанию он свёрнут. Раскрывается сам, если счета пусты
  * или после сабмита в них ошибка (иначе ошибка была бы невидима).
  */
-function ItemFormAccountingSection({ accounts }) {
+function ItemFormAccountingSection({ accounts }: any) {
   const { values, errors, submitCount } = useFormikContext<any>();
 
   const hasEmptyAccount =
@@ -235,7 +232,6 @@ function ItemFormAccountingSection({ accounts }) {
                 <Hint content={<T id={'item.field.sell_account.hint'} />} />
               }
               inline={true}
-              sellable={values.sellable}
             >
               <AccountsSelect
                 name={'sell_account_id'}
@@ -254,7 +250,6 @@ function ItemFormAccountingSection({ accounts }) {
             {/*------------- Cost account ------------- */}
             <FFormGroup
               name={'cost_account_id'}
-              purchasable={values.purchasable}
               label={<T id={'item.form.cost_account'} />}
               labelInfo={
                 <Hint content={<T id={'item.field.cost_account.hint'} />} />

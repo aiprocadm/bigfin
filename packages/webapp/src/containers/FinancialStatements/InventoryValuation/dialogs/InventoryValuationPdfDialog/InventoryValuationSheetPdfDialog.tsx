@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
@@ -16,7 +15,7 @@ const InventoryValuationPdfDialogContent = lazy(
  * Inventory valuation sheet pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function InventoryValuationSheetPdfDialogRoot({ dialogName, payload, isOpen }) {
+function InventoryValuationSheetPdfDialogRoot({ dialogName, payload, isOpen }: any) {
   return (
     <Dialog
       name={dialogName}
@@ -28,7 +27,7 @@ function InventoryValuationSheetPdfDialogRoot({ dialogName, payload, isOpen }) {
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <InventoryValuationPdfDialogContent dialogName={dialogName} />
+        <InventoryValuationPdfDialogContent />
       </DialogSuspense>
     </Dialog>
   );

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
@@ -48,7 +47,7 @@ export default function TaxRateFormDialogContent() {
         <FInputGroup name={'description'} fastField={true} />
       </FFormGroup>
 
-      <CompoundFormGroup name={'is_compound'} fastField={true}>
+      <CompoundFormGroup name={'is_compound'}>
         <FCheckbox
           label={intl.get('tax_rates.label.is_compound')}
           name={'is_compound'}
@@ -56,7 +55,7 @@ export default function TaxRateFormDialogContent() {
         />
       </CompoundFormGroup>
 
-      <CompoundFormGroup name={'is_non_recoverable'} fastField={true}>
+      <CompoundFormGroup name={'is_non_recoverable'}>
         <FCheckbox
           label={intl.get('tax_rates.label.is_non_recoverable')}
           name={'is_non_recoverable'}
@@ -77,7 +76,7 @@ function TaxRateCodeField() {
   const { setFieldValue } = useFormikContext<any>();
 
   // Handle the field change.
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     const transformedValue = transformTaxRateCodeValue(event.target.value);
     setFieldValue('code', transformedValue);
   };

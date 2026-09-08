@@ -1,7 +1,7 @@
 // © 2026 Bigfin
 import 'reflect-metadata';
 import { ForbiddenException } from '@nestjs/common';
-import { Ability } from '@casl/ability';
+import { MongoAbility, createMongoAbility } from '@casl/ability';
 import { PermissionGuard } from './Permission.guard';
 import { REQUIRED_PERMISSION_KEY } from './RequirePermission.decorator';
 import { REQUIRE_OWNER_KEY } from './RequireOwner.decorator';
@@ -116,7 +116,7 @@ const OWNER_ONLY_HANDLERS = [
 ];
 
 const abilityFrom = (rules: Array<{ action: string; subject: string }>) =>
-  new Ability(rules);
+  createMongoAbility(rules);
 
 const staffAbility = () =>
   abilityFrom(
@@ -130,7 +130,7 @@ const staffAbility = () =>
 
 const adminAbility = () => abilityFrom([{ action: 'manage', subject: 'all' }]);
 
-const contextFor = (gate: Gate, ability: Ability) =>
+const contextFor = (gate: Gate, ability: MongoAbility) =>
   ({
     switchToHttp: () => ({ getRequest: () => ({ ability }) }),
     getHandler: () => gate.controller.prototype[gate.handler],

@@ -1,5 +1,5 @@
 // © 2026 Bigfin
-import { Ability } from '@casl/ability';
+import { MongoAbility } from '@casl/ability';
 
 /**
  * Какие стороны контрагентов доверены роли: покупатели, поставщики или обе.
@@ -9,7 +9,7 @@ import { Ability } from '@casl/ability';
  * доверенной стороны: роль «только поставщики» не должна видеть покупателей
  * с их долгами (шаг В3 карты v9).
  */
-export const allowedContactServices = (ability: Ability): string[] => {
+export const allowedContactServices = (ability: MongoAbility): string[] => {
   const services: string[] = [];
 
   if (ability.can('View', 'Customer')) services.push('customer');

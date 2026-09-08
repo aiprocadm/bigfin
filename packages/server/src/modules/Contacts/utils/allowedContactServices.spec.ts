@@ -1,5 +1,5 @@
 // © 2026 Bigfin
-import { Ability } from '@casl/ability';
+import { MongoAbility, createMongoAbility } from '@casl/ability';
 import { allowedContactServices } from './allowedContactServices';
 
 /**
@@ -11,19 +11,19 @@ import { allowedContactServices } from './allowedContactServices';
  */
 describe('какие стороны контрагентов доверены роли', () => {
   it('только поставщики — только поставщики', () => {
-    const ability = new Ability([{ action: 'View', subject: 'Vendor' }]);
+    const ability = createMongoAbility([{ action: 'View', subject: 'Vendor' }]);
 
     expect(allowedContactServices(ability)).toEqual(['vendor']);
   });
 
   it('только покупатели — только покупатели', () => {
-    const ability = new Ability([{ action: 'View', subject: 'Customer' }]);
+    const ability = createMongoAbility([{ action: 'View', subject: 'Customer' }]);
 
     expect(allowedContactServices(ability)).toEqual(['customer']);
   });
 
   it('оба права — обе стороны', () => {
-    const ability = new Ability([
+    const ability = createMongoAbility([
       { action: 'View', subject: 'Customer' },
       { action: 'View', subject: 'Vendor' },
     ]);
@@ -32,13 +32,13 @@ describe('какие стороны контрагентов доверены р
   });
 
   it('владелец с manage all — обе стороны', () => {
-    const ability = new Ability([{ action: 'manage', subject: 'all' }]);
+    const ability = createMongoAbility([{ action: 'manage', subject: 'all' }]);
 
     expect(allowedContactServices(ability)).toEqual(['customer', 'vendor']);
   });
 
   it('без обоих прав — ничего', () => {
-    const ability = new Ability([{ action: 'View', subject: 'SaleInvoice' }]);
+    const ability = createMongoAbility([{ action: 'View', subject: 'SaleInvoice' }]);
 
     expect(allowedContactServices(ability)).toEqual([]);
   });

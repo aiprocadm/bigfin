@@ -9,7 +9,16 @@ const TaxRatesLandingContext = React.createContext<any>(undefined);
 /**
  * Cash Flow data provider.
  */
-function TaxRatesLandingProvider({ tableState, ...props }) {
+/**
+ * Раньше в разборе стоял `tableState` — его не передаёт никто и не читает сам
+ * поставщик, но проверка считала его обязательным, и экран ставок налога был
+ * ошибкой (Д33 карты v75).
+ */
+function TaxRatesLandingProvider({
+  ...props
+}: {
+  children?: React.ReactNode;
+}) {
   // Fetch cash flow list .
   const {
     data: taxRates,

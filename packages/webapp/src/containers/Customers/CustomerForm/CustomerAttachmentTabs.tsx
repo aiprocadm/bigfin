@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, {
   useMemo,
   useState,
@@ -13,8 +12,6 @@ function CustomerAttachmentTabs() {
     <div>
       <Dragzone
         initialFiles={[]}
-        onDrop={null}
-        onDeleteFile={[]}
         hint={<T id={'attachments_maximum'} />}
       />
     </div>

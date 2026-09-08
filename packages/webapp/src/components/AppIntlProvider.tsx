@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 
 interface AppIntlContextValue {
@@ -26,7 +25,9 @@ function AppIntlProvider({
   isRTL,
   children,
 }: AppIntlProviderProps) {
-  const provider = {
+  // Тип указан явно: без него `'rtl' : 'ltr'` расширяется до «просто строки»,
+  // а объявление значения ждёт одно из двух (Д27 карты v75).
+  const provider: AppIntlContextValue = {
     currentLocale,
     isRTL,
     isLTR: !isRTL,

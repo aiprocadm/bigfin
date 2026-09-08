@@ -4,7 +4,12 @@ import { CLASSES } from '@/constants/classes';
 import styles from '@/style/components/BigAmount.module.scss';
 
 interface PageFormBigNumberProps {
-  label: string;
+  /**
+   * Подпись над суммой. Почти всегда это `<T id={…} />`, то есть элемент, а не
+   * строка — на строке настаивала прежняя запись, и три шапки формы считались
+   * ошибкой (Д4 карты v75).
+   */
+  label: React.ReactNode;
   amount: string | number;
 }
 export function PageFormBigNumber({ label, amount }: PageFormBigNumberProps) {

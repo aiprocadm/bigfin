@@ -13,12 +13,29 @@ export const TotalLineTextStyle = {
   Bold: 'Bold',
 };
 
+/**
+ * Свойства блока итогов. Все, кроме содержимого, необязательные.
+ *
+ * Карта v59 объявила свойства строки итога (`TotalLineProps`), но сам блок
+ * пропустила — та же ошибка этажом выше. Проверка выводила из разбора все
+ * четыре свойства как обязательные, и одиннадцать подвалов, передающих только
+ * содержимое, считались ошибкой (Д2 карты v75).
+ */
+export interface TotalLinesProps {
+  children?: React.ReactNode;
+  /** Ширина колонки с суммой. По умолчанию — из вёрстки. */
+  amountColWidth?: string | number;
+  /** Ширина колонки с подписью. По умолчанию — из вёрстки. */
+  labelColWidth?: string | number;
+  className?: string;
+}
+
 export function TotalLines({
   children,
   amountColWidth,
   labelColWidth,
   className,
-}) {
+}: TotalLinesProps) {
   return (
     <TotalLinesRoot
       className={className}

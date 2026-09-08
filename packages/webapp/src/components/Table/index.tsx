@@ -1,4 +1,3 @@
-// @ts-nocheck
 import styled from 'styled-components';
 
 export const Table = styled.table`
@@ -9,7 +8,8 @@ export const Table = styled.table`
 `;
 export const TBody = styled.tbody``;
 export const TR = styled.tr``;
-export const TD = styled.td`
+/** Ячейка читает `textAlign` — значит, его надо объявить (Д16 карты v75). */
+export const TD = styled.td<{ textAlign?: string }>`
   padding: 0.5rem 0.5rem;
   border-bottom-width: 1px;
   border-bottom-color: inherit;

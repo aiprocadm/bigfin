@@ -64,17 +64,41 @@ const billableTypeInputValueRenderer = (inputValue) => {
  * Project billable type suggest field.
  * @param
  */
+/** Вид работ: то, что показывают в списке. */
+interface BillableTypeOption {
+  id: number;
+  name: string;
+  value: string;
+}
+
+/**
+ * Свойства поля выбора вида работ. Кроме самого списка — все необязательные:
+ * типа не было вовсе, и окно разнесения работ считалось ошибкой из-за трёх
+ * «недостающих» свойств, которых там и не должно быть (Д40 карты v75).
+ */
+interface ProjectBillableTypeSuggestFieldProps {
+  billableType: BillableTypeOption[];
+  initialBillableTypeId?: number;
+  selectedBillableTypeId?: number;
+  /** Подпись, пока ничего не выбрано. */
+  defautlSelectText?: string;
+  onBillableTypeSelected?: (type: BillableTypeOption) => void;
+  popoverFill?: boolean;
+  [key: string]: any;
+}
+
 export function ProjectBillableTypeSuggestField({
   billableType,
   initialBillableTypeId,
   selectedBillableTypeId,
 
-  defautlSelectText = 'Placeholder Type...',
+  // Здесь стояла английская строка прямо в коде — по `CLAUDE.md` это ошибка.
+  defautlSelectText = intl.get('project_billable_type.select.placeholder'),
   onBillableTypeSelected,
   popoverFill = false,
 
   ...suggestProps
-}) {
+}: ProjectBillableTypeSuggestFieldProps) {
   const initialBillableType = React.useMemo(
     () => billableType.find((b) => b.id === initialBillableTypeId),
     [initialBillableTypeId, billableType],

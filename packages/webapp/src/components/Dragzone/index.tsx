@@ -12,6 +12,39 @@ import intl from 'react-intl-universal';
 //   uploaded: boolean,
 // };
 
+/** Файл в области перетаскивания: сам файл, картинка для показа и признак «уже загружен». */
+export interface DragzoneFile {
+  file?: File;
+  preview?: string;
+  metadata?: Record<string, any>;
+  uploaded?: boolean;
+  name?: string;
+}
+
+/**
+ * Свойства области перетаскивания. Все необязательные: та же ошибка, что и у
+ * блока итогов — типа не было вовсе, проверка вывела все шесть как
+ * обязательные, и обе вкладки вложений считались ошибкой (Д10 карты v75).
+ */
+export interface DragzoneProps {
+  /** Надпись внутри рамки. По умолчанию — «перетащите файлы сюда». */
+  text?: React.ReactNode;
+  /**
+   * ВНИМАНИЕ: сейчас не подключено. Свойство разбирается, но внутри область
+   * пользуется собственным обработчиком и наружу о новых файлах не сообщает.
+   * Обе вкладки вложений передавали сюда `null`, так что сегодня это ничего не
+   * меняет; подключение — отдельная работа.
+   */
+  onDrop?: ((files: DragzoneFile[]) => void) | null;
+  /** Файлы, показанные сразу при открытии. */
+  initialFiles?: DragzoneFile[];
+  /** Вызывается при удалении файла из области. */
+  onDeleteFile?: (deleted: DragzoneFile[]) => void;
+  /** Пояснение под рамкой — например, про предельный размер. */
+  hint?: React.ReactNode;
+  className?: string;
+}
+
 export function Dragzone({
   text = intl.get('drag_drop_files_here_or_click_here'),
   onDrop,
@@ -19,7 +52,7 @@ export function Dragzone({
   onDeleteFile,
   hint,
   className,
-}) {
+}: DragzoneProps) {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {

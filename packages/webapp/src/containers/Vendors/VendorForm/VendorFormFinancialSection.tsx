@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { FormGroup, Position, ControlGroup } from '@blueprintjs/core';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { ErrorMessage, useFormikContext } from 'formik';
@@ -142,7 +141,7 @@ function VendorOpeningBalanceExchangeRateField() {
   return (
     <ExchangeRateInputGroup
       fromCurrency={values.currency_code}
-      toCurrency={currentOrganization.base_currency}
+      toCurrency={currentOrganization.base_currency ?? ''}
       name={'opening_balance_exchange_rate'}
       onRecalcConfirm={() => {}}
       onCancel={() => {}}

@@ -1,10 +1,8 @@
-// @ts-nocheck
 import React from 'react';
-import { Position, Tooltip } from '@blueprintjs/core';
+import { Position, Tooltip, TooltipProps } from '@blueprintjs/core';
 import { Icon } from '../Icon';
 
 import '@/style/components/Hint.scss';
-import { Tooltip2Props } from '@blueprintjs/popover2';
 
 interface HintProps {
   /**
@@ -12,11 +10,20 @@ interface HintProps {
    * стоит вообще без текста, то есть значок висит, а под ним пусто. Тексты —
    * отдельная работа (задел карты v62); объявление приведено в соответствие
    * с тем, как компонент используют.
+   *
+   * Принимает строку или элемент, но не любой узел: так объявлено у самой
+   * всплывашки (Д44 карты v75).
    */
-  content?: React.ReactNode;
+  content?: string | JSX.Element;
   position?: Position;
   iconSize?: number;
-  tooltipProps?: Partial<Tooltip2Props>;
+  /**
+   * Свойства всплывашки берутся из ТОГО ЖЕ набора, откуда сама всплывашка.
+   * Раньше здесь стоял тип из `@blueprintjs/popover2` — он держится на второй
+   * версии движка подложек, а всплывашка из `@blueprintjs/core` — на первой.
+   * Два разных `Boundary` сталкивались лбами (Д44 карты v75).
+   */
+  tooltipProps?: Partial<TooltipProps>;
 }
 
 /**

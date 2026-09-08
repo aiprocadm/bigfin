@@ -3,7 +3,22 @@ import React from 'react';
 import clsx from 'classnames';
 import styled from 'styled-components';
 
-export function Alert({ title, description, children, intent, className }) {
+/** Свойства плашки. Все необязательные: рисуем то, что дали (Д37 карты v75). */
+export interface AlertProps {
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  children?: React.ReactNode;
+  intent?: string;
+  className?: string;
+}
+
+export function Alert({
+  title,
+  description,
+  children,
+  intent,
+  className,
+}: AlertProps) {
   return (
     <AlertRoot className={clsx(className)} intent={intent}>
       {title && <AlertTitle>{title}</AlertTitle>}

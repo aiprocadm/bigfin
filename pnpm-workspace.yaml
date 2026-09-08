@@ -25,4 +25,14 @@ allowBuilds:
 overrides:
   bcrypt: 'npm:bcryptjs@^2.4.3'
 
-# ОПЫТ карты v72: снято, проверяем, поставится ли бинарник платформы
+supportedArchitectures:
+  os:
+    - win32
+    - linux
+    - darwin
+  cpu:
+    - x64
+    - arm64
+  libc:
+    - glibc
+    - musl

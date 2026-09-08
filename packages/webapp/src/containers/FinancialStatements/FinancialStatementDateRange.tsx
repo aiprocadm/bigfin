@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -20,11 +19,10 @@ export default function FinancialStatementDateRange() {
       <Row>
         <Col xs={4}>
           <FastField name={'date_range'}>
-            {({ form: { setFieldValue }, field: { value } }) => (
+            {({ form: { setFieldValue }, field: { value } }: any) => (
               <FormGroup
                 label={intl.get('report_date_range')}
                 labelInfo={<Hint content={intl.get('report_date_range.hint')} />}
-                minimal={true}
               >
                 <HTMLSelect
                   fill={true}
@@ -69,7 +67,6 @@ export default function FinancialStatementDateRange() {
               popoverProps={{ minimal: true, position: Position.BOTTOM_LEFT }}
               maxDate={FINANCIAL_REPORT_MAX_DATE}
               canClearSelection={false}
-              minimal
               fill
             />
           </FFormGroup>
@@ -87,7 +84,6 @@ export default function FinancialStatementDateRange() {
               popoverProps={{ minimal: true, position: Position.BOTTOM }}
               canClearSelection={false}
               fill
-              minimal
               maxDate={FINANCIAL_REPORT_MAX_DATE}
             />
           </FFormGroup>

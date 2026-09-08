@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { useFormikContext } from 'formik';
@@ -57,7 +56,7 @@ export function SharePaymentLinkFormContent() {
                 { value: 'private', text: 'Private' },
                 { value: 'public', text: 'Public' },
               ]}
-              input={({ activeItem, text, label, value }) => (
+              input={({ activeItem, text, label, value }: any) => (
                 <Button
                   text={text || 'Select an item ...'}
                   rightIcon={<Icon icon={'caret-down-16'} iconSize={16} />}
@@ -97,7 +96,6 @@ export function SharePaymentLinkFormContent() {
 
           {url && (
             <FormGroup
-              name={'link'}
               label={intl.get('payment_link.dialog.label.payment_link')}
             >
               <InputGroup

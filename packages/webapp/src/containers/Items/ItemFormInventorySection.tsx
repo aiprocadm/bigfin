@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import {
@@ -18,7 +17,7 @@ import { compose } from '@/utils';
 /**
  * Item form inventory sections.
  */
-function ItemFormInventorySection({ organization: { base_currency } }) {
+function ItemFormInventorySection({ organization: { base_currency } }: any) {
   const { accounts } = useItemFormContext();
   const { values } = useFormikContext<any>();
 
@@ -38,8 +37,6 @@ function ItemFormInventorySection({ organization: { base_currency } }) {
           <FFormGroup
             label={<T id={'inventory_account'} />}
             name={'inventory_account_id'}
-            items={accounts}
-            shouldUpdate={accountsFieldShouldUpdate}
             inline={true}
           >
             <AccountsSelect

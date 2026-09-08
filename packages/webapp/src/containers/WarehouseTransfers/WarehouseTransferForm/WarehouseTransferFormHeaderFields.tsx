@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
@@ -30,7 +29,7 @@ function WarehouseTransferFormHeaderFields({
   warehouseTransferAutoIncrement,
   warehouseTransferNextNumber,
   warehouseTransferNumberPrefix,
-}) {
+}: any) {
   const { warehouses } = useWarehouseTransferFormContext();
   const { values } = useFormikContext<any>();
 
@@ -40,7 +39,7 @@ function WarehouseTransferFormHeaderFields({
   };
 
   // Handle transfer no. field blur.
-  const handleTransferNoBlur = (event) => {
+  const handleTransferNoBlur = (event: any) => {
     const newValue = event.target.value;
 
     if (
@@ -117,7 +116,6 @@ function WarehouseTransferFormHeaderFields({
       {/* ----------- Form Warehouse ----------- */}
       <FFormGroup
         name={'from_warehouse_id'}
-        items={warehouses}
         label={<T id={'warehouse_transfer.label.from_warehouse'} />}
         inline={true}
         labelInfo={<FieldRequiredHint />}
@@ -152,7 +150,7 @@ function WarehouseTransferFormHeaderFields({
 
 export default compose(
   withDialogActions,
-  withSettings(({ warehouseTransferSettings }) => ({
+  withSettings(({ warehouseTransferSettings }: any) => ({
     warehouseTransferAutoIncrement: warehouseTransferSettings?.autoIncrement,
     warehouseTransferNextNumber: warehouseTransferSettings?.nextNumber,
     warehouseTransferNumberPrefix: warehouseTransferSettings?.numberPrefix,

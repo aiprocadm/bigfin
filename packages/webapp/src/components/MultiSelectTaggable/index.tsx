@@ -9,7 +9,17 @@ import { safeInvoke } from '@/utils';
 /**
  * Items multi-select.
  */
-export function MultiSelect({
+/**
+ * Наш собственный многовыбор с ярлыками.
+ *
+ * Имя изменено с `MultiSelect` на `MultiSelectTaggable`: под прежним именем то
+ * же самое отдавал и `./Forms` (чужой компонент из `@blueprintjs-formik`), а
+ * когда два `export *` отдают одно имя, наружу не выходит **ни один** — наш
+ * компонент был недостижим через `@/components` (Д13 карты v75).
+ *
+ * Сейчас его никто не вызывает; удалять без спроса не стал.
+ */
+export function MultiSelectTaggable({
   items,
   initialSelectedItems,
   onItemSelect,
@@ -77,6 +87,6 @@ export function MultiSelect({
   );
 }
 
-MultiSelect.defaultProps = {
+MultiSelectTaggable.defaultProps = {
   initialSelectedItems: [],
 };

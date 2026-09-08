@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import clsx from 'classnames';
 
@@ -94,7 +93,11 @@ export function DetailItem({
     >
       <div
         style={{
-          'min-width': minLabelSize,
+          // Именно `minWidth`, а не `'min-width'`: React в объекте оформления
+          // понимает только запись через заглавную букву, а ключ через дефис
+          // молча выбрасывает. Ширина подписи не применялась вовсе
+          // (Д6 карты v75).
+          minWidth: minLabelSize,
         }}
         className="detail-item__label"
       >

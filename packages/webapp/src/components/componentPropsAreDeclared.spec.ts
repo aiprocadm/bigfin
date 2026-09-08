@@ -83,7 +83,7 @@ const KNOWN = [
   'Indicator/LoadingIndicator.tsx → LoadingIndicator',
   'Items/ItemsListField.tsx → ItemsListField',
   'Items/ItemsSuggestField.tsx → ItemsSuggestFieldRoot',
-  'MultiSelectTaggable/index.tsx → MultiSelect',
+  'MultiSelectTaggable/index.tsx → MultiSelectTaggable',
   'NumberFormatDropdown/index.tsx → NumberFormatDropdown',
   'PageForm/PageForm.tsx → PageFormBody',
   'PageForm/PageForm.tsx → PageFormFooterActions',

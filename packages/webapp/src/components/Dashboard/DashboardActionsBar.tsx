@@ -1,10 +1,12 @@
-// @ts-nocheck
 import React from 'react';
 import clsx from 'classnames';
 import { Navbar } from '@blueprintjs/core';
 
 interface DashboardActionsBarProps {
   children?: React.ReactNode;
+  className?: string;
+  /** Имя раздела — уходит в имя стиля, чтобы панель можно было доработать. */
+  name?: string;
 }
 
 export function DashboardActionsBar({

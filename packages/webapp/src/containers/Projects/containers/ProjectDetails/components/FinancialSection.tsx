@@ -7,11 +7,18 @@ export function DetailFinancialSection({ children }: any) {
   return <FinancialSectionWrap>{children}</FinancialSectionWrap>;
 }
 
+/**
+ * Карточка сводки проекта. Компонент только печатает то, что ему дали, —
+ * поэтому все четыре свойства принимают разметку и все, кроме подписи,
+ * необязательны: полоска и пояснение рисуются, только если их передали
+ * (Д14 карты v76).
+ */
 interface DetailFinancialCardProps {
-  label: string;
-  value: number;
-  description: string | JSX.Element;
-  progressValue: number;
+  label: React.ReactNode;
+  value?: React.ReactNode;
+  description?: React.ReactNode;
+  /** Доля от нуля до единицы. Если не задана — полоски нет. */
+  progressValue?: number;
 }
 
 export function DetailFinancialCard({

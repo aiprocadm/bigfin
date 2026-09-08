@@ -79,7 +79,7 @@ export function useDeleteProjectTask(props: any) {
  * @param requestProps
  * @returns
  */
-export function useProjectTask(taskId: any, props: any, requestProps: any) {
+export function useProjectTask(taskId: any, props?: any, requestProps?: any) {
   return useRequestQuery(
     [t.PROJECT_TASK, taskId],
     { method: 'get', url: `tasks/${taskId}`, ...requestProps },
@@ -102,7 +102,7 @@ const transformProjectTasks = (res: any) => ({
  * @param requestProps
  * @returns
  */
-export function useProjectTasks(projectId: any, props: any, requestProps: any) {
+export function useProjectTasks(projectId: any, props?: any, requestProps?: any) {
   return useRequestQuery(
     [t.PROJECT_TASKS, projectId],
     { method: 'get', url: `projects/${projectId}/tasks`, ...requestProps },

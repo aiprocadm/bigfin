@@ -10,7 +10,11 @@ interface PageFormBigNumberProps {
    * ошибкой (Д4 карты v75).
    */
   label: React.ReactNode;
-  amount: string | number;
+  /**
+   * Сама сумма. Тоже бывает разметкой: шапка «оплата поставщику» передаёт
+   * сюда `<Money … />` (Д14 карты v76).
+   */
+  amount: React.ReactNode;
 }
 export function PageFormBigNumber({ label, amount }: PageFormBigNumberProps) {
   return (

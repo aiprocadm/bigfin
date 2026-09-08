@@ -1,13 +1,21 @@
-// @ts-nocheck
 import React, { useState, useEffect, useMemo } from 'react';
 import { Spinner } from '@blueprintjs/core';
+
+interface LoadingIndicatorProps {
+  /** Идёт ли загрузка. Пока идёт — вместо содержимого крутится значок. */
+  loading?: boolean;
+  spinnerSize?: number;
+  children?: React.ReactNode;
+  /** Отрисовать содержимое сразу, не дожидаясь конца загрузки. */
+  mount?: boolean;
+}
 
 export function LoadingIndicator({
   loading,
   spinnerSize = 40,
   children,
   mount = false,
-}) {
+}: LoadingIndicatorProps) {
   const [rendered, setRendered] = useState(mount);
 
   useEffect(() => {
@@ -23,7 +31,7 @@ export function LoadingIndicator({
   const loadingComponent = useMemo(
     () => (
       <div className="dashboard__loading-indicator">
-        <Spinner size={spinnerSize} value={null} />
+        <Spinner size={spinnerSize} value={undefined} />
       </div>
     ),
     [spinnerSize],

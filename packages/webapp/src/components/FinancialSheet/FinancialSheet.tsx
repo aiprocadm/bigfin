@@ -20,6 +20,42 @@ import {
  * Financial sheet.
  * @returns {React.JSX}
  */
+/**
+ * Свойства бланка отчёта. Все необязательные — сам компонент так и написан:
+ * шапку он рисует, только если что-то из трёх её частей передали
+ * (`companyName || sheetType || dateText`).
+ *
+ * Типа не было вовсе, проверка вывела все десять как обязательные, и восемь
+ * отчётов считались ошибкой (Д7 карты v76).
+ */
+export interface FinancialSheetProps {
+  /** Название организации в шапке. */
+  companyName?: React.ReactNode;
+  /** Название отчёта. */
+  sheetType?: React.ReactNode;
+  /** Период отчёта строкой. */
+  dateText?: React.ReactNode;
+  children?: React.ReactNode;
+  /** Подпись про способ учёта в подвале. */
+  accountingBasis?: React.ReactNode;
+  /** Способ учёта: `cash` или `accrual`. */
+  basis?: string;
+  minimal?: boolean;
+  fullWidth?: boolean;
+  /** Печатать ли время составления в подвале. */
+  currentDate?: boolean;
+  className?: string;
+}
+
+/**
+ * Название организации, которое обёртка подставляет каждой таблице отчёта.
+ * Отдельный тип потому, что таких таблиц шесть и все объявляли его заново —
+ * или, чаще, не объявляли вовсе (Д15 карты v76).
+ */
+export interface WithCompanyNameProps {
+  companyName?: string;
+}
+
 export function FinancialSheet({
   companyName,
   sheetType,
@@ -31,7 +67,7 @@ export function FinancialSheet({
   fullWidth = false,
   currentDate = true,
   className,
-}) {
+}: FinancialSheetProps) {
   const methodsLabels = useMemo(
     () => ({
       cash: intl.get('cash'),

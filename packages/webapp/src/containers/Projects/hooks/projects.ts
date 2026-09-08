@@ -78,7 +78,9 @@ export function useDeleteProject(props: any) {
  * @param requestProps
  * @returns
  */
-export function useProject(projectId: any, props: any, requestProps: any) {
+// Оба последних довода необязательны: ни одно из девяти мест вызова третий не
+// передаёт вовсе, а прежняя запись требовала его от всех (Д4 карты v76).
+export function useProject(projectId: any, props?: any, requestProps?: any) {
   return useRequestQuery(
     [t.PROJECT, projectId],
     { method: 'get', url: `projects/${projectId}`, ...requestProps },

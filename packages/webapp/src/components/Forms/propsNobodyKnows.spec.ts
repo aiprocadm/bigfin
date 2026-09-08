@@ -32,7 +32,23 @@ const UNKNOWN_PROPS: Record<string, string[]> = {
   // Группа полей — единственный компонент пакета, собранный НЕ через `Field`:
   // она не читает ни `fastField`, ни `shouldUpdate*`. А `fill` и `items` не
   // знает и blueprint-овый FormGroup, в который она всё пересылает.
-  FFormGroup: ['fill', 'fastField', 'items', 'shouldUpdate', 'shouldUpdateDeps'],
+  FFormGroup: [
+    'fill',
+    'fastField',
+    'items',
+    'shouldUpdate',
+    'shouldUpdateDeps',
+    // признаки товара группа полей тоже не знает (Д2 карты v70)
+    'sellable',
+    'purchasable',
+  ],
+  // стилевые обёртки над группой полей: они пересылают всё в неё, а она
+  // `fastField` не читает
+  BrandingThemeFormGroup: ['fastField'],
+  CompoundFormGroup: ['fastField'],
+  // окна предпросмотра PDF имя окна не читают — его задаёт сам диалог
+  PdfPreviewDialogContent: ['dialogName'],
+  InventoryValuationPdfDialogContent: ['dialogName'],
   // blueprint-овый FormGroup разбирает только свои свойства; `fill`, `name` и
   // `minimal` в его исходнике не упоминаются вовсе
   FormGroup: ['fill', 'name', 'minimal'],

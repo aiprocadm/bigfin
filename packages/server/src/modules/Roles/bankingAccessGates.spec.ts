@@ -1,7 +1,7 @@
 // © 2026 Bigfin
 import 'reflect-metadata';
 import { ForbiddenException } from '@nestjs/common';
-import { Ability } from '@casl/ability';
+import { MongoAbility, createMongoAbility } from '@casl/ability';
 import { PermissionGuard } from './Permission.guard';
 import { REQUIRED_PERMISSION_KEY } from './RequirePermission.decorator';
 import { AbilitySubject } from './Roles.types';
@@ -212,7 +212,7 @@ const MONEY_GATES: Gate[] = [
 
 /** Права роли «Сотрудник» — собраны так же, как их собирает приложение. */
 const staffAbility = () =>
-  new Ability(
+  createMongoAbility(
     staffRolePermissions()
       .filter((permission) => permission.value)
       .map((permission) => ({
@@ -222,9 +222,9 @@ const staffAbility = () =>
   );
 
 /** Владелец и встроенный «Администратор» получают ровно это правило. */
-const adminAbility = () => new Ability([{ action: 'manage', subject: 'all' }]);
+const adminAbility = () => createMongoAbility([{ action: 'manage', subject: 'all' }]);
 
-const contextFor = (gate: Gate, ability: Ability) =>
+const contextFor = (gate: Gate, ability: MongoAbility) =>
   ({
     switchToHttp: () => ({ getRequest: () => ({ ability }) }),
     getHandler: () => gate.controller.prototype[gate.handler],

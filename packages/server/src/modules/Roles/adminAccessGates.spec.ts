@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ForbiddenException } from '@nestjs/common';
-import { Ability } from '@casl/ability';
+import { MongoAbility, createMongoAbility } from '@casl/ability';
 import { PermissionGuard } from './Permission.guard';
 import { REQUIRED_PERMISSION_KEY } from './RequirePermission.decorator';
 import { AbilitySubject } from './Roles.types';
@@ -101,7 +101,7 @@ const ADMIN_GATES: Gate[] = [
 ];
 
 const staffAbility = () =>
-  new Ability(
+  createMongoAbility(
     staffRolePermissions()
       .filter((permission) => permission.value)
       .map((permission) => ({
@@ -110,9 +110,9 @@ const staffAbility = () =>
       })),
   );
 
-const adminAbility = () => new Ability([{ action: 'manage', subject: 'all' }]);
+const adminAbility = () => createMongoAbility([{ action: 'manage', subject: 'all' }]);
 
-const contextFor = (gate: Gate, ability: Ability) =>
+const contextFor = (gate: Gate, ability: MongoAbility) =>
   ({
     switchToHttp: () => ({ getRequest: () => ({ ability }) }),
     getHandler: () => gate.controller.prototype[gate.handler],

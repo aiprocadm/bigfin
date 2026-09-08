@@ -5,7 +5,7 @@ import {
 } from '@/database/tenant/seeds/core/20210812121909_seed_roles_permissions';
 import { getInvalidPermissions } from './utils';
 import { AbilitySchema } from './AbilitySchema';
-import { Ability } from '@casl/ability';
+import { MongoAbility, createMongoAbility } from '@casl/ability';
 
 /**
  * Встроенная роль «Сотрудник» обязана действительно давать права.
@@ -25,7 +25,7 @@ import { Ability } from '@casl/ability';
 
 /** Повторяет сборку прав из `TenantAbilities.getRulesFromRolePermissions`. */
 const abilityFromSeed = () =>
-  new Ability(
+  createMongoAbility(
     staffRolePermissions()
       .filter((permission) => permission.value)
       .map((permission) => ({

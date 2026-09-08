@@ -1,4 +1,4 @@
-import { Ability } from '@casl/ability';
+import { createMongoAbility } from '@casl/ability';
 import * as LruCache from 'lru-cache';
 import { Role } from './models/Role.model';
 import { RolePermission } from './models/RolePermission.model';
@@ -13,7 +13,7 @@ export const ABILITIES_CACHE = new LruCache(1000);
  */
 export function getAbilityForRole(role) {
   const rules = getAbilitiesRolesConds(role);
-  return new Ability(rules);
+  return createMongoAbility(rules);
 }
 
 /**

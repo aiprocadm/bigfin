@@ -1,5 +1,10 @@
 import { Knex } from 'knex';
-import { Ability, RawRuleOf, ForcedSubject } from '@casl/ability';
+import {
+  createMongoAbility,
+  MongoAbility,
+  RawRuleOf,
+  ForcedSubject,
+} from '@casl/ability';
 import { CreateRoleDto, EditRoleDto } from './dtos/Role.dto';
 import { Role } from './models/Role.model';
 
@@ -20,10 +25,12 @@ export type Abilities = [
   )
 ];
 
-export type AppAbility = Ability<Abilities>;
+// В шестой версии `Ability` заменён на `MongoAbility` и фабрику
+// `createMongoAbility` (карта v73).
+export type AppAbility = MongoAbility<Abilities>;
 
 export const createAbility = (rules: RawRuleOf<AppAbility>[]) =>
-  new Ability<Abilities>(rules);
+  createMongoAbility<Abilities>(rules);
 
 
 export interface ISubjectAbilitySchema {

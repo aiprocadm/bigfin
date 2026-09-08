@@ -11,7 +11,14 @@ import QuickCreateItemDrawerForm from './QuickCreateItemDrawerForm';
 /**
  * Quick create/edit item drawer content.
  */
-export default function QuickCreateItemDrawerContent({ itemName }) {
+interface QuickCreateItemDrawerContentProps {
+  /** Заготовка названия — то, что человек уже успел напечатать в поле поиска. */
+  itemName?: string;
+}
+
+export default function QuickCreateItemDrawerContent({
+  itemName,
+}: QuickCreateItemDrawerContentProps) {
   return (
     <React.Fragment>
       <DrawerHeaderContent

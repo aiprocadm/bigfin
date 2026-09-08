@@ -531,7 +531,9 @@ export const transfromToSnakeCase = (object) => {
   return deepMapKeys(object, (key) => _.snakeCase(key));
 };
 
-export const transformTableQueryToParams = (object) => {
+export const transformTableQueryToParams = (
+  object: any,
+): Record<string, any> => {
   return transfromToSnakeCase(object);
 };
 
@@ -620,7 +622,9 @@ function transformFilterRoles(filterRoles) {
 /**
  * Transformes the table state to url query.
  */
-export function transformTableStateToQuery(tableState) {
+export function transformTableStateToQuery(
+  tableState: any,
+): Record<string, any> {
   const { pageSize, pageIndex, viewSlug, sortBy } = tableState;
 
   const query = {

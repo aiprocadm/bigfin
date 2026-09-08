@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import { Radio } from '@blueprintjs/core';
 
@@ -21,7 +21,7 @@ export default function ReferenceNumberFormContent() {
       {/* ------------- Auto increment mode ------------- */}
       <FRadioGroup name={'incrementMode'} fastField>
         <Radio
-          label={<T id={'auto_increment.field.auto'} />}
+          label={intl.get('auto_increment.field.auto')}
           value="auto"
         />
       </FRadioGroup>
@@ -30,7 +30,7 @@ export default function ReferenceNumberFormContent() {
       {/* ------------- Manual increment mode ------------- */}
       <FRadioGroup name={'incrementMode'} fastField>
         <Radio
-          label={<T id={'auto_increment.field.manually'} />}
+          label={intl.get('auto_increment.field.manually')}
           value="manual"
         />
       </FRadioGroup>
@@ -82,7 +82,7 @@ function ReferenceNumberManualOnce() {
     <FFormGroup name={'incrementMode'}>
       <FRadioGroup name={'incrementMode'} fastField>
         <Radio
-          label={<T id={'auto_increment.field.manual_this_transaction'} />}
+          label={intl.get('auto_increment.field.manual_this_transaction')}
           value="manual-transaction"
         />
       </FRadioGroup>

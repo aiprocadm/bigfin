@@ -1,8 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
 import { FinancialSheet, DataTable } from '@/components';
+import { WithCompanyNameProps } from '@/components/FinancialSheet/FinancialSheet';
 
 /**
  * Unrealized Gain or Loss table.
@@ -10,7 +10,7 @@ import { FinancialSheet, DataTable } from '@/components';
 export default function UnrealizedGainOrLossTable({
   // #ownProps
   companyName,
-}) {
+}: WithCompanyNameProps) {
   return (
     <FinancialSheet
       companyName={companyName}

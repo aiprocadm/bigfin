@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 import {
@@ -15,7 +14,17 @@ const ItemsContext = createContext<any>(undefined);
 /**
  * Items list provider.
  */
-function ItemsListProvider({ tableState, tableStateChanged, ...props }) {
+function ItemsListProvider({
+  tableState,
+  tableStateChanged,
+  ...props
+}: {
+  /** Состояние таблицы: страница, сортировка, отбор. */
+  tableState?: any;
+  /** Признак «состояние поменялось» — по нему решают, ждать ли ответ. */
+  tableStateChanged?: boolean;
+  children?: React.ReactNode;
+}) {
   const tableQuery = transformItemsTableState(tableState);
 
   // Fetch accounts resource views and fields.

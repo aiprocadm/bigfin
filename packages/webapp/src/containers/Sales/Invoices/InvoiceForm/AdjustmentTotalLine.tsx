@@ -21,7 +21,13 @@ const formGroupCss = css`
 `;
 
 interface AdjustmentTotalLineProps {
-  adjustmentAmount: number;
+  /**
+   * Сумма УЖЕ отформатирована: все пять подвалов передают сюда результат
+   * `formattedAmount(...)` — строку с валютой, а не число. Компонент её
+   * просто печатает. Прежняя запись `number` описывала не то
+   * (Д1 карты v76).
+   */
+  adjustmentAmount: string;
 }
 
 export function AdjustmentTotalLine({

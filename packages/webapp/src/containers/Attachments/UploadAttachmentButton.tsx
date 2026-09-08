@@ -16,7 +16,13 @@ import styles from './UploadAttachmentButton.module.scss';
 function UploadAttachmentButtonButtonContentField() {
   return (
     <Field name={'attachments'}>
-      {({ form: { setFieldValue }, field: { value } }) => (
+      {({
+        form: { setFieldValue },
+        field: { value },
+      }: {
+        form: { setFieldValue: (name: string, value: any) => void };
+        field: { value: any };
+      }) => (
         <UploadAttachmentsPopoverContent
           value={transformToCamelCase(value)}
           onChange={(changedValue) => {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getUserDetails } from '@/store/users/users.reducer';
 import { getDialogPayload } from '@/store/dashboard/dashboard.reducer';
 
-export const mapStateToProps = (state, props) => {
+export const mapStateToProps = (state: any, props: any) => {
   const dialogPayload = getDialogPayload(state, 'user-form');
 
   return {

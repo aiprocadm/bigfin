@@ -8,7 +8,16 @@ const ContactDetailDrawerContext = React.createContext<any>(undefined);
 /**
  * Contact detail provider.
  */
-function ContactDetailDrawerProvider({ contactId, ...props }) {
+interface ContactDetailDrawerProviderProps {
+  /** Кого показываем. Приходит из полезной нагрузки ящика. */
+  contactId?: number;
+  children?: React.ReactNode;
+}
+
+function ContactDetailDrawerProvider({
+  contactId,
+  ...props
+}: ContactDetailDrawerProviderProps) {
   // Handle fetch contact duplicate details.
   const { data: contact, isLoading: isContactLoading } = useContact(contactId, {
     enabled: !!contactId,

@@ -39,10 +39,13 @@ export const transformAccountsFilter = (form: any) => {
 /**
  * Transform filter form to http query.
  */
-export const transformFilterFormToQuery = (form: any) => {
+export const transformFilterFormToQuery = (form: any): Record<string, any> => {
+  // Тип приведён явно: `R.compose` из трёх шагов результат не выводит и отдаёт
+  // «неизвестно что» — та же беда, что с компонентами в карте v75
+  // (Д16 карты v76).
   return R.compose(
     transfromToSnakeCase,
     transformAccountsFilter,
     transformDisplayColumnsType,
-  )(form);
+  )(form) as Record<string, any>;
 };

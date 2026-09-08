@@ -12,7 +12,7 @@ import { TableStatementUpload } from './TableStatementUpload';
 
 export default function ImportUncategorizedTransactions() {
   const history = useHistory();
-  const params = useParams();
+  const params = useParams<{ id?: string }>();
   const { featureCan } = useFeatureCan();
   const fileInputRef = useRef(null);
 

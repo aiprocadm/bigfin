@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import * as R from 'ramda';
 import { Can, Icon, T } from '@/components';
@@ -25,6 +24,9 @@ export const ItemDetailActionsMoreBtn = R.compose(withDialogActions)(
   ({
     //#withDialogActions,
     openDialog,
+  }: {
+    /** Подставляет обёртка `withDialogActions`. */
+    openDialog: (name: string, payload?: any) => void;
   }) => {
     const { itemId, item } = useItemDetailDrawerContext();
 

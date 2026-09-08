@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo } from 'react';
 import {
   chain,
@@ -32,14 +31,20 @@ type ImportFileMappingRes = { from: string; to: string; group: string }[];
  */
 export const transformValueToReq = (
   value: ImportFileMappingFormValues,
-): { mapping: ImportFileMappingRes[] } => {
+// Имя уже во множественном числе: `ImportFileMappingRes` — это список.
+// Было `ImportFileMappingRes[]`, то есть список списков (Д42 карты v75).
+): { mapping: ImportFileMappingRes } => {
   const mapping = chain(value)
     .thru(deepdash.index)
     .pickBy((_value, key) => !isEmpty(get(value, key)))
     .map((from, key) => ({
-      from,
-      to: key.includes('.') ? last(key.split('.')) : key,
-      group: key.includes('.') ? head(key.split('.')) : '',
+      // Обход дерева отдаёт значение «чем угодно», а в запрос уходит имя
+      // колонки — строка (Д42 карты v75).
+      from: String(from),
+      // Запасные пустые строки: `last`/`head` на пустом списке не возвращают
+      // ничего, и в соответствие уходило бы «ничто» (Д42 карты v75).
+      to: (key.includes('.') ? last(key.split('.')) : key) ?? '',
+      group: (key.includes('.') ? head(key.split('.')) : '') ?? '',
     }))
     .value();
 

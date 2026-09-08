@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DashboardInsider } from '@/components';
@@ -24,8 +23,8 @@ interface AccountTransactionsProviderProps {
 }
 
 function AccountTransactionsProvider({ query, ...props }: AccountTransactionsProviderProps) {
-  const { id } = useParams();
-  const accountId = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const accountId = parseInt(id ?? '', 10);
 
   const [locationQuery, setLocationQuery] = useAppQueryString();
 

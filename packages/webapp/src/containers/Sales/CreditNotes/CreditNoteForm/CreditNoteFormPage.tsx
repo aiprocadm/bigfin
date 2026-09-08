@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { css } from '@emotion/css';
@@ -14,8 +13,8 @@ import { DashboardInsider } from '@/components';
  * Credit note form page.
  */
 export default function CreditNoteFormPage() {
-  const { id } = useParams();
-  const idAsInteger = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const idAsInteger = parseInt(id ?? '', 10);
 
   return (
     <CreditNoteFormProvider creditNoteId={idAsInteger}>

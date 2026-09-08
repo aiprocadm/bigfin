@@ -13,7 +13,7 @@ import { InvoiceFormV2 } from './InvoiceFormV2';
  */
 export default function InvoiceFormPageV2() {
   const { id } = useParams<{ id?: string }>();
-  const invoiceId = id ? Number.parseInt(id, 10) : undefined;
+  const invoiceId = id ? Number.parseInt(id ?? '', 10) : undefined;
 
   return (
     <InvoiceFormProviderLoose invoiceId={invoiceId}>

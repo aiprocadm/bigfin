@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { parseAbbrValue } from './parseAbbrValue';
 import { removeSeparators } from './removeSeparators';
 import { removeInvalidChars } from './removeInvalidChars';
@@ -38,7 +37,11 @@ export const cleanValue = ({
 
   const isNegative = value.includes('-');
 
-  const [prefixWithValue, preValue] = RegExp(`(\\d+)-?${escapeRegExp(prefix)}`).exec(value) || [];
+  // Запасные пустые строки не для красоты: если приставки в строке нет, обе
+  // части выходят пустыми, и `.concat(undefined)` дописал бы в число слово
+  // «undefined» (Д35 карты v75).
+  const [prefixWithValue = '', preValue = ''] =
+    RegExp(`(\\d+)-?${escapeRegExp(prefix)}`).exec(value) || [];
   const withoutPrefix = prefix ? value.replace(prefixWithValue, '').concat(preValue) : value;
   const withoutSeparators = removeSeparators(withoutPrefix, groupSeparator);
   const withoutInvalidChars = removeInvalidChars(withoutSeparators, [

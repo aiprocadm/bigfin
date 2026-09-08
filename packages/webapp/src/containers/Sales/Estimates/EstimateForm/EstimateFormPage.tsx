@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { css } from '@emotion/css';
@@ -15,8 +14,8 @@ import { DashboardInsider } from '@/components';
  * Estimate form page.
  */
 export default function EstimateFormPage() {
-  const { id } = useParams();
-  const idInteger = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const idInteger = parseInt(id ?? '', 10);
 
   return (
     <EstimateFormProvider estimateId={idInteger}>

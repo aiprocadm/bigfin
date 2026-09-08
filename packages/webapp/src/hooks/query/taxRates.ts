@@ -31,7 +31,9 @@ export function useTaxRates(props?: any) {
  * Retrieves tax rate.
  * @param {number} taxRateId - Tax rate id.
  */
-export function useTaxRate(taxRateId: string, props: any) {
+// Признак — число: так его хранит запись и так передают оба места вызова
+// (Д12 карты v75).
+export function useTaxRate(taxRateId: number, props: any) {
   return useRequestQuery(
     [QUERY_TYPES.TAX_RATES, taxRateId],
     {

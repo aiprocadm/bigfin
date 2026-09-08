@@ -62,13 +62,21 @@ function SetupInitializingForm({
   );
 }
 
-export default R.compose(
+/**
+ * Тип указан явно. `R.compose` из двух и более обёрток теряет знание о том, что
+ * на выходе компонент, и место применения получает «ничто» — отсюда «нельзя
+ * использовать как компонент». Обёртки сами подставляют всё, что нужно, поэтому
+ * снаружи компонент вызывается без свойств (Д9 карты v75).
+ */
+const ConnectedSetupInitializingForm: React.FC<{ id?: string }> = R.compose(
   withOrganizationActions,
   withCurrentOrganization(({ organizationTenantId }) => ({
     organizationId: organizationTenantId,
   })),
   withOrganization(({ organization }) => ({ organization })),
 )(SetupInitializingForm);
+
+export default ConnectedSetupInitializingForm;
 
 /**
  * State initializing failed state.

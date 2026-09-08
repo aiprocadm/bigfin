@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext, useState } from 'react';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
@@ -19,7 +18,11 @@ import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
 
 interface PaymentReceivedFormContextValue {
   isPaymentReceivedStateLoading: boolean;
-  paymentReceivedState: PaymentReceivedStateResponse;
+  /**
+   * Пока запрос идёт, значения ещё нет — поэтому «может отсутствовать».
+   * Все читающие экраны сначала смотрят признак загрузки (Д26 карты v75).
+   */
+  paymentReceivedState?: PaymentReceivedStateResponse;
   // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
   // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
   paymentReceiveId: any;

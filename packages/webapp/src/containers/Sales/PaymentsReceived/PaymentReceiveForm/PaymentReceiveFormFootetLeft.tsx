@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -11,7 +10,6 @@ export function PaymentReceiveFormFootetLeft() {
       <TermsConditsFormGroup
         name={'statement'}
         label={<T id={'payment_receive_form.label.note'} />}
-        fastField={true}
       >
         <FEditableText
           name={'statement'}

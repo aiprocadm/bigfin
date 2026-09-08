@@ -13,7 +13,7 @@ import { EstimateFormV2 } from './EstimateFormV2';
  */
 export default function EstimateFormPageV2() {
   const { id } = useParams<{ id?: string }>();
-  const estimateId = id ? Number.parseInt(id, 10) : undefined;
+  const estimateId = id ? Number.parseInt(id ?? '', 10) : undefined;
 
   return (
     <EstimateFormProviderLoose estimateId={estimateId}>

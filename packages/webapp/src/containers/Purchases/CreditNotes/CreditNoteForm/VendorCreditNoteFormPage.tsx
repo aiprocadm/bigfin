@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -9,8 +8,8 @@ import { VendorCreditNoteFormProvider } from './VendorCreditNoteFormProvider';
  * Vendor Credit note form pages.
  */
 export default function VendorCreditNoteFormPage() {
-  const { id } = useParams();
-  const idAsInteger = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const idAsInteger = parseInt(id ?? '', 10);
 
   return (
     <VendorCreditNoteFormProvider vendorCreditId={idAsInteger}>

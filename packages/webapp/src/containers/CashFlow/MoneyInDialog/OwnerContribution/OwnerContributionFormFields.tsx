@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField, ErrorMessage } from 'formik';
 import { Position, ControlGroup } from '@blueprintjs/core';
@@ -122,7 +121,7 @@ export default function OwnerContributionFormFields() {
             <FAccountsSuggestField
               name={'credit_account_id'}
               items={accounts}
-              filterByTypes={ACCOUNT_TYPE.EQUITY}
+              filterByTypes={[ACCOUNT_TYPE.EQUITY]}
             />
           </FFormGroup>
         </Col>

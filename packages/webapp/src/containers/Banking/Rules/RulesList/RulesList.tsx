@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DashboardPageContent } from '@/components';
 import { RulesListBoot } from './RulesListBoot';
 import { RulesListActionsBar } from './RulesListActionsBar';

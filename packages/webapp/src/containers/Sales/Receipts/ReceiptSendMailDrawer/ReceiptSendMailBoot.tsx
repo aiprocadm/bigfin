@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext, useContext } from 'react';
 import { Spinner } from '@blueprintjs/core';
 import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
@@ -10,7 +9,11 @@ import {
 interface ReceiptSendMailBootValues {
   receiptId: number;
 
-  receiptMailState: GetSaleReceiptMailStateResponse | null;
+  /**
+   * Пока запрос идёт, значения ещё нет — поэтому «может отсутствовать».
+   * Все читающие экраны сначала смотрят признак загрузки (Д26 карты v75).
+   */
+  receiptMailState?: GetSaleReceiptMailStateResponse | null;
   isReceiptMailState: boolean;
 }
 interface ReceiptSendMailBootProps {

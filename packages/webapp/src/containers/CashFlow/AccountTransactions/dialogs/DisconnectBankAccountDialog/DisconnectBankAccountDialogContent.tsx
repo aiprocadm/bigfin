@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import { Button, Intent, Classes } from '@blueprintjs/core';
@@ -28,6 +27,8 @@ const getSchema = () =>
 
 interface DisconnectBankAccountDialogContentProps {
   bankAccountId: number;
+  /** Подставляет обёртка `withDialogActions` — объявить всё равно надо. */
+  closeDialog: (name: string) => void;
 }
 
 function DisconnectBankAccountDialogContent({

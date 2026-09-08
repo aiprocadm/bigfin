@@ -14,7 +14,7 @@ import { BillFormV2 } from './BillFormV2';
  */
 export default function BillFormPageV2() {
   const { id } = useParams<{ id?: string }>();
-  const billId = id ? Number.parseInt(id, 10) : undefined;
+  const billId = id ? Number.parseInt(id ?? '', 10) : undefined;
 
   return (
     <BillFormProviderLoose billId={billId}>

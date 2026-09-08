@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { downloadFile } from '@/hooks/useDownloadFile';
 import useApiRequest from '@/hooks/useRequest';
 import { AxiosError } from 'axios';
@@ -17,8 +16,11 @@ interface ResourceExportValues {
 export const useResourceExport = () => {
   const apiRequest = useApiRequest();
 
-  return useMutation<void, AxiosError, any>((data: ResourceExportValues) => {
-    return apiRequest
+  // Запрос отдаёт ответ, а не пустоту: при `void` проверка не могла
+  // подобрать вариант вызова вовсе (Д36 карты v75).
+  return useMutation<any, AxiosError, ResourceExportValues>(
+    (data: ResourceExportValues) =>
+      apiRequest
       .get('/export', {
         responseType: 'blob',
         headers: {
@@ -30,9 +32,9 @@ export const useResourceExport = () => {
           format: data.format,
         },
       })
-      .then((res) => {
-        downloadFile(res.data, `${data.resource}.${data.format}`);
-        return res;
-      });
-  });
+        .then((res) => {
+          downloadFile(res.data, `${data.resource}.${data.format}`);
+          return res;
+        }),
+  );
 };

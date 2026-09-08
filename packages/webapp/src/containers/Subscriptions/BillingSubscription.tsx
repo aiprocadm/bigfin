@@ -138,7 +138,13 @@ function SubscriptionRoot({ openAlert, openDrawer }) {
   );
 }
 
-export const Subscription = R.compose(
+/**
+ * Тип указан явно. `R.compose` из двух и более обёрток теряет знание о том, что
+ * на выходе компонент, и место применения получает «ничто» — отсюда «нельзя
+ * использовать как компонент». Обёртки сами подставляют всё, что нужно, поэтому
+ * снаружи компонент вызывается без свойств (Д9 карты v75).
+ */
+export const Subscription: React.FC = R.compose(
   withAlertActions,
   withDrawerActions,
 )(SubscriptionRoot);

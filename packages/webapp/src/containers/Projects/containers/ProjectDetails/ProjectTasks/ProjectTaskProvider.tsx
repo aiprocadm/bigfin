@@ -10,8 +10,8 @@ const ProjectTaskContext = React.createContext<any>(undefined);
  * @returns
  */
 function ProjectTaskProvider({ ...props }) {
-  const { id } = useParams();
-  const projectId = parseInt(id, 10);
+  const { id } = useParams<{ id?: string }>();
+  const projectId = parseInt(id ?? '', 10);
 
   // Handle fetch project tasks.
   const {

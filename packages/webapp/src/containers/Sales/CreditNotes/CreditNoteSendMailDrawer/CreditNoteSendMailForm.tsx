@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { css } from '@emotion/css';

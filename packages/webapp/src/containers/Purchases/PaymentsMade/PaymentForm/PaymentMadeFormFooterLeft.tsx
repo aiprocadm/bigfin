@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -15,7 +14,6 @@ export function PaymentMadeFormFooterLeft() {
       <InternalNoteFormGroup
         name={'statement'}
         label={<T id={'payment_made.form.internal_note.label'} />}
-        fastField={true}
       >
         <FEditableText
           name={'statement'}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Route, Switch, useLocation } from 'react-router-dom';
 import BodyClassName from 'react-body-classname';
 import { Suspense } from 'react';

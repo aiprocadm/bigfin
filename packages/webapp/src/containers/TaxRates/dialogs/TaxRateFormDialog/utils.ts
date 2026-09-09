@@ -1,9 +1,8 @@
 // @ts-nocheck
 import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
-import * as R from 'ramda';
 import { omit } from 'lodash';
-import { transformToForm } from '@/utils';
+import { transformToForm, compose } from '@/utils';
 
 // Default initial form values.
 export const defaultInitialValues = {
@@ -65,7 +64,7 @@ const convertFormAttrsToBoolean = (form) => {
 };
 
 export const transformTaxRateToForm = (taxRate) => {
-  return R.compose(convertFormAttrsToBoolean)({
+  return compose(convertFormAttrsToBoolean)({
     ...defaultInitialValues,
     /**
      * We only care about the fields in the form. Previously unfilled optional

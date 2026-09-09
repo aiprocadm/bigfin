@@ -17,7 +17,9 @@ interface UploadAttachmentResponse {
 export function useUploadAttachments(props?: any) {
   const apiRequest = useApiRequest();
 
-  return useMutation<UploadAttachmentResponse>(
+  // Вид довода назван: без него запуск считается «ничего не принимает», и
+  // вызов с телом запроса — ошибка (Д10 карты v84).
+  return useMutation<UploadAttachmentResponse, Error, FormData>(
     (values) =>
       apiRequest
         .post('attachments', values)

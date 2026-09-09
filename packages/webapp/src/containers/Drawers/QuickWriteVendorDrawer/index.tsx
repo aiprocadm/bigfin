@@ -1,5 +1,5 @@
 import React from 'react';
-import * as R from 'ramda';
+import { compose } from '@/utils';
 
 import { Drawer, DrawerSuspense } from '@/components';
 import { withDrawers } from '@/containers/Drawer/withDrawers';
@@ -32,4 +32,4 @@ function QuickWriteVendorDrawer({
   );
 }
 
-export default R.compose(withDrawers())(QuickWriteVendorDrawer);
+export default compose(withDrawers())(QuickWriteVendorDrawer);

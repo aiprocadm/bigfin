@@ -1,7 +1,8 @@
 import intl from 'react-intl-universal';
+import type React from 'react';
+import { compose } from '@/utils';
 import * as Yup from 'yup';
 import { Button, Intent, Classes } from '@blueprintjs/core';
-import * as R from 'ramda';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { AppToaster, FFormGroup, FInputGroup } from '@/components';
 import { useDisconnectBankAccount } from '@/hooks/query/bank-rules';
@@ -105,4 +106,8 @@ function DisconnectBankAccountDialogContent({
   );
 }
 
-export default R.compose(withDialogActions)(DisconnectBankAccountDialogContent);
+const DisconnectBankAccountDialogContentComposed: React.ComponentType<{
+  bankAccountId: number | null;
+}> = compose(withDialogActions)(DisconnectBankAccountDialogContent);
+
+export default DisconnectBankAccountDialogContentComposed;

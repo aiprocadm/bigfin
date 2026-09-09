@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import { Button, Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import styled from 'styled-components';
@@ -39,7 +39,7 @@ function CategorizeTransactionFormFooterRoot({
   );
 }
 
-export const CategorizeTransactionFormFooter = R.compose(withBankingActions)(
+export const CategorizeTransactionFormFooter = compose(withBankingActions)(
   CategorizeTransactionFormFooterRoot,
 );
 

@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React, { lazy } from 'react';
 import type { DrawerReduxProps } from '@/components/DialogReduxConnect';
 import { Drawer, DrawerSuspense } from '@/components';
@@ -12,8 +5,16 @@ import { withDrawers } from '@/containers/Drawer/withDrawers';
 
 import { compose } from '@/utils';
 
-const CategorizeTransactionContent = lazy(
-  () => import('./CategorizeTransactionContent'),
+// У модуля содержимого вывоза «по умолчанию» нет — только именованный.
+// Отложенная загрузка требует именно `default`, поэтому при открытии ящика
+// React получил бы `undefined` вместо экрана. Сегодня это не проявлялось:
+// ящик зарегистрирован в `DrawersContainer`, но открыть его неоткуда — ни
+// одного `openDrawer(DRAWERS.CATEGORIZE_TRANSACTION)` в витрине нет
+// (Д15 карты v84). Соседний `AccountTransactionsAside` заворачивает имя так же.
+const CategorizeTransactionContent = lazy(() =>
+  import('./CategorizeTransactionContent').then((module) => ({
+    default: module.CategorizeTransactionContent,
+  })),
 );
 
 /**

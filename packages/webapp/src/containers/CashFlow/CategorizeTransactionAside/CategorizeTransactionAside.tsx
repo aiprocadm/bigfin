@@ -1,5 +1,5 @@
 import intl from 'react-intl-universal';
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import { Aside } from '@/components/Aside/Aside';
 import { CategorizeTransactionTabs } from './CategorizeTransactionTabs';
 import {
@@ -73,7 +73,9 @@ function CategorizeTransactionAsideRoot({
   );
 }
 
-export const CategorizeTransactionAside = R.compose(
+// Сборка своя, а не `R.compose`: объявление ramda не умеет вычесть свойства
+// надстроек и отдаёт «ничего» (Д3 карты v84).
+export const CategorizeTransactionAside = compose(
   withBankingActions,
   withBanking(({ transactionsToCategorizeIdsSelected }) => ({
     selectedUncategorizedTransactionId: transactionsToCategorizeIdsSelected,

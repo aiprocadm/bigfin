@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import intl from 'react-intl-universal';
 import type { DialogReduxProps } from '@/components/DialogReduxConnect';
 import React from 'react';
@@ -34,10 +27,8 @@ function DisconnectBankAccountDialogRoot({
       style={{ width: 400 }}
     >
       <DialogSuspense>
-        <DisconnectBankAccountDialogContent
-          dialogName={dialogName}
-          bankAccountId={bankAccountId}
-        />
+        {/* Имя окна содержимое не читает — свойство убрано (Д14 карты v84). */}
+        <DisconnectBankAccountDialogContent bankAccountId={bankAccountId} />
       </DialogSuspense>
     </Dialog>
   );

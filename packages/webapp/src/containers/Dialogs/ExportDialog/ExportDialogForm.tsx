@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import { Formik } from 'formik';
 import intl from 'react-intl-universal';
 
@@ -46,7 +39,16 @@ function ExportDialogFormRoot({
   const { mutateAsync: mutateExport } = useResourceExport();
 
   // Callbacks handles form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (
+    values: { resource: string; format: string },
+    {
+      setSubmitting,
+      setErrors,
+    }: {
+      setSubmitting: (v: boolean) => void;
+      setErrors: (errors: any) => void;
+    },
+  ) => {
     setSubmitting(true);
     const { resource, format } = values;
 

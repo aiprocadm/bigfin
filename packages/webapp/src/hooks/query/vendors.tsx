@@ -137,7 +137,11 @@ export function useCreateVendor(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('vendors', values), {
+  // Вид довода назван: без него заведение считается «ничего не принимает»
+  // (Д10 карты v84).
+  return useMutation<any, Error, any>(
+    (values) => apiRequest.post('vendors', values),
+    {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

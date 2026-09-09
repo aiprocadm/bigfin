@@ -5,7 +5,9 @@ import { useTaxRate } from '@/hooks/query/taxRates';
 const TaxRateDetailsContext = createContext<any>(undefined);
 
 interface TaxRateDetailsContentBootProps {
-  taxRateId: number;
+  /** У ещё не выбранной ставки номера нет. */
+  taxRateId?: number;
+  children?: React.ReactNode;
 }
 
 /**

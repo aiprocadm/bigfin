@@ -90,7 +90,7 @@ export function Stepper({
 
 Stepper.Step = StepperStep;
 Stepper.Completed = StepperCompleted;
-Stepper.displayName = '@bigfin/core/stepper';
+Stepper.displayName = 'Stepper';
 
 const StepsItems = styled(Box)`
   display: flex;

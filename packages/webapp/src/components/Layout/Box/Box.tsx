@@ -14,4 +14,8 @@ export const Box = forwardRef(
     return <Element className={className} ref={ref} {...rest} />;
   },
 );
-Box.displayName = '@bigfin/Box';
+// Имя для отладчика — обычное слово, без «@» и косых черт: генератор
+// описаний Storybook подставляет его прямо в код (`<имя>.__docgenInfo = …`),
+// и на «@bigfin/Box» разбор падал — из-за этого **вся сборка витрины историй
+// не собиралась вовсе** (Д17 карты v84).
+Box.displayName = 'Box';

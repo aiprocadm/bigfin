@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React from 'react';
 import { Classes, Position } from '@blueprintjs/core';
 import classNames from 'classnames';
@@ -36,7 +29,6 @@ export default function UnlockingPartialTransactionsFormFields() {
             name={'unlock_from_date'}
             label={<T id={'unlocking_partial_transactions.dialog.from_date'} />}
             labelInfo={<FieldRequiredHint />}
-            minimal
           >
             <FDateInput
               name={'unlock_from_date'}
@@ -55,7 +47,6 @@ export default function UnlockingPartialTransactionsFormFields() {
             name={'unlock_to_date'}
             label={<T id={'unlocking_partial_transactions.dialog.to_date'} />}
             labelInfo={<FieldRequiredHint />}
-            minimal={true}
           >
             <FDateInput
               name={'unlock_to_date'}

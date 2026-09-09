@@ -149,7 +149,11 @@ export function useCreateCustomer(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('customers', values), {
+  // Вид довода назван: без него заведение считается «ничего не принимает»
+  // (Д10 карты v84).
+  return useMutation<any, Error, any>(
+    (values) => apiRequest.post('customers', values),
+    {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

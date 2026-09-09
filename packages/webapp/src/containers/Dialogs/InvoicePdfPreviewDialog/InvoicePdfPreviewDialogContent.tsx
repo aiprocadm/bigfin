@@ -7,6 +7,17 @@ import { usePdfInvoice } from '@/hooks/query';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
+/**
+ * Что окно передаёт содержимому.
+ *
+ * Вид объявлен здесь, а не выведен: сборка отдаёт «что угодно», а `React.lazy`
+ * из «что угодно» делает экран, **не принимающий свойств вовсе** (Д4 карты v84,
+ * тот же случай, что в карте v82).
+ */
+export interface InvoicePdfPreviewDialogContentProps {
+  subscriptionForm: { invoiceId: number | null };
+}
+
 function InvoicePdfPreviewDialogContent({
   subscriptionForm: { invoiceId },
   // #withDialog
@@ -46,4 +57,7 @@ function InvoicePdfPreviewDialogContent({
   );
 }
 
-export default compose(withDialogActions)(InvoicePdfPreviewDialogContent);
+const InvoicePdfPreviewDialogContentComposed: React.ComponentType<InvoicePdfPreviewDialogContentProps> =
+  compose(withDialogActions)(InvoicePdfPreviewDialogContent);
+
+export default InvoicePdfPreviewDialogContentComposed;

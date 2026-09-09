@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import intl from 'react-intl-universal';
 import { Stack } from '@/components';
 import { ElementCustomizeHeader } from './ElementCustomizeHeader';
@@ -31,6 +31,6 @@ function ElementCustomizePreviewRoot({ closeDrawer }: any) {
   );
 }
 
-export const ElementCustomizePreview = R.compose(withDrawerActions)(
+export const ElementCustomizePreview = compose(withDrawerActions)(
   ElementCustomizePreviewRoot,
 );

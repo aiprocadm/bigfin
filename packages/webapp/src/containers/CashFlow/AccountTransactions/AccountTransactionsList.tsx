@@ -1,11 +1,4 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import { Spinner } from '@blueprintjs/core';
 import { Suspense, lazy } from 'react';
 
@@ -31,6 +24,8 @@ import { withBanking } from '../withBanking';
 function AccountTransactionsListRoot({
   // #withBanking
   openMatchingTransactionAside,
+}: {
+  openMatchingTransactionAside?: boolean;
 }) {
   return (
     <AccountTransactionsProvider>
@@ -62,7 +57,7 @@ function AccountTransactionsMain() {
   );
 }
 
-export default R.compose(
+export default compose(
   withBanking(
     ({ selectedUncategorizedTransactionId, openMatchingTransactionAside }) => ({
       selectedUncategorizedTransactionId,

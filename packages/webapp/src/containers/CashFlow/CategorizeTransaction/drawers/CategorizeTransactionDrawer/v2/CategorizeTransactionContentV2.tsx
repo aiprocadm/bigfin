@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import { Spinner } from '@/components/ui/Spinner';
 import { CategorizeTransactionBoot } from '../CategorizeTransactionBoot';
 import { withBanking } from '@/containers/CashFlow/withBanking';
@@ -21,7 +21,7 @@ function CategorizeTransactionContentV2Root({
   );
 }
 
-export const CategorizeTransactionContentV2 = R.compose(
+export const CategorizeTransactionContentV2 = compose(
   withBanking(({ transactionsToCategorizeIdsSelected }: any) => ({
     transactionsToCategorizeIdsSelected,
   })),

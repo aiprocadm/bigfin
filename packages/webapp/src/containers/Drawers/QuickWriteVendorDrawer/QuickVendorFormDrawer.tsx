@@ -1,5 +1,5 @@
 import React from 'react';
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import styled from 'styled-components';
 
 import { Card, DrawerLoading } from '@/components';
@@ -71,7 +71,7 @@ function QuickVendorFormDrawer({
   );
 }
 
-export default R.compose(
+export default compose(
   withDrawerActions,
   withDashboardActions,
 )(QuickVendorFormDrawer);

@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -126,7 +119,12 @@ export default function InventoryAdjustmentFormDialogFields() {
                 position: Position.BOTTOM,
                 minimal: true,
               }}
-              inputRef={(ref: any) => (dateFieldRef.current = ref)}
+              // Свойства `inputRef` у поля даты нет — оно молча падало на
+              // пол, и курсор на поле не наводился. Ссылка передаётся через
+              // `inputProps` (Д16 карты v84).
+              inputProps={{
+                inputRef: (ref: any) => (dateFieldRef.current = ref),
+              }}
             />
           </FFormGroup>
         </Col>

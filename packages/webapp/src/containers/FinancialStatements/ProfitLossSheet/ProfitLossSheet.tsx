@@ -1,11 +1,5 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React from 'react';
+import { compose } from '@/utils';
 import moment from 'moment';
 import * as R from 'ramda';
 
@@ -87,7 +81,7 @@ function ProfitLossSheet({
 // Тип указан явно: `R.compose` возвращает обобщённую функцию, и загрузчик
 // страниц (`lazy`) не признаёт её за компонент — маршрут отчёта краснел
 // проверкой типов, хотя экран работает (карта v52).
-export default R.compose(
+export default compose(
   withDashboardActions,
   withProfitLossActions,
 )(ProfitLossSheet) as React.ComponentType;

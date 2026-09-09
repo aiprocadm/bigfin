@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React from 'react';
 import intl from 'react-intl-universal';
 import TaxRateDetailsContentActionsBar from './TaxRateDetailsContentActionsBar';
@@ -16,7 +9,9 @@ import { DRAWERS } from '@/constants/drawers';
 interface TaxRateDetailsContentProps {
   // Было `taxRateid` с маленькой «d» — опечатка в объявлении; сам экран и
   // место вызова пишут `taxRateId` (Д8 карты v83).
-  taxRateId: number;
+  /** Имя ящика приходит от обёртки и дальше не читается. */
+  name?: string;
+  taxRateId?: number;
 }
 
 export default function TaxRateDetailsContent({

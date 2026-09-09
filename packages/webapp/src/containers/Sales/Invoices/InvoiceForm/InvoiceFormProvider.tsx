@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React, { createContext, useState } from 'react';
 import type { ProviderProps } from '@/utils/formTypes';
 import { useRouteState, RouteActionState } from '@/hooks/useRouteState';
@@ -33,7 +26,8 @@ import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
 import { useGetPaymentServices } from '@/hooks/query/payment-services';
 
 interface InvoiceFormContextValue {
-  saleInvoiceState: GetSaleInvoiceStateResponse | null;
+  /** Пока ответ не пришёл, состояния нет. */
+  saleInvoiceState?: GetSaleInvoiceStateResponse | null;
   isInvoiceStateLoading: boolean;
   // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
   // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.

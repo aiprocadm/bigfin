@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 import { useState } from 'react';
@@ -111,17 +104,19 @@ export function BrandingTemplateForm<
     // Exclude all the private props that starts with _.
     const excludedPrivateValues = excludePrivateProps(_values);
 
-    // Transform the the form values to request based on the mode (new or edit mode).
-    const reqValues = templateId
-      ? transformToEditRequest(excludedPrivateValues, initialValues)
-      : transformToNewRequest(excludedPrivateValues, initialValues, resource);
-
     // Template id is presented means edit mode.
+    //
+    // Преобразование делается внутри ветки, а не заранее: иначе вид значений —
+    // объединение «для правки» и «для заведения», и ни одна из двух ручек его
+    // не принимает (Д13 карты v84).
     if (templateId) {
       setSubmitting(true);
 
       try {
-        await editPdfTemplate({ templateId, values: reqValues });
+        await editPdfTemplate({
+          templateId,
+          values: transformToEditRequest(excludedPrivateValues, initialValues),
+        });
         handleSuccess(intl.get('branding.templates.updated'));
       } catch {
         handleError(intl.get('branding.templates.error.update'));
@@ -130,7 +125,13 @@ export function BrandingTemplateForm<
       setSubmitting(true);
 
       try {
-        await createPdfTemplate(reqValues);
+        await createPdfTemplate(
+          transformToNewRequest(
+            excludedPrivateValues,
+            initialValues,
+            resource,
+          ),
+        );
         handleSuccess(intl.get('branding.templates.created'));
       } catch {
         handleError(intl.get('branding.templates.error.create'));

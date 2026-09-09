@@ -11,7 +11,9 @@ import { useRef, useEffect } from 'react';
  * экрана.
  */
 export default function useAutofocus(focus = true) {
-  const ref = useRef<HTMLInputElement | null>(null);
+  // Поле бывает и многострочным: окна блокировки наводят курсор на `textarea`
+  // (Д9 карты v84). Крючку нужен только `.focus()`.
+  const ref = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     if (ref.current && focus) {

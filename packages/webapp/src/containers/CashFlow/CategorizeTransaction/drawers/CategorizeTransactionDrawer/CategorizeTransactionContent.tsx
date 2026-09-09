@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
+import type React from 'react';
+import { compose } from '@/utils';
 import styled from 'styled-components';
-import * as R from 'ramda';
 import { Spinner } from '@blueprintjs/core';
 import { CategorizeTransactionBoot } from './CategorizeTransactionBoot';
 import { CategorizeTransactionForm } from './CategorizeTransactionForm';
@@ -22,7 +23,14 @@ function CategorizeTransactionContentRoot({
   );
 }
 
-export const CategorizeTransactionContent = R.compose(
+/**
+ * Что окно передаёт содержимому. Вид объявлен здесь, потому что сборка отдаёт
+ * «что угодно», а отложенная загрузка из «что угодно» делает экран, не
+ * принимающий свойств вовсе (Д4 карты v84).
+ */
+export const CategorizeTransactionContent: React.ComponentType<{
+  uncategorizedTransactionId?: number | null;
+}> = compose(
   withBanking(({ transactionsToCategorizeIdsSelected }: any) => ({
     transactionsToCategorizeIdsSelected,
   })),

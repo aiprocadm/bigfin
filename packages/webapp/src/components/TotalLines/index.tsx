@@ -98,7 +98,7 @@ export const TotalLinesRoot = styled.div`
   `}
 `;
 
-export const TotalLinePrimitive = styled.div`
+const TotalLinePrimitiveRoot = styled.div`
   --x-color-divider: #d2dde2;
   --x-color-divider-dark: #000;
 
@@ -147,6 +147,18 @@ const TotalLineAmount = (props) => {
 
 export const TotalLineTitle = (props) => {
   return <x.div display={'table-cell'} padding={'8px'} {...props} />;
+};
+
+/**
+ * Строка итога с приложенными частями: `TotalLinePrimitive.Title`, `.Amount`.
+ *
+ * `styled.div` о таких частях не знает, поэтому их надо назвать отдельно —
+ * иначе места вызова считают `TotalLinePrimitive.Title` не компонентом вовсе
+ * (Д2 карты v84). Приём тот же, что у `AppContentShell` в карте v82.
+ */
+export const TotalLinePrimitive = TotalLinePrimitiveRoot as typeof TotalLinePrimitiveRoot & {
+  Amount: typeof TotalLineAmount;
+  Title: typeof TotalLineTitle;
 };
 
 TotalLinePrimitive.Amount = TotalLineAmount;

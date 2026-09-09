@@ -1,11 +1,5 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React from 'react';
+import { compose } from '@/utils';
 import intl from 'react-intl-universal';
 import {
   Button,
@@ -19,7 +13,6 @@ import {
   PopoverInteractionKind,
   Position,
 } from '@blueprintjs/core';
-import * as R from 'ramda';
 import { AppToaster, Can, DrawerActionsBar, Icon } from '@/components';
 import { AbilitySubject, TaxRateAction } from '@/constants/abilityOption';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
@@ -42,6 +35,9 @@ function TaxRateDetailsContentActionsBar({
 
   // #withAlertActions
   openAlert,
+}: {
+  openDialog: (name: string, payload?: any) => void;
+  openAlert: (name: string, payload?: any) => void;
 }) {
   const { taxRateId, taxRate } = useTaxRateDetailsContext();
 
@@ -148,7 +144,7 @@ function TaxRateDetailsContentActionsBar({
   );
 }
 
-export default R.compose(
+export default compose(
   withDrawerActions,
   withDialogActions,
   withAlertActions,

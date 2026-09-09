@@ -1,14 +1,7 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React from 'react';
+import { compose } from '@/utils';
 import type { WithDrawerActionsProps } from '@/containers/Drawer/withDrawerActions';
 import intl from 'react-intl-universal';
-import * as R from 'ramda';
 import { Button, Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { Box, Group, Stack } from '@/components';
@@ -35,9 +28,12 @@ export function ElementCustomizeFieldsMain() {
 
   const CustomizeTabPanel = React.useMemo(
     () =>
-      React.Children.map(CustomizeTabs, (tab) => {
-        return tab.props.id === currentTabId ? tab : null;
-      }).filter(Boolean),
+      // `React.Children.map` отдаёт «всё, что можно нарисовать»: строки и
+      // числа среди прочего. Нас интересуют только узлы со свойством `id`
+      // (Д11 карты v84).
+      (React.Children.map(CustomizeTabs, (tab) =>
+        React.isValidElement(tab) && tab.props.id === currentTabId ? tab : null,
+      ) ?? []).filter(Boolean),
     [CustomizeTabs, currentTabId],
   );
 
@@ -84,6 +80,6 @@ function ElementCustomizeFooterActionsRoot({
   );
 }
 
-const ElementCustomizeFooterActions = R.compose(withDrawerActions)(
+const ElementCustomizeFooterActions = compose(withDrawerActions)(
   ElementCustomizeFooterActionsRoot,
 );

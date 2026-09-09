@@ -1,18 +1,10 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React, { useEffect, useRef } from 'react';
 import { useFormikContext } from 'formik';
-import * as R from 'ramda';
 import { ExchangeRateInputGroup } from '@/components';
 import { useCurrentOrganization } from '@/hooks/state';
 import { useCreditNoteIsForeignCustomer, useCreditNoteSubtotal } from './utils';
 import { withSettings } from '@/containers/Settings/withSettings';
-import { transactionNumber } from '@/utils';
+import { transactionNumber, compose } from '@/utils';
 import {
   useSyncExRateToForm,
   withExchangeRateFetchingLoading,
@@ -46,7 +38,7 @@ function CreditNoteExchangeRateInputFieldRoot({ ...props }) {
   );
 }
 
-export const CreditNoteExchangeRateInputField = R.compose(
+export const CreditNoteExchangeRateInputField = compose(
   withExchangeRateFetchingLoading,
   withExchangeRateItemEntriesPriceRecalc,
 )(CreditNoteExchangeRateInputFieldRoot);
@@ -55,13 +47,13 @@ export const CreditNoteExchangeRateInputField = R.compose(
  * Syncs credit note auto-increment settings to form.
  * @return {React.ReactNode}
  */
-export const CreditNoteSyncIncrementSettingsToForm = R.compose(
+export const CreditNoteSyncIncrementSettingsToForm = compose(
   withSettings(({ creditNoteSettings }: any) => ({
     creditAutoIncrement: creditNoteSettings?.autoIncrement,
     creditNextNumber: creditNoteSettings?.nextNumber,
     creditNumberPrefix: creditNoteSettings?.numberPrefix,
   })),
-)(({ creditAutoIncrement, creditNextNumber, creditNumberPrefix }) => {
+)(({ creditAutoIncrement, creditNextNumber, creditNumberPrefix }: any) => {
   const { setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
@@ -82,10 +74,10 @@ export const CreditNoteSyncIncrementSettingsToForm = R.compose(
  * as an indication the entries rates have been re-calculated.
  * @returns {React.ReactNode}
  */
-export const CreditNoteExchangeRateSync = R.compose(withDialogActions)(
-  ({ openDialog }) => {
+export const CreditNoteExchangeRateSync = compose(withDialogActions)(
+  ({ openDialog }: any) => {
     const subtotal = useCreditNoteSubtotal();
-    const timeout = useRef();
+    const timeout = useRef<ReturnType<typeof setTimeout>>();
 
     useSyncExRateToForm({
       onSynced: () => {

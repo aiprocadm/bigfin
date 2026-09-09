@@ -404,16 +404,34 @@ export const transformToForm = (obj, emptyInitialValues) => {
   );
 };
 
-export function excludePrivateProps(
-  obj: Record<string, any>,
-): Record<string, any> {
+/**
+ * Убирает служебные ключи (те, что начинаются с `_`).
+ *
+ * Вид входа сохраняется: раньше отсюда выходил безымянный набор, и всё, что
+ * ждало объявленную форму значений, ловило расхождение (Д12 карты v84).
+ */
+export function excludePrivateProps<T extends Record<string, any>>(obj: T): T {
   return Object.fromEntries(
-    Object.entries(obj).filter(([key, value]) => !key.startsWith('_')),
-  );
+    Object.entries(obj).filter(([key]) => !key.startsWith('_')),
+  ) as T;
 }
 
-export function inputIntent({ error, touched }) {
-  return error && touched ? Intent.DANGER : '';
+/**
+ * Вид поля: красный, если ошибка уже показана.
+ *
+ * Возвращалась **пустая строка**, а не «нет вида». Blueprint из неё делает
+ * класс `bp4-intent-` (см. `intentClass`: пропускается только `null` и
+ * `Intent.NONE`) — мусорный класс на **двадцати шести** местах вызова. Правил
+ * он ничего, но и правды в нём не было (Д1 карты v84).
+ */
+export function inputIntent({
+  error,
+  touched,
+}: {
+  error?: unknown;
+  touched?: unknown;
+}): Intent {
+  return error && touched ? Intent.DANGER : Intent.NONE;
 }
 
 export function listToTree(

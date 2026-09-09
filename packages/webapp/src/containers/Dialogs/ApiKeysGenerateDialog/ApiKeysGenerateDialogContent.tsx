@@ -8,7 +8,10 @@ import { useGenerateApiKey } from '@/hooks/query';
 import ApiKeysGenerateFormContent from './ApiKeysGenerateFormContent';
 import ApiKeysGenerateFormSchema from './ApiKeysGenerateForm.schema';
 import ApiKeyDisplayView from './ApiKeyDisplayView';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
 const defaultInitialValues = {
@@ -18,11 +21,22 @@ const defaultInitialValues = {
 /**
  * API Keys Generate form dialog content.
  */
+/**
+ * Что окно передаёт содержимому.
+ *
+ * Вид объявлен здесь, а не выведен: сборка отдаёт «что угодно», а `React.lazy`
+ * из «что угодно» делает экран, **не принимающий свойств вовсе** (Д4 карты v84,
+ * тот же случай, что в карте v82).
+ */
+export interface ApiKeysGenerateDialogContentProps {
+  dialogName: string;
+}
+
 function ApiKeysGenerateDialogContent({
   // #withDialogActions
   closeDialog,
   dialogName,
-}) {
+}: ApiKeysGenerateDialogContentProps & WithDialogActionsProps) {
   const [generatedApiKey, setGeneratedApiKey] = useState(null);
   const generateApiKeyMutate = useGenerateApiKey();
 
@@ -83,4 +97,7 @@ function ApiKeysGenerateDialogContent({
   );
 }
 
-export default compose(withDialogActions)(ApiKeysGenerateDialogContent);
+const ApiKeysGenerateDialogContentComposed: React.ComponentType<ApiKeysGenerateDialogContentProps> =
+  compose(withDialogActions)(ApiKeysGenerateDialogContent);
+
+export default ApiKeysGenerateDialogContentComposed;

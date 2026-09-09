@@ -1,7 +1,7 @@
 import React from 'react';
+import { compose } from '@/utils';
 import intl from 'react-intl-universal';
 import { Button, Intent } from '@blueprintjs/core';
-import * as R from 'ramda';
 import { EmptyStatus, Can } from '@/components';
 import { SaleInvoiceAction, AbilitySubject } from '@/constants/abilityOption';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
@@ -36,6 +36,6 @@ function TaxRatesLandingEmptyStateRoot({
   );
 }
 
-export const TaxRatesLandingEmptyState = R.compose(withDialogActions)(
+export const TaxRatesLandingEmptyState = compose(withDialogActions)(
   TaxRatesLandingEmptyStateRoot,
 );

@@ -1,10 +1,3 @@
-// @ts-nocheck
-// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
-// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
-// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
-// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
-// своего разбора, а половину дерева без пометки оставить нельзя: тогда
-// проверка типов красная и сборка не проходит.
 import React, { useCallback } from 'react';
 import { Formik, Form } from 'formik';
 
@@ -20,6 +13,10 @@ export default function NumberFormatDropdown({
   numberFormat = {},
   onSubmit,
   submitDisabled = false,
+}: {
+  numberFormat?: Record<string, any>;
+  onSubmit?: (values: any) => void;
+  submitDisabled?: boolean;
 }) {
   const initialValues = {
     formatMoney: 'total',
@@ -39,14 +36,16 @@ export default function NumberFormatDropdown({
     { setSubmitting }: { setSubmitting: (v: boolean) => void },
   ) => {
     setSubmitting(true);
-    onSubmit(values);
+    onSubmit && onSubmit(values);
   };
 
   return (
     <div className={'number-format-dropdown'}>
       <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
         <Form>
-          <NumberFormatFields onCancelClick={handleCancelClick} />
+          {/* Поля вида чисел свойств не принимают вовсе: `onCancelClick`
+              сюда передавали, но никто его не читал (Д7 карты v84). */}
+          <NumberFormatFields />
           <NumberFormatFooter submitDisabled={submitDisabled} />
         </Form>
       </Formik>

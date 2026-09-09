@@ -278,7 +278,7 @@ export const Dropzone = (_props: DropzoneProps) => {
   );
 };
 
-Dropzone.displayName = '@mantine/dropzone/Dropzone';
+Dropzone.displayName = 'Dropzone';
 Dropzone.Accept = DropzoneAccept;
 Dropzone.Idle = DropzoneIdle;
 Dropzone.Reject = DropzoneReject;

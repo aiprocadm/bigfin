@@ -1,9 +1,10 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
 
@@ -16,7 +17,7 @@ const SalesByItemsPdfDialogContent = lazy(
  * Sales by items sheet pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function SalesByItemsPdfDialogRoot({ dialogName, payload, isOpen }) {
+function SalesByItemsPdfDialogRoot({ dialogName, payload, isOpen }: DialogReduxProps) {
   return (
     <Dialog
       name={dialogName}
@@ -28,7 +29,9 @@ function SalesByItemsPdfDialogRoot({ dialogName, payload, isOpen }) {
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <SalesByItemsPdfDialogContent dialogName={dialogName} />
+        {/* Содержимое окна не принимает свойств вовсе: `dialogName` сюда
+            передавали, но никто его не читал (Д2 карты v83). */}
+        <SalesByItemsPdfDialogContent />
       </DialogSuspense>
     </Dialog>
   );

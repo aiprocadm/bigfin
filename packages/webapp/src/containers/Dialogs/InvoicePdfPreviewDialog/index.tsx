@@ -1,10 +1,18 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
 import { T, Dialog, DialogSuspense } from '@/components';
 
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
@@ -17,7 +25,7 @@ const PdfPreviewDialogContent = lazy(() =>
 /**
  * Invoice PDF preview dialog.
  */
-function InvoicePdfPreviewDialog({ dialogName, payload, isOpen }) {
+function InvoicePdfPreviewDialog({ dialogName, payload, isOpen }: DialogReduxProps) {
   return (
     <Dialog
       name={dialogName}

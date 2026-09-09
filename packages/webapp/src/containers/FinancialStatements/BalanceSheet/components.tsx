@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import {
   Button,
@@ -91,7 +90,8 @@ export const useBalanceSheetColumns = () => {
  * @returns {JSX.Element}
  */
 export const BalanceSheetExportMenu = () => {
-  const toastKey = useRef(null);
+  // Ключ уведомления: до первого показа его нет.
+  const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
     isCloseButtonShown: true,
     timeout: 2000,

@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import intl from 'react-intl-universal';
 import {
   Button,
@@ -64,7 +70,7 @@ function CashFlowAccountsActionsBar({
     });
   };
   // Handle inactive switch changing.
-  const handleInactiveSwitchChange = (event) => {
+  const handleInactiveSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
     setCashflowAccountsTableState({ inactiveMode: checked });
   };
@@ -92,7 +98,12 @@ function CashFlowAccountsActionsBar({
           <NavbarDivider />
         </Can>
         <NavbarDivider />
-        <Can I={CashflowAction.Edit} a={AbilitySubject.Cashflow}>
+        {/* Права `Edit` у денежных счетов нет ни на клиенте, ни на сервере
+            (`CashflowAction` — только `View`, `Create`, `Delete`). CASL на
+            пустое право отвечает «нельзя», поэтому переключатель «показать
+            неактивные» был скрыт у всех. Переключатель меняет только показ —
+            значит, право на просмотр (Д6 карты v83). */}
+        <Can I={CashflowAction.View} a={AbilitySubject.Cashflow}>
           <Switch
             labelElement={<T id={'inactive'} />}
             defaultChecked={false}

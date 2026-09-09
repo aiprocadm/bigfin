@@ -18,6 +18,10 @@ export const getCustomersTransactionsQuerySchema = () => {
 };
 
 export const getCustomersTransactionsDefaultQuery = () => ({
+  // Настройка вида чисел: экран её пишет в адрес, а разбор берёт только
+  // ключи из набора по умолчанию — без этой строки настройка терялась на
+  // первом же обновлении (Д3 карты v83).
+  numberFormat: {},
   fromDate: moment().startOf('month').format('YYYY-MM-DD'),
   toDate: moment().format('YYYY-MM-DD'),
   customersIds: [],

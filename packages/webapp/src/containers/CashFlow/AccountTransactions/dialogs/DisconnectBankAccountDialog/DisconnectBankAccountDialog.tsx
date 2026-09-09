@@ -1,5 +1,12 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import intl from 'react-intl-universal';
+import type { DialogReduxProps } from '@/components/DialogReduxConnect';
 import React from 'react';
 import { Dialog, DialogSuspense } from '@/components';
 import withDialogRedux from '@/components/DialogReduxConnect';
@@ -14,9 +21,9 @@ const DisconnectBankAccountDialogContent = React.lazy(
  */
 function DisconnectBankAccountDialogRoot({
   dialogName,
-  payload: { bankAccountId },
+  payload: { bankAccountId } = { bankAccountId: null },
   isOpen,
-}) {
+}: DialogReduxProps<{ bankAccountId: number | null }>) {
   return (
     <Dialog
       name={dialogName}

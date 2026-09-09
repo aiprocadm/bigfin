@@ -1,7 +1,15 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React, { useState } from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { compose } from '@/utils';
 
 const ApiKeysGenerateDialogContent = React.lazy(
@@ -11,7 +19,7 @@ const ApiKeysGenerateDialogContent = React.lazy(
 /**
  * API Keys Generate dialog.
  */
-function ApiKeysGenerateDialog({ dialogName, payload, isOpen }) {
+function ApiKeysGenerateDialog({ dialogName, payload, isOpen }: DialogReduxProps) {
   return (
     <Dialog
       name={dialogName}

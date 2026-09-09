@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { flatten, map } from 'lodash';
 import * as R from 'ramda';
@@ -18,11 +17,13 @@ const ExcludedTransactionsContext =
     {} as ExcludedBankTransactionsContextValue,
   );
 
-function flattenInfinityPagesData(data) {
+function flattenInfinityPagesData(data: any) {
   return flatten(map(data.pages, (page) => page.data));
 }
 
 interface ExcludedBankTransactionsTableBootProps {
+  /** Диапазон дат из надстройки банка. */
+  uncategorizedTransactionsFilter?: { fromDate?: string; toDate?: string };
   children: React.ReactNode;
 }
 
@@ -51,7 +52,7 @@ function ExcludedBankTransactionsTableBootRoot({
     page_size: 50,
     account_id: accountId,
     min_date: uncategorizedTransactionsFilter?.fromDate || null,
-    max_date: uncategorizedTransactionsFilter.toDate || null,
+    max_date: uncategorizedTransactionsFilter?.toDate || null,
   });
   // Memorized the cashflow account transactions.
   const excludedBankTransactions = React.useMemo(

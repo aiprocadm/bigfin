@@ -1,10 +1,11 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
@@ -18,7 +19,7 @@ const TrialBalanceSheetPdfDialogContent = lazy(
  * Trial balance sheet pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function TrialBalanceSheetPdfDialogRoot({ dialogName, payload, isOpen }) {
+function TrialBalanceSheetPdfDialogRoot({ dialogName, payload, isOpen }: DialogReduxProps) {
   return (
     <Dialog
       name={dialogName}
@@ -30,10 +31,10 @@ function TrialBalanceSheetPdfDialogRoot({ dialogName, payload, isOpen }) {
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <TrialBalanceSheetPdfDialogContent
-          dialogName={dialogName}
-          subscriptionForm={payload}
-        />
+        {/* Содержимое окна не принимает свойств вовсе: `dialogName` и
+            `subscriptionForm` сюда передавали, но никто их не читал
+            (Д2 карты v83). */}
+        <TrialBalanceSheetPdfDialogContent />
       </DialogSuspense>
     </Dialog>
   );

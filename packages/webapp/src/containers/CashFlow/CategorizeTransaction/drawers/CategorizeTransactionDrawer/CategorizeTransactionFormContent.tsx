@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import intl from 'react-intl-universal';
 import React from 'react';
 import styled from 'styled-components';
@@ -44,7 +50,7 @@ export function CategorizeTransactionFormContent() {
   const { mutateAsync: createVendor, isLoading: isCreatingVendor } =
     useCreateVendor();
 
-  const handleContactSelected = (contact) => {
+  const handleContactSelected = (contact: any) => {
     setFieldValue('contactId', contact ? contact.id : null);
   };
 

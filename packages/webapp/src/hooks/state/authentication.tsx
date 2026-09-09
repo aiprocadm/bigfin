@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { isAuthenticated } from '@/store/authentication/authentication.reducer';
@@ -29,7 +28,10 @@ export const useAuthActions = () => {
   const queryClient = useQueryClient();
 
   return {
-    setLogin: useCallback((login) => dispatch(setLogin(login)), [dispatch]),
+    // `setLogin` доводов не принимает, а сам тип действия `AUTH_LOGIN_SUCCESS`
+    // не обрабатывает ни один сводитель — довод уходил в никуда
+    // (Д10 карты v83).
+    setLogin: useCallback(() => dispatch(setLogin()), [dispatch]),
     setLogout: useCallback(() => {
       // Resets store state.
       // dispatch(setStoreReset());
@@ -94,7 +96,11 @@ export const useSetAuthEmailConfirmed = () => {
   const dispatch = useDispatch();
 
   return useCallback(
-    (verified?: boolean = true, email: string) =>
+    // Было `(verified?: boolean = true, email: string)` — и знак «необязательно»,
+    // и значение по умолчанию сразу, да ещё обязательный довод после
+    // необязательного. Такое не принимает даже разбор; держалось только тем,
+    // что файл стоял под пометкой (Д11 карты v83).
+    (verified: boolean = true, email?: string) =>
       dispatch(setEmailConfirmed(verified, email)),
     [dispatch],
   );

@@ -34,3 +34,17 @@
 // библиотеке (карта v74). Переход на 1.x — отдельный разговор.
 declare module 'react-use-context-menu';
 declare module 'react-scroll-sync';
+
+/**
+ * Виджет оплаты Lemon Squeezy подключается тегом `<script>` и живёт в глобальном
+ * объекте окна. Объявлено то, что витрина действительно у него зовёт
+ * (Д7 карты v83).
+ */
+interface Window {
+  LemonSqueezy: {
+    Setup: (options: {
+      eventHandler: (event: { event: string }) => void;
+    }) => void;
+    Url: { Open: (url: string) => void };
+  };
+}

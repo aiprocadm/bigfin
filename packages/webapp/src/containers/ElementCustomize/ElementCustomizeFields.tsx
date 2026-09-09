@@ -1,5 +1,12 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React from 'react';
+import type { WithDrawerActionsProps } from '@/containers/Drawer/withDrawerActions';
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { Button, Intent } from '@blueprintjs/core';
@@ -48,7 +55,9 @@ export function ElementCustomizeFieldsMain() {
   );
 }
 
-function ElementCustomizeFooterActionsRoot({ closeDrawer }) {
+function ElementCustomizeFooterActionsRoot({
+  closeDrawer,
+}: WithDrawerActionsProps) {
   const { name } = useDrawerContext();
   const { submitForm, isSubmitting } = useFormikContext<any>();
 

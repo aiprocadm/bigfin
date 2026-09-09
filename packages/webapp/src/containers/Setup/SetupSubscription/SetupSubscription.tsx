@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect } from 'react';
 import * as R from 'ramda';
 
@@ -13,6 +12,8 @@ import styles from './SetupSubscription.module.scss';
 function SetupSubscription({
   // #withSubscriptionPlansActions
   initSubscriptionPlans,
+}: {
+  initSubscriptionPlans: () => void;
 }) {
   useEffect(() => {
     initSubscriptionPlans();

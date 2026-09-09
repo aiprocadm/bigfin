@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import {
   usePlaidLink,
@@ -49,7 +48,9 @@ export function LaunchLink(props: PlaidLaunchLinkProps) {
     } else {
       await exchangeAccessToken({
         public_token: publicToken,
-        institution_id: metadata.institution.institution_id,
+        // Plaid не всегда возвращает банк: в режиме обновления связи
+        // `institution` приходит пустым.
+        institution_id: metadata.institution?.institution_id,
       });
     }
     // resetError();
@@ -62,7 +63,10 @@ export function LaunchLink(props: PlaidLaunchLinkProps) {
     metadata: PlaidLinkOnExitMetadata,
   ) => {
     // log and save error and metatdata
-    logExit(error, metadata, props.userId);
+    // Третьим доводом стоял `props.userId`, которого у этого экрана нет
+    // вовсе, а запись выхода принимает два — довод молча выбрасывался
+    // (Д4 карты v83).
+    logExit(error, metadata);
     if (error != null) {
       // setError(error.error_code, error.display_message || error.error_message);
     }

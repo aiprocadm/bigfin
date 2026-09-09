@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMutation } from 'react-query';
 import useApiRequest from '../useRequest';
 import { transformToCamelCase } from '@/utils';
@@ -15,7 +14,7 @@ interface UploadAttachmentResponse {
 /**
  * Uploads the given attachments.
  */
-export function useUploadAttachments(props) {
+export function useUploadAttachments(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation<UploadAttachmentResponse>(
@@ -30,7 +29,7 @@ export function useUploadAttachments(props) {
 /**
  * Deletes the given attachment key.
  */
-export function useDeleteAttachment(props) {
+export function useDeleteAttachment(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -42,7 +41,7 @@ export function useDeleteAttachment(props) {
 /**
  * Uploads the given attachments.
  */
-export function useGetPresignedUrlAttachment(props?) {
+export function useGetPresignedUrlAttachment(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(

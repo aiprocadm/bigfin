@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import type { ProviderProps } from '@/utils/formTypes';
 import { useCustomers } from '@/hooks/query';
 import { useCreateProject, useEditProject, useProject } from '../../hooks';
 import { DialogContent } from '@/components';
@@ -15,7 +15,7 @@ function ProjectFormProvider({
   dialogName,
   projectId,
   ...props
-}) {
+}: ProviderProps<{ dialogName?: string; projectId?: number }>) {
   // Create and edit project mutations.
   const { mutateAsync: createProjectMutate } = useCreateProject();
   const { mutateAsync: editProjectMutate } = useEditProject();

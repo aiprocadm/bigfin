@@ -1,5 +1,5 @@
 // @ts-nocheck
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import useApiRequest from './useRequest';
@@ -16,7 +16,11 @@ interface IArgs {
 export const useDownloadFile = (args: IArgs) => {
   const apiRequest = useApiRequest();
 
-  const mutation = useMutation<void, AxiosError, IArgs>(
+  // Доводов у запуска нет: всё, что нужно, крючок получил при создании и
+  // держит в замыкании. Объявлено было `IArgs` — будто их надо передать ещё
+  // раз, и **тридцать** вызовов вида `xlsxExport()` в пятнадцати отчётах
+  // считались ошибкой (Д1 карты v83).
+  const mutation = useMutation<AxiosResponse, AxiosError, void>(
     () =>
       apiRequest
         .get(args.url, {

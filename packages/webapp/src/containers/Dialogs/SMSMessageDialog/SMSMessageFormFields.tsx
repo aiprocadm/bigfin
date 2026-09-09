@@ -1,5 +1,12 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React from 'react';
+import type { FieldProps } from 'formik';
 import styled from 'styled-components';
 import { useFormikContext, FastField, ErrorMessage } from 'formik';
 import { Intent, Button, FormGroup, TextArea } from '@blueprintjs/core';
@@ -29,7 +36,7 @@ export default function SMSMessageFormFields() {
     <div>
       {/* ----------- Message Text ----------- */}
       <FastField name={'message_text'}>
-        {({ field, meta: { error, touched } }) => (
+        {({ field, meta: { error, touched } }: FieldProps) => (
           <FormGroup
             label={<T id={'notify_via_sms.dialog.message_text'} />}
             className={'form-group--message_text'}

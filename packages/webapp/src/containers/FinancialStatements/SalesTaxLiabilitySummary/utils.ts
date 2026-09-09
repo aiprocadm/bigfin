@@ -13,6 +13,11 @@ import { useSalesTaxLiabilitySummaryContext } from './SalesTaxLiabilitySummaryBo
  * @returns {}
  */
 export const getDefaultSalesTaxLiablitySummaryQuery = () => ({
+  // Настройка вида чисел: экран её пишет в адрес (`setLocationQuery({ …query,
+  // numberFormat })`), а при чтении разбор берёт только ключи из набора по
+  // умолчанию — без этой строки настройка терялась на первом же обновлении.
+  // У семи отчётов из одиннадцати она есть; здесь её забыли (Д3 карты v83).
+  numberFormat: {},
   fromDate: moment().startOf('month').format('YYYY-MM-DD'),
   toDate: moment().format('YYYY-MM-DD'),
   basis: 'cash',

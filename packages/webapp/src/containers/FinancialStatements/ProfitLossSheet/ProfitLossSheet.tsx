@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React from 'react';
 import moment from 'moment';
 import * as R from 'ramda';
@@ -26,12 +32,14 @@ import { ProfitLossSheetDialogs } from './ProfitLossSheetDialogs';
 function ProfitLossSheet({
   // #withProfitLossActions
   toggleProfitLossFilterDrawer: toggleDisplayFilterDrawer,
+}: {
+  toggleProfitLossFilterDrawer: (open?: boolean) => void;
 }) {
   // Profit/loss sheet query.
   const { query, setLocationQuery } = useProfitLossSheetQuery();
 
   // Handle submit filter.
-  const handleSubmitFilter = (filter) => {
+  const handleSubmitFilter = (filter: Record<string, any>) => {
     const newFilter = {
       ...filter,
       fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -40,7 +48,7 @@ function ProfitLossSheet({
     setLocationQuery(newFilter);
   };
   // Handle number format submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: Record<string, any>) => {
     setLocationQuery({
       ...query,
       numberFormat,

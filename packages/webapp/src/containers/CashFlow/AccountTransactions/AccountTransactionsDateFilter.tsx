@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import intl from 'react-intl-universal';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Button, FormGroup, Intent, Position } from '@blueprintjs/core';
@@ -48,7 +54,7 @@ export function AccountTransactionsDateFilterForm({
   initialValues = {},
   onSubmit,
 }: UncategorizedTransactionsDateFilterProps) {
-  const handleSubmit = (values, bag) => {
+  const handleSubmit = (values: any, bag: any) => {
     return onSubmit && onSubmit(values, bag);
   };
 
@@ -150,7 +156,7 @@ function AccountTransactionsDateFilterFooter() {
 function AccountTransactionDatePeriodField() {
   const { setFieldValue } = useFormikContext<any>();
 
-  const handleItemChange = (item) => {
+  const handleItemChange = (item: any) => {
     const { fromDate, toDate } = getDateRangePeriod(item.value);
 
     setFieldValue('fromDate', fromDate);

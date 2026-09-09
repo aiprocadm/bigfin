@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useCallback } from 'react';
 import moment from 'moment';
 
@@ -24,12 +23,14 @@ import { InventoryValuationDialogs } from './InventoryValuationDialogs';
 function InventoryValuation({
   // #withInventoryValuationActions
   toggleInventoryValuationFilterDrawer,
+}: {
+  toggleInventoryValuationFilterDrawer: (open?: boolean) => void;
 }) {
   const { query, setLocationQuery } = useInventoryValuationQuery();
 
   // Handle filter form submit.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: Record<string, any>) => {
       const newFilter = {
         ...filter,
         asDate: moment(filter.asDate).format('YYYY-MM-DD'),
@@ -39,7 +40,7 @@ function InventoryValuation({
     [setLocationQuery],
   );
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: Record<string, any>) => {
     setLocationQuery({
       ...query,
       numberFormat,

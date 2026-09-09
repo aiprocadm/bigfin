@@ -7,6 +7,10 @@ import { transformToForm } from '@/utils';
 
 export const getDefaultVendorsBalanceQuery = () => {
   return {
+    // Настройка вида чисел: экран её пишет в адрес, а разбор берёт только
+    // ключи из набора по умолчанию — без этой строки настройка терялась на
+    // первом же обновлении (Д3 карты v83).
+    numberFormat: {},
     asDate: moment().endOf('day').format('YYYY-MM-DD'),
     filterByOption: 'with-transactions',
     vendorsIds: [],

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   useMutation,
   UseMutationOptions,
@@ -86,7 +85,17 @@ export function useOneClickDemoBuildJob(
 interface OneClickSigninDemoValues {
   demoId: string;
 }
-interface OneClickSigninDemoRes {}
+/**
+ * Вход в демо тоже возвращает ответ **как есть**, без разбора — обработчик
+ * читает `res.data.access_token`. Объявлено было пустым (Д9 карты v83).
+ */
+interface OneClickSigninDemoRes {
+  data: {
+    access_token: string;
+    organization_id: string;
+    user_id: string;
+  };
+}
 
 /**
  * Sign-in to the created one-click demo account.

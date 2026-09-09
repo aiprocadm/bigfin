@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import {
   Button,
@@ -90,7 +89,8 @@ export function CashFlowStatementAlerts() {
  * @returns {JSX.Element}
  */
 export function CashflowSheetExportMenu() {
-  const toastKey = useRef(null);
+  // Ключ уведомления: до первого показа его нет.
+  const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
     isCloseButtonShown: true,
     timeout: 2000,

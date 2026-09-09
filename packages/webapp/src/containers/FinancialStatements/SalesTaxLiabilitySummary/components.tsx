@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useRef } from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -36,7 +35,8 @@ export function SalesTaxLiabilitySummaryLoadingBar() {
  * @returns {JSX.Element}
  */
 export function SalesTaxLiabilityExportMenu() {
-  const toastKey = useRef(null);
+  // Ключ уведомления: до первого показа его нет.
+  const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
     isCloseButtonShown: true,
     timeout: 2000,

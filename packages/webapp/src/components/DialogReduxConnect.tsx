@@ -35,3 +35,15 @@ export default (mapState?: any) => {
   };
   return connect(mapStateToProps);
 };
+
+/**
+ * Свойства ящика, подставляемые надстройкой `withDrawer`.
+ *
+ * То же, что у окна, но имя приходит под ключом `name`, а не `dialogName`
+ * (Д13 карты v83).
+ */
+export interface DrawerReduxProps<TPayload = any> {
+  name: string;
+  isOpen: boolean;
+  payload?: TPayload;
+}

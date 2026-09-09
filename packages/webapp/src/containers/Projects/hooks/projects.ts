@@ -15,7 +15,7 @@ const commonInvalidateQueries = (queryClient: any) => {
  * Create a new project
  * @param props
  */
-export function useCreateProject(props: any) {
+export function useCreateProject(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -33,7 +33,7 @@ export function useCreateProject(props: any) {
  * @param props
  * @returns
  */
-export function useEditProject(props: any) {
+export function useEditProject(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -55,7 +55,7 @@ export function useEditProject(props: any) {
  * Delete the given project
  * @param props
  */
-export function useDeleteProject(props: any) {
+export function useDeleteProject(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -101,7 +101,7 @@ const transformProjects = (res: any) => ({
  * @param query
  * @param props
  */
-export function useProjects(query: any, props: any) {
+export function useProjects(query: any, props?: any) {
   return useRequestQuery(
     [t.PROJECTS, query],
     { method: 'get', url: 'deals', params: query },
@@ -120,7 +120,7 @@ export function useProjects(query: any, props: any) {
  * @param props
  * @returns
  */
-export function useProjectStatus(props: any) {
+export function useProjectStatus(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

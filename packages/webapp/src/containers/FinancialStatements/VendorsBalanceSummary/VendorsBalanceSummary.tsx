@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import moment from 'moment';
 
@@ -25,11 +24,13 @@ import { compose } from '@/utils';
 function VendorsBalanceSummary({
   // #withVendorsBalanceSummaryActions
   toggleVendorSummaryFilterDrawer,
+}: {
+  toggleVendorSummaryFilterDrawer: (open?: boolean) => void;
 }) {
   const { query, setLocationQuery } = useVendorsBalanceSummaryQuery();
 
   // Handle refetch vendors balance summary.
-  const handleFilterSubmit = (filter) => {
+  const handleFilterSubmit = (filter: Record<string, any>) => {
     const _filter = {
       ...filter,
       asDate: moment(filter.asDate).format('YYYY-MM-DD'),
@@ -38,7 +39,7 @@ function VendorsBalanceSummary({
   };
 
   // Handle number format submit.
-  const handleNumberFormatSubmit = (format) => {
+  const handleNumberFormatSubmit = (format: Record<string, any>) => {
     setLocationQuery({
       ...query,
       numberFormat: format,

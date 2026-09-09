@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { setSubscriptions } from '@/store/subscription/subscription.actions';
@@ -14,7 +13,7 @@ import {
 export const useSetSubscriptions = () => {
   const dispatch = useDispatch();
 
-  return useCallback((subscriptions) => {
+  return useCallback((subscriptions: any) => {
     dispatch(setSubscriptions(subscriptions));
   }, [dispatch]);
 }

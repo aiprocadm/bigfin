@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React, { useEffect, useRef } from 'react';
 import { useFormikContext } from 'formik';
 import * as R from 'ramda';
@@ -50,7 +56,7 @@ export const CreditNoteExchangeRateInputField = R.compose(
  * @return {React.ReactNode}
  */
 export const CreditNoteSyncIncrementSettingsToForm = R.compose(
-  withSettings(({ creditNoteSettings }) => ({
+  withSettings(({ creditNoteSettings }: any) => ({
     creditAutoIncrement: creditNoteSettings?.autoIncrement,
     creditNextNumber: creditNoteSettings?.nextNumber,
     creditNumberPrefix: creditNoteSettings?.numberPrefix,

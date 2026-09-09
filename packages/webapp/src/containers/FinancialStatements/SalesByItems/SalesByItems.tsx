@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useCallback } from 'react';
 import moment from 'moment';
 
@@ -23,12 +22,14 @@ import { SalesByItemsDialogs } from './SalesByitemsDialogs';
 function SalesByItems({
   // #withSellsByItemsActions
   toggleSalesByItemsFilterDrawer,
+}: {
+  toggleSalesByItemsFilterDrawer: (open?: boolean) => void;
 }) {
   const { query, setLocationQuery } = useSalesByItemsQuery();
 
   // Handle filter form submit.
   const handleFilterSubmit = useCallback(
-    (filter) => {
+    (filter: Record<string, any>) => {
       const parsedFilter = {
         ...filter,
         fromDate: moment(filter.fromDate).format('YYYY-MM-DD'),
@@ -40,7 +41,7 @@ function SalesByItems({
   );
 
   // Handle number format form submit.
-  const handleNumberFormatSubmit = (numberFormat) => {
+  const handleNumberFormatSubmit = (numberFormat: Record<string, any>) => {
     setLocationQuery({
       ...query,
       numberFormat,

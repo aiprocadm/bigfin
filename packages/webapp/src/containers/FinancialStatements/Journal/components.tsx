@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import classNames from 'classnames';
 import {
@@ -77,7 +76,8 @@ export function JournalSheetAlerts() {
  * @returns {JSX.Element}
  */
 export const JournalSheetExportMenu = () => {
-  const toastKey = useRef(null);
+  // Ключ уведомления: до первого показа его нет.
+  const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
     isCloseButtonShown: true,
     timeout: 2000,

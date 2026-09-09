@@ -1,9 +1,10 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import classNames from 'classnames';
 
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { CLASSES } from '@/constants/classes';
 import { compose } from '@/utils';
 
@@ -16,7 +17,7 @@ const ARAgingSummaryPdfDialogContent = lazy(
  * Balance sheet pdf preview dialog.
  * @returns {React.ReactNode}
  */
-function ARAgingSummaryPdfDialogRoot({ dialogName, payload, isOpen }) {
+function ARAgingSummaryPdfDialogRoot({ dialogName, payload, isOpen }: DialogReduxProps) {
   return (
     <Dialog
       name={dialogName}
@@ -28,7 +29,9 @@ function ARAgingSummaryPdfDialogRoot({ dialogName, payload, isOpen }) {
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <ARAgingSummaryPdfDialogContent dialogName={dialogName} />
+        {/* Содержимое окна не принимает свойств вовсе: `dialogName` сюда
+            передавали, но никто его не читал (Д2 карты v83). */}
+        <ARAgingSummaryPdfDialogContent />
       </DialogSuspense>
     </Dialog>
   );

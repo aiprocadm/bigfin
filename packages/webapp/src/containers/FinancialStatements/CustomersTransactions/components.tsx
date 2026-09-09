@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import { AppToaster, If, Stack } from '@/components';
@@ -113,7 +112,8 @@ export function CustomersTransactionsLoadingBar() {
  * @returns {JSX.Element}
  */
 export function CustomersTransactionsExportMenu() {
-  const toastKey = useRef(null);
+  // Ключ уведомления: до первого показа его нет.
+  const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
     isCloseButtonShown: true,
     timeout: 2000,

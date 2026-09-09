@@ -5,23 +5,30 @@ import type { RootState } from '@/store/reducers';
 type SubscriptionRecord = Record<string, unknown>;
 type SubscriptionProps = { subscriptionType?: string; subscriptionTypes?: Array<string> };
 
+// Второй довод необязателен: через `connect` сюда приходят свойства экрана, а
+// через `useSelector` — нет, и тогда его просто нет. Объявление требовало его
+// всегда, поэтому крючок подписки не проходил проверку (Д5 карты v83).
 const subscriptionSelector =
   (slug?: string) =>
-  (state: RootState, props: SubscriptionProps): SubscriptionRecord | undefined => {
+  (
+    state: RootState,
+    props?: SubscriptionProps,
+  ): SubscriptionRecord | undefined => {
     const subscriptions = Object.values(state.subscriptions.data) as SubscriptionRecord[];
     return subscriptions.find(
-      (subscription) => subscription['slug'] === (slug || props.subscriptionType),
+      (subscription) => subscription['slug'] === (slug || props?.subscriptionType),
     );
   };
 
 const subscriptionsSelector = (
   state: RootState,
-  props: SubscriptionProps,
+  props?: SubscriptionProps,
 ): SubscriptionRecord[] => {
   const subscriptions = Object.values(state.subscriptions.data) as SubscriptionRecord[];
   return subscriptions.filter(
     (subscription) =>
-      includes(props.subscriptionTypes, subscription['slug']) || !props.subscriptionTypes,
+      includes(props?.subscriptionTypes, subscription['slug']) ||
+      !props?.subscriptionTypes,
   );
 };
 

@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React, { useCallback } from 'react';
 import { Formik, Form } from 'formik';
 
@@ -28,7 +34,10 @@ export default function NumberFormatDropdown({
   const handleCancelClick = useCallback(() => {}, []);
 
   // Handle form submit.
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = (
+    values: any,
+    { setSubmitting }: { setSubmitting: (v: boolean) => void },
+  ) => {
     setSubmitting(true);
     onSubmit(values);
   };

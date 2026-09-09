@@ -18,7 +18,13 @@ export interface BankingMapped {
   enableMultipleCategorization: boolean;
   transactionsToCategorizeIdsSelected: number[];
   categorizedTransactionsSelected: number[];
-  uncategorizedTransactionsFilter: string;
+  /**
+   * Диапазон дат для списков операций. Карта v82 объявила его строкой —
+   * это была **выдумка**: сводитель хранит объект
+   * (`uncategorizedFilter: { fromDate?: string; toDate?: string }`), и из-за
+   * ложного объявления фильтр дат выглядел неработающим (Д12 карты v83).
+   */
+  uncategorizedTransactionsFilter: { fromDate?: string; toDate?: string };
 }
 
 export const withBanking = <TMapped,>(

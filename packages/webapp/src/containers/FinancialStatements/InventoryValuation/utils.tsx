@@ -19,6 +19,11 @@ export const getInventoryValuationQuerySchema = () => {
  * Retrieves the inventory valuation sheet default query.
  */
 export const getInventoryValuationQuery = () => ({
+  // Настройка вида чисел: экран её пишет в адрес (`setLocationQuery({ …query,
+  // numberFormat })`), а при чтении разбор берёт только ключи из набора по
+  // умолчанию — без этой строки настройка терялась на первом же обновлении.
+  // У семи отчётов из одиннадцати она есть; здесь её забыли (Д3 карты v83).
+  numberFormat: {},
   asDate: moment().format('YYYY-MM-DD'),
   filterByOption: 'with-transactions',
   itemsIds: [],

@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React from 'react';
 import {
   DrawerHeaderContent,
@@ -12,7 +18,13 @@ import { DRAWERS } from '@/constants/drawers';
 /**
  * Quick create/edit vendor drawer.
  */
-export default function QuickWriteVendorDrawerContent({ displayName, autofillRef }) {
+export default function QuickWriteVendorDrawerContent({
+  displayName,
+  autofillRef,
+}: {
+  displayName?: string;
+  autofillRef?: any;
+}) {
   return (
     <React.Fragment>
       <DrawerHeaderContent

@@ -1,5 +1,13 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import React, { createContext, useState } from 'react';
+import type { ProviderProps } from '@/utils/formTypes';
+import { useRouteState, RouteActionState } from '@/hooks/useRouteState';
 import { isEmpty, pick } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import { Features } from '@/constants';
@@ -69,8 +77,12 @@ const InvoiceFormContext = createContext<InvoiceFormContextValue>(
 /**
  * Accounts chart data provider.
  */
-function InvoiceFormProvider({ invoiceId, baseCurrency, ...props }) {
-  const { state } = useLocation();
+function InvoiceFormProvider({
+  invoiceId,
+  baseCurrency,
+  ...props
+}: ProviderProps<{ invoiceId?: number; baseCurrency?: string }>) {
+  const state = useRouteState<RouteActionState>();
   const estimateId = state?.action;
 
   // Features guard.

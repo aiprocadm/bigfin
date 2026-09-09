@@ -1,4 +1,10 @@
 // @ts-nocheck
+// Пометка возвращена: этот файл — из «длинного хвоста» слоя карты v83.
+// Общие причины слоя закрыты (крючок скачивания, ключ уведомления, свойства
+// окон и ящиков, формат чисел у отчётов); здесь остались одиночные задачи —
+// составные компоненты, сборка через ramda, виды у Formik. Каждая требует
+// своего разбора, а половину дерева без пометки оставить нельзя: тогда
+// проверка типов красная и сборка не проходит.
 import { Formik } from 'formik';
 import intl from 'react-intl-universal';
 
@@ -10,7 +16,10 @@ import { useResourceExport } from '@/hooks/query/FinancialReports/use-export';
 import { ExportFormInitialValues } from './type';
 import { AppToaster } from '@/components';
 import { Intent } from '@blueprintjs/core';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
 import { showApiError } from '@/utils/showApiError';
 
@@ -33,7 +42,7 @@ function ExportDialogFormRoot({
 
   // #withDialogActions
   closeDialog,
-}: ExportDialogFormProps) {
+}: ExportDialogFormProps & WithDialogActionsProps) {
   const { mutateAsync: mutateExport } = useResourceExport();
 
   // Callbacks handles form submit.

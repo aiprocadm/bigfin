@@ -1,8 +1,6 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import * as Yup from 'yup';
-import { castArray } from 'lodash';
 import intl from 'react-intl-universal';
 import { transformToForm } from '@/utils';
 import { useAppQueryString } from '@/hooks';
@@ -23,19 +21,18 @@ export const getDefaultSalesTaxLiablitySummaryQuery = () => ({
 /**
  * Parses the sales tax liability summary query.
  */
-const parseSalesTaxLiabilitySummaryQuery = (locationQuery) => {
+const parseSalesTaxLiabilitySummaryQuery = (locationQuery: any) => {
   const defaultQuery = getDefaultSalesTaxLiablitySummaryQuery();
 
   const transformed = {
     ...defaultQuery,
     ...transformToForm(locationQuery, defaultQuery),
   };
-  return {
-    ...transformed,
-
-    // Ensures the branches ids is always array.
-    branchesIds: castArray(transformed.branchesIds),
-  };
+  // Строка «branchesIds: castArray(transformed.branchesIds)» отсюда убрана.
+  // У пяти соседних отчётов `branchesIds` есть в наборе по умолчанию и есть
+  // выбор подразделений на экране; у этого отчёта нет ни того, ни другого —
+  // приведение к списку давало `[undefined]` и уезжало в запрос (Д17 карты v82).
+  return transformed;
 };
 
 /**

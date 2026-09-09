@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { forwardRef, Ref } from 'react';
 import {
   AppShellProvider,
@@ -16,7 +15,21 @@ interface AppContentShellProps {
   hideMain?: boolean;
 }
 
-export const AppContentShell = forwardRef(
+/**
+ * Оболочка с приложенными частями: `AppContentShell.Main`, `.Aside`.
+ *
+ * `forwardRef` о таких частях не знает, поэтому их надо назвать отдельно —
+ * иначе присвоение внизу файла считается обращением к несуществующему
+ * свойству, и файл не выходит из-под пометки (Д5 карты v82).
+ */
+type AppContentShellCompound = React.ForwardRefExoticComponent<
+  AppContentShellProps & React.RefAttributes<HTMLDivElement>
+> & {
+  Main: typeof AppContentShellMain;
+  Aside: typeof AppContentShellAside;
+};
+
+export const AppContentShell: AppContentShellCompound = forwardRef(
   (
     {
       asideProps,
@@ -40,7 +53,7 @@ export const AppContentShell = forwardRef(
       </AppShellProvider>
     );
   },
-);
+) as AppContentShellCompound;
 AppContentShell.displayName = 'AppContentShell';
 
 interface AppContentShellMainProps extends BoxProps {}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { transformToForm, transfromToSnakeCase } from '@/utils';
 import { useCategorizeTransactionBoot } from './CategorizeTransactionBoot';
@@ -19,7 +18,9 @@ export const defaultInitialValues = {
 };
 
 export const transformToCategorizeForm = (
-  autofillCategorizeTransaction: GetAutofillCategorizeTransaction,
+  // Пока ответ не пришёл, подставлять нечего — вызывающий отдаёт `null`
+  // или не отдаёт ничего.
+  autofillCategorizeTransaction?: GetAutofillCategorizeTransaction | null,
 ) => {
   return transformToForm(autofillCategorizeTransaction, defaultInitialValues);
 };

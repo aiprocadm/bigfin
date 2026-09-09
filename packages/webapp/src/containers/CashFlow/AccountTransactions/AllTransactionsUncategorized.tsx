@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, lazy } from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';

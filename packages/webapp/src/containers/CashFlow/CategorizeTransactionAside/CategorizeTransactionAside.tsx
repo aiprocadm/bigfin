@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { Aside } from '@/components/Aside/Aside';
@@ -11,7 +10,19 @@ import { CategorizeTransactionTabsBoot } from './CategorizeTransactionTabsBoot';
 import { withBanking } from '../withBanking';
 import { useEffect } from 'react';
 
-interface CategorizeTransactionAsideProps extends WithBankingActionsProps {}
+/**
+ * Что приходит из надстройки банка. Имя `selectedUncategorizedTransactionId`
+ * — не из хранилища: сборка внизу файла подставляет под него список
+ * выбранных операций.
+ */
+interface CategorizeTransactionAsideProps extends WithBankingActionsProps {
+  /**
+   * Список выбранных операций. Имя обманчиво: сборка внизу файла подставляет
+   * под него `transactionsToCategorizeIdsSelected` — то есть не «номер одной
+   * неразобранной», а список выбранных (Д19 карты v82).
+   */
+  selectedUncategorizedTransactionId?: number[];
+}
 
 function CategorizeTransactionAsideRoot({
   // #withBankingActions

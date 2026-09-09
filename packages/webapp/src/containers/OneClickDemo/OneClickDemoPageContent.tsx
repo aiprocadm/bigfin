@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Button, Intent, ProgressBar, Text } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
@@ -68,7 +67,7 @@ export function OneClickDemoPageContent() {
 
           {isLoading && (
             <Stack align={'center'} spacing={15}>
-              <ProgressBar stripes value={null} className={style.progressBar} />
+              <ProgressBar stripes className={style.progressBar} />
               {isOneclickDemoSigningIn && (
                 <Text className={style.waitingText}>
                   {intl.get('one_click_demo.signing_in')}

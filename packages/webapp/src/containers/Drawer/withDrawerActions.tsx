@@ -12,4 +12,19 @@ export const mapDispatchToProps = (dispatch: any) => ({
     dispatch({ type: CLOSE_DRAWER, name, payload }),
 });
 
-export const withDrawerActions = connect(null, mapDispatchToProps);
+/**
+ * Первым видом стоит вид подставляемых свойств. Без него `connect` не считает
+ * `openDrawer`/`closeDrawer` подставленными, и место вызова требует передать
+ * их руками (Д20 карты v82) — та же ошибка, что у `withBankingActions`.
+ */
+export interface WithDrawerActionsProps {
+  openDrawer: (name: any, payload?: any) => void;
+  closeDrawer: (name: any, payload?: any) => void;
+}
+
+export const withDrawerActions = connect<
+  {},
+  WithDrawerActionsProps,
+  {},
+  any
+>(null, mapDispatchToProps);

@@ -4,7 +4,8 @@ import { TaxRateFormDialogBoot } from './TaxRateFormDialogBoot';
 
 interface TaxRateFormDialogContentProps {
   dialogName: string;
-  taxRateId: number;
+  /** У новой ставки номера нет — это и проверяет `enabled: !!taxRateId`. */
+  taxRateId?: number;
 }
 
 /**

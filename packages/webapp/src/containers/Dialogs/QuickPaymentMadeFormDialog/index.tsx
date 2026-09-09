@@ -20,7 +20,7 @@ function QuickPaymentMadeFormDialog({
       name={dialogName}
       title={<T id={'quick_made_payment'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--quick-payment-receive'}
     >

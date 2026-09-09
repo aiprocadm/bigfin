@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { InputGroupProps, SwitchProps } from '@blueprintjs/core';
 import { FInputGroup, FSwitch, Group, Stack } from '@/components';
 import { CLASSES } from '@/constants';
@@ -47,7 +46,14 @@ export function ElementCustomizeContentItemFieldGroup({
       <FSwitch {...switchProps} fastField />
 
       {inputGroupProps?.name && (
-        <FInputGroup {...inputGroupProps} style={{ maxWidth: 150 }} fastField />
+        <FInputGroup
+          {...inputGroupProps}
+          // Имя повторено после раскрытия нарочно: условие выше уже проверило,
+          // что оно есть, но при раскрытии это знание теряется.
+          name={inputGroupProps.name}
+          style={{ maxWidth: 150 }}
+          fastField
+        />
       )}
     </Group>
   );

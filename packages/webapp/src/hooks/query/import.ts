@@ -1,11 +1,10 @@
-// @ts-nocheck
 import {
   QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
 } from 'react-query';
-import { AxiosError } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 import useApiRequest from '../useRequest';
 import { transformToCamelCase } from '@/utils';
 import { downloadFile, useDownloadFile } from '../useDownloadFile';
@@ -107,7 +106,9 @@ export const useSampleSheetImport = () => {
 
   // Было `IArgs` — такого типа нет вовсе. Настоящий вид довода виден
   // строкой ниже (Д5 карты v76).
-  return useMutation<void, AxiosError, SampleSheetImportQuery>(
+  // Возврат объявлен «ничем», а на деле отдаётся ответ целиком — файл
+  // забирают из него (Д25 карты v82).
+  return useMutation<AxiosResponse, AxiosError, SampleSheetImportQuery>(
     (data: SampleSheetImportQuery) => {
       return apiRequest
         .get('/import/sample', {

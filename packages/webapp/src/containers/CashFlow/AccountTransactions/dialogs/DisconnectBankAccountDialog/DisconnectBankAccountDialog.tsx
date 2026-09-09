@@ -22,7 +22,7 @@ function DisconnectBankAccountDialogRoot({
       name={dialogName}
       title={intl.get('cashflow.dialog.disconnect_bank_account')}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       style={{ width: 400 }}
     >

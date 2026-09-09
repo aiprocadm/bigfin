@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Position, ControlGroup } from '@blueprintjs/core';
@@ -46,7 +45,7 @@ export function CustomerFormFinancialSection() {
             <CurrencySelectList
               name="currency_code"
               items={currencies}
-              disabled={customerId}
+              disabled={!!customerId}
               />
           </FFormGroup>
 
@@ -88,7 +87,7 @@ function CustomerOpeningBalanceAtField() {
       <FDateInput
         name={'opening_balance_at'}
         popoverProps={{ position: Position.BOTTOM, minimal: true }}
-        disabled={customerId}
+        disabled={!!customerId}
         formatDate={formatOrganizationDate}
         parseDate={(str) => new Date(str)}
         inputProps={{

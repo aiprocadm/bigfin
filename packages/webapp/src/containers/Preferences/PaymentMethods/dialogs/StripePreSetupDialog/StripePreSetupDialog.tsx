@@ -15,7 +15,7 @@ function StripePreSetupDialogRoot({ dialogName, payload, isOpen }: any) {
       isOpen={isOpen}
       payload={payload}
       title={intl.get('preferences.payment_methods.stripe.pre_setup.title')}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       style={{ width: 500 }}
     >

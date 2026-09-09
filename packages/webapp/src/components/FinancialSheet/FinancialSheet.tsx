@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo, useCallback } from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -75,7 +74,14 @@ export function FinancialSheet({
     }),
     [],
   );
-  const getBasisLabel = useCallback((b) => methodsLabels[b], [methodsLabels]);
+  const getBasisLabel = useCallback(
+    // Способов учёта ровно два; всё прочее подписи не имеет.
+    (b?: string) =>
+      b && b in methodsLabels
+        ? methodsLabels[b as keyof typeof methodsLabels]
+        : undefined,
+    [methodsLabels],
+  );
   const basisLabel = useMemo(
     () => getBasisLabel(basis),
     [getBasisLabel, basis],

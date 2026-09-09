@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
@@ -73,7 +72,7 @@ export default function CreditNoteFormHeaderFields() {
           popoverProps={{ position: Position.BOTTOM_LEFT, minimal: true }}
           inputProps={{
             leftIcon: <Icon icon={'date-range'} />,
-            fill: true
+            fill: true,
           }}
           fill
         />
@@ -102,7 +101,10 @@ function CreditNoteCustomersSelect() {
   const updateEntries = useCustomerUpdateExRate();
 
   // Handles item change.
-  const handleItemChange = (customer) => {
+  const handleItemChange = (customer: {
+    id: number;
+    currency_code?: string;
+  }) => {
     setFieldValue('customer_id', customer.id);
     setFieldValue('currency_code', customer?.currency_code);
 
@@ -116,22 +118,26 @@ function CreditNoteCustomersSelect() {
       labelInfo={<FieldRequiredHint />}
       inline={true}
     >
-      <CustomersSelect
-        name={'customer_id'}
-        items={customers}
-        placeholder={<T id={'select_customer_account'} />}
-        onItemChange={handleItemChange}
-        popoverFill={true}
-        allowCreate={true}
-        fastField={true}
-        shouldUpdate={customerNameFieldShouldUpdate}
-        shouldUpdateDeps={{ items: customers }}
-      />
-      {values.customer_id && (
-        <CustomerButtonLink customerId={values.customer_id}>
-          <T id={'view_customer_details'} />
-        </CustomerButtonLink>
-      )}
+      {/* Обёртка нужна: группа поля объявлена на одного ребёнка, а здесь их
+          два — сам выбор и ссылка на карточку покупателя. */}
+      <>
+        <CustomersSelect
+          name={'customer_id'}
+          items={customers}
+          placeholder={<T id={'select_customer_account'} />}
+          onItemChange={handleItemChange}
+          popoverFill={true}
+          allowCreate={true}
+          fastField={true}
+          shouldUpdate={customerNameFieldShouldUpdate}
+          shouldUpdateDeps={{ items: customers }}
+        />
+        {values.customer_id && (
+          <CustomerButtonLink customerId={values.customer_id}>
+            <T id={'view_customer_details'} />
+          </CustomerButtonLink>
+        )}
+      </>
     </FFormGroup>
   );
 }

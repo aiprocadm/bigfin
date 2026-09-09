@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useFormikContext } from 'formik';
@@ -33,7 +32,10 @@ export function CreditNoteFormFooterRight() {
       <TotalLine
         title={<T id={'credit_note.label_subtotal'} />}
         value={subtotalFormatted}
-        borderStyle={TotalLineBorderStyle.BorderBottom}
+        // Значения `BorderBottom` в наборе нет вовсе: получалось «ничего»,
+        // то есть ровно то же, что `None`, — как у всех соседних подвалов
+        // (Д23 карты v82).
+        borderStyle={TotalLineBorderStyle.None}
       />
       <DiscountTotalLine
         currencyCode={currency_code}

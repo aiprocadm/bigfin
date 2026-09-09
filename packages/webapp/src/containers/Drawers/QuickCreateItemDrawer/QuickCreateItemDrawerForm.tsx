@@ -1,5 +1,5 @@
 import React from 'react';
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import styled from 'styled-components';
 
 import { Card, DrawerLoading } from '@/components';
@@ -71,7 +71,11 @@ function DrawerItemFormLoading({ children }: any) {
   return <DrawerLoading loading={isFormLoading}>{children}</DrawerLoading>;
 }
 
-export default R.compose(
+// Сборка своя, а не `R.compose`: у ramda объявление не умеет вычесть свойства,
+// которые подставляет надстройка, — получается «ничего» (`never`), и место
+// вызова не может передать ни одного свойства. Порядок применения у обеих
+// сборок одинаковый: `compose(f, g)(X)` — это `f(g(X))` (Д22 карты v82).
+export default compose(
   withDrawerActions,
   withDashboardActions,
 )(QuickCreateItemDrawerForm);

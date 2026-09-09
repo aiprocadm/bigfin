@@ -4,7 +4,8 @@ import { Box } from '../Layout';
 import styles from './TagsControl.module.scss';
 
 interface TagsControProps {
-  options: Array<{ label: string; value: string }>;
+  /** Подпись рисуется как есть — все места вызова передают размётку. */
+  options: ReadonlyArray<{ label: React.ReactNode; value: string }>;
   initialValue?: string;
   value?: string;
   onValueChange?: (value: string) => void;

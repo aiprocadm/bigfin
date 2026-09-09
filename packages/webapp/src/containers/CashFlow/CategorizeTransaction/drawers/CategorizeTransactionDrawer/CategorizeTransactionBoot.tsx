@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import { first } from 'lodash';
 import { DrawerLoading } from '@/components';
@@ -23,7 +22,8 @@ interface CategorizeTransactionBootValue {
   isBranchesLoading: boolean;
   isAccountsLoading: boolean;
   primaryBranch: any;
-  autofillCategorizeValues: null | GetAutofillCategorizeTransaction;
+  /** Пока ответ не пришёл, подставлять нечего. */
+  autofillCategorizeValues?: null | GetAutofillCategorizeTransaction;
   isAutofillCategorizeValuesLoading: boolean;
 }
 
@@ -62,7 +62,7 @@ function CategorizeTransactionBoot({
 
   // Retrieves the primary branch.
   const primaryBranch = useMemo(
-    () => branches?.find((b) => b.primary) || first(branches),
+    () => branches?.find((b: { primary?: boolean }) => b.primary) || first(branches),
     [branches],
   );
 

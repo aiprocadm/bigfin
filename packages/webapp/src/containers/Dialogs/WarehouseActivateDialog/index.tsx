@@ -17,7 +17,7 @@ function WarehouseActivateDialog({ dialogName, payload: {}, isOpen }: any) {
       name={dialogName}
       title={<T id={'warehouse_activate.dialog.label'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--warehouse-activate'}
     >

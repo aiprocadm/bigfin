@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
 import withDialogRedux, {
@@ -18,7 +17,11 @@ function KeyboardShortcutsDialog({ dialogName, isOpen }: DialogReduxProps) {
       name={dialogName}
       isOpen={isOpen}
       className={'dialog--keyboard-shortcuts'}
-      title={<T id={'keyboard_shortcuts'} canEscapeKeyClose={true} />}
+      // Настройка закрытия по Esc стояла внутри заголовка — у перевода, а не у
+      // окна. Видимого вреда не было: Blueprint и так закрывает по Esc по
+      // умолчанию, поэтому свойство просто ничего не делало (Д4 карты v82).
+      canEscapeKeyClose={true}
+      title={<T id={'keyboard_shortcuts'} />}
     >
       <DialogSuspense>
         <KeyboardShortcutsContent />

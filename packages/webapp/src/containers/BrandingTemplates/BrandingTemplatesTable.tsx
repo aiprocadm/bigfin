@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { compose } from '@/utils';
 import * as R from 'ramda';
 import { DataTable, TableSkeletonRows } from '@/components';
 import { useBrandingTemplatesBoot } from './BrandingTemplatesBoot';
@@ -67,7 +68,10 @@ function BrandingTemplateTableRoot({
   );
 }
 
-export const BrandingTemplatesTable = R.compose(
+// Сборка своя, а не `R.compose`: у ramda объявление не умеет вычесть свойства,
+// которые подставляет надстройка, — получается «ничего» (`never`), и место
+// вызова не может передать ни одного свойства (Д22 карты v82).
+export const BrandingTemplatesTable = compose(
   withAlertActions,
   withDrawerActions,
 )(BrandingTemplateTableRoot);

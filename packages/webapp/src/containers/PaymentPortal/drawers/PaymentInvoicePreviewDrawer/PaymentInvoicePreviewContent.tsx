@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { Box, DrawerBody, DrawerHeaderContent } from '@/components';
 import { InvoicePaperTemplate } from '@/containers/Sales/Invoices/InvoiceCustomize/InvoicePaperTemplate';
@@ -23,7 +22,11 @@ export function PaymentInvoicePreviewContent() {
             paymentMade={sharableLinkMeta?.paymentAmountFormatted}
             termsConditions={sharableLinkMeta?.termsConditions}
             statement={sharableLinkMeta?.invoiceMessage}
-            companyName={sharableLinkMeta?.companyName}
+            // Сервер шлёт название организации в `organization.name`; поля
+            // `companyName` в ответе платёжной ссылки нет вовсе — оно есть
+            // только у почтовых преобразователей. Название на общедоступной
+            // странице счёта было пустым всегда (Д9 карты v82).
+            companyName={sharableLinkMeta?.organization?.name}
             primaryColor={sharableLinkMeta?.brandingTemplate?.primaryColor}
             secondaryColor={sharableLinkMeta?.brandingTemplate?.secondaryColor}
             lines={sharableLinkMeta?.entries?.map((entry) => ({

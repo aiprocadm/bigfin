@@ -18,7 +18,7 @@ function NotifyEstimateViaSMSDialog({
       name={dialogName}
       title={<T id={'notify_via_sms.dialog.notify_via_sms'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--notify-vis-sms'}
     >

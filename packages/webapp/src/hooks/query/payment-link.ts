@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   UseMutationOptions,
   UseMutationResult,
@@ -112,6 +111,9 @@ export interface GetInvoicePaymentLinkResponse {
   brandingTemplate: {
     companyLogoUri: string;
     primaryColor: string;
+    // Сервер отдаёт его необязательным (`PaymentLinkBrandingTemplateDto`), а
+    // объявление витрины отстало — хотя страница его читает.
+    secondaryColor?: string;
   };
   organization: GetInvoicePaymentLinkOrganizationRes;
   hasStripePaymentMethod: boolean;

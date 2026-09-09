@@ -14,7 +14,7 @@ import { TabProps } from '@blueprintjs/core';
 import { useBrandingState } from '../BrandingTemplates/_utils';
 
 export interface ElementCustomizeProps<T, Y>
-  extends ElementCustomizeFormProps<T, Y> {
+  extends ElementCustomizeFormProps<T> {
   brandingState?: Y;
   children?: React.ReactNode;
 }

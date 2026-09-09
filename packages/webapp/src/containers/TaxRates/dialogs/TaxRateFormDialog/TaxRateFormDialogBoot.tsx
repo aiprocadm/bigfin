@@ -6,12 +6,14 @@ import { DialogsName } from '@/constants/dialogs';
 const TaxRateFormDialogContext = React.createContext<any>(undefined);
 
 interface TaxRateFormDialogBootProps {
-  taxRateId: number;
+  /** У новой ставки номера нет — это и проверяет `enabled: !!taxRateId`. */
+  taxRateId?: number;
   children?: JSX.Element;
 }
 
 interface TaxRateFormDialogBootContext {
-  taxRateId: number;
+  /** У новой ставки номера нет — это и проверяет `enabled: !!taxRateId`. */
+  taxRateId?: number;
   taxRate: any;
   isTaxRateLoading: boolean;
   isTaxRateSuccess: boolean;

@@ -20,12 +20,16 @@ function ProjectBillableEntriesFormProvider({
   const { data: billableEntries, isLoading: isProjectBillableEntriesLoading } =
     useProjectBillableEntries(
       projectId,
-      {
-        enabled: !!projectId,
-      },
+      // Порядок доводов у крючка — (номер проекта, параметры адреса,
+      // настройки запроса). Признак `enabled` стоял вторым, то есть уходил
+      // **в адрес** как `?enabled=true`, а запрос выполнялся всегда — в том
+      // числе с пустым номером проекта (Д13 карты v82).
       {
         // billable_type: '',
         // to_date: '',
+      },
+      {
+        enabled: !!projectId,
       },
     );
 

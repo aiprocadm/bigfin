@@ -20,7 +20,7 @@ function InventoryAdjustmentFormDialog({
       name={dialogName}
       title={<T id={'make_adjustment'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--adjustment-item'}
     >

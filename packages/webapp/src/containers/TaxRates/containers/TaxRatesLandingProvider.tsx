@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { isEmpty } from 'lodash';
 import { DashboardInsider } from '@/components/Dashboard';
@@ -24,7 +23,12 @@ function TaxRatesLandingProvider({
     data: taxRates,
     isFetching: isTaxRatesFetching,
     isLoading: isTaxRatesLoading,
-  } = useTaxRates({}, { keepPreviousData: true });
+  } = useTaxRates({
+    // Настройка стояла вторым доводом, а крючок принимает один — и второй
+    // просто выбрасывался: список ставок при обновлении моргал пустотой,
+    // хотя просили сохранять прежние данные (Д11 карты v82).
+    keepPreviousData: true,
+  });
 
   // Detarmines whether the table should show empty state.
   const isEmptyStatus = isEmpty(taxRates) && !isTaxRatesLoading;

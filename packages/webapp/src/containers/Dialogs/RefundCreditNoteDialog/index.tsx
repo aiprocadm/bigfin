@@ -21,7 +21,7 @@ function RefundCreditNoteDialog({
       name={dialogName}
       title={<T id={'refund_credit_note.dialog.label'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--refund-credit-note'}
       style={{ width: '450px' }}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import clsx from 'classnames';
 import { Field, useFormikContext } from 'formik';

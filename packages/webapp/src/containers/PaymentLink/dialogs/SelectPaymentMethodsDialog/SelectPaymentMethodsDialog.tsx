@@ -20,7 +20,7 @@ function SelectPaymentMethodsDialogRoot({ dialogName, payload, isOpen }: any) {
       isOpen={isOpen}
       payload={payload}
       title={intl.get('payment_link.dialog.share_link')}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       style={{ width: 570 }}
     >

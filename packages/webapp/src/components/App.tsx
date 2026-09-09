@@ -1,4 +1,17 @@
 // @ts-nocheck
+// Пометка возвращена намеренно (Д27 карты v82).
+//
+// Файл ввозит `createBrowserHistory` из пакета `history`, а объявлений типов у
+// него нет: `@types/history` лежит в хранилище как зависимость
+// `@types/react-router-dom`, но наверх не поднят, и разрешить его неоткуда.
+//
+// Два обхода отвергнуты:
+//   — поставить `@types/history` зависимостью: это правит `pnpm-lock.yaml`,
+//     а файл замков затрагивает стенд и защищён отдельным хуком (карта v66);
+//   — объявить заглушку `declare module 'history'`: она перекроет настоящие
+//     типы, на которые изнутри ссылается `@types/react-router-dom`.
+//
+// Оба решения — за владельцем, поэтому здесь проведена явная граница.
 import { lazy, Suspense } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';

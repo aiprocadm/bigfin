@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { setGlobalErrors } from '@/store/global-errors/global-errors.actions';
@@ -6,7 +5,7 @@ import { setGlobalErrors } from '@/store/global-errors/global-errors.actions';
 export const useSetGlobalErrors = () => {
   const dispatch = useDispatch();
 
-  return useCallback((errors) => {
+  return useCallback((errors: any) => {
     dispatch(setGlobalErrors(errors));
   }, [dispatch]);
 };

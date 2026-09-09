@@ -21,7 +21,7 @@ function QuickPaymentReceiveFormDialog({
       name={dialogName}
       title={<T id={'quick_receive_payment'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--quick-payment-receive'}
     >

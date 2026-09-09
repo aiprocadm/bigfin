@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { PricingPlan } from '@/components/PricingPlan/PricingPlan';
@@ -26,7 +25,12 @@ interface SubscriptionPricingProps {
   monthlyPriceLabel: string;
   annuallyPrice: string;
   annuallyPriceLabel: string;
-  onSubscribe?: (variantId: number) => void;
+  /**
+   * Оба живых места вызова считают номер тарифа сами, из выбранного периода, и
+   * ничего не принимают. Объявление обещало довод, которого никогда не было
+   * (Д12 карты v82).
+   */
+  onSubscribe?: () => void;
   // Типа `Optional` в продукте нет вовсе; по смыслу — «часть свойств
   // кнопки», то есть `Partial` (Д5 карты v76).
   subscribeButtonProps?: Partial<ButtonProps>;

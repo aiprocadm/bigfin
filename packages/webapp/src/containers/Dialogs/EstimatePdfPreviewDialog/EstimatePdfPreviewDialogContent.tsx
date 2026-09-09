@@ -7,6 +7,21 @@ import { usePdfEstimate } from '@/hooks/query';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
+
+/**
+ * Что окно передаёт содержимому.
+ *
+ * Вид объявлен здесь, а не выведен: `compose(…)` отдаёт «что угодно», а
+ * `React.lazy` из «что угодно» делает экран, **не принимающий свойств вовсе**.
+ * Из-за этого окно не проходило проверку типов (Д3 карты v82).
+ *
+ * Имя `subscriptionForm` — след копирования из окна подписки; сюда приходит
+ * груз окна. Переименование трогает оба файла и вынесено в задел.
+ */
+export interface EstimatePdfPreviewDialogContentProps {
+  subscriptionForm: { estimateId: number | null };
+}
+
 function EstimatePdfPreviewDialogContent({
   subscriptionForm: { estimateId },
   dialogName,
@@ -47,4 +62,7 @@ function EstimatePdfPreviewDialogContent({
   );
 }
 
-export default compose(withDialogActions)(EstimatePdfPreviewDialogContent);
+const EstimatePdfPreviewDialogContentComposed: React.ComponentType<EstimatePdfPreviewDialogContentProps> =
+  compose(withDialogActions)(EstimatePdfPreviewDialogContent);
+
+export default EstimatePdfPreviewDialogContentComposed;

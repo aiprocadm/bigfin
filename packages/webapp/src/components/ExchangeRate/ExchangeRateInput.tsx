@@ -22,8 +22,13 @@ interface ExchangeRateValuesBag {
 
 interface ExchangeRateInputGroupProps {
   name: string;
-  fromCurrency: string;
-  toCurrency: string;
+  /**
+   * Валюты берутся из значений формы и до выбора контрагента пусты — все
+   * места вызова передают сюда `values.currency_code`, который может быть
+   * не задан (Д21 карты v82).
+   */
+  fromCurrency?: string;
+  toCurrency?: string;
   isLoading?: boolean;
 
   inputGroupProps?: any;
@@ -31,8 +36,13 @@ interface ExchangeRateInputGroupProps {
 
   withPopoverRecalcConfirm?: boolean;
 
-  onRecalcConfirm: (bag: ExchangeRateValuesBag) => void;
-  onCancel: (bag: ExchangeRateValuesBag) => void;
+  /**
+   * Обработчики объявлены необязательными: тело и так проверяет их наличие
+   * (`onRecalcConfirm && onRecalcConfirm(…)`), и половина мест вызова их не
+   * передаёт (Д21 карты v82).
+   */
+  onRecalcConfirm?: (bag: ExchangeRateValuesBag) => void;
+  onCancel?: (bag: ExchangeRateValuesBag) => void;
 
   isConfirmPopoverOpen?: boolean;
   initialConfirmPopoverOpen?: boolean;

@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import React, { lazy } from 'react';
 import intl from 'react-intl-universal';
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
 
@@ -6,7 +6,35 @@ import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
 // он жил в ~130 строках, и его не читал никто — наследство биллинга
 // зарубежного предшественника. Сторож в navigationReachability.spec.ts
 // не даст ему вернуться.
-export const getDashboardRoutes = () => [
+
+/**
+ * Запись реестра маршрутов панели.
+ *
+ * Без объявления список получался **объединением ста одиннадцати разных видов**
+ * — по одному на каждую запись, — и чтение любого необязательного ключа
+ * (`route.exact`) считалось обращением к несуществующему свойству
+ * (Д6 карты v82).
+ *
+ * `exact` не задан **ни у одного** маршрута: порядок записей внутри `Switch`
+ * решает всё сам — «/accounts/import» стоит выше «/accounts». Ключ оставлен
+ * объявленным, потому что содержимое панели его читает.
+ */
+export interface DashboardRoute {
+  path: string;
+  component: React.ComponentType<any>;
+  breadcrumb?: string;
+  pageTitle?: string;
+  defaultSearchResource?: string;
+  backLink?: boolean;
+  sidebarExpand?: boolean;
+  name?: string;
+  hotkey?: string;
+  hint?: string;
+  exact?: boolean;
+  pageType?: string;
+}
+
+export const getDashboardRoutes = (): DashboardRoute[] => [
   // Accounts.
   {
     path: '/accounts/import',

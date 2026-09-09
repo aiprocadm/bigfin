@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import type React from 'react';
 import type { FormikProps } from 'formik';
 
 /**
@@ -30,3 +31,16 @@ export interface ServiceError {
   message?: string;
   [key: string]: any;
 }
+
+/**
+ * Свойства поставщика данных экрана.
+ *
+ * Поставщики устроены одинаково: берут своё (номер записи), рисуют содержимое
+ * и передают остальное дальше — `({ itemId, ...props })`. Объявить только своё
+ * недостаточно: вызывающий передаёт ещё и содержимое, и проверка типов считает
+ * это лишним свойством (Д15 карты v82).
+ */
+export type ProviderProps<TOwn = {}> = TOwn & {
+  children?: React.ReactNode;
+  [key: string]: any;
+};

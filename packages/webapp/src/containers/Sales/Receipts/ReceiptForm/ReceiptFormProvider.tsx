@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React, { createContext, useState } from 'react';
+import type { ProviderProps } from '@/utils/formTypes';
 import { Features } from '@/constants';
 import { useFeatureCan } from '@/hooks/state';
 import { DashboardInsider } from '@/components/Dashboard';
@@ -25,7 +25,8 @@ const ReceiptFormContext = createContext<ReceiptFormProviderValue>(
 
 interface ReceiptFormProviderValue {
   isSaleReceiptStateLoading: boolean;
-  saleReceiptState: IGetReceiptStateResponse;
+  /** Пока ответ не пришёл, состояния нет. */
+  saleReceiptState?: IGetReceiptStateResponse;
   // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
   // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.
   receiptId: any;
@@ -60,7 +61,10 @@ interface ReceiptFormProviderValue {
 /**
  * Receipt form provider.
  */
-function ReceiptFormProvider({ receiptId, ...props }) {
+function ReceiptFormProvider({
+  receiptId,
+  ...props
+}: ProviderProps<{ receiptId?: number }>) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);

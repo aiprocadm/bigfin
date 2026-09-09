@@ -19,7 +19,7 @@ function ApiKeysGenerateDialog({ dialogName, payload, isOpen }) {
         <T id={'api_key.dialog.generate_title'} />
       }
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--api-keys-generate'}
       style={{ width: '500px' }}

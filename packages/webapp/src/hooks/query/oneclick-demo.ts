@@ -18,10 +18,19 @@ import { batch } from 'react-redux';
 import { transformToCamelCase } from '@/utils';
 
 interface CreateOneClickDemoValues {}
+/**
+ * Что на самом деле отдаёт заведение демо.
+ *
+ * Объявлено было `{ demoId, email, buildJob }`, а крючок возвращает **ответ
+ * как есть**, без разбора: соседний `useOneClickDemoBuildJob` делает
+ * `.then((res) => transformToCamelCase(res.data))`, а этот — нет. Экран
+ * читает `res.data.data.demo_id` в змеином написании и работает; врало
+ * объявление (Д10 карты v82).
+ *
+ * Привести крючок к соседям — отдельная правка с проверкой, вынесена в задел.
+ */
 interface CreateOneClickDemoRes {
-  demoId: string;
-  email: string;
-  buildJob: { jobId: string };
+  data: { data: { demo_id: string } };
 }
 
 /**

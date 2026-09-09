@@ -19,7 +19,7 @@ function ExcessPaymentDialogRoot({ dialogName, isOpen }: any) {
       name={dialogName}
       title={intl.get('excess_payment')}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       style={{ width: 500 }}
     >

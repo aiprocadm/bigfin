@@ -21,7 +21,7 @@ function RefundVendorCreditDialog({
       name={dialogName}
       title={<T id={'refund_vendor_credit.dialog.label'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--refund-vendor-credit'}
     >

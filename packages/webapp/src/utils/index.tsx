@@ -125,12 +125,25 @@ export const objectKeysTransform = (obj, transform) => {
   }, {});
 };
 
-export const compose = (...funcs) =>
-  funcs.reduce(
+/**
+ * Сборка надстроек слева направо: `compose(f, g)(X)` — это `f(g(X))`.
+ *
+ * Вид возврата указан списком, а не выведен. Без него сборка отдавала
+ * «ничего не принимает», и **каждый** отложенно загружаемый экран, собранный
+ * через `compose`, отвергал свои свойства: окна предпросмотра PDF, ящики,
+ * поставщики (Д3 карты v82).
+ *
+ * Тело оставлено как было. Переписывать его нельзя: `compose()` без доводов
+ * должен вернуть сам довод, а сокращение справа налево вернуло бы список.
+ */
+export const compose = (
+  ...funcs: Array<(...args: any[]) => any>
+): ((...args: any[]) => any) =>
+  funcs.reduce<(...args: any[]) => any>(
     (a, b) =>
-      (...args) =>
+      (...args: any[]) =>
         a(b(...args)),
-    (arg) => arg,
+    (arg: any) => arg,
   );
 
 export const getObjectDiff = (a, b) => {
@@ -523,12 +536,21 @@ export const toSafeNumber = (number) => {
   return _.toNumber(_.defaultTo(number, 0));
 };
 
-export const transformToCamelCase = (object) => {
-  return deepMapKeys(object, (key) => _.camelCase(key));
+/**
+ * Ответ сервера в camelCase.
+ *
+ * Вид указан списком, а не выведен: `deepMapKeys<T>` не из чего выводить `T`,
+ * и без указания он получался `unknown`. Тогда **каждый** крючок запроса,
+ * объявивший свой ответ, ловил расхождение — восемь файлов слепой зоны из-за
+ * одной строки (Д1 карты v82). По умолчанию `any`: 63 места зовут это без
+ * указания вида, и «неизвестно» им только мешает.
+ */
+export const transformToCamelCase = <T = any,>(object: any): T => {
+  return deepMapKeys<T>(object, (key) => _.camelCase(key));
 };
 
-export const transfromToSnakeCase = (object) => {
-  return deepMapKeys(object, (key) => _.snakeCase(key));
+export const transfromToSnakeCase = <T = any,>(object: any): T => {
+  return deepMapKeys<T>(object, (key) => _.snakeCase(key));
 };
 
 export const transformTableQueryToParams = (

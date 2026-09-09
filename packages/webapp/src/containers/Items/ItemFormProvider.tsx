@@ -1,5 +1,6 @@
-// @ts-nocheck
 import React, { createContext, useState } from 'react';
+import type { ProviderProps } from '@/utils/formTypes';
+import { useRouteState, RouteActionState } from '@/hooks/useRouteState';
 import { useLocation } from 'react-router-dom';
 import {
   useItem,
@@ -17,8 +18,11 @@ const ItemFormContext = createContext<any>(undefined);
 /**
  * Accounts chart data provider.
  */
-function ItemFormProvider({ itemId, ...props }) {
-  const { state } = useLocation();
+function ItemFormProvider({
+  itemId,
+  ...props
+}: ProviderProps<{ itemId?: number }>) {
+  const state = useRouteState<RouteActionState>();
 
   const duplicateId = state?.action;
 

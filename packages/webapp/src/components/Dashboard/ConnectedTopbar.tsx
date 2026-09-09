@@ -1,4 +1,3 @@
-// @ts-nocheck — хуки в @/hooks/state и @/hooks/query не типизированы
 import { Plus, Search } from 'lucide-react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';

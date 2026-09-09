@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   useMutation,
   useQuery,
@@ -130,7 +129,7 @@ export const useGetStripeAccountLink = (
   options?: UseQueryOptions<StripeAccountLinkResponse, Error>,
 ): UseQueryResult<StripeAccountLinkResponse, Error> => {
   const apiRequest = useApiRequest();
-  return useQuery(
+  return useQuery<StripeAccountLinkResponse, Error>(
     'getStripeAccountLink',
     () => {
       return apiRequest

@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Хуки запросов в этом слое не типизированы: `useApiRequest` описан без
 // дженериков, и строгая типизация здесь спорит с ним, а не помогает.
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';

@@ -22,7 +22,7 @@ function SMSMessageDialog({
       name={dialogName}
       title={intl.get('sms_message.dialog.label')}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--sms-message'}
     >

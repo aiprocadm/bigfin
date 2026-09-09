@@ -7,9 +7,24 @@ import { usePdfPaymentReceive } from '@/hooks/query';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
+
+/**
+ * Что окно передаёт содержимому.
+ *
+ * Вид объявлен здесь, а не выведен: `compose(…)` отдаёт «что угодно», а
+ * `React.lazy` из «что угодно» делает экран, **не принимающий свойств вовсе**.
+ * Из-за этого окно не проходило проверку типов (Д3 карты v82).
+ *
+ * Имя `subscriptionForm` — след копирования из окна подписки; сюда приходит
+ * груз окна. Переименование трогает оба файла и вынесено в задел.
+ */
+export interface PaymentReceivePdfPreviewDialogContentProps {
+  subscriptionForm: { paymentReceiveId: number | null };
+}
+
 function PaymentReceivePdfPreviewDialogContent({
   subscriptionForm: { paymentReceiveId },
-}: any) {
+}: PaymentReceivePdfPreviewDialogContentProps) {
   const { isLoading, pdfUrl, filename } = usePdfPaymentReceive(paymentReceiveId);
 
   return (
@@ -44,6 +59,7 @@ function PaymentReceivePdfPreviewDialogContent({
   );
 }
 
-export default compose(withDialogActions)(
-  PaymentReceivePdfPreviewDialogContent,
-);
+const PaymentReceivePdfPreviewDialogContentComposed: React.ComponentType<PaymentReceivePdfPreviewDialogContentProps> =
+  compose(withDialogActions)(PaymentReceivePdfPreviewDialogContent);
+
+export default PaymentReceivePdfPreviewDialogContentComposed;

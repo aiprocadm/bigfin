@@ -23,7 +23,7 @@ function CustomerOpeningBalanceDialog({
       name={dialogName}
       title={<T id={'customer_opening_balance.label'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--customer-opening-balance'}
     >

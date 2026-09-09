@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Tooltip, Position } from '@blueprintjs/core';
 
@@ -7,8 +6,14 @@ import { Tooltip, Position } from '@blueprintjs/core';
  * @returns {JSX.Element}
  */
 interface TextOverviewTooltipCellProps {
-  /** Ячейка таблицы: нас интересует только её значение. */
-  cell: { value?: React.ReactNode };
+  /**
+   * Ячейка таблицы: нас интересует только её значение.
+   *
+   * Вид сужен со «всего, что можно нарисовать» до строки или узла: всплывашка
+   * Blueprint принимает только их, а ячейка эта — для длинного текста
+   * (Д7 карты v82).
+   */
+  cell: { value?: string | JSX.Element };
 }
 
 export function TextOverviewTooltipCell({
@@ -24,7 +29,7 @@ export function TextOverviewTooltipCell({
 
   return (
     <Tooltip
-      content={value}
+      content={value ?? undefined}
       position={Position.BOTTOM_LEFT}
       boundary={'viewport'}
       minimal={true}

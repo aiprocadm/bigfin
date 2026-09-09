@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createReducer } from '@reduxjs/toolkit';
 import { REGISTER_SET } from '@/store/types';;
 
@@ -8,9 +7,9 @@ const initialState = {
 
 export default createReducer(initialState, {
   [REGISTER_SET]: (state, action) => {
-    const _registers = {};
+    const _registers: Record<string, any> = {};
 
-    action.registers.forEach((register) => {
+    action.registers.forEach((register: { id: string | number }) => {
       _registers[register.id] = register;
     });
     state.registers = {

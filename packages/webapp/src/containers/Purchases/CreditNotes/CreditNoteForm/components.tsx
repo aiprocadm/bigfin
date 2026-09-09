@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useFormikContext } from 'formik';
 import { ExchangeRateInputGroup } from '@/components';
@@ -9,7 +8,14 @@ import { useVendorNoteIsForeignCustomer } from './utils';
  * vendor credit note exchange rate input field.
  * @returns {JSX.Element}
  */
-export function VendorCreditNoteExchangeRateInputField({ ...props }) {
+export function VendorCreditNoteExchangeRateInputField({
+  // Имя поля приходит от места вызова и передаётся полю курса как есть.
+  name = 'exchange_rate',
+  ...props
+}: {
+  name?: string;
+  [key: string]: any;
+}) {
   const currentOrganization = useCurrentOrganization();
   const { values } = useFormikContext<any>();
 
@@ -23,6 +29,7 @@ export function VendorCreditNoteExchangeRateInputField({ ...props }) {
     <ExchangeRateInputGroup
       fromCurrency={values.currency_code}
       toCurrency={currentOrganization.base_currency}
+      name={name}
       {...props}
     />
   );

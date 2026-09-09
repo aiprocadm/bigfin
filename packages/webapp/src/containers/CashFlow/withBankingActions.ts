@@ -158,8 +158,14 @@ const mapDipatchToProps = (dispatch: any): WithBankingActionsProps => ({
     dispatch(resetUncategorizedTranasctionsFilter()),
 });
 
+/**
+ * Первым видом стояло `null` — «состояние не берём». Но на это место `connect`
+ * ждёт **вид подставляемых свойств**, и от `null` пересечение схлопывалось:
+ * подставленные свойства не считались подставленными, и каждое место вызова
+ * «не передавало семнадцать свойств» (Д20 карты v82).
+ */
 export const withBankingActions = connect<
-  null,
+  {},
   WithBankingActionsProps,
   {},
   any

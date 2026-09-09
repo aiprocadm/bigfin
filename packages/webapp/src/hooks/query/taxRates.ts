@@ -33,7 +33,9 @@ export function useTaxRates(props?: any) {
  */
 // Признак — число: так его хранит запись и так передают оба места вызова
 // (Д12 карты v75).
-export function useTaxRate(taxRateId: number, props: any) {
+// Номер необязателен: окно заведения новой ставки зовёт крючок без него и
+// гасит запрос через `enabled` (карта v82).
+export function useTaxRate(taxRateId?: number, props?: any) {
   return useRequestQuery(
     [QUERY_TYPES.TAX_RATES, taxRateId],
     {

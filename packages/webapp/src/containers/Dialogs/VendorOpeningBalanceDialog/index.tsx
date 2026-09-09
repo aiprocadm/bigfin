@@ -22,7 +22,7 @@ function VendorOpeningBalanceDialog({
       name={dialogName}
       title={<T id={'vendor_opening_balance.label'} />}
       isOpen={isOpen}
-      canEscapeJeyClose={true}
+      canEscapeKeyClose={true}
       autoFocus={true}
       className={'dialog--vendor-opening-balance'}
     >

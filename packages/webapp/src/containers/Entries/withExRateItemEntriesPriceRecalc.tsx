@@ -74,7 +74,7 @@ export const useCustomerUpdateExRate = () => {
   const DEFAULT_EX_RATE = 1;
 
   return useCallback(
-    (customer: { currency_code: string }) => {
+    (customer: { currency_code?: string }) => {
       // Reset the auto exchange rate currency cycle.
       setAutoExRateCurrency(null);
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo } from 'react';
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
@@ -19,7 +18,7 @@ export function AccountTransactionsUncategorizeFilter() {
 
   const totalPending = bankAccountMetaSummary?.totalPendingTransactions;
 
-  const handleTabsChange = (value) => {
+  const handleTabsChange = (value: string) => {
     setLocationQuery({ uncategorizedFilter: value });
   };
 

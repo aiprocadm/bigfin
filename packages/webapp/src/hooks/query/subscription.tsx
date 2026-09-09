@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   useMutation,
   UseMutationOptions,
@@ -97,20 +96,23 @@ interface ChangeMainSubscriptionPlanValues {
 interface ChangeMainSubscriptionPlanResponse {}
 
 /**
- * Changese the main subscription of the current organization.
- * @param {UseMutationOptions<ChangeMainSubscriptionPlanValues, Error, ChangeMainSubscriptionPlanResponse>} options -
- * @returns {UseMutationResult<ChangeMainSubscriptionPlanValues, Error, ChangeMainSubscriptionPlanResponse>}
+ * Меняет основную подписку текущей организации.
+ *
+ * Порядок видов — (что вернётся, ошибка, что передаём). Снаружи он стоял
+ * наоборот, хотя внутри `useMutation` записан верно: вызывающему обещали, что
+ * менять тариф надо ответом сервера, а передавать он должен `{ variant_id }`
+ * (Д14 карты v82).
  */
 export function useChangeSubscriptionPlan(
   options?: UseMutationOptions<
-    ChangeMainSubscriptionPlanValues,
+    ChangeMainSubscriptionPlanResponse,
     Error,
-    ChangeMainSubscriptionPlanResponse
+    ChangeMainSubscriptionPlanValues
   >,
 ): UseMutationResult<
-  ChangeMainSubscriptionPlanValues,
+  ChangeMainSubscriptionPlanResponse,
   Error,
-  ChangeMainSubscriptionPlanResponse
+  ChangeMainSubscriptionPlanValues
 > {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();

@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React, { useState, createContext } from 'react';
+import { useRouteState, RouteActionState } from '@/hooks/useRouteState';
 import { omit } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import {
@@ -32,7 +32,7 @@ interface VendorFormProviderProps {
 }
 
 function VendorFormProvider({ query, vendorId, ...props }: VendorFormProviderProps) {
-  const { state } = useLocation();
+  const state = useRouteState<RouteActionState>();
   const contactId = state?.action;
 
   // Features guard.
@@ -80,7 +80,9 @@ function VendorFormProvider({ query, vendorId, ...props }: VendorFormProviderPro
     currencies,
     vendor,
     branches,
-    contactDuplicate: { ...omit(contactDuplicate, ['opening_balance_at']) },
+    contactDuplicate: {
+      ...omit(contactDuplicate as object, ['opening_balance_at']),
+    },
     submitPayload,
 
     isNewMode,

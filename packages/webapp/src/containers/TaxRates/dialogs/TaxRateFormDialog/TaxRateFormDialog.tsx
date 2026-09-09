@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React, { lazy } from 'react';
 import styled from 'styled-components';
@@ -35,7 +34,7 @@ function TaxRateFormDialog({
       <DialogSuspense>
         <TaxRateFormDialogContent
           dialogName={dialogName}
-          taxRateId={payload.id}
+          taxRateId={payload.id ?? undefined}
         />
       </DialogSuspense>
     </TaxRateDialog>

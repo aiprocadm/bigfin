@@ -1,5 +1,6 @@
-// @ts-nocheck
 import React from 'react';
+import type { ProviderProps } from '@/utils/formTypes';
+import { useRouteState } from '@/hooks/useRouteState';
 import { useLocation } from 'react-router-dom';
 import { isEmpty, pick } from 'lodash';
 import { DashboardInsider } from '@/components/Dashboard';
@@ -58,8 +59,11 @@ const CreditNoteFormContext = React.createContext<CreditNoteFormProviderValue>(
 /**
  * Credit note data provider.
  */
-function CreditNoteFormProvider({ creditNoteId, ...props }) {
-  const { state } = useLocation();
+function CreditNoteFormProvider({
+  creditNoteId,
+  ...props
+}: ProviderProps<{ creditNoteId?: number }>) {
+  const state = useRouteState<{ invoiceId?: number }>();
   const invoiceId = state?.invoiceId;
 
   // Features guard.

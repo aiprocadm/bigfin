@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef, useState, useEffect } from 'react';
 import { FormattedMessage as T } from '@/components';
 import PropTypes from 'prop-types';
@@ -7,6 +6,28 @@ import { useHistory } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { If, Icon } from '@/components';
 import { saveInvoke } from '@/utils';
+
+/** Вкладка сохранённого вида списка. */
+interface ViewTab {
+  slug: string | number;
+  name: React.ReactNode;
+}
+
+interface DashboardViewsTabsProps {
+  initialViewSlug?: string | number;
+  currentViewSlug?: string | number;
+  tabs: ViewTab[];
+  defaultTabText?: React.ReactNode;
+  allTab?: boolean;
+  newViewTab?: boolean;
+  /** Раздел, в котором заводится новый вид: `/custom_views/<раздел>/new`. */
+  resourceName?: string;
+  onNewViewTabClick?: () => void;
+  onChange?: (viewSlug: string | number | null) => void;
+  /** Имя с заглавной — так его передают вызывающие; переименование отдельно. */
+  OnThrottledChange?: (viewSlug: string | number | null) => void;
+  throttleTime?: number;
+}
 
 /**
  * Dashboard views tabs.
@@ -23,7 +44,7 @@ export function DashboardViewsTabs({
   onChange,
   OnThrottledChange,
   throttleTime = 250,
-}) {
+}: DashboardViewsTabsProps) {
   const history = useHistory();
   const [currentView, setCurrentView] = useState(initialViewSlug || 0);
 
@@ -41,7 +62,7 @@ export function DashboardViewsTabs({
   );
 
   // Trigger `onChange` and `onThrottledChange` events.
-  const triggerOnChange = (viewSlug) => {
+  const triggerOnChange = (viewSlug: string | number) => {
     const value = viewSlug === 0 ? null : viewSlug;
     saveInvoke(onChange, value);
     throttledOnChange.current(value);
@@ -54,7 +75,7 @@ export function DashboardViewsTabs({
   };
 
   // Handle tabs change.
-  const handleTabsChange = (viewSlug) => {
+  const handleTabsChange = (viewSlug: string | number) => {
     setCurrentView(viewSlug);
     triggerOnChange(viewSlug);
   };
@@ -71,7 +92,7 @@ export function DashboardViewsTabs({
       >
         {allTab && <Tab id={0} title={defaultTabText} />}
 
-        {tabs.map((tab) => (
+        {tabs.map((tab: ViewTab) => (
           <Tab id={tab.slug} title={tab.name} />
         ))}
         <If condition={newViewTab}>

@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { useFormikContext } from 'formik';
 import moment from 'moment';
 import { useUpdateEntriesOnExchangeRateChange } from './useUpdateEntriesOnExchangeRateChange';
 import { useAutoExRateContext } from './AutoExchangeProvider';
 import { pickSyncedExRate } from './pickSyncedExRate';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useCurrentOrganization } from '@/hooks/state';
 
 /**
@@ -13,13 +12,20 @@ import { useCurrentOrganization } from '@/hooks/state';
  * @returns {JSX.Element}
  */
 export const withExchangeRateItemEntriesPriceRecalc =
-  (Component) => (props) => {
+  (Component: React.ComponentType<any>) =>
+  (props: Record<string, unknown>) => {
     const { setFieldValue } = useFormikContext<any>();
     const updateChangeExRate = useUpdateEntriesOnExchangeRateChange();
 
     return (
       <Component
-        onRecalcConfirm={({ exchangeRate, oldExchangeRate }) => {
+        onRecalcConfirm={({
+          exchangeRate,
+          oldExchangeRate,
+        }: {
+          exchangeRate: number;
+          oldExchangeRate: number;
+        }) => {
           setFieldValue(
             'entries',
             updateChangeExRate(oldExchangeRate, exchangeRate),
@@ -35,18 +41,24 @@ export const withExchangeRateItemEntriesPriceRecalc =
  * @param Component
  * @returns {}
  */
-export const withExchangeRateFetchingLoading = (Component) => (props) => {
-  const { isAutoExchangeRateLoading } = useAutoExRateContext();
+export const withExchangeRateFetchingLoading =
+  (Component: React.ComponentType<any>) =>
+  (props: Record<string, unknown>) => {
+    const { isAutoExchangeRateLoading } = useAutoExRateContext();
 
-  return (
-    <Component
-      isLoading={isAutoExchangeRateLoading}
-      inputGroupProps={{
-        disabled: isAutoExchangeRateLoading,
-      }}
-    />
-  );
-};
+    return (
+      <Component
+        isLoading={isAutoExchangeRateLoading}
+        inputGroupProps={{
+          disabled: isAutoExchangeRateLoading,
+        }}
+        // Своих свойств обёртка не передавала дальше вовсе — всё, что ей
+        // отдавали, пропадало молча. Сегодня поле зовут без свойств, поэтому
+        // ничего не ломалось; соседняя обёртка выше их передаёт (Д2 карты v81).
+        {...props}
+      />
+    );
+  };
 
 /**
  * Updates the customer currency code and exchange rate once you update the customer
@@ -62,7 +74,7 @@ export const useCustomerUpdateExRate = () => {
   const DEFAULT_EX_RATE = 1;
 
   return useCallback(
-    (customer) => {
+    (customer: { currency_code: string }) => {
       // Reset the auto exchange rate currency cycle.
       setAutoExRateCurrency(null);
 

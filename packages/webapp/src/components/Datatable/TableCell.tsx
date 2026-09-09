@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React, { useContext } from 'react';
+import type { Cell, Row } from 'react-table';
 import classNames from 'classnames';
 import { camelCase } from 'lodash';
 
@@ -13,9 +13,25 @@ import { MoneyDisplay } from '../Money/MoneyDisplay';
 const ROW_CLICK_SELECTORS_INGORED = ['.expand-toggle', '.selection-checkbox'];
 
 /**
+ * Разбор значения ячейки объявлен **статическим полем на самом рисователе**
+ * (`ActionsCellRenderer.cellType = CellType.Button`), а не свойством колонки.
+ * Рисователь бывает и строкой, и не задан вовсе.
+ */
+const cellTypeOf = (Cell: unknown): string | undefined =>
+  (Cell as { cellType?: string } | undefined)?.cellType;
+
+/**
  * Table cell.
  */
-export default function TableCell({ cell, row, index }) {
+export default function TableCell({
+  cell,
+  row,
+  index,
+}: {
+  cell: Cell<any>;
+  row: Row<any>;
+  index: number;
+}) {
   const { index: rowIndex, depth, getToggleRowExpandedProps, isExpanded } = row;
   const {
     props: {
@@ -29,7 +45,10 @@ export default function TableCell({ cell, row, index }) {
   } = useContext(TableContext);
 
   const isExpandColumn = expandToggleColumn === index;
-  const { skeletonWidthMax = 100, skeletonWidthMin = 40 } = {};
+  // Ширины читались из пустого объекта `{}` — то есть настройка колонки не
+  // действовала никогда, всегда брались значения по умолчанию. Соседние
+  // `TableHeaderSkeleton` и `TableSkeletonRows` читают их из колонки (Д2 карты v81).
+  const { skeletonWidthMax = 100, skeletonWidthMin = 40 } = cell.column;
 
   // Application intl context.
   const { isRTL } = useAppIntlContext();
@@ -54,13 +73,13 @@ export default function TableCell({ cell, row, index }) {
     );
   }
   // Handle cell click action.
-  const handleCellClick = (event) => {
+  const handleCellClick = (event: React.MouseEvent) => {
     if (ignoreEventFromSelectors(event, ROW_CLICK_SELECTORS_INGORED)) {
       return;
     }
     saveInvoke(onCellClick, cell, event);
   };
-  const cellType = camelCase(cell.column.Cell.cellType) || 'text';
+  const cellType = camelCase(cellTypeOf(cell.column.Cell)) || 'text';
 
   return (
     <div
@@ -73,7 +92,7 @@ export default function TableCell({ cell, row, index }) {
           [`td-${cell.column.id}`]: cell.column.id,
           [`td-${cellType}-type`]: !!cellType,
         }),
-        tabindex: 0,
+        tabIndex: 0,
         onClick: handleCellClick,
       })}
     >

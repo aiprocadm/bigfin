@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Position } from '@blueprintjs/core';
@@ -112,7 +111,7 @@ export default function MakeJournalEntriesHeader({}) {
         <FSelect
           name={'currency_code'}
           items={currencies}
-          onItemChange={(currencyItem) => {
+          onItemChange={(currencyItem: { currency_code: string }) => {
             form.setFieldValue('currency_code', currencyItem.currency_code);
             form.setFieldValue('exchange_rate', '');
           }}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import { Spinner } from '@blueprintjs/core';
@@ -46,7 +45,7 @@ const useAuditLogTableColumns = () => {
         accessor: 'summary',
         width: 350,
         textOverview: true,
-        Cell: ({ value }) => (
+        Cell: ({ value }: { value: string }) => (
           <div
             style={{
               maxWidth: 330,
@@ -65,7 +64,7 @@ const useAuditLogTableColumns = () => {
         accessor: 'ip',
         width: 120,
         textOverview: true,
-        Cell: ({ value }) => value || '—',
+        Cell: ({ value }: { value: string }) => value || '—',
       },
     ],
     []

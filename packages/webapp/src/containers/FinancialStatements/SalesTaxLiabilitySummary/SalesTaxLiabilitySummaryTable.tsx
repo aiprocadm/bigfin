@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { compose } from 'ramda';
@@ -16,6 +15,8 @@ import { useSalesTaxLiabilitySummaryColumns } from './utils';
 function SalesTaxLiabilitySummaryTableRoot({
   // #ownProps
   organizationName,
+}: {
+  organizationName: string;
 }) {
   // Balance sheet context.
   const {

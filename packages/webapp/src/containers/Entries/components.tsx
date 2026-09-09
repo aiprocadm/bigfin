@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import type { TableCellRendererProps } from '@/components/Datatable/cellProps';
 import intl from 'react-intl-universal';
 import { MenuItem, Menu, Button, Position, Intent } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
@@ -41,7 +41,9 @@ export function ItemHeaderCell() {
 export function ActionsCellRenderer({
   row: { index },
   payload: { removeRow },
-}) {
+}: Required<
+  TableCellRendererProps<{ removeRow: (index: number) => void }>
+>) {
   const onRemoveRole = () => {
     removeRow(index);
   };
@@ -70,7 +72,10 @@ ActionsCellRenderer.cellType = CellType.Button;
 /**
  * Total accessor.
  */
-export function TotalCell({ payload: { currencyCode }, value }) {
+export function TotalCell({
+  payload: { currencyCode },
+  value,
+}: Required<TableCellRendererProps<{ currencyCode: string }, number>>) {
   return <span>{formattedAmount(value, currencyCode, { noZero: true })}</span>;
 }
 

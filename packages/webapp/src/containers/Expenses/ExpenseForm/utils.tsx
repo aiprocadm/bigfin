@@ -1,5 +1,15 @@
-// @ts-nocheck
 import React from 'react';
+import type {
+  FastFieldShouldUpdateProps,
+  ServiceError,
+} from '@/utils/formTypes';
+
+/** Строка расхода в форме: у неё читают сумму и счёт затрат. */
+interface ExpenseEntry {
+  amount?: number | string;
+  expense_account_id?: number | string;
+  [key: string]: any;
+}
 import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -56,8 +66,14 @@ export const defaultExpense = {
 /**
  * Transform API errors in toasts messages.
  */
-export const transformErrors = (errors, { setErrors }) => {
-  const hasError = (errorType) => errors.some((e) => e.type === errorType);
+export const transformErrors = (
+  errors: ServiceError[],
+  // `setErrors` здесь получает то, что вернул показ уведомления, а не набор
+  // ошибок поля. Похоже на недосмотр, но правка меняла бы поведение — вынесено
+  // в задел карты v81.
+  { setErrors }: { setErrors: (errors: any) => void },
+) => {
+  const hasError = (errorType: string) => errors.some((e) => e.type === errorType);
 
   if (hasError(ERROR.EXPENSE_ALREADY_PUBLISHED)) {
     setErrors(
@@ -80,13 +96,13 @@ export const transformErrors = (errors, { setErrors }) => {
  * Transformes the expense to form initial values in edit mode.
  */
 export const transformToEditForm = (
-  expense,
-  defaultExpense,
+  expense: any,
+  defaultExpense: any,
   linesNumber = 4,
 ) => {
   const expenseEntry = defaultExpense.categories[0];
   const initialEntries = [
-    ...expense.categories.map((category) => ({
+    ...expense.categories.map((category: any) => ({
       ...transformToForm(category, expenseEntry),
     })),
     ...repeatValue(
@@ -110,7 +126,10 @@ export const transformToEditForm = (
 /**
  * Detarmine cusotmers fast-field should update.
  */
-export const customersFieldShouldUpdate = (newProps, oldProps) => {
+export const customersFieldShouldUpdate = (
+  newProps: FastFieldShouldUpdateProps & { shouldUpdateDeps: { items: any } },
+  oldProps: FastFieldShouldUpdateProps & { shouldUpdateDeps: { items: any } },
+) => {
   return (
     newProps.shouldUpdateDeps.items !== oldProps.shouldUpdateDeps.items ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -120,7 +139,10 @@ export const customersFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Detarmine accounts fast-field should update.
  */
-export const accountsFieldShouldUpdate = (newProps, oldProps) => {
+export const accountsFieldShouldUpdate = (
+  newProps: FastFieldShouldUpdateProps,
+  oldProps: FastFieldShouldUpdateProps,
+) => {
   return (
     newProps.items !== oldProps.items ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -130,7 +152,7 @@ export const accountsFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Filter expense entries that has no amount or expense account.
  */
-export const filterNonZeroEntries = (categories) => {
+export const filterNonZeroEntries = (categories: ExpenseEntry[]) => {
   return categories.filter(
     (category) => category.amount && category.expense_account_id,
   );
@@ -139,7 +161,7 @@ export const filterNonZeroEntries = (categories) => {
 /**
  * Transformes the form values to request body.
  */
-export const transformFormValuesToRequest = (values) => {
+export const transformFormValuesToRequest = (values: any) => {
   const categories = filterNonZeroEntries(values.categories);
   const attachments = transformAttachmentsToRequest(values);
 
@@ -156,7 +178,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess && isNewMode) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: { primary?: boolean; id: number }) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);

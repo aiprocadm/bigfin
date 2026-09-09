@@ -1,7 +1,7 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { FastField, useFormikContext } from 'formik';
+import type { FieldProps } from 'formik';
 import { Classes } from '@blueprintjs/core';
 import { subtract } from 'lodash';
 
@@ -34,14 +34,14 @@ export default function ReconcileVendorCreditFormFields() {
 
       <FastField name={'entries'}>
         {({
-          form: { setFieldValue, values },
+          form: { setFieldValue },
           field: { value },
-          meta: { error, touched },
-        }) => (
+          meta: { error },
+        }: FieldProps) => (
           <ReconcileVendorCreditEntriesTable
             entries={value}
             errors={error}
-            onUpdateData={(newEntries) => {
+            onUpdateData={(newEntries: unknown) => {
               setFieldValue('entries', newEntries);
             }}
           />

@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import type { ServiceError } from '@/utils/formTypes';
 import intl from 'react-intl-universal';
 import { Intent, Tag, Classes } from '@blueprintjs/core';
 import clsx from 'classnames';
@@ -17,11 +17,14 @@ export const DeleteAccountTypeError = {
 /**
  * Account name accessor.
  */
-export const accountNameAccessor = (account) => {
+export const accountNameAccessor = (account: {
+  name: string;
+  description?: string;
+}) => {
   return (
     <span>
       <span className={'account-name'}>{account.name}</span>
-      <If condition={account.description}>
+      <If condition={!!account.description}>
         <span className={'account-desc'}>{account.description}</span>
       </If>
     </span>
@@ -31,7 +34,7 @@ export const accountNameAccessor = (account) => {
 /**
  * Handle delete errors in bulk and singular.
  */
-export const handleDeleteErrors = (errors) => {
+export const handleDeleteErrors = (errors: ServiceError[]) => {
   if (errors.find((e) => e.type === DeleteAccountTypeError.AccountPredefined)) {
     AppToaster.show({
       message: intl.get('cannot_delete_predefined_accounts'),
@@ -46,7 +49,7 @@ export const handleDeleteErrors = (errors) => {
   }
 };
 
-export const AccountCodeAccessor = (row) =>
+export const AccountCodeAccessor = (row: { code?: string }) =>
   !isBlank(row.code) ? (
     <Tag minimal round intent={Intent.NONE}>
       {row.code}
@@ -130,14 +133,14 @@ export const useAccountsTableColumns = () => {
   );
 };
 
-export const rowClassNames = (row) => ({
+export const rowClassNames = (row: { original: { active: boolean } }) => ({
   inactive: !row.original.active,
 });
 
 /**
  * Transformes the table state to list query.
  */
-export const transformAccountsStateToQuery = (tableState) => {
+export const transformAccountsStateToQuery = (tableState: any) => {
   return {
     ...transformTableStateToQuery(tableState),
     onlyInactive: tableState.inactiveMode,

@@ -1,5 +1,16 @@
-// @ts-nocheck
 import React from 'react';
+import type {
+  FastFieldShouldUpdateProps,
+  ServiceError,
+} from '@/utils/formTypes';
+
+/** Строка к оплате: счёт покупателю, сколько должны и сколько платят. */
+interface ReceivableEntry {
+  invoice_id?: number | string;
+  due_amount?: number;
+  payment_amount?: number | string;
+  [key: string]: any;
+}
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import { omit, pick, first, sumBy } from 'lodash';
@@ -71,10 +82,13 @@ export const defaultRequestPayment = {
 /**
  * Transformes the edit payment receive to initial values of the form.
  */
-export const transformToEditForm = (paymentReceive, paymentReceiveEntries) => ({
+export const transformToEditForm = (
+  paymentReceive: any,
+  paymentReceiveEntries: ReceivableEntry[],
+) => ({
   ...transformToForm(paymentReceive, defaultPaymentReceive),
   entries: [
-    ...paymentReceiveEntries.map((paymentReceiveEntry) => ({
+    ...paymentReceiveEntries.map((paymentReceiveEntry: ReceivableEntry) => ({
       ...transformToForm(paymentReceiveEntry, defaultPaymentReceiveEntry),
       payment_amount: paymentReceiveEntry.payment_amount || '',
     })),
@@ -85,8 +99,8 @@ export const transformToEditForm = (paymentReceive, paymentReceiveEntries) => ({
 /**
  * Transformes the given invoices to the new page receivable entries.
  */
-export const transformInvoicesNewPageEntries = (invoices) => [
-  ...invoices.map((invoice, index) => ({
+export const transformInvoicesNewPageEntries = (invoices: any[]) => [
+  ...invoices.map((invoice: any, index: number) => ({
     index: index + 1,
     invoice_id: invoice.id,
     entry_type: 'invoice',
@@ -101,15 +115,20 @@ export const transformInvoicesNewPageEntries = (invoices) => [
   })),
 ];
 
-export const transformEntriesToEditForm = (receivableEntries) => [
+export const transformEntriesToEditForm = (receivableEntries: any[]) => [
   ...transformInvoicesNewPageEntries([...(receivableEntries || [])]),
 ];
 
-export const clearAllPaymentEntries = (entries) => [
-  ...entries.map((entry) => ({ ...entry, payment_amount: 0 })),
+export const clearAllPaymentEntries = (entries: ReceivableEntry[]) => [
+  ...entries.map((entry: ReceivableEntry) => ({ ...entry, payment_amount: 0 })),
 ];
 
-export const amountPaymentEntries = (amount, entries) => {
+export const amountPaymentEntries = (
+  amount: number,
+  // Этой раскладке долг по строке нужен обязательно: без него `Math.min` даёт
+  // «не число», и в сумму платежа попадает оно.
+  entries: (ReceivableEntry & { due_amount: number })[],
+) => {
   let total = amount;
 
   return entries.map((item) => {
@@ -123,8 +142,8 @@ export const amountPaymentEntries = (amount, entries) => {
   });
 };
 
-export const fullAmountPaymentEntries = (entries) => {
-  return entries.map((item) => ({
+export const fullAmountPaymentEntries = (entries: ReceivableEntry[]) => {
+  return entries.map((item: ReceivableEntry) => ({
     ...item,
     payment_amount: item.due_amount,
   }));
@@ -133,7 +152,10 @@ export const fullAmountPaymentEntries = (entries) => {
 /**
  * Detarmines the customers fast-field should update.
  */
-export const customersFieldShouldUpdate = (newProps, oldProps) => {
+export const customersFieldShouldUpdate = (
+  newProps: FastFieldShouldUpdateProps & { shouldUpdateDeps: { items: any } },
+  oldProps: FastFieldShouldUpdateProps & { shouldUpdateDeps: { items: any } },
+) => {
   return (
     newProps.shouldUpdateDeps.items !== oldProps.shouldUpdateDeps.items ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -143,7 +165,10 @@ export const customersFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Detarmines the accounts fast-field should update.
  */
-export const accountsFieldShouldUpdate = (newProps, oldProps) => {
+export const accountsFieldShouldUpdate = (
+  newProps: FastFieldShouldUpdateProps,
+  oldProps: FastFieldShouldUpdateProps,
+) => {
   return (
     newProps.items !== oldProps.items ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -153,11 +178,11 @@ export const accountsFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Tranformes form values to request.
  */
-export const transformFormToRequest = (form) => {
+export const transformFormToRequest = (form: any) => {
   // Filters entries that have no `invoice_id` and `payment_amount`.
   const entries = form.entries
-    .filter((entry) => entry.invoice_id && entry.payment_amount)
-    .map((entry) => ({
+    .filter((entry: ReceivableEntry) => entry.invoice_id && entry.payment_amount)
+    .map((entry: ReceivableEntry) => ({
       ...pick(entry, Object.keys(defaultRequestPaymentEntry)),
     }));
 
@@ -181,7 +206,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess && isNewMode) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: { primary?: boolean; id: number }) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);
@@ -193,8 +218,11 @@ export const useSetPrimaryBranchToForm = () => {
 /**
  * Transformes the response errors types.
  */
-export const transformErrors = (errors, { setFieldError }) => {
-  const getError = (errorType) => errors.find((e) => e.type === errorType);
+export const transformErrors = (
+  errors: ServiceError[],
+  { setFieldError }: { setFieldError: (field: string, message: string) => void },
+) => {
+  const getError = (errorType: string) => errors.find((e) => e.type === errorType);
 
   if (getError('PAYMENT_RECEIVE_NO_EXISTS')) {
     setFieldError(
@@ -298,7 +326,15 @@ export const useEstimateIsForeignCustomer = () => {
   return isForeignCustomer;
 };
 
-export const resetFormState = ({ initialValues, values, resetForm }) => {
+export const resetFormState = ({
+  initialValues,
+  values,
+  resetForm,
+}: {
+  initialValues: any;
+  values: { brand_id?: number | string };
+  resetForm: (next: { values: any }) => void;
+}) => {
   resetForm({
     values: {
       // Reset the all values except the brand id.
@@ -308,7 +344,7 @@ export const resetFormState = ({ initialValues, values, resetForm }) => {
   });
 };
 
-export const getExceededAmountFromValues = (values) => {
+export const getExceededAmountFromValues = (values: any) => {
   const totalApplied = sumBy(values.entries, 'payment_amount');
   const totalAmount = values.amount;
 

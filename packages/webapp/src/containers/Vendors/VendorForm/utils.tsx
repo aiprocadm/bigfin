@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import type { FastFieldShouldUpdateProps } from '@/utils/formTypes';
 import moment from 'moment';
 import { useFormikContext } from 'formik';
 import { first } from 'lodash';
@@ -58,7 +58,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: { primary?: boolean; id: number }) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('opening_balance_branch_id', primaryBranch.id);
@@ -81,7 +81,15 @@ export const useIsVendorForeignCurrency = () => {
 /**
  * Detarmines the exchange opening balance field when should update.
  */
-export const openingBalanceFieldShouldUpdate = (newProps, oldProps) => {
+export const openingBalanceFieldShouldUpdate = (
+  // Этому сравнителю набор зависимостей нужен обязательно — отсюда сужение.
+  newProps: FastFieldShouldUpdateProps & {
+    shouldUpdateDeps: { currencyCode: string };
+  },
+  oldProps: FastFieldShouldUpdateProps & {
+    shouldUpdateDeps: { currencyCode: string };
+  },
+) => {
   return (
     newProps.shouldUpdateDeps.currencyCode !==
       oldProps.shouldUpdateDeps.currencyCode ||

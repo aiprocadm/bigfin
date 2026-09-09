@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -29,7 +28,11 @@ function CustomerFormPageContent() {
   const { isFormLoading } = useCustomerFormContext();
 
 
-  const handleSubmitSuccess = (values, formArgs, submitPayload) => {
+  const handleSubmitSuccess = (
+    values: any,
+    formArgs: any,
+    submitPayload: { noRedirect?: boolean },
+  ) => {
     if (!submitPayload.noRedirect) {
       history.push('/customers');
     }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { css } from '@emotion/css';
 import { x } from '@xstyled/emotion';

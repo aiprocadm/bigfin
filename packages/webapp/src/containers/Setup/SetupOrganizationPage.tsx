@@ -10,6 +10,7 @@ import SetupOrganizationForm from './SetupOrganizationForm';
 import { useOrganizationSetup } from '@/hooks/query';
 import { withSettingsActions } from '@/containers/Settings/withSettingsActions';
 
+import type { SetupOrganizationFormValues } from './SetupOrganization.schema';
 import { getSetupOrganizationValidation } from './SetupOrganization.schema';
 import { setCookie, compose, transfromToSnakeCase } from '@/utils';
 
@@ -35,7 +36,7 @@ const defaultValues = {
  * When the current UI locale is Russian, we pre-fill base currency (RUB)
  * and language (ru) — typical for the target audience.
  */
-function getLocaleAwareDefaults() {
+function getLocaleAwareDefaults(): Partial<SetupOrganizationFormValues> {
   const currentLocale =
     (intl.getInitOptions && intl.getInitOptions()?.currentLocale) ||
     (typeof localStorage !== 'undefined' && localStorage.getItem('lang'));
@@ -55,7 +56,7 @@ function SetupOrganizationPage({ wizard }) {
   const validationSchema = getSetupOrganizationValidation();
 
   // Initialize values.
-  const initialValues = {
+  const initialValues: SetupOrganizationFormValues = {
     ...defaultValues,
     ...getLocaleAwareDefaults(),
   };

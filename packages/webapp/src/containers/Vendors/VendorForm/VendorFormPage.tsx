@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useParams, useHistory } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { VendorFormFormik } from './VendorFormFormik';
  * Vendor form page loading wrapper.
  * @returns {JSX}
  */
-function VendorFormPageLoading({ children }) {
+function VendorFormPageLoading({ children }: { children: React.ReactNode }) {
   const { isFormLoading } = useVendorFormContext();
 
   return (
@@ -28,7 +27,11 @@ export function VendorFormPage() {
   const { id } = useParams<{ id?: string }>();
 
   // Handle the form submit success.
-  const handleSubmitSuccess = (values, formArgs, submitPayload) => {
+  const handleSubmitSuccess = (
+    values: any,
+    formArgs: any,
+    submitPayload: { noRedirect?: boolean },
+  ) => {
     if (!submitPayload.noRedirect) {
       history.push('/vendors');
     }

@@ -1,5 +1,16 @@
-// @ts-nocheck
 import React from 'react';
+import type {
+  FastFieldShouldUpdateProps,
+  ServiceError,
+} from '@/utils/formTypes';
+
+/** Строка оплаты: счёт, по которому платят, и сумма платежа. */
+interface PaymentEntry {
+  bill_id?: number | string;
+  payment_amount?: number | string;
+  currency_code?: string;
+  [key: string]: any;
+}
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import { pick, first, sumBy } from 'lodash';
@@ -51,13 +62,16 @@ export const defaultPaymentMade = {
   attachments: [],
 };
 
-export const transformToEditForm = (paymentMade, paymentMadeEntries) => {
+export const transformToEditForm = (
+  paymentMade: any,
+  paymentMadeEntries: PaymentEntry[],
+) => {
   const attachments = transformAttachmentsToForm(paymentMade);
 
   return {
     ...transformToForm(paymentMade, defaultPaymentMade),
     entries: [
-      ...paymentMadeEntries.map((paymentMadeEntry) => ({
+      ...paymentMadeEntries.map((paymentMadeEntry: PaymentEntry) => ({
         ...transformToForm(paymentMadeEntry, defaultPaymentMadeEntry),
         payment_amount: paymentMadeEntry.payment_amount || '',
       })),
@@ -69,8 +83,8 @@ export const transformToEditForm = (paymentMade, paymentMadeEntries) => {
 /**
  * Transform the new page entries.
  */
-export const transformToNewPageEntries = (entries) => {
-  return entries.map((entry) => ({
+export const transformToNewPageEntries = (entries: PaymentEntry[]) => {
+  return entries.map((entry: PaymentEntry) => ({
     ...transformToForm(entry, defaultPaymentMadeEntry),
     payment_amount: '',
     currency_code: entry.currency_code,
@@ -80,7 +94,10 @@ export const transformToNewPageEntries = (entries) => {
 /**
  * Detarmines vendors fast field when update.
  */
-export const vendorsFieldShouldUpdate = (newProps, oldProps) => {
+export const vendorsFieldShouldUpdate = (
+  newProps: FastFieldShouldUpdateProps & { shouldUpdateDeps: { items: any } },
+  oldProps: FastFieldShouldUpdateProps & { shouldUpdateDeps: { items: any } },
+) => {
   return (
     newProps.shouldUpdateDeps.items !== oldProps.shouldUpdateDeps.items ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -90,7 +107,10 @@ export const vendorsFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Detarmines accounts fast field when update.
  */
-export const accountsFieldShouldUpdate = (newProps, oldProps) => {
+export const accountsFieldShouldUpdate = (
+  newProps: FastFieldShouldUpdateProps,
+  oldProps: FastFieldShouldUpdateProps,
+) => {
   return (
     newProps.items !== oldProps.items ||
     defaultFastFieldShouldUpdate(newProps, oldProps)
@@ -100,11 +120,11 @@ export const accountsFieldShouldUpdate = (newProps, oldProps) => {
 /**
  * Transformes the form values to request body.
  */
-export const transformFormToRequest = (form) => {
+export const transformFormToRequest = (form: any) => {
   // Filters entries that have no `bill_id` or `payment_amount`.
   const entries = form.entries
-    .filter((item) => item.bill_id && item.payment_amount)
-    .map((entry) => ({
+    .filter((item: PaymentEntry) => item.bill_id && item.payment_amount)
+    .map((entry: PaymentEntry) => ({
       ...pick(entry, ['payment_amount', 'bill_id']),
     }));
 
@@ -119,7 +139,7 @@ export const useSetPrimaryBranchToForm = () => {
 
   React.useEffect(() => {
     if (isBranchesSuccess && isNewMode) {
-      const primaryBranch = branches.find((b) => b.primary) || first(branches);
+      const primaryBranch = branches.find((b: { primary?: boolean; id: number }) => b.primary) || first(branches);
 
       if (primaryBranch) {
         setFieldValue('branch_id', primaryBranch.id);
@@ -131,8 +151,11 @@ export const useSetPrimaryBranchToForm = () => {
 /**
  * Transformes the response errors types.
  */
-export const transformErrors = (errors, { setFieldError }) => {
-  const getError = (errorType) => errors.find((e) => e.type === errorType);
+export const transformErrors = (
+  errors: ServiceError[],
+  { setFieldError }: { setFieldError: (field: string, message: string) => void },
+) => {
+  const getError = (errorType: string) => errors.find((e) => e.type === errorType);
 
   if (getError(PAYMENT_MADE_ERRORS.PAYMENT_NUMBER_NOT_UNIQUE)) {
     setFieldError('payment_number', intl.get('payment_number_is_not_unique'));
@@ -215,7 +238,7 @@ export const usePaymentMadeIsForeignCustomer = () => {
   return isForeignCustomer;
 };
 
-export const getPaymentExcessAmountFromValues = (values) => {
+export const getPaymentExcessAmountFromValues = (values: any) => {
   const appliedAmount = sumBy(values.entries, 'payment_amount');
   const totalAmount = values.amount;
 

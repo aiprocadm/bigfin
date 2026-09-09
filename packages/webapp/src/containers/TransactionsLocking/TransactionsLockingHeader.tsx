@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -34,7 +33,7 @@ export function TransactionsLockingHeader() {
     const activeModules = validateMoveToFullLocking(
       transactionsLocking.modules,
     );
-    const modulesStrong = activeModules.map((module) => (
+    const modulesStrong = activeModules.map((module: { formatted_module: string }) => (
       <strong>{module.formatted_module}</strong>
     ));
     if (activeModules.length > 0) {

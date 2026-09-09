@@ -20,6 +20,11 @@ import path from 'path';
  * целиком — ошибка вернётся молча и снова затянет файлы в слепую зону.
  *
  * Правило: перечисленные доводы объявлены необязательными (со знаком `?`).
+ *
+ * Образцы допускают список видов в угловых скобках и перенос строки после
+ * открывающей скобки: карта v81 объявила надстройкам, что они отдают, — запись
+ * стала `<TMapped,>(\n  mapState?: …`, и сторож упал, хотя довод остался
+ * необязательным. Сторож должен ловить смысл, а не расстановку пробелов.
  */
 const SRC = path.resolve(__dirname, '..');
 
@@ -57,19 +62,25 @@ const CONTRACTS: Array<{
     what: 'надстройка ящиков',
     times: 1,
     file: 'containers/Drawer/withDrawers.tsx',
-    signatures: [/withDrawers = \(mapState\?/],
+    signatures: [/withDrawers =\s*(?:<[^>]*>)?\(\s*mapState\?/],
   },
   {
     what: 'надстройка предупреждений',
     times: 1,
     file: 'containers/Alert/withAlertStoreConnect.tsx',
-    signatures: [/withAlertStoreConnect = \(mapState\?/],
+    signatures: [/withAlertStoreConnect =\s*(?:<[^>]*>)?\(\s*mapState\?/],
   },
   {
     what: 'надстройка текущей организации',
     times: 1,
     file: 'containers/Organization/withCurrentOrganization.tsx',
-    signatures: [/withCurrentOrganization = \(mapState\?/],
+    signatures: [/withCurrentOrganization =\s*(?:<[^>]*>)?\(\s*mapState\?/],
+  },
+  {
+    what: 'надстройка панели',
+    times: 1,
+    file: 'containers/Dashboard/withDashboard.tsx',
+    signatures: [/withDashboard =\s*(?:<[^>]*>)?\(\s*mapState\?/],
   },
   {
     what: 'надстройка диалогов',

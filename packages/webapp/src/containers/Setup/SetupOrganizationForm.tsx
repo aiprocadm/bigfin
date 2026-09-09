@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { FastField, Form, ErrorMessage } from 'formik';
 import { Button, Intent, FormGroup, Classes } from '@blueprintjs/core';
@@ -21,6 +20,8 @@ import { useIsDarkMode } from '@/hooks/useDarkMode';
 import intl from 'react-intl-universal';
 import { getFiscalYear } from '@/constants/fiscalYearOptions';
 import { getLanguages } from '@/constants/languagesOptions';
+import type { FormikProps } from 'formik';
+import type { SetupOrganizationFormValues } from './SetupOrganization.schema';
 import { getAllCurrenciesOptions } from '@/constants/currencies';
 import {
   ORGANIZATION_LEGAL_FORMS,
@@ -33,7 +34,10 @@ const countries = getAllCountries();
 /**
  * Setup organization form.
  */
-export default function SetupOrganizationForm({ isSubmitting, values }) {
+export default function SetupOrganizationForm({
+  isSubmitting,
+  values,
+}: FormikProps<SetupOrganizationFormValues>) {
   const FiscalYear = getFiscalYear();
   const Languages = getLanguages();
   const currencies = getAllCurrenciesOptions();

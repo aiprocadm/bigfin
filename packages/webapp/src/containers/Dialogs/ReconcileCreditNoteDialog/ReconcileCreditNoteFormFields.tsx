@@ -1,7 +1,7 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { FastField, useFormikContext } from 'formik';
+import type { FieldProps } from 'formik';
 import { Classes } from '@blueprintjs/core';
 
 import {
@@ -37,11 +37,15 @@ export default function ReconcileCreditNoteFormFields() {
 
       {/*------------ Reconcile credit entries table -----------*/}
       <FastField name={'entries'}>
-        {({ form: { setFieldValue }, field: { value }, meta: { error } }) => (
+        {({
+          form: { setFieldValue },
+          field: { value },
+          meta: { error },
+        }: FieldProps) => (
           <ReconcileCreditNoteEntriesTable
             entries={value}
             errors={error}
-            onUpdateData={(newEntries) => {
+            onUpdateData={(newEntries: unknown) => {
               setFieldValue('entries', newEntries);
             }}
           />

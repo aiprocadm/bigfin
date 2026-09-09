@@ -1,5 +1,5 @@
-// @ts-nocheck
 import React from 'react';
+import type { FastFieldShouldUpdateProps } from '@/utils/formTypes';
 import moment from 'moment';
 import { useFormikContext } from 'formik';
 import { first } from 'lodash';
@@ -82,7 +82,15 @@ export const useIsCustomerForeignCurrency = () => {
 /**
  * Detarmines the exchange opening balance field when should update.
  */
-export const openingBalanceFieldShouldUpdate = (newProps, oldProps) => {
+export const openingBalanceFieldShouldUpdate = (
+  // Этому сравнителю набор зависимостей нужен обязательно — отсюда сужение.
+  newProps: FastFieldShouldUpdateProps & {
+    shouldUpdateDeps: { currencyCode: string };
+  },
+  oldProps: FastFieldShouldUpdateProps & {
+    shouldUpdateDeps: { currencyCode: string };
+  },
+) => {
   return (
     newProps.shouldUpdateDeps.currencyCode !==
       oldProps.shouldUpdateDeps.currencyCode ||

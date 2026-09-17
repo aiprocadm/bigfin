@@ -91,12 +91,25 @@ function CreditNoteNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettingsActions,
-  withSettings(({ creditNoteSettings }) => ({
-    autoIncrement: creditNoteSettings?.autoIncrement,
-    nextNumber: creditNoteSettings?.nextNumber,
-    numberPrefix: creditNoteSettings?.numberPrefix,
-  })),
-)(CreditNoteNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface CreditNoteNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const CreditNoteNumberDialogContentComposed: React.ComponentType<CreditNoteNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettingsActions,
+    withSettings(({ creditNoteSettings }) => ({
+      autoIncrement: creditNoteSettings?.autoIncrement,
+      nextNumber: creditNoteSettings?.nextNumber,
+      numberPrefix: creditNoteSettings?.numberPrefix,
+    })),
+  )(CreditNoteNumberDialogContent);
+
+export default CreditNoteNumberDialogContentComposed;

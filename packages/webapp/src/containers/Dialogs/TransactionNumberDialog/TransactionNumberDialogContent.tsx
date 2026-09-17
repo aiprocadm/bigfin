@@ -93,12 +93,25 @@ function TransactionNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettingsActions,
-  withSettings(({ cashflowSetting }) => ({
-    nextNumber: cashflowSetting?.nextNumber,
-    numberPrefix: cashflowSetting?.numberPrefix,
-    autoIncrement: cashflowSetting?.autoIncrement,
-  })),
-)(TransactionNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface TransactionNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const TransactionNumberDialogContentComposed: React.ComponentType<TransactionNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettingsActions,
+    withSettings(({ cashflowSetting }) => ({
+      nextNumber: cashflowSetting?.nextNumber,
+      numberPrefix: cashflowSetting?.numberPrefix,
+      autoIncrement: cashflowSetting?.autoIncrement,
+    })),
+  )(TransactionNumberDialogContent);
+
+export default TransactionNumberDialogContentComposed;

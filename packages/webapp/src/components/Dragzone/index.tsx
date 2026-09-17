@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import classNames from 'classnames';
@@ -53,7 +52,7 @@ export function Dragzone({
   hint,
   className,
 }: DragzoneProps) {
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<DragzoneFile[]>([]);
 
   useEffect(() => {
     setFiles([...initialFiles]);
@@ -72,7 +71,7 @@ export function Dragzone({
   });
 
   const handleRemove = useCallback(
-    (index) => {
+    (index: number) => {
       const deletedFile = files.splice(index, 1);
       setFiles([...files]);
       onDeleteFile && onDeleteFile(deletedFile);
@@ -93,7 +92,9 @@ export function Dragzone({
 
   useEffect(
     () => () => {
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
+      files.forEach((file) => {
+        if (file.preview) URL.revokeObjectURL(file.preview);
+      });
     },
     [files, onDrop],
   );

@@ -1,28 +1,40 @@
-// @ts-nocheck
 import React from 'react';
-import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { AppToaster } from '@/components';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { useCancelMainSubscription } from '@/hooks/query/subscription';
+import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
+
+type CancelMainSubscriptionAlertProps = AlertReduxProps<{}> &
+  WithAlertActionsProps;
 
 /**
- * Cancel Unlocking partial transactions alerts.
+ * Предупреждение «отменить подписку организации».
+ *
+ * Модуль подписок законсервирован (решение 27, карты v18 и v86), но код его
+ * жив и обязан говорить правду: отказ сервера раньше глотался молча, а текст
+ * под заголовком был английским прямо в разметке (Д5 карты v87).
  */
 function CancelMainSubscriptionAlert({
   name,
 
   // #withAlertStoreConnect
   isOpen,
-  payload: { module },
 
   // #withAlertActions
   closeAlert,
-}) {
+}: CancelMainSubscriptionAlertProps) {
   const { mutateAsync: cancelSubscription, isLoading } =
     useCancelMainSubscription();
 
@@ -32,9 +44,6 @@ function CancelMainSubscriptionAlert({
   };
   // Handle confirm.
   const handleConfirm = () => {
-    const values = {
-      module: module,
-    };
     cancelSubscription()
       .then(() => {
         AppToaster.show({
@@ -42,13 +51,7 @@ function CancelMainSubscriptionAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });
@@ -56,7 +59,7 @@ function CancelMainSubscriptionAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
+      cancelButtonText={intl.get('cancel')}
       confirmButtonText={intl.get('subscription.alert.cancel_button')}
       intent={Intent.DANGER}
       isOpen={isOpen}
@@ -68,15 +71,12 @@ function CancelMainSubscriptionAlert({
         <strong>{intl.get('subscription.alert.cancel_description')}</strong>
       </p>
 
-      <p>
-        It will no longer be accessible to you or any other users. Make sure any
-        data has already been exported.
-      </p>
+      <p>{intl.get('subscription.alert.cancel_data_notice')}</p>
     </Alert>
   );
 }
 
-export default R.compose(
+export default compose(
   withAlertStoreConnect(),
   withAlertActions,
 )(CancelMainSubscriptionAlert);

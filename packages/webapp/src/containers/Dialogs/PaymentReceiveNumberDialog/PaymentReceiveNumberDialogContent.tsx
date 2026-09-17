@@ -96,12 +96,25 @@ function PaymentNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettingsActions,
-  withSettings(({ paymentReceiveSettings }) => ({
-    nextNumber: paymentReceiveSettings?.nextNumber,
-    numberPrefix: paymentReceiveSettings?.numberPrefix,
-    autoIncrement: paymentReceiveSettings?.autoIncrement,
-  })),
-)(PaymentNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface PaymentNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const PaymentNumberDialogContentComposed: React.ComponentType<PaymentNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettingsActions,
+    withSettings(({ paymentReceiveSettings }) => ({
+      nextNumber: paymentReceiveSettings?.nextNumber,
+      numberPrefix: paymentReceiveSettings?.numberPrefix,
+      autoIncrement: paymentReceiveSettings?.autoIncrement,
+    })),
+  )(PaymentNumberDialogContent);
+
+export default PaymentNumberDialogContentComposed;

@@ -1,21 +1,34 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
-import { FormattedMessage as T } from '@/components';
 import { AppToaster } from '@/components';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
+import {
+  withDrawerActions,
+  WithDrawerActionsProps,
+} from '@/containers/Drawer/withDrawerActions';
 
 import { useUncategorizeTransaction } from '@/hooks/query';
 import { compose } from '@/utils';
 import { DRAWERS } from '@/constants/drawers';
 import { showApiError } from '@/utils/showApiError';
 
+type UncategorizeTransactionAlertProps = AlertReduxProps<{
+  uncategorizedTransactionId: number;
+}> &
+  WithAlertActionsProps &
+  WithDrawerActionsProps;
+
 /**
- * Project delete alert.
+ * Предупреждение «снять категорию с операции».
  */
 function UncategorizeTransactionAlert({
   name,
@@ -29,7 +42,7 @@ function UncategorizeTransactionAlert({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: UncategorizeTransactionAlertProps) {
   const { mutateAsync: uncategorizeTransaction, isLoading } =
     useUncategorizeTransaction();
 
@@ -54,7 +67,7 @@ function UncategorizeTransactionAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
+      cancelButtonText={intl.get('cancel')}
       confirmButtonText={intl.get('cashflow.alert.uncategorize')}
       intent={Intent.WARNING}
       isOpen={isOpen}

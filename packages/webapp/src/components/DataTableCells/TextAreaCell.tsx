@@ -1,18 +1,18 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { Classes, TextArea, FormGroup, Intent } from '@blueprintjs/core';
 import { CellType } from '@/constants';
+import type { EditableCellProps } from './InputGroupCell';
 
 const TextAreaEditableCell = ({
   row: { index },
   column: { id },
   cell: { value: initialValue },
   payload,
-}) => {
+}: EditableCellProps) => {
   const [value, setValue] = useState(initialValue);
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
   };
   const onBlur = () => {
@@ -26,7 +26,7 @@ const TextAreaEditableCell = ({
 
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={classNames(Classes.FILL)}
     >
       <TextArea

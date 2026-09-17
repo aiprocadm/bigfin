@@ -1,8 +1,6 @@
-// @ts-nocheck
 import React, { useReducer, useEffect } from 'react';
 import { Button, ButtonGroup, Intent, HTMLSelect } from '@blueprintjs/core';
 import intl from 'react-intl-universal';
-import PropTypes from 'prop-types';
 import { range } from 'lodash';
 import styled from 'styled-components';
 import { x } from '@xstyled/emotion';
@@ -37,7 +35,7 @@ const StyledPaginationButton = styled(Button)`
 
   &:not([class*="bp4-intent-"]).bp4-minimal {
     color: var(--x-button-text-color);
-    
+
     &:hover {
       background-color: var(--x-button-hover-background);
     }
@@ -90,7 +88,7 @@ const StyledHTMLSelect = styled(HTMLSelect)`
   }
   &.bp4-html-select.bp4-minimal  {
     margin-left: 6px;
-    
+
     select {
       height: 24px;
       width: auto;
@@ -115,9 +113,25 @@ const TYPE = {
   PAGE_CHANGE: 'PAGE_CHANGE',
   PAGE_SIZE_CHANGE: 'PAGE_SIZE_CHANGE',
   INITIALIZE: 'INITIALIZE',
-};
+} as const;
 
-const getState = ({ currentPage, size, total }) => {
+interface PaginationInput {
+  currentPage: number;
+  size: number;
+  total: number;
+}
+
+interface PaginationState extends PaginationInput {
+  pages: number[];
+  totalPages: number;
+}
+
+type PaginationAction =
+  | { type: typeof TYPE.PAGE_CHANGE; page: number }
+  | { type: typeof TYPE.PAGE_SIZE_CHANGE; size: number }
+  | { type: typeof TYPE.INITIALIZE; page: number; size: number; total: number };
+
+const getState = ({ currentPage, size, total }: PaginationInput): PaginationState => {
   const totalPages = Math.ceil(total / size);
   const visibleItems = 5;
   const halfVisibleItems = Math.ceil(visibleItems / 2);
@@ -159,7 +173,10 @@ const getState = ({ currentPage, size, total }) => {
   };
 };
 
-const reducer = (state, action) => {
+const reducer = (
+  state: PaginationState,
+  action: PaginationAction,
+): PaginationState => {
   switch (action.type) {
     case TYPE.PAGE_CHANGE:
       return getState({
@@ -184,14 +201,28 @@ const reducer = (state, action) => {
   }
 };
 
+export interface PaginationProps {
+  currentPage?: number;
+  total: number;
+  size?: number;
+  pageSizesOptions?: number[];
+  onPageChange?: (change: { page: number; pageSize: number }) => void;
+  onPageSizeChange?: (change: { pageSize: number; page: number }) => void;
+}
+
+/**
+ * Значения по умолчанию заданы прямо в разборе свойств: `defaultProps` у
+ * функционального компонента React 18.3 объявил устаревшим, а `propTypes`
+ * дублировал объявление свойств (Д8 карты v87).
+ */
 export function Pagination({
-  currentPage,
+  currentPage = 1,
   total,
-  size,
+  size = 25,
   pageSizesOptions = [20, 30, 50, 75, 100, 150],
   onPageChange,
   onPageSizeChange,
-}) {
+}: PaginationProps) {
   const isDark = useIsDarkMode();
   const [state, dispatch] = useReducer(
     reducer,
@@ -220,7 +251,7 @@ export function Pagination({
               const page = state.currentPage - 1;
               const { size: pageSize } = state;
 
-              onPageChange({ page, pageSize });
+              onPageChange?.({ page, pageSize });
             }}
             minimal={true}
             icon={<Icon icon={'arrow-back-24'} iconSize={12} />}
@@ -237,7 +268,7 @@ export function Pagination({
                 dispatch({ type: 'PAGE_CHANGE', page });
                 const { size: pageSize } = state;
 
-                onPageChange({ page, pageSize });
+                onPageChange?.({ page, pageSize });
               }}
               minimal={true}
               className={state.currentPage === page ? 'is-active' : ''}
@@ -255,7 +286,7 @@ export function Pagination({
               const page = state.currentPage + 1;
               const { size: pageSize } = state;
 
-              onPageChange({ page, pageSize });
+              onPageChange?.({ page, pageSize });
             }}
             minimal={true}
             icon={<Icon icon={'arrow-forward-24'} iconSize={12} />}
@@ -277,7 +308,7 @@ export function Pagination({
               const { size: pageSize } = state;
 
               dispatch({ type: 'PAGE_CHANGE', page });
-              onPageChange({ page, pageSize });
+              onPageChange?.({ page, pageSize });
             }}
           />
         </x.div>
@@ -293,7 +324,7 @@ export function Pagination({
               dispatch({ type: 'PAGE_SIZE_CHANGE', size: pageSize });
               dispatch({ type: 'PAGE_CHANGE', page: 1 });
 
-              onPageSizeChange({ pageSize, page: 1 });
+              onPageSizeChange?.({ pageSize, page: 1 });
             }}
           />
         </x.div>
@@ -309,16 +340,3 @@ export function Pagination({
     </x.div>
   );
 }
-
-Pagination.propTypes = {
-  currentPage: PropTypes.number.isRequired,
-  size: PropTypes.number.isRequired,
-  total: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func,
-  onPageSizeChange: PropTypes.func,
-};
-
-Pagination.defaultProps = {
-  currentPage: 1,
-  size: 25,
-};

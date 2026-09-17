@@ -1,27 +1,40 @@
-// @ts-nocheck
 import React from 'react';
-import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { AppToaster } from '@/components';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 import { useResumeMainSubscription } from '@/hooks/query/subscription';
+import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
+
+type ResumeMainSubscriptionAlertProps = AlertReduxProps<{}> &
+  WithAlertActionsProps;
 
 /**
- * Resume Unlocking partial transactions alerts.
+ * Предупреждение «возобновить подписку организации».
+ *
+ * Модуль подписок законсервирован (решение 27, карты v18 и v86), но код его
+ * жив и обязан говорить правду: отказ сервера раньше глотался молча, вопрос
+ * был английским прямо в разметке, а абзац лежал внутри абзаца
+ * (Д5 карты v87).
  */
 function ResumeMainSubscriptionAlert({
   name,
 
   // #withAlertStoreConnect
   isOpen,
-  payload: { module },
 
   // #withAlertActions
   closeAlert,
-}) {
+}: ResumeMainSubscriptionAlertProps) {
   const { mutateAsync: resumeSubscription, isLoading } =
     useResumeMainSubscription();
 
@@ -31,9 +44,6 @@ function ResumeMainSubscriptionAlert({
   };
   // Handle confirm.
   const handleConfirm = () => {
-    const values = {
-      module: module,
-    };
     resumeSubscription()
       .then(() => {
         AppToaster.show({
@@ -41,13 +51,7 @@ function ResumeMainSubscriptionAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });
@@ -55,7 +59,7 @@ function ResumeMainSubscriptionAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
+      cancelButtonText={intl.get('cancel')}
       confirmButtonText={intl.get('subscription.alert.resume_button')}
       intent={Intent.DANGER}
       isOpen={isOpen}
@@ -65,16 +69,14 @@ function ResumeMainSubscriptionAlert({
     >
       <p>
         <strong>{intl.get('subscription.alert.resume_description')}</strong>
-
-        <p>
-          Are you sure want to resume the subscription of this organization?
-        </p>
       </p>
+
+      <p>{intl.get('subscription.alert.resume_confirm')}</p>
     </Alert>
   );
 }
 
-export default R.compose(
+export default compose(
   withAlertStoreConnect(),
   withAlertActions,
 )(ResumeMainSubscriptionAlert);

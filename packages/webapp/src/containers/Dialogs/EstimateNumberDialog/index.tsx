@@ -1,7 +1,8 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { saveInvoke, compose } from '@/utils';
 
 const EstimateNumberDialogContent = lazy(
@@ -11,13 +12,18 @@ const EstimateNumberDialogContent = lazy(
 /**
  * Estimate number dialog.
  */
+interface EstimateNumberDialogProps
+  extends DialogReduxProps<{ initialFormValues?: Record<string, unknown> }> {
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
 function EstimateNumberDialog({
   dialogName,
-  payload: { initialFormValues },
+  payload: { initialFormValues } = {},
   isOpen,
   onConfirm,
-}) {
-  const handleConfirm = (values) => {
+}: EstimateNumberDialogProps) {
+  const handleConfirm = (values: Record<string, unknown>) => {
     saveInvoke(onConfirm, values);
   };
 

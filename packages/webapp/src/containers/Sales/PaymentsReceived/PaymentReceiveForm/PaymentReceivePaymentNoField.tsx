@@ -1,8 +1,6 @@
-// @ts-nocheck
 import React from 'react';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
-import * as R from 'ramda';
 
 import { FInputGroup, FormattedMessage as T } from '@/components';
 import {
@@ -12,14 +10,26 @@ import {
   InputPrependButton,
 } from '@/components';
 
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { withSettings } from '@/containers/Settings/withSettings';
+import { compose } from '@/utils';
+
+interface PaymentReceivePaymentNoFieldProps extends WithDialogActionsProps {
+  // #withSettings
+  paymentReceiveAutoIncrement?: boolean;
+}
 
 /**
  * Payment receive number field.
+ *
+ * Сборка своя, а не `R.compose` из ramda: та не умеет вычесть подставленные
+ * свойства и отдаёт «ничего» (класс карты v84).
  */
-export const PaymentReceivePaymentNoField = R.compose(
-  withSettings(({ paymentReceiveSettings }) => ({
+export const PaymentReceivePaymentNoField: React.ComponentType = compose(
+  withSettings(({ paymentReceiveSettings }: any) => ({
     paymentReceiveAutoIncrement: paymentReceiveSettings?.autoIncrement,
   })),
   withDialogActions,
@@ -29,7 +39,7 @@ export const PaymentReceivePaymentNoField = R.compose(
 
   // #withSettings
   paymentReceiveAutoIncrement,
-}) => {
+}: PaymentReceivePaymentNoFieldProps) => {
   const { values, setFieldValue } = useFormikContext<any>();
 
   // Handle click open payment receive number dialog.
@@ -37,7 +47,7 @@ export const PaymentReceivePaymentNoField = R.compose(
     openDialog('payment-receive-number-form');
   };
   // Handle payment number field blur.
-  const handlePaymentNoBlur = (event) => {
+  const handlePaymentNoBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
 
     // Show the confirmation dialog if the value has changed and auto-increment

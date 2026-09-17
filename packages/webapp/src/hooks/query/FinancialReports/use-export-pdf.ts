@@ -1,27 +1,34 @@
-// @ts-nocheck
 import { downloadFile } from '@/hooks/useDownloadFile';
 import useApiRequest from '@/hooks/useRequest';
-import { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
+import { useMutation, UseMutationOptions } from 'react-query';
 import { asyncToastProgress } from '@/utils/async-toast-progress';
 import { showApiError } from '@/utils/showApiError';
 
 interface ResourceExportValues {
   resource: string;
+  format?: string;
 }
+
 /**
  * Initiates a download of the balance sheet in XLSX format.
  * @param {Object} query - The query parameters for the request.
  * @param {Object} args - Additional configurations for the download.
  * @returns {Function} A function to trigger the file download.
+ *
+ * Настройки мутации (`onMutate` и прочее) раньше уходили ТРЕТЬИМ доводом в
+ * `apiRequest.get`, у которого их два, — то есть в никуда; `useMutation` их
+ * не видел. Единственное место вызова передавало пустой `onMutate`, поэтому
+ * поведение не менялось (Д3 карты v87).
  */
-export const useResourceExportPdf = (props) => {
+export const useResourceExportPdf = (
+  props?: UseMutationOptions<AxiosResponse, AxiosError, ResourceExportValues>,
+) => {
   const apiRequest = useApiRequest();
 
-  return useMutation<void, AxiosError, any>((data: ResourceExportValues) => {
-    return apiRequest.get(
-      '/export',
-      {
+  return useMutation<AxiosResponse, AxiosError, ResourceExportValues>(
+    (data) =>
+      apiRequest.get('/export', {
         responseType: 'blob',
         headers: {
           accept: 'application/pdf',
@@ -30,10 +37,9 @@ export const useResourceExportPdf = (props) => {
           resource: data.resource,
           format: data.format,
         },
-      },
-      props,
-    );
-  });
+      }),
+    props,
+  );
 };
 
 export const useDownloadExportPdf = () => {
@@ -45,7 +51,7 @@ export const useDownloadExportPdf = () => {
   const { mutateAsync, isLoading: isExportPdfLoading } =
     resourceExportPdfMutation;
 
-  const downloadAsync = (values) => {
+  const downloadAsync = (values: ResourceExportValues) => {
     if (!isExportPdfLoading) {
       startProgress();
       // .finally гарантирует остановку прогресс-индикатора и при ошибке —

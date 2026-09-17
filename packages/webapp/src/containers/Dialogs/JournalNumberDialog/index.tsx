@@ -1,19 +1,25 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import { FormattedMessage as T } from '@/components';
 import { Dialog, DialogSuspense } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { saveInvoke, compose } from '@/utils';
 
 const JournalNumberDialogContent = lazy(() => import('./JournalNumberDialogContent'));
 
+interface JournalNumberDialogProps
+  extends DialogReduxProps<{ initialFormValues?: Record<string, unknown> }> {
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
 function JournalNumberDialog({
   dialogName,
-  payload: { initialFormValues },
+  payload: { initialFormValues } = {},
   isOpen,
   onConfirm
-}) {
-  const handleConfirm = (values) => {
+}: JournalNumberDialogProps) {
+  const handleConfirm = (values: Record<string, unknown>) => {
     saveInvoke(onConfirm, values)
   };
 

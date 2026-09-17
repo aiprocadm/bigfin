@@ -14,35 +14,24 @@ const QueryKeys = {
   Subscriptions: 'GetSubscriptions',
 };
 
-interface CancelMainSubscriptionValues {}
 interface CancelMainSubscriptionResponse {}
 
 /**
  * Cancels the main subscription of the current organization.
- * @param {UseMutationOptions<CreateBankRuleValues, Error, CreateBankRuleValues>} options -
- * @returns {UseMutationResult<CreateBankRuleValues, Error, CreateBankRuleValues>}TCHES
+ *
+ * Доводов у запуска нет: серверу ничего не передаётся. Раньше виды стояли в
+ * обратном порядке (`<Values, Error, Response>`), и запуск требовал передать
+ * «ответ сервера» — тот же класс, что у смены тарифа в карте v82
+ * (Д5 карты v87).
  */
 export function useCancelMainSubscription(
-  options?: UseMutationOptions<
-    CancelMainSubscriptionValues,
-    Error,
-    CancelMainSubscriptionResponse
-  >,
-): UseMutationResult<
-  CancelMainSubscriptionValues,
-  Error,
-  CancelMainSubscriptionResponse
-> {
+  options?: UseMutationOptions<CancelMainSubscriptionResponse, Error, void>,
+): UseMutationResult<CancelMainSubscriptionResponse, Error, void> {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation<
-    CancelMainSubscriptionValues,
-    Error,
-    CancelMainSubscriptionResponse
-  >(
-    (values) =>
-      apiRequest.post(`/subscription/cancel`, values).then((res) => res.data),
+  return useMutation<CancelMainSubscriptionResponse, Error, void>(
+    () => apiRequest.post(`/subscription/cancel`).then((res) => res.data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QueryKeys.Subscriptions);
@@ -52,35 +41,20 @@ export function useCancelMainSubscription(
   );
 }
 
-interface ResumeMainSubscriptionValues {}
 interface ResumeMainSubscriptionResponse {}
 
 /**
  * Resumes the main subscription of the current organization.
- * @param {UseMutationOptions<CreateBankRuleValues, Error, CreateBankRuleValues>} options -
- * @returns {UseMutationResult<CreateBankRuleValues, Error, CreateBankRuleValues>}TCHES
+ * Доводов у запуска нет — см. `useCancelMainSubscription` (Д5 карты v87).
  */
 export function useResumeMainSubscription(
-  options?: UseMutationOptions<
-    ResumeMainSubscriptionValues,
-    Error,
-    ResumeMainSubscriptionResponse
-  >,
-): UseMutationResult<
-  ResumeMainSubscriptionValues,
-  Error,
-  ResumeMainSubscriptionResponse
-> {
+  options?: UseMutationOptions<ResumeMainSubscriptionResponse, Error, void>,
+): UseMutationResult<ResumeMainSubscriptionResponse, Error, void> {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation<
-    ResumeMainSubscriptionValues,
-    Error,
-    ResumeMainSubscriptionResponse
-  >(
-    (values) =>
-      apiRequest.post(`/subscription/resume`, values).then((res) => res.data),
+  return useMutation<ResumeMainSubscriptionResponse, Error, void>(
+    () => apiRequest.post(`/subscription/resume`).then((res) => res.data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(QueryKeys.Subscriptions);

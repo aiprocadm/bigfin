@@ -1,7 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { compose, saveInvoke } from '@/utils';
 
 const WarehouseTransferNumberDialogContent = React.lazy(
@@ -11,13 +12,18 @@ const WarehouseTransferNumberDialogContent = React.lazy(
 /**
  * Warehouse transfer number dialog.
  */
+interface WarehouseTransferNumberDilaogProps
+  extends DialogReduxProps<{ initialFormValues?: Record<string, unknown> }> {
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
 function WarehouseTransferNumberDilaog({
   dialogName,
-  payload: { initialFormValues },
+  payload: { initialFormValues } = {},
   isOpen,
   onConfirm,
-}) {
-  const handleConfirm = (values) => {
+}: WarehouseTransferNumberDilaogProps) {
+  const handleConfirm = (values: Record<string, unknown>) => {
     saveInvoke(onConfirm, values);
   };
   return (

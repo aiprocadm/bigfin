@@ -1,13 +1,24 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Classes, Dialog, Intent, Callout } from '@blueprintjs/core';
 import { FormattedMessage as T, AppToaster } from '@/components';
 import intl from 'react-intl-universal';
 import { x } from '@xstyled/emotion';
 import { useInactivateWorkspace, useActivateWorkspace } from '@/ee/workspaces/hooks/query/workspaces';
-import withDialogRedux from '@/components/DialogReduxConnect';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
+
+type WorkspaceInactivateDialogProps = DialogReduxProps<{
+  organizationId?: string;
+  workspaceName?: string;
+  isActive?: boolean;
+}> &
+  WithDialogActionsProps;
 
 function WorkspaceInactivateDialog({
   dialogName,
@@ -16,7 +27,7 @@ function WorkspaceInactivateDialog({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: WorkspaceInactivateDialogProps) {
   const { mutateAsync: inactivateWorkspace, isLoading: isInactivating } = useInactivateWorkspace();
   const { mutateAsync: activateWorkspace, isLoading: isActivating } = useActivateWorkspace();
 
@@ -44,6 +55,8 @@ function WorkspaceInactivateDialog({
           fallback: 'Cannot activate workspace',
         });
 
+    // Без номера организации переключать нечего — окно открыто без груза.
+    if (!organizationId) return;
     action(organizationId)
       .then(() => {
         AppToaster.show({

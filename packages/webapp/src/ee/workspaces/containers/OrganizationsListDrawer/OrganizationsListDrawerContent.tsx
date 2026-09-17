@@ -1,9 +1,11 @@
-// @ts-nocheck
 import React, { useState, useMemo, useCallback } from 'react';
-import * as R from 'ramda';
 import { debounce } from 'lodash';
 import { FormGroup, InputGroup, Button } from '@blueprintjs/core';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import {
+  withDrawerActions,
+  WithDrawerActionsProps,
+} from '@/containers/Drawer/withDrawerActions';
+import { compose } from '@/utils';
 import { DRAWERS } from '@/constants/drawers';
 import { useWorkspaces, useSetDefaultWorkspace } from '@/ee/workspaces/hooks/query/workspaces';
 import { useAuthOrganizationId } from '@/hooks/state';
@@ -59,12 +61,23 @@ const organizationsDrawerCreateBtnCss = css`
 /**
  * Organizations list drawer content.
  */
-function OrganizationsListDrawerContentRoot({ closeDrawer, openDrawer }) {
+/** Рабочее пространство, как его отдаёт список — ровно те поля, что читаются здесь. */
+interface WorkspaceRow {
+  organizationId: string;
+  isDefault?: boolean;
+  metadata?: { name?: string };
+}
+
+function OrganizationsListDrawerContentRoot({
+  closeDrawer,
+  openDrawer,
+}: WithDrawerActionsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const activeOrganizationId = useAuthOrganizationId();
   const setDefaultWorkspace = useSetDefaultWorkspace();
-  const { data: workspaces, isLoading } = useWorkspaces({ includeInactive: true });
+  const { data, isLoading } = useWorkspaces({ includeInactive: true });
+  const workspaces = data as WorkspaceRow[] | undefined;
 
   const isCurrentOrgDefault = useMemo(() => {
     return workspaces?.find((w) => w.organizationId === activeOrganizationId)?.isDefault ?? false;
@@ -72,13 +85,13 @@ function OrganizationsListDrawerContentRoot({ closeDrawer, openDrawer }) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetSearch = useCallback(
-    debounce((value) => {
+    debounce((value: string) => {
       setDebouncedSearch(value);
     }, 200),
     []
   );
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
     debouncedSetSearch(value);
@@ -104,7 +117,7 @@ function OrganizationsListDrawerContentRoot({ closeDrawer, openDrawer }) {
   };
 
   return (
-    <x.div display="flex" flexDirection="column" height="100%" minHeight={0}>
+    <x.div display="flex" flexDirection="column" h="100%" minHeight={0}>
       <OrganizationsListDrawerHeader
         isCurrentOrgDefault={isCurrentOrgDefault}
         activeOrganizationId={activeOrganizationId}
@@ -159,6 +172,6 @@ function OrganizationsListDrawerContentRoot({ closeDrawer, openDrawer }) {
   );
 }
 
-export const OrganizationsListDrawerContent = R.compose(withDrawerActions)(
-  OrganizationsListDrawerContentRoot,
-);
+export const OrganizationsListDrawerContent: React.ComponentType = compose(
+  withDrawerActions,
+)(OrganizationsListDrawerContentRoot);

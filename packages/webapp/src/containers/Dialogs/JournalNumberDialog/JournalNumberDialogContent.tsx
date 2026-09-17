@@ -93,11 +93,24 @@ function JournalNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettings(({ manualJournalsSettings }) => ({
-    nextNumber: manualJournalsSettings?.nextNumber,
-    numberPrefix: manualJournalsSettings?.numberPrefix,
-    autoIncrement: manualJournalsSettings?.autoIncrement,
-  })),
-)(JournalNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface JournalNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const JournalNumberDialogContentComposed: React.ComponentType<JournalNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettings(({ manualJournalsSettings }) => ({
+      nextNumber: manualJournalsSettings?.nextNumber,
+      numberPrefix: manualJournalsSettings?.numberPrefix,
+      autoIncrement: manualJournalsSettings?.autoIncrement,
+    })),
+  )(JournalNumberDialogContent);
+
+export default JournalNumberDialogContentComposed;

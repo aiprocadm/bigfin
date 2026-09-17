@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Copyright 2017 Palantir Technologies, Inc. All rights reserved.
  *
@@ -19,7 +18,6 @@ import classNames from 'classnames';
 import * as React from 'react';
 import { Classes, Intent, MaybeElement, Props } from '@blueprintjs/core';
 import IconSvgPaths from '@/static/json/icons';
-import PropTypes from 'prop-types';
 /** Имена значков, какие есть в нашем наборе. */
 export type IconNames = keyof typeof IconSvgPaths;
 
@@ -117,15 +115,20 @@ export class Icon extends React.Component<IconProps> {
     );
   }
 
-  getSvgPath(iconName) {
-    const svgPathsRecord = IconSvgPaths;
+  /**
+   * Пути значка по имени. Неизвестное имя (или элемент вместо имени) даёт
+   * `undefined` — и значок не рисуется, как у Blueprint.
+   */
+  getSvgPath(iconName: string) {
+    const svgPathsRecord: Record<string, { path: string[]; viewBox: string }> =
+      IconSvgPaths;
     const pathStrings = svgPathsRecord[iconName];
 
     return pathStrings;
   }
 
   /** Render `<path>` elements for the given icon name. Returns `null` if name is unknown. */
-  renderSvgPaths(pathStrings) {
+  renderSvgPaths(pathStrings: string[] | null | undefined) {
     if (pathStrings == null) {
       return null;
     }
@@ -135,60 +138,6 @@ export class Icon extends React.Component<IconProps> {
   }
 }
 
-Icon.propTypes = {
-  /**
-   * Color of icon. This is used as the `fill` attribute on the `<svg>` image
-   * so it will override any CSS `color` property, including that set by
-   * `intent`. If this prop is omitted, icon color is inherited from
-   * surrounding text.
-   */
-  color: PropTypes.string,
-
-  /**
-   * String for the `title` attribute on the rendered element, which will appear
-   * on hover as a native browser tooltip.
-   */
-  htmlTitle: PropTypes.string,
-
-  /**
-   * Name of a Blueprint UI icon, or an icon element, to render. This prop is
-   * required because it determines the content of the component, but it can
-   * be explicitly set to falsy values to render nothing.
-   *
-   * - If `null` or `undefined` or `false`, this component will render
-   *   nothing.
-   * - If given an `IconName` (a string literal union of all icon names), that
-   *   icon will be rendered as an `<svg>` with `<path>` tags. Unknown strings
-   *   will render a blank icon to occupy space.
-   * - If given a `JSX.Element`, that element will be rendered and _all other
-   *   props on this component are ignored._ This type is supported to
-   *   simplify icon support in other Blueprint components. As a consumer, you
-   *   should avoid using `<Icon icon={<Element />}` directly; simply render
-   *   `<Element />` instead.
-   */
-  // icon: IconName | MaybeElement;
-
-  /**
-   * Size of the icon, in pixels. Blueprint contains 16px and 20px SVG icon
-   * images, and chooses the appropriate resolution based on this prop.
-   * @default Icon.SIZE_STANDARD = 16
-   */
-  iconSize: PropTypes.number,
-
-  /** CSS style properties. */
-  style: PropTypes.object,
-
-  /**
-   * HTML tag to use for the rendered element.
-   * @default "span"
-   */
-  // tagName?: keyof JSX.IntrinsicElements
-
-  /**
-   * Description string. This string does not appear in normal browsers, but
-   * it increases accessibility. For instance, screen readers will use it for
-   * aural feedback. By default, this is set to the icon's name. Pass an
-   * explicit falsy value to disable.
-   */
-  title: PropTypes.string,
-};
+// Описания свойств через `prop-types` здесь больше нет: их дублировал
+// интерфейс `IconProps` выше, и в нём же они проверяются при сборке, а не в
+// работающем приложении (Д8 карты v87).

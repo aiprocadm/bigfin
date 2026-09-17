@@ -10,7 +10,9 @@ export const submitOptions = ({ form }: { form: { options?: Array<SettingOption>
     });
 };
 
-export const FetchOptions = ({ form }: { form: unknown }) => {
+// Довод не читается: настройки запрашиваются целиком. Раньше он был объявлен
+// обязательным, и единственный вызов передавал пустой объект (Д9 карты v87).
+export const FetchOptions = (_options: { form?: unknown } = {}) => {
   return (dispatch: any) =>
     new Promise((resolve, reject) => {
       ApiService.get('settings')

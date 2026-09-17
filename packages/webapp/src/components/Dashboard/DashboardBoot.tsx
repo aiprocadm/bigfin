@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react';
 import {
   useAuthenticatedAccount,
@@ -24,7 +23,7 @@ export function useDashboardMetaBoot() {
   });
   const [startLoading, stopLoading] = useSplashLoading();
 
-  useWatchImmediate((value) => {
+  useWatchImmediate((value: boolean) => {
     value && startLoading();
   }, isDashboardMetaLoading);
 
@@ -87,23 +86,23 @@ export function useApplicationBoot() {
 
   // Splash loading when organization request loading and
   // application still not booted.
-  useWatchImmediate((value) => {
+  useWatchImmediate((value: boolean) => {
     value && !isBooted.current && startLoading();
   }, isOrgLoading);
 
   // Splash loading when request authenticated user loading and
   // application still not booted yet.
-  useWatchImmediate((value) => {
+  useWatchImmediate((value: boolean) => {
     value && !isBooted.current && startLoading();
   }, isAuthUserLoading);
 
   // Stop splash loading once organization request success.
-  useWatch((value) => {
+  useWatch((value: boolean) => {
     value && stopLoading();
   }, isCurrentOrganizationSuccess);
 
   // Stop splash loading once authenticated user request success.
-  useWatch((value) => {
+  useWatch((value: boolean) => {
     value && stopLoading();
   }, isAuthUserSuccess);
 

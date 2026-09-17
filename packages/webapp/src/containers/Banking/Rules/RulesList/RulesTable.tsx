@@ -1,5 +1,3 @@
-// @ts-nocheck
-import * as R from 'ramda';
 import {
   DataTable,
   DashboardContentTable,
@@ -7,8 +5,15 @@ import {
   TableSkeletonRows,
 } from '@/components';
 
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
+import { compose } from '@/utils';
 
 import { useBankRulesTableColumns } from './hooks';
 import { BankRulesTableActionsMenu } from './_components';
@@ -26,18 +31,18 @@ function RulesTable({
 
   // #withDialogAction
   openDialog,
-}) {
+}: WithAlertActionsProps & WithDialogActionsProps) {
   // Invoices table columns.
   const columns = useBankRulesTableColumns();
   const { bankRules, isEmptyState } = useRulesListBoot();
 
   // Handle edit bank rule.
-  const handleDeleteBankRule = ({ id }) => {
+  const handleDeleteBankRule = ({ id }: { id: number }) => {
     openAlert('bank-rule-delete', { id });
   };
 
   // Handle delete bank rule.
-  const handleEditBankRule = ({ id }) => {
+  const handleEditBankRule = ({ id }: { id: number }) => {
     openDialog(DialogsName.BankRuleForm, { bankRuleId: id });
   };
 
@@ -77,12 +82,12 @@ function RulesTable({
 }
 
 /**
- * Тип указан явно. `R.compose` из двух и более обёрток теряет знание о том, что
- * на выходе компонент, и место применения получает «ничто» — отсюда «нельзя
- * использовать как компонент». Обёртки сами подставляют всё, что нужно, поэтому
- * снаружи компонент вызывается без свойств (Д9 карты v75).
+ * Тип указан явно: обёртки сами подставляют всё, что нужно, поэтому снаружи
+ * компонент вызывается без свойств (Д9 карты v75). Сборка своя, а не
+ * `R.compose` из ramda — та не умеет вычесть подставленные свойства и отдаёт
+ * «ничего» (класс карты v84).
  */
-export const BankRulesTable: React.FC = R.compose(
+export const BankRulesTable: React.FC = compose(
   withAlertActions,
   withDialogActions,
 )(RulesTable);

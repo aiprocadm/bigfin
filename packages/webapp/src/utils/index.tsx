@@ -21,8 +21,8 @@ export * from './deep';
 /** Strips leading slash from a path segment to avoid double slashes when joining with a base (e.g. `/api/` + path). */
 export const normalizeApiPath = (path) => (path || '').replace(/^\//, '');
 
-export const getCookie = (name, defaultValue) =>
-  _.defaultTo(jsCookie.get(name), defaultValue);
+export const getCookie = <T = undefined,>(name: string, defaultValue?: T): string | T =>
+  _.defaultTo(jsCookie.get(name), defaultValue as T);
 
 export const setCookie = (name, value, expiry = 365, secure = false) => {
   jsCookie.set(name, value, { expires: expiry, path: '/', secure });

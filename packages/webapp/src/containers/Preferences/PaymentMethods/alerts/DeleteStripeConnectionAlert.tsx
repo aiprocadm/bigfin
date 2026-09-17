@@ -1,13 +1,24 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
 
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { AppToaster } from '@/components';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 import { useDeletePaymentMethod } from '@/hooks/query/payment-services';
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
+
+type DeleteStripeAccountAlertProps = AlertReduxProps<{
+  paymentMethodId: number;
+}> &
+  WithAlertActionsProps;
 
 /**
  * Delete Stripe connection alert.
@@ -21,7 +32,7 @@ function DeleteStripeAccountAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: DeleteStripeAccountAlertProps) {
   const { isLoading, mutateAsync: deletePaymentMethod } =
     useDeletePaymentMethod();
 
@@ -39,19 +50,19 @@ function DeleteStripeAccountAlert({
         });
         closeAlert(name);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
+        // Раньше отказ показывался ЗЕЛЁНЫМ уведомлением «что-то пошло не
+        // так» — с видом успеха. Теперь — причина от сервера, как у соседних
+        // предупреждений (Д1 карты v87).
         closeAlert(name);
-        AppToaster.show({
-          message: intl.get('something_wentwrong'),
-          intent: Intent.SUCCESS,
-        });
+        showApiError(error);
       });
   };
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete_account'} />}
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete_account')}
       intent={Intent.DANGER}
       isOpen={isOpen}
       onCancel={handleCancelOpenBill}

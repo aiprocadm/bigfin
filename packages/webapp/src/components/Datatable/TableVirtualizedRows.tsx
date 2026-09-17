@@ -1,13 +1,16 @@
-// @ts-nocheck
 import React, { useContext } from 'react';
 import { WindowScroller, AutoSizer, List } from 'react-virtualized';
+import type { ListRowProps } from 'react-virtualized';
 import { CLASSES } from '@/constants/classes';
 import TableContext from './TableContext';
+
+/** Свойства строки — те, что даёт список, без `key` (его ставит отрисовщик). */
+type TableVirtualizedListRowProps = Omit<ListRowProps, 'key'>;
 
 /**
  * Table virtualized list row.
  */
-function TableVirtualizedListRow({ index, isScrolling, isVisible, style }) {
+function TableVirtualizedListRow({ index, style }: TableVirtualizedListRowProps) {
   const {
     table: { page, prepareRow },
     props: { TableRowRenderer },
@@ -34,7 +37,9 @@ export function TableVirtualizedListRows() {
     document.querySelector(`.${CLASSES.DASHBOARD_CONTENT_PANE}`);
 
   const rowRenderer = React.useCallback(
-    ({ key, ...args }) => <TableVirtualizedListRow {...args} key={key} />,
+    ({ key, ...args }: ListRowProps) => (
+      <TableVirtualizedListRow {...args} key={key} />
+    ),
     [],
   );
 

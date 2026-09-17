@@ -1,14 +1,24 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Button, Classes, Dialog, Intent, Callout, FormGroup, InputGroup } from '@blueprintjs/core';
 import { FormattedMessage as T, AppToaster } from '@/components';
 import intl from 'react-intl-universal';
 import { x, } from '@xstyled/emotion';
 import { useDeleteWorkspace } from '@/ee/workspaces/hooks/query/workspaces';
-import withDialogRedux from '@/components/DialogReduxConnect';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 import { css } from '@emotion/css';
+
+type WorkspaceDeleteDialogProps = DialogReduxProps<{
+  organizationId?: string;
+  workspaceName?: string;
+}> &
+  WithDialogActionsProps;
 
 function WorkspaceDeleteDialog({
   dialogName,
@@ -17,7 +27,7 @@ function WorkspaceDeleteDialog({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: WorkspaceDeleteDialogProps) {
   const { mutateAsync: deleteWorkspace, isLoading } = useDeleteWorkspace();
   const [confirmText, setConfirmText] = useState('');
   const confirmationPhrase = `Delete ${workspaceName || organizationId}`;
@@ -29,6 +39,8 @@ function WorkspaceDeleteDialog({
   };
 
   const handleConfirmDelete = () => {
+    // Без номера организации удалять нечего — окно открыто без груза.
+    if (!organizationId) return;
     deleteWorkspace(organizationId)
       .then(() => {
         AppToaster.show({
@@ -92,7 +104,9 @@ function WorkspaceDeleteDialog({
             <x.li mb={1}>{intl.get('workspaces.delete_workspace_database', { fallback: 'The entire database for this workspace' })}</x.li>
           </x.ul>
          
-          <Callout intent={Intent.DANGER} icon="">
+          {/* Значка у второго предупреждения нет намеренно; пустая строка
+              вместо `null` заставляла Blueprint рисовать пустой значок. */}
+          <Callout intent={Intent.DANGER} icon={null}>
             {intl.get('workspaces.delete_workspace_irreversible', {
               fallback: 'This action is irreversible. Please make sure you have exported any important data before proceeding.',
             })}

@@ -1,7 +1,8 @@
-// @ts-nocheck
 import React, { lazy } from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { saveInvoke, compose } from '@/utils';
 
 const PaymentReceiveNumbereDialogContent = lazy(
@@ -11,12 +12,17 @@ const PaymentReceiveNumbereDialogContent = lazy(
 /**
  * Payment receive number dialog.
  */
+interface PaymentReceiveNumberDialogProps
+  extends DialogReduxProps<{ initialFormValues?: Record<string, unknown> }> {
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
 function PaymentReceiveNumberDialog({
   dialogName,
-  payload: { initialFormValues },
+  payload: { initialFormValues } = {},
   isOpen,
   onConfirm,
-}) {
+}: PaymentReceiveNumberDialogProps) {
   return (
     <Dialog
       title={<T id={'payment_number_settings'} />}
@@ -28,7 +34,9 @@ function PaymentReceiveNumberDialog({
       <DialogSuspense>
         <PaymentReceiveNumbereDialogContent
           initialValues={initialFormValues}
-          onConfirm={(values) => saveInvoke(onConfirm, values)}
+          onConfirm={(values: Record<string, unknown>) =>
+            saveInvoke(onConfirm, values)
+          }
         />
       </DialogSuspense>
     </Dialog>

@@ -94,11 +94,24 @@ function EstimateNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettings(({ estimatesSettings }) => ({
-    nextNumber: estimatesSettings?.nextNumber,
-    numberPrefix: estimatesSettings?.numberPrefix,
-    autoIncrement: estimatesSettings?.autoIncrement,
-  })),
-)(EstimateNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface EstimateNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const EstimateNumberDialogContentComposed: React.ComponentType<EstimateNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettings(({ estimatesSettings }) => ({
+      nextNumber: estimatesSettings?.nextNumber,
+      numberPrefix: estimatesSettings?.numberPrefix,
+      autoIncrement: estimatesSettings?.autoIncrement,
+    })),
+  )(EstimateNumberDialogContent);
+
+export default EstimateNumberDialogContentComposed;

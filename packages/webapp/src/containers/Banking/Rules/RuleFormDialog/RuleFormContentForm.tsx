@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useCallback, useMemo } from 'react';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import intl from 'react-intl-universal';
@@ -33,7 +32,10 @@ import {
   transformToForm,
   transfromToSnakeCase,
 } from '@/utils';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
 import { getAddMoneyInOptions, getAddMoneyOutOptions } from '@/constants';
 import { showApiError } from '@/utils/showApiError';
@@ -45,7 +47,7 @@ const MoneyOutOptions = getAddMoneyOutOptions();
 function RuleFormContentFormRoot({
   // #withDialogActions
   closeDialog,
-}) {
+}: WithDialogActionsProps) {
   const { accounts, bankRule, isEditMode, bankRuleId } =
     useRuleFormDialogBoot();
   const { mutateAsync: createBankRule } = useCreateBankRule();
@@ -73,11 +75,11 @@ function RuleFormContentFormRoot({
         message: intl.get('banking.rules.created_successfully'),
       });
     };
-    const handleError = (error) => {
+    const handleError = (error: unknown) => {
       setSubmitting(false);
       showApiError(error);
     };
-    if (isEditMode) {
+    if (isEditMode && bankRuleId != null) {
       editBankRule({ id: bankRuleId, value: _values })
         .then(handleSuccess)
         .catch(handleError);
@@ -245,7 +247,7 @@ function RuleFormConditions() {
 function RuleFormActionsRoot({
   // #withDialogActions
   closeDialog,
-}) {
+}: WithDialogActionsProps) {
   const { isSubmitting, submitForm } = useFormikContext<RuleFormValues>();
 
   const handleSaveBtnClick = () => {

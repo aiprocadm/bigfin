@@ -3419,6 +3419,8 @@
   "subscription.alert.resume_success": "The subscription has been resumed.",
   "subscription.alert.resume_button": "Resume Subscription",
   "subscription.alert.resume_description": "The subscription for this organization will resume.",
+  "subscription.alert.cancel_data_notice": "It will no longer be accessible to you or any other users. Make sure any data has already been exported.",
+  "subscription.alert.resume_confirm": "Resume the subscription of this organization?",
   "subscription.plan.most_popular": "Most Popular",
   "subscription.change_plan.title": "Change Subscription Plan",
   "subscription.change_plan.success": "The subscription plan has been changed.",

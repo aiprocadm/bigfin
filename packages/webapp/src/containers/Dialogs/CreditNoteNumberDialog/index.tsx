@@ -1,7 +1,8 @@
-// @ts-nocheck
 import React from 'react';
 import { Dialog, DialogSuspense, FormattedMessage as T } from '@/components';
-import withDialogRedux from '@/components/DialogReduxConnect';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
 import { compose, saveInvoke } from '@/utils';
 
 const CreditNoteNumberDialogContent = React.lazy(() =>
@@ -11,13 +12,18 @@ const CreditNoteNumberDialogContent = React.lazy(() =>
 /**
  * Credit note number dialog.
  */
+interface CreditNoteNumberDialogProps
+  extends DialogReduxProps<{ initialFormValues?: Record<string, unknown> }> {
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
 function CreditNoteNumberDialog({
   dialogName,
-  payload: { initialFormValues },
+  payload: { initialFormValues } = {},
   isOpen,
   onConfirm,
-}) {
-  const handleConfirm = (values) => {
+}: CreditNoteNumberDialogProps) {
+  const handleConfirm = (values: Record<string, unknown>) => {
     saveInvoke(onConfirm, values);
   };
 

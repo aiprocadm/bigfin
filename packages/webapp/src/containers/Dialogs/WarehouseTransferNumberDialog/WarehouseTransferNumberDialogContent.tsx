@@ -93,12 +93,25 @@ function WarehouseTransferNumberDialogContent({
     </WarehouseTransferNumberDialogProvider>
   );
 }
-export default compose(
-  withDialogActions,
-  withSettingsActions,
-  withSettings(({ warehouseTransferSettings }) => ({
-    autoIncrement: warehouseTransferSettings?.autoIncrement,
-    nextNumber: warehouseTransferSettings?.nextNumber,
-    numberPrefix: warehouseTransferSettings?.numberPrefix,
-  })),
-)(WarehouseTransferNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface WarehouseTransferNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const WarehouseTransferNumberDialogContentComposed: React.ComponentType<WarehouseTransferNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettingsActions,
+    withSettings(({ warehouseTransferSettings }) => ({
+      autoIncrement: warehouseTransferSettings?.autoIncrement,
+      nextNumber: warehouseTransferSettings?.nextNumber,
+      numberPrefix: warehouseTransferSettings?.numberPrefix,
+    })),
+  )(WarehouseTransferNumberDialogContent);
+
+export default WarehouseTransferNumberDialogContentComposed;

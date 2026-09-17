@@ -3419,6 +3419,8 @@
   "subscription.alert.resume_success": "Подписка возобновлена.",
   "subscription.alert.resume_button": "Возобновить подписку",
   "subscription.alert.resume_description": "Подписка этой организации будет возобновлена.",
+  "subscription.alert.cancel_data_notice": "Организация станет недоступна вам и другим пользователям. Убедитесь, что нужные данные уже выгружены.",
+  "subscription.alert.resume_confirm": "Возобновить подписку этой организации?",
   "subscription.plan.most_popular": "Самый популярный",
   "subscription.change_plan.title": "Смена тарифа",
   "subscription.change_plan.success": "Тариф изменён.",

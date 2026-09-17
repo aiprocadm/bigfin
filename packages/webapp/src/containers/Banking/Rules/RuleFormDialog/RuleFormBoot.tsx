@@ -3,10 +3,19 @@ import { DialogContent } from '@/components';
 import { useBankRule } from '@/hooks/query/bank-rules';
 import { useAccounts } from '@/hooks/query';
 
+/**
+ * Что загрузчик кладёт в контекст формы правила.
+ *
+ * Раньше объявление говорило, что правило и его номер — всегда `null`, а
+ * счетов в контексте нет вовсе; на деле счета кладутся сюда с первого дня, и
+ * форма их читает. Врало объявление, не код (Д6 карты v87).
+ */
 interface RuleFormBootValues {
-  bankRule?: null;
-  bankRuleId?: null;
+  bankRule?: any;
+  bankRuleId?: number;
+  accounts?: any[];
   isBankRuleLoading: boolean;
+  isAccountsLoading: boolean;
   isEditMode: boolean;
   isNewMode: boolean;
 }
@@ -32,7 +41,7 @@ function RuleFormBoot({ bankRuleId, ...props }: RuleFormBootProps) {
   const isNewMode = !bankRuleId;
   const isEditMode = !isNewMode;
 
-  const provider = {
+  const provider: RuleFormBootValues = {
     bankRuleId,
     bankRule,
     accounts,
@@ -40,7 +49,7 @@ function RuleFormBoot({ bankRuleId, ...props }: RuleFormBootProps) {
     isAccountsLoading,
     isEditMode,
     isNewMode,
-  } as RuleFormBootValues;
+  };
 
   const isLoading = isBankRuleLoading || isAccountsLoading;
 

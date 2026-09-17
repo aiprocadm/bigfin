@@ -93,12 +93,25 @@ function InvoiceNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettingsActions,
-  withSettings(({ invoiceSettings }) => ({
-    nextNumber: invoiceSettings?.nextNumber,
-    numberPrefix: invoiceSettings?.numberPrefix,
-    autoIncrement: invoiceSettings?.autoIncrement,
-  })),
-)(InvoiceNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface InvoiceNumberDialogContentProps {
+  initialValues?: Record<string, unknown>;
+  onConfirm?: (values: Record<string, unknown>) => void;
+}
+
+const InvoiceNumberDialogContentComposed: React.ComponentType<InvoiceNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettingsActions,
+    withSettings(({ invoiceSettings }) => ({
+      nextNumber: invoiceSettings?.nextNumber,
+      numberPrefix: invoiceSettings?.numberPrefix,
+      autoIncrement: invoiceSettings?.autoIncrement,
+    })),
+  )(InvoiceNumberDialogContent);
+
+export default InvoiceNumberDialogContentComposed;

@@ -34,7 +34,7 @@ export function useCreateRolePermissionSchema(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post(`roles`, values), {
+  return useMutation((values: any) => apiRequest.post(`roles`, values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -50,7 +50,7 @@ export function useDeleteRole(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`roles/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`roles/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific role.
       queryClient.invalidateQueries(t.ROLE, id);

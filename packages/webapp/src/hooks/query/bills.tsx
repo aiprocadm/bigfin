@@ -51,7 +51,7 @@ export function useCreateBill(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('bills', values), {
+  return useMutation((values: any) => apiRequest.post('bills', values), {
     onSuccess: (res, values) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -107,7 +107,7 @@ export function useOpenBill(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.patch(`bills/${id}/open`), {
+  return useMutation((id: number) => apiRequest.patch(`bills/${id}/open`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -126,7 +126,7 @@ export function useDeleteBill(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`bills/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`bills/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -35,12 +34,13 @@ function AccountSwitchItem() {
   const { cashflowAccounts, accountId } = useAccountTransactionsContext();
 
   // Handle item click.
-  const handleItemClick = curry((account, event) => {
+  const handleItemClick = curry((account: any, event: any) => {
     push(`/cashflow-accounts/${account.id}/transactions`);
   });
 
-  const items = cashflowAccounts.map((account) => (
+  const items = cashflowAccounts.map((account: any) => (
     <AccountSwitchMenuItem
+      key={account.id}
       name={account.name}
       balance={account.formatted_amount}
       onClick={handleItemClick(account)}
@@ -141,25 +141,30 @@ export function AccountTransactionsDetailsBar() {
   );
 }
 
+interface AccountSwitchMenuItemProps {
+  name: string;
+  balance: string;
+  [key: string]: any;
+}
+
+/**
+ * Строка счёта в переключателе счетов.
+ *
+ * Здесь была подпись «Операции 25» — число вшито в разметку и одинаково у
+ * ВСЕХ счетов: настоящего числа операций не отдаёт ни сервер, ни витрина
+ * (поля нет нигде в коде). Подпись снята: пустое место честнее выдуманной
+ * цифры. Вернуть её можно, когда список счетов начнёт приносить счётчик
+ * (Д9 карты v88).
+ */
 function AccountSwitchMenuItem({
   name,
   balance,
-  transactionsNumber,
   ...restProps
-}) {
+}: AccountSwitchMenuItemProps) {
   return (
     <MenuItem
       label={balance}
-      text={
-        <React.Fragment>
-          <AccountSwitchItemName>{name}</AccountSwitchItemName>
-          <AccountSwitchItemTranscations>
-            {intl.get('cash_flow_transaction.switch_item', { value: '25' })}
-          </AccountSwitchItemTranscations>
-
-          <AccountSwitchItemUpdatedAt></AccountSwitchItemUpdatedAt>
-        </React.Fragment>
-      }
+      text={<AccountSwitchItemName>{name}</AccountSwitchItemName>}
       {...restProps}
     />
   );
@@ -202,16 +207,6 @@ const AccountBalanceAmount = styled.span`
 const AccountSwitchItemName = styled.div`
   font-weight: 600;
 `;
-const AccountSwitchItemTranscations = styled.div`
-  font-size: 12px;
-  opacity: 0.7;
-`;
-
-const AccountSwitchItemUpdatedAt = styled.div`
-  font-size: 12px;
-  opacity: 0.5;
-`;
-
 const AccountSwitchButtonBase = styled(Button)`
   .bp4-button-text {
     margin-right: 5px;

@@ -55,7 +55,7 @@ export function useCreateReceipt(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('sale-receipts', values), {
+  return useMutation((values: any) => apiRequest.post('sale-receipts', values), {
     onSuccess: () => {
       // Invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -93,7 +93,7 @@ export function useDeleteReceipt(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`sale-receipts/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`sale-receipts/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific receipt.
       queryClient.invalidateQueries([t.SALE_RECEIPT, id]);
@@ -155,7 +155,7 @@ export function useCloseReceipt(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`sale-receipts/${id}/close`), {
+  return useMutation((id: number) => apiRequest.post(`sale-receipts/${id}/close`), {
     onSuccess: (res, id) => {
       queryClient.invalidateQueries([t.SALE_RECEIPT, id]);
 

@@ -75,7 +75,7 @@ export function useDeleteVendor(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`vendors/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`vendors/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific vendor.
       queryClient.invalidateQueries([t.VENDOR, id]);

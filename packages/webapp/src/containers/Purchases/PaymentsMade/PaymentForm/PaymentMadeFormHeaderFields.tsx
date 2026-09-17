@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
@@ -73,7 +72,11 @@ const getFieldsStyle = (theme: Theme) => css`
 /**
  * Payment made form header fields.
  */
-function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
+function PaymentMadeFormHeaderFields({
+  organization: { base_currency },
+}: {
+  organization: { base_currency?: string };
+}) {
   // Formik form context.
   const {
     values: { entries, currency_code },
@@ -102,7 +105,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
   };
 
   // Handles the full-amount field blur.
-  const onFullAmountBlur = (value) => {
+  const onFullAmountBlur = (value: any) => {
     const newEntries = amountPaymentEntries(toSafeInteger(value), entries);
     setFieldValue('entries', newEntries);
   };
@@ -141,6 +144,12 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
         inline={true}
         labelInfo={<Hint content={intl.get('payment_made.full_amount.hint')} />}
       >
+        {/*
+          Пакет объявляет у группы полей ровно одного ребёнка, хотя передаёт
+          их насквозь. Собираем в один прозрачный узел — разметка та же
+          (Д19 карты v88).
+        */}
+        <>
         <ControlGroup>
           <InputPrependText text={currency_code} />
           <FMoneyInputGroup
@@ -161,6 +170,7 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
             <Money amount={payableFullAmount} currency={currency_code} />)
           </Button>
         )}
+        </>
       </FFormGroup>
 
       {/* ------------ Payment number ------------ */}
@@ -224,11 +234,12 @@ function PaymentFormVendorSelect() {
       labelInfo={<FieldRequiredHint />}
       inline={true}
     >
+      <>
       <VendorsSelect
         name={'vendor_id'}
         items={vendors}
         placeholder={<T id={'select_vender_account'} />}
-        onItemChange={(contact) => {
+        onItemChange={(contact: any) => {
           setFieldValue('vendor_id', contact.id);
           setFieldValue('currency_code', contact?.currency_code);
           setPaymentVendorId(contact.id);
@@ -241,6 +252,7 @@ function PaymentFormVendorSelect() {
           <T id={'view_vendor_details'} />
         </VendorButtonLink>
       )}
+      </>
     </FFormGroup>
   );
 }

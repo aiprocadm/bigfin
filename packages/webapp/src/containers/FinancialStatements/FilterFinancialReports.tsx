@@ -1,3 +1,4 @@
+import React from 'react';
 import { isEmpty } from 'lodash';
 import { useAbilityContext } from '@/hooks';
 import { useFeatureCan } from '@/hooks/state/feature';
@@ -8,7 +9,24 @@ import {
   filterAccountantOnlyReports,
 } from '@/constants/interfaceMode';
 
-function useFilterFinancialReports(financialSection: any) {
+/** Одна карточка отчёта в меню «Все отчёты». */
+export interface FinancialReportItem {
+  title: React.ReactNode;
+  desc: React.ReactNode;
+  link: string;
+  subject?: any;
+  ability?: any;
+}
+
+/** Секция меню отчётов — заголовок и карточки под ним. */
+export interface FinancialReportSection {
+  sectionTitle: React.ReactNode;
+  reports: FinancialReportItem[];
+}
+
+function useFilterFinancialReports(
+  financialSection: any,
+): FinancialReportSection[] {
   const ability = useAbilityContext();
   const mode = useInterfaceMode();
   const { featureCan } = useFeatureCan();

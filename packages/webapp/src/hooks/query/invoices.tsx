@@ -61,7 +61,7 @@ export function useCreateInvoice(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('sale-invoices', values), {
+  return useMutation((values: any) => apiRequest.post('sale-invoices', values), {
     onSuccess: (res, values) => {
       // Invalidate invoice customer.
       queryClient.invalidateQueries([t.CUSTOMER, values.customer_id]);
@@ -109,7 +109,7 @@ export function useDeleteInvoice(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`sale-invoices/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`sale-invoices/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific invoice.
       queryClient.invalidateQueries([t.SALE_INVOICE, id]);

@@ -20,7 +20,7 @@ export function useCreateBranch(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('branches', values), {
+  return useMutation((values: any) => apiRequest.post('branches', values), {
     onSuccess: (res, values) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -58,7 +58,7 @@ export function useDeleteBranch(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`branches/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`branches/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific branch.
       queryClient.invalidateQueries([t.BRANCH, id]);
@@ -108,7 +108,7 @@ export function useActivateBranches(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`branches/activate`), {
+  return useMutation((id: number) => apiRequest.post(`branches/activate`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -124,7 +124,7 @@ export function useMarkBranchAsPrimary(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`branches/${id}/mark-primary`), {
+  return useMutation((id: number) => apiRequest.post(`branches/${id}/mark-primary`), {
     onSuccess: (res, id) => {
       // Invalidate specific inventory adjustment.
       queryClient.invalidateQueries([t.BRANCH, id]);

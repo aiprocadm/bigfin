@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, DependencyList, EffectCallback } from 'react';
 
 /**
  * A custom useEffect hook that only triggers on updates, not on initial mount
@@ -6,7 +6,14 @@ import { useRef, useEffect } from 'react';
  * @param {Function} effect
  * @param {Array<any>} dependencies
  */
-export function useUpdateEffect(effect: any, dependencies = []) {
+// Список зависимостей без объявленного вида выводился как «пустой список
+// чего угодно» (`never[]`): любое место вызова со своими зависимостями
+// переставало сходиться по типам, как только выходило из слепой зоны
+// (Д16 карты v88).
+export function useUpdateEffect(
+  effect: EffectCallback,
+  dependencies: DependencyList = [],
+) {
   const isInitialMount = useRef(true);
 
   useEffect(() => {

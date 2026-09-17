@@ -1,15 +1,24 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
-import { FormattedMessage as T, FormattedHTMLMessage } from '@/components';
+import { FormattedHTMLMessage } from '@/components';
 import { Intent, Alert } from '@blueprintjs/core';
 import { AppToaster } from '@/components';
 import { useDeleteProject } from '../../hooks';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
+
+type ProjectDeleteAlertProps = AlertReduxProps<{ projectId: number }> &
+  WithAlertActionsProps;
 
 /**
  * Project delete alert.
@@ -23,10 +32,7 @@ function ProjectDeleteAlert({
 
   // #withAlertActions
   closeAlert,
-
-  // #withDrawerActions
-  closeDrawer,
-}) {
+}: ProjectDeleteAlertProps) {
   const { mutateAsync: deleteProjectMutate, isLoading } = useDeleteProject();
 
   // handle cancel delete project alert.
@@ -43,13 +49,10 @@ function ProjectDeleteAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
+      // Раньше отказ разбирали как `{ response: { data: { errors } } }` и
+      // ничего не делали: сообщения человек не видел, а предупреждение всё
+      // равно закрывалось — отказ выглядел как успех (Д1 карты v88).
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });
@@ -57,8 +60,8 @@ function ProjectDeleteAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete')}
       icon="trash"
       intent={Intent.DANGER}
       isOpen={isOpen}

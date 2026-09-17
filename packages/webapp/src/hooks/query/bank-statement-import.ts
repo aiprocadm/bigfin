@@ -8,9 +8,23 @@ interface Import1CStatementValues {
   currencyCode?: string;
 }
 
+/**
+ * Что сервер отвечает на загрузку выписки.
+ *
+ * Разбивка пропущенных записей (`Import1CResult.dto` на сервере, инвариант
+ * `skipped = duplicates + noDirection + unparsed`) здесь не была объявлена,
+ * хотя страница импорта её читает и показывает человеку. Дописана (Д8 карты
+ * v88).
+ */
 interface Import1CStatementResponse {
   imported: number;
   skipped: number;
+  /** Запись уже была — дедуп по внешнему номеру. */
+  duplicates: number;
+  /** Не удалось определить приход/расход. */
+  noDirection: number;
+  /** Строку не распознал разборщик. */
+  unparsed: number;
 }
 
 /**

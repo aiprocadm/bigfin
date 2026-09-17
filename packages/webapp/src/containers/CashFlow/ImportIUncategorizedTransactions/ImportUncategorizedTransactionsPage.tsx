@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
@@ -14,7 +13,7 @@ export default function ImportUncategorizedTransactions() {
   const history = useHistory();
   const params = useParams<{ id?: string }>();
   const { featureCan } = useFeatureCan();
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bankImportEnabled = featureCan(Features.BankStatementImport);
 
@@ -32,11 +31,11 @@ export default function ImportUncategorizedTransactions() {
     );
   };
 
-  const handle1CFileChange = (e) => {
-    const file = e.target.files[0];
+  const handle1CFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
-    import1C({ accountId: params.id, file })
+    import1C({ accountId: params.id ?? '', file })
       .then((data) => {
         const hasSkipped = (data.skipped ?? 0) > 0;
         const nothingImported = (data.imported ?? 0) === 0 && hasSkipped;

@@ -19,7 +19,7 @@ export function useCreateItemCategory(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('item-categories', values), {
+  return useMutation((values: any) => apiRequest.post('item-categories', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -57,7 +57,7 @@ export function useDeleteItemCategory(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`item-categories/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`item-categories/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific item category.
       queryClient.invalidateQueries([t.ITEM_CATEGORY, id]);

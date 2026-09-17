@@ -1,7 +1,6 @@
-// @ts-nocheck
 import { useState } from 'react';
 import intl from 'react-intl-universal';
-import * as R from 'ramda';
+import { compose } from '@/utils';
 import moment from 'moment';
 import { Box, Icon } from '@/components';
 import { Classes, Popover, Position } from '@blueprintjs/core';
@@ -12,6 +11,8 @@ import { TagButton } from './TagButton';
 
 function AccountUncategorizedDateFilterRoot({
   uncategorizedTransactionsFilter,
+}: {
+  uncategorizedTransactionsFilter?: { fromDate?: string; toDate?: string };
 }) {
   const fromDate = uncategorizedTransactionsFilter?.fromDate;
   const toDate = uncategorizedTransactionsFilter?.toDate;
@@ -65,15 +66,15 @@ function AccountUncategorizedDateFilterRoot({
   );
 }
 
-export const AccountUncategorizedDateFilter = R.compose(
-  withBanking(({ uncategorizedTransactionsFilter }) => ({
+export const AccountUncategorizedDateFilter = compose(
+  withBanking(({ uncategorizedTransactionsFilter }: any) => ({
     uncategorizedTransactionsFilter,
   })),
 )(AccountUncategorizedDateFilterRoot);
 
-export const UncategorizedTransactionsDateFilter = R.compose(
+export const UncategorizedTransactionsDateFilter = compose(
   withBankingActions,
-  withBanking(({ uncategorizedTransactionsFilter }) => ({
+  withBanking(({ uncategorizedTransactionsFilter }: any) => ({
     uncategorizedTransactionsFilter,
   })),
 )(
@@ -86,12 +87,12 @@ export const UncategorizedTransactionsDateFilter = R.compose(
 
     // #ownProps
     onSubmit,
-  }) => {
+  }: any) => {
     const initialValues = {
       ...uncategorizedTransactionsFilter,
     };
 
-    const handleSubmit = (values) => {
+    const handleSubmit = (values: any) => {
       setUncategorizedTransactionsFilter({
         fromDate: values.fromDate,
         toDate: values.toDate,

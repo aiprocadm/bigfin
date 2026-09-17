@@ -57,13 +57,26 @@ const UNKNOWN_PROPS: Record<string, string[]> = {
   PdfPreviewDialogContent: ['dialogName'],
   InventoryValuationPdfDialogContent: ['dialogName'],
   // blueprint-овый FormGroup разбирает только свои свойства; `fill`, `name` и
-  // `minimal` в его исходнике не упоминаются вовсе
-  FormGroup: ['fill', 'name', 'minimal'],
+  // `minimal` в его исходнике не упоминаются вовсе. Ни `fastField`, ни
+  // `shouldUpdate*` — тоже: это слова из обёрток над Formik, а сюда они
+  // попадали копированием из соседней FFormGroup (Д13 карты v88).
+  FormGroup: [
+    'fill',
+    'name',
+    'minimal',
+    'fastField',
+    'shouldUpdate',
+    'shouldUpdateDeps',
+  ],
   // InputGroup знает large / small / fill / round; этих — нет
   // `inputProps` поле ввода тоже не читает: в его исходнике этого слова нет,
   // и blueprint-овый InputGroup отбрасывает незнакомое (Д39 карты v75)
   FInputGroup: ['minimal', 'medium', 'inputProps'],
-  InputGroup: ['minimal'],
+  // `fastField` — слово из обёрток над Formik. У blueprint-ового поля ввода
+  // его нет ни в объявлениях, ни в собранном коде: там, где его написали,
+  // поле вообще не было связано с формой, и введённое пропадало
+  // (Д18 карты v88).
+  InputGroup: ['minimal', 'fastField'],
   // @blueprintjs-formik/datetime не упоминает fastField ни в объявлениях, ни
   // в собранном коде; `minimal` не упоминает и blueprint-овый DateInput
   FDateInput: ['fastField', 'minimal'],

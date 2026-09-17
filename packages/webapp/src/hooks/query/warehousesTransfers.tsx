@@ -66,7 +66,7 @@ export function useDeleteWarehouseTransfer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`warehouse-transfers/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`warehouse-transfers/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

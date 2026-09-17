@@ -58,7 +58,7 @@ export function useCreateCreditNote(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('credit-notes', values), {
+  return useMutation((values: any) => apiRequest.post('credit-notes', values), {
     onSuccess: (res, values) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -96,7 +96,7 @@ export function useDeleteCreditNote(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`credit-notes/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`credit-notes/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -236,7 +236,7 @@ export function useDeleteRefundCreditNote(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`credit-notes/refunds/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`credit-notes/refunds/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -272,7 +272,7 @@ export function useOpenCreditNote(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`credit-notes/${id}/open`), {
+  return useMutation((id: number) => apiRequest.post(`credit-notes/${id}/open`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

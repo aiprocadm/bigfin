@@ -89,7 +89,7 @@ export function useDeleteExpense(props: any) {
   const apiRequest = useApiRequest();
   const queryClient = useQueryClient();
 
-  return useMutation((id) => apiRequest.delete(`expenses/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`expenses/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific expense.
       queryClient.invalidateQueries([t.EXPENSE, id]);
@@ -173,7 +173,7 @@ export function useCreateExpense(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('expenses', values), {
+  return useMutation((values: any) => apiRequest.post('expenses', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -189,7 +189,7 @@ export function usePublishExpense(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`expenses/${id}/publish`), {
+  return useMutation((id: number) => apiRequest.post(`expenses/${id}/publish`), {
     onSuccess: (res, id) => {
       // Invalidate specific expense.
       queryClient.invalidateQueries([t.EXPENSE, id]);

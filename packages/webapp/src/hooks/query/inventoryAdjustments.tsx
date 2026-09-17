@@ -50,7 +50,7 @@ export function useDeleteInventoryAdjustment(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`inventory-adjustments/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`inventory-adjustments/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

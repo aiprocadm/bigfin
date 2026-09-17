@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useRef } from 'react';
 import {
   useTable,
@@ -38,7 +37,7 @@ import { useResizeObserver } from './utils';
 /**
  * Datatable component.
  */
-export function DataTable(props) {
+export function DataTable(props: any) {
   const {
     columns,
     data,
@@ -122,7 +121,7 @@ export function DataTable(props) {
       },
       manualPagination,
       pageCount: controlledPageCount,
-      getSubRows: (row) => row.children,
+      getSubRows: (row: any) => row.children,
       manualSortBy,
       expandSubRows,
       payload,
@@ -178,9 +177,13 @@ export function DataTable(props) {
   }, [selectedRowIds, onSelectedRowsChange]);
 
   // Column resizing observer.
-  useResizeObserver(table.state, (current, columnWidth, columnsResizing) => {
-    onColumnResizing && onColumnResizing(current, columnWidth, columnsResizing);
-  });
+  useResizeObserver(
+    table.state,
+    (current: any, columnWidth: any, columnsResizing: any) => {
+      onColumnResizing &&
+        onColumnResizing(current, columnWidth, columnsResizing);
+    },
+  );
 
   return (
     <TableContext.Provider value={{ table, props }}>

@@ -1,46 +1,37 @@
-// @ts-nocheck
-
 import React from 'react';
-import intl from 'react-intl-universal';
-import { Formik } from 'formik';
-import { AppToaster } from '@/components';
+import { Formik, FormikHelpers } from 'formik';
 import { ProjectBillableEntriesFormSchema } from './ProjectBillableEntriesForm.schema';
 import ProjectBillableEntriesFormContent from './ProjectBillableEntriesFormContent';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 
 import { compose } from '@/utils';
 
 const defaultInitialValues = {};
 
+type ProjectBillableEntriesFormValues = typeof defaultInitialValues;
+
 /**
  * project billable entries form.
- * @returns
+ *
+ * ФОРМА НИЧЕГО НЕ СОХРАНЯЕТ — как и две соседние формы раздела: запроса нет,
+ * а уведомление об успехе было пустым. Серверных ручек `projects/*` не
+ * существует, раздел закрыт (Р3 карты v16), окно недостижимо (Д5 карты v88).
  */
-function ProjectBillableEntriesForm({
-  //#withDialogActions
-  closeDialog,
-}) {
+function ProjectBillableEntriesForm({}: WithDialogActionsProps) {
   const initialValues = {
     ...defaultInitialValues,
   };
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
-    const form = {};
-
-    // Handle request response success.
-    const onSuccess = (response) => {
-      AppToaster.show({});
-    };
-
-    // Handle request response errors.
-    const onError = ({
-      response: {
-        data: { errors },
-      },
-    }) => {
-      setSubmitting(false);
-    };
+  const handleFormSubmit = (
+    values: ProjectBillableEntriesFormValues,
+    { setSubmitting }: FormikHelpers<ProjectBillableEntriesFormValues>,
+  ) => {
+    // Сохранять некуда — снимаем «отправку», чтобы кнопка не крутилась вечно.
+    setSubmitting(false);
   };
 
   return (

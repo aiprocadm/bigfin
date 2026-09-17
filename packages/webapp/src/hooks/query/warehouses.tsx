@@ -23,7 +23,7 @@ export function useCreateWarehouse(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('warehouses', values), {
+  return useMutation((values: any) => apiRequest.post('warehouses', values), {
     onSuccess: (res, values) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -61,7 +61,7 @@ export function useDeleteWarehouse(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`warehouses/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`warehouses/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific warehoue.
       queryClient.invalidateQueries([t.WAREHOUSE, id]);
@@ -111,7 +111,7 @@ export function useActivateWarehouses(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`warehouses/activate`), {
+  return useMutation((id: number) => apiRequest.post(`warehouses/activate`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -127,7 +127,7 @@ export function useMarkWarehouseAsPrimary(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.put(`warehouses/${id}/mark-primary`), {
+  return useMutation((id: number) => apiRequest.put(`warehouses/${id}/mark-primary`), {
     onSuccess: (res, id) => {
       // Invalidate specific inventory adjustment.
       queryClient.invalidateQueries([t.WAREHOUSE, id]);

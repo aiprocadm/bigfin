@@ -88,7 +88,7 @@ export function useDeleteCashflowTransaction(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`banking/transactions/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`banking/transactions/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate queries.
       commonInvalidateQueries(queryClient);

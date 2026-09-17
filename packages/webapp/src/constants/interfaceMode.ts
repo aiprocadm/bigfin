@@ -1,3 +1,5 @@
+import type React from 'react';
+
 export const INTERFACE_MODE = {
   Business: 'business',
   Accountant: 'accountant',
@@ -61,6 +63,8 @@ function linkPathname(link: string): string {
 }
 
 interface ReportsSection<TReport extends { link: string }> {
+  /** Заголовок секции («Финансовый учёт», «Налоги» и т. д.). */
+  sectionTitle: React.ReactNode;
   reports: TReport[];
 }
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { FormGroup, Position, Classes } from '@blueprintjs/core';
@@ -6,7 +5,7 @@ import { DateInput } from '@blueprintjs/datetime';
 import { FastField, ErrorMessage } from 'formik';
 import { css } from '@emotion/css';
 import classNames from 'classnames';
-import { useTheme } from '@emotion/react';
+import { Theme, useTheme } from '@emotion/react';
 
 import {
   CustomersSelect,
@@ -21,7 +20,7 @@ import {
   inputIntent,
   handleDateChange,
 } from '@/utils';
-import { customersFieldShouldUpdate, accountsFieldShouldUpdate } from './utils';
+
 import {
   FFormGroup,
   FSelect,
@@ -61,7 +60,7 @@ export default function ExpenseFormHeader() {
   return (
     <Stack spacing={18} flex={1} className={fieldsClassName}>
       <FastField name={'payment_date'}>
-        {({ form, field: { value }, meta: { error, touched } }) => (
+        {({ form, field: { value }, meta: { error, touched } }: any) => (
           <FormGroup
             label={<T id={'payment_date'} />}
             labelInfo={<Hint content={intl.get('expense.payment_date.hint')} />}
@@ -73,7 +72,7 @@ export default function ExpenseFormHeader() {
             <DateInput
               {...momentFormatter('YYYY/MM/DD')}
               value={tansformDateValue(value)}
-              onChange={handleDateChange((formattedDate) => {
+              onChange={handleDateChange((formattedDate: string) => {
                 form.setFieldValue('payment_date', formattedDate);
               })}
               popoverProps={{ position: Position.BOTTOM, minimal: true }}
@@ -148,9 +147,6 @@ function ExpenseFormCustomerSelect() {
       label={<T id={'customer'} />}
       labelInfo={<Hint content={intl.get('expense.customer.hint')} />}
       inline={true}
-      fastField={true}
-      shouldUpdateDeps={{ items: customers }}
-      shouldUpdate={customersFieldShouldUpdate}
     >
       <CustomersSelect
         name={'customer_id'}

@@ -12,7 +12,7 @@ export function useSaveSettings(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((settings) => apiRequest.put('settings', settings), {
+  return useMutation((settings: any) => apiRequest.put('settings', settings), {
     onSuccess: () => {
       queryClient.invalidateQueries(t.SETTING);
     },

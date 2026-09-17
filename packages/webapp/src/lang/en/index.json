@@ -3225,6 +3225,7 @@
   "tax_rates.alert.created_successfully": "The tax rate has been created successfully.",
   "tax_rates.alert.deleted_successfully": "The tax rate has been deleted successfully.",
   "tax_rates.alert.in_use": "This tax rate is used in documents, items or entries — it cannot be deleted.",
+  "tax_rates.alert.once_delete_this_tax_rate": "Once you delete this tax rate, you won't be able to restore it.<br /><br />If you're not sure, you can inactivate it instead.",
   "tax_rates.alert.activated_successfully": "The tax rate has been activated successfully.",
   "tax_rates.alert.inactivated_successfully": "The tax rate has been inactivated successfully.",
   "tax_rates.label.name": "Name",

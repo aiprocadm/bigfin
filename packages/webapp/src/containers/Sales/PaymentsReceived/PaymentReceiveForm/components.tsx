@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useLayoutEffect } from 'react';
 import moment from 'moment';
 import intl from 'react-intl-universal';
@@ -16,21 +15,21 @@ import { withSettings } from '@/containers/Settings/withSettings';
 /**
  * Invoice date cell.
  */
-function InvoiceDateCell({ value }) {
+function InvoiceDateCell({ value }: { value: string }) {
   return <span>{moment(value).format('YYYY MMM DD')}</span>;
 }
 
 /**
  * Invoice number table cell accessor.
  */
-function InvNumberCellAccessor(row) {
+function InvNumberCellAccessor(row: any) {
   return row?.invoice_no ? `#${row?.invoice_no || ''}` : '-';
 }
 
 /**
  * Mobey table cell.
  */
-function MoneyTableCell({ row: { original }, value }) {
+function MoneyTableCell({ row: { original }, value }: any) {
   return <Money amount={value} currency={original.currency_code} />;
 }
 
@@ -89,7 +88,12 @@ export const usePaymentReceiveEntriesColumns = () => {
  * payment receive exchange rate input field.
  * @returns {JSX.Element}
  */
-export function PaymentReceiveExchangeRateInputField({ ...props }) {
+export function PaymentReceiveExchangeRateInputField({
+  ...props
+}: {
+  name: string;
+  [key: string]: any;
+}) {
   const currentOrganization = useCurrentOrganization();
   const { values } = useFormikContext<any>();
 
@@ -112,7 +116,11 @@ export function PaymentReceiveExchangeRateInputField({ ...props }) {
  * payment receive project select.
  * @returns {JSX.Element}
  */
-export function PaymentReceiveProjectSelectButton({ label }) {
+export function PaymentReceiveProjectSelectButton({
+  label,
+}: {
+  label?: string;
+}) {
   return <Button text={label ?? intl.get('select_project')} />;
 }
 
@@ -121,7 +129,7 @@ export function PaymentReceiveProjectSelectButton({ label }) {
  * @returns {React.ReactNode}
  */
 export const PaymentReceiveSyncIncrementSettingsToForm = R.compose(
-  withSettings(({ paymentReceiveSettings }) => ({
+  withSettings(({ paymentReceiveSettings }: any) => ({
     paymentReceiveNextNumber: paymentReceiveSettings?.nextNumber,
     paymentReceiveNumberPrefix: paymentReceiveSettings?.numberPrefix,
     paymentReceiveAutoIncrement: paymentReceiveSettings?.autoIncrement,
@@ -131,7 +139,7 @@ export const PaymentReceiveSyncIncrementSettingsToForm = R.compose(
     paymentReceiveNextNumber,
     paymentReceiveNumberPrefix,
     paymentReceiveAutoIncrement,
-  }) => {
+  }: any) => {
     const { setFieldValue } = useFormikContext<any>();
 
     useLayoutEffect(() => {

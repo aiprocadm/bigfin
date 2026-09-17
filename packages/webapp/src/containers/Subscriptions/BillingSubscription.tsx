@@ -1,17 +1,26 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import clsx from 'classnames';
 import { includes } from 'lodash';
 import { Box, Group, Stack } from '@/components';
 import { Button, Card, Classes, Intent, Text } from '@blueprintjs/core';
-import { withAlertActions } from '../Alert/withAlertActions';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '../Alert/withAlertActions';
 import styles from './BillingSubscription.module.scss';
-import { withDrawerActions } from '../Drawer/withDrawerActions';
+import {
+  withDrawerActions,
+  WithDrawerActionsProps,
+} from '../Drawer/withDrawerActions';
 import { DRAWERS } from '@/constants/drawers';
 import { useBillingPageBoot } from './BillingPageBoot';
 import { getSubscriptionStatusText } from './_utils';
+import { compose } from '@/utils';
 
-function SubscriptionRoot({ openAlert, openDrawer }) {
+function SubscriptionRoot({
+  openAlert,
+  openDrawer,
+}: WithAlertActionsProps & WithDrawerActionsProps) {
   const { mainSubscription } = useBillingPageBoot();
 
   // Can't continue if the main subscription is not loaded.
@@ -139,17 +148,17 @@ function SubscriptionRoot({ openAlert, openDrawer }) {
 }
 
 /**
- * Тип указан явно. `R.compose` из двух и более обёрток теряет знание о том, что
+ * Тип указан явно. Сборка из двух и более обёрток теряет знание о том, что
  * на выходе компонент, и место применения получает «ничто» — отсюда «нельзя
  * использовать как компонент». Обёртки сами подставляют всё, что нужно, поэтому
  * снаружи компонент вызывается без свойств (Д9 карты v75).
  */
-export const Subscription: React.FC = R.compose(
+export const Subscription: React.FC = compose(
   withAlertActions,
   withDrawerActions,
 )(SubscriptionRoot);
 
-function SubscriptionStatusText({ subscription }) {
+function SubscriptionStatusText({ subscription }: { subscription: any }) {
   const text = getSubscriptionStatusText(subscription);
 
   if (!text) return null;

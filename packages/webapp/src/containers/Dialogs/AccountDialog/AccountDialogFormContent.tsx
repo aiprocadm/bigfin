@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Form, useFormikContext } from 'formik';
 import { Button, Classes, FormGroup, Intent } from '@blueprintjs/core';
@@ -32,6 +31,9 @@ function AccountFormDialogFields({
   // #ownProps
   onClose,
   action,
+}: {
+  onClose?: () => void;
+  action?: string;
 }) {
   const { values, isSubmitting, setFieldValue } = useFormikContext<any>();
   const accountNameFieldRef = useAutofocus();
@@ -91,7 +93,9 @@ function AccountFormDialogFields({
         >
           <FCheckbox
             inline={true}
-            label={<T id={'sub_account'} />}
+            // У переключателя `label` — строка; для разметки в библиотеке
+            // есть `labelElement` (Д12 карты v88).
+            labelElement={<T id={'sub_account'} />}
             name={'subaccount'}
             fastField={true}
           />
@@ -171,7 +175,7 @@ function AccountFormDialogFields({
 }
 
 export default compose(
-  withAccounts(({ accountsTypes, accountsList }) => ({
+  withAccounts(({ accountsTypes, accountsList }: any) => ({
     accountsTypes,
     accounts: accountsList,
   })),

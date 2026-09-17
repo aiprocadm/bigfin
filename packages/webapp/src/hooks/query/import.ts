@@ -22,7 +22,7 @@ export function useImportFileUpload(props = {}) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post(`import/file`, values), {
+  return useMutation((values: any) => apiRequest.post(`import/file`, values), {
     onSuccess: (res, id) => {
       // Invalidate queries.
     },

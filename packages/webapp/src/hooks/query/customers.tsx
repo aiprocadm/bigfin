@@ -81,7 +81,7 @@ export function useDeleteCustomer(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`customers/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`customers/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific customer.
       queryClient.invalidateQueries([t.CUSTOMER, id]);

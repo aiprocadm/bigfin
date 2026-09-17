@@ -3225,6 +3225,7 @@
   "tax_rates.alert.created_successfully": "Налоговая ставка успешно создана.",
   "tax_rates.alert.deleted_successfully": "Налоговая ставка удалена.",
   "tax_rates.alert.in_use": "Ставка используется в документах, товарах или проводках — удалить нельзя.",
+  "tax_rates.alert.once_delete_this_tax_rate": "После удаления налоговую ставку восстановить не получится. Точно удалить?<br /><br />Если не уверены — можете вместо этого деактивировать её.",
   "tax_rates.alert.activated_successfully": "Налоговая ставка активирована.",
   "tax_rates.alert.inactivated_successfully": "Налоговая ставка деактивирована.",
   "tax_rates.label.name": "Название",

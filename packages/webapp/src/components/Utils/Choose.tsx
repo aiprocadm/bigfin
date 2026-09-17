@@ -1,6 +1,4 @@
-// @ts-nocheck
 import React from 'react';
-import PropTypes from 'prop-types';
 import { If } from './If';
 
 interface ChooseProps {
@@ -13,23 +11,26 @@ interface OtherwiseProps {
   render?: () => React.ReactNode;
 }
 
-export const Choose = (props: ChooseProps) => {
-  let when = null;
-  let otherwise = null;
+export const Choose = (props: ChooseProps): React.ReactElement | null => {
+  let when: React.ReactElement | null = null;
+  let otherwise: React.ReactElement | null = null;
 
-  React.Children.forEach(props.children, (children) => {
-    if (children.props.condition === undefined) {
-      otherwise = children;
-    } else if (!when && children.props.condition === true) {
-      when = children;
+  React.Children.forEach(props.children, (child) => {
+    // Считаем ветками только элементы: строку или пустоту спрашивать про
+    // условие бессмысленно — раньше на таком ребёнке разбор падал бы
+    // (Д14 карты v88).
+    if (!React.isValidElement(child)) return;
+
+    const condition = (child.props as { condition?: boolean }).condition;
+
+    if (condition === undefined) {
+      otherwise = child;
+    } else if (!when && condition === true) {
+      when = child;
     }
   });
 
   return when || otherwise;
-};
-
-Choose.propTypes = {
-  children: PropTypes.node,
 };
 
 Choose.When = If;
@@ -49,8 +50,3 @@ Choose.Otherwise = ({
 }: OtherwiseProps): React.ReactElement | null => (
   <>{render ? render() : children}</>
 );
-
-Choose.Otherwise.propTypes = {
-  children: PropTypes.node,
-  render: PropTypes.func,
-};

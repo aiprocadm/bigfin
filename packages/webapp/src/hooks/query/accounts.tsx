@@ -74,7 +74,7 @@ export function useCreateAccount(props?: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('accounts', values), {
+  return useMutation((values: any) => apiRequest.post('accounts', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(client);
@@ -109,7 +109,7 @@ export function useDeleteAccount(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`accounts/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`accounts/${id}`), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(client);
@@ -125,7 +125,7 @@ export function useActivateAccount(props: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`accounts/${id}/activate`), {
+  return useMutation((id: number) => apiRequest.post(`accounts/${id}/activate`), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(client);
@@ -141,7 +141,7 @@ export function useInactivateAccount(props: any) {
   const query = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`accounts/${id}/inactivate`), {
+  return useMutation((id: number) => apiRequest.post(`accounts/${id}/inactivate`), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(query);

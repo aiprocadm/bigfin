@@ -1,17 +1,29 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
-import { AppToaster, FormattedMessage as T } from '@/components';
+import { AppToaster, FormattedHTMLMessage } from '@/components';
 
 import { useDeleteTaxRate } from '@/hooks/query/taxRates';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
+import {
+  withDrawerActions,
+  WithDrawerActionsProps,
+} from '@/containers/Drawer/withDrawerActions';
 
 import { compose } from '@/utils';
 import { DRAWERS } from '@/constants/drawers';
+
+type TaxRateDeleteAlertProps = AlertReduxProps<{ taxRateId: number }> &
+  WithAlertActionsProps &
+  WithDrawerActionsProps;
 
 /**
  * Item delete alerts.
@@ -28,7 +40,7 @@ function TaxRateDeleteAlert({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: TaxRateDeleteAlertProps) {
   const { mutateAsync: deleteTaxRate, isLoading } = useDeleteTaxRate();
 
   // Handle cancel delete item alert.
@@ -45,7 +57,7 @@ function TaxRateDeleteAlert({
         });
         closeDrawer(DRAWERS.TAX_RATE_DETAILS);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         const type = error?.response?.data?.errors?.[0]?.type;
         AppToaster.show({
           message: intl.get(
@@ -63,8 +75,8 @@ function TaxRateDeleteAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete')}
       icon="trash"
       intent={Intent.DANGER}
       isOpen={isOpen}
@@ -72,14 +84,13 @@ function TaxRateDeleteAlert({
       onConfirm={handleConfirmDeleteItem}
       loading={isLoading}
     >
+      {/*
+        Раньше оба абзаца были английским текстом прямо в разметке — мимо
+        словаря, да ещё с дырой в вопросе («delete ?»). Теперь это обычный
+        ключ, как у соседних предупреждений (Д2 карты v88).
+      */}
       <p>
-        Once you delete this tax rate, you won't be able to restore the item
-        later.
-      </p>
-
-      <p>
-        Are you sure you want to delete ? If you're not sure, you can inactivate
-        it instead.
+        <FormattedHTMLMessage id={'tax_rates.alert.once_delete_this_tax_rate'} />
       </p>
     </Alert>
   );

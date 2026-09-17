@@ -1,17 +1,25 @@
-// @ts-nocheck
 import { compose } from '@/utils';
 import * as R from 'ramda';
 import { DataTable, TableSkeletonRows } from '@/components';
 import { useBrandingTemplatesBoot } from './BrandingTemplatesBoot';
 import { ActionsMenu } from './_components';
 import { DRAWERS } from '@/constants/drawers';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
+import {
+  withDrawerActions,
+  WithDrawerActionsProps,
+} from '@/containers/Drawer/withDrawerActions';
 import { getCustomizeDrawerNameFromResource } from './_utils';
 import { useBrandingTemplatesColumns } from './_hooks';
 import styles from './BrandTemplates.module.scss';
 
-interface BrandingTemplatesTableProps {}
+// Обёртки подставляют `openAlert` и `openDrawer`; раньше объявление было
+// пустым, и оба «не существовали» для проверки типов (Д11 карты v88).
+type BrandingTemplatesTableProps = WithAlertActionsProps &
+  WithDrawerActionsProps;
 
 function BrandingTemplateTableRoot({
   openAlert,
@@ -21,18 +29,18 @@ function BrandingTemplateTableRoot({
   const columns = useBrandingTemplatesColumns();
   const { isPdfTemplatesLoading, pdfTemplates } = useBrandingTemplatesBoot();
 
-  const handleEditTemplate = (template) => {
+  const handleEditTemplate = (template: any) => {
     openDrawer(DRAWERS.INVOICE_CUSTOMIZE, {
       templateId: template.id,
       resource: template.resource,
     });
   };
 
-  const handleDeleteTemplate = (template) => {
+  const handleDeleteTemplate = (template: any) => {
     openAlert('branding-template-delete', { templateId: template.id });
   };
 
-  const handleCellClick = (cell, event) => {
+  const handleCellClick = (cell: any, event: any) => {
     const templateId = cell.row.original.id;
     const resource = cell.row.original.resource;
 
@@ -43,7 +51,7 @@ function BrandingTemplateTableRoot({
   };
 
   // Handle mark as default button click.
-  const handleMarkDefaultTemplate = (template) => {
+  const handleMarkDefaultTemplate = (template: any) => {
     openAlert('branding-template-mark-default', { templateId: template.id });
   };
 

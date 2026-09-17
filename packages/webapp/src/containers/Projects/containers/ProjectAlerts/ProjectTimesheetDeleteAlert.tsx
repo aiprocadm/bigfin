@@ -1,15 +1,26 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
-import { FormattedMessage as T, FormattedHTMLMessage } from '@/components';
+import { FormattedHTMLMessage } from '@/components';
 import { Intent, Alert } from '@blueprintjs/core';
 import { AppToaster } from '@/components';
 import { useDeleteProjectTimeEntry } from '../../hooks';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
+
+type ProjectTimesheetDeleteAlertProps = AlertReduxProps<{
+  timesheetId: number;
+}> &
+  WithAlertActionsProps;
 
 /**
  * Project timesheet delete alert.
@@ -24,7 +35,7 @@ function ProjectTimesheetDeleteAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: ProjectTimesheetDeleteAlertProps) {
   const { mutateAsync: deleteProjectTimeEntryMutate, isLoading } =
     useDeleteProjectTimeEntry();
 
@@ -42,13 +53,8 @@ function ProjectTimesheetDeleteAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
+      // Отказ сервера показываем, а не глотаем (Д1 карты v88).
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });
@@ -56,8 +62,8 @@ function ProjectTimesheetDeleteAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete')}
       icon="trash"
       intent={Intent.DANGER}
       isOpen={isOpen}

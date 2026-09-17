@@ -10,7 +10,7 @@ export function useCreateCurrency(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('currencies', values), {
+  return useMutation((values: any) => apiRequest.post('currencies', values), {
     onSuccess: () => {
       // Invalidate currencies.
       queryClient.invalidateQueries(t.CURRENCIES);

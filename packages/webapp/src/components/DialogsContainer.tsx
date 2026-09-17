@@ -14,11 +14,6 @@ import EstimatePdfPreviewDialog from '@/containers/Dialogs/EstimatePdfPreviewDia
 import MoneyInDialog from '@/containers/CashFlow/MoneyInDialog';
 import MoneyOutDialog from '@/containers/CashFlow/MoneyOutDialog';
 import BadDebtDialog from '@/containers/Dialogs/BadDebtDialog';
-import NotifyInvoiceViaSMSDialog from '@/containers/Dialogs/NotifyInvoiceViaSMSDialog';
-import NotifyReceiptViaSMSDialog from '@/containers/Dialogs/NotifyReceiptViaSMSDialog';
-import NotifyEstimateViaSMSDialog from '@/containers/Dialogs/NotifyEstimateViaSMSDialog';
-import NotifyPaymentReceiveViaSMSDialog from '@/containers/Dialogs/NotifyPaymentReceiveViaSMSDialog';
-import SMSMessageDialog from '@/containers/Dialogs/SMSMessageDialog';
 import RefundCreditNoteDialog from '@/containers/Dialogs/RefundCreditNoteDialog';
 import RefundVendorCreditDialog from '@/containers/Dialogs/RefundVendorCreditDialog';
 import ReconcileCreditNoteDialog from '@/containers/Dialogs/ReconcileCreditNoteDialog';
@@ -96,20 +91,10 @@ export default function DialogsContainer() {
       <MoneyInDialog dialogName={DialogsName.MoneyInForm} />
       <MoneyOutDialog dialogName={DialogsName.MoneyOutForm} />
 
-      <NotifyInvoiceViaSMSDialog
-        dialogName={DialogsName.NotifyInvoiceViaForm}
-      />
-      <NotifyReceiptViaSMSDialog
-        dialogName={DialogsName.NotifyReceiptViaForm}
-      />
-      <NotifyEstimateViaSMSDialog
-        dialogName={DialogsName.NotifyEstimateViaForm}
-      />
-      <NotifyPaymentReceiveViaSMSDialog
-        dialogName={DialogsName.NotifyPaymentViaForm}
-      />
+      {/* Окон «уведомить по SMS» и шаблонов SMS больше нет: провайдера SMS
+          в продукте не было никогда, ручки отвечали «ок» и ничего не слали
+          (вопрос 10 карт v10–v17, закрыт в Д5 карты v86). */}
       <BadDebtDialog dialogName={DialogsName.BadDebtForm} />
-      <SMSMessageDialog dialogName={DialogsName.SMSMessageForm} />
       <RefundCreditNoteDialog dialogName={DialogsName.RefundCreditNote} />
       <RefundVendorCreditDialog dialogName={DialogsName.RefundVendorCredit} />
       <ReconcileCreditNoteDialog dialogName={DialogsName.ReconcileCreditNote} />

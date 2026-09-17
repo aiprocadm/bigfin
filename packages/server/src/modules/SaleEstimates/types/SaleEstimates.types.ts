@@ -86,7 +86,6 @@ export enum SaleEstimateAction {
   Edit = 'Edit',
   Delete = 'Delete',
   View = 'View',
-  NotifyBySms = 'NotifyBySms',
 }
 
 export interface ISaleEstimateApprovingEvent {

@@ -91,7 +91,6 @@ export enum BillAction {
   Edit = 'Edit',
   Delete = 'Delete',
   View = 'View',
-  NotifyBySms = 'NotifyBySms',
 }
 
 export interface IBillOpeningPayload {

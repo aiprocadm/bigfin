@@ -228,40 +228,6 @@ export function useRefreshReceipts() {
   };
 }
 
-export function useCreateNotifyReceiptBySMS(props?) {
-  const queryClient = useQueryClient();
-  const apiRequest = useApiRequest();
-  return useMutation(
-    ([id, values]: [any, any]) =>
-      apiRequest.post(`sale-receipts/${id}/notify-by-sms`, values),
-    {
-      onSuccess: (res, [id, values]) => {
-        queryClient.invalidateQueries([t.NOTIFY_SALE_RECEIPT_BY_SMS, id]);
-
-        // Invalidate queries.
-        commonInvalidateQueries(queryClient);
-      },
-      ...props,
-    },
-  );
-}
-
-export function useReceiptSMSDetail(receiptId, props, requestProps?) {
-  return useRequestQuery(
-    [t.SALE_RECEIPT_SMS_DETAIL, receiptId],
-    {
-      method: 'get',
-      url: `sale-receipts/${receiptId}/sms-details`,
-      ...requestProps,
-    },
-    {
-      select: (res) => res.data,
-      defaultData: {},
-      ...props,
-    },
-  );
-}
-
 /**
  *
  */

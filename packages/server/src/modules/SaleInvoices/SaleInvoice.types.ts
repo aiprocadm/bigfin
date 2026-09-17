@@ -170,7 +170,6 @@ export enum SaleInvoiceAction {
   Delete = 'Delete',
   View = 'View',
   Writeoff = 'Writeoff',
-  NotifyBySms = 'NotifyBySms',
 }
 
 export interface SaleInvoiceMailOptions extends CommonMailOptions {

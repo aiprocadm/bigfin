@@ -62,7 +62,6 @@ export enum SaleReceiptAction {
   Edit = 'Edit',
   Delete = 'Delete',
   View = 'View',
-  NotifyBySms = 'NotifyBySms',
 }
 
 export interface ISaleReceiptDeletingPayload {

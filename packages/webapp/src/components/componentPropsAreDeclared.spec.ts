@@ -13,11 +13,11 @@ import ts from 'typescript';
  *
  * Карты v59 и v62 разобрали самых частых: сетку, опись, строку итога,
  * подсказку, заглушку отчёта, подбор ширины столбца. Это сняло около 700
- * замечаний. Осталось 67 компонентов — они реже используются, и каждый стоит
+ * замечаний. Осталось 66 компонентов — они реже используются, и каждый стоит
  * своего разбора: где-то свойство и правда обязательно, где-то нет.
  *
  * Поэтому здесь **барьер на новое**, как у сторожа `check-no-new-ts-nocheck`:
- * известные 67 записаны ниже, а появление шестьдесят восьмого — ошибка.
+ * известные 66 записаны ниже, а появление шестьдесят седьмого — ошибка.
  * Список должен только укорачиваться.
  *
  * Как убрать себя из списка: объявить свойства (интерфейс `XProps` рядом с
@@ -89,7 +89,6 @@ const KNOWN = [
   'PageForm/PageForm.tsx → PageFormFooterActions',
   'PageForm/PageForm.tsx → PageFormHeader',
   'PaymentReceive/PaymentReceiveListField.tsx → PaymentReceiveListField',
-  'SMSPreview/index.tsx → SMSMessagePreview',
   'Select/ListSelect.tsx → ListSelect',
   'Skeleton/Skeleton.tsx → Skeleton',
   'Skeleton/SkeletonText.tsx → SkeletonText',

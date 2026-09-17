@@ -113,6 +113,7 @@ export class PullTelegramEntriesService {
         updateId,
         parsed.amount,
         parsed.description,
+        this.messageDate(message),
       );
       if (created) {
         imported += 1;
@@ -133,12 +134,29 @@ export class PullTelegramEntriesService {
     return { imported, skipped };
   }
 
+  /**
+   * Дата операции — день, когда сообщение написали, а не день, когда бот его
+   * прочитал. Крон ходит за сообщениями раз в несколько минут, но при
+   * выключенном модуле или сбое сообщение ждёт часами, и запись «уезжала»
+   * на день чтения (вопрос 25 карт v15–v17, закрыт в Д3 карты v86).
+   * Telegram отдаёт `date` в секундах UTC; без него — сегодня, как раньше.
+   */
+  private messageDate(message: { date?: unknown }): string {
+    const seconds = Number(message?.date);
+    const when =
+      Number.isFinite(seconds) && seconds > 0
+        ? new Date(seconds * 1000)
+        : new Date();
+    return when.toISOString().slice(0, 10);
+  }
+
   /** Возвращает false, если операция с таким апдейтом уже заведена. */
   private async createEntry(
     accountId: number,
     updateId: number,
     amount: number,
     description: string | null,
+    date: string,
   ): Promise<boolean> {
     const externalId = `telegram:${updateId}`;
 
@@ -150,7 +168,7 @@ export class PullTelegramEntriesService {
 
       await this.createUncategorized.create(
         {
-          date: new Date().toISOString().slice(0, 10),
+          date,
           accountId,
           amount,
           currencyCode: 'RUB',

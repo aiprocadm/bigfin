@@ -44,7 +44,6 @@ export const SaleEstimateAction = {
   Create: 'Create',
   Edit: 'Edit',
   Delete: 'Delete',
-  NotifyBySms: 'NotifyBySms',
 };
 
 export const SaleInvoiceAction = {
@@ -53,7 +52,6 @@ export const SaleInvoiceAction = {
   Edit: 'Edit',
   Delete: 'Delete',
   Writeoff: 'bad-debt',
-  NotifyBySms: 'NotifyBySms',
 };
 
 export const SaleReceiptAction = {
@@ -61,7 +59,6 @@ export const SaleReceiptAction = {
   Create: 'Create',
   Edit: 'Edit',
   Delete: 'Delete',
-  NotifyBySms: 'NotifyBySms',
 };
 
 export const PaymentReceiveAction = {
@@ -69,7 +66,6 @@ export const PaymentReceiveAction = {
   Create: 'Create',
   Edit: 'Edit',
   Delete: 'Delete',
-  NotifyBySms: 'NotifyBySms',
 };
 
 export const CreditNoteAction = {
@@ -92,7 +88,6 @@ export const BillAction = {
   Create: 'Create',
   Edit: 'Edit',
   Delete: 'Delete',
-  NotifyBySms: 'NotifyBySms',
 };
 
 export const PaymentMadeAction = {

@@ -20,7 +20,6 @@ export * from './BankAccounts';
 export * from './IntersectionObserver';
 export * from './Datatable';
 export * from './Button';
-export * from './SMSPreview';
 export * from './Contacts';
 export * from './Utils';
 export * from './Typo';

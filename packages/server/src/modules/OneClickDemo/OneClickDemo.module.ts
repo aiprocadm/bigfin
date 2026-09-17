@@ -17,6 +17,7 @@ import { PaymentsReceivedModule } from '../PaymentReceived/PaymentsReceived.modu
 import { ExpensesModule } from '../Expenses/Expenses.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
+import { S3Module } from '../S3/S3.module';
 
 /**
  * Демо-режим «в один щелчок» (Д1 карты v18, решение 21).
@@ -38,6 +39,8 @@ import { AccountsModule } from '../Accounts/Accounts.module';
     TenancyModule,
     // Модель счёта учёта: демо-товарам нужен счёт доходов из плана счетов.
     AccountsModule,
+    // Уборка демо удаляет и файлы организации из хранилища (Д4 карты v86).
+    S3Module,
   ],
   providers: [
     CreateOneClickDemoService,

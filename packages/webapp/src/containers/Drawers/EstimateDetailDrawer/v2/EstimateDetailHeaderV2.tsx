@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   FilePlus2,
   Mail,
-  MessageSquare,
   MoreHorizontal,
   Pencil,
   Printer,
@@ -87,7 +86,7 @@ export function getEstimateStatus(estimate: EstimateDetail): {
 /**
  * Шапка деталей сметы: номер + статус-пилюля + «Редактировать» + меню «⋯»
  * со всеми действиями легаси actions-bar (преобразовать в счёт, отправка,
- * печать, SMS, одобрение/отклонение, удаление).
+ * печать, одобрение/отклонение, удаление).
  */
 function EstimateDetailHeaderV2Root({
   estimate,
@@ -122,9 +121,6 @@ function EstimateDetailHeaderV2Root({
   };
   const handlePrintEstimate = () => {
     openDialog('estimate-pdf-preview', { estimateId });
-  };
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-estimate-via-sms', { estimateId });
   };
   const handleApproveEstimate = () => {
     openAlert('estimate-Approve', { estimateId });
@@ -193,13 +189,6 @@ function EstimateDetailHeaderV2Root({
                 <DropdownMenuItem onClick={handlePrintEstimate}>
                   <Printer className="mr-2 h-4 w-4" aria-hidden />
                   {intl.get('print')}
-                </DropdownMenuItem>
-              </Can>
-
-              <Can I={SaleEstimateAction.NotifyBySms} a={AbilitySubject.Estimate}>
-                <DropdownMenuItem onClick={handleNotifyViaSMS}>
-                  <MessageSquare className="mr-2 h-4 w-4" aria-hidden />
-                  {intl.get('notify_via_sms.dialog.notify_via_sms')}
                 </DropdownMenuItem>
               </Can>
 

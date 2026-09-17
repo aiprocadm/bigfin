@@ -34,9 +34,7 @@ function EstimatePdfPreviewDialog({
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <PdfPreviewDialogContent
-          subscriptionForm={payload}
-        />
+        <PdfPreviewDialogContent estimateId={payload.estimateId} />
       </DialogSuspense>
     </Dialog>
   );

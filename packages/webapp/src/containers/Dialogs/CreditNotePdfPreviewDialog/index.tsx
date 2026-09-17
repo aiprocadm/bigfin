@@ -33,9 +33,7 @@ function CreditNotePdfPreviewDialog({
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <PdfPreviewDialogContent
-          subscriptionForm={payload}
-        />
+        <PdfPreviewDialogContent creditNoteId={payload.creditNoteId} />
       </DialogSuspense>
     </Dialog>
   );

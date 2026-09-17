@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   useProjects,
@@ -13,6 +12,14 @@ import { Features } from '@/constants/features';
 
 const ProjecctTimeEntryFormContext = React.createContext<any>(undefined);
 
+interface ProjectTimeEntryFormProviderProps {
+  // #ownProps
+  dialogName: string;
+  projectId?: number;
+  timesheetId?: number;
+  children?: React.ReactNode;
+}
+
 /**
  * Project time entry form provider.
  * @returns
@@ -23,7 +30,7 @@ function ProjectTimeEntryFormProvider({
   projectId,
   timesheetId,
   ...props
-}) {
+}: ProjectTimeEntryFormProviderProps) {
   // project payload.
   const [project, setProjectPayload] = React.useState(projectId);
 

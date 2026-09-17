@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import intl from 'react-intl-universal';
 import { FormattedMessage as T } from '@/components';
 import { x } from '@xstyled/emotion';
@@ -48,8 +47,14 @@ function getLocaleAwareDefaults(): Partial<SetupOrganizationFormValues> {
 
 /**
  * Setup organization form.
+ *
+ * Шаг мастера здесь не переключается руками: номер шага считает
+ * `withSetupWizard` из состояния организации, и после удачного запроса
+ * `onSuccess` крючка обновляет её. Раньше в конце стоял `wizard.next()`, но
+ * свойства `wizard` странице никто не передавал — вызов бросал исключение,
+ * которое молча глотал `catch` ниже (Д12 карты v85).
  */
-function SetupOrganizationPage({ wizard }) {
+function SetupOrganizationPage() {
   const { mutateAsync: organizationSetupMutate } = useOrganizationSetup();
 
   // Validation schema.
@@ -62,16 +67,18 @@ function SetupOrganizationPage({ wizard }) {
   };
 
   // Handle the form submit.
-  const handleSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleSubmit = (
+    values: SetupOrganizationFormValues,
+    { setSubmitting }: FormikHelpers<SetupOrganizationFormValues>,
+  ) => {
     organizationSetupMutate({ ...transfromToSnakeCase(values) })
-      .then((response) => {
+      .then(() => {
         setSubmitting(false);
 
         // Sets locale cookie to next boot cycle.
         setCookie('locale', values.language);
-        wizard.next();
       })
-      .catch((erros) => {
+      .catch(() => {
         setSubmitting(false);
       });
   };

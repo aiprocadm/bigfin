@@ -18,18 +18,18 @@ import { transformToCamelCase } from '@/utils';
 
 interface CreateOneClickDemoValues {}
 /**
- * Что на самом деле отдаёт заведение демо.
+ * Что отдаёт заведение демо — данные из ответа сервера
+ * `{ type, code, message, data }`, разобранные в верблюжье написание, как у
+ * соседнего `useOneClickDemoBuildJob`.
  *
- * Объявлено было `{ demoId, email, buildJob }`, а крючок возвращает **ответ
- * как есть**, без разбора: соседний `useOneClickDemoBuildJob` делает
- * `.then((res) => transformToCamelCase(res.data))`, а этот — нет. Экран
- * читает `res.data.data.demo_id` в змеином написании и работает; врало
- * объявление (Д10 карты v82).
- *
- * Привести крючок к соседям — отдельная правка с проверкой, вынесена в задел.
+ * Раньше крючок отдавал ответ **как есть**, а экран читал
+ * `res.data.data.demo_id` в змеином написании; объявление при этом врало
+ * (Д10 карты v82). Теперь крючок приведён к соседям (Д10 карты v85).
  */
-interface CreateOneClickDemoRes {
-  data: { data: { demo_id: string } };
+export interface CreateOneClickDemoRes {
+  demoId: string;
+  email: string;
+  buildJob: { jobId: string };
 }
 
 /**
@@ -47,7 +47,10 @@ export function useCreateOneClickDemo(
   const apiRequest = useApiRequest();
 
   return useMutation<CreateOneClickDemoRes, Error, CreateOneClickDemoValues>(
-    () => apiRequest.post(`/demo/one_click`),
+    () =>
+      apiRequest
+        .post(`/demo/one_click`)
+        .then((res) => transformToCamelCase(res.data.data)),
     { ...props },
   );
 }

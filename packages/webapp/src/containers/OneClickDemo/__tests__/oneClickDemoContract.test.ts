@@ -41,4 +41,14 @@ describe('демо «в один щелчок»: договор с сервер�
   it('состояние постройки спрашивается по ключу демо, а не по номеру джоба', () => {
     expect(hooks).toContain('/demo/one_click/${demoId}/build_job');
   });
+
+  // Д10 карты v85: заведение демо разбирает ответ до данных, как соседние
+  // крючки, а экран читает ключ демо в верблюжьем написании — не
+  // `res.data.data.demo_id`.
+  it('заведение демо разбирает ответ, а экран читает demoId', () => {
+    const page = read('containers/OneClickDemo/OneClickDemoPageContent.tsx');
+    expect(hooks).toContain('transformToCamelCase(res.data.data)');
+    expect(page).toContain('.demoId');
+    expect(page).not.toContain('demo_id');
+  });
 });

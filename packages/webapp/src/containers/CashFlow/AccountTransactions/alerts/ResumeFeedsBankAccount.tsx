@@ -1,18 +1,28 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
 
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { AppToaster } from '@/components';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { useResumeFeedsBankAccount } from '@/hooks/query/bank-accounts';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
 
+type ResumeFeedsBankAccountAlertProps = AlertReduxProps<{
+  bankAccountId: number;
+}> &
+  WithAlertActionsProps;
+
 /**
- * Resume bank account feeds alert. 
+ * Resume bank account feeds alert.
  */
 function ResumeFeedsBankAccountAlert({
   name,
@@ -23,7 +33,7 @@ function ResumeFeedsBankAccountAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: ResumeFeedsBankAccountAlertProps) {
   const { mutateAsync: resumeFeedsBankAccount, isLoading } =
     useResumeFeedsBankAccount();
 
@@ -47,9 +57,11 @@ function ResumeFeedsBankAccountAlert({
       });
   };
 
+  // Подписи кнопок у `Alert` — строки, не элементы; текст вопроса раньше был
+  // английским прямо в разметке (Д7 карты v85).
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
+      cancelButtonText={intl.get('cancel')}
       confirmButtonText={intl.get('cashflow.alert.resume_bank_feeds')}
       intent={Intent.SUCCESS}
       isOpen={isOpen}
@@ -57,10 +69,7 @@ function ResumeFeedsBankAccountAlert({
       loading={isLoading}
       onConfirm={handleConfirmItemActivate}
     >
-      <p>
-        Are you sure want to resume bank feeds syncing of this bank account, you
-        can always pause it again?
-      </p>
+      <p>{intl.get('cashflow.alert.resume_bank_feeds.body')}</p>
     </Alert>
   );
 }

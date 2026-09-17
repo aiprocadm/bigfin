@@ -1,14 +1,24 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
 
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { AppToaster } from '@/components';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { useUncategorizeTransactionsBulkAction } from '@/hooks/query/bank-transactions';
 import { compose } from '@/utils';
+
+type UncategorizeBankTransactionsBulkAlertProps = AlertReduxProps<{
+  uncategorizeTransactionsIds: number[];
+}> &
+  WithAlertActionsProps;
 
 /**
  * Uncategorize bank account transactions in build alert.
@@ -22,7 +32,7 @@ function UncategorizeBankTransactionsBulkAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: UncategorizeBankTransactionsBulkAlertProps) {
   const { mutateAsync: uncategorizeTransactions, isLoading } =
     useUncategorizeTransactionsBulkAction();
 
@@ -40,7 +50,7 @@ function UncategorizeBankTransactionsBulkAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         AppToaster.show({
           message: intl.get('cashflow.error.uncategorize_transactions'),
           intent: Intent.DANGER,
@@ -51,9 +61,11 @@ function UncategorizeBankTransactionsBulkAlert({
       });
   };
 
+  // Подписи кнопок у `Alert` — строки, не элементы; текст вопроса раньше был
+  // английским прямо в разметке (Д7 карты v85).
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
+      cancelButtonText={intl.get('cancel')}
       confirmButtonText={intl.get('cashflow.alert.uncategorize_transactions')}
       intent={Intent.DANGER}
       isOpen={isOpen}
@@ -61,10 +73,7 @@ function UncategorizeBankTransactionsBulkAlert({
       loading={isLoading}
       onConfirm={handleConfirmItemActivate}
     >
-      <p>
-        Are you sure want to uncategorize the selected bank transactions, this
-        action is not reversible but you can always categorize them again?
-      </p>
+      <p>{intl.get('cashflow.alert.uncategorize_transactions.body')}</p>
     </Alert>
   );
 }

@@ -220,7 +220,6 @@ function CreateReconcileTransactionContent() {
               },
               boundary: 'viewport',
             }}
-            fastField
           />
         </FFormGroup>
       </FeatureCan>
@@ -250,7 +249,6 @@ function MatchingReconcileCategoryField() {
           boundary: 'viewport',
         }}
         filterByRootTypes={values.type === 'deposit' ? 'income' : 'expense'}
-        fastField
       />
     </FFormGroup>
   );

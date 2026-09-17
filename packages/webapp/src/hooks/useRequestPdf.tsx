@@ -1,15 +1,20 @@
-// @ts-nocheck
 import React from 'react';
+import {
+  AxiosHeaders,
+  AxiosRequestConfig,
+  AxiosResponse,
+  RawAxiosHeaders,
+} from 'axios';
 import useApiRequest from './useRequest';
 import { normalizeApiPath } from '../utils';
 import { showApiError } from '@/utils/showApiError';
 
-export const useRequestPdf = (httpProps) => {
+export const useRequestPdf = (httpProps: AxiosRequestConfig) => {
   const apiRequest = useApiRequest();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [pdfUrl, setPdfUrl] = React.useState('');
-  const [response, setResponse] = React.useState(null);
+  const [response, setResponse] = React.useState<AxiosResponse | null>(null);
   const [filename, setFilename] = React.useState<string>('');
 
   React.useEffect(() => {
@@ -38,8 +43,16 @@ export const useRequestPdf = (httpProps) => {
           return;
         }
 
-        // Extract the filename from the Content-Disposition header
-        const contentDisposition = response.headers.get('Content-Disposition');
+        // Extract the filename from the Content-Disposition header.
+        // Заголовки ответа у axios бывают и «сырым» объектом, и `AxiosHeaders`;
+        // `.get` есть только у второго. `AxiosHeaders.from` приводит к нему
+        // (и не копирует, если это уже он). Приведение к `RawAxiosHeaders`
+        // снимает лишь `Partial` из объявления ответа.
+        const contentDisposition = String(
+          AxiosHeaders.from(response.headers as RawAxiosHeaders).get(
+            'Content-Disposition',
+          ) ?? '',
+        );
         let _filename = 'default.pdf'; // Default filename if not provided by server
 
         if (contentDisposition && contentDisposition.includes('filename=')) {

@@ -24,7 +24,6 @@ export function StripeIntegrationEditFormContent() {
           name={'bankAccountId'}
           items={accounts}
           filterByTypes={[ACCOUNT_TYPE.CASH, ACCOUNT_TYPE.BANK]}
-          fastField
           fill
           allowCreate
         />
@@ -45,7 +44,6 @@ export function StripeIntegrationEditFormContent() {
           name={'clearingAccountId'}
           items={accounts}
           filterByTypes={[ACCOUNT_TYPE.OTHER_CURRENT_LIABILITY]}
-          fastField
           fill
           allowCreate
         />

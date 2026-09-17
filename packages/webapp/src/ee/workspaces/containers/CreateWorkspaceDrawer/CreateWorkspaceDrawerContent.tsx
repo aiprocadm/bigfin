@@ -28,7 +28,6 @@ function CreateWorkspaceDrawerContentRoot({
       minHeight={0}
     >
       <DrawerHeaderContent
-        name={DRAWERS.CREATE_WORKSPACE}
         title={<T id={'workspace.create_new_workspace'} />}
       />
       <CreateWorkspaceStepper onClose={handleClose} />

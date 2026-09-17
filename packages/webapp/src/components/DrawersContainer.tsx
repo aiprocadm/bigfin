@@ -21,7 +21,6 @@ import RefundCreditNoteDetailDrawer from '@/containers/Drawers/RefundCreditNoteD
 import RefundVendorCreditDetailDrawer from '@/containers/Drawers/RefundVendorCreditDetailDrawer';
 import WarehouseTransferDetailDrawer from '@/containers/Drawers/WarehouseTransferDetailDrawer';
 import TaxRateDetailsDrawer from '@/containers/TaxRates/drawers/TaxRateDetailsDrawer/TaxRateDetailsDrawer';
-import CategorizeTransactionDrawer from '@/containers/CashFlow/CategorizeTransaction/drawers/CategorizeTransactionDrawer/CategorizeTransactionDrawer';
 import ChangeSubscriptionPlanDrawer from '@/containers/Subscriptions/drawers/ChangeSubscriptionPlanDrawer/ChangeSubscriptionPlanDrawer';
 import { InvoiceCustomizeDrawer } from '@/containers/Sales/Invoices/InvoiceCustomize/InvoiceCustomizeDrawer';
 import { EstimateCustomizeDrawer } from '@/containers/Sales/Estimates/EstimateCustomize/EstimateCustomizeDrawer';
@@ -75,7 +74,6 @@ export default function DrawersContainer() {
         name={DRAWERS.WAREHOUSE_TRANSFER_DETAILS}
       />
       <TaxRateDetailsDrawer name={DRAWERS.TAX_RATE_DETAILS} />
-      <CategorizeTransactionDrawer name={DRAWERS.CATEGORIZE_TRANSACTION} />
       <ChangeSubscriptionPlanDrawer name={DRAWERS.CHANGE_SUBSCARIPTION_PLAN} />
       <InvoiceCustomizeDrawer name={DRAWERS.INVOICE_CUSTOMIZE} />
       <EstimateCustomizeDrawer name={DRAWERS.ESTIMATE_CUSTOMIZE} />

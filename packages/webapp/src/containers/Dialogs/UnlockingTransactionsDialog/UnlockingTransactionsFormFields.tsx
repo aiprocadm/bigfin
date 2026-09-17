@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React from 'react';
-import { FastField, ErrorMessage } from 'formik';
+import { FastField, ErrorMessage, FieldProps } from 'formik';
 import { Classes, FormGroup, TextArea } from '@blueprintjs/core';
 import { FieldRequiredHint, FormattedMessage as T } from '@/components';
 import { useAutofocus } from '@/hooks';
@@ -16,7 +15,7 @@ export default function UnlockingTransactionsFormFields() {
     <div className={Classes.DIALOG_BODY}>
       {/*------------ Locking  Reason -----------*/}
       <FastField name={'reason'}>
-        {({ field, meta: { error, touched } }) => (
+        {({ field, meta: { error, touched } }: FieldProps) => (
           <FormGroup
             label={<T id={'unlocking_transactions.dialog.reason'} />}
             labelInfo={<FieldRequiredHint />}

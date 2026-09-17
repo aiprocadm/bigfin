@@ -13,7 +13,7 @@ export const useGetLemonSqueezyCheckout = (props = {}) => {
   const apiRequest = useApiRequest();
 
   return useMutation(
-    (values) =>
+    (values: { variantId: number }) =>
       apiRequest
         .post('subscription/lemon/checkout_url', values)
         .then((res) => res.data),

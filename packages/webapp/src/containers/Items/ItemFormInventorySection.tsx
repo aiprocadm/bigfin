@@ -44,8 +44,6 @@ function ItemFormInventorySection({ organization: { base_currency } }: any) {
               items={accounts}
               placeholder={<T id={'select_account'} />}
               filterByTypes={[ACCOUNT_TYPE.INVENTORY]}
-              fastField={true}
-              shouldUpdate={accountsFieldShouldUpdate}
             />
           </FFormGroup>
         </Col>

@@ -1,5 +1,3 @@
-// @ts-nocheck
-import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { AppToaster, Group, GroupProps } from '@/components';
@@ -7,8 +5,12 @@ import { SubscriptionPlansPeriod } from '@/store/plans/plans.reducer';
 import { SubscriptionPlan } from '@/containers/Subscriptions/component/SubscriptionPlan';
 import { useGetLemonSqueezyCheckout } from '@/hooks/query';
 import { useSubscriptionPlans } from './hooks';
-import { withPlans } from '@/containers/Subscriptions/withPlans';
-import { withSubscriptionPlanMapper } from '@/containers/Subscriptions/component/withSubscriptionPlanMapper';
+import { withPlans, WithPlansProps } from '@/containers/Subscriptions/withPlans';
+import {
+  withSubscriptionPlanMapper,
+  MappedSubscriptionPlanProps,
+} from '@/containers/Subscriptions/component/withSubscriptionPlanMapper';
+import { compose } from '@/utils';
 
 interface SubscriptionPlansProps {
   wrapProps?: GroupProps;
@@ -30,38 +32,50 @@ export function SubscriptionPlans({
   );
 }
 
-const SubscriptionPlanMapped = R.compose(
+type SubscriptionPlanMappedProps = MappedSubscriptionPlanProps &
+  Pick<WithPlansProps, 'plansPeriod'>;
+
+// Сборка своя, а не `R.compose` из ramda: та не умеет вычесть свойства,
+// которые подставляют надстройки, и отдаёт «ничего» (класс карты v84).
+const SubscriptionPlanMapped = compose(
   withSubscriptionPlanMapper,
   withPlans(({ plansPeriod }) => ({ plansPeriod })),
-)(({ plansPeriod, monthlyVariantId, annuallyVariantId, ...props }) => {
-  const { mutateAsync: getLemonCheckout, isLoading } =
-    useGetLemonSqueezyCheckout();
+)(
+  ({
+    plansPeriod,
+    monthlyVariantId,
+    annuallyVariantId,
+    ...props
+  }: SubscriptionPlanMappedProps) => {
+    const { mutateAsync: getLemonCheckout, isLoading } =
+      useGetLemonSqueezyCheckout();
 
-  const handleSubscribeBtnClick = () => {
-    const variantId =
-      SubscriptionPlansPeriod.Monthly === plansPeriod
-        ? monthlyVariantId
-        : annuallyVariantId;
+    const handleSubscribeBtnClick = () => {
+      const variantId =
+        SubscriptionPlansPeriod.Monthly === plansPeriod
+          ? monthlyVariantId
+          : annuallyVariantId;
 
-    getLemonCheckout({ variantId })
-      .then((res) => {
-        const checkoutUrl = res.data.data.attributes.url;
-        window.LemonSqueezy.Url.Open(checkoutUrl);
-      })
-      .catch(() => {
-        AppToaster.show({
-          message: intl.get('something_went_wrong'),
-          intent: Intent.DANGER,
+      getLemonCheckout({ variantId })
+        .then((res) => {
+          const checkoutUrl = res.data.data.attributes.url;
+          window.LemonSqueezy.Url.Open(checkoutUrl);
+        })
+        .catch(() => {
+          AppToaster.show({
+            message: intl.get('something_went_wrong'),
+            intent: Intent.DANGER,
+          });
         });
-      });
-  };
-  return (
-    <SubscriptionPlan
-      {...props}
-      onSubscribe={handleSubscribeBtnClick}
-      subscribeButtonProps={{
-        loading: isLoading,
-      }}
-    />
-  );
-});
+    };
+    return (
+      <SubscriptionPlan
+        {...props}
+        onSubscribe={handleSubscribeBtnClick}
+        subscribeButtonProps={{
+          loading: isLoading,
+        }}
+      />
+    );
+  },
+);

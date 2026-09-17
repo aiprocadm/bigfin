@@ -85,7 +85,6 @@ export default function AllocateLandedCostFormFields() {
           valueAccessor={'value'}
           textAccessor={'name'}
           popoverProps={{ minimal: true }}
-          fastField
         />
       </FFormGroup>
 
@@ -142,7 +141,6 @@ export default function AllocateLandedCostFormFields() {
               'landed_cost.dialog.label_select_transaction_entry',
             )}
             popoverProps={{ minimal: true }}
-            fastField
           />
         </FFormGroup>
       </If>

@@ -183,7 +183,8 @@ export const useCreateStripeCheckoutSession = (
 
 // Get Payment Link Invoice PDF
 // ------------------------------------
-interface GetPaymentLinkInvoicePdfResponse {}
+/** Запрос идёт с `responseType: 'blob'` — ответ и есть файл, не объект. */
+type GetPaymentLinkInvoicePdfResponse = Blob;
 
 interface GeneratePaymentLinkInvoicePdfValues {
   paymentLinkId: string;

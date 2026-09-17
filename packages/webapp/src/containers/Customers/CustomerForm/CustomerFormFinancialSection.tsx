@@ -63,7 +63,6 @@ export function CustomerFormFinancialSection() {
                 name={'opening_balance_branch_id'}
                 branches={branches}
                 popoverProps={{ minimal: true }}
-                fastField
               />
             </FFormGroup>
           </FeatureCan>

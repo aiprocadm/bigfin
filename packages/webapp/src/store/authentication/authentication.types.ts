@@ -1,5 +1,4 @@
 export const AUTH_LOGIN_REQUEST = 'AUTH_LOGIN_REQUEST' as const;
-export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS' as const;
 export const AUTH_LOGIN_FAILURE = 'AUTH_LOGIN_FAILURE' as const;
 export const AUTH_LOGOUT = 'AUTH_LOGOUT' as const;
 export const AUTH_LOGIN_CLEAR_ERRORS = 'AUTH_LOGIN_CLEAR_ERRORS' as const;

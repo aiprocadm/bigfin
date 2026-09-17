@@ -18,7 +18,11 @@ const PdfPreviewDialogContent = lazy(() =>
 /**
  * Invoice PDF preview dialog.
  */
-function InvoicePdfPreviewDialog({ dialogName, payload, isOpen }: DialogReduxProps) {
+function InvoicePdfPreviewDialog({
+  dialogName,
+  payload = { invoiceId: null },
+  isOpen,
+}: DialogReduxProps<{ invoiceId: number | null }>) {
   return (
     <Dialog
       name={dialogName}
@@ -30,9 +34,7 @@ function InvoicePdfPreviewDialog({ dialogName, payload, isOpen }: DialogReduxPro
       style={{ width: '1000px' }}
     >
       <DialogSuspense>
-        <PdfPreviewDialogContent
-          subscriptionForm={payload}
-        />
+        <PdfPreviewDialogContent invoiceId={payload.invoiceId} />
       </DialogSuspense>
     </Dialog>
   );

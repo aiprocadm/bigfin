@@ -1,16 +1,29 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
 import { FormattedMessage as T, AppToaster } from '@/components';
 import intl from 'react-intl-universal';
 
-import BulkDeleteDialogContent from '@/containers/Dialogs/components/BulkDeleteDialogContent';
+import BulkDeleteDialogContent, {
+  BulkDeleteDialogPayload,
+} from '@/containers/Dialogs/components/BulkDeleteDialogContent';
 import { useBulkDeleteCreditNotes } from '@/hooks/query/creditNote';
-import withDialogRedux from '@/components/DialogReduxConnect';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { withCreditNotesActions } from '@/containers/Sales/CreditNotes/CreditNotesLanding/withCreditNotesActions';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+
+interface CreditNoteBulkDeleteDialogProps
+  extends DialogReduxProps<BulkDeleteDialogPayload>,
+    WithDialogActionsProps {
+  // #withCreditNotesActions
+  setCreditNotesSelectedRows: (rows: unknown[]) => void;
+}
 
 function CreditNoteBulkDeleteDialog({
   dialogName,
@@ -19,7 +32,7 @@ function CreditNoteBulkDeleteDialog({
     ids = [],
     deletableCount = 0,
     undeletableCount = 0,
-    totalSelected = ids.length,
+    totalSelected: totalSelectedInPayload,
   } = {},
 
   // #withCreditNotesActions
@@ -27,7 +40,11 @@ function CreditNoteBulkDeleteDialog({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: CreditNoteBulkDeleteDialogProps) {
+  // Итог считается здесь, а не значением по умолчанию в разборе свойств:
+  // там ссылка на соседний `ids` делает вид разбора «что угодно» (TS7022).
+  const totalSelected = totalSelectedInPayload ?? ids.length;
+
   const { mutateAsync: bulkDeleteCreditNotes, isLoading } =
     useBulkDeleteCreditNotes();
 

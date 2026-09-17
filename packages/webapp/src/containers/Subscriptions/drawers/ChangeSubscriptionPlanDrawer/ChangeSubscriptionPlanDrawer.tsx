@@ -27,7 +27,6 @@ function ChangeSubscriptionPlanDrawer({
     >
       <DrawerSuspense>
         <DrawerHeaderContent
-          name={DRAWERS.CHANGE_SUBSCARIPTION_PLAN}
           title={intl.get('subscription.change_plan.title')}
         />
         <ChangeSubscriptionPlanContent />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { createContext } from 'react';
 import { isEmpty } from 'lodash';
 import { DashboardInsider } from '@/components';
@@ -16,10 +15,24 @@ import { ITEMS_FILTER_ROLES_QUERY } from './utils';
 
 const WarehouseFormContext = createContext<any>(undefined);
 
+interface WarehouseTransferFormProviderProps {
+  warehouseTransferId?: number;
+  children?: React.ReactNode;
+}
+
+/** Запрос себестоимости: дата и номера товаров, пока их нет — `null`. */
+interface ItemCostQuery {
+  date?: string;
+  itemsIds?: number[];
+}
+
 /**
  * Warehouse transfer form provider.
  */
-function WarehouseTransferFormProvider({ warehouseTransferId, ...props }) {
+function WarehouseTransferFormProvider({
+  warehouseTransferId,
+  ...props
+}: WarehouseTransferFormProviderProps) {
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);
@@ -47,7 +60,8 @@ function WarehouseTransferFormProvider({ warehouseTransferId, ...props }) {
   } = useWarehouses({}, { enabled: isWarehouseFeatureCan });
 
   // Inventory items cost query.
-  const [itemCostQuery, setItemCostQuery] = React.useState(null);
+  const [itemCostQuery, setItemCostQuery] =
+    React.useState<ItemCostQuery | null>(null);
 
   // Detarmines whether the inventory items cost query is enabled.
   const isItemsCostQueryEnabled =

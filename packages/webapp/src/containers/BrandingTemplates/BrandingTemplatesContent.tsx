@@ -15,7 +15,6 @@ export default function BrandingTemplateContent() {
   return (
     <Box>
       <DrawerHeaderContent
-        name={DRAWERS.BRANDING_TEMPLATES}
         title={intl.get('branding_templates.title')}
       />
       <Box className={Classes.DRAWER_BODY}>

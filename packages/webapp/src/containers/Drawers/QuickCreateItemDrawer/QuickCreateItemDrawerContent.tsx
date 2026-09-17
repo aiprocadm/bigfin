@@ -21,7 +21,6 @@ export default function QuickCreateItemDrawerContent({
   return (
     <React.Fragment>
       <DrawerHeaderContent
-        name={DRAWERS.QUICK_CREATE_ITEM}
         title={<T id={'create_a_new_item'} />}
       />
       <DrawerBody>

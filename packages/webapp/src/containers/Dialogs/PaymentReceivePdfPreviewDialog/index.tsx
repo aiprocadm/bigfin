@@ -35,7 +35,7 @@ function PaymentReceivePdfPreviewDialog({
     >
       <DialogSuspense>
         <PdfPreviewDialogContent
-          subscriptionForm={payload}
+          paymentReceiveId={payload.paymentReceiveId}
         />
       </DialogSuspense>
     </Dialog>

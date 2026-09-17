@@ -24,7 +24,9 @@ export const isOrganizationBuiltFactory = () =>
 
 export const isOrganizationReadyFactory = () =>
   createSelector(organizationSelector, (organization) => {
-    return organization?.['is_ready'];
+    // Как у соседей — признак, а не «что лежит в поле»: читающие его
+    // экраны и так проверяли истинность (Д2 карты v85).
+    return !!organization?.['is_ready'];
   });
 
 export const isOrganizationSubscribedFactory = () =>

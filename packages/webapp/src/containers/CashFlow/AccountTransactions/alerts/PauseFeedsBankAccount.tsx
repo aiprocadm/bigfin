@@ -1,15 +1,25 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import React from 'react';
 import { Intent, Alert } from '@blueprintjs/core';
 
-import { AppToaster, FormattedMessage as T } from '@/components';
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import { AppToaster } from '@/components';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { usePauseFeedsBankAccount } from '@/hooks/query/bank-accounts';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+
+type PauseFeedsBankAccountAlertProps = AlertReduxProps<{
+  bankAccountId: number;
+}> &
+  WithAlertActionsProps;
 
 /**
  * Pause feeds of the bank account alert.
@@ -23,7 +33,7 @@ function PauseFeedsBankAccountAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: PauseFeedsBankAccountAlertProps) {
   const { mutateAsync: pauseBankAccountFeeds, isLoading } =
     usePauseFeedsBankAccount();
 
@@ -46,9 +56,11 @@ function PauseFeedsBankAccountAlert({
       });
   };
 
+  // Подписи кнопок у `Alert` — строки, не элементы; текст вопроса раньше был
+  // английским прямо в разметке (Д7 карты v85).
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
+      cancelButtonText={intl.get('cancel')}
       confirmButtonText={intl.get('cashflow.alert.pause_bank_feeds')}
       intent={Intent.WARNING}
       isOpen={isOpen}
@@ -56,10 +68,7 @@ function PauseFeedsBankAccountAlert({
       loading={isLoading}
       onConfirm={handleConfirmItemActivate}
     >
-      <p>
-        Are you sure want to pause bank feeds syncing of this bank account, you
-        can always resume it again?
-      </p>
+      <p>{intl.get('cashflow.alert.pause_bank_feeds.body')}</p>
     </Alert>
   );
 }

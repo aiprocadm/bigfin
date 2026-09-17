@@ -1,11 +1,12 @@
-// @ts-nocheck
 import React from 'react';
 import {
   PopoverInteractionKind,
   Tooltip,
   MenuItem,
   Position,
+  PopperModifiers,
 } from '@blueprintjs/core';
+import { ItemRendererProps } from '@blueprintjs/select';
 import classNames from 'classnames';
 import {
   FFormGroup,
@@ -16,7 +17,7 @@ import {
 import { CLASSES } from '@/constants/classes';
 import { filterAccountsOptions } from './constants';
 
-const SUBMENU_POPOVER_MODIFIERS = {
+const SUBMENU_POPOVER_MODIFIERS: PopperModifiers = {
   flip: { boundariesElement: 'viewport', padding: 20 },
   offset: { offset: '0, 10' },
   preventOverflow: { boundariesElement: 'viewport', padding: 40 },
@@ -45,14 +46,16 @@ export default function FinancialStatementsFilter({
   label = <T id={'filter_accounts'} />,
   ...restProps
 }: FinancialStatementsFilterProps) {
-  const filterRenderer = (item, { handleClick, modifiers, query }) => {
+  const filterRenderer = (
+    item: FinancialStatementsFilterOption,
+    { handleClick }: ItemRendererProps,
+  ) => {
     return (
       <Tooltip
         interactionKind={PopoverInteractionKind.HOVER}
         position={Position.RIGHT_TOP}
         content={item.hint}
         modifiers={SUBMENU_POPOVER_MODIFIERS}
-        inline={true}
         minimal={true}
         className={MODIFIER.SELECT_LIST_TOOLTIP_ITEMS}
       >

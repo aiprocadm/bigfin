@@ -144,7 +144,6 @@ export default function InventoryAdjustmentFormDialogFields() {
               valueAccessor={'value'}
               textAccessor={'name'}
               popoverProps={{ minimal: true }}
-              fastField
             />
           </FFormGroup>
         </Col>

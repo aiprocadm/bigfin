@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useMemo, useRef } from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -34,7 +33,8 @@ export const useInventoryValuationTableColumns = () => {
     () => [
       {
         Header: intl.get('item_name'),
-        accessor: (row) => (row.code ? `${row.name} - ${row.code}` : row.name),
+        accessor: (row: { code?: string; name: string }) =>
+          row.code ? `${row.name} - ${row.code}` : row.name,
         className: 'name',
         width: 240,
         textOverview: true,

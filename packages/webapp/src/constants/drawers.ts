@@ -22,7 +22,6 @@ export enum DRAWERS {
   REFUND_VENDOR_CREDIT_DETAILS = 'refund-vendor-detail-drawer',
   WAREHOUSE_TRANSFER_DETAILS = 'warehouse-transfer-detail-drawer',
   TAX_RATE_DETAILS = 'tax-rate-detail-drawer',
-  CATEGORIZE_TRANSACTION = 'categorize-transaction',
   CHANGE_SUBSCARIPTION_PLAN = 'change-subscription-plan',
   INVOICE_CUSTOMIZE = 'INVOICE_CUSTOMIZE',
   ESTIMATE_CUSTOMIZE = 'ESTIMATE_CUSTOMIZE',

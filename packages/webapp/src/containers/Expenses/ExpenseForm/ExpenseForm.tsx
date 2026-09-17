@@ -119,7 +119,7 @@ function ExpenseForm({
         data: { errors },
       },
     }: any) => {
-      transformErrors(errors, { setErrors });
+      transformErrors(errors);
       setSubmitting(false);
     };
     if (isNewMode) {

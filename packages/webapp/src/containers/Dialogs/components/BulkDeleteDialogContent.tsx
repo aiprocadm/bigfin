@@ -3,6 +3,18 @@ import { Classes, Intent, Tag } from '@blueprintjs/core';
 import { FormattedMessage as T } from '@/components';
 import { x } from '@xstyled/emotion';
 
+/**
+ * Что окно массового удаления получает при открытии — одно и то же у всех
+ * двенадцати окон (счета, товары, контрагенты, документы). Раньше каждое
+ * разбирало этот объект без объявления (Д1 карты v85).
+ */
+export interface BulkDeleteDialogPayload {
+  ids?: number[];
+  deletableCount?: number;
+  undeletableCount?: number;
+  totalSelected?: number;
+}
+
 interface BulkDeleteDialogContentProps {
   totalSelected: number;
   deletableCount: number;

@@ -30,7 +30,6 @@ function ItemDetailDrawerProvider({ itemId, ...props }: any) {
   return (
     <DrawerLoading loading={isItemLoading}>
       <DrawerHeaderContent
-        name={DRAWERS.ITEM_DETAILS}
         title={inactiveStatus(item)}
       />
       <ItemDetailDrawerContext.Provider value={provider} {...props} />

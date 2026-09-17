@@ -20,7 +20,6 @@ export default function TaxRateDetailsContent({
   return (
     <TaxRateDetailsContentBoot taxRateId={taxRateId}>
       <DrawerHeaderContent
-        name={DRAWERS.TAX_RATE_DETAILS}
         title={intl.get('tax_rates.drawer.title')}
       />
       <TaxRateDetailsContentActionsBar />

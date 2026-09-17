@@ -71,8 +71,10 @@ export function SendMailViewMessageField({
           borderBottom={0}
           borderRadius={'3px 3px 0 0'}
         >
+          {/* `selectedItem` списку не передаётся: такого свойства нет ни у
+              обёртки, ни у Blueprint — выбранное значение список берёт из
+              формы (Д17 карты v85). */}
           <FSelect
-            selectedItem={'customerName'}
             name={'item'}
             items={argsOptions}
             onItemChange={handleTextareaChange}
@@ -80,9 +82,13 @@ export function SendMailViewMessageField({
               fill: false,
               position: Position.BOTTOM_LEFT,
               minimal: true,
-              inputProps: {
-                onKeyDown: handleTagInputKeyDown,
-              },
+            }}
+            // Обработчик клавиш лежал ВНУТРИ `popoverProps` — у всплывашки
+            // Blueprint такого свойства нет, и он не подключался никогда:
+            // Enter в строке поиска переменной уходил в отправку формы.
+            // Свойство принадлежит самому списку (Д17 карты v85).
+            inputProps={{
+              onKeyDown: handleTagInputKeyDown,
             }}
             input={() => (
               <Button
@@ -96,7 +102,6 @@ export function SendMailViewMessageField({
               </Button>
             )}
             fill={false}
-            fastField
           />
         </Group>
 

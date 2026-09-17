@@ -5,7 +5,6 @@ import {
   setAuthToken,
   setAuthUserId,
   setEmailConfirmed,
-  setLogin,
   setOrganizationId,
   setLocale,
 } from '@/store/authentication/authentication.actions';
@@ -28,10 +27,8 @@ export const useAuthActions = () => {
   const queryClient = useQueryClient();
 
   return {
-    // `setLogin` доводов не принимает, а сам тип действия `AUTH_LOGIN_SUCCESS`
-    // не обрабатывает ни один сводитель — довод уходил в никуда
-    // (Д10 карты v83).
-    setLogin: useCallback(() => dispatch(setLogin()), [dispatch]),
+    // `setLogin` здесь больше нет: действие `AUTH_LOGIN_SUCCESS` не обрабатывал
+    // ни один сводитель, а сам `setLogin` никто не звал (Д14 карты v85).
     setLogout: useCallback(() => {
       // Resets store state.
       // dispatch(setStoreReset());

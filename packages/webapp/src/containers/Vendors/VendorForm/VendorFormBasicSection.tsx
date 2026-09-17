@@ -32,7 +32,6 @@ export function VendorFormBasicSection({}) {
           <SalutationList
             name={'salutation'}
             popoverProps={{ minimal: true }}
-            fastField
           />
           <FInputGroup
             name={'first_name'}
@@ -79,7 +78,6 @@ export function VendorFormBasicSection({}) {
           name={'display_name'}
           popoverProps={{ minimal: true }}
           buttonProps={{ fill: true }}
-          fastField
         />
       </FFormGroup>
 

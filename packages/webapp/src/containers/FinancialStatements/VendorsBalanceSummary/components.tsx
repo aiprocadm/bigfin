@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
@@ -68,7 +67,7 @@ const totalColumnAccessor = () => ({
 /**
  * Composes the response columns to table component columns.
  */
-const dynamicColumns = (columns) => {
+const dynamicColumns = (columns: any[]) => {
   return R.map(
     R.compose(
       R.when(R.pathEq(['key'], 'name'), vendorColumnAccessor),

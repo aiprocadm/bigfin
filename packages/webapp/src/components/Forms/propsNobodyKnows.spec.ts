@@ -27,6 +27,13 @@ import ts from 'typescript';
  */
 const SRC = path.resolve(__dirname, '..', '..');
 
+/**
+ * Обёртки над `FSelect` пересылают в него всё как есть, а он собран на обычном
+ * `Field`: ни `fastField`, ни `shouldUpdate*` до библиотеки не доходят
+ * (Д18 карты v85).
+ */
+const OVER_FSELECT = ['fastField', 'shouldUpdate', 'shouldUpdateDeps'];
+
 /** Тег → свойства, которые он не читает, и почему это проверено. */
 const UNKNOWN_PROPS: Record<string, string[]> = {
   // Группа полей — единственный компонент пакета, собранный НЕ через `Field`:
@@ -62,7 +69,38 @@ const UNKNOWN_PROPS: Record<string, string[]> = {
   FDateInput: ['fastField', 'minimal'],
   DateInput: ['minimal'],
   // Выборы живут в @blueprintjs-formik/select — там слова `fastField` нет
-  // вовсе (в отличие от полей из /core, где он работает)
+  // вовсе (в отличие от полей из /core, где он работает). Слова `searchable`
+  // там нет тоже. Пояснение это стояло здесь с карты v64, а самого правила
+  // для `FSelect` не было: у списка сотня с лишним мест вызова, и все они
+  // передавали `fastField` впустую (Д18 карты v85). Обёртки над списком
+  // пересылают в него всё как есть — им те же запреты.
+  // `selectedItem` — тоже: выбранное значение список берёт из формы.
+  // `shouldUpdate*` — из /core, где поля собраны на FastField; список собран
+  // на обычном Field и этих слов не содержит
+  FSelect: [
+    'fastField',
+    'searchable',
+    'selectedItem',
+    'shouldUpdate',
+    'shouldUpdateDeps',
+  ],
+  ProjectTaskSelect: OVER_FSELECT,
+  ExpenseSelect: OVER_FSELECT,
+  ProjectsSelect: OVER_FSELECT,
+  ProjectTaskChargeTypeSelect: OVER_FSELECT,
+  FinancialStatementsFilter: OVER_FSELECT,
+  AdvancedFilterCompatatorField: OVER_FSELECT,
+  DisplayNameList: OVER_FSELECT,
+  SalutationList: OVER_FSELECT,
+  CurrencySelect: OVER_FSELECT,
+  CustomersSelect: OVER_FSELECT,
+  CurrencySelectList: OVER_FSELECT,
+  AccountsTypesSelect: OVER_FSELECT,
+  VendorsSelect: OVER_FSELECT,
+  AccountsSelect: OVER_FSELECT,
+  TaxRatesSelect: OVER_FSELECT,
+  WarehouseSelect: OVER_FSELECT,
+  BranchSelect: OVER_FSELECT,
   // Переключатель не знает `small`: ни обёртка над Formik, ни blueprint-овый
   // Switch этого слова не содержат (Д9 карты v76)
   FSwitch: ['small'],

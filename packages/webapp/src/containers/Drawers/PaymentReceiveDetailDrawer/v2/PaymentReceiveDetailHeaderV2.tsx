@@ -3,7 +3,6 @@ import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
 import {
   Mail,
-  MessageSquare,
   MoreHorizontal,
   Pencil,
   Printer,
@@ -58,7 +57,7 @@ type UseFeatureCanResult = { featureCan: (feature: string) => boolean };
 /**
  * Шапка деталей поступления оплаты: номер платежа + «Редактировать» +
  * меню «⋯» с теми же действиями, что и легаси actions-bar (письмо,
- * печать, SMS, удаление). Подзаголовок — подразделение (если включено).
+ * печать, удаление). Подзаголовок — подразделение (если включено).
  */
 function PaymentReceiveDetailHeaderV2Root({
   paymentReceive,
@@ -86,9 +85,6 @@ function PaymentReceiveDetailHeaderV2Root({
   };
   const handlePrintPaymentReceive = () => {
     openDialog('payment-pdf-preview', { paymentReceiveId });
-  };
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-payment-via-sms', { paymentReceiveId });
   };
   const handleDeletePaymentReceive = () => {
     openAlert('payment-received-delete', { paymentReceiveId });
@@ -144,16 +140,6 @@ function PaymentReceiveDetailHeaderV2Root({
                 <DropdownMenuItem onClick={handlePrintPaymentReceive}>
                   <Printer className="mr-2 h-4 w-4" aria-hidden />
                   {intl.get('print')}
-                </DropdownMenuItem>
-              </Can>
-
-              <Can
-                I={PaymentReceiveAction.NotifyBySms}
-                a={AbilitySubject.PaymentReceive}
-              >
-                <DropdownMenuItem onClick={handleNotifyViaSMS}>
-                  <MessageSquare className="mr-2 h-4 w-4" aria-hidden />
-                  {intl.get('notify_via_sms.dialog.notify_via_sms')}
                 </DropdownMenuItem>
               </Can>
 

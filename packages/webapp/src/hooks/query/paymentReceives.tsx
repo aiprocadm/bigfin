@@ -232,46 +232,6 @@ export function useRefreshPaymentReceive() {
   };
 }
 
-export function useCreateNotifyPaymentReceiveBySMS(props?) {
-  const queryClient = useQueryClient();
-  const apiRequest = useApiRequest();
-
-  return useMutation(
-    ([id, values]: [any, any]) =>
-      apiRequest.post(`payments-received/${id}/notify-by-sms`, values),
-    {
-      onSuccess: (res, [id, values]) => {
-        // Invalidate
-        queryClient.invalidateQueries([t.NOTIFY_PAYMENT_RECEIVE_BY_SMS, id]);
-
-        // Common invalidate queries.
-        commonInvalidateQueries(queryClient);
-      },
-      ...props,
-    },
-  );
-}
-
-export function usePaymentReceiveSMSDetail(
-  paymentReceiveId,
-  props,
-  requestProps?,
-) {
-  return useRequestQuery(
-    [t.PAYMENT_RECEIVE_SMS_DETAIL, paymentReceiveId],
-    {
-      method: 'get',
-      url: `payments-received/${paymentReceiveId}/sms-details`,
-      ...requestProps,
-    },
-    {
-      select: (res) => res.data,
-      defaultData: {},
-      ...props,
-    },
-  );
-}
-
 /**
  * Retrieve the payment receive pdf document data.
  * @param {number} paymentReceiveId - Payment receive id.

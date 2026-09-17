@@ -249,33 +249,9 @@ export class SaleEstimatesController {
     return this.saleEstimatesApplication.rejectSaleEstimate(saleEstimateId);
   }
 
-  @Post(':id/notify-sms')
-  @RequirePermission(SaleEstimateAction.NotifyBySms, AbilitySubject.SaleEstimate)
-  @ApiOperation({ summary: 'Notify the given sale estimate by SMS.' })
-  @ApiParam({
-    name: 'id',
-    required: true,
-    type: Number,
-    description: 'The sale estimate id',
-  })
-  public notifySaleEstimateBySms(
-    @Param('id', ParseIntPipe) saleEstimateId: number,
-  ) {
-    return this.saleEstimatesApplication.notifySaleEstimateBySms(
-      saleEstimateId,
-    );
-  }
-
-  @Get(':id/sms-details')
-  @RequirePermission(SaleEstimateAction.View, AbilitySubject.SaleEstimate)
-  @ApiOperation({ summary: 'Retrieves the sale estimate SMS details.' })
-  public getSaleEstimateSmsDetails(
-    @Param('id', ParseIntPipe) saleEstimateId: number,
-  ) {
-    return this.saleEstimatesApplication.getSaleEstimateSmsDetails(
-      saleEstimateId,
-    );
-  }
+  // Ручек «уведомить по SMS» здесь больше нет: службы SMS были
+  // закомментированы целиком, ручка отвечала 201 и ничего не слала
+  // (вопрос 10 карт v10–v17, закрыт в Д5 карты v86).
 
   @Post(':id/mail')
   @HttpCode(200)

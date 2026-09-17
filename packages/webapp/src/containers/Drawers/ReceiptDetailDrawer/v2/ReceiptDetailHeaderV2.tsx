@@ -3,7 +3,6 @@ import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
 import {
   Mail,
-  MessageSquare,
   MoreHorizontal,
   Pencil,
   Printer,
@@ -53,7 +52,7 @@ interface WithDrawerActionsProps {
 /**
  * Шапка деталей чека: номер + статус-пилюля + «Редактировать» + меню «⋯»
  * с теми же действиями, что и легаси actions-bar (отправка на email,
- * печать, SMS-уведомление, удаление).
+ * печать, удаление).
  */
 function ReceiptDetailHeaderV2Root({
   receipt,
@@ -79,9 +78,6 @@ function ReceiptDetailHeaderV2Root({
   };
   const handlePrintReceipt = () => {
     openDialog('receipt-pdf-preview', { receiptId });
-  };
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-receipt-via-sms', { receiptId });
   };
   const handleDeleteReceipt = () => {
     openAlert('receipt-delete', { receiptId });
@@ -129,13 +125,6 @@ function ReceiptDetailHeaderV2Root({
                 <DropdownMenuItem onClick={handlePrintReceipt}>
                   <Printer className="mr-2 h-4 w-4" aria-hidden />
                   {intl.get('print')}
-                </DropdownMenuItem>
-              </Can>
-
-              <Can I={SaleReceiptAction.NotifyBySms} a={AbilitySubject.Receipt}>
-                <DropdownMenuItem onClick={handleNotifyViaSMS}>
-                  <MessageSquare className="mr-2 h-4 w-4" aria-hidden />
-                  {intl.get('notify_via_sms.dialog.notify_via_sms')}
                 </DropdownMenuItem>
               </Can>
 

@@ -127,7 +127,6 @@ export enum PaymentReceiveAction {
   Edit = 'Edit',
   Delete = 'Delete',
   View = 'View',
-  NotifyBySms = 'NotifyBySms',
 }
 
 export interface PaymentReceiveMailOpts extends CommonMailOptions {

@@ -247,52 +247,6 @@ export function useRefreshEstimates() {
   };
 }
 
-/**
- *
- */
-export function useCreateNotifyEstimateBySMS(props?: any) {
-  const queryClient = useQueryClient();
-  const apiRequest = useApiRequest();
-
-  return useMutation(
-    ([id, values]: [any, any]) =>
-      apiRequest.post(`sale-estimates/${id}/notify-by-sms`, values),
-    {
-      onSuccess: (res, [id, values]) => {
-        // Invalidate
-        queryClient.invalidateQueries([t.NOTIFY_SALE_ESTIMATE_BY_SMS, id]);
-
-        // Common invalidate queries.
-        commonInvalidateQueries(queryClient);
-      },
-      ...props,
-    },
-  );
-}
-
-/**
- *
- * @param {*} estimateId
- * @param {*} props
- * @param {*} requestProps
- * @returns
- */
-export function useEstimateSMSDetail(estimateId: number, props?: any, requestProps?: any) {
-  return useRequestQuery(
-    [t.SALE_ESTIMATE_SMS_DETAIL, estimateId],
-    {
-      method: 'get',
-      url: `sale-estimates/${estimateId}/sms-details`,
-      ...requestProps,
-    },
-    {
-      select: (res: any) => res.data,
-      defaultData: {},
-      ...props,
-    },
-  );
-}
-
 export function useSendSaleEstimateMail(props = {}) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();

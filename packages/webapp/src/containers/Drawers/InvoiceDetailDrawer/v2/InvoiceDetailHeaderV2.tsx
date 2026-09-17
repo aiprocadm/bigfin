@@ -8,7 +8,6 @@ import {
   FileX2,
   Link2,
   Mail,
-  MessageSquare,
   MoreHorizontal,
   Pencil,
   Printer,
@@ -101,7 +100,7 @@ export function InvoiceStatusBadgeV2({ invoice }: { invoice: InvoiceDetail }) {
 /**
  * Шапка деталей счёта: номер + статус-пилюля + «Редактировать» + меню «⋯»
  * со всеми действиями легаси actions-bar (платёж, письмо, печать, ссылка
- * на оплату, отправка, безнадёжный долг, кредит-нота, SMS, удаление).
+ * на оплату, отправка, безнадёжный долг, кредит-нота, удаление).
  */
 function InvoiceDetailHeaderV2Root({
   invoice,
@@ -132,8 +131,6 @@ function InvoiceDetailHeaderV2Root({
   const handlePrintInvoice = () =>
     openDialog('invoice-pdf-preview', { invoiceId });
   const handleBadDebt = () => openDialog('write-off-bad-debt', { invoiceId });
-  const handleNotifyViaSMS = () =>
-    openDialog('notify-invoice-via-sms', { invoiceId });
   const handleShareLink = () =>
     openDialog(DialogsName.SharePaymentLink, {
       transactionId: invoiceId,
@@ -269,12 +266,6 @@ function InvoiceDetailHeaderV2Root({
                   <DropdownMenuItem onClick={handleConvertToCreditNote}>
                     <FileText className="mr-2 h-4 w-4" aria-hidden />
                     {intl.get('invoice.convert_to_credit_note')}
-                  </DropdownMenuItem>
-                </Can>
-                <Can I={SaleInvoiceAction.NotifyBySms} a={AbilitySubject.Invoice}>
-                  <DropdownMenuItem onClick={handleNotifyViaSMS}>
-                    <MessageSquare className="mr-2 h-4 w-4" aria-hidden />
-                    {intl.get('notify_via_sms.dialog.notify_via_sms')}
                   </DropdownMenuItem>
                 </Can>
               </Can>

@@ -373,42 +373,6 @@ export function useCancelBadDebt(props) {
   );
 }
 
-export function useCreateNotifyInvoiceBySMS(props?) {
-  const queryClient = useQueryClient();
-  const apiRequest = useApiRequest();
-
-  return useMutation(
-    ([id, values]: [any, any]) =>
-      apiRequest.post(`sale-invoices/${id}/notify-by-sms`, values),
-    {
-      onSuccess: (res, [id, values]) => {
-        // Invalidate
-        queryClient.invalidateQueries([t.NOTIFY_SALE_INVOICE_BY_SMS, id]);
-
-        // Common invalidate queries.
-        commonInvalidateQueries(queryClient);
-      },
-      ...props,
-    },
-  );
-}
-
-export function useInvoiceSMSDetail(invoiceId, query, props) {
-  return useRequestQuery(
-    [t.SALE_INVOICE_SMS_DETAIL, invoiceId, query],
-    {
-      method: 'get',
-      url: `sale-invoices/${invoiceId}/sms-details`,
-      params: query,
-    },
-    {
-      select: (res) => res.data,
-      defaultData: {},
-      ...props,
-    },
-  );
-}
-
 export function useInvoicePaymentTransactions(invoiceId, props) {
   return useRequestQuery(
     [t.SALE_INVOICE_PAYMENT_TRANSACTIONS, invoiceId],

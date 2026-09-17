@@ -141,28 +141,6 @@ export class SaleEstimatesApplication {
   }
 
   /**
-   * Notify the customer of the given sale estimate by SMS.
-   * @param {number} saleEstimateId - Sale estimate ID.
-   * @returns {Promise<ISaleEstimate>}
-   */
-  public notifySaleEstimateBySms = async (saleEstimateId: number) => {
-    // return this.saleEstimateNotifyBySmsService.notifyBySms(
-    //   saleEstimateId,
-    // );
-  };
-
-  /**
-   * Retrieve the SMS details of the given payment receive transaction.
-   * @param {number} saleEstimateId - Sale estimate ID.
-   * @returns {Promise<IPaymentReceivedSmsDetails>}
-   */
-  public getSaleEstimateSmsDetails = (saleEstimateId: number) => {
-    // return this.saleEstimateNotifyBySmsService.smsDetails(
-    //   saleEstimateId,
-    // );
-  };
-
-  /**
    * Retrieve the PDF content of the given sale estimate.
    * @param {number} saleEstimateId - Sale estimate ID.
    * @returns {Promise<[Buffer, string]>}

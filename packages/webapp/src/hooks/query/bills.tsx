@@ -141,12 +141,31 @@ export function useDeleteBill(props: any) {
 /**
  * Deletes multiple bills in bulk.
  */
+/**
+ * Массовое удаление счетов поставщиков.
+ *
+ * Раньше крючок ждал список номеров, а окно массового удаления передавало
+ * объект `{ ids, skipUndeletable }` — тот же, что у двенадцати соседних окон.
+ * В тело запроса уезжало `{ ids: { ids: […], skipUndeletable } }`, и сервер
+ * отвечал ошибкой проверки: удалить несколько счетов поставщиков было нельзя
+ * вообще (Д4 карты v87). Теперь — как у соседей (`useBulkDeleteAccounts`).
+ */
 export function useBulkDeleteBills(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    (ids: number[]) => apiRequest.post('bills/bulk-delete', { ids }),
+    ({
+      ids,
+      skipUndeletable = false,
+    }: {
+      ids: number[];
+      skipUndeletable?: boolean;
+    }) =>
+      apiRequest.post('bills/bulk-delete', {
+        ids,
+        skip_undeletable: skipUndeletable,
+      }),
     {
       onSuccess: () => {
         // Common invalidate queries.

@@ -1,11 +1,9 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import styled from 'styled-components';
 import {
-  InputGroup,
   Position,
   Classes,
   ControlGroup,
@@ -21,6 +19,7 @@ import {
   CustomersSelect,
   FormattedMessage as T,
   FMoneyInputGroup,
+  FInputGroup,
   Stack,
   FDateInput,
 } from '@/components';
@@ -98,7 +97,7 @@ export default function PaymentReceiveHeaderFields() {
     setFieldValue('amount', fullAmount);
   };
   // Handles the full-amount field blur.
-  const onFullAmountBlur = (value) => {
+  const onFullAmountBlur = (value: any) => {
     const newEntries = amountPaymentEntries(toSafeInteger(value), entries);
     setFieldValue('entries', newEntries);
   };
@@ -141,6 +140,12 @@ export default function PaymentReceiveHeaderFields() {
         inline={true}
         labelInfo={<Hint content={intl.get('payment_receive.full_amount.hint')} />}
       >
+        {/*
+          Пакет объявляет у группы полей ровно одного ребёнка, хотя передаёт
+          их насквозь. Собираем в один прозрачный узел — разметка та же
+          (Д19 карты v88).
+        */}
+        <>
         <ControlGroup>
           <InputPrependText text={currency_code} />
           <FMoneyInputGroup
@@ -177,6 +182,7 @@ export default function PaymentReceiveHeaderFields() {
             <Money amount={totalDueAmount} currency={currency_code} />)
           </Button>
         )}
+        </>
       </FFormGroup>
 
       {/* ------------ Payment receive no. ------------ */}
@@ -209,7 +215,15 @@ export default function PaymentReceiveHeaderFields() {
         label={<T id={'reference'} />}
         inline
       >
-        <InputGroup name={'reference_no'} fastField />
+        {/*
+          Здесь стояло обычное поле ввода Blueprint: обёртка `FFormGroup`
+          детей с формой НЕ связывает (она только рисует метку и ошибку), а
+          `fastField` это поле не читает вовсе. Введённая ссылка никуда не
+          попадала — ни при создании, ни при правке, хотя поле есть и в
+          начальных значениях, и в схеме проверки, и на сервере
+          (Д18 карты v88).
+        */}
+        <FInputGroup name={'reference_no'} fastField />
       </FFormGroup>
 
       {/*------------ Project name -----------*/}
@@ -255,11 +269,12 @@ function PaymentReceiveCustomerSelect() {
       labelInfo={<FieldRequiredHint />}
       name={'customer_id'}
     >
+      <>
       <CustomersSelect
         name={'customer_id'}
         items={customers}
         placeholder={<T id={'select_customer_account'} />}
-        onItemChange={(customer) => {
+        onItemChange={(customer: any) => {
           setFieldValue('customer_id', customer.id);
           setFieldValue('full_amount', '');
           setFieldValue('currency_code', customer?.currency_code);
@@ -273,6 +288,7 @@ function PaymentReceiveCustomerSelect() {
           <T id={'view_customer_details'} />
         </CustomerButtonLink>
       )}
+      </>
     </FFormGroup>
   );
 }

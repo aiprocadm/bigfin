@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Ref, useCallback } from 'react';
 import clsx from 'classnames';
@@ -15,6 +14,15 @@ import { DropzoneAccept, DropzoneIdle, DropzoneReject } from './DropzoneStatus';
 import { Box } from '../Layout';
 import { CloudLoadingIndicator } from '../Indicator';
 import styles from './Dropzone.module.css';
+
+/**
+ * Рамка перенесена из чужой библиотеки (Mantine), а её в проекте нет: виды
+ * `MantineColor`, `MantineRadius`, `LoaderProps` и `Factory` здесь просто
+ * не существовали. Заменены своими — цвет и скругление задаются обычной
+ * строкой CSS (Д17 карты v88).
+ */
+export type DropzoneColor = string;
+export type DropzoneRadius = string | number;
 
 export type DropzoneStylesNames = 'root' | 'inner';
 export type DropzoneVariant = 'filled' | 'light';
@@ -38,13 +46,13 @@ export interface DropzoneProps {
   classNames?: { root?: string; content?: string; [key: string]: string | undefined };
 
   /** Key of `theme.colors` or any valid CSS color to set colors of `Dropzone.Accept`, `theme.primaryColor` by default */
-  acceptColor?: MantineColor;
+  acceptColor?: DropzoneColor;
 
   /** Key of `theme.colors` or any valid CSS color to set colors of `Dropzone.Reject`, `'red'` by default */
-  rejectColor?: MantineColor;
+  rejectColor?: DropzoneColor;
 
   /** Key of `theme.radius` or any valid CSS value to set `border-radius`, numbers are converted to rem, `theme.defaultRadius` by default */
-  radius?: MantineRadius;
+  radius?: DropzoneRadius;
 
   /** Determines whether files capturing should be disabled, `false` by default */
   disabled?: boolean;
@@ -127,23 +135,12 @@ export interface DropzoneProps {
   enablePointerEvents?: boolean;
 
   /** Props passed down to the Loader component */
-  loaderProps?: LoaderProps;
+  loaderProps?: Record<string, any>;
 
   /** Props passed down to the internal Input component */
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
-export type DropzoneFactory = Factory<{
-  props: DropzoneProps;
-  ref: HTMLDivElement;
-  stylesNames: DropzoneStylesNames;
-  vars: DropzoneCssVariables;
-  staticComponents: {
-    Accept: typeof DropzoneAccept;
-    Idle: typeof DropzoneIdle;
-    Reject: typeof DropzoneReject;
-  };
-}>;
 
 const defaultProps: Partial<DropzoneProps> = {
   loading: false,
@@ -155,7 +152,8 @@ const defaultProps: Partial<DropzoneProps> = {
   dragEventsBubbling: true,
   activateOnKeyboard: true,
   useFsAccessApi: true,
-  variant: 'light',
+  // `variant` компонент не читает — единственное его упоминание в теле
+  // закомментировано; в объявлении свойств его тоже нет (Д17 карты v88).
   rejectColor: 'red',
 };
 
@@ -255,16 +253,6 @@ export const Dropzone = (_props: DropzoneProps) => {
         })}
         // {...getStyles('root', { focusable: true })}
         {...others}
-        mod={[
-          {
-            accept: isDragAccept,
-            reject: isDragReject,
-            idle: isIdle,
-            loading,
-            'activate-on-click': activateOnClick,
-          },
-          // mod,
-        ]}
       >
         <input {...getInputProps(inputProps)} name={name} />
         <div

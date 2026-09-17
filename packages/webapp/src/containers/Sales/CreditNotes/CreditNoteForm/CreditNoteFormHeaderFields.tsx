@@ -2,7 +2,7 @@ import React from 'react';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import classNames from 'classnames';
 import styled from 'styled-components';
-import { FormGroup, InputGroup, Position } from '@blueprintjs/core';
+import { FormGroup, Position } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { FastField, ErrorMessage, useFormikContext } from 'formik';
 import { css } from '@emotion/css';
@@ -15,6 +15,7 @@ import {
   FormattedMessage as T,
   CustomerDrawerLink,
   FFormGroup,
+  FInputGroup,
   CustomersSelect,
   Stack,
   FDateInput,
@@ -83,7 +84,8 @@ export default function CreditNoteFormHeaderFields() {
 
       {/* ----------- Reference ----------- */}
       <FormGroup label={<T id={'reference_no'} />} inline>
-        <InputGroup name={'reference_no'} />
+        {/* Поле было не связано с формой — см. Д18 карты v88. */}
+        <FInputGroup name={'reference_no'} />
       </FormGroup>
     </Stack>
   );

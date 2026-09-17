@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { MenuItem } from '@blueprintjs/core';
 
@@ -8,7 +7,10 @@ import { getUniversalSearchBind } from './utils';
 /**
  * Default univesal search item component.
  */
-function UniversalSearchItemDetail(item, { handleClick, modifiers, query }) {
+function UniversalSearchItemDetail(
+  item: any,
+  { handleClick, modifiers, query }: any,
+) {
   return (
     <MenuItem
       active={modifiers.active}
@@ -24,7 +26,9 @@ function UniversalSearchItemDetail(item, { handleClick, modifiers, query }) {
           )}
         </div>
       }
-      label={item.label ? highlightText(item.label, query) : ''}
+      // Подсветка совпадения — это разметка, а не строка. У `label` строка,
+      // для разметки в библиотеке есть `labelElement` (Д12 карты v88).
+      labelElement={item.label ? highlightText(item.label, query) : ''}
       onClick={handleClick}
     />
   );
@@ -36,7 +40,7 @@ function UniversalSearchItemDetail(item, { handleClick, modifiers, query }) {
  * @param {*} actions
  * @returns
  */
-export const DashboardUniversalSearchItem = (props, actions) => {
+export const DashboardUniversalSearchItem = (props: any, actions: any) => {
     const itemRenderer = getUniversalSearchBind(props._type, 'itemRenderer');
 
     return typeof itemRenderer !== 'undefined'

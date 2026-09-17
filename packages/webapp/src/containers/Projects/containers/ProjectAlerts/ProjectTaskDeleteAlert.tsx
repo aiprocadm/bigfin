@@ -1,15 +1,24 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
-import { FormattedMessage as T, FormattedHTMLMessage } from '@/components';
+import { FormattedHTMLMessage } from '@/components';
 import { Intent, Alert } from '@blueprintjs/core';
 import { AppToaster } from '@/components';
 import { useDeleteProjectTask } from '../../hooks';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { compose } from '@/utils';
+import { showApiError } from '@/utils/showApiError';
+
+type ProjectTaskDeleteAlertProps = AlertReduxProps<{ taskId: number }> &
+  WithAlertActionsProps;
 
 /**
  * Project tasks delete alert.
@@ -24,7 +33,7 @@ function ProjectTaskDeleteAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: ProjectTaskDeleteAlertProps) {
   const { mutateAsync: deleteProjectTaskMutate, isLoading } =
     useDeleteProjectTask();
 
@@ -42,13 +51,8 @@ function ProjectTaskDeleteAlert({
           intent: Intent.SUCCESS,
         });
       })
-      .catch(
-        ({
-          response: {
-            data: { errors },
-          },
-        }) => {},
-      )
+      // Отказ сервера показываем, а не глотаем (Д1 карты v88).
+      .catch(showApiError)
       .finally(() => {
         closeAlert(name);
       });
@@ -56,8 +60,8 @@ function ProjectTaskDeleteAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete')}
       icon="trash"
       intent={Intent.DANGER}
       isOpen={isOpen}
@@ -66,7 +70,9 @@ function ProjectTaskDeleteAlert({
       loading={isLoading}
     >
       <p>
-        <FormattedHTMLMessage id={'project_task.alert.once_delete_this_project'} />
+        <FormattedHTMLMessage
+          id={'project_task.alert.once_delete_this_project'}
+        />
       </p>
     </Alert>
   );

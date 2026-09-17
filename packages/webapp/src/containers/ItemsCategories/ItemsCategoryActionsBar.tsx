@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   NavbarGroup,
   NavbarDivider,
@@ -28,6 +27,21 @@ import { DialogsName } from '@/constants/dialogs';
 /**
  * Items categories actions bar.
  */
+interface ItemsCategoryActionsBarProps {
+  /**
+   * Выделенные строки. ВСЕГДА пусто: обёртка `withItemCategories` такого поля
+   * не отдаёт, и в хранилище его нет — поэтому кнопка «Удалить» ниже не
+   * показывается никогда, а предупреждение, которое она открывает, не
+   * зарегистрировано (Д3 карты v88). Удаление мёртвого пути предложено
+   * владельцу.
+   */
+  itemCategoriesSelectedRows?: number[];
+  categoriesFilterConditions?: any[];
+  setItemsCategoriesTableState: (state: any) => void;
+  openDialog: (name: string, payload?: any) => void;
+  openAlert: (name: string, payload?: any) => void;
+}
+
 function ItemsCategoryActionsBar({
   // #withItemCategories
   itemCategoriesSelectedRows = [],
@@ -41,7 +55,7 @@ function ItemsCategoryActionsBar({
 
   // #withAlertActions
   openAlert,
-}) {
+}: ItemsCategoryActionsBarProps) {
   const { fields } = useItemsCategoriesContext();
   const history = useHistory();
 
@@ -80,17 +94,17 @@ function ItemsCategoryActionsBar({
             conditions: categoriesFilterConditions,
             defaultFieldKey: 'name',
             fields: fields,
-            onFilterChange: (filterConditions) => {
+            onFilterChange: (filterConditions: any) => {
               setItemsCategoriesTableState({ filterRoles: filterConditions });
             },
           }}
         >
           <DashboardFilterButton
-            conditionsCount={categoriesFilterConditions.length}
+            conditionsCount={categoriesFilterConditions?.length ?? 0}
           />
         </AdvancedFilterPopover>
 
-        <If condition={itemCategoriesSelectedRows.length}>
+        <If condition={itemCategoriesSelectedRows.length > 0}>
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="trash-16" iconSize={16} />}
@@ -120,7 +134,7 @@ function ItemsCategoryActionsBar({
 export default compose(
   withDialogActions,
   withItemCategories(
-    ({ itemCategoriesSelectedRows, itemsCategoriesTableState }) => ({
+    ({ itemCategoriesSelectedRows, itemsCategoriesTableState }: any) => ({
       itemCategoriesSelectedRows,
       categoriesFilterConditions: itemsCategoriesTableState.filterRoles,
     }),

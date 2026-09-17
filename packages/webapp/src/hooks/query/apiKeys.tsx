@@ -29,7 +29,7 @@ export function useGenerateApiKey(props?: any) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('api-keys/generate', values), {
+  return useMutation((values: any) => apiRequest.post('api-keys/generate', values), {
     onSuccess: () => {
       commonInvalidateQueries(client);
     },

@@ -51,7 +51,7 @@ export function useActivateContact(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.patch(`contacts/${id}/activate`), {
+  return useMutation((id: number) => apiRequest.patch(`contacts/${id}/activate`), {
     onSuccess: (res, id) => {
       // Invalidate specific contact.
       queryClient.invalidateQueries([t.CONTACT, id]);
@@ -70,7 +70,7 @@ export function useInactivateContact(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.patch(`contacts/${id}/inactivate`), {
+  return useMutation((id: number) => apiRequest.patch(`contacts/${id}/inactivate`), {
     onSuccess: (res, id) => {
       // Invalidate specific item.
       queryClient.invalidateQueries([t.CONTACT, id]);

@@ -1,7 +1,5 @@
-// @ts-nocheck
 import React from 'react';
 import { ProgressBar, Intent } from '@blueprintjs/core';
-import * as R from 'ramda';
 import { x } from '@xstyled/emotion';
 import { css } from '@emotion/css';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
@@ -12,6 +10,7 @@ import { FormattedMessage as T } from '@/components';
 import { withOrganizationActions } from '@/containers/Organization/withOrganizationActions';
 import { withCurrentOrganization } from '@/containers/Organization/withCurrentOrganization';
 import { withOrganization } from '../Organization/withOrganization';
+import { compose } from '@/utils';
 
 /**
  * Setup initializing step form.
@@ -19,6 +18,9 @@ import { withOrganization } from '../Organization/withOrganization';
 function SetupInitializingForm({
   setOrganizationSetupCompleted,
   organization,
+}: {
+  setOrganizationSetupCompleted: (completed: boolean) => void;
+  organization: any;
 }) {
   const { refetch, isSuccess } = useCurrentOrganization({ enabled: false });
 
@@ -63,14 +65,14 @@ function SetupInitializingForm({
 }
 
 /**
- * Тип указан явно. `R.compose` из двух и более обёрток теряет знание о том, что
+ * Тип указан явно. Сборка из двух и более обёрток теряет знание о том, что
  * на выходе компонент, и место применения получает «ничто» — отсюда «нельзя
  * использовать как компонент». Обёртки сами подставляют всё, что нужно, поэтому
  * снаружи компонент вызывается без свойств (Д9 карты v75).
  */
-const ConnectedSetupInitializingForm: React.FC<{ id?: string }> = R.compose(
+const ConnectedSetupInitializingForm: React.FC<{ id?: string }> = compose(
   withOrganizationActions,
-  withCurrentOrganization(({ organizationTenantId }) => ({
+  withCurrentOrganization(({ organizationTenantId }: any) => ({
     organizationId: organizationTenantId,
   })),
   withOrganization(({ organization }) => ({ organization })),
@@ -133,7 +135,12 @@ function SetupInitializingRunning() {
   return (
     <x.div>
       <x.div className={progressBarStyles}>
-        <ProgressBar intent={Intent.NONE} value={null} />
+        {/*
+          Полоса без `value` — это и есть «идёт, срок неизвестен»: в коде
+          библиотеки `value == null` и отсутствие свойства — одна и та же
+          ветка (Д20 карты v88).
+        */}
+        <ProgressBar intent={Intent.NONE} />
       </x.div>
 
       <x.div textAlign="center" mt={35}>

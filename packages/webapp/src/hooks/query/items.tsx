@@ -26,7 +26,7 @@ export function useCreateItem(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('items', values), {
+  return useMutation((values: any) => apiRequest.post('items', values), {
     onSuccess: (res, values) => {
       commonInvalidateQueries(queryClient);
     },
@@ -60,7 +60,7 @@ export function useDeleteItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`items/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`items/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific item.
       queryClient.invalidateQueries([t.ITEM, id]);
@@ -123,7 +123,7 @@ export function useActivateItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.patch(`items/${id}/activate`), {
+  return useMutation((id: number) => apiRequest.patch(`items/${id}/activate`), {
     onSuccess: (res, id) => {
       // Invalidate specific item.
       queryClient.invalidateQueries([t.ITEM, id]);
@@ -142,7 +142,7 @@ export function useInactivateItem(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.patch(`items/${id}/inactivate`), {
+  return useMutation((id: number) => apiRequest.patch(`items/${id}/inactivate`), {
     onSuccess: (res, id) => {
       // Invalidate specific item.
       queryClient.invalidateQueries([t.ITEM, id]);

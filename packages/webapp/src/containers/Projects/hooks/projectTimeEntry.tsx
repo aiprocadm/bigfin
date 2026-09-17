@@ -59,11 +59,11 @@ export function useEditProjectTimeEntry(props?: any) {
  * Delete the given project time entry
  * @param props
  */
-export function useDeleteProjectTimeEntry(props: any) {
+export function useDeleteProjectTimeEntry(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`projects/times/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`projects/times/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific project task.
       queryClient.invalidateQueries([t.PROJECT_TASK, id]);

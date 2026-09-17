@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
@@ -41,6 +40,17 @@ import {
 /**
  * Payment made form component.
  */
+interface PaymentMadeFormProps {
+  // #withSettings
+  preferredPaymentAccount?: number | string;
+
+  // #withCurrentOrganization
+  organization: { base_currency?: string };
+
+  // #withDialogActions
+  openDialog: (name: string, payload?: any) => void;
+}
+
 function PaymentMadeForm({
   // #withSettings
   preferredPaymentAccount,
@@ -50,7 +60,7 @@ function PaymentMadeForm({
 
   // #withDialogActions
   openDialog,
-}) {
+}: PaymentMadeFormProps) {
   const history = useHistory();
 
   // Payment made form context.
@@ -74,7 +84,10 @@ function PaymentMadeForm({
           }
         : {
             ...defaultPaymentMade,
-            payment_account_id: defaultTo(preferredPaymentAccount),
+            // Второй довод был потерян: без него поле уходило в форму
+            // пустотой (`undefined`), и оно переставало быть управляемым.
+            // У соседней формы расходов записано так же (Д10 карты v88).
+            payment_account_id: defaultTo(preferredPaymentAccount, ''),
             currency_code: base_currency,
             entries: orderingLinesIndexes(defaultPaymentMade.entries),
           }),
@@ -84,7 +97,7 @@ function PaymentMadeForm({
 
   // Handle the form submit.
   const handleSubmitForm = (
-    values,
+    values: any,
     { setSubmitting, resetForm, setFieldError }: FormikHelpers<any>,
   ) => {
     setSubmitting(true);
@@ -130,7 +143,7 @@ function PaymentMadeForm({
       response: {
         data: { errors },
       },
-    }) => {
+    }: any) => {
       if (errors) {
         transformErrors(errors, { setFieldError });
       }
@@ -187,7 +200,7 @@ function PaymentMadeForm({
 }
 
 export default compose(
-  withSettings(({ billPaymentSettings }) => ({
+  withSettings(({ billPaymentSettings }: any) => ({
     paymentNextNumber: billPaymentSettings?.next_number,
     paymentNumberPrefix: billPaymentSettings?.number_prefix,
     preferredPaymentAccount: parseInt(billPaymentSettings?.withdrawalAccount),

@@ -18,7 +18,7 @@ export function useCreateInviteUser(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.patch('invite', values), {
+  return useMutation((values: any) => apiRequest.patch('invite', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -34,7 +34,7 @@ export function useBulkCreateInviteUsers(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('invite/bulk', values), {
+  return useMutation((values: any) => apiRequest.post('invite/bulk', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -65,7 +65,7 @@ export function useInactivateUser(props: any) {
   const apiRequest = useApiRequest();
   const queryClient = useQueryClient();
 
-  return useMutation((userId) => apiRequest.put(`users/${userId}/inactivate`), {
+  return useMutation((userId: any) => apiRequest.put(`users/${userId}/inactivate`), {
     onSuccess: (res, userId) => {
       queryClient.invalidateQueries([t.USER, userId]);
 
@@ -80,7 +80,7 @@ export function useActivateUser(props: any) {
   const apiRequest = useApiRequest();
   const queryClient = useQueryClient();
 
-  return useMutation((userId) => apiRequest.put(`users/${userId}/activate`), {
+  return useMutation((userId: any) => apiRequest.put(`users/${userId}/activate`), {
     onSuccess: (res, userId) => {
       queryClient.invalidateQueries([t.USER, userId]);
 
@@ -98,7 +98,7 @@ export function useDeleteUser(props: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`users/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`users/${id}`), {
     onSuccess: (res, id) => {
       queryClient.invalidateQueries([t.USER, id]);
 

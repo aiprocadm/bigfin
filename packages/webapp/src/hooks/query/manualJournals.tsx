@@ -39,7 +39,7 @@ export function useCreateJournal(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('manual-journals', values), {
+  return useMutation((values: any) => apiRequest.post('manual-journals', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -77,7 +77,7 @@ export function useDeleteJournal(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`manual-journals/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`manual-journals/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific manual journal.
       queryClient.invalidateQueries(t.MANUAL_JOURNAL, id);
@@ -138,7 +138,7 @@ export function usePublishJournal(props) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.patch(`manual-journals/${id}/publish`), {
+  return useMutation((id: number) => apiRequest.patch(`manual-journals/${id}/publish`), {
     onSuccess: (res, id) => {
       // Invalidate specific manual journal.
       queryClient.invalidateQueries(t.MANUAL_JOURNAL, id);

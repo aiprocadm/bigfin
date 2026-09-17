@@ -45,7 +45,7 @@ export const useAuthLogin = (props: any) => {
   const setUserId = useSetAuthUserId();
   const setLocale = useSetLocale();
 
-  return useMutation((values) => apiRequest.post(AuthRoute.Signin, values), {
+  return useMutation((values: any) => apiRequest.post(AuthRoute.Signin, values), {
     onSuccess: (res) => {
       // Включена 2FA: вместо токена пришёл полу-токен — куки не ставим,
       // страница входа покажет шаг ввода кода.

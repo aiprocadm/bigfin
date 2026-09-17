@@ -1,9 +1,5 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
-import { Formik } from 'formik';
-import intl from 'react-intl-universal';
-import { Intent } from '@blueprintjs/core';
-import { AppToaster } from '@/components';
+import React, { useState } from 'react';
+import { Formik, FormikHelpers } from 'formik';
 import { useGenerateApiKey } from '@/hooks/query';
 import ApiKeysGenerateFormContent from './ApiKeysGenerateFormContent';
 import ApiKeysGenerateFormSchema from './ApiKeysGenerateForm.schema';
@@ -17,6 +13,8 @@ import { compose } from '@/utils';
 const defaultInitialValues = {
   name: '',
 };
+
+type ApiKeysGenerateFormValues = typeof defaultInitialValues;
 
 /**
  * API Keys Generate form dialog content.
@@ -37,30 +35,38 @@ function ApiKeysGenerateDialogContent({
   closeDialog,
   dialogName,
 }: ApiKeysGenerateDialogContentProps & WithDialogActionsProps) {
-  const [generatedApiKey, setGeneratedApiKey] = useState(null);
+  const [generatedApiKey, setGeneratedApiKey] = useState<string | null>(null);
   const generateApiKeyMutate = useGenerateApiKey();
 
   // Handles the form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (
+    values: ApiKeysGenerateFormValues,
+    { setSubmitting, setErrors }: FormikHelpers<ApiKeysGenerateFormValues>,
+  ) => {
     const form = { name: values.name || undefined };
 
     // Handle request response errors.
-    const handleError = (error) => {
+    const handleError = (error: any) => {
       const errors = error?.response?.data?.errors;
       if (errors) {
-        const errorsTransformed = Object.keys(errors).reduce((acc, key) => {
-          acc[key] = errors[key][0];
-          return acc;
-        }, {});
+        const errorsTransformed = Object.keys(errors).reduce(
+          (acc: Record<string, string>, key) => {
+            acc[key] = errors[key][0];
+            return acc;
+          },
+          {},
+        );
         setErrors(errorsTransformed);
       }
       setSubmitting(false);
     };
 
     generateApiKeyMutate.mutate(form, {
-      onSuccess: (response) => {
-        // The API returns { key, id }, which might be wrapped in response.data
-        const apiKey = response?.data?.key || response?.key;
+      onSuccess: (response: any) => {
+        // Сервер отдаёт `{ key, id }` телом ответа, поэтому ключ лежит в
+        // `response.data.key`. Запасная ветка `response.key` не срабатывала
+        // никогда — снята (Д7 карты v88).
+        const apiKey = response?.data?.key;
         if (apiKey) {
           setGeneratedApiKey(apiKey);
         } else {

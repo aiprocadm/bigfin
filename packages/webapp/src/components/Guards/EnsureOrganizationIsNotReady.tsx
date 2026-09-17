@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
@@ -9,29 +8,37 @@ import { withOrganization } from '@/containers/Organization/withOrganization';
 /**
  * Ensures organization is not ready.
  */
+interface EnsureOrganizationIsNotReadyProps {
+  children?: React.ReactNode;
+
+  // #withOrganization
+  isOrganizationReady?: boolean;
+  isOrganizationSetupCompleted?: boolean;
+}
+
 function EnsureOrganizationIsNotReady({
   children,
 
   // #withOrganization
   isOrganizationReady,
-  isOrganizationSetupCompleted
-}) {
+  isOrganizationSetupCompleted,
+}: EnsureOrganizationIsNotReadyProps) {
   return (isOrganizationReady && !isOrganizationSetupCompleted) ? (
     <Redirect to={{ pathname: '/' }} />
   ) : children;
 }
 
 export default compose(
-  withAuthentication(({ currentOrganizationId }) => ({
+  withAuthentication(({ currentOrganizationId }: any) => ({
     currentOrganizationId,
   })),
-  connect((state, props) => ({
+  connect((state: any, props: any) => ({
     organizationId: props.currentOrganizationId,
   })),
   withOrganization(({
     isOrganizationReady,
-    isOrganizationSetupCompleted
-  }) => ({
+    isOrganizationSetupCompleted,
+  }: any) => ({
     isOrganizationReady,
     isOrganizationSetupCompleted
   })),

@@ -10,7 +10,10 @@ export const withItemCategories = (mapState: any) => {
     const mapped = {  
       itemsCategoriesTableState: getItemsCategoriesTableState(state, props),
     };
-    return mapState ? mapState(mapped, state, props) : mapState;
+    // Без своего отбора отдаём собранное, а не сам отбор: раньше в этой ветке
+    // возвращался `mapState` (то есть `undefined`), и обёрнутый вид не получал
+    // ничего (Д4 карты v88).
+    return mapState ? mapState(mapped, state, props) : mapped;
   };
   return connect(mapStateToProps);
 };

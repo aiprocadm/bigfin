@@ -56,11 +56,11 @@ export function useEditProjectTask(props?: any) {
  * Delete the given project task.
  * @param props
  */
-export function useDeleteProjectTask(props: any) {
+export function useDeleteProjectTask(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`tasks/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`tasks/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific project task.
       queryClient.invalidateQueries([t.PROJECT_TASK, id]);

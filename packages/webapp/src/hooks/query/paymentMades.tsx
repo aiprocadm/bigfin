@@ -66,7 +66,7 @@ export function useCreatePaymentMade(props?) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('bill-payments', values), {
+  return useMutation((values: any) => apiRequest.post('bill-payments', values), {
     onSuccess: (res, values) => {
       // Common invalidation queries.
       commonInvalidateQueries(client);
@@ -104,7 +104,7 @@ export function useDeletePaymentMade(props) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`bill-payments/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`bill-payments/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidation queries.
       commonInvalidateQueries(client);

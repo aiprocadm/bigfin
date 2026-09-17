@@ -1,17 +1,28 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
-import { FormattedMessage as T } from '@/components';
 import { AppToaster } from '@/components';
 
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
-import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
+import {
+  withDrawerActions,
+  WithDrawerActionsProps,
+} from '@/containers/Drawer/withDrawerActions';
 
 import { useDeleteBankRule } from '@/hooks/query/bank-rules';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+
+type BankRuleDeleteAlertProps = AlertReduxProps<{ id: number }> &
+  WithAlertActionsProps &
+  WithDrawerActionsProps;
 
 /**
  * Project delete alert.
@@ -25,10 +36,7 @@ function BankRuleDeleteAlert({
 
   // #withAlertActions
   closeAlert,
-
-  // #withDrawerActions
-  closeDrawer,
-}) {
+}: BankRuleDeleteAlertProps) {
   const { mutateAsync: deleteBankRule, isLoading } = useDeleteBankRule();
 
   // handle cancel delete project alert.
@@ -51,8 +59,8 @@ function BankRuleDeleteAlert({
 
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={<T id={'delete'} />}
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete')}
       intent={Intent.DANGER}
       isOpen={isOpen}
       onCancel={handleCancelDeleteAlert}

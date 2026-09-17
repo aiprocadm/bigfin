@@ -1,17 +1,44 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import {  FormattedMessage as T, FormattedHTMLMessage } from '@/components';
+import { FormattedHTMLMessage } from '@/components';
 import { Intent, Alert } from '@blueprintjs/core';
 import { size } from 'lodash';
 import { AppToaster } from '@/components';
 
 import { withItemCategoriesActions } from '@/containers/ItemsCategories/withItemCategoriesActions';
-import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
-import { withAlertActions } from '@/containers/Alert/withAlertActions';
+import {
+  withAlertStoreConnect,
+  AlertReduxProps,
+} from '@/containers/Alert/withAlertStoreConnect';
+import {
+  withAlertActions,
+  WithAlertActionsProps,
+} from '@/containers/Alert/withAlertActions';
 
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+
+/**
+ * ЭТОТ ПУТЬ МЁРТВ ЦЕЛИКОМ (Д3 карты v88), удаление предложено владельцу:
+ *
+ * - имени `item-categories-bulk-delete` нет в реестре `ItemsCategoriesAlerts`,
+ *   значит предупреждение никогда не рисуется;
+ * - сам файл не импортируется нигде;
+ * - действие `requestDeleteBulkItemCategories` не существует во всём коде —
+ *   обёртка `withItemCategoriesActions` даёт только настройку таблицы;
+ * - на сервере ручки массового удаления категорий нет, только по одной;
+ * - кнопка, которая его открывает, не показывается: выделение строк категорий
+ *   нигде не хранится.
+ *
+ * Оставлено как есть, чтобы ничего не удалять без разрешения.
+ */
+type ItemCategoryBulkDeleteAlertProps = AlertReduxProps<{
+  itemCategoriesIds: number[];
+}> &
+  WithAlertActionsProps & {
+    /** Действия не существует — см. пояснение выше. */
+    requestDeleteBulkItemCategories: (ids: number[]) => Promise<unknown>;
+  };
 
 /**
  * Item category bulk delete alerts.
@@ -28,7 +55,7 @@ function ItemCategoryBulkDeleteAlert({
 
   // #withAlertActions
   closeAlert,
-}) {
+}: ItemCategoryBulkDeleteAlertProps) {
   
   const [isLoading, setLoading] = useState(false);
 
@@ -55,10 +82,10 @@ function ItemCategoryBulkDeleteAlert({
   };
   return (
     <Alert
-      cancelButtonText={<T id={'cancel'} />}
-      confirmButtonText={
-        <T id={'delete_count'} values={{ count: size(itemCategoriesIds) }} />
-      }
+      cancelButtonText={intl.get('cancel')}
+      confirmButtonText={intl.get('delete_count', {
+        count: size(itemCategoriesIds),
+      })}
       icon="trash"
       intent={Intent.DANGER}
       isOpen={isOpen}

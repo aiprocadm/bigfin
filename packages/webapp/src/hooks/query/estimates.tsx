@@ -27,7 +27,7 @@ export function useCreateEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('sale-estimates', values), {
+  return useMutation((values: any) => apiRequest.post('sale-estimates', values), {
     onSuccess: () => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -115,7 +115,7 @@ export function useDeleteEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`sale-estimates/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`sale-estimates/${id}`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -177,7 +177,7 @@ export function useDeliverEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.post(`sale-estimates/${id}/deliver`), {
+  return useMutation((id: number) => apiRequest.post(`sale-estimates/${id}/deliver`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -196,7 +196,7 @@ export function useApproveEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.put(`sale-estimates/${id}/approve`), {
+  return useMutation((id: number) => apiRequest.put(`sale-estimates/${id}/approve`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -215,7 +215,7 @@ export function useRejectEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.put(`sale-estimates/${id}/reject`), {
+  return useMutation((id: number) => apiRequest.put(`sale-estimates/${id}/reject`), {
     onSuccess: (res, id) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);

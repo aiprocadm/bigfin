@@ -1,15 +1,17 @@
-// @ts-nocheck
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { DashboardInsider, FormattedMessage as T } from '@/components';
-import useFilterFinancialReports from './FilterFinancialReports';
+import useFilterFinancialReports, {
+  FinancialReportItem,
+  FinancialReportSection,
+} from './FilterFinancialReports';
 import { financialReportMenus } from '@/constants/financialReportsMenu';
 
 /**
  * Карточка одного отчёта — ссылка на страницу отчёта.
  */
-function FinancialReportsItem({ title, desc, link }) {
+function FinancialReportsItem({ title, desc, link }: FinancialReportItem) {
   // Фон-карточку держим на <div> (легаси-стили перебивают bg на <a>),
   // а ссылку растягиваем на всю карточку через ::after (stretched link).
   return (
@@ -28,14 +30,17 @@ function FinancialReportsItem({ title, desc, link }) {
 /**
  * Секция отчётов (например, «Финансовый учёт»).
  */
-function FinancialReportsSection({ sectionTitle, reports }) {
+function FinancialReportsSection({
+  sectionTitle,
+  reports,
+}: FinancialReportSection) {
   return (
     <section className="flex flex-col gap-3">
       <h2 className="text-xs font-medium uppercase tracking-wide text-text-secondary">
         {sectionTitle}
       </h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {reports.map((report) => (
+        {reports.map((report: FinancialReportItem) => (
           <FinancialReportsItem key={report.link} {...report} />
         ))}
       </div>

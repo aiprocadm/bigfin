@@ -19,7 +19,7 @@ export function useCreateProject(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((values) => apiRequest.post('projects', values), {
+  return useMutation((values: any) => apiRequest.post('projects', values), {
     onSuccess: (res, values) => {
       // Common invalidate queries.
       commonInvalidateQueries(queryClient);
@@ -59,7 +59,7 @@ export function useDeleteProject(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation((id) => apiRequest.delete(`projects/${id}`), {
+  return useMutation((id: number) => apiRequest.delete(`projects/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific project.
       queryClient.invalidateQueries([t.PROJECT, id]);

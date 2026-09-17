@@ -1,31 +1,45 @@
-// @ts-nocheck
 import React, { useState, useRef } from 'react';
-import SplitPane from 'react-split-pane';
+import SplitPane, { SplitPaneProps } from 'react-split-pane';
 import { debounce } from 'lodash';
 
 import { withDashboard } from '@/containers/Dashboard/withDashboard';
 import { compose } from '@/utils';
 
+interface DashboardSplitPaneProps {
+  // #withDashboard
+  sidebarExpended: boolean;
+  children?: React.ReactNode;
+}
+
+/**
+ * Объявления `react-split-pane` писались до React 18 и не знают о `children`
+ * (React 18 убрал их из свойств по умолчанию) — а сама панель детей рисует.
+ * Дополняем объявление, а не библиотеку (Д8 карты v85).
+ */
+const SplitPaneWithChildren = SplitPane as unknown as React.ComponentType<
+  SplitPaneProps & { children?: React.ReactNode }
+>;
+
 function DashboardSplitPane({
   sidebarExpended,
-  children
-}) {
+  children,
+}: DashboardSplitPaneProps) {
   const initialSize = 220;
 
   const [defaultSize, setDefaultSize] = useState(
-    parseInt(localStorage.getItem('dashboard-size'), 10) || initialSize,
+    parseInt(localStorage.getItem('dashboard-size') ?? '', 10) || initialSize,
   );
   const debounceSaveSize = useRef(
-    debounce((size) => {
-      localStorage.setItem('dashboard-size', size);
+    debounce((size: number) => {
+      localStorage.setItem('dashboard-size', String(size));
     }, 500),
   );
-  const handleChange = (size) => {
+  const handleChange = (size: number) => {
     debounceSaveSize.current(size);
     setDefaultSize(size);
-  }
+  };
   return (
-    <SplitPane
+    <SplitPaneWithChildren
       allowResize={sidebarExpended}
       split="vertical"
       minSize={180}
@@ -36,10 +50,10 @@ function DashboardSplitPane({
       className="primary"
     >
       {children}
-    </SplitPane>
+    </SplitPaneWithChildren>
   );
 }
 
 export default compose(
-  withDashboard(({ sidebarExpended }) => ({ sidebarExpended }))
+  withDashboard(({ sidebarExpended }) => ({ sidebarExpended })),
 )(DashboardSplitPane);

@@ -51,8 +51,8 @@ export function OneClickDemoPageContent() {
   const handleCreateAccountBtnClick = () => {
     setHasFailed(false);
     createOneClickDemo({})
-      .then(({ data: { data } }) => {
-        setDemoId(data?.demo_id);
+      .then((demo) => {
+        setDemoId(demo.demoId);
       })
       .catch(() => setHasFailed(true));
   };

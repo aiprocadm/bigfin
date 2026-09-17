@@ -199,8 +199,6 @@ export default function PaymentReceiveHeaderFields() {
             ACCOUNT_TYPE.BANK,
             ACCOUNT_TYPE.OTHER_CURRENT_ASSET,
           ]}
-          shouldUpdate={accountsFieldShouldUpdate}
-          fastField={true}
           fill={true}
         />
       </FFormGroup>
@@ -269,9 +267,6 @@ function PaymentReceiveCustomerSelect() {
         popoverFill={true}
         disabled={!isNewMode}
         allowCreate={true}
-        fastField={true}
-        shouldUpdate={customersFieldShouldUpdate}
-        shouldUpdateDeps={{ items: customers }}
       />
       {values.customer_id && (
         <CustomerButtonLink customerId={values.customer_id}>

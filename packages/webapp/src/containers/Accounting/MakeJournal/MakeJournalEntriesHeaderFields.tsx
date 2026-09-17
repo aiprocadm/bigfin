@@ -115,15 +115,15 @@ export default function MakeJournalEntriesHeader({}) {
             form.setFieldValue('currency_code', currencyItem.currency_code);
             form.setFieldValue('exchange_rate', '');
           }}
+          // `inline` у всплывашки Blueprint 4 нет (ушло ещё в третьей
+          // версии) — свойство не читал никто (Д16 карты v85).
           popoverProps={{
-            inline: true,
             minimal: true,
             captureDismiss: true,
           }}
           valueAccessor={'currency_code'}
           labelAccessor={'currency_name'}
           textAccessor={'currency_code'}
-          fastField
         />
       </FFormGroup>
 

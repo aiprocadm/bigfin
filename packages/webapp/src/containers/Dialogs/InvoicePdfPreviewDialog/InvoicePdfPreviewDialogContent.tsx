@@ -15,11 +15,16 @@ import { compose } from '@/utils';
  * тот же случай, что в карте v82).
  */
 export interface InvoicePdfPreviewDialogContentProps {
-  subscriptionForm: { invoiceId: number | null };
+  /**
+   * Раньше номер приходил внутри объекта `subscriptionForm` — след
+   * копирования из окна подписки, висел в заделе с карты v82. Теперь
+   * содержимое получает номер напрямую (Д9 карты v85).
+   */
+  invoiceId: number | null;
 }
 
 function InvoicePdfPreviewDialogContent({
-  subscriptionForm: { invoiceId },
+  invoiceId,
   // #withDialog
   closeDialog,
 }: any) {

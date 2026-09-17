@@ -93,11 +93,25 @@ function ReceiptNumberDialogContent({
   );
 }
 
-export default compose(
-  withDialogActions,
-  withSettings(({ receiptSettings }) => ({
-    nextNumber: receiptSettings?.nextNumber,
-    numberPrefix: receiptSettings?.numberPrefix,
-    autoIncrement: receiptSettings?.autoIncrement,
-  })),
-)(ReceiptNumberDialogContent);
+/**
+ * Что окно передаёт содержимому. Вид объявлен у собранного экрана, а не
+ * выведен: `React.lazy` из «что угодно» делает экран, не принимающий свойств
+ * вовсе (приём карты v84).
+ */
+export interface ReceiptNumberDialogContentProps {
+  receiptId?: number;
+  onConfirm?: (values: Record<string, unknown>) => void;
+  initialValues?: Record<string, unknown>;
+}
+
+const ReceiptNumberDialogContentComposed: React.ComponentType<ReceiptNumberDialogContentProps> =
+  compose(
+    withDialogActions,
+    withSettings(({ receiptSettings }) => ({
+      nextNumber: receiptSettings?.nextNumber,
+      numberPrefix: receiptSettings?.numberPrefix,
+      autoIncrement: receiptSettings?.autoIncrement,
+    })),
+  )(ReceiptNumberDialogContent);
+
+export default ReceiptNumberDialogContentComposed;

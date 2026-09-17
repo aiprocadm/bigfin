@@ -128,9 +128,6 @@ function CreditNoteCustomersSelect() {
           onItemChange={handleItemChange}
           popoverFill={true}
           allowCreate={true}
-          fastField={true}
-          shouldUpdate={customerNameFieldShouldUpdate}
-          shouldUpdateDeps={{ items: customers }}
         />
         {values.customer_id && (
           <CustomerButtonLink customerId={values.customer_id}>

@@ -49,7 +49,7 @@ function TaxRatesSelectRoot({
       valueAccessor={'id'}
       labelAccessor={'code'}
       textAccessor={'name_formatted'}
-      popoverProps={{ minimal: true, usePortal: true, inline: false }}
+      popoverProps={{ minimal: true, usePortal: true }}
       createNewItemRenderer={maybeCreateNewItemRenderer}
       createNewItemFromQuery={maybeCreateNewItemFromQuery}
       onCreateItemSelect={handleCreateItemClick}

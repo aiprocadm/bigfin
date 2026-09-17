@@ -94,8 +94,6 @@ export default function ExpenseFormHeader() {
           placeholder={<T id={'select_payment_account'} />}
           filterByTypes={SUPPORTED_EXPENSE_PAYMENT_ACCOUNT_TYPES}
           allowCreate={true}
-          fastField={true}
-          shouldUpdate={accountsFieldShouldUpdate}
           fill={true}
         />
       </FFormGroup>
@@ -114,7 +112,6 @@ export default function ExpenseFormHeader() {
           labelAccessor={'currency_code'}
           popoverProps={{ minimal: true }}
           fill={true}
-          fastField={true}
         />
       </FFormGroup>
 
@@ -161,9 +158,6 @@ function ExpenseFormCustomerSelect() {
         placeholder={<T id={'select_customer_account'} />}
         allowCreate={true}
         popoverFill={true}
-        fastField={true}
-        shouldUpdateDeps={{ items: customers }}
-        shouldUpdate={customersFieldShouldUpdate}
       />
     </FormGroup>
   );

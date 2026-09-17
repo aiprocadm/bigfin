@@ -1,6 +1,9 @@
-// @ts-nocheck
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useState } from 'react';
+import {
+  AxiosError,
+  AxiosProgressEvent,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 import { useMutation } from 'react-query';
 import useApiRequest from './useRequest';
 import { showApiError } from '@/utils/showApiError';
@@ -25,9 +28,13 @@ export const useDownloadFile = (args: IArgs) => {
       apiRequest
         .get(args.url, {
           responseType: 'blob',
-          onDownloadProgress: (ev) => {
-            args.onDownloadProgress &&
+          // Без известного размера файла процент не посчитать: раньше сюда
+          // уходило `NaN` (деление на `undefined`), теперь событие без размера
+          // просто пропускается (Д13 карты v85).
+          onDownloadProgress: (ev: AxiosProgressEvent) => {
+            if (args.onDownloadProgress && ev.total) {
               args.onDownloadProgress(Math.round((ev.loaded * 100) / ev.total));
+            }
           },
           ...args.config,
         })
@@ -45,20 +52,26 @@ export const useDownloadFile = (args: IArgs) => {
 };
 
 export function downloadFile(
-  data,
-  filename,
+  data: BlobPart,
+  filename: string,
   mime = 'application/octet-stream',
-  bom?: any,
+  bom?: BlobPart,
 ) {
   var blobData = typeof bom !== 'undefined' ? [bom, data] : [data];
   var blob = new Blob(blobData, { type: mime });
 
-  if (typeof window.navigator.msSaveBlob !== 'undefined') {
+  // `msSaveBlob` есть только у Internet Explorer; из объявлений DOM его давно
+  // убрали, а ветка оставлена как была.
+  const navigatorWithMsSave = window.navigator as Navigator & {
+    msSaveBlob?: (blob: Blob, filename: string) => boolean;
+  };
+
+  if (typeof navigatorWithMsSave.msSaveBlob !== 'undefined') {
     // IE workaround for "HTML7007: One or more blob URLs were
     // revoked by closing the blob for which they were created.
     // These URLs will no longer resolve as the data backing
     // the URL has been freed."
-    window.navigator.msSaveBlob(blob, filename);
+    navigatorWithMsSave.msSaveBlob(blob, filename);
   } else {
     var blobURL =
       window.URL && window.URL.createObjectURL

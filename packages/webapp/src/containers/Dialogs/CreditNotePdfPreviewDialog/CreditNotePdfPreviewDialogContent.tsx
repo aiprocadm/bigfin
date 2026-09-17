@@ -15,15 +15,16 @@ import { compose } from '@/utils';
  * `React.lazy` из «что угодно» делает экран, **не принимающий свойств вовсе**.
  * Из-за этого окно не проходило проверку типов (Д3 карты v82).
  *
- * Имя `subscriptionForm` — след копирования из окна подписки; сюда приходит
- * груз окна. Переименование трогает оба файла и вынесено в задел.
+ * Раньше номер приходил внутри объекта `subscriptionForm` — след копирования
+ * из окна подписки, висел в заделе с карты v82. Теперь содержимое получает
+ * номер напрямую (Д9 карты v85).
  */
 export interface CreditNotePdfPreviewDialogContentProps {
-  subscriptionForm: { creditNoteId: number | null };
+  creditNoteId: number | null;
 }
 
 function CreditNotePdfPreviewDialogContent({
-  subscriptionForm: { creditNoteId },
+  creditNoteId,
 }: CreditNotePdfPreviewDialogContentProps) {
   const { isLoading, pdfUrl, filename } = usePdfCreditNote(creditNoteId);
 

@@ -189,8 +189,6 @@ function PaymentMadeFormHeaderFields({ organization: { base_currency } }) {
             ACCOUNT_TYPE.BANK,
             ACCOUNT_TYPE.OTHER_CURRENT_ASSET,
           ]}
-          shouldUpdate={accountsFieldShouldUpdate}
-          fastField={true}
           fill={true}
         />
       </FFormGroup>
@@ -237,9 +235,6 @@ function PaymentFormVendorSelect() {
         }}
         disabled={!isNewMode}
         allowCreate={true}
-        fastField={true}
-        shouldUpdate={vendorsFieldShouldUpdate}
-        shouldUpdateDeps={{ items: vendors }}
       />
       {values.vendor_id && (
         <VendorButtonLink vendorId={values.vendor_id}>

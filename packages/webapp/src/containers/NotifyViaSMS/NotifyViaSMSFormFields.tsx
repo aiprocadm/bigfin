@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React from 'react';
-import { FastField, ErrorMessage } from 'formik';
+import { FastField, ErrorMessage, FieldProps } from 'formik';
 import { FormGroup, InputGroup } from '@blueprintjs/core';
 import classNames from 'classnames';
 import styled from 'styled-components';
@@ -14,7 +13,14 @@ import {
 import { CLASSES } from '@/constants/classes';
 import { inputIntent } from '@/utils';
 
-export default function NotifyViaSMSFormFields({ notificationTypes }) {
+interface NotifyViaSMSFormFieldsProps {
+  /** Виды уведомлений для списка: читаются по `key` и `label`. */
+  notificationTypes: { key: string; label: string }[];
+}
+
+export default function NotifyViaSMSFormFields({
+  notificationTypes,
+}: NotifyViaSMSFormFieldsProps) {
   return (
     <NotifyViaSMSFormFieldsRoot>
       <FFormGroup
@@ -30,13 +36,12 @@ export default function NotifyViaSMSFormFields({ notificationTypes }) {
           popoverProps={{ minimal: true }}
           filterable={false}
           disabled={notificationTypes.length < 2}
-          fastField
         />
       </FFormGroup>
 
       {/* ----------- Send Notification to ----------- */}
       <FastField name={'customer_name'}>
-        {({ form, field, meta: { error, touched } }) => (
+        {({ field, meta: { error, touched } }: FieldProps) => (
           <FormGroup
             label={<T id={'notify_via_sms.dialog.send_notification_to'} />}
             className={classNames('form-group--customer-name', CLASSES.FILL)}
@@ -55,7 +60,7 @@ export default function NotifyViaSMSFormFields({ notificationTypes }) {
 
       {/* ----------- Phone number ----------- */}
       <FastField name={'customer_phone_number'}>
-        {({ form, field, meta: { error, touched } }) => (
+        {({ field, meta: { error, touched } }: FieldProps) => (
           <FormGroup
             label={<T id={'phone_number'} />}
             labelInfo={<FieldRequiredHint />}

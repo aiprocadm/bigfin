@@ -1,16 +1,29 @@
-// @ts-nocheck
 import React from 'react';
 import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
 import { FormattedMessage as T, AppToaster } from '@/components';
 import intl from 'react-intl-universal';
 
-import BulkDeleteDialogContent from '@/containers/Dialogs/components/BulkDeleteDialogContent';
+import BulkDeleteDialogContent, {
+  BulkDeleteDialogPayload,
+} from '@/containers/Dialogs/components/BulkDeleteDialogContent';
 import { useBulkDeleteItems } from '@/hooks/query/items';
-import withDialogRedux from '@/components/DialogReduxConnect';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { withItemsActions } from '@/containers/Items/withItemsActions';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+
+interface ItemBulkDeleteDialogProps
+  extends DialogReduxProps<BulkDeleteDialogPayload>,
+    WithDialogActionsProps {
+  // #withItemsActions
+  setItemsSelectedRows: (rows: unknown[]) => void;
+}
 
 function ItemBulkDeleteDialog({
   dialogName,
@@ -19,7 +32,7 @@ function ItemBulkDeleteDialog({
     ids = [],
     deletableCount = 0,
     undeletableCount = 0,
-    totalSelected = ids.length,
+    totalSelected: totalSelectedInPayload,
   } = {},
 
   // #withItemsActions
@@ -27,7 +40,11 @@ function ItemBulkDeleteDialog({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: ItemBulkDeleteDialogProps) {
+  // Итог считается здесь, а не значением по умолчанию в разборе свойств:
+  // там ссылка на соседний `ids` делает вид разбора «что угодно» (TS7022).
+  const totalSelected = totalSelectedInPayload ?? ids.length;
+
   const { mutateAsync: bulkDeleteItems, isLoading } = useBulkDeleteItems();
 
   const handleCancel = () => {

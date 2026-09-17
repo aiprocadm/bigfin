@@ -25,7 +25,6 @@ function InventoryAdjustmentDrawerProvider({ inventoryId, ...props }: any) {
   return (
     <DrawerLoading loading={isAdjustmentsLoading}>
       <DrawerHeaderContent
-        name={DRAWERS.INVENTORY_ADJUSTMENT_DETAILS}
         title={intl.get('inventory_adjustment.details_drawer.title')}
       />
       <InventoryAdjustmentDrawerContext.Provider value={provider} {...props} />

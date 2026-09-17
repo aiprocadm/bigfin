@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import {
   useCreateProjectTask,
@@ -8,6 +7,14 @@ import {
 import { DialogContent } from '@/components';
 
 const ProjectTaskFormContext = React.createContext<any>(undefined);
+
+interface ProjectTaskFormProviderProps {
+  // #ownProps
+  dialogName: string;
+  taskId?: number;
+  projectId?: number;
+  children?: React.ReactNode;
+}
 
 /**
  * Project task form provider.
@@ -19,7 +26,7 @@ function ProjectTaskFormProvider({
   taskId,
   projectId,
   ...props
-}) {
+}: ProjectTaskFormProviderProps) {
   // Create and edit project task mutations.
   const { mutateAsync: createProjectTaskMutate } = useCreateProjectTask();
   const { mutateAsync: editProjectTaskMutate } = useEditProjectTask();

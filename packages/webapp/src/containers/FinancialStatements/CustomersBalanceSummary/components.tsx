@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
@@ -66,7 +65,7 @@ const percentageColumnAccessor = () => ({
   align: Align.Right,
 });
 
-const dynamicColumns = (columns) => {
+const dynamicColumns = (columns: any[]) => {
   return R.map(
     R.compose(
       R.when(R.pathEq(['key'], 'name'), accountNameColumnAccessor),

@@ -6,7 +6,7 @@ interface WithSubscriptionPlanProps {
   onSubscribe?: (variantId: number) => void;
 }
 
-interface MappedSubscriptionPlanProps {
+export interface MappedSubscriptionPlanProps {
   slug: string;
   label: string;
   description: string;

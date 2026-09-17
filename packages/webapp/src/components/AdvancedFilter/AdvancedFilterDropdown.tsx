@@ -73,7 +73,6 @@ function FilterConditionField() {
             items={conditionalsOptions}
             filterable={false}
             popoverProps={{
-              inline: true,
               minimal: true,
               captureDismiss: true,
             }}
@@ -104,7 +103,6 @@ function FilterCompatatorFilter() {
         name={comparatorFieldPath}
         dataType={fieldType}
         className={Classes.FILL}
-        fastField
       />
     </FFormGroup>
   );
@@ -160,8 +158,12 @@ function FilterFieldsField() {
     <FastField name={fieldPath}>
       {({ field, form }) => (
         <FFormGroup className={'form-group--fieldKey'} name={fieldPath}>
+          {/* Список привязан к полю формы по имени: выбранное он читает из
+              Formik сам. Раньше сюда передавали `selectedItem` — свойства с
+              таким именем нет ни у обёртки, ни у библиотеки, а `name` не
+              передавали вовсе (Д17 карты v85). */}
           <FSelect
-            selectedItem={field.value}
+            name={fieldPath}
             textAccessor={'label'}
             valueAccessor={'value'}
             items={transformFieldsToOptions(fields)}
@@ -173,7 +175,6 @@ function FilterFieldsField() {
               form.setFieldValue(valueFieldPath, '');
             }}
             popoverProps={{
-              inline: true,
               minimal: true,
               captureDismiss: true,
             }}

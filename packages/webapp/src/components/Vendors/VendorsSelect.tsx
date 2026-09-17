@@ -49,7 +49,7 @@ function VendorsSelectRoot({
       textAccessor={'display_name'}
       labelAccessor={'formatted_balance'}
       valueAccessor={'id'}
-      popoverProps={{ minimal: true, usePortal: true, inline: false }}
+      popoverProps={{ minimal: true, usePortal: true }}
       createNewItemRenderer={maybeCreateNewItemRenderer}
       createNewItemFromQuery={maybeCreateNewItemFromQuery}
       onCreateItemSelect={handleCreateItemClick}

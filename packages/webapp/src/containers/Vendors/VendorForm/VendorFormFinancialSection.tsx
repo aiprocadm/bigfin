@@ -45,7 +45,6 @@ export function VendorFormFinancialSection() {
           name="currency_code"
           items={currencies}
           disabled={vendorId}
-          fastField
         />
       </FFormGroup>
 

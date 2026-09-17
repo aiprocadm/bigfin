@@ -17,7 +17,6 @@ export default function DynamicFilterCompatatorField({
       className={Classes.FILL}
       filterable={false}
       popoverProps={{
-        inline: true,
         minimal: true,
         captureDismiss: true,
       }}

@@ -15,7 +15,7 @@ const commonInvalidateQueries = (queryClient: any) => {
  * Create a new project task.
  *  @param props
  */
-export function useCreateProjectTask(props: any) {
+export function useCreateProjectTask(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -36,7 +36,7 @@ export function useCreateProjectTask(props: any) {
  * @param props
  * @returns
  */
-export function useEditProjectTask(props: any) {
+export function useEditProjectTask(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

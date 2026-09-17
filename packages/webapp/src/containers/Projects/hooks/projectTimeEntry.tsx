@@ -16,7 +16,7 @@ const commonInvalidateQueries = (queryClient: any) => {
  * @param props
  * @returns
  */
-export function useCreateProjectTimeEntry(props: any) {
+export function useCreateProjectTimeEntry(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -37,7 +37,7 @@ export function useCreateProjectTimeEntry(props: any) {
  * @param props
  * @returns
  */
-export function useEditProjectTimeEntry(props: any) {
+export function useEditProjectTimeEntry(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 

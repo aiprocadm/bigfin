@@ -1,6 +1,5 @@
-import { AUTH_LOGIN_SUCCESS, AUTH_LOGOUT, AUTH_SET_AUTH_TOKEN, AUTH_SET_EMAIL_VERIFIED, AUTH_SET_LOCALE, AUTH_SET_ORGANIZATIOIN_ID, AUTH_SET_USER_ID, RESET } from '@/store/types';
+import { AUTH_LOGOUT, AUTH_SET_AUTH_TOKEN, AUTH_SET_EMAIL_VERIFIED, AUTH_SET_LOCALE, AUTH_SET_ORGANIZATIOIN_ID, AUTH_SET_USER_ID, RESET } from '@/store/types';
 
-export const setLogin = () => ({ type: AUTH_LOGIN_SUCCESS });
 export const setLogout = () => ({ type: AUTH_LOGOUT });
 export const setStoreReset = () => ({ type: RESET });
 

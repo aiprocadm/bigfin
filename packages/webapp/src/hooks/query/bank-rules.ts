@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   QueryClient,
   UseMutationOptions,
@@ -10,6 +9,7 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
+import { AxiosRequestConfig } from 'axios';
 import useApiRequest from '../useRequest';
 import { transformToCamelCase } from '@/utils';
 import t from './types';
@@ -260,7 +260,7 @@ export function useGetBankTransactionsMatches(
   );
 }
 
-const onValidateExcludeUncategorizedTransaction = (queryClient) => {
+const onValidateExcludeUncategorizedTransaction = (queryClient: QueryClient) => {
   // Invalidate queries.
   queryClient.invalidateQueries(
     BANK_QUERY_KEY.EXCLUDED_BANK_TRANSACTIONS_INFINITY,
@@ -623,9 +623,9 @@ export function useGetAutofillCategorizeTransaction(
  * @returns
  */
 export function useRecognizedBankTransactionsInfinity(
-  query,
-  infinityProps?,
-  axios?,
+  query: Record<string, unknown>,
+  infinityProps?: any,
+  axios?: AxiosRequestConfig,
 ) {
   const apiRequest = useApiRequest();
 
@@ -654,9 +654,9 @@ export function useRecognizedBankTransactionsInfinity(
 }
 
 export function useExcludedBankTransactionsInfinity(
-  query,
-  infinityProps?,
-  axios?,
+  query: Record<string, unknown>,
+  infinityProps?: any,
+  axios?: AxiosRequestConfig,
 ) {
   const apiRequest = useApiRequest();
 
@@ -686,9 +686,9 @@ export function useExcludedBankTransactionsInfinity(
 }
 
 export function usePendingBankTransactionsInfinity(
-  query,
-  infinityProps?,
-  axios?,
+  query: Record<string, unknown>,
+  infinityProps?: any,
+  axios?: AxiosRequestConfig,
 ) {
   const apiRequest = useApiRequest();
 

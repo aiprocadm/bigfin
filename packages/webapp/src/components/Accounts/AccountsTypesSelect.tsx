@@ -1,7 +1,7 @@
 import intl from 'react-intl-universal';
-import { FSelect } from '@/components/Forms';
+import { FSelect, FSelectProps } from '@/components/Forms';
 
-export function AccountsTypesSelect({ ...props }) {
+export function AccountsTypesSelect(props: FSelectProps) {
   return (
     <FSelect
       valueAccessor={'key'}

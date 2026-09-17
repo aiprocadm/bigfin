@@ -58,7 +58,6 @@ function AccountFormDialogFields({
             }}
             disabled={fieldsDisabled.accountType}
             popoverProps={{ minimal: true }}
-            fastField={true}
             fill={true}
           />
         </FFormGroup>
@@ -107,11 +106,9 @@ function AccountFormDialogFields({
             <AccountsSelect
               name={'parent_account_id'}
               items={accounts}
-              shouldUpdate={parentAccountShouldUpdate}
               placeholder={<T id={'select_parent_account'} />}
               filterByTypes={values.account_type}
               buttonProps={{ disabled: !values.subaccount }}
-              fastField={true}
               fill={true}
               allowCreate={true}
             />
@@ -129,7 +126,6 @@ function AccountFormDialogFields({
               name={'currency_code'}
               currencies={currencies}
               popoverProps={{ minimal: true }}
-              fastField={true}
               fill={true}
             />
           </FFormGroup>

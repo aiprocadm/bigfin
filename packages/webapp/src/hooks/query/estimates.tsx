@@ -1,6 +1,6 @@
-// @ts-nocheck
 import {
   useQueryClient,
+  QueryClient,
   useMutation,
   useQuery,
   UseQueryOptions,
@@ -12,7 +12,7 @@ import { transformPagination, transformToCamelCase } from '@/utils';
 import t from './types';
 import { useRequestPdf } from '../useRequestPdf';
 
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: QueryClient) => {
   // Invalidate estimates.
   queryClient.invalidateQueries(t.SALE_ESTIMATES);
 
@@ -23,7 +23,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale estimate.
  */
-export function useCreateEstimate(props?) {
+export function useCreateEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -42,7 +42,7 @@ export function useCreateEstimate(props?) {
 /**
  * Edits the given sale estimate.
  */
-export function useEditEstimate(props?) {
+export function useEditEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -64,19 +64,22 @@ export function useEditEstimate(props?) {
 /**
  * Retrieve sale estimate details.
  */
-export function useEstimate(id, props) {
+export function useEstimate(
+  id: number | string | undefined,
+  props?: any,
+) {
   return useRequestQuery(
     [t.SALE_ESTIMATE, id],
     { method: 'get', url: `sale-estimates/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },
   );
 }
 
-const transformEstimates = (res) => ({
+const transformEstimates = (res: any) => ({
   estimates: res.data.sales_estimates,
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
@@ -85,7 +88,7 @@ const transformEstimates = (res) => ({
 /**
  * Retrieve sale invoices list with pagination meta.
  */
-export function useEstimates(query, props) {
+export function useEstimates(query?: any, props?: any) {
   return useRequestQuery(
     [t.SALE_ESTIMATES, query],
     { method: 'get', url: 'sale-estimates', params: query },
@@ -108,7 +111,7 @@ export function useEstimates(query, props) {
 /**
  * Deletes the given sale invoice.
  */
-export function useDeleteEstimate(props) {
+export function useDeleteEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -127,7 +130,7 @@ export function useDeleteEstimate(props) {
 /**
  * Deletes multiple sale estimates in bulk.
  */
-export function useBulkDeleteEstimates(props?) {
+export function useBulkDeleteEstimates(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -153,7 +156,7 @@ export function useBulkDeleteEstimates(props?) {
   );
 }
 
-export function useValidateBulkDeleteEstimates(props?) {
+export function useValidateBulkDeleteEstimates(props?: any) {
   const apiRequest = useApiRequest();
 
   return useMutation(
@@ -170,7 +173,7 @@ export function useValidateBulkDeleteEstimates(props?) {
 /**
  * Mark the given estimate as delivered.
  */
-export function useDeliverEstimate(props) {
+export function useDeliverEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -189,7 +192,7 @@ export function useDeliverEstimate(props) {
 /**
  * Mark the given estimate as approved.
  */
-export function useApproveEstimate(props) {
+export function useApproveEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -208,7 +211,7 @@ export function useApproveEstimate(props) {
 /**
  * Mark the given estimate as rejected.
  */
-export function useRejectEstimate(props) {
+export function useRejectEstimate(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -228,7 +231,7 @@ export function useRejectEstimate(props) {
  * Retrieve the estimate pdf document data,
  */
 
-export function usePdfEstimate(estimateId) {
+export function usePdfEstimate(estimateId: number) {
   return useRequestPdf({
     url: `sale-estimates/${estimateId}`,
   });
@@ -247,7 +250,7 @@ export function useRefreshEstimates() {
 /**
  *
  */
-export function useCreateNotifyEstimateBySMS(props?) {
+export function useCreateNotifyEstimateBySMS(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -274,7 +277,7 @@ export function useCreateNotifyEstimateBySMS(props?) {
  * @param {*} requestProps
  * @returns
  */
-export function useEstimateSMSDetail(estimateId, props, requestProps?) {
+export function useEstimateSMSDetail(estimateId: number, props?: any, requestProps?: any) {
   return useRequestQuery(
     [t.SALE_ESTIMATE_SMS_DETAIL, estimateId],
     {
@@ -283,7 +286,7 @@ export function useEstimateSMSDetail(estimateId, props, requestProps?) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: any) => res.data,
       defaultData: {},
       ...props,
     },

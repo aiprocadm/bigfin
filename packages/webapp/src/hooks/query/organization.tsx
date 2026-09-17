@@ -68,7 +68,8 @@ export function useOrganizationSetup() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (values) => apiRequest.post(OrganizationRoute.Build, values),
+    (values: Record<string, unknown>) =>
+      apiRequest.post(OrganizationRoute.Build, values),
     {
       onSuccess: (res) => {
         queryClient.invalidateQueries(t.ORGANIZATION_CURRENT);

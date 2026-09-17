@@ -193,9 +193,6 @@ function VendorCreditFormVendorSelect() {
         }}
         popoverFill={true}
         allowCreate={true}
-        fastField={true}
-        shouldUpdate={vendorsFieldShouldUpdate}
-        shouldUpdateDeps={{ items: vendors }}
       />
       {values.vendor_id && (
         <VendorButtonLink vendorId={values.vendor_id}>

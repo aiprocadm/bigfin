@@ -112,7 +112,6 @@ function RuleFormContentFormRoot({
             name={'applyIfAccountId'}
             items={accounts}
             filterByTypes={['cash', 'bank']}
-            fastField
           />
         </FFormGroup>
 
@@ -195,9 +194,8 @@ function RuleFormConditions() {
               <FSelect
                 name={`conditions[${index}].field`}
                 items={getFields()}
-                popoverProps={{ minimal: true, inline: false }}
+                popoverProps={{ minimal: true }}
                 onItemChange={handleConditionFieldChange(index)}
-                fastField
               />
             </FFormGroup>
 
@@ -211,11 +209,7 @@ function RuleFormConditions() {
                 items={getFieldConditionsByFieldKey(
                   get(values, `conditions[${index}].field`),
                 )}
-                popoverProps={{ minimal: true, inline: false }}
-                shouldUpdateDeps={{
-                  fieldKey: get(values, `conditions[${index}].field`),
-                }}
-                fastField
+                popoverProps={{ minimal: true }}
               />
             </FFormGroup>
 
@@ -302,9 +296,8 @@ function RuleApplyIfTransactionTypeField() {
       <FSelect
         name={'applyIfTransactionType'}
         items={getTransactionTypeOptions()}
-        popoverProps={{ minimal: true, inline: false }}
+        popoverProps={{ minimal: true }}
         onItemChange={handleItemChange}
-        fastField
       />
     </FFormGroup>
   );
@@ -341,11 +334,10 @@ function RuleAssignCategoryField() {
       <FSelect
         name={'assignCategory'}
         items={transactionTypes}
-        popoverProps={{ minimal: true, inline: false }}
+        popoverProps={{ minimal: true }}
         valueAccessor={'value'}
         textAccessor={'name'}
         onItemChange={handleItemChange}
-        fastField
       />
     </FFormGroup>
   );
@@ -371,8 +363,6 @@ function RuleAssignCategoryAccountField() {
         name={'assignAccountId'}
         items={accounts}
         filterByRootTypes={accountRoot}
-        shouldUpdateDeps={{ accountRoot }}
-        fastField
       />
     </FFormGroup>
   );

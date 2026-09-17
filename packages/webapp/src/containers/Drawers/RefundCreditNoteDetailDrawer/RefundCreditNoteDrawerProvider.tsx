@@ -27,7 +27,6 @@ function RefundCreditNoteDrawerProvider({ refundTransactionId, ...props }: any) 
   return (
     <DrawerLoading loading={isRefundCreditTransaction}>
       <DrawerHeaderContent
-        name={DRAWERS.REFUND_CREDIT_NOTE_DETAILS}
         title={intl.get('refund_credit.drawer.title')}
       />
       <RefundCreditNoteDrawerContext.Provider value={provider} {...props} />

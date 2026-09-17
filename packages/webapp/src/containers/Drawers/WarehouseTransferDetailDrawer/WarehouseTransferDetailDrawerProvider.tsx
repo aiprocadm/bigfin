@@ -27,7 +27,6 @@ function WarehouseTransferDetailDrawerProvider({
   return (
     <DrawerLoading loading={isWarehouseTransferLoading}>
       <DrawerHeaderContent
-        name={DRAWERS.WAREHOUSE_TRANSFER_DETAILS}
         title={intl.get('warehouse_transfer.drawer.title', {
           number: warehouseTransfer.transaction_number
             ? `(${warehouseTransfer.transaction_number})`

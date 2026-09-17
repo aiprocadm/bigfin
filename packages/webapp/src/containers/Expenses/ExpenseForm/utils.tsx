@@ -65,30 +65,26 @@ export const defaultExpense = {
 
 /**
  * Transform API errors in toasts messages.
+ *
+ * Раньше показ уведомления заворачивали в `setErrors` Formik: тот ждёт набор
+ * ошибок полей, а получал ключ показанного уведомления. Уведомление всё равно
+ * показывалось, а в ошибки формы попадала строка вместо объекта — висело в
+ * заделе с карты v81 (Д11 карты v85). Второе сообщение было служебным кодом
+ * вместо слов.
  */
-export const transformErrors = (
-  errors: ServiceError[],
-  // `setErrors` здесь получает то, что вернул показ уведомления, а не набор
-  // ошибок поля. Похоже на недосмотр, но правка меняла бы поведение — вынесено
-  // в задел карты v81.
-  { setErrors }: { setErrors: (errors: any) => void },
-) => {
+export const transformErrors = (errors: ServiceError[]) => {
   const hasError = (errorType: string) => errors.some((e) => e.type === errorType);
 
   if (hasError(ERROR.EXPENSE_ALREADY_PUBLISHED)) {
-    setErrors(
-      AppToaster.show({
-        message: intl.get('the_expense_is_already_published'),
-      }),
-    );
+    AppToaster.show({
+      message: intl.get('the_expense_is_already_published'),
+    });
   }
   if (hasError(ERROR.ENTRIES_ALLOCATED_COST_COULD_NOT_DELETED)) {
-    setErrors(
-      AppToaster.show({
-        intent: Intent.DANGER,
-        message: 'ENTRIES_ALLOCATED_COST_COULD_NOT_DELETED',
-      }),
-    );
+    AppToaster.show({
+      intent: Intent.DANGER,
+      message: intl.get('expense.error.entries_allocated_cost_could_not_deleted'),
+    });
   }
 };
 

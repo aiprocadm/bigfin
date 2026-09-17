@@ -1,18 +1,31 @@
-// @ts-nocheck
 import React from 'react';
 import { FormattedMessage as T } from '@/components';
 import intl from 'react-intl-universal';
 import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
 
-import withDialogRedux from '@/components/DialogReduxConnect';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import withDialogRedux, {
+  DialogReduxProps,
+} from '@/components/DialogReduxConnect';
+import {
+  withDialogActions,
+  WithDialogActionsProps,
+} from '@/containers/Dialog/withDialogActions';
 import { withInvoiceActions } from '@/containers/Sales/Invoices/InvoicesLanding/withInvoiceActions';
 import { useBulkDeleteInvoices } from '@/hooks/query/invoices';
 import { AppToaster } from '@/components';
-import BulkDeleteDialogContent from '@/containers/Dialogs/components/BulkDeleteDialogContent';
+import BulkDeleteDialogContent, {
+  BulkDeleteDialogPayload,
+} from '@/containers/Dialogs/components/BulkDeleteDialogContent';
 
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+
+interface InvoiceBulkDeleteDialogProps
+  extends DialogReduxProps<BulkDeleteDialogPayload>,
+    WithDialogActionsProps {
+  // #withInvoiceActions
+  resetInvoicesSelectedRows: () => void;
+}
 
 /**
  * Invoice bulk delete dialog.
@@ -24,7 +37,7 @@ function InvoiceBulkDeleteDialog({
     ids = [],
     deletableCount = 0,
     undeletableCount = 0,
-    totalSelected = ids.length,
+    totalSelected: totalSelectedInPayload,
   } = {},
 
   // #withInvoiceActions
@@ -32,7 +45,11 @@ function InvoiceBulkDeleteDialog({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: InvoiceBulkDeleteDialogProps) {
+  // Итог считается здесь, а не значением по умолчанию в разборе свойств:
+  // там ссылка на соседний `ids` делает вид разбора «что угодно» (TS7022).
+  const totalSelected = totalSelectedInPayload ?? ids.length;
+
   const { mutateAsync: bulkDeleteInvoices, isLoading } =
     useBulkDeleteInvoices();
 

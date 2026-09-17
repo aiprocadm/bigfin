@@ -127,7 +127,6 @@ export default function CreateWorkspaceForm({
                     placeholder={<T id={'select_business_location'} />}
                     popoverProps={{ minimal: true }}
                     buttonProps={{ large: true }}
-                    fastField
                   />
                 </FFormGroupField>
 
@@ -143,7 +142,6 @@ export default function CreateWorkspaceForm({
                         textAccessor={'name'}
                         placeholder={<T id={'select_base_currency'} />}
                         buttonProps={{ large: true }}
-                        fastField
                       />
                     </FFormGroupField>
                   </Col>
@@ -159,7 +157,6 @@ export default function CreateWorkspaceForm({
                         placeholder={<T id={'select_language'} />}
                         popoverProps={{ minimal: true }}
                         buttonProps={{ large: true }}
-                        fastField
                       />
                     </FFormGroupField>
                   </Col>
@@ -175,7 +172,6 @@ export default function CreateWorkspaceForm({
                     placeholder={<T id={'select_fiscal_year'} />}
                     popoverProps={{ minimal: true }}
                     buttonProps={{ large: true }}
-                    fastField
                   />
                 </FFormGroupField>
 

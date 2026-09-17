@@ -161,8 +161,6 @@ function ItemFormBody({ organization: { base_currency } }: any) {
               name={'purchase_tax_rate_id'}
               items={taxRates}
               allowCreate={true}
-              fastField={true}
-              shouldUpdateDeps={{ taxRates }}
             />
           </FFormGroup>
 
@@ -241,7 +239,6 @@ function ItemFormAccountingSection({ accounts }: any) {
                 filterByParentTypes={[ACCOUNT_PARENT_TYPE.INCOME]}
                 fill={true}
                 allowCreate={true}
-                fastField={true}
               />
             </FFormGroup>
           </Col>
@@ -263,10 +260,8 @@ function ItemFormAccountingSection({ accounts }: any) {
                 filterByParentTypes={[ACCOUNT_PARENT_TYPE.EXPENSE]}
                 popoverFill={true}
                 allowCreate={true}
-                fastField={true}
                 disabled={!values.purchasable}
                 purchasable={values.purchasable}
-                shouldUpdate={costAccountFieldShouldUpdate}
               />
             </FFormGroup>
           </Col>

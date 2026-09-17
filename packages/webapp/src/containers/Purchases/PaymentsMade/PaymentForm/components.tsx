@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import moment from 'moment';
@@ -8,18 +7,24 @@ import { useFormikContext } from 'formik';
 import { useCurrentOrganization } from '@/hooks/state';
 import { usePaymentMadeIsForeignCustomer } from './utils';
 
-function BillNumberAccessor(row) {
+function BillNumberAccessor(row: { bill_no?: string | null }) {
   return row?.bill_no ? row?.bill_no : '-';
 }
 
-function BillDateCell({ value }) {
+function BillDateCell({ value }: { value: string }) {
   return moment(value).format('YYYY MMM DD');
 }
 
 /**
  * Mobey table cell.
  */
-function MoneyTableCell({ row: { original }, value }) {
+function MoneyTableCell({
+  row: { original },
+  value,
+}: {
+  row: { original: { currency_code: string } };
+  value: number;
+}) {
   return <Money amount={value} currency={original.currency_code} />;
 }
 
@@ -30,7 +35,9 @@ export function usePaymentMadeEntriesTableColumns() {
   return React.useMemo(
     () => [
       {
-        Header: 'Bill date',
+        // Заголовок был английским прямо в коде, хотя ключ `bill_date`
+        // есть в обоих словарях (Д7 карты v85).
+        Header: intl.get('bill_date'),
         id: 'bill_date',
         accessor: 'bill_date',
         Cell: BillDateCell,
@@ -73,7 +80,14 @@ export function usePaymentMadeEntriesTableColumns() {
  * payment made exchange rate input field.
  * @returns {JSX.Element}
  */
-export function PaymentMadeExchangeRateInputField({ ...props }) {
+type PaymentMadeExchangeRateInputFieldProps = Omit<
+  React.ComponentProps<typeof ExchangeRateInputGroup>,
+  'fromCurrency' | 'toCurrency'
+>;
+
+export function PaymentMadeExchangeRateInputField(
+  props: PaymentMadeExchangeRateInputFieldProps,
+) {
   const currentOrganization = useCurrentOrganization();
   const { values } = useFormikContext<any>();
 

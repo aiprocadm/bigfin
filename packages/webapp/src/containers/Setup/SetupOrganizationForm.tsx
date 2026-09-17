@@ -80,7 +80,6 @@ export default function SetupOrganizationForm({
           placeholder={<T id={'select_business_location'} />}
           popoverProps={{ minimal: true }}
           buttonProps={{ large: true }}
-          fastField
         />
       </FFormGroup>
 
@@ -99,7 +98,6 @@ export default function SetupOrganizationForm({
               textAccessor={'name'}
               placeholder={<T id={'select_base_currency'} />}
               buttonProps={{ large: true }}
-              fastField
             />
           </FFormGroup>
         </Col>
@@ -115,7 +113,6 @@ export default function SetupOrganizationForm({
               placeholder={<T id={'select_language'} />}
               popoverProps={{ minimal: true }}
               buttonProps={{ large: true }}
-              fastField
             />
           </FFormGroup>
         </Col>
@@ -134,7 +131,6 @@ export default function SetupOrganizationForm({
           placeholder={<T id={'select_fiscal_year'} />}
           popoverProps={{ minimal: true }}
           buttonProps={{ large: true }}
-          fastField
         />
       </FFormGroup>
 
@@ -212,7 +208,6 @@ export default function SetupOrganizationForm({
           textAccessor={'name'}
           popoverProps={{ minimal: true }}
           buttonProps={{ large: true }}
-          fastField
         />
       </FFormGroup>
 

@@ -63,8 +63,6 @@ export function SharePaymentLinkFormContent() {
                   minimal
                 />
               )}
-              searchable={false}
-              fastField
             />
           </FFormGroup>
 

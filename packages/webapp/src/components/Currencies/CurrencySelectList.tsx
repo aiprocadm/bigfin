@@ -20,7 +20,7 @@ export function CurrencySelectList({
       textAccessor={'currency_code'}
       valueAccessor={'currency_code'}
       placeholder={placeholder}
-      popoverProps={{ minimal: true, usePortal: true, inline: false }}
+      popoverProps={{ minimal: true, usePortal: true }}
       {...props}
     />
   );

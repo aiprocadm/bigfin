@@ -3,8 +3,10 @@ import {
   NavbarDivider,
   Button,
   Classes,
+  Intent,
 } from '@blueprintjs/core';
 import {
+  If,
   Icon,
   FormattedMessage as T,
   AdvancedFilterPopover,
@@ -15,6 +17,7 @@ import {
 import { withItemCategories } from './withItemCategories';
 import { withItemCategoriesActions } from './withItemCategoriesActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import { withAlertActions } from '@/containers/Alert/withAlertActions';
 
 import { compose } from '@/utils';
 import { useItemsCategoriesContext } from './ItemsCategoriesProvider';
@@ -24,8 +27,24 @@ import { DialogsName } from '@/constants/dialogs';
 /**
  * Items categories actions bar.
  */
+interface ItemsCategoryActionsBarProps {
+  /**
+   * Выделенные строки. ВСЕГДА пусто: обёртка `withItemCategories` такого поля
+   * не отдаёт, и в хранилище его нет — поэтому кнопка «Удалить» ниже не
+   * показывается никогда, а предупреждение, которое она открывает, не
+   * зарегистрировано (Д3 карты v88). Удаление мёртвого пути предложено
+   * владельцу.
+   */
+  itemCategoriesSelectedRows?: number[];
+  categoriesFilterConditions?: any[];
+  setItemsCategoriesTableState: (state: any) => void;
+  openDialog: (name: string, payload?: any) => void;
+  openAlert: (name: string, payload?: any) => void;
+}
+
 function ItemsCategoryActionsBar({
   // #withItemCategories
+  itemCategoriesSelectedRows = [],
   categoriesFilterConditions,
 
   //
@@ -33,11 +52,10 @@ function ItemsCategoryActionsBar({
 
   // #withDialog
   openDialog,
-}: {
-  categoriesFilterConditions?: any[];
-  setItemsCategoriesTableState: (state: any) => void;
-  openDialog: (name: string, payload?: any) => void;
-}) {
+
+  // #withAlertActions
+  openAlert,
+}: ItemsCategoryActionsBarProps) {
   const { fields } = useItemsCategoriesContext();
   const history = useHistory();
 
@@ -49,6 +67,12 @@ function ItemsCategoryActionsBar({
     history.push('/item/categories/import');
   };
 
+  // Handle the items categories bulk delete.
+  const handelBulkDelete = () => {
+    openAlert('item-categories-bulk-delete', {
+      itemCategoriesIds: itemCategoriesSelectedRows,
+    });
+  };
   // Handle the export button click.
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'item_category' });
@@ -80,13 +104,16 @@ function ItemsCategoryActionsBar({
           />
         </AdvancedFilterPopover>
 
-        {/*
-          Здесь была кнопка «удалить выбранные». Она не работала никогда:
-          выделение строк категорий нигде не хранится, предупреждение
-          `item-categories-bulk-delete` не было записано в реестр, действие
-          `requestDeleteBulkItemCategories` не существует, а на сервере нет
-          ручки массового удаления категорий — только по одной (Д3 карты v88).
-        */}
+        <If condition={itemCategoriesSelectedRows.length > 0}>
+          <Button
+            className={Classes.MINIMAL}
+            icon={<Icon icon="trash-16" iconSize={16} />}
+            text={<T id={'delete'} />}
+            intent={Intent.DANGER}
+            onClick={handelBulkDelete}
+          />
+        </If>
+
         <Button
           className={Classes.MINIMAL}
           icon={<Icon icon="file-import-16" iconSize={16} />}
@@ -106,8 +133,12 @@ function ItemsCategoryActionsBar({
 
 export default compose(
   withDialogActions,
-  withItemCategories(({ itemsCategoriesTableState }: any) => ({
-    categoriesFilterConditions: itemsCategoriesTableState.filterRoles,
-  })),
+  withItemCategories(
+    ({ itemCategoriesSelectedRows, itemsCategoriesTableState }: any) => ({
+      itemCategoriesSelectedRows,
+      categoriesFilterConditions: itemsCategoriesTableState.filterRoles,
+    }),
+  ),
+  withAlertActions,
   withItemCategoriesActions,
 )(ItemsCategoryActionsBar);

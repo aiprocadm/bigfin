@@ -81,6 +81,28 @@ describe('PullTelegramEntriesService', () => {
     expect(text.replace(/[\s ]/g, '')).toContain('1500');
   });
 
+  // Д3 карты v86: раньше ставился день чтения ботом, а не день сообщения.
+  it('дата операции — день сообщения, а не день, когда его прочитал бот', async () => {
+    const twoDaysAgo = Math.floor(Date.now() / 1000) - 2 * 86400;
+    const update = message(101, '-1500 такси');
+    update.message = { ...update.message, date: twoDaysAgo } as any;
+    const deps = makeDeps([update]);
+
+    await deps.service.pull();
+
+    expect(deps.rows[0].date).toBe(
+      new Date(twoDaysAgo * 1000).toISOString().slice(0, 10),
+    );
+  });
+
+  it('без даты в сообщении операция датируется сегодняшним днём', async () => {
+    const deps = makeDeps([message(101, '-1500 такси')]);
+
+    await deps.service.pull();
+
+    expect(deps.rows[0].date).toBe(new Date().toISOString().slice(0, 10));
+  });
+
   it('запоминает смещение, чтобы не обработать сообщение дважды', async () => {
     const deps = makeDeps([message(101, '-1500 такси')]);
     await deps.service.pull();

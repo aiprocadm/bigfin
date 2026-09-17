@@ -2,6 +2,12 @@ import * as moment from 'moment';
 import { Knex } from 'knex';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  DeleteObjectsCommand,
+  ListObjectsV2Command,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { S3_CLIENT } from '@/modules/S3/S3.module';
 import { OneClickDemo } from '@/modules/System/models/OneClickDemo.model';
 import { SystemUser } from '@/modules/System/models/SystemUser';
 import { TenantModel } from '@/modules/System/models/TenantModel';
@@ -32,6 +38,9 @@ export class CleanupOneClickDemosService {
 
     @Inject(PlanSubscription.name)
     private readonly planSubscriptionModel: typeof PlanSubscription,
+
+    @Inject(S3_CLIENT)
+    private readonly s3: S3Client,
   ) {}
 
   /**
@@ -79,6 +88,9 @@ export class CleanupOneClickDemosService {
     const tenant = await this.tenantModel.query().findById(demo.tenantId);
 
     if (tenant) {
+      // Файлы — до базы: список вложений живёт в базе, но ключи в хранилище
+      // и так начинаются с номера организации, поэтому база не нужна.
+      await this.deleteTenantFiles(tenant.organizationId);
       await this.dropTenantDatabase(tenant.organizationId);
 
       // Порядок важен: подписка и метаданные держат тенанта по внешнему
@@ -101,6 +113,58 @@ export class CleanupOneClickDemosService {
     // Демо-пользователь заведён только ради этого демо и больше нигде не
     // нужен: он не может войти иначе как по ключу демо.
     await this.systemUserModel.query().deleteById(demo.userId);
+  }
+
+  /**
+   * Удаляет файлы организации из хранилища.
+   *
+   * Каждое вложение лежит под ключом `<организация>/<uuid>` (см. раздачу
+   * ключей в `Attachment.module.ts`), поэтому файлы демо находятся по
+   * префиксу. Раньше уборка сносила базу, а файлы оставались навсегда:
+   * сотня «посмотревших» — сотня папок мусора (вопрос 19 карт v14–v17,
+   * закрыт для демо в Д4 карты v86).
+   *
+   * Сбой хранилища уборку не останавливает: базу и записи всё равно надо
+   * убрать, а незачищенные файлы видны по префиксу и доберутся в другой раз.
+   */
+  private async deleteTenantFiles(organizationId: string): Promise<void> {
+    const bucket = this.configService.get('s3.bucket');
+    if (!bucket) return;
+
+    const prefix = `${organizationId}/`;
+    let continuationToken: string | undefined;
+
+    try {
+      do {
+        const listed = await this.s3.send(
+          new ListObjectsV2Command({
+            Bucket: bucket,
+            Prefix: prefix,
+            ContinuationToken: continuationToken,
+          }),
+        );
+        const keys = (listed.Contents ?? [])
+          .map((object) => object.Key)
+          .filter((key): key is string => Boolean(key));
+
+        if (keys.length > 0) {
+          await this.s3.send(
+            new DeleteObjectsCommand({
+              Bucket: bucket,
+              Delete: { Objects: keys.map((Key) => ({ Key })), Quiet: true },
+            }),
+          );
+        }
+        continuationToken = listed.IsTruncated
+          ? listed.NextContinuationToken
+          : undefined;
+      } while (continuationToken);
+    } catch (error) {
+      console.error(
+        `Failed to delete the files of the one-click demo ${organizationId}:`,
+        error,
+      );
+    }
   }
 
   /**

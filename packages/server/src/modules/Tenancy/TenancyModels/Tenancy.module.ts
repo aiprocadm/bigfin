@@ -44,6 +44,7 @@ import { ManagementArticle } from '@/modules/ManagementArticles/models/Managemen
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { Budget } from '@/modules/Budgets/models/Budget.model';
+import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
 import { BudgetLine } from '@/modules/Budgets/models/BudgetLine.model';
 import { DebtRepaymentPlan } from '@/modules/Debts/models/DebtRepaymentPlan.model';
 import { DebtRepaymentInstallment } from '@/modules/Debts/models/DebtRepaymentInstallment.model';
@@ -111,6 +112,7 @@ const models = [
   ManagementArticleAccount,
   PlannedOperation,
   Budget,
+  LegalEntity,
   BudgetLine,
   DebtRepaymentPlan,
   DebtRepaymentInstallment,

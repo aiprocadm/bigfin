@@ -327,3 +327,86 @@ export function useSetCostBehavior(
     },
   );
 }
+
+// ---------------------------------------------------------------------------
+// Анализ расходов — этап 9 ТЗ
+// ---------------------------------------------------------------------------
+
+export interface ExpensesSplit {
+  fixed: number;
+  variable: number;
+  /** Расходы по статьям без пометки «постоянный / переменный». */
+  unset: number;
+  total: number;
+  fixedShare: number;
+  variableShare: number;
+  unsetShare: number;
+  unsetArticles: number;
+}
+
+export interface ExpenseShareMonth {
+  month: string;
+  revenue: number;
+  expenses: number;
+  /** null — выручки в этом месяце не было, доля не считается. */
+  share: number | null;
+}
+
+export interface TopExpenseRow {
+  articleId: number;
+  name: string;
+  amount: number;
+  previousAmount: number;
+  growthAbs: number;
+  growthPct: number | null;
+  isSharpGrowth: boolean;
+  isNew: boolean;
+}
+
+export interface ExpensesAnalysis {
+  fromDate: string;
+  toDate: string;
+  revenue: number;
+  split: ExpensesSplit;
+  monthly: ExpenseShareMonth[];
+  topArticles: TopExpenseRow[];
+  breakEven: MetricValue;
+  safetyMargin: MetricValue;
+  hasFixedArticles: boolean;
+}
+
+/** Анализ расходов за период (этап 9 ТЗ). */
+export function useExpensesAnalysis(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.EXPENSES_ANALYSIS, query],
+    {
+      method: 'get',
+      url: 'financial-model/expenses-analysis',
+      params: query,
+    },
+    {
+      select: (res: any) => res.data?.data ?? res.data,
+      defaultData: {
+        fromDate: '',
+        toDate: '',
+        revenue: 0,
+        split: {
+          fixed: 0,
+          variable: 0,
+          unset: 0,
+          total: 0,
+          fixedShare: 0,
+          variableShare: 0,
+          unsetShare: 0,
+          unsetArticles: 0,
+        },
+        monthly: [],
+        topArticles: [],
+        breakEven: { value: 0, applicable: false },
+        safetyMargin: { value: 0, applicable: false },
+        hasFixedArticles: false,
+      } as ExpensesAnalysis,
+      ...props,
+    },
+  );
+}

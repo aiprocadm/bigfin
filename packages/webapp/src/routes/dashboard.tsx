@@ -1173,6 +1173,16 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     pageTitle: intl.get('credits.page.title'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT,
   },
+  // Анализ расходов (этап 9 ТЗ): постоянные и переменные, доля расходов
+  // в выручке, точка безубыточности и запас прочности.
+  {
+    path: `/expenses-analysis`,
+    component: lazy(
+      () => import('@/containers/ExpensesAnalysis/ExpensesAnalysisPage'),
+    ),
+    breadcrumb: intl.get('expenses_analysis.page.title'),
+    pageTitle: intl.get('expenses_analysis.page.title'),
+  },
   // Financial model (Финмодель)
   {
     path: `/financial-model`,

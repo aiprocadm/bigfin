@@ -7,6 +7,8 @@ import * as R from 'ramda';
 // Легаси ProfitLossSheetHeader/ProfitLossActionsBar остаются на месте (не удаляем).
 import { ProfitLossHeaderV2 } from './v2/ProfitLossHeaderV2';
 import { ProfitLossToolbarV2 } from './v2/ProfitLossToolbarV2';
+import { ProfitLossBasisSwitch } from './v2/ProfitLossBasisSwitch';
+import type { AccountingBasis } from '../accountingBasis';
 
 import { DashboardPageContent } from '@/components';
 
@@ -41,6 +43,12 @@ function ProfitLossSheet({
     };
     setLocationQuery(newFilter);
   };
+  // Смена метода учёта: адрес — единственное место, где живёт метод,
+  // поэтому отчёт перезапрашивается тем же путём, что и любой другой отбор.
+  const handleBasisChange = (basis: AccountingBasis) => {
+    setLocationQuery({ ...query, basis });
+  };
+
   // Handle number format submit.
   const handleNumberFormatSubmit = (numberFormat: Record<string, any>) => {
     setLocationQuery({
@@ -69,6 +77,15 @@ function ProfitLossSheet({
         <ProfitLossHeaderV2
           pageFilter={query}
           onSubmitFilter={handleSubmitFilter}
+        />
+        {/*
+          Переключатель метода учёта прямо в шапке (п. 4.3 ТЗ): раньше он
+          лежал в панели «Настроить отчёт», и человек не знал ни что метода
+          два, ни каким посчитаны цифры перед ним.
+        */}
+        <ProfitLossBasisSwitch
+          basis={query.basis}
+          onChange={handleBasisChange}
         />
         <ProfitLossBody />
       </DashboardPageContent>

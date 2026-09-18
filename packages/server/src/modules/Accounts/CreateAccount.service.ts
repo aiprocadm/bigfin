@@ -13,6 +13,9 @@ import { UnitOfWork } from '../Tenancy/TenancyDB/UnitOfWork.service';
 import { TenancyContext } from '../Tenancy/TenancyContext.service';
 import { events } from '@/common/events/events';
 import { CreateAccountDTO } from './CreateAccount.dto';
+import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
+import { decideAccountLegalEntity } from '@/modules/LegalEntities/utils/accountLegalEntity';
+import { ServiceError } from '@/modules/Items/ServiceError';
 import { PartialModelObject } from 'objection';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { AccountsSettingsService } from './AccountsSettings.service';
@@ -34,6 +37,9 @@ export class CreateAccountService {
     private readonly validator: CommandAccountValidators,
     private readonly tenancyContext: TenancyContext,
     private readonly accountsSettings: AccountsSettingsService,
+
+    @Inject(LegalEntity.name)
+    private readonly legalEntityModel: TenantModelProxy<typeof LegalEntity>,
   ) {}
 
   /**
@@ -109,6 +115,39 @@ export class CreateAccountService {
   };
 
   /**
+   * Какое юрлицо проставить новому счёту.
+   *
+   * Правило живёт в `decideAccountLegalEntity` и покрыто тестами отдельно:
+   * одно юрлицо — подставляем, несколько без выбора — отказываем.
+   */
+  private resolveLegalEntity = async (
+    accountDTO: CreateAccountDTO,
+  ): Promise<number | null> => {
+    // Справочника может не быть вовсе (база до этапа 6) — тогда ведём себя
+    // как раньше и счёт заводится без юрлица.
+    let entities: any[] = [];
+    try {
+      entities = await this.legalEntityModel().query();
+    } catch {
+      return null;
+    }
+
+    const decision = decideAccountLegalEntity(
+      (accountDTO as any).legalEntityId,
+      entities.map((entity) => ({
+        id: Number(entity.id),
+        active: Boolean(entity.active),
+        isPrimary: Boolean(entity.isPrimary),
+      })),
+    );
+
+    if (decision.mustAsk) {
+      throw new ServiceError('LEGAL_ENTITY_REQUIRED');
+    }
+    return decision.legalEntityId;
+  };
+
+  /**
    * Creates a new account on the storage.
    * @param {IAccountCreateDTO} accountDTO
    * @returns {Promise<IAccount>}
@@ -129,6 +168,12 @@ export class CreateAccountService {
       accountDTO,
       tenant.metadata.baseCurrency,
     );
+
+    // Юрлицо счёта (§8.1 ТЗ). Пока юрлицо одно — подставляется само:
+    // приёмка §8.5 требует, чтобы организация с одним юрлицом не видела
+    // никаких изменений. Как только их больше — выбор обязателен, потому
+    // что угаданное юрлицо разведёт остатки, и заметят это через месяц.
+    const legalEntityId = await this.resolveLegalEntity(accountDTO);
     // Creates a new account with associated transactions under unit-of-work envirement.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       // Triggers `onAccountCreating` event.
@@ -142,7 +187,8 @@ export class CreateAccountService {
         .query()
         .insert({
           ...accountInputModel,
-        });
+          ...(legalEntityId != null ? { legalEntityId } : {}),
+        } as any);
       // Triggers `onAccountCreated` event.
       await this.eventEmitter.emitAsync(events.accounts.onCreated, {
         account,

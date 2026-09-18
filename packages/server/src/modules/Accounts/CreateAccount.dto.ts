@@ -6,9 +6,29 @@ import {
   MinLength,
   MaxLength,
   IsBoolean,
-} from 'class-validator';
+  } from 'class-validator';
 
 export class CreateAccountDTO {
+  /**
+   * Юрлицо, которому принадлежит счёт (этап 8 ТЗ, §8.1).
+   *
+   * Операции по счёту наследуют юрлицо от него автоматически, и вручную
+   * переопределять его нельзя — иначе остатки по юрлицам разъедутся.
+   *
+   * Поле необязательное намеренно: у организации с одним юрлицом выбирать
+   * не из чего, и требовать выбор значило бы нарушить приёмку §8.5 —
+   * «организация с одним юрлицом не видит никаких изменений в интерфейсе».
+   * Обязательным его делает служба создания счёта, когда юрлиц больше одного.
+   */
+  @IsOptional()
+  @IsInt()
+  @ApiProperty({
+    description: 'Legal entity the account belongs to',
+    example: 1,
+    required: false,
+  })
+  legalEntityId?: number;
+
   @IsString()
   @MinLength(3)
   @MaxLength(255) // Assuming DATATYPES_LENGTH.STRING is 255

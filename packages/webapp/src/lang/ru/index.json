@@ -4310,5 +4310,12 @@
   "dashboard.attention.uncategorized": "{count} операций ждут разноски",
   "dashboard.attention.cash_gap": "Кассовый разрыв {date}: не хватает {amount}",
   "dashboard.attention.overdue_receivable": "Просрочена дебиторка на {amount}",
-  "dashboard.attention.pending_payment_requests": "{count} заявок на оплату ждут согласования"
+  "dashboard.attention.pending_payment_requests": "{count} заявок на оплату ждут согласования",
+  "reports.main.cash_flow.title": "Деньги (ДДС)",
+  "reports.main.cash_flow.description": "Куда приходят и уходят деньги",
+  "reports.main.profit_loss.title": "Прибыль (ОПиУ)",
+  "reports.main.profit_loss.description": "Сколько заработал бизнес на самом деле",
+  "reports.main.balance_sheet.title": "Баланс",
+  "reports.main.balance_sheet.description": "Чем владеет компания и кому должна",
+  "reports.other.title": "Другие отчёты"
 }

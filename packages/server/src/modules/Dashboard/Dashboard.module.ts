@@ -9,6 +9,7 @@ import { APAgingSummaryModule } from '../FinancialStatements/modules/APAgingSumm
 import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module';
 import { ProfitLossSheetModule } from '../FinancialStatements/modules/ProfitLossSheet/ProfitLossSheet.module';
 import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
+import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
 
 @Module({
   // Сводка о деньгах берёт цифры из тех же отчётов, что показывают разделы
@@ -25,6 +26,7 @@ import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
     TenancyContext,
     GetMoneySummaryService,
     GetTaxEstimateService,
+    GetDashboardOverviewService,
   ],
   controllers: [DashboardController],
   // Оценку налога спрашивает и правило уведомления «скоро платить налог»

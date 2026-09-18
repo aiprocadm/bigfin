@@ -5,9 +5,10 @@ import {
   getSchemaPath,
   ApiExtraModels,
 } from '@nestjs/swagger';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardService } from './Dashboard.service';
 import { GetMoneySummaryService } from './queries/GetMoneySummary.service';
+import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
 import { GetDashboardBootMetaResponseDto } from './dtos/GetDashboardBootMetaResponse.dto';
 
 @ApiTags('Dashboard')
@@ -17,6 +18,7 @@ export class DashboardController {
   constructor(
     private readonly dashboardService: DashboardService,
     private readonly moneySummaryService: GetMoneySummaryService,
+    private readonly overviewService: GetDashboardOverviewService,
   ) {}
 
   @ApiOperation({ summary: 'Get dashboard boot metadata' })
@@ -41,5 +43,22 @@ export class DashboardController {
   @Get('money-summary')
   getMoneySummary() {
     return this.moneySummaryService.getMoneySummary();
+  }
+
+  @ApiOperation({
+    summary:
+      'Всё для главной одним ответом: показатели, ряды графика, остатки по ' +
+      'счетам и топ статей расходов.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Доходы, расходы и прибыль берутся из отчёта о прибылях и убытках — ' +
+      'суммы совпадают с разделом «Отчёты».',
+  })
+  @Get('overview')
+  getOverview(@Query('from') from?: string, @Query('to') to?: string) {
+    // Пять отдельных запросов на главной недопустимы (п. 2.3 ТЗ).
+    return this.overviewService.getOverview(from, to);
   }
 }

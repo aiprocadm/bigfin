@@ -4271,5 +4271,16 @@
   "all_transactions.bulk.excluded": "Excluded transactions: {count}",
   "all_transactions.import_statement": "Import statement",
   "all_transactions.amount_from": "Amount from",
-  "all_transactions.amount_to": "Amount to"
+  "all_transactions.amount_to": "Amount to",
+  "sidebar.group.operations": "Transactions",
+  "sidebar.group.deals": "Deals",
+  "sidebar.group.directories": "Directories",
+  "sidebar.group.documents": "Documents",
+  "sidebar.group.counterparties": "Counterparties",
+  "sidebar.operations.all": "All transactions",
+  "sidebar.operations.awaiting": "Awaiting categorization",
+  "sidebar.reports.money": "Cash flow",
+  "sidebar.reports.profit": "Profit and loss",
+  "sidebar.reports.debts_receivable": "Debts: owed to us",
+  "sidebar.reports.debts_payable": "Debts: we owe"
 }

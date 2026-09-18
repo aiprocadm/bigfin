@@ -28,6 +28,16 @@ describe('isAccountantOnlyPath', () => {
     '/financial-reports/general-ledger',
     '/financial-reports/trial-balance-sheet',
     '/financial-reports/journal-sheet',
+    // Добавлено этапом 1 ТЗ (п. 1.3): список вырос с шести адресов до
+    // тринадцати. План счетов, склад и аналитика для бухгалтера в режиме
+    // «Бизнес» не нужны — собственник ведёт управленческий учёт.
+    '/accounts',
+    '/inventory-adjustments',
+    '/warehouses-transfers',
+    '/items/categories',
+    '/vat-analysis',
+    '/financial-ratios',
+    '/data-quality',
   ])('accountant-only: %s', (p) => {
     expect(isAccountantOnlyPath(p)).toBe(true);
   });
@@ -36,8 +46,10 @@ describe('isAccountantOnlyPath', () => {
     '/',
     '/invoices',
     '/financial-reports/balance-sheet',
-    '/accounts',
     '/tax-rates',
+    // Товары остаются: без них управленческий учёт не ведут. Скрыты только
+    // их КАТЕГОРИИ — складская часть.
+    '/items',
   ])('обычный: %s', (p) => {
     expect(isAccountantOnlyPath(p)).toBe(false);
   });

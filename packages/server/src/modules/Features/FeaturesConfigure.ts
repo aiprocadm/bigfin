@@ -69,6 +69,15 @@ export class FeaturesConfigure {
         defaultValue: true,
       },
       {
+        // Блок первичных документов: счета, акты, накладные, расходы.
+        // Выключен по умолчанию — п. 1.4 ТЗ (этап 1 «Навигация»), решение
+        // владельца от 18.09.2026: блок нужен тем, кто выставляет первичку из
+        // Bigfin, а не тем, кто ведёт управленческий учёт. Включается в
+        // «Настройки → Модули».
+        name: Features.DOCUMENTS,
+        defaultValue: false,
+      },
+      {
         name: Features.PAYMENT_CALENDAR,
         defaultValue: false,
       },

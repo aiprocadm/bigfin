@@ -35,4 +35,7 @@ export const Features = {
   FinancialRatios: 'financial_ratios', // ㉕ финансовые коэффициенты («Показатели»)
   DataQuality: 'data_quality', // ㉗ качество данных (без статьи/дубли/ОПиУ↔ДДС)
   CrmIntegration: 'crm_integration', // CRM-интеграции (⑯a Битрикс24)
+  // Первичные документы: счета, акты, накладные, расходы. Выключен по
+  // умолчанию — п. 1.4 ТЗ (этап 1 «Навигация»).
+  Documents: 'documents',
 }

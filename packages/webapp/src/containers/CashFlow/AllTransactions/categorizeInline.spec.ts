@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 
 import {
+  buildBulkCategorizePayload,
+  bulkSide,
   buildCategorizePayload,
   inlineAccountRootType,
   inlineTransactionType,
@@ -107,5 +109,31 @@ describe('разнос операции из строки', () => {
       transaction_type: 'other_income',
       exchange_rate: 1,
     });
+  });
+
+  it('различает однородное и смешанное выделение', () => {
+    expect(bulkSide([])).toBe('empty');
+    expect(bulkSide([deposit])).toBe('in');
+    expect(bulkSide([withdrawal, { ...withdrawal, id: 20 }])).toBe('out');
+    expect(bulkSide([deposit, withdrawal])).toBe('mixed');
+  });
+
+  it('разносит разом только однородное выделение', () => {
+    expect(
+      buildBulkCategorizePayload([withdrawal, { ...withdrawal, id: 21 }], 2),
+    ).toEqual({
+      uncategorized_transaction_ids: [11, 21],
+      date: '2026-03-06',
+      credit_account_id: 2,
+      transaction_type: 'other_expense',
+      exchange_rate: 1,
+    });
+  });
+
+  it('смешанное выделение разом не разносит', () => {
+    // Иначе поступления ушли бы в расходную статью — отчёты соврали бы, а
+    // человек бы этого не увидел.
+    expect(() => buildBulkCategorizePayload([deposit, withdrawal], 2)).toThrow();
+    expect(() => buildBulkCategorizePayload([], 2)).toThrow();
   });
 });

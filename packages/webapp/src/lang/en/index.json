@@ -4263,5 +4263,10 @@
   "all_transactions.categorize.placeholder": "Choose category",
   "all_transactions.categorize.search": "Search category",
   "all_transactions.categorize.empty": "No matching categories",
-  "all_transactions.categorize.apply": "Apply “{name}”"
+  "all_transactions.categorize.apply": "Apply “{name}”",
+  "all_transactions.bulk.categorize": "Set category for selected",
+  "all_transactions.bulk.exclude": "Exclude from books",
+  "all_transactions.bulk.mixed": "Both money in and money out are selected — a category applies to one side only",
+  "all_transactions.bulk.categorized": "Categorized transactions: {count}",
+  "all_transactions.bulk.excluded": "Excluded transactions: {count}"
 }

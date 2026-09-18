@@ -65,3 +65,48 @@ export const buildCategorizePayload = (row: any, accountId: number) => ({
   ...(row.description ? { description: row.description } : {}),
   ...(row.contact_id ? { contact_id: Number(row.contact_id) } : {}),
 });
+
+/**
+ * Разнос НЕСКОЛЬКИХ выделенных строк разом (этап 3 ТЗ, п. 3.1 — массовые
+ * действия).
+ *
+ * Ручка сервера принимает список, но одним запросом можно разнести только
+ * однородное выделение: тип операции и статья у прихода и расхода разные.
+ * Если человек выделил и то и другое, честнее сказать об этом, чем молча
+ * разнести половину или, хуже, увести поступления в расходную статью.
+ */
+export type BulkSide = 'in' | 'out' | 'mixed' | 'empty';
+
+/** Какая сторона у выделения: только приход, только расход или вперемешку. */
+export const bulkSide = (rows: any[]): BulkSide => {
+  if (!rows || rows.length === 0) return 'empty';
+
+  const hasDeposit = rows.some((row) => isDepositRow(row));
+  const hasWithdrawal = rows.some((row) => !isDepositRow(row));
+
+  if (hasDeposit && hasWithdrawal) return 'mixed';
+  return hasDeposit ? 'in' : 'out';
+};
+
+/** Тело запроса разноски для выделенных строк одной стороны. */
+export const buildBulkCategorizePayload = (rows: any[], accountId: number) => {
+  const side = bulkSide(rows);
+
+  if (side === 'empty' || side === 'mixed') {
+    throw new Error(
+      'Разносить разом можно только поступления или только списания.',
+    );
+  }
+  const [first] = rows;
+
+  return {
+    uncategorized_transaction_ids: rows.map((row) => Number(row.id)),
+    // Дата обязательна для сервера. У разных строк она разная, поэтому берём
+    // дату первой: собственные даты операций сервер сохраняет сам по каждой
+    // строке выписки.
+    date: first.date,
+    credit_account_id: Number(accountId),
+    transaction_type: inlineTransactionType(first),
+    exchange_rate: 1,
+  };
+};

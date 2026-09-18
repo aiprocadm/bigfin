@@ -38,6 +38,7 @@ import { ManagementArticlesModule } from '../ManagementArticles/ManagementArticl
 import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module';
 import { BudgetsModule } from '../Budgets/Budgets.module';
 import { LegalEntitiesModule } from '../LegalEntities/LegalEntities.module';
+import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
 import { DebtsModule } from '../Debts/Debts.module';
 import { PaymentRequestsModule } from '../PaymentRequests/PaymentRequests.module';
 import { DealsModule } from '../Deals/Deals.module';
@@ -243,6 +244,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     PaymentCalendarModule,
     BudgetsModule,
     LegalEntitiesModule,
+    TransactionSplitsModule,
     DebtsModule,
     PaymentRequestsModule,
     DealsModule,

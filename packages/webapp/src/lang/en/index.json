@@ -4317,5 +4317,9 @@
   "reports.main.profit_loss.description": "What the business actually earned",
   "reports.main.balance_sheet.title": "Balance sheet",
   "reports.main.balance_sheet.description": "What the company owns and owes",
-  "reports.other.title": "Other reports"
+  "reports.other.title": "Other reports",
+  "reports.chart.revenue": "Revenue",
+  "reports.chart.profit": "Profit",
+  "reports.chart.money_in": "Money in",
+  "reports.chart.money_out": "Money out"
 }

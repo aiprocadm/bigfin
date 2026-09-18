@@ -7,6 +7,9 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ProfitLossSheetService } from '@/modules/FinancialStatements/modules/ProfitLossSheet/ProfitLossSheetService';
+import { UncategorizedBankTransaction } from '@/modules/BankingTransactions/models/UncategorizedBankTransaction';
+import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.model';
+import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/queries/GetPaymentCalendarForecast.service';
 import { ProfitLossAggregateNodeId } from '@/modules/FinancialStatements/modules/ProfitLossSheet/ProfitLossSheet.types';
 import { GetMoneySummaryService } from './GetMoneySummary.service';
 
@@ -47,6 +50,28 @@ export interface OverviewExpenseShare {
   sharePercent: number;
 }
 
+/**
+ * Строка блока «Требует внимания» (этап 2 ТЗ, блок 3).
+ *
+ * Показываем только непустые: карточка «0 операций ждут разноски» ничего не
+ * сообщает, а место занимает.
+ */
+export interface AttentionItem {
+  /** Что случилось: по нему витрина берёт текст и ссылку. */
+  kind:
+    | 'uncategorized'
+    | 'cash_gap'
+    | 'overdue_receivable'
+    | 'pending_payment_requests';
+  /** Сколько штук — для строк со счётом. */
+  count?: number;
+  /** Сумма — для строк о деньгах. */
+  amount?: number;
+  formattedAmount?: string;
+  /** Дата — для кассового разрыва. */
+  date?: string;
+}
+
 export interface DashboardOverview {
   period: { fromDate: string; toDate: string };
   tiles: {
@@ -61,6 +86,7 @@ export interface DashboardOverview {
   months: OverviewMonth[];
   accounts: OverviewAccount[];
   topExpenses: OverviewExpenseShare[];
+  attention: AttentionItem[];
   currencyCode: string;
 }
 
@@ -88,10 +114,21 @@ export class GetDashboardOverviewService {
   constructor(
     private readonly profitLoss: ProfitLossSheetService,
     private readonly moneySummary: GetMoneySummaryService,
+    private readonly paymentCalendar: GetPaymentCalendarForecastService,
     private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
     private readonly accountModel: TenantModelProxy<typeof Account>,
+
+    @Inject(UncategorizedBankTransaction.name)
+    private readonly uncategorizedModel: TenantModelProxy<
+      typeof UncategorizedBankTransaction
+    >,
+
+    @Inject(PaymentRequest.name)
+    private readonly paymentRequestModel: TenantModelProxy<
+      typeof PaymentRequest
+    >,
   ) {}
 
   public async getOverview(
@@ -112,6 +149,7 @@ export class GetDashboardOverviewService {
     ]);
 
     const months = await this.getMonths(period.toDate);
+    const attention = await this.getAttention(summary, currencyCode, metadata);
 
     const netProfit = current.income - current.expenses;
     const previousNetProfit = prior.income - prior.expenses;
@@ -133,8 +171,103 @@ export class GetDashboardOverviewService {
       months,
       accounts,
       topExpenses: this.topExpenses(current, currencyCode),
+      attention,
       currencyCode,
     };
+  }
+
+  /**
+   * «Требует внимания» — карточки-действия (блок 3 п. 2.2 ТЗ).
+   *
+   * Каждая строка обязана вести туда, где с ней можно что-то сделать, и
+   * появляться, только когда она не пуста. Сбой отдельного источника не
+   * должен ронять главную: не смогли посчитать — строки просто нет.
+   */
+  private async getAttention(
+    summary: any,
+    currencyCode: string,
+    metadata: any,
+  ): Promise<AttentionItem[]> {
+    const [uncategorized, gap, pendingRequests] = await Promise.all([
+      this.countUncategorized(),
+      this.findCashGap(metadata?.tenantId),
+      this.countPendingPaymentRequests(),
+    ]);
+
+    const items: AttentionItem[] = [];
+
+    if (uncategorized > 0) {
+      items.push({ kind: 'uncategorized', count: uncategorized });
+    }
+    if (gap) {
+      items.push({
+        kind: 'cash_gap',
+        date: gap.date,
+        amount: gap.amount,
+        formattedAmount: this.format(gap.amount, currencyCode),
+      });
+    }
+    const overdue = Number(summary?.receivableOverdue?.amount ?? 0);
+    if (overdue > 0) {
+      items.push({
+        kind: 'overdue_receivable',
+        amount: overdue,
+        formattedAmount: summary.receivableOverdue.formattedAmount,
+      });
+    }
+    if (pendingRequests > 0) {
+      items.push({
+        kind: 'pending_payment_requests',
+        count: pendingRequests,
+      });
+    }
+    return items;
+  }
+
+  /** Сколько строк выписки ждут разноски. */
+  private async countUncategorized(): Promise<number> {
+    try {
+      const rows = await this.uncategorizedModel()
+        .query()
+        .where('categorized', false)
+        .modify('notExcluded')
+        .modify('notPending')
+        .resultSize();
+
+      return Number(rows ?? 0);
+    } catch {
+      return 0;
+    }
+  }
+
+  /** Ближайший кассовый разрыв: день и размер нехватки. */
+  private async findCashGap(tenantId?: number) {
+    try {
+      const forecast: any = await this.paymentCalendar.getForecast(
+        tenantId as number,
+        {
+          fromDate: moment().format('YYYY-MM-DD'),
+          toDate: moment().add(90, 'days').format('YYYY-MM-DD'),
+        } as any,
+      );
+      return forecast?.gap ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Сколько заявок на оплату ждут согласования. */
+  private async countPendingPaymentRequests(): Promise<number> {
+    try {
+      const rows = await this.paymentRequestModel()
+        .query()
+        .where('status', 'pending')
+        .resultSize();
+
+      return Number(rows ?? 0);
+    } catch {
+      return 0;
+    }
   }
 
   /** Период по умолчанию — текущий месяц (п. 2.2 ТЗ). */

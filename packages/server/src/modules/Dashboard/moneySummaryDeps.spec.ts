@@ -13,6 +13,15 @@ import { activeCode } from '../../testing/activeCode';
  */
 const MODULES_DIR = path.resolve(__dirname, '..');
 const SERVICE = path.resolve(__dirname, 'queries/GetMoneySummary.service.ts');
+/**
+ * Ручка главной (этап 2 ТЗ) зависит от тех же чужих служб плюс от
+ * платёжного календаря: у неё та же болезнь при недоступном провайдере —
+ * сервер не поднимается, а типы и модульные тесты молчат.
+ */
+const OVERVIEW_SERVICE = path.resolve(
+  __dirname,
+  'queries/GetDashboardOverview.service.ts',
+);
 const OWN_MODULE = path.resolve(__dirname, 'Dashboard.module.ts');
 
 const moduleFiles = (dir: string): string[] =>
@@ -33,9 +42,14 @@ describe('сводка о деньгах: чужие службы доступн
   const service = activeCode(fs.readFileSync(SERVICE, 'utf8'));
   const own = activeCode(fs.readFileSync(OWN_MODULE, 'utf8'));
 
-  const types = [
-    ...service.matchAll(/private readonly \w+:\s*([A-Z][A-Za-z0-9_]*)\s*,/g),
-  ].map((m) => m[1]);
+  const overview = activeCode(fs.readFileSync(OVERVIEW_SERVICE, 'utf8'));
+
+  const typesOf = (source: string) =>
+    [
+      ...source.matchAll(/private readonly \w+:\s*([A-Z][A-Za-z0-9_]*)\s*,/g),
+    ].map((m) => m[1]);
+
+  const types = [...typesOf(service), ...typesOf(overview)];
 
   const modules = moduleFiles(MODULES_DIR).map((file) => {
     const source = activeCode(fs.readFileSync(file, 'utf8'));
@@ -74,5 +88,17 @@ describe('сводка о деньгах: чужие службы доступн
 
     expect(imports).toContain('ARAgingSummaryModule');
     expect(imports).toContain('APAgingSummaryModule');
+  });
+
+  it('модуль главной подключает отчёт о прибылях и платёжный календарь', () => {
+    // Ручка главной берёт из них доходы, расходы и кассовый разрыв.
+    const imports = section(own, 'imports');
+
+    expect(imports).toContain('ProfitLossSheetModule');
+    expect(imports).toContain('PaymentCalendarModule');
+  });
+
+  it('зависимости ручки главной вообще нашлись', () => {
+    expect(typesOf(overview).length).toBeGreaterThan(1);
   });
 });

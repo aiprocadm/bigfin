@@ -4305,5 +4305,10 @@
   "dashboard.summary.income": "Доходы за месяц",
   "dashboard.summary.expenses": "Расходы за месяц",
   "dashboard.summary.profit": "Прибыль",
-  "dashboard.summary.balance": "Остаток на счетах"
+  "dashboard.summary.balance": "Остаток на счетах",
+  "dashboard.attention.title": "Требует внимания",
+  "dashboard.attention.uncategorized": "{count} операций ждут разноски",
+  "dashboard.attention.cash_gap": "Кассовый разрыв {date}: не хватает {amount}",
+  "dashboard.attention.overdue_receivable": "Просрочена дебиторка на {amount}",
+  "dashboard.attention.pending_payment_requests": "{count} заявок на оплату ждут согласования"
 }

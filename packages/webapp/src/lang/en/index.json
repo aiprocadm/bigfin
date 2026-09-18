@@ -4380,5 +4380,9 @@
   "legal_entities.delete_error": "Could not delete: it has transactions or it is the last one",
   "legal_entities.error.name_required": "Enter the legal entity name",
   "legal_entities.error.form_required": "Choose a form: LLC, sole trader or other",
-  "legal_entities.error.ownership_share": "Ownership share must be between 0 and 100"
+  "legal_entities.error.ownership_share": "Ownership share must be between 0 and 100",
+  "screen_state.error": "Could not load the data. Check your connection and try again.",
+  "screen_state.retry": "Retry",
+  "expenses_analysis.error": "Could not calculate expenses. Please try again.",
+  "legal_entities.error": "Could not load the legal entities. Please try again."
 }

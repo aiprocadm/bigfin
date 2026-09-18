@@ -4380,5 +4380,9 @@
   "legal_entities.delete_error": "Не удалось удалить юрлицо: на нём есть операции или оно последнее",
   "legal_entities.error.name_required": "Укажите название юрлица",
   "legal_entities.error.form_required": "Выберите форму: ООО, ИП или другую",
-  "legal_entities.error.ownership_share": "Доля владельца — число от 0 до 100"
+  "legal_entities.error.ownership_share": "Доля владельца — число от 0 до 100",
+  "screen_state.error": "Не удалось загрузить данные. Проверьте связь и попробуйте ещё раз.",
+  "screen_state.retry": "Повторить",
+  "expenses_analysis.error": "Не удалось посчитать расходы. Попробуйте ещё раз.",
+  "legal_entities.error": "Не удалось загрузить список юрлиц. Попробуйте ещё раз."
 }

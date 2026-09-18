@@ -16,6 +16,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ScreenError } from '@/components/ui/screen-error';
+import { pickScreenState } from '@/components/ui/screen-state';
 import { cn } from '@/lib/cn';
 import {
   useCreateLegalEntity,
@@ -64,7 +66,7 @@ const emptyValues = {
  * одних и тех же понятий.
  */
 export default function LegalEntitiesPage() {
-  const { data: entities, isLoading } = useLegalEntities();
+  const { data: entities, isLoading, isError, refetch } = useLegalEntities();
   const createMutation = useCreateLegalEntity();
   const editMutation = useEditLegalEntity();
   const deleteMutation = useDeleteLegalEntity();
@@ -128,8 +130,23 @@ export default function LegalEntitiesPage() {
     }
   };
 
-  if (isLoading) {
+  // Четыре состояния экрана (§5.3 ТЗ): загрузка важнее ошибки,
+  // ошибка важнее пустоты.
+  const screenState = pickScreenState({ isLoading, isError });
+
+  if (screenState === 'loading') {
     return <Skeleton className="m-6 h-96 w-full" />;
+  }
+
+  if (screenState === 'error') {
+    return (
+      <div className="p-6">
+        <ScreenError
+          message={intl.get('legal_entities.error')}
+          onRetry={() => refetch?.()}
+        />
+      </div>
+    );
   }
 
   const rows: LegalEntityRow[] = entities ?? [];

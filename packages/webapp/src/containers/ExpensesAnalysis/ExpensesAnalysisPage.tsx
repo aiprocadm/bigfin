@@ -19,6 +19,8 @@ import {
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ScreenError } from '@/components/ui/screen-error';
+import { pickScreenState } from '@/components/ui/screen-state';
 import { cn } from '@/lib/cn';
 
 import {
@@ -65,10 +67,28 @@ export default function ExpensesAnalysisPage() {
   );
   const [toDate] = React.useState(today.format('YYYY-MM-DD'));
 
-  const { data, isLoading } = useExpensesAnalysis({ fromDate, toDate });
+  const { data, isLoading, isError, refetch } = useExpensesAnalysis({
+    fromDate,
+    toDate,
+  });
 
-  if (isLoading) {
+  // Четыре состояния экрана (§5.3 ТЗ). Порядок задан общим правилом:
+  // загрузка важнее ошибки, ошибка важнее пустоты.
+  const screenState = pickScreenState({ isLoading, isError });
+
+  if (screenState === 'loading') {
     return <Skeleton className="m-6 h-96 w-full" />;
+  }
+
+  if (screenState === 'error') {
+    return (
+      <div className="p-6">
+        <ScreenError
+          message={intl.get('expenses_analysis.error')}
+          onRetry={() => refetch?.()}
+        />
+      </div>
+    );
   }
 
   const splitRows = buildSplitRows(data?.split);

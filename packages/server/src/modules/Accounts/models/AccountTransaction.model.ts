@@ -21,6 +21,12 @@ export class AccountTransaction extends BaseModel {
   public readonly taxRate: number;
   public readonly date: Date | string;
   public readonly transactionType: string;
+  /**
+   * Внутригрупповая операция: деньги перемещаются между юрлицами группы
+   * (этап 7 ТЗ, §7.2). В сводном отчёте такие обороты исключаются —
+   * для группы это перекладывание из кармана в карман.
+   */
+  public readonly isIntercompany: boolean;
   public readonly currencyCode: string;
   public readonly transactionNumber!: string;
   public readonly referenceNumber!: string;

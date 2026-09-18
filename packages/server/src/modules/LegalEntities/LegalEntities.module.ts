@@ -10,6 +10,7 @@ import { BackfillLegalEntityProcessor } from './jobs/BackfillLegalEntityJob';
 import { BackfillLegalEntityQueue } from './constants';
 import { LegalEntitiesApplication } from './LegalEntities.application';
 import { LegalEntitiesController } from './LegalEntities.controller';
+import { GetIntercompanyTurnoverService } from './queries/GetIntercompanyTurnover.service';
 
 /**
  * Юрлица группы (этап 6 ТЗ).
@@ -26,6 +27,7 @@ import { LegalEntitiesController } from './LegalEntities.controller';
   controllers: [LegalEntitiesController],
   providers: [
     LegalEntitiesApplication,
+    GetIntercompanyTurnoverService,
     EnsureDefaultLegalEntityService,
     BackfillLegalEntityService,
     BackfillLegalEntityProcessor,

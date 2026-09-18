@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -19,6 +20,7 @@ import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 import { LegalEntitiesApplication } from './LegalEntities.application';
+import { GetIntercompanyTurnoverService } from './queries/GetIntercompanyTurnover.service';
 import {
   CreateLegalEntityDto,
   EditLegalEntityDto,
@@ -40,7 +42,10 @@ import {
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard, PermissionGuard)
 export class LegalEntitiesController {
-  constructor(private readonly application: LegalEntitiesApplication) {}
+  constructor(
+    private readonly application: LegalEntitiesApplication,
+    private readonly intercompany: GetIntercompanyTurnoverService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Список юрлиц со счётчиком закреплённых счетов.' })
@@ -52,6 +57,23 @@ export class LegalEntitiesController {
   })
   getLegalEntities() {
     return this.application.getLegalEntities();
+  }
+
+  @Get('intercompany-turnover')
+  @ApiOperation({
+    summary: 'Внутригрупповые обороты за период: кто кому и сколько.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Нужен для сверки: делает исключение внутренних оборотов из сводных ' +
+      'отчётов проверяемым.',
+  })
+  getIntercompanyTurnover(
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ) {
+    return this.intercompany.getTurnover(from, to);
   }
 
   @Post()

@@ -79,6 +79,8 @@ export interface ISaveLedgerEntryQueuePayload {
   tenantId: number;
   entry: ILedgerEntry;
   trx?: Knex.Transaction;
+  /** Внутригрупповая ли операция целиком (этап 7 ТЗ, §7.2). */
+  isIntercompany?: boolean;
 }
 
 export interface ISaveAccountsBalanceQueuePayload {

@@ -42,11 +42,27 @@ const report = (
   ],
 });
 
+/** Модель-счётчик: отдаёт заданное число строк. */
+const countingModel = (size: number) => () => ({
+  query: () => {
+    const chain: any = {
+      where: () => chain,
+      modify: () => chain,
+      resultSize: async () => size,
+    };
+    return chain;
+  },
+});
+
 const buildService = (options: {
   current: any;
   previous: any;
   periods?: any;
   accounts?: any[];
+  uncategorized?: number;
+  pendingRequests?: number;
+  gap?: any;
+  overdue?: number;
 }) => {
   const calls: any[] = [];
 
@@ -66,7 +82,15 @@ const buildService = (options: {
   const moneySummary = {
     getMoneySummary: async () => ({
       cashBalance: { amount: 1000, formattedAmount: '1000.00 RUB' },
+      receivableOverdue: {
+        amount: options.overdue ?? 0,
+        formattedAmount: `${(options.overdue ?? 0).toFixed(2)} RUB`,
+      },
     }),
+  };
+
+  const paymentCalendar = {
+    getForecast: async () => ({ gap: options.gap ?? null }),
   };
 
   const tenancyContext = {
@@ -84,8 +108,11 @@ const buildService = (options: {
   const service = new GetDashboardOverviewService(
     profitLoss as any,
     moneySummary as any,
+    paymentCalendar as any,
     tenancyContext as any,
     accountModel as any,
+    countingModel(options.uncategorized ?? 0) as any,
+    countingModel(options.pendingRequests ?? 0) as any,
   );
   return { service, calls };
 };
@@ -229,5 +256,63 @@ describe('главная: всё одним ответом', () => {
       },
       { id: 2, name: 'Касса', amount: 15_000, formattedAmount: '15000.00 RUB' },
     ]);
+  });
+
+  it('«требует внимания» показывает только непустые строки', async () => {
+    const { service } = buildService({
+      current: report(0, 0),
+      previous: report(0, 0),
+      uncategorized: 12,
+      overdue: 340_000,
+      pendingRequests: 0,
+      gap: null,
+    });
+
+    const overview = await service.getOverview('2026-03-01', '2026-03-31');
+
+    // Ни кассового разрыва, ни заявок — их строк быть не должно: карточка
+    // «0 заявок ждут согласования» ничего не сообщает, а место занимает.
+    expect(overview.attention.map((item) => item.kind)).toEqual([
+      'uncategorized',
+      'overdue_receivable',
+    ]);
+    expect(overview.attention[0].count).toBe(12);
+    expect(overview.attention[1].amount).toBe(340_000);
+  });
+
+  it('кассовый разрыв приходит с днём и размером нехватки', async () => {
+    const { service } = buildService({
+      current: report(0, 0),
+      previous: report(0, 0),
+      gap: { date: '2026-03-14', amount: 340_000, daysFromStart: 5 },
+    });
+
+    const overview = await service.getOverview('2026-03-01', '2026-03-31');
+
+    expect(overview.attention).toContainEqual({
+      kind: 'cash_gap',
+      date: '2026-03-14',
+      amount: 340_000,
+      formattedAmount: '340000.00 RUB',
+    });
+  });
+
+  it('сбой отдельного источника не роняет главную', async () => {
+    const { service } = buildService({
+      current: report(100, 50),
+      previous: report(0, 0),
+    });
+
+    // Платёжный календарь падает — остальная главная обязана собраться.
+    (service as any).paymentCalendar = {
+      getForecast: async () => {
+        throw new Error('календарь недоступен');
+      },
+    };
+
+    const overview = await service.getOverview('2026-03-01', '2026-03-31');
+
+    expect(overview.tiles.income.amount).toBe(100);
+    expect(overview.attention.some((i) => i.kind === 'cash_gap')).toBe(false);
   });
 });

@@ -21,6 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 
 import { useDashboardOverview } from './useDashboardOverview';
+import AttentionList from './AttentionList';
 import {
   DashboardPeriod,
   DashboardPeriodKind,
@@ -133,7 +134,7 @@ export default function OverviewSection() {
     return null;
   }
 
-  const { tiles, months, accounts, topExpenses } = data;
+  const { tiles, months, accounts, topExpenses, attention } = data;
   const hasNumbers =
     tiles.income.amount !== 0 ||
     tiles.expenses.amount !== 0 ||
@@ -213,6 +214,12 @@ export default function OverviewSection() {
           to="/financial-reports/profit-loss-sheet"
         />
       </div>
+
+      {/*
+        «Требует внимания» идёт сразу под показателями: это то, ради чего
+        человек открыл главную — что нужно сделать прямо сейчас.
+      */}
+      <AttentionList items={attention ?? []} />
 
       {/* Главный график продукта: доходы и расходы столбцами, прибыль линией. */}
       <div className="rounded-lg border border-border bg-surface p-4">

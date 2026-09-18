@@ -37,6 +37,19 @@ export interface OverviewExpenseShare {
   sharePercent: number;
 }
 
+/** Строка блока «Требует внимания» (этап 2 ТЗ, блок 3). */
+export interface AttentionItem {
+  kind:
+    | 'uncategorized'
+    | 'cash_gap'
+    | 'overdue_receivable'
+    | 'pending_payment_requests';
+  count?: number;
+  amount?: number;
+  formattedAmount?: string;
+  date?: string;
+}
+
 export interface DashboardOverview {
   period: { fromDate: string; toDate: string };
   tiles: {
@@ -48,6 +61,7 @@ export interface DashboardOverview {
   months: OverviewMonth[];
   accounts: OverviewAccount[];
   topExpenses: OverviewExpenseShare[];
+  attention: AttentionItem[];
   currencyCode: string;
 }
 

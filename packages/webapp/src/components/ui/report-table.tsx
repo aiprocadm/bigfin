@@ -50,6 +50,11 @@ export interface ReportTableColumn {
   align?: 'left' | 'right' | 'center';
   /** Индекс ячейки в row.cells (cell_index сервера). Fallback — поиск по key. */
   cellIndex?: number;
+  /**
+   * Колонка, которой нет в ответе отчёта: значение считает вызывающий
+   * (план-факт — этап 4 ТЗ, п. 4.4). Пустая строка = прочерк в ячейке.
+   */
+  getValue?: (row: ReportTableRow) => string;
 }
 
 export interface ReportTableProps {
@@ -107,6 +112,10 @@ export function getRowCellValue(
   column: ReportTableColumn,
   columnIndex: number,
 ): string {
+  // Вычисляемая колонка важнее ячеек сервера: её в ответе отчёта нет.
+  if (column.getValue) {
+    return column.getValue(row) ?? '';
+  }
   if (column.cellIndex != null) {
     return row.cells[column.cellIndex]?.value ?? '';
   }

@@ -21,6 +21,8 @@ import { GetReportChartService } from './queries/GetReportChart.service';
 import { GetReportDrillDownService } from './queries/GetReportDrillDown.service';
 import { TenancyContext } from '../Tenancy/TenancyContext.service';
 import { ReportChartController } from './queries/ReportChart.controller';
+import { GetReportPlanFactService } from './queries/GetReportPlanFact.service';
+import { ReportPlanFactController } from './queries/ReportPlanFact.controller';
 
 @Module({
   imports: [
@@ -46,7 +48,12 @@ import { ReportChartController } from './queries/ReportChart.controller';
   // График над таблицей отчёта (п. 4.2 ТЗ): считает те же числа, что таблица.
   // TenancyContext нужен раскрытию суммы: без него сервер не поднимется —
   // это и стережёт `tenancyModuleImports.spec.ts`.
-  providers: [GetReportChartService, GetReportDrillDownService, TenancyContext],
-  controllers: [ReportChartController],
+  providers: [
+    GetReportChartService,
+    GetReportDrillDownService,
+    GetReportPlanFactService,
+    TenancyContext,
+  ],
+  controllers: [ReportChartController, ReportPlanFactController],
 })
 export class FinancialStatementsModule {}

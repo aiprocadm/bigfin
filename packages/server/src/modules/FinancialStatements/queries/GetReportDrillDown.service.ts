@@ -5,6 +5,10 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import {
+  isCreditNormalAccount,
+  reportAccountNet,
+} from './reportAccountNet';
 
 export interface DrillDownRow {
   date: string;
@@ -88,12 +92,12 @@ export class GetReportDrillDownService {
       .orderBy('date', 'desc')
       .limit(DRILL_DOWN_LIMIT);
 
-    const isCreditNormal = this.isCreditNormal(account);
+    const isCreditNormal = isCreditNormalAccount(account);
 
     const transactions = rows.map((row) => {
       const debit = Number(row.debit ?? 0);
       const credit = Number(row.credit ?? 0);
-      const amount = isCreditNormal ? credit - debit : debit - credit;
+      const amount = reportAccountNet(debit, credit, isCreditNormal);
 
       return {
         date: row.date,
@@ -121,16 +125,6 @@ export class GetReportDrillDownService {
       transactions,
       currencyCode,
     };
-  }
-
-  /**
-   * Нормальная сторона счёта. Поле называется по-разному в разных местах
-   * ответа модели, поэтому принимаем оба написания — иначе половина счетов
-   * молча посчиталась бы с обратным знаком.
-   */
-  private isCreditNormal(account: any): boolean {
-    const normal = account?.accountNormal ?? account?.account_normal;
-    return normal === 'credit';
   }
 
   private format(amount: number, currencyCode: string): string {

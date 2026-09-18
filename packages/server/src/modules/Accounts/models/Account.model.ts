@@ -24,6 +24,12 @@ import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCur
 @InjectModelDefaultViews(AccountDefaultViews)
 @PreventMutateBaseCurrency()
 export class Account extends TenantBaseModel {
+  /**
+   * Юрлицо, которому принадлежит счёт (этап 8 ТЗ, §8.1).
+   * Операции по счёту наследуют его автоматически.
+   */
+  public legalEntityId!: number | null;
+
   public name!: string;
   public slug!: string;
   public code!: string;

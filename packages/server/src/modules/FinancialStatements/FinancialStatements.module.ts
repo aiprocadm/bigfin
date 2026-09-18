@@ -17,6 +17,8 @@ import { ProfitLossSheetModule } from './modules/ProfitLossSheet/ProfitLossSheet
 import { CashflowStatementModule } from './modules/CashFlowStatement/CashflowStatement.module';
 import { VendorBalanceSummaryModule } from './modules/VendorBalanceSummary/VendorBalanceSummary.module';
 import { BalanceSheetModule } from './modules/BalanceSheet/BalanceSheet.module';
+import { GetReportChartService } from './queries/GetReportChart.service';
+import { ReportChartController } from './queries/ReportChart.controller';
 
 @Module({
   imports: [
@@ -39,5 +41,8 @@ import { BalanceSheetModule } from './modules/BalanceSheet/BalanceSheet.module';
     ProfitLossSheetModule,
     CashflowStatementModule,
   ],
+  // График над таблицей отчёта (п. 4.2 ТЗ): считает те же числа, что таблица.
+  providers: [GetReportChartService],
+  controllers: [ReportChartController],
 })
 export class FinancialStatementsModule {}

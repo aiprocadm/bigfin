@@ -4317,5 +4317,9 @@
   "reports.main.profit_loss.description": "Сколько заработал бизнес на самом деле",
   "reports.main.balance_sheet.title": "Баланс",
   "reports.main.balance_sheet.description": "Чем владеет компания и кому должна",
-  "reports.other.title": "Другие отчёты"
+  "reports.other.title": "Другие отчёты",
+  "reports.chart.revenue": "Выручка",
+  "reports.chart.profit": "Прибыль",
+  "reports.chart.money_in": "Поступления",
+  "reports.chart.money_out": "Выплаты"
 }

@@ -16,6 +16,8 @@ import {
   Wallet,
 } from 'lucide-react';
 
+import intl from 'react-intl-universal';
+
 import { cn } from '@/lib/cn';
 
 // Форматирование сумм в рублях по-русски: «842 500 ₽».
@@ -78,25 +80,37 @@ export function DashboardSummary({
 }: DashboardSummaryProps) {
   return (
     <div className={cn('mx-auto max-w-6xl p-4 sm:p-6', className)}>
-      <h1 className="mb-4 text-xl font-medium text-text-primary">Сводка</h1>
+      {/*
+        Строки идут через словарь: компонент жил только в витрине
+        компонентов, и подписи в нём были вписаны по-русски прямо в
+        разметку. На живом экране это баг — продукт обязан говорить на
+        языке организации.
+      */}
+      <h1 className="mb-4 text-xl font-medium text-text-primary">
+        {intl.get('dashboard.summary.title')}
+      </h1>
 
       {/* Метрики: 2 колонки на телефоне, 4 на десктопе. */}
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Metric
-          label="Доходы за месяц"
+          label={intl.get('dashboard.summary.income')}
           value={rub(metrics.income)}
           tone="income"
           icon={ArrowUpRight}
         />
         <Metric
-          label="Расходы за месяц"
+          label={intl.get('dashboard.summary.expenses')}
           value={rub(metrics.expense)}
           tone="expense"
           icon={ArrowDownRight}
         />
-        <Metric label="Прибыль" value={rub(metrics.profit)} icon={TrendingUp} />
         <Metric
-          label="Остаток на счетах"
+          label={intl.get('dashboard.summary.profit')}
+          value={rub(metrics.profit)}
+          icon={TrendingUp}
+        />
+        <Metric
+          label={intl.get('dashboard.summary.balance')}
           value={rub(metrics.balance)}
           icon={Wallet}
         />
@@ -137,14 +151,14 @@ export function DashboardSummary({
               />
               <Bar
                 dataKey="income"
-                name="Доходы"
+                name={intl.get('dashboard.chart.income')}
                 fill="var(--color-success)"
                 radius={[4, 4, 0, 0]}
                 isAnimationActive={false}
               />
               <Bar
                 dataKey="expense"
-                name="Расходы"
+                name={intl.get('dashboard.chart.expenses')}
                 fill="var(--color-danger)"
                 radius={[4, 4, 0, 0]}
                 isAnimationActive={false}

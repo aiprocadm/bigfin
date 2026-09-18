@@ -13,12 +13,23 @@ export type InterfaceModeValue =
  * (чисто-бухгалтерские: проводки, книги, ОСВ, закрытие периодов).
  */
 export const ACCOUNTANT_ONLY_ROUTE_BASES = [
+  // Бухгалтерия: проводки, закрытие периода, план счетов.
   '/manual-journals',
   '/make-journal-entry',
   '/transactions-locking',
+  '/accounts',
+  // Бухгалтерские отчёты.
   '/financial-reports/general-ledger',
   '/financial-reports/trial-balance-sheet',
   '/financial-reports/journal-sheet',
+  // Склад: собственнику в режиме «Бизнес» он не нужен.
+  '/inventory-adjustments',
+  '/warehouses-transfers',
+  '/items/categories',
+  // Аналитика для бухгалтера.
+  '/vat-analysis',
+  '/financial-ratios',
+  '/data-quality',
 ];
 
 /**

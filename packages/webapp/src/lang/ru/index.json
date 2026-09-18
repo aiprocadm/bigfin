@@ -4271,5 +4271,16 @@
   "all_transactions.bulk.excluded": "Исключено операций: {count}",
   "all_transactions.import_statement": "Импорт выписки",
   "all_transactions.amount_from": "Сумма от",
-  "all_transactions.amount_to": "Сумма до"
+  "all_transactions.amount_to": "Сумма до",
+  "sidebar.group.operations": "Операции",
+  "sidebar.group.deals": "Сделки",
+  "sidebar.group.directories": "Справочники",
+  "sidebar.group.documents": "Документы",
+  "sidebar.group.counterparties": "Контрагенты",
+  "sidebar.operations.all": "Все операции",
+  "sidebar.operations.awaiting": "Ждут разноски",
+  "sidebar.reports.money": "Деньги (ДДС)",
+  "sidebar.reports.profit": "Прибыль (ОПиУ)",
+  "sidebar.reports.debts_receivable": "Долги: нам должны",
+  "sidebar.reports.debts_payable": "Долги: мы должны"
 }

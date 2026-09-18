@@ -35,6 +35,12 @@ export enum Features {
   RU_PRINT_FORMS = 'ru_print_forms',
   FINANCIAL_RATIOS = 'financial_ratios',
   CRM_INTEGRATION = 'crm_integration',
+  /**
+   * Первичные документы: счета, акты, накладные, расходы (этап 1 ТЗ, п. 1.4).
+   * По умолчанию ВЫКЛЮЧЕН: блок нужен тем, кто выставляет первичку из Bigfin,
+   * а не тем, кто ведёт управленческий учёт. Включается в «Настройки → Модули».
+   */
+  DOCUMENTS = 'documents',
 }
 
 export interface IFeatureAllItem {

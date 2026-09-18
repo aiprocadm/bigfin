@@ -209,6 +209,48 @@ export function useAccountTransactionsInfinity(
  * @param {*} axios
  * @returns
  */
+/**
+ * Операции, ждущие разноски, ПО ВСЕМ СЧЕТАМ.
+ *
+ * Полоса «N операций без статьи» на экране «Операции» и режим разноски
+ * (этап 3 ТЗ). Раньше такой список существовал только внутри одного счёта.
+ */
+export function useAllUncategorizedInfinity(
+  filters: { fromDate?: string; toDate?: string; accountId?: number } = {},
+  infinityProps?: any,
+) {
+  const apiRequest = useApiRequest();
+
+  const params = Object.fromEntries(
+    Object.entries(filters).filter(
+      ([, value]) => value !== undefined && value !== null && value !== '',
+    ),
+  );
+
+  return useInfiniteQuery(
+    [t.ALL_UNCATEGORIZED_INFINITY, params],
+    async ({ pageParam = 1 }) => {
+      const response = await apiRequest.http({
+        method: 'get',
+        url: `/api/banking/uncategorized`,
+        params: { page: pageParam, page_size: 50, ...params },
+      });
+      return response.data;
+    },
+    {
+      getNextPageParam: (lastPage: any) => {
+        const { pagination } = lastPage;
+
+        return pagination.total > pagination.page_size * pagination.page
+          ? pagination.page + 1
+          : undefined;
+      },
+      keepPreviousData: true,
+      ...infinityProps,
+    },
+  );
+}
+
 export function useAccountUncategorizedTransactionsInfinity(
   accountId: any,
   query: any,

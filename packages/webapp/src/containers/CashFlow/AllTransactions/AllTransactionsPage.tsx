@@ -21,18 +21,24 @@ import {
 
 import {
   useAllTransactionsInfinity,
-  type AllTransactionsFilters,
+  useAllUncategorizedInfinity,
 } from '@/hooks/query/cashflowAccounts';
 import { useCashflowAccounts } from '@/hooks/query';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
+import { useUncategorizedColumns } from './useUncategorizedColumns';
 import {
   defaultPeriod,
   filtersFromSearch,
   searchFromFilters,
+  serverFilters,
+  type ScreenFilters,
 } from './allTransactionsFilters';
 
 /** Ключ строки: у операций нет своего номера, сервер различает их парой ссылок. */
 const getRowId = (row: any) => `${row.reference_type}-${row.reference_id}`;
+
+/** У строк выписки свой номер есть. */
+const getUncategorizedRowId = (row: any) => String(row.id);
 
 const toDate = (value?: string) => (value ? moment(value).toDate() : undefined);
 const fromDate = (value?: Date) =>
@@ -52,7 +58,7 @@ export default function AllTransactionsPage() {
   const location = useLocation();
 
   // Отборы читаем из адреса; период по умолчанию — текущий месяц.
-  const filters = React.useMemo<AllTransactionsFilters>(() => {
+  const filters = React.useMemo<ScreenFilters>(() => {
     const fromUrl = filtersFromSearch(location.search);
 
     return fromUrl.fromDate || fromUrl.toDate
@@ -61,7 +67,7 @@ export default function AllTransactionsPage() {
   }, [location.search]);
 
   const setFilters = React.useCallback(
-    (next: AllTransactionsFilters) => {
+    (next: ScreenFilters) => {
       history.replace({
         pathname: location.pathname,
         search: searchFromFilters(next),
@@ -71,10 +77,14 @@ export default function AllTransactionsPage() {
   );
 
   const patch = React.useCallback(
-    (part: Partial<AllTransactionsFilters>) =>
-      setFilters({ ...filters, ...part }),
+    (part: Partial<ScreenFilters>) => setFilters({ ...filters, ...part }),
     [filters, setFilters],
   );
+
+  // Режим «ждут разноски»: отдельный список строк выписки без статьи.
+  const isAwaiting = filters.status === 'uncategorized';
+
+  const query = serverFilters(filters);
 
   const {
     data,
@@ -83,7 +93,22 @@ export default function AllTransactionsPage() {
     hasNextPage,
     fetchNextPage,
     isSuccess,
-  } = useAllTransactionsInfinity(filters);
+  } = useAllTransactionsInfinity(query, { enabled: !isAwaiting });
+
+  // Непроведённые запрашиваются всегда: их число нужно полосе даже тогда,
+  // когда открыт обычный список.
+  const {
+    data: awaitingData,
+    isLoading: isAwaitingLoading,
+    isFetchingNextPage: isAwaitingFetchingNext,
+    hasNextPage: hasAwaitingNextPage,
+    fetchNextPage: fetchAwaitingNextPage,
+    isSuccess: isAwaitingSuccess,
+  } = useAllUncategorizedInfinity({
+    fromDate: filters.fromDate,
+    toDate: filters.toDate,
+    accountId: filters.accountId,
+  });
 
   const { data: accounts = [] } = useCashflowAccounts();
 
@@ -91,14 +116,62 @@ export default function AllTransactionsPage() {
     () => (isSuccess ? flatten(map((data as any)?.pages, (p: any) => p.transactions)) : []),
     [data, isSuccess],
   );
+  const awaiting = React.useMemo(
+    () =>
+      isAwaitingSuccess
+        ? flatten(map((awaitingData as any)?.pages, (p: any) => p.data))
+        : [],
+    [awaitingData, isAwaitingSuccess],
+  );
+
   const total = (data as any)?.pages?.[0]?.pagination?.total ?? 0;
+  const awaitingTotal = (awaitingData as any)?.pages?.[0]?.pagination?.total ?? 0;
+
   const columns = useAllTransactionsColumns();
+  const awaitingColumns = useUncategorizedColumns();
+
+  // Что показываем сейчас — обычный список или «ждут разноски».
+  const rows = isAwaiting ? awaiting : transactions;
+  const shownTotal = isAwaiting ? awaitingTotal : total;
 
   return (
     <DashboardInsider name={'all-transactions'}>
       <div className="bigfin-ui min-h-full bg-background p-4 sm:p-6">
         <div className="mx-auto flex max-w-[1400px] flex-col">
-          <PageHeader title={intl.get('all_transactions.title')} />
+          <PageHeader
+            title={intl.get(
+              isAwaiting
+                ? 'all_transactions.awaiting.title'
+                : 'all_transactions.title',
+            )}
+          />
+
+          {/*
+            Полоса состояния из п. 3.1 ТЗ: сколько операций ждёт статьи и
+            вход в разноску одним нажатием. Показываем только когда есть что
+            разносить — пустая полоса ничего не сообщает.
+          */}
+          {awaitingTotal > 0 && (
+            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-md border border-border bg-surface-elevated px-3 py-2">
+              <span className="text-sm text-text-primary">
+                {intl.get('all_transactions.awaiting.banner', {
+                  count: awaitingTotal,
+                })}
+              </span>
+              <Button
+                variant={isAwaiting ? 'secondary' : 'primary'}
+                onClick={() =>
+                  patch({ status: isAwaiting ? undefined : 'uncategorized' })
+                }
+              >
+                {intl.get(
+                  isAwaiting
+                    ? 'all_transactions.awaiting.back'
+                    : 'all_transactions.awaiting.show',
+                )}
+              </Button>
+            </div>
+          )}
 
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <DatePicker
@@ -162,32 +235,44 @@ export default function AllTransactionsPage() {
           />
 
           <DataTable
-            columns={columns}
-            data={transactions}
-            getRowId={getRowId}
-            loading={isLoading}
+            columns={isAwaiting ? awaitingColumns : columns}
+            data={rows}
+            getRowId={isAwaiting ? getUncategorizedRowId : getRowId}
+            loading={isAwaiting ? isAwaitingLoading : isLoading}
             emptyState={
               <EmptyState
-                title={intl.get('all_transactions.empty.title')}
-                description={intl.get('all_transactions.empty.description')}
+                title={intl.get(
+                  isAwaiting
+                    ? 'all_transactions.awaiting.empty.title'
+                    : 'all_transactions.empty.title',
+                )}
+                description={intl.get(
+                  isAwaiting
+                    ? 'all_transactions.awaiting.empty.description'
+                    : 'all_transactions.empty.description',
+                )}
               />
             }
           />
 
-          {transactions.length > 0 && (
+          {rows.length > 0 && (
             <div className="mt-3 flex items-center justify-between">
               <span className="text-sm text-text-secondary tabular-nums">
                 {intl.get('all_transactions.counter', {
-                  shown: transactions.length,
-                  total,
+                  shown: rows.length,
+                  total: shownTotal,
                 })}
               </span>
 
-              {hasNextPage && (
+              {(isAwaiting ? hasAwaitingNextPage : hasNextPage) && (
                 <Button
                   variant="secondary"
-                  disabled={isFetchingNextPage}
-                  onClick={() => fetchNextPage()}
+                  disabled={
+                    isAwaiting ? isAwaitingFetchingNext : isFetchingNextPage
+                  }
+                  onClick={() =>
+                    isAwaiting ? fetchAwaitingNextPage() : fetchNextPage()
+                  }
                 >
                   {intl.get('all_transactions.load_more')}
                 </Button>

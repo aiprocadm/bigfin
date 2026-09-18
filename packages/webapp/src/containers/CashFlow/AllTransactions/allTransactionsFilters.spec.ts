@@ -5,6 +5,7 @@ import {
   defaultPeriod,
   filtersFromSearch,
   searchFromFilters,
+  serverFilters,
 } from './allTransactionsFilters';
 
 /**
@@ -79,5 +80,28 @@ describe('отборы списка операций', () => {
         accountId: 5,
       }),
     ).toBe(2);
+  });
+
+  it('режим «ждут разноски» читается из адреса и пишется обратно', () => {
+    expect(filtersFromSearch('?status=uncategorized')).toEqual({
+      status: 'uncategorized',
+    });
+    expect(searchFromFilters({ status: 'uncategorized' })).toBe(
+      '?status=uncategorized',
+    );
+    // Чужое значение режимом не становится.
+    expect(filtersFromSearch('?status=что-то')).toEqual({});
+  });
+
+  it('режим показа на сервер списка операций не уходит', () => {
+    // Иначе сервер получил бы неизвестный ему отбор: режим — дело экрана,
+    // непроведённые операции лежат в отдельной ручке.
+    expect(
+      serverFilters({
+        fromDate: '2026-01-01',
+        status: 'uncategorized',
+        flow: 'out',
+      }),
+    ).toEqual({ fromDate: '2026-01-01', flow: 'out' });
   });
 });

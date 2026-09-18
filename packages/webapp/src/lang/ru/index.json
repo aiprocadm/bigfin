@@ -4250,5 +4250,14 @@
   "all_transactions.empty.title": "Операций за этот период нет",
   "all_transactions.empty.description": "Измените период или отборы — или загрузите выписку банка.",
   "all_transactions.load_more": "Показать ещё",
-  "all_transactions.counter": "Показано {shown} из {total}"
+  "all_transactions.counter": "Показано {shown} из {total}",
+  "all_transactions.column.category": "Статья",
+  "all_transactions.suggested": "Похоже на «{name}»",
+  "all_transactions.no_category": "Без статьи",
+  "all_transactions.awaiting.banner": "{count} операций ждут разноски",
+  "all_transactions.awaiting.show": "Показать",
+  "all_transactions.awaiting.back": "Вернуться ко всем операциям",
+  "all_transactions.awaiting.title": "Ждут разноски",
+  "all_transactions.awaiting.empty.title": "Все операции разнесены",
+  "all_transactions.awaiting.empty.description": "Ни одна операция не ждёт статьи. Как появятся новые — они окажутся здесь."
 }

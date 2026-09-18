@@ -4250,5 +4250,14 @@
   "all_transactions.empty.title": "No transactions for this period",
   "all_transactions.empty.description": "Change the period or filters — or import a bank statement.",
   "all_transactions.load_more": "Load more",
-  "all_transactions.counter": "Showing {shown} of {total}"
+  "all_transactions.counter": "Showing {shown} of {total}",
+  "all_transactions.column.category": "Category",
+  "all_transactions.suggested": "Looks like “{name}”",
+  "all_transactions.no_category": "No category",
+  "all_transactions.awaiting.banner": "{count} transactions await categorization",
+  "all_transactions.awaiting.show": "Show",
+  "all_transactions.awaiting.back": "Back to all transactions",
+  "all_transactions.awaiting.title": "Awaiting categorization",
+  "all_transactions.awaiting.empty.title": "Everything is categorized",
+  "all_transactions.awaiting.empty.description": "No transaction awaits a category. New ones will show up here."
 }

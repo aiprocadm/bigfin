@@ -2,6 +2,15 @@ import moment from 'moment';
 import type { AllTransactionsFilters } from '@/hooks/query/cashflowAccounts';
 
 /**
+ * Отборы экрана. Кроме серверных сюда входит режим показа: `uncategorized` —
+ * это «ждут разноски», отдельный список непроведённых операций (этап 3 ТЗ).
+ * Режим на сервер списка проведённых не уходит.
+ */
+export interface ScreenFilters extends AllTransactionsFilters {
+  status?: 'uncategorized';
+}
+
+/**
  * Отборы списка операций живут в адресной строке (приёмка этапа 3 ТЗ:
  * «ссылку можно переслать коллеге»). Здесь — только перевод туда и обратно,
  * без React: так это можно проверить тестами.
@@ -20,11 +29,11 @@ export const defaultPeriod = (today: moment.MomentInput = undefined) => {
 const NUMERIC_KEYS = ['accountId', 'contactId', 'minAmount', 'maxAmount'] as const;
 
 /** Читает отборы из строки запроса адреса. */
-export const filtersFromSearch = (search: string): AllTransactionsFilters => {
+export const filtersFromSearch = (search: string): ScreenFilters => {
   const params = new URLSearchParams(search);
-  const filters: AllTransactionsFilters = {};
+  const filters: ScreenFilters = {};
 
-  const text = (key: keyof AllTransactionsFilters) => {
+  const text = (key: keyof ScreenFilters) => {
     const value = params.get(key);
     if (value) {
       (filters as any)[key] = value;
@@ -38,6 +47,10 @@ export const filtersFromSearch = (search: string): AllTransactionsFilters => {
   const flow = params.get('flow');
   if (flow === 'in' || flow === 'out') {
     filters.flow = flow;
+  }
+
+  if (params.get('status') === 'uncategorized') {
+    filters.status = 'uncategorized';
   }
 
   NUMERIC_KEYS.forEach((key) => {
@@ -55,7 +68,7 @@ export const filtersFromSearch = (search: string): AllTransactionsFilters => {
 };
 
 /** Собирает строку запроса адреса из отборов. Пустые не пишет. */
-export const searchFromFilters = (filters: AllTransactionsFilters): string => {
+export const searchFromFilters = (filters: ScreenFilters): string => {
   const params = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -67,8 +80,17 @@ export const searchFromFilters = (filters: AllTransactionsFilters): string => {
   return query ? `?${query}` : '';
 };
 
+/**
+ * Отборы, которые уходят на сервер списка проведённых операций: без режима
+ * показа — он к запросу отношения не имеет.
+ */
+export const serverFilters = (filters: ScreenFilters): AllTransactionsFilters => {
+  const { status, ...rest } = filters;
+  return rest;
+};
+
 /** Сколько отборов задано сверх периода — для подписи на кнопке. */
-export const countExtraFilters = (filters: AllTransactionsFilters): number =>
+export const countExtraFilters = (filters: ScreenFilters): number =>
   Object.entries(filters).filter(
     ([key, value]) =>
       !['fromDate', 'toDate'].includes(key) &&

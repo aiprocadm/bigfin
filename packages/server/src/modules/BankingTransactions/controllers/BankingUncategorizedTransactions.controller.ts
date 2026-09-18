@@ -50,6 +50,26 @@ export class BankingUncategorizedTransactionsController {
     );
   }
 
+  @Get()
+  @ApiOperation({
+    summary: 'Get uncategorized transactions of all bank accounts',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Returns a list of uncategorized transactions across all bank accounts',
+  })
+  async getAllUncategorizedTransactions(
+    @Query() query: GetUncategorizedTransactionsQueryDto,
+  ) {
+    // Без счёта — операции, ждущие разноски, по всем счетам организации.
+    // Нужно полосе «N операций без статьи» на экране «Операции» (этап 3 ТЗ).
+    return this.bankingTransactionsApplication.getBankAccountUncategorizedTransactions(
+      undefined,
+      query,
+    );
+  }
+
   @Get('accounts/:accountId')
   @ApiOperation({
     summary: 'Get uncategorized transactions for a specific bank account',

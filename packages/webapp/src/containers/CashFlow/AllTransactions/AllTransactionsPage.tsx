@@ -26,6 +26,7 @@ import {
 import { useAccounts, useCashflowAccounts } from '@/hooks/query';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
+import { BulkActionsBar } from './BulkActionsBar';
 import {
   defaultPeriod,
   filtersFromSearch,
@@ -139,6 +140,20 @@ export default function AllTransactionsPage() {
   const rows = isAwaiting ? awaiting : transactions;
   const shownTotal = isAwaiting ? awaitingTotal : total;
 
+  // Выделение строк — только в режиме разноски: массовые действия применимы
+  // к строкам выписки, а не к уже проведённым операциям.
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    // Сменили режим или отборы — прежнее выделение больше не про эти строки.
+    setSelectedIds([]);
+  }, [isAwaiting, location.search]);
+
+  const selectedRows = React.useMemo(
+    () => awaiting.filter((row: any) => selectedIds.includes(String(row.id))),
+    [awaiting, selectedIds],
+  );
+
   return (
     <DashboardInsider name={'all-transactions'}>
       <div className="bigfin-ui min-h-full bg-background p-4 sm:p-6">
@@ -237,6 +252,14 @@ export default function AllTransactionsPage() {
             search={filters.search ?? ''}
             onSearchChange={(value) => patch({ search: value || undefined })}
             searchPlaceholder={intl.get('all_transactions.search_placeholder')}
+            selectedCount={selectedRows.length}
+            bulkActions={
+              <BulkActionsBar
+                rows={selectedRows}
+                accounts={chartAccounts as any[]}
+                onDone={() => setSelectedIds([])}
+              />
+            }
           />
 
           <DataTable
@@ -244,6 +267,9 @@ export default function AllTransactionsPage() {
             data={rows}
             getRowId={isAwaiting ? getUncategorizedRowId : getRowId}
             loading={isAwaiting ? isAwaitingLoading : isLoading}
+            enableSelection={isAwaiting}
+            selectedIds={selectedIds}
+            onSelectionChange={setSelectedIds}
             emptyState={
               <EmptyState
                 title={intl.get(

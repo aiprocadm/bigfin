@@ -27,6 +27,8 @@ export class AccountTransaction extends BaseModel {
    * для группы это перекладывание из кармана в карман.
    */
   public readonly isIntercompany: boolean;
+  /** Юрлицо операции — наследуется от счёта (этап 8 ТЗ, §8.1). */
+  public readonly legalEntityId: number | null;
   public readonly currencyCode: string;
   public readonly transactionNumber!: string;
   public readonly referenceNumber!: string;

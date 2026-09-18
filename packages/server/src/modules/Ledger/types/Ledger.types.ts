@@ -81,6 +81,8 @@ export interface ISaveLedgerEntryQueuePayload {
   trx?: Knex.Transaction;
   /** Внутригрупповая ли операция целиком (этап 7 ТЗ, §7.2). */
   isIntercompany?: boolean;
+  /** Юрлицо ноги — наследуется от счёта (этап 8 ТЗ, §8.1). */
+  legalEntityId?: number | null;
 }
 
 export interface ISaveAccountsBalanceQueuePayload {

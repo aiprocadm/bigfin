@@ -1,15 +1,17 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 
+import { CategorizeInlineCell } from './CategorizeInlineCell';
+
 /**
  * Колонки списка «Ждут разноски» (этап 3 ТЗ).
  *
- * Это ещё не проводки, а строки выписки: у них нет статьи, поэтому вместо
- * неё показывается подсказка от правила разноски — сервер кладёт её в
- * `assigned_account_name`, когда правило сработало. Саму разноску одним
- * движением делает следующий шаг.
+ * Это ещё не проводки, а строки выписки: статьи у них нет. Колонка «Статья»
+ * даёт выбрать её прямо здесь — операция разносится сразу, без окна
+ * (приёмка этапа: десять операций подряд без единого модального окна).
+ * Если правило разноски дало подсказку, рядом кнопка «Применить».
  */
-export function useUncategorizedColumns() {
+export function useUncategorizedColumns(accounts: any[] = []) {
   return React.useMemo(
     () => [
       {
@@ -38,22 +40,12 @@ export function useUncategorizedColumns() {
         ),
       },
       {
-        id: 'suggestion',
+        id: 'category',
         Header: intl.get('all_transactions.column.category'),
         disableSortBy: true,
-        Cell: ({ row }: any) => {
-          const suggested = row.original.assigned_account_name;
-
-          return suggested ? (
-            <span className="text-text-secondary">
-              {intl.get('all_transactions.suggested', { name: suggested })}
-            </span>
-          ) : (
-            <span className="text-text-muted">
-              {intl.get('all_transactions.no_category')}
-            </span>
-          );
-        },
+        Cell: ({ row }: any) => (
+          <CategorizeInlineCell row={row.original} accounts={accounts} />
+        ),
       },
       {
         id: 'account',
@@ -90,6 +82,6 @@ export function useUncategorizedColumns() {
         },
       },
     ],
-    [],
+    [accounts],
   );
 }

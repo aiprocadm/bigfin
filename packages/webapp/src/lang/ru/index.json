@@ -4259,5 +4259,9 @@
   "all_transactions.awaiting.back": "Вернуться ко всем операциям",
   "all_transactions.awaiting.title": "Ждут разноски",
   "all_transactions.awaiting.empty.title": "Все операции разнесены",
-  "all_transactions.awaiting.empty.description": "Ни одна операция не ждёт статьи. Как появятся новые — они окажутся здесь."
+  "all_transactions.awaiting.empty.description": "Ни одна операция не ждёт статьи. Как появятся новые — они окажутся здесь.",
+  "all_transactions.categorize.placeholder": "Выбрать статью",
+  "all_transactions.categorize.search": "Поиск статьи",
+  "all_transactions.categorize.empty": "Подходящих статей нет",
+  "all_transactions.categorize.apply": "Применить «{name}»"
 }

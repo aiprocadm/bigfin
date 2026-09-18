@@ -23,7 +23,7 @@ import {
   useAllTransactionsInfinity,
   useAllUncategorizedInfinity,
 } from '@/hooks/query/cashflowAccounts';
-import { useCashflowAccounts } from '@/hooks/query';
+import { useAccounts, useCashflowAccounts } from '@/hooks/query';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
 import {
@@ -112,6 +112,11 @@ export default function AllTransactionsPage() {
 
   const { data: accounts = [] } = useCashflowAccounts();
 
+  // План счетов нужен только в режиме разноски — в обычном списке не грузим.
+  const { data: chartAccounts = [] } = useAccounts(undefined, {
+    enabled: isAwaiting,
+  });
+
   const transactions = React.useMemo(
     () => (isSuccess ? flatten(map((data as any)?.pages, (p: any) => p.transactions)) : []),
     [data, isSuccess],
@@ -128,7 +133,7 @@ export default function AllTransactionsPage() {
   const awaitingTotal = (awaitingData as any)?.pages?.[0]?.pagination?.total ?? 0;
 
   const columns = useAllTransactionsColumns();
-  const awaitingColumns = useUncategorizedColumns();
+  const awaitingColumns = useUncategorizedColumns(chartAccounts as any[]);
 
   // Что показываем сейчас — обычный список или «ждут разноски».
   const rows = isAwaiting ? awaiting : transactions;

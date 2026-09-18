@@ -4268,5 +4268,8 @@
   "all_transactions.bulk.exclude": "Exclude from books",
   "all_transactions.bulk.mixed": "Both money in and money out are selected — a category applies to one side only",
   "all_transactions.bulk.categorized": "Categorized transactions: {count}",
-  "all_transactions.bulk.excluded": "Excluded transactions: {count}"
+  "all_transactions.bulk.excluded": "Excluded transactions: {count}",
+  "all_transactions.import_statement": "Import statement",
+  "all_transactions.amount_from": "Amount from",
+  "all_transactions.amount_to": "Amount to"
 }

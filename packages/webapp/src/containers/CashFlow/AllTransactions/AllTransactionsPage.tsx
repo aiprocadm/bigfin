@@ -11,6 +11,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { DatePicker } from '@/components/ui/date-picker';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
+import { MoneyField } from '@/components/ui/money-field';
 import {
   Select,
   SelectContent,
@@ -24,6 +25,8 @@ import {
   useAllUncategorizedInfinity,
 } from '@/hooks/query/cashflowAccounts';
 import { useAccounts, useCashflowAccounts } from '@/hooks/query';
+import { useDialogActions } from '@/hooks/state';
+import { DialogsName } from '@/constants/dialogs';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
 import { BulkActionsBar } from './BulkActionsBar';
@@ -57,6 +60,7 @@ const fromDate = (value?: Date) =>
 export default function AllTransactionsPage() {
   const history = useHistory();
   const location = useLocation();
+  const { openDialog } = useDialogActions();
 
   // Отборы читаем из адреса; период по умолчанию — текущий месяц.
   const filters = React.useMemo<ScreenFilters>(() => {
@@ -164,6 +168,37 @@ export default function AllTransactionsPage() {
                 ? 'all_transactions.awaiting.title'
                 : 'all_transactions.title',
             )}
+            action={
+              <div className="flex flex-wrap items-center gap-2">
+                {/*
+                  Загрузка выписки всегда идёт в конкретный счёт — так устроен
+                  разбор файла. Поэтому кнопка появляется, когда счёт выбран
+                  отбором; иначе вести её некуда (этап 3 ТЗ, шаг 3.7).
+                */}
+                {filters.accountId && (
+                  <Button
+                    variant="secondary"
+                    onClick={() =>
+                      history.push(
+                        `/cashflow-accounts/${filters.accountId}/import`,
+                      )
+                    }
+                  >
+                    {intl.get('all_transactions.import_statement')}
+                  </Button>
+                )}
+                <Button
+                  variant="secondary"
+                  onClick={() =>
+                    openDialog(DialogsName.Export, {
+                      resource: 'bank_transaction',
+                    })
+                  }
+                >
+                  {intl.get('export')}
+                </Button>
+              </div>
+            }
           />
 
           {/*
@@ -225,6 +260,24 @@ export default function AllTransactionsPage() {
                 </SelectItem>
               </SelectContent>
             </Select>
+
+            {/*
+              Суммы вводит поле продукта, а не системное числовое поле
+              браузера: то выбрасывает запятую, и «1000,50» молча становится
+              «100050» (сторож `systemNumberInputGuard`, карта v37).
+            */}
+            <MoneyField
+              className="w-[130px]"
+              placeholder={intl.get('all_transactions.amount_from')}
+              value={filters.minAmount ?? ''}
+              onChange={(value) => patch({ minAmount: value })}
+            />
+            <MoneyField
+              className="w-[130px]"
+              placeholder={intl.get('all_transactions.amount_to')}
+              value={filters.maxAmount ?? ''}
+              onChange={(value) => patch({ maxAmount: value })}
+            />
 
             <Select
               value={filters.accountId ? String(filters.accountId) : 'all'}

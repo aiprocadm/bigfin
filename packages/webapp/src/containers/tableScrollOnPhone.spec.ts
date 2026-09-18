@@ -18,6 +18,12 @@ import path from 'path';
  *
  * Правило: файл, который рисует таблицу, либо заворачивает её, либо
  * перечислен в исключениях — с причиной.
+ *
+ * Дополнение этапа 3 ТЗ (шаг 3.7). Новые экраны рисуют таблицу не сами, а
+ * через примитивы `components/ui`. Сторож их не смотрел вовсе: разделы
+ * проверялись по наличию `<table` в своём файле, а у такого экрана его нет.
+ * Значит стоило убрать обёртку из примитива — и таблицы поехали бы вбок сразу
+ * на всех новых экранах, молча. Теперь примитивы проверяются отдельно.
  */
 const SRC = path.resolve(__dirname, '..');
 
@@ -36,6 +42,9 @@ const sourceFiles = (dir: string): string[] =>
     if (/\.spec\.tsx?$/.test(entry.name)) return [];
     return [full];
   });
+
+/** Примитивы дизайн-системы, рисующие таблицу: за них отвечает обёртка. */
+const UI_DIR = path.join(SRC, 'components', 'ui');
 
 describe('таблицы на телефоне', () => {
   const files = sourceFiles(path.join(SRC, 'containers'));
@@ -71,5 +80,23 @@ describe('таблицы на телефоне', () => {
     });
 
     expect(stale).toEqual([]);
+  });
+
+  it('примитивы дизайн-системы сами заворачивают таблицу', () => {
+    const primitives = sourceFiles(UI_DIR).filter((file) =>
+      /<table[\s>]/.test(fs.readFileSync(file, 'utf8')),
+    );
+
+    // Иначе проверка ниже стала бы пустой и зелёной.
+    expect(primitives.length).toBeGreaterThan(0);
+
+    const offenders = primitives
+      .filter(
+        (file) =>
+          !/overflow-x-auto|overflow-auto/.test(fs.readFileSync(file, 'utf8')),
+      )
+      .map((file) => path.relative(SRC, file).split(path.sep).join('/'));
+
+    expect(offenders).toEqual([]);
   });
 });

@@ -4268,5 +4268,8 @@
   "all_transactions.bulk.exclude": "Исключить из учёта",
   "all_transactions.bulk.mixed": "Выделены и поступления, и списания — статью можно назначить только одной стороне",
   "all_transactions.bulk.categorized": "Разнесено операций: {count}",
-  "all_transactions.bulk.excluded": "Исключено операций: {count}"
+  "all_transactions.bulk.excluded": "Исключено операций: {count}",
+  "all_transactions.import_statement": "Импорт выписки",
+  "all_transactions.amount_from": "Сумма от",
+  "all_transactions.amount_to": "Сумма до"
 }

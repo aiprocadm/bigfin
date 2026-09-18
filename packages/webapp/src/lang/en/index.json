@@ -4354,5 +4354,8 @@
   "expenses_analysis.top.growth": "Change",
   "expenses_analysis.top.new": "new",
   "expenses_analysis.warning.no_fixed": "No expense category is marked as fixed, so the break-even point cannot be calculated. Mark your fixed categories (rent, salaries) in the categories list.",
-  "expenses_analysis.warning.partly_unmarked": "Some expenses are not classified as fixed or variable — break-even and safety margin are calculated on part of the money only."
+  "expenses_analysis.warning.partly_unmarked": "Some expenses are not classified as fixed or variable — break-even and safety margin are calculated on part of the money only.",
+  "management_articles.field.cost_behavior": "Fixed or variable",
+  "management_articles.cost_behavior.hint": "Fixed costs do not depend on sales volume — rent, salaries. Variable costs grow with revenue — goods purchases, piece-rate pay, commissions.",
+  "management_articles.error.cost_behavior_required": "Choose whether this expense is fixed or variable — the break-even point cannot be calculated without it."
 }

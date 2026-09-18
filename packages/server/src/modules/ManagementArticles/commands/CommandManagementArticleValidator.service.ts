@@ -92,6 +92,24 @@ export class CommandManagementArticleValidatorService {
   }
 
   /**
+   * Пометка «постоянный / переменный» осмысленна только у расходных статей:
+   * у выручки постоянных и переменных не бывает.
+   *
+   * Проверка стоит на сервере, а не только в форме: через ручку API статью
+   * заводят и импортом, и интеграцией. Бессмыслица, доехавшая до базы, потом
+   * тихо попадёт в расчёт точки безубыточности.
+   */
+  public validateCostBehaviorMatchesKind(
+    kind: string,
+    costBehavior?: string | null,
+  ) {
+    if (!costBehavior) return;
+    if (kind !== 'expense') {
+      throw new ServiceError(ERRORS.COST_BEHAVIOR_ONLY_FOR_EXPENSE);
+    }
+  }
+
+  /**
    * Validates that every direct child of `articleId` shares `kind`. Used on
    * edit to block changing an article's kind while it still has children of
    * the previous kind, which would break the single-kind subtree invariant.

@@ -12,6 +12,7 @@ export const ERRORS = {
   ARTICLE_KIND_CHILDREN_MISMATCH: 'ARTICLE_KIND_CHILDREN_MISMATCH',
   ARTICLE_PARENT_CYCLE: 'ARTICLE_PARENT_CYCLE',
   INVALID_ARTICLE_KIND: 'INVALID_ARTICLE_KIND',
+  COST_BEHAVIOR_ONLY_FOR_EXPENSE: 'COST_BEHAVIOR_ONLY_FOR_EXPENSE',
 };
 
 export const ARTICLE_KINDS = ['income', 'expense'] as const;
@@ -20,3 +21,10 @@ export const CASHFLOW_SECTIONS = [
   'investing',
   'financing',
 ] as const;
+
+/**
+ * Поведение расхода: постоянный не зависит от объёма продаж (аренда,
+ * оклады), переменный растёт вместе с выручкой (закупка товара, сдельная
+ * оплата, комиссии). Нужно точке безубыточности (этап 9 ТЗ).
+ */
+export const COST_BEHAVIORS = ['fixed', 'variable'] as const;

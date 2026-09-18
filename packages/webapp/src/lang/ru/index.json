@@ -4238,5 +4238,17 @@
   "estimate_form.customer_note.hint": "Будет показано в коммерческом предложении",
   "receipt_form.customer_note.hint": "Будет показано в чеке",
   "branch.suggest.placeholder": "Выберите подразделение",
-  "project_billable_type.select.placeholder": "Выберите вид…"
+  "project_billable_type.select.placeholder": "Выберите вид…",
+  "all_transactions.title": "Операции",
+  "all_transactions.column.note": "Назначение",
+  "all_transactions.column.account": "Счёт",
+  "all_transactions.search_placeholder": "Поиск по назначению и номеру",
+  "all_transactions.flow.all": "Все операции",
+  "all_transactions.flow.in": "Только поступления",
+  "all_transactions.flow.out": "Только списания",
+  "all_transactions.account.all": "Все счета",
+  "all_transactions.empty.title": "Операций за этот период нет",
+  "all_transactions.empty.description": "Измените период или отборы — или загрузите выписку банка.",
+  "all_transactions.load_more": "Показать ещё",
+  "all_transactions.counter": "Показано {shown} из {total}"
 }

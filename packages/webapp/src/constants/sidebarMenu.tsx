@@ -452,6 +452,18 @@ export const SidebarMenu = [
         type: ISidebarMenuItemType.Group,
         children: [
           {
+            // Список операций по всем счетам (этап 3 ТЗ). Стоит первым: это
+            // главный рабочий экран собственника. Полная перестройка меню —
+            // этап 1, здесь добавлен только вход на новый экран.
+            text: <T id={'all_transactions.title'} />,
+            href: '/cashflow-accounts/transactions',
+            type: ISidebarMenuItemType.Link,
+            permission: {
+              subject: AbilitySubject.Cashflow,
+              ability: CashflowAction.View,
+            },
+          },
+          {
             text: <T id={'sidebar.cash_bank_accounts'} />,
             href: '/cashflow-accounts',
             type: ISidebarMenuItemType.Link,

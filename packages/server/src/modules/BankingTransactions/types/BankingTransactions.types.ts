@@ -180,4 +180,13 @@ export interface ICashflowAccountTransaction {
   formattedStatus: string;
 
   uncategorizedTransactionId: number;
+
+  /** Счёт операции — нужен списку по всем счетам (этап 3 ТЗ). */
+  accountId?: number;
+  accountName?: string;
+  /** Контрагент операции. */
+  contactId?: number;
+  contactName?: string;
+  /** Назначение платежа. */
+  note?: string;
 }

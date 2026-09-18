@@ -117,6 +117,13 @@ export class GetBankAccountTransactions extends FinancialSheet {
       transactionNumber: transaction.transactionNumber,
       referenceNumber: transaction.referenceNumber,
 
+      // Счёт и контрагент строки — для списка по всем счетам (этап 3 ТЗ).
+      accountId: transaction.accountId,
+      accountName: transaction.account?.name ?? '',
+      contactId: transaction.contactId,
+      contactName: transaction.contact?.displayName ?? '',
+      note: transaction.note ?? '',
+
       runningBalance: this.runningBalance.amount(),
       formattedRunningBalance: this.formatNumber(this.runningBalance.amount()),
 

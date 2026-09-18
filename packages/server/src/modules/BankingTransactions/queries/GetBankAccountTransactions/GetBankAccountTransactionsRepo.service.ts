@@ -125,6 +125,12 @@ export class GetBankAccountTransactionsRepository {
 
     this.applyFilters(query);
 
+    // Счёт и контрагент нужны списку по всем счетам: без них в строке не
+    // видно, откуда деньги и кому платили (этап 3 ТЗ). На экране одного
+    // счёта эти поля просто не показываются.
+    query.withGraphFetched('account');
+    query.withGraphFetched('contact');
+
     const { results, pagination } = await query
       .orderBy([
         { column: 'date', order: 'desc' },

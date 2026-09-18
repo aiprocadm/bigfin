@@ -1004,6 +1004,18 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   // Cash flow
   {
+    // Список операций по ВСЕМ счетам (этап 3 ТЗ). Стоит перед адресом
+    // «операции одного счёта»: у того три сегмента пути, у этого два, так что
+    // они не пересекаются, но порядок делает намерение явным.
+    path: `/cashflow-accounts/transactions`,
+    component: lazy(
+      () =>
+        import('@/containers/CashFlow/AllTransactions/AllTransactionsPage'),
+    ),
+    pageTitle: intl.get('all_transactions.title'),
+    defaultSearchResource: RESOURCES_TYPES.ACCOUNT,
+  },
+  {
     path: `/cashflow-accounts/:id/transactions`,
     component: lazy(
       () =>

@@ -8,13 +8,14 @@ import { EnsureDefaultLegalEntityService } from './commands/EnsureDefaultLegalEn
 import { BackfillLegalEntityService } from './commands/BackfillLegalEntity.service';
 import { BackfillLegalEntityProcessor } from './jobs/BackfillLegalEntityJob';
 import { BackfillLegalEntityQueue } from './constants';
+import { LegalEntitiesApplication } from './LegalEntities.application';
+import { LegalEntitiesController } from './LegalEntities.controller';
 
 /**
  * Юрлица группы (этап 6 ТЗ).
  *
- * Пока здесь юрлицо по умолчанию и фоновое заполнение существующих строк.
- * Справочник и ручки добавляются шагом 6.4 — модуль заведён сразу, чтобы
- * следующие шаги дописывали его, а не собирали заново.
+ * Здесь юрлицо по умолчанию, фоновое заполнение существующих строк и
+ * справочник (§6.4). Экран витрины — шагом 6.4б.
  *
  * `TenancyContext` — в providers: реквизиты организации лежат в системной
  * схеме, и без него сервер не поднимется (это стережёт
@@ -22,12 +23,18 @@ import { BackfillLegalEntityQueue } from './constants';
  */
 @Module({
   imports: [BullModule.registerQueue({ name: BackfillLegalEntityQueue })],
+  controllers: [LegalEntitiesController],
   providers: [
+    LegalEntitiesApplication,
     EnsureDefaultLegalEntityService,
     BackfillLegalEntityService,
     BackfillLegalEntityProcessor,
     TenancyContext,
   ],
-  exports: [EnsureDefaultLegalEntityService, BackfillLegalEntityService],
+  exports: [
+    LegalEntitiesApplication,
+    EnsureDefaultLegalEntityService,
+    BackfillLegalEntityService,
+  ],
 })
 export class LegalEntitiesModule {}

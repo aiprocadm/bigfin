@@ -7,6 +7,7 @@ import { FinancialSheetSkeleton } from '@/components/FinancialSheet';
 
 import { useCashFlowStatementContext } from './CashFlowStatementProvider';
 import ReportChart from '../ReportChart';
+import PlanFactSummary from '../PlanFactSummary';
 import { withCurrentOrganization } from '@/containers/Organization/withCurrentOrganization';
 
 /**
@@ -32,6 +33,16 @@ function CashFlowStatementBodyJSX({
           */}
           <ReportChart
             kind="cash_flow"
+            fromDate={httpQuery?.fromDate}
+            toDate={httpQuery?.toDate}
+          />
+          {/*
+            План и факт по бюджету движения денег (п. 4.4 ТЗ) — сводкой,
+            а не колонками: строки этого отчёта — балансовые счета,
+            а бюджет разложен по статьям доходов и расходов.
+          */}
+          <PlanFactSummary
+            report="cash_flow"
             fromDate={httpQuery?.fromDate}
             toDate={httpQuery?.toDate}
           />

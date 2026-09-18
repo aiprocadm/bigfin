@@ -148,6 +148,11 @@ const buildCleanupService = ({ demos, ttlHours = 24 }: any) => {
       }),
     } as any,
     { query: () => ({ delete: () => ({ where: async () => 1 }) }) } as any,
+    // Восьмой довод — клиент хранилища файлов. Без него проверка типов
+    // сервера была красной: конструктор ждёт восемь доводов, тест передавал
+    // семь. В самих проверках хранилище не используется — `s3.bucket` в
+    // настройках пуст, и уборка файлов выходит сразу.
+    { send: async () => ({}) } as any,
   );
 
   return { service, dropped, deletedDemoIds, deletedUserIds, deletedTenantIds };

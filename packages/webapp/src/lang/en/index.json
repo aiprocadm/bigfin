@@ -3714,6 +3714,8 @@
   "modules.warehouses.desc": "Multiple warehouses and transfers",
   "modules.notifications.label": "Notifications",
   "modules.notifications.desc": "Alerts for cash gaps and overdue invoices",
+  "modules.ai_analyst.label": "AI analyst",
+  "modules.ai_analyst.desc": "Short takeaways from your report figures",
   "financial_model.page.title": "Financial model",
   "financial_model.filter.period": "Period",
   "financial_model.metric.margin": "Margin",

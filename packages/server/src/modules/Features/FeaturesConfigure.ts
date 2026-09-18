@@ -78,6 +78,13 @@ export class FeaturesConfigure {
         defaultValue: false,
       },
       {
+        // ИИ-аналитик (этап 13 ТЗ). Выключен по умолчанию — §13.1 требует
+        // этого прямо: раздел обращается к внешней модели, и решение
+        // отправлять туда свои цифры принимает человек, а не мы за него.
+        name: Features.AI_ANALYST,
+        defaultValue: false,
+      },
+      {
         name: Features.PAYMENT_CALENDAR,
         defaultValue: false,
       },

@@ -3714,6 +3714,8 @@
   "modules.warehouses.desc": "Несколько складов и перемещения",
   "modules.notifications.label": "Уведомления",
   "modules.notifications.desc": "Оповещения о разрывах и просрочках",
+  "modules.ai_analyst.label": "ИИ-аналитик",
+  "modules.ai_analyst.desc": "Короткие выводы по цифрам отчётов",
   "financial_model.page.title": "Финмодель",
   "financial_model.filter.period": "Период",
   "financial_model.metric.margin": "Маржинальность",

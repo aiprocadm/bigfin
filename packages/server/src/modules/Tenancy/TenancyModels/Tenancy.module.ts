@@ -45,6 +45,8 @@ import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/Ma
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { Budget } from '@/modules/Budgets/models/Budget.model';
 import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
+import { Webhook } from '@/modules/PublicApi/models/Webhook.model';
+import { WebhookDelivery } from '@/modules/PublicApi/models/WebhookDelivery.model';
 import { BudgetLine } from '@/modules/Budgets/models/BudgetLine.model';
 import { DebtRepaymentPlan } from '@/modules/Debts/models/DebtRepaymentPlan.model';
 import { DebtRepaymentInstallment } from '@/modules/Debts/models/DebtRepaymentInstallment.model';
@@ -113,6 +115,9 @@ const models = [
   PlannedOperation,
   Budget,
   LegalEntity,
+  // Вебхуки (этап 15): подписка принадлежит одной организации.
+  Webhook,
+  WebhookDelivery,
   BudgetLine,
   DebtRepaymentPlan,
   DebtRepaymentInstallment,

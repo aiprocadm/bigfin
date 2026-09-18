@@ -4259,5 +4259,9 @@
   "all_transactions.awaiting.back": "Back to all transactions",
   "all_transactions.awaiting.title": "Awaiting categorization",
   "all_transactions.awaiting.empty.title": "Everything is categorized",
-  "all_transactions.awaiting.empty.description": "No transaction awaits a category. New ones will show up here."
+  "all_transactions.awaiting.empty.description": "No transaction awaits a category. New ones will show up here.",
+  "all_transactions.categorize.placeholder": "Choose category",
+  "all_transactions.categorize.search": "Search category",
+  "all_transactions.categorize.empty": "No matching categories",
+  "all_transactions.categorize.apply": "Apply “{name}”"
 }

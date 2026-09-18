@@ -22,6 +22,7 @@ import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
 import {
   FinancialOverviewQueryDto,
+  ExpensesAnalysisQueryDto,
   CreateMarketingChannelDto,
   UpdateMarketingChannelDto,
   UpsertMarketingMonthlyDto,
@@ -64,6 +65,17 @@ export class FinancialModelController {
   })
   getBreakEven(@Query() query: FinancialOverviewQueryDto) {
     return this.application.getBreakEven(query);
+  }
+
+  @Get('expenses-analysis')
+  @ApiOperation({
+    summary:
+      'Анализ расходов: постоянные и переменные с долями, доля расходов ' +
+      'в выручке по месяцам, топ статей с динамикой, точка безубыточности ' +
+      'и запас прочности.',
+  })
+  getExpensesAnalysis(@Query() query: ExpensesAnalysisQueryDto) {
+    return this.application.getExpensesAnalysis(query);
   }
 
   @Get('articles')

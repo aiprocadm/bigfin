@@ -10,6 +10,7 @@ import { GetSegmentProfitabilityService } from './queries/GetSegmentProfitabilit
 import { GetProductMarginService } from './queries/GetProductMargin.service';
 import { GetMarketingMetricsService } from './queries/GetMarketingMetrics.service';
 import { GetBreakEvenService } from './queries/GetBreakEven.service';
+import { GetExpensesAnalysisService } from './queries/GetExpensesAnalysis.service';
 import { MarketingDataService } from './commands/MarketingData.service';
 import { CostBehaviorService } from './commands/CostBehavior.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
@@ -24,6 +25,7 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     GetProductMarginService,
     GetMarketingMetricsService,
     GetBreakEvenService,
+    GetExpensesAnalysisService,
     MarketingDataService,
     CostBehaviorService,
     // collaborator injected directly (no ManagementArticlesModule import needed)

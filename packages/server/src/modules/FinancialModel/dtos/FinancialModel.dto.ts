@@ -10,7 +10,9 @@ import {
   Min,
   Matches,
   IsIn,
+  IsArray,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class FinancialOverviewQueryDto {
   @ApiPropertyOptional({ description: 'Начало периода YYYY-MM-DD' })
@@ -22,6 +24,23 @@ export class FinancialOverviewQueryDto {
   @IsOptional()
   @IsDateString()
   toDate?: string;
+}
+
+/**
+ * Отбор экрана «Анализ расходов»: период плюс разрезы (этап 9 ТЗ).
+ * Юрлицо появится вместе с этапом 6 — таблицы `legal_entities` ещё нет.
+ */
+export class ExpensesAnalysisQueryDto extends FinancialOverviewQueryDto {
+  @ApiPropertyOptional({ description: 'Направления (подразделения)' })
+  @IsOptional()
+  @IsArray()
+  branchesIds?: number[];
+
+  @ApiPropertyOptional({ description: 'Проект' })
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  projectId?: number;
 }
 
 export class CreateMarketingChannelDto {

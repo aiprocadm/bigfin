@@ -4,10 +4,12 @@ import { GetFinancialOverviewService } from './queries/GetFinancialOverview.serv
 import { GetSegmentProfitabilityService } from './queries/GetSegmentProfitability.service';
 import { GetMarketingMetricsService } from './queries/GetMarketingMetrics.service';
 import { GetBreakEvenService } from './queries/GetBreakEven.service';
+import { GetExpensesAnalysisService } from './queries/GetExpensesAnalysis.service';
 import { MarketingDataService } from './commands/MarketingData.service';
 import { CostBehaviorService } from './commands/CostBehavior.service';
 import {
   FinancialOverviewQueryDto,
+  ExpensesAnalysisQueryDto,
   CreateMarketingChannelDto,
   UpdateMarketingChannelDto,
   UpsertMarketingMonthlyDto,
@@ -20,6 +22,7 @@ export class FinancialModelApplication {
     private readonly segmentsService: GetSegmentProfitabilityService,
     private readonly marketingMetrics: GetMarketingMetricsService,
     private readonly breakEven: GetBreakEvenService,
+    private readonly expensesAnalysis: GetExpensesAnalysisService,
     private readonly marketingData: MarketingDataService,
     private readonly costBehavior: CostBehaviorService,
   ) {}
@@ -34,6 +37,10 @@ export class FinancialModelApplication {
 
   getMarketingMetrics(query: FinancialOverviewQueryDto) {
     return this.marketingMetrics.getMetrics(query);
+  }
+
+  getExpensesAnalysis(query: ExpensesAnalysisQueryDto) {
+    return this.expensesAnalysis.getExpensesAnalysis(query);
   }
 
   getBreakEven(query: FinancialOverviewQueryDto) {

@@ -9,7 +9,11 @@ import {
   IsNumber,
   IsString,
 } from 'class-validator';
-import { ARTICLE_KINDS, CASHFLOW_SECTIONS } from '../constants';
+import {
+  ARTICLE_KINDS,
+  CASHFLOW_SECTIONS,
+  COST_BEHAVIORS,
+} from '../constants';
 
 class CommandManagementArticleDto {
   @IsString()
@@ -41,6 +45,18 @@ class CommandManagementArticleDto {
     description: 'Cash flow statement section (optional)',
   })
   cashflowSection?: string;
+
+  @IsString()
+  @IsIn(COST_BEHAVIORS as unknown as string[])
+  @IsOptional()
+  @ApiProperty({
+    example: 'fixed',
+    enum: COST_BEHAVIORS,
+    description:
+      'Постоянный или переменный расход. Только для расходных статей: ' +
+      'у выручки постоянных и переменных не бывает.',
+  })
+  costBehavior?: string;
 
   @ToNumber()
   @IsInt()

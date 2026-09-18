@@ -4184,8 +4184,8 @@
   "taxes": "Налоги",
   "management_articles.no_accounts": "счета не привязаны",
   "management_articles.accounts_count": "счетов",
-  "management_articles.cost_behavior.fixed": "Постоянная",
-  "management_articles.cost_behavior.variable": "Переменная",
+  "management_articles.cost_behavior.fixed": "Постоянный",
+  "management_articles.cost_behavior.variable": "Переменный",
   "data_quality.tab.failed_mails": "Письма не отправлены",
   "data_quality.failed_mails.title": "Письма, которые не удалось доставить",
   "data_quality.failed_mails.description": "Окончательные сбои доставки за последние 7 дней. Каждый виден и в ленте уведомлений; проверьте настройки почты и отправьте письмо заново из карточки документа.",
@@ -4354,5 +4354,8 @@
   "expenses_analysis.top.growth": "Изменение",
   "expenses_analysis.top.new": "новая",
   "expenses_analysis.warning.no_fixed": "Ни одна статья расходов не помечена как постоянная, поэтому точку безубыточности посчитать не из чего. Отметьте постоянные статьи (аренда, оклады) в справочнике статей.",
-  "expenses_analysis.warning.partly_unmarked": "Часть расходов не размечена на постоянные и переменные — точка безубыточности и запас прочности посчитаны не по всем деньгам."
+  "expenses_analysis.warning.partly_unmarked": "Часть расходов не размечена на постоянные и переменные — точка безубыточности и запас прочности посчитаны не по всем деньгам.",
+  "management_articles.field.cost_behavior": "Постоянный или переменный",
+  "management_articles.cost_behavior.hint": "Постоянные не зависят от объёма продаж — аренда, оклады. Переменные растут вместе с выручкой — закупка товара, сдельная оплата, комиссии.",
+  "management_articles.error.cost_behavior_required": "Выберите, постоянный это расход или переменный — без этого не посчитать точку безубыточности."
 }

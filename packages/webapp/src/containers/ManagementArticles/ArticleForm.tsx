@@ -92,6 +92,7 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
       name: article?.name ?? '',
       kind: article?.kind ?? 'expense',
       cashflowSection: article?.cashflowSection ?? '',
+      costBehavior: article?.costBehavior ?? '',
       parentId: article?.parentId ?? null,
       accountIds: article?.accounts?.map((a) => a.id) ?? [],
     },
@@ -153,6 +154,11 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
       name: values.name,
       kind: values.kind,
       cashflowSection: values.cashflowSection || undefined,
+      // У доходной статьи пометки не бывает — сервер такую отвергнет.
+      costBehavior:
+        values.kind === 'expense'
+          ? values.costBehavior || undefined
+          : undefined,
       parentId: values.parentId ?? undefined,
       accountIds: (values.accountIds ?? []).filter((id) =>
         allowedAccountIds.has(id),
@@ -304,6 +310,49 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
                 </FormItem>
               )}
             />
+            {/*
+              Постоянный или переменный расход (этап 9 ТЗ). Спрашиваем сразу:
+              без пометки расход не попадёт в постоянные затраты, и точка
+              безубыточности окажется ближе, чем она есть.
+              У доходной статьи вопрос бессмыслен — поле не показываем.
+            */}
+            {kind === 'expense' && (
+              <FormField
+                control={form.control}
+                name="costBehavior"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {intl.get('management_articles.field.cost_behavior')}
+                    </FormLabel>
+                    <FormControl>
+                      <select
+                        className={selectClassName}
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                      >
+                        <option value="">—</option>
+                        <option value="fixed">
+                          {intl.get('management_articles.cost_behavior.fixed')}
+                        </option>
+                        <option value="variable">
+                          {intl.get(
+                            'management_articles.cost_behavior.variable',
+                          )}
+                        </option>
+                      </select>
+                    </FormControl>
+                    <p className="text-muted-foreground text-sm">
+                      {intl.get('management_articles.cost_behavior.hint')}
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="accountIds"

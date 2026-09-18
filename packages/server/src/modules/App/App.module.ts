@@ -37,6 +37,7 @@ import { ItemCategoryModule } from '../ItemCategories/ItemCategory.module';
 import { ManagementArticlesModule } from '../ManagementArticles/ManagementArticles.module';
 import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module';
 import { BudgetsModule } from '../Budgets/Budgets.module';
+import { LegalEntitiesModule } from '../LegalEntities/LegalEntities.module';
 import { DebtsModule } from '../Debts/Debts.module';
 import { PaymentRequestsModule } from '../PaymentRequests/PaymentRequests.module';
 import { DealsModule } from '../Deals/Deals.module';
@@ -241,6 +242,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     ManagementArticlesModule,
     PaymentCalendarModule,
     BudgetsModule,
+    LegalEntitiesModule,
     DebtsModule,
     PaymentRequestsModule,
     DealsModule,

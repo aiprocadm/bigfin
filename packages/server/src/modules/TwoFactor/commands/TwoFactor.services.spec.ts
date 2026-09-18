@@ -7,6 +7,17 @@ import { encryptTwoFactorSecret } from '../utils/secretCipher';
 import { generateTotpCode, generateTotpSecret } from '../utils/totp';
 import { hashBackupCodes } from '../utils/backupCodes';
 
+/**
+ * Проверки двухфакторного входа честно хешируют резервные коды: десять кодов
+ * через bcrypt с фактором 10. В одиночку это укладывается в секунды, но в
+ * полном прогоне (346 наборов разом) машина занята, и стандартных пяти секунд
+ * не хватает — тест падал по таймауту через раз, хотя код исправен.
+ *
+ * Поднимаем срок ожидания, а не стойкость хеширования: она защищает
+ * настоящие коды и снижать её нельзя.
+ */
+jest.setTimeout(30_000);
+
 const APP_SECRET = 'test-app-secret';
 
 /** Заглушка ConfigService: отдаёт jwt.secret. */

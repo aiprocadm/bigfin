@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { resolveSellerRequisites } from '../utils/resolveSellerRequisites';
 import { Injectable } from '@nestjs/common';
 import {
   renderRuPaymentInvoicePaperTemplateHtml,
@@ -59,8 +60,15 @@ export class GetRuPaymentInvoicePdf {
     const invoice = await this.getInvoiceService.getSaleInvoice(invoiceId);
     const tenant = await this.tenancyContext.getTenant(true);
     const metadata = tenant.metadata;
+    // Реквизиты берутся у ЮРЛИЦА документа (§8.3 ТЗ): счёт от ООО должен
+    // содержать реквизиты ООО, а не общие настройки аккаунта. Без юрлица —
+    // как раньше, по организации.
+    const seller = resolveSellerRequisites(
+      metadata,
+      (invoice as any)?.legalEntity ?? null,
+    );
 
-    return transformToRuPaymentInvoiceProps(invoice, metadata);
+    return transformToRuPaymentInvoiceProps(invoice, metadata, seller);
   }
 }
 
@@ -71,18 +79,19 @@ export class GetRuPaymentInvoicePdf {
 export const transformToRuPaymentInvoiceProps = (
   invoice: any,
   metadata: any,
+  seller?: ReturnType<typeof resolveSellerRequisites>,
 ): RuPaymentInvoicePaperTemplateProps => {
   const entries = invoice.entries || [];
 
   return {
     ...buildSignerProps(metadata),
 
-    bankName: metadata?.bankName ?? '',
-    bankBik: metadata?.bankBik ?? '',
-    bankCorrespondentAccount: metadata?.bankCorrespondentAccount ?? '',
-    bankAccount: metadata?.bankAccount ?? '',
-    sellerInn: metadata?.inn ?? '',
-    sellerKpp: metadata?.kpp ?? '',
+    bankName: seller?.bankName ?? metadata?.bankName ?? '',
+    bankBik: seller?.bankBik ?? metadata?.bankBik ?? '',
+    bankCorrespondentAccount: seller?.bankCorrespondentAccount ?? metadata?.bankCorrespondentAccount ?? '',
+    bankAccount: seller?.bankAccount ?? metadata?.bankAccount ?? '',
+    sellerInn: seller?.inn ?? metadata?.inn ?? '',
+    sellerKpp: seller?.kpp ?? metadata?.kpp ?? '',
     sellerName: metadata?.name ?? '',
 
     documentNumber: invoice.invoiceNo ?? '',

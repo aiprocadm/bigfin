@@ -4324,5 +4324,7 @@
   "reports.chart.money_out": "Money out",
   "reports.drill_down.total": "Row total",
   "reports.drill_down.empty": "No transactions for this category in the period.",
-  "reports.drill_down.error": "Could not load transactions. Please try again."
+  "reports.drill_down.error": "Could not load transactions. Please try again.",
+  "reports.basis.cash_hint": "Cash basis: income and expenses count on the day the money actually arrives in or leaves the account.",
+  "reports.basis.accrual_hint": "Accrual basis: income and expenses count on the day of the deal, even if the money has not moved yet."
 }

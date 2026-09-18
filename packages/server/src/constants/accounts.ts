@@ -1,6 +1,9 @@
 export const ACCOUNT_TYPE = {
   CASH: 'cash',
   BANK: 'bank',
+  // Личные средства собственника: в малом бизнесе часть расходов
+  // идёт с личной карты (§8.2 ТЗ).
+  PERSONAL_FUNDS: 'personal-funds',
   ACCOUNTS_RECEIVABLE: 'accounts-receivable',
   INVENTORY: 'inventory',
   OTHER_CURRENT_ASSET: 'other-current-asset',
@@ -63,6 +66,19 @@ export const ACCOUNT_TYPES = [
   {
     label: 'Bank',
     key: ACCOUNT_TYPE.BANK,
+    normal: ACCOUNT_NORMAL.DEBIT,
+    parentType: ACCOUNT_PARENT_TYPE.CURRENT_ASSET,
+    rootType: ACCOUNT_ROOT_TYPE.ASSET,
+    multiCurrency: true,
+    balanceSheet: true,
+    incomeSheet: false,
+  },
+  {
+    // Личные средства собственника (§8.2 ТЗ). Отдельный тип, а не «прочие
+    // активы»: такие деньги ведут себя как касса — с них платят, — но
+    // принадлежат не фирме, и смешивать их с её кассой нельзя.
+    label: 'Personal funds',
+    key: ACCOUNT_TYPE.PERSONAL_FUNDS,
     normal: ACCOUNT_NORMAL.DEBIT,
     parentType: ACCOUNT_PARENT_TYPE.CURRENT_ASSET,
     rootType: ACCOUNT_ROOT_TYPE.ASSET,

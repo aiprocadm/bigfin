@@ -37,4 +37,7 @@ export const MODULE_ALLOWLIST: string[] = [
   Features.BRANCHES, Features.WAREHOUSES,
   // Прочее
   Features.NOTIFICATIONS,
+  // ИИ-аналитик (этап 13 ТЗ): тумблер нужен на странице «Модули», иначе
+  // включить раздел можно было бы только прямым SQL.
+  Features.AI_ANALYST,
 ];

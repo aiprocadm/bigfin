@@ -27,6 +27,7 @@ import {
   Send,
   ShieldCheck,
   ShoppingCart,
+  Sparkles,
   Split,
   Target,
   TrendingUp,
@@ -64,7 +65,7 @@ const MODULE_GROUPS: { group: string; features: string[] }[] = [
     ],
   },
   { group: 'structure', features: ['branches', 'warehouses'] },
-  { group: 'other', features: ['notifications'] },
+  { group: 'other', features: ['notifications', 'ai_analyst'] },
 ];
 
 const MODULE_ICONS: Record<string, LucideIcon> = {
@@ -100,6 +101,7 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   branches: Building2,
   warehouses: Warehouse,
   notifications: Bell,
+  ai_analyst: Sparkles,
 };
 
 /**

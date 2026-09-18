@@ -48,6 +48,13 @@ const OPEN_BY_DESIGN: string[] = [
   'OneClickDemo/OneClickDemo.controller.ts#createOneClickDemo',
   'OneClickDemo/OneClickDemo.controller.ts#signin',
 
+  // ИИ-чат (этап 14 ТЗ): POST здесь только потому, что вопрос — это текст,
+  // и его отправляют телом запроса. Ручка НИЧЕГО НЕ МЕНЯЕТ: она читает те же
+  // отчёты, что человек и так видит на экране. Требовать право на запись
+  // значило бы, что вопрос о своих же цифрах доступен меньшему числу людей,
+  // чем сам отчёт.
+  'AiChat/AiChat.controller.ts#ask',
+
   // Уведомления читает их собственный получатель — это не общие данные.
   'Notifications/Notifications.controller.ts#markAllRead',
   'Notifications/Notifications.controller.ts#markRead',

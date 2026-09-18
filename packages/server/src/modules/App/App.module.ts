@@ -40,6 +40,7 @@ import { BudgetsModule } from '../Budgets/Budgets.module';
 import { LegalEntitiesModule } from '../LegalEntities/LegalEntities.module';
 import { PublicApiModule } from '../PublicApi/PublicApi.module';
 import { AiAnalystModule } from '../AiAnalyst/AiAnalyst.module';
+import { AiChatModule } from '../AiChat/AiChat.module';
 import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
 import { DebtsModule } from '../Debts/Debts.module';
 import { PaymentRequestsModule } from '../PaymentRequests/PaymentRequests.module';
@@ -250,6 +251,8 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     PublicApiModule,
     // ИИ-аналитик (этап 13 ТЗ). Флаг по умолчанию выключен.
     AiAnalystModule,
+    // ИИ-чат по финансам (этап 14 ТЗ). Тот же флаг, что у аналитика.
+    AiChatModule,
     TransactionSplitsModule,
     DebtsModule,
     PaymentRequestsModule,

@@ -4310,5 +4310,12 @@
   "dashboard.attention.uncategorized": "{count} transactions await categorization",
   "dashboard.attention.cash_gap": "Cash gap on {date}: {amount} short",
   "dashboard.attention.overdue_receivable": "{amount} overdue from customers",
-  "dashboard.attention.pending_payment_requests": "{count} payment requests await approval"
+  "dashboard.attention.pending_payment_requests": "{count} payment requests await approval",
+  "reports.main.cash_flow.title": "Cash flow",
+  "reports.main.cash_flow.description": "Where money comes in and goes out",
+  "reports.main.profit_loss.title": "Profit and loss",
+  "reports.main.profit_loss.description": "What the business actually earned",
+  "reports.main.balance_sheet.title": "Balance sheet",
+  "reports.main.balance_sheet.description": "What the company owns and owes",
+  "reports.other.title": "Other reports"
 }

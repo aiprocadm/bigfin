@@ -325,6 +325,18 @@ export const SidebarMenu = [
     type: ISidebarMenuItemType.Group,
     children: [
       {
+        // Юрлица (этап 6 ТЗ, §6.4). Пункт в меню есть всегда: завести второе
+        // юрлицо надо откуда-то. Навязывание — это колонки и фильтры в
+        // других разделах, и они появляются только со вторым юрлицом.
+        text: <T id={'sidebar.legal_entities'} />,
+        href: '/legal-entities',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Preferences,
+          ability: PreferencesAbility.Mutate,
+        },
+      },
+      {
         text: <T id={'sidebar.management_articles'} />,
         href: '/management-articles',
         type: ISidebarMenuItemType.Link,

@@ -38,6 +38,7 @@ import { ManagementArticlesModule } from '../ManagementArticles/ManagementArticl
 import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module';
 import { BudgetsModule } from '../Budgets/Budgets.module';
 import { LegalEntitiesModule } from '../LegalEntities/LegalEntities.module';
+import { PublicApiModule } from '../PublicApi/PublicApi.module';
 import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
 import { DebtsModule } from '../Debts/Debts.module';
 import { PaymentRequestsModule } from '../PaymentRequests/PaymentRequests.module';
@@ -244,6 +245,8 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     PaymentCalendarModule,
     BudgetsModule,
     LegalEntitiesModule,
+    // Публичный API и вебхуки (этап 15 ТЗ).
+    PublicApiModule,
     TransactionSplitsModule,
     DebtsModule,
     PaymentRequestsModule,

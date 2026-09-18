@@ -5,6 +5,7 @@ import * as path from 'path';
 import './utils/moment-mysql';
 import { AppModule } from './modules/App/App.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { isApiDocsEnabled } from './modules/PublicApi/utils/apiDocsFlag';
 
 global.__public_dirname = path.join(__dirname, '..', 'public');
 global.__static_dirname = path.join(__dirname, '../static');
@@ -26,14 +27,29 @@ async function bootstrap() {
   // create and mount the middleware manually here
   app.use(new ClsMiddleware({}).use);
 
-  const config = new DocumentBuilder()
-    .setTitle('Bigfin')
-    .setDescription('Financial accounting software')
-    .setVersion('1.0')
-    .build();
+  // Документация API. Этап 15 ТЗ: адрес `/api/docs`, на бою — за флагом.
+  // Старый адрес `swagger` оставлен рядом, чтобы не порвать чужие закладки
+  // и скрипты; он подчиняется тому же флагу.
+  if (isApiDocsEnabled()) {
+    const config = new DocumentBuilder()
+      .setTitle('Bigfin')
+      .setDescription('Публичный API Bigfin')
+      .setVersion('1.0')
+      // Токен публичного API: по нему Swagger UI умеет ходить в ручки.
+      .addBearerAuth(
+        { type: 'http', scheme: 'bearer', bearerFormat: 'bgf_...' },
+        'apiToken',
+      )
+      .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, documentFactory);
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+
+    // Глобальный префикс `/api` уже задан выше, поэтому здесь путь без него.
+    SwaggerModule.setup('docs', app, documentFactory, {
+      useGlobalPrefix: true,
+    });
+    SwaggerModule.setup('swagger', app, documentFactory);
+  }
 
   await app.listen(process.env.PORT ?? 3000);
 }

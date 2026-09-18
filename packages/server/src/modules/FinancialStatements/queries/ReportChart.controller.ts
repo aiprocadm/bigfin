@@ -8,6 +8,7 @@ import {
   GetReportChartService,
   ReportChartKind,
 } from './GetReportChart.service';
+import { GetReportDrillDownService } from './GetReportDrillDown.service';
 
 /**
  * Ряды графика над таблицей отчёта (этап 4 ТЗ, п. 4.2).
@@ -20,7 +21,10 @@ import {
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard)
 export class ReportChartController {
-  constructor(private readonly reportChart: GetReportChartService) {}
+  constructor(
+    private readonly reportChart: GetReportChartService,
+    private readonly drillDown: GetReportDrillDownService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Ряды графика отчёта по месяцам.' })
@@ -38,5 +42,23 @@ export class ReportChartController {
       report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
 
     return this.reportChart.getChart(kind, from, to);
+  }
+
+  @Get('drill-down')
+  @ApiOperation({
+    summary: 'Операции, из которых сложилась сумма отчёта.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Итог списка совпадает с суммой в отчёте: вклад строки считается тем ' +
+      'же правилом стороны счёта, что и в самом отчёте.',
+  })
+  getDrillDown(
+    @Query('accountId') accountId: string,
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ) {
+    return this.drillDown.getDrillDown(Number(accountId), from, to);
   }
 }

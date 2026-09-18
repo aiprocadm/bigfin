@@ -70,6 +70,14 @@ export interface ReportTableProps {
   /** Текст, когда строк нет («За выбранный период продаж не было»). */
   emptyText?: React.ReactNode;
   /**
+   * Клик по строке отчёта: раскрытие суммы до операций (этап 4 ТЗ, п. 4.2).
+   * Вызывается только для строк, которые вызывающий счёл раскрываемыми —
+   * `canDrillDown`. Без него строка ведёт себя как раньше.
+   */
+  onRowClick?: (row: ReportTableRow) => void;
+  /** Какие строки можно раскрыть: обычно это строки-счета, а не итоги. */
+  canDrillDown?: (row: ReportTableRow) => boolean;
+  /**
    * Виртуализация для длинных отчётов (Журнал, Главная книга):
    * рендерятся только видимые строки, высота строки фиксированная.
    */
@@ -194,6 +202,8 @@ interface ReportRowViewProps {
   onToggle: (path: string) => void;
   hideValuesWhenExpanded: boolean;
   rowHeight?: number;
+  onRowClick?: (row: ReportTableRow) => void;
+  canDrillDown?: (row: ReportTableRow) => boolean;
 }
 
 function ReportRowView({
@@ -202,18 +212,26 @@ function ReportRowView({
   onToggle,
   hideValuesWhenExpanded,
   rowHeight,
+  onRowClick,
+  canDrillDown,
 }: ReportRowViewProps) {
   const { row, path, depth, hasChildren, isExpanded, isFinal } = flat;
   const isTotal = isTotalRow(row);
   const hideValues = hideValuesWhenExpanded && isExpanded;
 
+  // Раскрывать до операций имеет смысл не у всякой строки: у итогов и
+  // расчётных строк своих проводок нет.
+  const drillable = Boolean(onRowClick && canDrillDown?.(row));
+
   return (
     <tr
       style={rowHeight ? { height: rowHeight } : undefined}
+      onClick={drillable ? () => onRowClick?.(row) : undefined}
       className={cn(
         'border-b border-border/60',
         isTotal && 'border-t border-t-border font-semibold',
         isFinal && 'border-b-0 bg-surface-elevated font-semibold',
+        drillable && 'cursor-pointer hover:bg-surface-elevated',
       )}
     >
         {columns.map((column, columnIndex) => {
@@ -284,6 +302,8 @@ export function ReportTable({
   hideValuesWhenExpanded = true,
   isFinalRow,
   emptyText,
+  onRowClick,
+  canDrillDown,
   virtualized = false,
   rowHeight = 32,
   overscan = 8,
@@ -394,6 +414,8 @@ export function ReportTable({
               onToggle={handleToggle}
               hideValuesWhenExpanded={hideValuesWhenExpanded}
               rowHeight={virtualized ? rowHeight : undefined}
+              onRowClick={onRowClick}
+              canDrillDown={canDrillDown}
             />
           ))}
           {vwin && vwin.padBottom > 0 && (

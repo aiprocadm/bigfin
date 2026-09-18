@@ -4321,5 +4321,8 @@
   "reports.chart.revenue": "Revenue",
   "reports.chart.profit": "Profit",
   "reports.chart.money_in": "Money in",
-  "reports.chart.money_out": "Money out"
+  "reports.chart.money_out": "Money out",
+  "reports.drill_down.total": "Row total",
+  "reports.drill_down.empty": "No transactions for this category in the period.",
+  "reports.drill_down.error": "Could not load transactions. Please try again."
 }

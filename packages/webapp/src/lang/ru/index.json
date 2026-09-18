@@ -4321,5 +4321,8 @@
   "reports.chart.revenue": "Выручка",
   "reports.chart.profit": "Прибыль",
   "reports.chart.money_in": "Поступления",
-  "reports.chart.money_out": "Выплаты"
+  "reports.chart.money_out": "Выплаты",
+  "reports.drill_down.total": "Итого по строке",
+  "reports.drill_down.empty": "За этот период операций по статье нет.",
+  "reports.drill_down.error": "Не удалось показать операции. Попробуйте ещё раз."
 }

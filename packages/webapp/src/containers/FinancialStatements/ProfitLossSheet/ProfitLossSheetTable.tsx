@@ -57,6 +57,9 @@ const flattenLeafColumns = (
 import ReportDrillDownPanel, {
   DrillDownTarget,
 } from '../ReportDrillDownPanel';
+import { formattedAmount } from '@/utils';
+import { formatVariance, planFactForRow } from '../planFactColumns';
+import { useReportPlanFact } from '../useReportPlanFact';
 
 /**
  * Раскрыть можно строку-счёт: у неё числовой номер. У итогов и расчётных
@@ -86,6 +89,13 @@ export default function ProfitLossSheetTable({
     null,
   );
 
+  // План по строкам отчёта (этап 4 ТЗ, п. 4.4). Нет бюджета — нет колонок.
+  const planFact = useReportPlanFact(
+    'profit_loss',
+    query?.from_date,
+    query?.to_date,
+  );
+
   // Строки сервера отдаём движку как есть; стабильная ссылка, чтобы
   // развёртка сбрасывалась только при реальной смене данных отчёта.
   const rows = React.useMemo<ReportTableRow[]>(
@@ -94,10 +104,11 @@ export default function ProfitLossSheetTable({
   );
 
   // Колонки движка из колонок сервера: первая — название, деньги — вправо.
+  // В конец добавляются «План» и «Отклонение», если по периоду есть бюджет.
   const columns = React.useMemo<ReportTableColumn[]>(() => {
     const leaves = flattenLeafColumns(table?.columns ?? []);
 
-    return leaves.map((column, index) => ({
+    const serverColumns: ReportTableColumn[] = leaves.map((column, index) => ({
       // Ключи листьев повторяются между периодами сравнения — индекс
       // делает React-ключ уникальным (значение берётся по cellIndex).
       key: `${column.key}-${index}`,
@@ -105,7 +116,34 @@ export default function ProfitLossSheetTable({
       align: column.key === 'name' ? 'left' : 'right',
       cellIndex: column.cell_index,
     }));
-  }, [table]);
+
+    if (!planFact?.available) return serverColumns;
+
+    const money = (value: number) => formattedAmount(value, '');
+
+    return serverColumns.concat([
+      {
+        key: 'plan-fact-plan',
+        label: intl.get('reports.plan_fact.plan'),
+        align: 'right',
+        getValue: (row) => {
+          const found = planFactForRow(row, planFact);
+          return found ? money(found.plan) : '';
+        },
+      },
+      {
+        key: 'plan-fact-variance',
+        label: intl.get('reports.plan_fact.variance'),
+        align: 'right',
+        getValue: (row) => {
+          const found = planFactForRow(row, planFact);
+          return found
+            ? formatVariance(found.varianceAbs, found.variancePct, money)
+            : '';
+        },
+      },
+    ]);
+  }, [table, planFact]);
 
   // Финальная плашка отчёта — строка «Чистая прибыль».
   const isNetIncomeRow = React.useCallback(

@@ -145,6 +145,17 @@ export const SidebarMenu = [
         },
       },
       {
+        // Этап 9 ТЗ: отдельный экран, а не отчёт из общего списка —
+        // он отвечает на вопрос «почему деньги уходят», а не «сколько».
+        text: <T id={'sidebar.reports.expenses_analysis'} />,
+        href: '/expenses-analysis',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Report,
+          ability: ReportsAction.READ_PROFIT_LOSS,
+        },
+      },
+      {
         text: <T id={'sidebar.all_financial_reports'} />,
         href: '/financial-reports',
         type: ISidebarMenuItemType.Link,

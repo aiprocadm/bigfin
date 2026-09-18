@@ -1,9 +1,11 @@
 // © 2026 Bigfin
 import {
+  BUDGET_TYPE_BY_REPORT,
   GetReportPlanFactService,
   attributePlanToAccounts,
   withoutDoubleCountedPlans,
 } from './GetReportPlanFact.service';
+import { BUDGET_TYPES } from '@/modules/Budgets/constants';
 
 /**
  * Этап 4 ТЗ, п. 4.4. Колонки «План» и «Отклонение» в отчёте.
@@ -25,6 +27,8 @@ const buildService = (options: {
   map?: any[];
   sums?: any[];
   accounts?: any[];
+  legs?: any[];
+  cashAccounts?: any[];
 }) => {
   const budgetModel = () => {
     const chain: any = {
@@ -52,8 +56,13 @@ const buildService = (options: {
   });
 
   const accountModel = () => {
+    // Кассовый факт сначала спрашивает денежные счета по типу,
+    // потом — счета из полученных сумм по номерам.
     const chain: any = {
-      whereIn: async () => options.accounts ?? [],
+      whereIn: async (column: string) =>
+        column === 'accountType'
+          ? options.cashAccounts ?? []
+          : options.accounts ?? [],
     };
     return { query: () => chain };
   };
@@ -64,6 +73,8 @@ const buildService = (options: {
       sum: () => chain,
       where: () => chain,
       groupBy: async () => options.sums ?? [],
+      // Кассовый факт берёт проводки списком, без группировки.
+      then: (resolve: any) => resolve(options.legs ?? []),
     };
     return { query: () => chain };
   };
@@ -306,5 +317,143 @@ describe('GetReportPlanFactService', () => {
     expect(seen.fiscalYear).toBe(2026);
     // ДДС спрашивает бюджет движения денег, а не бюджет прибыли.
     expect(seen.type).toBe('bdds');
+  });
+});
+
+describe('тип бюджета по отчёту', () => {
+  it('названия типов взяты из общего списка, а не написаны на глаз', () => {
+    // Опечатка в этой строке ничего не ломает вслух: сервер не найдёт
+    // бюджет и ответит «бюджета нет», а колонки молча не появятся.
+    // Именно так и случилось в первой версии («bdr» вместо «bdir»).
+    const known = new Set<string>(BUDGET_TYPES as unknown as string[]);
+
+    expect(known.has(BUDGET_TYPE_BY_REPORT.profit_loss)).toBe(true);
+    expect(known.has(BUDGET_TYPE_BY_REPORT.cash_flow)).toBe(true);
+  });
+
+  it('прибыль и деньги спрашивают разные бюджеты', () => {
+    expect(BUDGET_TYPE_BY_REPORT.profit_loss).not.toBe(
+      BUDGET_TYPE_BY_REPORT.cash_flow,
+    );
+  });
+});
+
+describe('кассовый факт для движения денег', () => {
+  const budget = { id: 1, name: 'Бюджет 2026', activeScenario: 'base' };
+  const lines = [{ articleId: 10, plannedAmount: 100_000 }];
+  const articles = [{ id: 10, parentId: null, kind: 'expense' }];
+  const map = [{ articleId: 10, accountId: 55 }];
+  const accounts = [{ id: 55, accountNormal: 'debit' }];
+  const cashAccounts = [{ id: 1, accountType: 'bank' }];
+
+  it('неоплаченный счёт в факт не попадает', async () => {
+    // Операция не задела ни один денежный счёт: деньги не двигались.
+    const service = buildService({
+      budget,
+      lines,
+      articles,
+      map,
+      accounts,
+      cashAccounts,
+      legs: [
+        {
+          referenceType: 'Bill',
+          referenceId: 7,
+          accountId: 55,
+          debit: 80_000,
+          credit: 0,
+        },
+        {
+          referenceType: 'Bill',
+          referenceId: 7,
+          accountId: 90,
+          debit: 0,
+          credit: 80_000,
+        },
+      ],
+    });
+
+    const result = await service.getPlanFact(
+      'cash_flow',
+      '2026-01-01',
+      '2026-03-31',
+    );
+
+    expect(result.totals.expense.fact).toBe(0);
+  });
+
+  it('оплаченный счёт попадает в факт', async () => {
+    const service = buildService({
+      budget,
+      lines,
+      articles,
+      map,
+      accounts,
+      cashAccounts,
+      legs: [
+        {
+          referenceType: 'Payment',
+          referenceId: 9,
+          accountId: 55,
+          debit: 80_000,
+          credit: 0,
+        },
+        // Вторая нога — на банковском счёте: деньги реально ушли.
+        {
+          referenceType: 'Payment',
+          referenceId: 9,
+          accountId: 1,
+          debit: 0,
+          credit: 80_000,
+        },
+      ],
+    });
+
+    const result = await service.getPlanFact(
+      'cash_flow',
+      '2026-01-01',
+      '2026-03-31',
+    );
+
+    expect(result.totals.expense.fact).toBe(80_000);
+    expect(result.totals.expense.varianceAbs).toBe(-20_000);
+  });
+
+  it('перевод между своими счетами деньгами не считается', async () => {
+    // Он ничего не зарабатывает и не тратит, только перекладывает.
+    const service = buildService({
+      budget,
+      lines,
+      articles,
+      map,
+      accounts,
+      cashAccounts,
+      legs: [
+        {
+          referenceType: 'Transfer',
+          referenceId: 3,
+          accountId: 55,
+          debit: 80_000,
+          credit: 0,
+          transactionType: 'TransferToAccount',
+        },
+        {
+          referenceType: 'Transfer',
+          referenceId: 3,
+          accountId: 1,
+          debit: 0,
+          credit: 80_000,
+          transactionType: 'TransferToAccount',
+        },
+      ],
+    });
+
+    const result = await service.getPlanFact(
+      'cash_flow',
+      '2026-01-01',
+      '2026-03-31',
+    );
+
+    expect(result.totals.expense.fact).toBe(0);
   });
 });

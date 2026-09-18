@@ -9,14 +9,22 @@ import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/Ma
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { computeVariance } from '@/modules/Budgets/utils/computeVariance';
+import { cashSettledReferenceKeys } from '@/modules/Budgets/utils/cashSettledReferenceKeys';
+import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
 import { isCreditNormalAccount, reportAccountNet } from './reportAccountNet';
 
 /** Тип отчёта, к которому просят план. */
 export type PlanFactReportKind = 'profit_loss' | 'cash_flow';
 
-/** Бюджет заведён на ОПиУ («БДР») или на движение денег («БДДС»). */
-const BUDGET_TYPE_BY_REPORT: Record<PlanFactReportKind, string> = {
-  profit_loss: 'bdr',
+/**
+ * Бюджет заведён на доходы и расходы («БДиР») или на движение денег («БДДС»).
+ *
+ * Опечатка здесь ничего не ломает вслух: сервер просто не найдёт бюджет и
+ * честно ответит «бюджета нет», а колонки молча не появятся. Поэтому
+ * значения сверяются с общим списком `BUDGET_TYPES` отдельной проверкой.
+ */
+export const BUDGET_TYPE_BY_REPORT: Record<PlanFactReportKind, string> = {
+  profit_loss: 'bdir',
   cash_flow: 'bdds',
 };
 
@@ -262,7 +270,13 @@ export class GetReportPlanFactService {
       accountId: Number(row.accountId),
     }));
 
-    const factByAccount = await this.getFactByAccount(fromDate, toDate);
+    // У бюджета движения денег факт — только ОПЛАЧЕННОЕ. Считать его так
+    // же, как для прибыли, значит записать в факт выставленные, но не
+    // оплаченные счета — и показать выполнение плана, которого не было.
+    const factByAccount =
+      report === 'cash_flow'
+        ? await this.getCashSettledFactByAccount(fromDate, toDate)
+        : await this.getFactByAccount(fromDate, toDate);
     const { accounts, totals } = attributePlanToAccounts(
       articles,
       map,
@@ -276,6 +290,77 @@ export class GetReportPlanFactService {
       accounts,
       totals,
     };
+  }
+
+  /**
+   * Кассовый факт по счетам за период: только операции, которые реально
+   * задели деньги.
+   *
+   * Правило отбора взято из бюджета движения денег
+   * (`cashSettledReferenceKeys`), а не написано заново: иначе сводка в
+   * отчёте и экран «Бюджеты → План-факт» показывали бы разные числа по
+   * одному и тому же бюджету.
+   *
+   * Перевод между своими счетами деньгами не считается: он ничего не
+   * зарабатывает и не тратит, только перекладывает.
+   */
+  private async getCashSettledFactByAccount(
+    fromDate: string,
+    toDate: string,
+  ): Promise<Map<number, number>> {
+    const cashAccounts: any[] = await this.accountModel()
+      .query()
+      .whereIn('accountType', CASH_ACCOUNT_TYPES as unknown as string[]);
+
+    const cashAccountIds = new Set<number>(
+      cashAccounts.map((account) => Number(account.id)),
+    );
+
+    const legs: any[] = await this.transactionModel()
+      .query()
+      .where('date', '>=', fromDate)
+      .where('date', '<=', toDate);
+
+    const settledKeys = cashSettledReferenceKeys(legs as any, (accountId) =>
+      cashAccountIds.has(Number(accountId)),
+    );
+
+    const totals = new Map<number, { debit: number; credit: number }>();
+    legs.forEach((leg) => {
+      const key = `${leg.referenceType}:${leg.referenceId}`;
+      if (!settledKeys.has(key)) return;
+
+      const accountId = Number(leg.accountId);
+      const current = totals.get(accountId) ?? { debit: 0, credit: 0 };
+      current.debit += Number(leg.debit ?? 0);
+      current.credit += Number(leg.credit ?? 0);
+      totals.set(accountId, current);
+    });
+
+    if (totals.size === 0) return new Map();
+
+    const accountRows: any[] = await this.accountModel()
+      .query()
+      .whereIn('id', [...totals.keys()]);
+
+    const creditNormalById = new Map<number, boolean>();
+    accountRows.forEach((account) => {
+      creditNormalById.set(Number(account.id), isCreditNormalAccount(account));
+    });
+
+    const factByAccount = new Map<number, number>();
+    totals.forEach((sums, accountId) => {
+      factByAccount.set(
+        accountId,
+        reportAccountNet(
+          sums.debit,
+          sums.credit,
+          creditNormalById.get(accountId) ?? false,
+        ),
+      );
+    });
+
+    return factByAccount;
   }
 
   /**

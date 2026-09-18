@@ -4328,5 +4328,9 @@
   "reports.basis.cash_hint": "Cash basis: income and expenses count on the day the money actually arrives in or leaves the account.",
   "reports.basis.accrual_hint": "Accrual basis: income and expenses count on the day of the deal, even if the money has not moved yet.",
   "reports.plan_fact.plan": "Plan",
-  "reports.plan_fact.variance": "Variance"
+  "reports.plan_fact.variance": "Variance",
+  "reports.plan_fact.fact": "Actual",
+  "reports.plan_fact.money_in": "Money in",
+  "reports.plan_fact.money_out": "Money out",
+  "reports.plan_fact.summary_title": "Plan vs actual by budget"
 }

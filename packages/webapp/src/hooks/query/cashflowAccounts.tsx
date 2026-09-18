@@ -33,7 +33,10 @@ const commonInvalidateQueries = (queryClient: any) => {
 /**
  * Retrieve accounts list.
  */
-export function useCashflowAccounts(query: any, props: any) {
+// Оба довода необязательны: список счетов часто нужен «как есть», без отбора
+// и настроек. Раньше они были обязательными, и такой вызов не сходился по
+// типам (тот же класс, что чинили в картах v87–v88).
+export function useCashflowAccounts(query?: any, props?: any) {
   return useRequestQuery(
     [t.CASH_FLOW_ACCOUNTS, query],
     { method: 'get', url: 'banking/accounts', params: query },
@@ -97,6 +100,70 @@ export function useDeleteCashflowTransaction(props: any) {
   });
 }
 
+/** Отборы списка операций по всем счетам (этап 3 ТЗ). */
+export interface AllTransactionsFilters {
+  /** Начало периода, `YYYY-MM-DD`. */
+  fromDate?: string;
+  /** Конец периода, `YYYY-MM-DD`. */
+  toDate?: string;
+  /** Счёт. Пусто — по всем счетам. */
+  accountId?: number;
+  /** Приход (`in`) или расход (`out`). */
+  flow?: 'in' | 'out';
+  /** Контрагент. */
+  contactId?: number;
+  /** Поиск по номеру, номеру-ссылке и назначению. */
+  search?: string;
+  /** Сумма от и до. */
+  minAmount?: number;
+  maxAmount?: number;
+}
+
+/**
+ * Список операций ПО ВСЕМ СЧЕТАМ с отборами.
+ *
+ * Отдельный крючок, а не довод к соседнему: отборы обязаны попадать в ключ
+ * памяти запросов, иначе при смене периода показывался бы прошлый ответ.
+ * У соседнего крючка ключ состоит только из счёта — там отборы не меняются.
+ */
+export function useAllTransactionsInfinity(
+  filters: AllTransactionsFilters = {},
+  infinityProps?: any,
+) {
+  const apiRequest = useApiRequest();
+
+  // Пустые значения в запрос не отправляем: сервер отличает «не задано» от
+  // «задано пустым», и пустая строка отбора отсекла бы все строки.
+  const params = Object.fromEntries(
+    Object.entries(filters).filter(
+      ([, value]) => value !== undefined && value !== null && value !== '',
+    ),
+  );
+
+  return useInfiniteQuery(
+    [t.ALL_TRANSACTIONS_INFINITY, params],
+    async ({ pageParam = 1 }) => {
+      const response = await apiRequest.http({
+        method: 'get',
+        url: `/api/banking/transactions`,
+        params: { page: pageParam, page_size: 50, ...params },
+      });
+      return response.data;
+    },
+    {
+      getNextPageParam: (lastPage: any) => {
+        const { pagination } = lastPage;
+
+        return pagination.total > pagination.page_size * pagination.page
+          ? pagination.page + 1
+          : undefined;
+      },
+      keepPreviousData: true,
+      ...infinityProps,
+    },
+  );
+}
+
 /**
  * Retrieve account transactions infinity scrolling.
  * @param {number} accountId
@@ -142,6 +209,48 @@ export function useAccountTransactionsInfinity(
  * @param {*} axios
  * @returns
  */
+/**
+ * Операции, ждущие разноски, ПО ВСЕМ СЧЕТАМ.
+ *
+ * Полоса «N операций без статьи» на экране «Операции» и режим разноски
+ * (этап 3 ТЗ). Раньше такой список существовал только внутри одного счёта.
+ */
+export function useAllUncategorizedInfinity(
+  filters: { fromDate?: string; toDate?: string; accountId?: number } = {},
+  infinityProps?: any,
+) {
+  const apiRequest = useApiRequest();
+
+  const params = Object.fromEntries(
+    Object.entries(filters).filter(
+      ([, value]) => value !== undefined && value !== null && value !== '',
+    ),
+  );
+
+  return useInfiniteQuery(
+    [t.ALL_UNCATEGORIZED_INFINITY, params],
+    async ({ pageParam = 1 }) => {
+      const response = await apiRequest.http({
+        method: 'get',
+        url: `/api/banking/uncategorized`,
+        params: { page: pageParam, page_size: 50, ...params },
+      });
+      return response.data;
+    },
+    {
+      getNextPageParam: (lastPage: any) => {
+        const { pagination } = lastPage;
+
+        return pagination.total > pagination.page_size * pagination.page
+          ? pagination.page + 1
+          : undefined;
+      },
+      keepPreviousData: true,
+      ...infinityProps,
+    },
+  );
+}
+
 export function useAccountUncategorizedTransactionsInfinity(
   accountId: any,
   query: any,

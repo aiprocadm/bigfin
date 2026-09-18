@@ -57,14 +57,81 @@ export class GetBankAccountTransactionsRepository {
   }
 
   /**
+   * Накладывает отборы списка операций на запрос.
+   *
+   * Счёт здесь необязателен: без него список идёт по всем счетам организации
+   * (экран «Операции», этап 3 ТЗ). Остальные отборы — период, направление
+   * движения денег, контрагент, сумма и поиск по тексту.
+   */
+  private applyFilters(query: any) {
+    const {
+      accountId,
+      fromDate,
+      toDate,
+      flow,
+      contactId,
+      search,
+      minAmount,
+      maxAmount,
+    } = this.query;
+
+    if (accountId) {
+      query.where('account_id', accountId);
+    }
+    if (fromDate) {
+      query.where('date', '>=', fromDate);
+    }
+    if (toDate) {
+      query.where('date', '<=', toDate);
+    }
+    // Приход лежит в дебете, расход — в кредите.
+    if (flow === 'in') {
+      query.where('debit', '>', 0);
+    } else if (flow === 'out') {
+      query.where('credit', '>', 0);
+    }
+    if (contactId) {
+      query.where('contact_id', contactId);
+    }
+    if (typeof minAmount === 'number') {
+      query.where((builder: any) => {
+        builder.where('debit', '>=', minAmount).orWhere('credit', '>=', minAmount);
+      });
+    }
+    if (typeof maxAmount === 'number') {
+      query.where((builder: any) => {
+        builder.where('debit', '<=', maxAmount).andWhere('credit', '<=', maxAmount);
+      });
+    }
+    if (search) {
+      const like = `%${search}%`;
+      query.where((builder: any) => {
+        builder
+          .where('transaction_number', 'like', like)
+          .orWhere('reference_number', 'like', like)
+          .orWhere('note', 'like', like);
+      });
+    }
+    return query;
+  }
+
+  /**
    * Retrieve the cashflow account transactions.
    * @param {number} tenantId -
    * @param {ICashflowAccountTransactionsQuery} query -
    */
   async initCashflowAccountTransactions() {
-    const { results, pagination } = await this.accountTransactionModel()
-      .query()
-      .where('account_id', this.query.accountId)
+    const query = this.accountTransactionModel().query();
+
+    this.applyFilters(query);
+
+    // Счёт и контрагент нужны списку по всем счетам: без них в строке не
+    // видно, откуда деньги и кому платили (этап 3 ТЗ). На экране одного
+    // счёта эти поля просто не показываются.
+    query.withGraphFetched('account');
+    query.withGraphFetched('contact');
+
+    const { results, pagination } = await query
       .orderBy([
         { column: 'date', order: 'desc' },
         { column: 'created_at', order: 'desc' },
@@ -83,6 +150,13 @@ export class GetBankAccountTransactionsRepository {
    * @return {Promise<number>}
    */
   async initCashflowAccountOpeningBalance(): Promise<void> {
+    // Без выбранного счёта входящий остаток не имеет смысла: строки идут по
+    // разным счетам, и накопительный итог по ним ничего не значит. Отдаём
+    // ноль — витрина в этом случае колонку остатка не показывает.
+    if (!this.query.accountId) {
+      this.openingBalance = 0;
+      return;
+    }
     // Retrieve the opening balance of credit and debit balances.
     const openingBalancesSubquery = this.accountTransactionModel()
       .query()

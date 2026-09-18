@@ -134,7 +134,22 @@ export interface IGetUncategorizedTransactionsQuery {
 export interface ICashflowAccountTransactionsQuery {
   page: number;
   pageSize: number;
-  accountId: number;
+  /** Пусто — операции по всем счетам организации (этап 3 ТЗ). */
+  accountId?: number;
+  /** Начало периода, `YYYY-MM-DD`. */
+  fromDate?: string;
+  /** Конец периода, `YYYY-MM-DD`. */
+  toDate?: string;
+  /** Приход (`in`) или расход (`out`). */
+  flow?: 'in' | 'out';
+  /** Контрагент операции. */
+  contactId?: number;
+  /** Поиск по номеру, номеру-ссылке и примечанию. */
+  search?: string;
+  /** Сумма от. */
+  minAmount?: number;
+  /** Сумма до. */
+  maxAmount?: number;
   numberFormat: INumberFormatQuery;
 }
 
@@ -165,4 +180,13 @@ export interface ICashflowAccountTransaction {
   formattedStatus: string;
 
   uncategorizedTransactionId: number;
+
+  /** Счёт операции — нужен списку по всем счетам (этап 3 ТЗ). */
+  accountId?: number;
+  accountName?: string;
+  /** Контрагент операции. */
+  contactId?: number;
+  contactName?: string;
+  /** Назначение платежа. */
+  note?: string;
 }

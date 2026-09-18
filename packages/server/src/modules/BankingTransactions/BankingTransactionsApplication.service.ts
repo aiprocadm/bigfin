@@ -86,7 +86,7 @@ export class BankingTransactionsApplication {
    * @param {IGetUncategorizedTransactionsQuery} query - Query.
    */
   public getBankAccountUncategorizedTransactions(
-    accountId: number,
+    accountId: number | undefined,
     query: GetUncategorizedTransactionsQueryDto,
   ) {
     return this.getBankAccountUncategorizedTransitionsService.getTransactions(

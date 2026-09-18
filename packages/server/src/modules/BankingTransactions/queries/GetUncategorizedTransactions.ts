@@ -22,11 +22,17 @@ export class GetUncategorizedTransactions {
 
   /**
    * Retrieves the uncategorized cashflow transactions.
-   * @param {number} accountId - Account Id.
+   *
+   * Счёт необязателен: без него отдаём операции, ждущие разноски, по ВСЕМ
+   * счетам организации. Это полоса «N операций без статьи» на экране
+   * «Операции» (этап 3 ТЗ) — раньше её нельзя было собрать, потому что
+   * непроведённые операции отдавались только по одному счёту.
+   *
+   * @param {number} [accountId] - Account Id. Пусто — все счета.
    * @param {IGetUncategorizedTransactionsQuery} query - Query.
    */
   public async getTransactions(
-    accountId: number,
+    accountId: number | undefined,
     query: GetUncategorizedTransactionsQueryDto,
   ) {
     // Parsed query with default values.
@@ -39,7 +45,9 @@ export class GetUncategorizedTransactions {
       await this.uncategorizedBankTransactionModel()
         .query()
         .onBuild((q) => {
-          q.where('accountId', accountId);
+          if (accountId) {
+            q.where('accountId', accountId);
+          }
           q.where('categorized', false);
 
           q.modify('notExcluded');

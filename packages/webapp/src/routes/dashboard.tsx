@@ -1173,6 +1173,16 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     pageTitle: intl.get('credits.page.title'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT,
   },
+  // Справочник юрлиц (этап 6 ТЗ, §6.4). Пока юрлицо одно, раздел не
+  // навязывается: колонки «Юрлицо» и фильтры в других разделах скрыты.
+  {
+    path: `/legal-entities`,
+    component: lazy(
+      () => import('@/containers/LegalEntities/LegalEntitiesPage'),
+    ),
+    breadcrumb: intl.get('legal_entities.page.title'),
+    pageTitle: intl.get('legal_entities.page.title'),
+  },
   // Анализ расходов (этап 9 ТЗ): постоянные и переменные, доля расходов
   // в выручке, точка безубыточности и запас прочности.
   {

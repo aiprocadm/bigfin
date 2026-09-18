@@ -26,7 +26,9 @@ interface ProfitLossSheetContextValue {
       columns?: ProfitLossServerColumn[];
       rows?: ReportTableRow[];
     };
-    query: { basis?: string };
+    // Даты периода нужны раскрытию суммы до операций: панель спрашивает
+    // ровно тот отрезок, за который посчитана строка (этап 4 ТЗ, п. 4.2).
+    query: { basis?: string; from_date?: string; to_date?: string };
     meta?: {
       formatted_date_range?: string;
       formatted_as_date?: string;
@@ -52,6 +54,19 @@ const flattenLeafColumns = (
     return acc;
   }, []);
 
+import ReportDrillDownPanel, {
+  DrillDownTarget,
+} from '../ReportDrillDownPanel';
+
+/**
+ * Раскрыть можно строку-счёт: у неё числовой номер. У итогов и расчётных
+ * строк (INCOME, NET_INCOME) своих проводок нет — раскрывать нечего.
+ */
+const accountIdOf = (row: any): number | null => {
+  const id = Number(row?.id);
+  return Number.isFinite(id) && id > 0 ? id : null;
+};
+
 interface ProfitLossSheetTableProps {
   companyName?: string;
 }
@@ -65,6 +80,11 @@ export default function ProfitLossSheetTable({
   const {
     profitLossSheet: { table, query, meta },
   } = useProfitLossContext();
+
+  // Какая сумма сейчас раскрыта до операций (этап 4 ТЗ, п. 4.2).
+  const [drillDown, setDrillDown] = React.useState<DrillDownTarget | null>(
+    null,
+  );
 
   // Строки сервера отдаём движку как есть; стабильная ссылка, чтобы
   // развёртка сбрасывалась только при реальной смене данных отчёта.
@@ -103,7 +123,28 @@ export default function ProfitLossSheetTable({
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
       basis={query?.basis}
     >
-      <ReportTable columns={columns} rows={rows} isFinalRow={isNetIncomeRow} />
+      <ReportTable
+        columns={columns}
+        rows={rows}
+        isFinalRow={isNetIncomeRow}
+        canDrillDown={(row) => accountIdOf(row) !== null}
+        onRowClick={(row) => {
+          const accountId = accountIdOf(row);
+          if (!accountId) return;
+
+          setDrillDown({
+            accountId,
+            accountName: row.cells?.[0]?.value,
+            fromDate: query?.from_date ?? '',
+            toDate: query?.to_date ?? '',
+          });
+        }}
+      />
+
+      <ReportDrillDownPanel
+        target={drillDown}
+        onClose={() => setDrillDown(null)}
+      />
     </ReportSheet>
   );
 }

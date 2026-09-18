@@ -18,6 +18,8 @@ import { CashflowStatementModule } from './modules/CashFlowStatement/CashflowSta
 import { VendorBalanceSummaryModule } from './modules/VendorBalanceSummary/VendorBalanceSummary.module';
 import { BalanceSheetModule } from './modules/BalanceSheet/BalanceSheet.module';
 import { GetReportChartService } from './queries/GetReportChart.service';
+import { GetReportDrillDownService } from './queries/GetReportDrillDown.service';
+import { TenancyContext } from '../Tenancy/TenancyContext.service';
 import { ReportChartController } from './queries/ReportChart.controller';
 
 @Module({
@@ -42,7 +44,9 @@ import { ReportChartController } from './queries/ReportChart.controller';
     CashflowStatementModule,
   ],
   // График над таблицей отчёта (п. 4.2 ТЗ): считает те же числа, что таблица.
-  providers: [GetReportChartService],
+  // TenancyContext нужен раскрытию суммы: без него сервер не поднимется —
+  // это и стережёт `tenancyModuleImports.spec.ts`.
+  providers: [GetReportChartService, GetReportDrillDownService, TenancyContext],
   controllers: [ReportChartController],
 })
 export class FinancialStatementsModule {}

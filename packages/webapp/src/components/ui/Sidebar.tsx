@@ -111,7 +111,10 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
         // сантиметр, а пункты идут вплотную — промах уводит в соседний
         // раздел. На больших экранах ограничение снимается, там указатель
         // точный и лишняя высота удлиняла бы список без пользы.
-        'relative mx-2 flex min-h-11 items-center gap-3 rounded-control px-3 py-2 text-sm transition-colors md:min-h-0',
+        // `no-underline` задан и на самом пункте: пункт меню — не ссылка
+        // в тексте, а орган управления, и подчёркивание делает его
+        // похожим на сноску.
+        'relative mx-2 flex min-h-11 items-center gap-3 rounded-control px-3 py-2 text-sm no-underline transition-colors md:min-h-0',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
         active
           ? 'bg-surface font-semibold text-text-primary'

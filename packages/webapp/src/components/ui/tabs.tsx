@@ -11,7 +11,10 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      'inline-flex h-10 items-center justify-center rounded-control bg-surface-elevated p-1 text-text-secondary',
+      // Полоса вкладок — на линии, без серой подложки. Подложка была
+      // ещё одной поверхностью поверх страницы, и глаз обязан был её
+      // разобрать, прежде чем добраться до самих вкладок.
+      'inline-flex h-10 items-center justify-start gap-1 border-b border-border text-text-secondary',
       className,
     )}
     {...props}
@@ -26,7 +29,14 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      'inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-text-primary data-[state=active]:shadow-sm',
+      // Текущая вкладка ПОДЧЁРКИВАЕТСЯ, а не всплывает над полосой.
+      // Тень оставлена тому, что и правда лежит поверх страницы, —
+      // меню, окнам, подсказкам. Так же выглядят вкладки на старых
+      // экранах (см. мост темы), и продукт не двоится.
+      'relative inline-flex items-center justify-center whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action disabled:pointer-events-none disabled:opacity-50',
+      'hover:text-text-primary',
+      'data-[state=active]:text-text-primary data-[state=active]:shadow-[inset_0_-2px_0_rgb(var(--c-action))]',
       className,
     )}
     {...props}

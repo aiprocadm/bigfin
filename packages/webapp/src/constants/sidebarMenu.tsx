@@ -265,6 +265,14 @@ export const SidebarMenu = [
         type: ISidebarMenuItemType.Link,
         feature: Features.FinancialModel,
       },
+      {
+        // Этап 14 ТЗ. Пункт появляется только с включённым разделом: вести
+        // человека туда, где ему ответят «раздел выключен», — обман.
+        text: <T id={'ai_chat.page.title'} />,
+        href: '/ai-chat',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.AiAnalyst,
+      },
     ],
   },
 

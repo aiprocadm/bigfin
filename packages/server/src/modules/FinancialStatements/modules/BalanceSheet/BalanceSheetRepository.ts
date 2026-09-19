@@ -19,12 +19,12 @@ import { INamedModifiableQuery } from '../../common/queryTypes';
 import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { applyProjectScope } from '@/modules/Projects/utils/projectScope';
 import {
-  INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
   INTERCOMPANY_SETTLEMENT_NAME,
   needsSettlementLine,
+  settlementAccountSide,
+  settlementBalance,
   settlementEntry,
 } from '@/modules/LegalEntities/utils/intercompanySettlement';
-import { ACCOUNT_TYPE } from '@/constants/accounts';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class BalanceSheetRepository extends R.compose(
@@ -103,6 +103,12 @@ export class BalanceSheetRepository extends R.compose(
    * Total closing accounts ledger.
    * @param {Ledger}
    */
+  /**
+   * Итог расчётов внутри группы: плюс — юрлицу должны, минус — должно оно.
+   * По знаку выбирается сторона баланса (остаток К9).
+   */
+  public settlementTotal = 0;
+
   public totalAccountsLedger: Ledger;
 
   /**
@@ -228,6 +234,9 @@ export class BalanceSheetRepository extends R.compose(
   // ----------------------------
   public initAccounts = async () => {
     const accounts = await this.getAccounts();
+
+    await this.initSettlementSide();
+
     const withSettlement = this.withSettlementAccount(accounts);
 
     this.accounts = withSettlement;
@@ -443,11 +452,12 @@ export class BalanceSheetRepository extends R.compose(
   private withSettlementAccount = (accounts: any[]): any[] => {
     if (!this.needsSettlement) return accounts;
 
+    const side = settlementAccountSide(this.settlementTotal);
     const settlement = this.accountModel().fromJson({
-      id: INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
+      id: side.accountId,
       name: INTERCOMPANY_SETTLEMENT_NAME,
-      slug: 'intercompany-settlement',
-      accountType: ACCOUNT_TYPE.OTHER_CURRENT_ASSET,
+      slug: side.slug,
+      accountType: side.accountType,
       parentAccountId: null,
       code: null,
       index: 1,
@@ -457,6 +467,40 @@ export class BalanceSheetRepository extends R.compose(
     });
 
     return [...accounts, settlement];
+  };
+
+  /**
+   * Итог расчётов внутри группы — ОДИН дешёвый запрос перед сборкой отчёта.
+   *
+   * ЗАЧЕМ ОТДЕЛЬНО. Сторона баланса выбирается по знаку итога: отдал своим —
+   * это имущество, получил — обязательство. А список счетов отчёта строится
+   * РАНЬШЕ книг, из которых знак стал бы известен. Без этого запроса пришлось
+   * бы завести обе стороны сразу, и у человека всегда висела бы лишняя
+   * пустая строка с непонятным названием.
+   *
+   * Запрос складывает две суммы без группировки — это одна строка ответа.
+   */
+  private initSettlementSide = async (): Promise<void> => {
+    this.settlementTotal = 0;
+
+    if (!this.needsSettlement) return;
+
+    const rows: any = await this.accountTransactionModel()
+      .query()
+      .onBuild((query) => {
+        query.sum('credit as credit');
+        query.sum('debit as debit');
+
+        query.modify('filterDateRange', null, this.query.toDate);
+
+        this.commonFilterBranchesQuery(query);
+      });
+    const row = Array.isArray(rows) ? rows[0] : rows;
+
+    this.settlementTotal = settlementBalance({
+      debit: Number(row?.debit) || 0,
+      credit: Number(row?.credit) || 0,
+    });
   };
 
   /**
@@ -488,7 +532,7 @@ export class BalanceSheetRepository extends R.compose(
     const entry = settlementEntry(net);
     const account = this.withSettlementAccount([]).at(-1);
 
-    return { ...entry, accountId: INTERCOMPANY_SETTLEMENT_ACCOUNT_ID, account, date };
+    return { ...entry, accountId: account.id, account, date };
   };
 
   /** Досылает строку расчётов к остаткам на дату. */

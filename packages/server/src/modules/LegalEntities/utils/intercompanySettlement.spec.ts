@@ -1,7 +1,10 @@
 // © 2026 Bigfin
 import {
-  INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
+  INTERCOMPANY_PAYABLE_ACCOUNT_ID,
+  INTERCOMPANY_RECEIVABLE_ACCOUNT_ID,
+  isSettlementAccountId,
   needsSettlementLine,
+  settlementAccountSide,
   settlementBalance,
   settlementEntry,
 } from './intercompanySettlement';
@@ -72,10 +75,48 @@ describe('расчёты внутри группы', () => {
     });
   });
 
-  describe('номер вычисляемого счёта', () => {
-    it('отрицательный — не столкнётся с настоящим счётом', () => {
+  describe('номера вычисляемых строк', () => {
+    it('отрицательные — не столкнутся с настоящим счётом', () => {
       // Номера настоящих счетов выдаёт база, они всегда положительные.
-      expect(INTERCOMPANY_SETTLEMENT_ACCOUNT_ID).toBeLessThan(0);
+      expect(INTERCOMPANY_RECEIVABLE_ACCOUNT_ID).toBeLessThan(0);
+      expect(INTERCOMPANY_PAYABLE_ACCOUNT_ID).toBeLessThan(0);
+    });
+
+    it('две стороны — разные номера', () => {
+      // Один номер на обе означал бы, что долг и требование складываются в
+      // одну строку и гасят друг друга.
+      expect(INTERCOMPANY_RECEIVABLE_ACCOUNT_ID).not.toBe(
+        INTERCOMPANY_PAYABLE_ACCOUNT_ID,
+      );
+    });
+
+    it('настоящий счёт строкой расчётов не считается', () => {
+      expect(isSettlementAccountId(INTERCOMPANY_PAYABLE_ACCOUNT_ID)).toBe(true);
+      expect(isSettlementAccountId(1043)).toBe(false);
+      expect(isSettlementAccountId(undefined)).toBe(false);
+    });
+  });
+
+  describe('сторона баланса', () => {
+    it('должны нам — имущество', () => {
+      const side = settlementAccountSide(500_000);
+
+      expect(side.accountType).toBe('other-current-asset');
+      expect(side.accountId).toBe(INTERCOMPANY_RECEIVABLE_ACCOUNT_ID);
+    });
+
+    it('должны мы — обязательство', () => {
+      // ЖИВАЯ ПРОВЕРКА: у ИП, получившего 500 000 от своего ООО, при
+      // единственной имущественной строке выходило «Активы 0» — деньги на
+      // счету есть, а отчёт показывает ноль.
+      const side = settlementAccountSide(-500_000);
+
+      expect(side.accountType).toBe('other-current-liability');
+      expect(side.accountId).toBe(INTERCOMPANY_PAYABLE_ACCOUNT_ID);
+    });
+
+    it('ноль — имущественная сторона, строки всё равно не будет', () => {
+      expect(settlementAccountSide(0).accountType).toBe('other-current-asset');
     });
   });
 

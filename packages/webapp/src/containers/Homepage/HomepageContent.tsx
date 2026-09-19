@@ -1,3 +1,4 @@
+import CashTimelineSection from './CashTimelineSection';
 import FirstStepsSection from './FirstStepsSection';
 import OverviewSection from './OverviewSection';
 import MoneySummarySection from './MoneySummarySection';
@@ -7,25 +8,33 @@ import FinancialAccountingSection from './FinancialAccountingSection';
 import ProductsServicesSection from './ProductsServicesSection';
 
 /**
- * Содержимое главной: сначала деньги, потом быстрые ссылки по разделам.
+ * Содержимое главной.
  *
- * Сводка идёт первой (Г2 карты v20): человек заходит утром в продукт учёта
- * денег и должен видеть деньги, а не кнопки.
+ * Порядок отвечает на то, зачем человек сюда зашёл.
  *
- * Этап 2 ТЗ добавил сверху полосу показателей и главный график продукта
- * «Деньги по месяцам»: раньше на главной не было ни одного графика, а
- * готовый компонент со столбцами жил только в витрине компонентов.
+ * 1. ЛЕНТА ДЕНЕГ — герой. Не «сколько у меня сейчас» (это одно число), а
+ *    «доживу ли я до конца месяца». Раньше первым блоком шли подсказки по
+ *    настройке и плитки показателей, то есть оглавление.
+ * 2. Показатели за период и график — разбор того же вопроса вглубь.
+ * 3. Сводка по деньгам, долги, справочники — реже и ниже.
+ * 4. Подсказки по настройке — В КОНЦЕ. Они нужны в первую неделю жизни
+ *    организации, а место занимали всегда и у всех.
+ *
+ * Между блоками нет карточек с тенями: страница держится на волосяных линиях
+ * и воздухе. Одинаковые карточки уравнивали блоки по важности, и глазу было
+ * не за что зацепиться.
  */
 function HomepageContent() {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-6">
-      <FirstStepsSection />
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6">
+      <CashTimelineSection />
       <OverviewSection />
       <MoneySummarySection />
       <AccountsReceivableSection />
       <AccountsPayableSection />
       <FinancialAccountingSection />
       <ProductsServicesSection />
+      <FirstStepsSection />
     </div>
   );
 }

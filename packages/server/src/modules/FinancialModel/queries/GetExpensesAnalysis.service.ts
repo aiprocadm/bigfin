@@ -2,7 +2,10 @@
 import { Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 
-import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
+import {
+  ArticlesPlRollupService,
+  type UnmappedTotals,
+} from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { computeDealMargin } from '@/modules/Deals/utils/computeDealMargin';
 
 import { MetricValue, enumerateMonths } from '../utils/financialMath';
@@ -36,6 +39,15 @@ export interface ExpensesAnalysisResult {
   safetyMargin: MetricValue;
   /** Помечена ли хоть одна статья постоянной — без этого расчёт неполон. */
   hasFixedArticles: boolean;
+
+  /**
+   * Деньги, прошедшие МИМО статей (остаток Р4 этапа 9).
+   *
+   * Раньше такие счета молча выпадали из отчёта: итог оказывался меньше,
+   * чем в ОПиУ, и ничто на это не указывало. Теперь пробел приходит на
+   * экран числом — вместе с тем, сколько счетов надо разметить.
+   */
+  unmapped: UnmappedTotals;
 }
 
 /**
@@ -92,7 +104,7 @@ export class GetExpensesAnalysisService {
 
     // Выручка — свёрткой по дереву: там корневые строки уже содержат сумму
     // поддерева, и это ровно то число, что показывает финансовый обзор.
-    const rolled = await this.rollup.getRollup({
+    const { rows: rolled, unmapped } = await this.rollup.getRollupWithUnmapped({
       fromDate,
       toDate,
       ...scope,
@@ -123,6 +135,7 @@ export class GetExpensesAnalysisService {
       breakEven: breakEven.breakEven,
       safetyMargin: computeSafetyMargin(revenue, breakEven.breakEven),
       hasFixedArticles: breakEven.hasFixedArticles,
+      unmapped,
     };
   }
 

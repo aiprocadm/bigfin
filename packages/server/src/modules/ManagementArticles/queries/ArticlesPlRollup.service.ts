@@ -65,6 +65,63 @@ export function foldAccountsIntoArticles(
   return articles.map((a) => ({ ...a, amount: totals.get(a.id) ?? 0 }));
 }
 
+/** Сколько денег прошло мимо статей. */
+export interface UnmappedTotals {
+  /** Доходы по счетам, не привязанным ни к одной статье. */
+  income: number;
+  /** Расходы по счетам, не привязанным ни к одной статье. */
+  expense: number;
+  /** Сколько таких счетов — чтобы человек понимал объём работы. */
+  accountsCount: number;
+}
+
+/**
+ * Деньги, прошедшие МИМО статей (Р4 этапа 9).
+ *
+ * ЗАЧЕМ ЭТО ЕСТЬ. `foldAccountsIntoArticles` молча пропускает счёт, который
+ * не привязан ни к одной статье. Это не то же самое, что статья «Не
+ * размечено»: ту хотя бы видно. Здесь же сумма просто НЕ ПОПАДАЕТ в отчёт —
+ * итог оказывается меньше, чем в ОПиУ, и ничто на это не указывает. Человек
+ * замечает расхождение через месяц и не знает, где искать.
+ *
+ * Считаем отдельно, а не строкой в свёртке, НАМЕРЕННО. Свёртку зовут два
+ * десятка мест: безубыточность, рентабельность сделок, распределение
+ * накладных. Подмешать туда искусственную строку значило бы тихо изменить
+ * все эти расчёты — то есть лечить тишину новой тишиной. Здесь пробел
+ * возвращается ОТДЕЛЬНЫМ полем, и экран показывает его прямо.
+ *
+ * Доходы и расходы разведены: «не разнесено 300 000» без знака непонятно —
+ * это недосчитанная выручка или недосчитанные траты.
+ */
+export function unmappedAccountsTotals(
+  map: { accountId: number; articleId: number }[],
+  accountNets: { accountId: number; net: number }[],
+  normalByAccountId: Map<number, string>,
+): UnmappedTotals {
+  const mapped = new Set<number>(map.map((m) => m.accountId));
+
+  let income = 0;
+  let expense = 0;
+  let accountsCount = 0;
+
+  accountNets.forEach(({ accountId, net }) => {
+    if (mapped.has(accountId)) return;
+    // Счёт без движения за период не «пробел», а просто тишина: показывать
+    // его человеку не о чем.
+    if (!net) return;
+
+    accountsCount += 1;
+
+    if (normalByAccountId.get(accountId) === 'credit') {
+      income += net;
+    } else {
+      expense += net;
+    }
+  });
+
+  return { income, expense, accountsCount };
+}
+
 /**
  * Rolls each article's own amount up into all of its ancestors, so a parent
  * article reports the total of its whole subtree (its own mapped accounts plus
@@ -128,8 +185,24 @@ export class ArticlesPlRollupService {
    * @returns {Promise<ArticleRollupRow[]>}
    */
   public async getRollup(query: ArticlesRollupQueryDto) {
-    const folded = await this.buildFolded(query);
+    const { folded } = await this.buildFolded(query);
     return rollupAmountsToAncestors(folded);
+  }
+
+  /**
+   * Свёртка ВМЕСТЕ с тем, что прошло мимо статей.
+   *
+   * Отдельный метод, а не изменение `getRollup`: два десятка мест зовут
+   * свёртку ради расчётов, и добавлять им в ответ лишнее поле незачем.
+   * Экран анализа расходов зовёт этот.
+   */
+  public async getRollupWithUnmapped(query: ArticlesRollupQueryDto): Promise<{
+    rows: ArticleRollupRow[];
+    unmapped: UnmappedTotals;
+  }> {
+    const { folded, unmapped } = await this.buildFolded(query);
+
+    return { rows: rollupAmountsToAncestors(folded), unmapped };
   }
 
   /**
@@ -141,12 +214,14 @@ export class ArticlesPlRollupService {
    * @returns {Promise<ArticleRollupRow[]>}
    */
   public async getOwnAmounts(query: ArticlesRollupQueryDto) {
-    return this.buildFolded(query);
+    const { folded } = await this.buildFolded(query);
+    return folded;
   }
 
-  private async buildFolded(
-    query: ArticlesRollupQueryDto,
-  ): Promise<ArticleRollupRow[]> {
+  private async buildFolded(query: ArticlesRollupQueryDto): Promise<{
+    folded: ArticleRollupRow[];
+    unmapped: UnmappedTotals;
+  }> {
     const articles = await this.articleModel().query().orderBy('sortOrder');
     const map = await this.articleAccountModel().query();
 
@@ -175,10 +250,12 @@ export class ArticlesPlRollupService {
         }
       });
 
-    // Look up each mapped account's normal (credit/debit) to sign its net.
-    const mappedAccountIds = map.map((m) => m.accountId);
-    const accounts = mappedAccountIds.length
-      ? await this.accountModel().query().whereIn('id', mappedAccountIds)
+    // Вид счёта (приходный/расходный) нужен ВСЕМ счетам с движением, а не
+    // только привязанным к статьям: по нему же разделяются доходы и расходы
+    // в том, что прошло мимо статей.
+    const accountIdsWithMovement = accountTotals.map((row: any) => row.accountId);
+    const accounts = accountIdsWithMovement.length
+      ? await this.accountModel().query().whereIn('id', accountIdsWithMovement)
       : [];
     const normalByAccountId = new Map<number, string>();
     accounts.forEach((a: any) =>
@@ -194,6 +271,9 @@ export class ArticlesPlRollupService {
       ),
     }));
 
-    return foldAccountsIntoArticles(articles, map, accountNets);
+    return {
+      folded: foldAccountsIntoArticles(articles, map, accountNets),
+      unmapped: unmappedAccountsTotals(map, accountNets, normalByAccountId),
+    };
   }
 }

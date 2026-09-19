@@ -11,12 +11,12 @@ import {
 describe('loginSchema', () => {
   it('accepts valid email + password', () => {
     expect(
-      loginSchema.safeParse({ email: 'a@b.ru', password: 'password' }).success,
+      loginSchema().safeParse({ email: 'a@b.ru', password: 'password' }).success,
     ).toBe(true);
   });
 
   it('rejects invalid email', () => {
-    const r = loginSchema.safeParse({
+    const r = loginSchema().safeParse({
       email: 'not-an-email',
       password: 'password',
     });
@@ -24,13 +24,13 @@ describe('loginSchema', () => {
   });
 
   it('rejects empty password', () => {
-    const r = loginSchema.safeParse({ email: 'a@b.ru', password: '' });
+    const r = loginSchema().safeParse({ email: 'a@b.ru', password: '' });
     expect(r.success).toBe(false);
   });
 
   it('accepts optional rememberMe', () => {
     expect(
-      loginSchema.safeParse({
+      loginSchema().safeParse({
         email: 'a@b.ru',
         password: 'password',
         rememberMe: true,
@@ -41,7 +41,7 @@ describe('loginSchema', () => {
 
 describe('registerSchema', () => {
   it('accepts valid name + email + 10-char password + matching confirm + terms', () => {
-    const r = registerSchema.safeParse({
+    const r = registerSchema().safeParse({
       name: 'Иван',
       email: 'a@b.ru',
       password: 'password12',
@@ -52,7 +52,7 @@ describe('registerSchema', () => {
   });
 
   it('rejects mismatching confirm password', () => {
-    const r = registerSchema.safeParse({
+    const r = registerSchema().safeParse({
       name: 'Иван',
       email: 'a@b.ru',
       password: 'password12',
@@ -63,7 +63,7 @@ describe('registerSchema', () => {
   });
 
   it('rejects when terms not agreed', () => {
-    const r = registerSchema.safeParse({
+    const r = registerSchema().safeParse({
       name: 'Иван',
       email: 'a@b.ru',
       password: 'password12',
@@ -74,7 +74,7 @@ describe('registerSchema', () => {
   });
 
   it('rejects password shorter than 10 chars', () => {
-    const r = registerSchema.safeParse({
+    const r = registerSchema().safeParse({
       name: 'Иван',
       email: 'a@b.ru',
       password: 'pass1',
@@ -85,7 +85,7 @@ describe('registerSchema', () => {
   });
 
   it('rejects empty name', () => {
-    const r = registerSchema.safeParse({
+    const r = registerSchema().safeParse({
       name: '',
       email: 'a@b.ru',
       password: 'password12',
@@ -96,7 +96,7 @@ describe('registerSchema', () => {
   });
 
   it('rejects invalid email', () => {
-    const r = registerSchema.safeParse({
+    const r = registerSchema().safeParse({
       name: 'Иван',
       email: 'not-an-email',
       password: 'password12',
@@ -110,20 +110,20 @@ describe('registerSchema', () => {
 describe('forgotPasswordSchema', () => {
   it('accepts valid email', () => {
     expect(
-      forgotPasswordSchema.safeParse({ email: 'a@b.ru' }).success,
+      forgotPasswordSchema().safeParse({ email: 'a@b.ru' }).success,
     ).toBe(true);
   });
 
   it('rejects invalid email', () => {
     expect(
-      forgotPasswordSchema.safeParse({ email: 'not-an-email' }).success,
+      forgotPasswordSchema().safeParse({ email: 'not-an-email' }).success,
     ).toBe(false);
   });
 });
 
 describe('resetPasswordSchema', () => {
   it('accepts 10-char password with matching confirm', () => {
-    const r = resetPasswordSchema.safeParse({
+    const r = resetPasswordSchema().safeParse({
       password: 'password12',
       confirmPassword: 'password12',
     });
@@ -131,7 +131,7 @@ describe('resetPasswordSchema', () => {
   });
 
   it('rejects mismatching confirm password', () => {
-    const r = resetPasswordSchema.safeParse({
+    const r = resetPasswordSchema().safeParse({
       password: 'password12',
       confirmPassword: 'different12',
     });
@@ -139,7 +139,7 @@ describe('resetPasswordSchema', () => {
   });
 
   it('rejects password shorter than 10 chars', () => {
-    const r = resetPasswordSchema.safeParse({
+    const r = resetPasswordSchema().safeParse({
       password: 'pass1',
       confirmPassword: 'pass1',
     });
@@ -156,11 +156,11 @@ describe('inviteAcceptSchema', () => {
   };
 
   it('accepts valid input', () => {
-    expect(inviteAcceptSchema.safeParse(validInput).success).toBe(true);
+    expect(inviteAcceptSchema().safeParse(validInput).success).toBe(true);
   });
 
   it('rejects when password < 10 chars', () => {
-    const r = inviteAcceptSchema.safeParse({
+    const r = inviteAcceptSchema().safeParse({
       ...validInput,
       password: 'short',
       confirmPassword: 'short',
@@ -169,7 +169,7 @@ describe('inviteAcceptSchema', () => {
   });
 
   it('rejects when passwords mismatch', () => {
-    const r = inviteAcceptSchema.safeParse({
+    const r = inviteAcceptSchema().safeParse({
       ...validInput,
       confirmPassword: 'differentpass',
     });
@@ -182,37 +182,37 @@ describe('inviteAcceptSchema', () => {
 
   it('rejects when firstName is empty', () => {
     expect(
-      inviteAcceptSchema.safeParse({ ...validInput, firstName: '' }).success,
+      inviteAcceptSchema().safeParse({ ...validInput, firstName: '' }).success,
     ).toBe(false);
   });
 
   it('rejects when lastName is empty', () => {
     expect(
-      inviteAcceptSchema.safeParse({ ...validInput, lastName: '' }).success,
+      inviteAcceptSchema().safeParse({ ...validInput, lastName: '' }).success,
     ).toBe(false);
   });
 });
 
 describe('twoFactorCodeSchema', () => {
   it('принимает 6-значный код из приложения', () => {
-    expect(twoFactorCodeSchema.safeParse({ code: '123456' }).success).toBe(
+    expect(twoFactorCodeSchema().safeParse({ code: '123456' }).success).toBe(
       true,
     );
   });
 
   it('принимает резервный код XXXX-XXXX (в любом регистре, с дефисом и без)', () => {
-    expect(twoFactorCodeSchema.safeParse({ code: 'AB2C-3DEF' }).success).toBe(
+    expect(twoFactorCodeSchema().safeParse({ code: 'AB2C-3DEF' }).success).toBe(
       true,
     );
-    expect(twoFactorCodeSchema.safeParse({ code: 'ab2c3def' }).success).toBe(
+    expect(twoFactorCodeSchema().safeParse({ code: 'ab2c3def' }).success).toBe(
       true,
     );
   });
 
   it('отклоняет пустое, слишком короткое и мусор', () => {
-    expect(twoFactorCodeSchema.safeParse({ code: '' }).success).toBe(false);
-    expect(twoFactorCodeSchema.safeParse({ code: '123' }).success).toBe(false);
-    expect(twoFactorCodeSchema.safeParse({ code: '!!!@@@' }).success).toBe(
+    expect(twoFactorCodeSchema().safeParse({ code: '' }).success).toBe(false);
+    expect(twoFactorCodeSchema().safeParse({ code: '123' }).success).toBe(false);
+    expect(twoFactorCodeSchema().safeParse({ code: '!!!@@@' }).success).toBe(
       false,
     );
   });

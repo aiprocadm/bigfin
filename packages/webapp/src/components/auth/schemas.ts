@@ -1,69 +1,113 @@
+import intl from 'react-intl-universal';
 import { z } from 'zod';
 
-export const loginSchema = z.object({
-  email: z.string().email('Введите корректный email'),
-  password: z.string().min(1, 'Введите пароль'),
-  rememberMe: z.boolean().optional(),
-});
+/**
+ * Проверки полей входа и регистрации.
+ *
+ * ПОЧЕМУ ФУНКЦИИ, А НЕ ГОТОВЫЕ СХЕМЫ. Раньше схемы объявлялись прямо здесь
+ * значениями, а тексты ошибок были вписаны по-русски. Перевести их «на месте»
+ * нельзя: значение модуля вычисляется при его загрузке — раньше, чем словарь
+ * успевает загрузиться, — и в ошибке оказалась бы пустая строка.
+ *
+ * Поэтому схема собирается в тот миг, когда она нужна форме. Стоит это одной
+ * парой скобок на вызове: `zodResolver(loginSchema())`.
+ */
 
-export const registerSchema = z
-  .object({
-    name: z.string().min(1, 'Введите имя'),
-    email: z.string().email('Введите корректный email'),
-    password: z.string().min(10, 'Пароль должен быть не короче 10 символов'),
-    confirmPassword: z.string(),
-    agreedToTerms: z.boolean(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Пароли не совпадают',
-    path: ['confirmPassword'],
-  })
-  .refine((data) => data.agreedToTerms === true, {
-    message: 'Необходимо согласие с условиями',
+/** Наименьшая длина пароля. Держим в одном месте — правило одно на все формы. */
+const PASSWORD_MIN_LENGTH = 10;
+
+const passwordField = () =>
+  z
+    .string()
+    .min(
+      PASSWORD_MIN_LENGTH,
+      intl.get('auth.validation.password_too_short', {
+        min: PASSWORD_MIN_LENGTH,
+      }),
+    );
+
+const emailField = () => z.string().email(intl.get('auth.validation.email'));
+
+/** «Пароли не совпадают» — правило повторяется в трёх формах. */
+const withMatchingPasswords = <T extends z.ZodTypeAny>(schema: T) =>
+  schema.refine(
+    (data: any) => data.password === data.confirmPassword,
+    {
+      message: intl.get('auth.validation.passwords_mismatch'),
+      path: ['confirmPassword'],
+    },
+  );
+
+export const loginSchema = () =>
+  z.object({
+    email: emailField(),
+    password: z.string().min(1, intl.get('auth.validation.password_required')),
+    rememberMe: z.boolean().optional(),
+  });
+
+export const registerSchema = () =>
+  withMatchingPasswords(
+    z.object({
+      name: z.string().min(1, intl.get('auth.validation.name_required')),
+      email: emailField(),
+      password: passwordField(),
+      confirmPassword: z.string(),
+      agreedToTerms: z.boolean(),
+    }),
+  ).refine((data: any) => data.agreedToTerms === true, {
+    message: intl.get('auth.validation.terms_required'),
     path: ['agreedToTerms'],
   });
 
-// Код 2FA: 6 цифр из приложения-аутентификатора
-// или резервный код из 8 букв/цифр (дефис в середине не обязателен).
-export const twoFactorCodeSchema = z.object({
-  code: z
-    .string()
-    .trim()
-    .refine(
-      (v) => /^\d{6}$/.test(v) || /^[a-z0-9]{4}-?[a-z0-9]{4}$/i.test(v),
-      'Введите 6-значный код или резервный код',
-    ),
-});
-
-export const forgotPasswordSchema = z.object({
-  email: z.string().email('Введите корректный email'),
-});
-
-export const resetPasswordSchema = z
-  .object({
-    password: z.string().min(10, 'Пароль должен быть не короче 10 символов'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Пароли не совпадают',
-    path: ['confirmPassword'],
+/**
+ * Код второго шага: 6 цифр из приложения-аутентификатора либо резервный код
+ * из 8 букв и цифр (дефис в середине не обязателен).
+ */
+export const twoFactorCodeSchema = () =>
+  z.object({
+    code: z
+      .string()
+      .trim()
+      .refine(
+        (v) => /^\d{6}$/.test(v) || /^[a-z0-9]{4}-?[a-z0-9]{4}$/i.test(v),
+        intl.get('auth.validation.two_factor_code'),
+      ),
   });
 
-export const inviteAcceptSchema = z
-  .object({
-    firstName: z.string().min(1, 'Введите имя'),
-    lastName: z.string().min(1, 'Введите фамилию'),
-    password: z.string().min(10, 'Пароль должен быть не короче 10 символов'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Пароли не совпадают',
-    path: ['confirmPassword'],
+export const forgotPasswordSchema = () =>
+  z.object({
+    email: emailField(),
   });
 
-export type LoginInput = z.infer<typeof loginSchema>;
-export type RegisterInput = z.infer<typeof registerSchema>;
-export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
-export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
-export type InviteAcceptInput = z.infer<typeof inviteAcceptSchema>;
-export type TwoFactorCodeInput = z.infer<typeof twoFactorCodeSchema>;
+export const resetPasswordSchema = () =>
+  withMatchingPasswords(
+    z.object({
+      password: passwordField(),
+      confirmPassword: z.string(),
+    }),
+  );
+
+export const inviteAcceptSchema = () =>
+  withMatchingPasswords(
+    z.object({
+      firstName: z.string().min(1, intl.get('auth.validation.name_required')),
+      lastName: z
+        .string()
+        .min(1, intl.get('auth.validation.last_name_required')),
+      password: passwordField(),
+      confirmPassword: z.string(),
+    }),
+  );
+
+export type LoginInput = z.infer<ReturnType<typeof loginSchema>>;
+export type RegisterInput = z.infer<ReturnType<typeof registerSchema>>;
+export type ForgotPasswordInput = z.infer<
+  ReturnType<typeof forgotPasswordSchema>
+>;
+export type ResetPasswordInput = z.infer<
+  ReturnType<typeof resetPasswordSchema>
+>;
+export type InviteAcceptInput = z.infer<ReturnType<typeof inviteAcceptSchema>>;
+export type TwoFactorCodeInput = z.infer<
+  ReturnType<typeof twoFactorCodeSchema>
+>;

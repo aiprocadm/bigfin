@@ -1,4 +1,5 @@
 import * as React from 'react';
+import intl from 'react-intl-universal';
 import { TrendingUp, BarChart3, Wallet } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
@@ -10,14 +11,23 @@ interface AuthLayoutProps {
   className?: string;
 }
 
-const HERO_FEATURES = [
-  { icon: TrendingUp, label: 'Доходы и расходы' },
-  { icon: BarChart3, label: 'Прибыль и убытки' },
-  { icon: Wallet, label: 'Кэшфлоу' },
-] as const;
+/**
+ * Три обещания продукта на левой половине экрана входа.
+ *
+ * Собирается ФУНКЦИЕЙ, а не значением модуля: значение вычисляется при
+ * загрузке файла — раньше, чем загрузится словарь, — и подписи оказались бы
+ * пустыми.
+ */
+const heroFeatures = () =>
+  [
+    { icon: TrendingUp, label: intl.get('auth.hero.feature_income_expenses') },
+    { icon: BarChart3, label: intl.get('auth.hero.feature_profit_loss') },
+    { icon: Wallet, label: intl.get('auth.hero.feature_cashflow') },
+  ] as const;
 
 export const AuthLayout = ({ children, className }: AuthLayoutProps) => {
   const year = new Date().getFullYear();
+  const features = heroFeatures();
 
   return (
     <div
@@ -33,10 +43,10 @@ export const AuthLayout = ({ children, className }: AuthLayoutProps) => {
         <div className="relative z-10 flex flex-col items-center gap-8 text-center">
           <Logo size="xl" showMark />
           <p className="max-w-sm text-2xl font-semibold text-text-primary">
-            Финансы вашего бизнеса — в&nbsp;порядке
+            {intl.get('auth.hero.tagline')}
           </p>
           <ul className="flex flex-col gap-3">
-            {HERO_FEATURES.map(({ icon: Icon, label }) => (
+            {features.map(({ icon: Icon, label }) => (
               <li
                 key={label}
                 className="flex items-center gap-3 text-text-secondary"
@@ -69,13 +79,13 @@ export const AuthLayout = ({ children, className }: AuthLayoutProps) => {
             ·
           </span>
           <Link to="/privacy" variant="muted" className="text-xs">
-            Политика
+            {intl.get('auth.footer.privacy')}
           </Link>
           <span aria-hidden className="mx-2">
             ·
           </span>
           <Link to="/terms" variant="muted" className="text-xs">
-            Условия
+            {intl.get('auth.footer.terms')}
           </Link>
         </footer>
       </main>

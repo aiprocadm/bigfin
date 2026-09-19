@@ -32,9 +32,25 @@ const ALLOWED = [
 const SKIP = /node_modules|\/lang\/|\.spec\.|\.stories\.|__tests__/;
 const CYR = '[А-Яа-яЁё]';
 
-const NODE_RE = new RegExp('>\\s*([^<>{}\\n]*' + CYR + '[^<>{}]*?)\\s*<');
+/**
+ * Текстовый узел между тегами.
+ *
+ * ВАЖНО: без `\n` в отрицании. Сначала здесь стояло `[^<>{}\n]*`, и проверка
+ * шла ПОСТРОЧНО — а разметка после форматирования почти всегда кладёт текст на
+ * СВОЮ строку:
+ *
+ *     >
+ *       Забыли пароль?
+ *     </Link>
+ *
+ * `>` на одной строке, текст на другой, `<` на третьей — построчная проверка
+ * такое не видит вовсе. Сторож был зелёным, пока вся форма входа говорила
+ * зашитыми словами. Теперь читается файл целиком.
+ */
+const NODE_RE = new RegExp('>\\s*([^<>{}]*' + CYR + '[^<>{}]*?)\\s*<', 'g');
 const ATTR_RE = new RegExp(
   '\\b(aria-label|placeholder|title|label|alt)\\s*=\\s*"[^"]*' + CYR,
+  'g',
 );
 
 function collect(dir: string, acc: string[] = []): string[] {
@@ -52,28 +68,47 @@ function collect(dir: string, acc: string[] = []): string[] {
   return acc;
 }
 
-/** Строки кода без комментариев. */
-function activeLines(source: string): Array<{ line: number; text: string }> {
-  const out: Array<{ line: number; text: string }> = [];
-  let inBlock = false;
+/**
+ * Исходник без комментариев, но ТОЙ ЖЕ длины.
+ *
+ * Комментарии заменяются пробелами, а не вырезаются: так номера строк в
+ * сообщении остаются настоящими, и найденное место можно открыть.
+ *
+ * Пояснения по-русски в комментариях писать не только можно, но и нужно —
+ * иначе следующий не поймёт, почему нельзя.
+ */
+function withoutComments(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+    .replace(
+      /(^|[^:])\/\/[^\n]*/g,
+      (m, prefix) => prefix + ' '.repeat(m.length - prefix.length),
+    );
+}
 
-  source.split('\n').forEach((text, i) => {
-    const trimmed = text.trim();
+/** Номер строки по положению в тексте. */
+function lineAt(source: string, index: number): number {
+  return source.slice(0, index).split('\n').length;
+}
 
-    if (inBlock) {
-      if (trimmed.includes('*/')) inBlock = false;
-      return;
+/** Места с зашитым текстом в одном файле. */
+function findHardcoded(source: string): Array<{ line: number; text: string }> {
+  const clean = withoutComments(source);
+  const found: Array<{ line: number; text: string }> = [];
+
+  [NODE_RE, ATTR_RE].forEach((re) => {
+    re.lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = re.exec(clean)) !== null) {
+      found.push({
+        line: lineAt(clean, match.index),
+        text: (match[1] ?? match[0]).trim().slice(0, 60),
+      });
     }
-    if (trimmed.startsWith('/*')) {
-      if (!trimmed.includes('*/')) inBlock = true;
-      return;
-    }
-    if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
-
-    out.push({ line: i + 1, text });
   });
 
-  return out;
+  return found;
 }
 
 describe('видимый текст не зашит в разметку', () => {
@@ -92,14 +127,28 @@ describe('видимый текст не зашит в разметку', () => 
 
       if (ALLOWED.includes(rel)) return;
 
-      activeLines(fs.readFileSync(file, 'utf8')).forEach(({ line, text }) => {
-        if (NODE_RE.test(text) || ATTR_RE.test(text)) {
-          offenders.push(`${rel}:${line}`);
-        }
+      findHardcoded(fs.readFileSync(file, 'utf8')).forEach(({ line, text }) => {
+        offenders.push(`${rel}:${line} — ${text}`);
       });
     });
 
     expect(offenders).toEqual([]);
+  });
+
+  it('проверка и правда видит текст на своей строке', () => {
+    // Ради этого сторож и переписан: именно так разметка выглядит после
+    // форматирования, и именно этого он раньше не видел.
+    const sample = ['<Link>', '  Забыли пароль?', '</Link>'].join('\n');
+
+    expect(findHardcoded(sample)).toHaveLength(1);
+  });
+
+  it('пояснения в комментариях не считаются', () => {
+    const sample = ['// Забыли пароль?', '<Link>{intl.get("x")}</Link>'].join(
+      '\n',
+    );
+
+    expect(findHardcoded(sample)).toEqual([]);
   });
 
   it('список исключений не разрастается', () => {

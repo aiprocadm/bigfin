@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -36,7 +37,7 @@ export const ForgotPasswordPage = () => {
   const { mutateAsync: sendReset } = useAuthSendResetPassword({}) as unknown as AuthMutation<SendResetVars>;
 
   const form = useForm<ForgotPasswordInput>({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(forgotPasswordSchema()),
     defaultValues: { email: '' },
   });
 
@@ -48,7 +49,8 @@ export const ForgotPasswordPage = () => {
       // friendlier UX — users typically tab out to check email.
       setSent(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
+      const message =
+        err instanceof Error ? err.message : intl.get('auth.error.network');
       toast.error(`Сетевая ошибка: ${message}`);
     }
   };
@@ -59,10 +61,10 @@ export const ForgotPasswordPage = () => {
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-text-primary">
-            Сброс пароля
+            {intl.get('auth.forgot.title')}
           </h1>
           <p className="mt-1 text-text-secondary">
-            Введите email — пришлём ссылку для смены пароля.
+            {intl.get('auth.forgot.subtitle')}
           </p>
         </div>
 
@@ -70,7 +72,7 @@ export const ForgotPasswordPage = () => {
           <Alert>
             <CheckCircle2 className="h-4 w-4" />
             <AlertDescription>
-              Письмо отправлено. Проверьте почту — ссылка действительна 1 час.
+              {intl.get('auth.forgot.sent')}
             </AlertDescription>
           </Alert>
         ) : (
@@ -101,11 +103,11 @@ export const ForgotPasswordPage = () => {
                 {form.formState.isSubmitting ? (
                   <>
                     <Spinner size="sm" />
-                    Отправляем...
+                    {intl.get('auth.forgot.submitting')}
                   </>
                 ) : (
                   <>
-                    Отправить ссылку
+                    {intl.get('auth.forgot.submit')}
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -116,7 +118,7 @@ export const ForgotPasswordPage = () => {
 
         <p className="mt-2 text-center text-sm text-text-secondary">
           <Link to="/auth/login" variant="muted">
-            ← Вернуться к входу
+            {intl.get('auth.back_to_login')}
           </Link>
         </p>
       </div>

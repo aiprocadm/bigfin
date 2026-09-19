@@ -37,4 +37,29 @@ export class FinancialSheetBranchesQueryDto {
     type: [Number],
   })
   legalEntityIds?: Array<number>;
+
+  /**
+   * Разрез по направлениям (остаток О6 ТЗ).
+   *
+   * Правило проще, чем у юрлиц: пусто — ВСЕ операции, включая непомеченные.
+   * Направление это ярлык, а не часть устройства группы, и исключать тут
+   * нечего: перевод между направлениями — не двойной счёт, а перекладывание
+   * внутри одного кармана.
+   */
+  @Transform(({ value }) =>
+    value === undefined || value === null || value === ''
+      ? undefined
+      : (Array.isArray(value) ? value : [value])
+          .filter((item) => item !== '' && item !== null && item !== undefined)
+          .map((item) => Number(item)),
+  )
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @ApiPropertyOptional({
+    description: 'Номера направлений. Пусто — все операции.',
+    example: [1, 2],
+    type: [Number],
+  })
+  projectsIds?: Array<number>;
 }

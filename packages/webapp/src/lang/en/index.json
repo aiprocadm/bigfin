@@ -4699,5 +4699,7 @@
   "directions.deleted": "Direction deleted",
   "directions.delete_error": "Could not delete the direction: it may already have operations",
   "directions.error.name_required": "Enter a name",
-  "directions.error.title": "Could not load directions"
+  "directions.error.title": "Could not load directions",
+  "report.directions.label": "Directions",
+  "report.directions.hint": "Nothing selected means all operations. Once you pick directions, operations without one are left out."
 }

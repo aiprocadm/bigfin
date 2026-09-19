@@ -31,6 +31,7 @@ import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentRe
 import { BillPaymentEntry } from '@/modules/BillPayments/models/BillPaymentEntry';
 import { INamedModifiableQuery } from '../../common/queryTypes';
 import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
+import { applyProjectScope } from '@/modules/Projects/utils/projectScope';
 
 /** Как документ-оплата связан с тем, что он гасит. */
 const SETTLEMENT_SOURCES = [
@@ -443,6 +444,9 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
     // отбирающие по-разному, расходятся цифрами между страницами.
     applyLegalEntityScope(query, {
       legalEntityIds: (this.query.query as any).legalEntityIds,
+    });
+    applyProjectScope(query as any, {
+      projectsIds: (this.query.query as any).projectsIds,
     });
   };
 

@@ -9,6 +9,7 @@ import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { INamedModifiableQuery } from '../../common/queryTypes';
 import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
+import { applyProjectScope } from '@/modules/Projects/utils/projectScope';
 
 @Injectable()
 export class CashFlowRepository {
@@ -179,6 +180,9 @@ export class CashFlowRepository {
     }
     applyLegalEntityScope(knexQuery, {
       legalEntityIds: (query as any).legalEntityIds,
+    });
+    applyProjectScope(knexQuery as any, {
+      projectsIds: (query as any).projectsIds,
     });
   };
 }

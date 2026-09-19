@@ -4699,5 +4699,7 @@
   "directions.deleted": "Направление удалено",
   "directions.delete_error": "Не удалось удалить направление: возможно, на него уже отнесены операции",
   "directions.error.name_required": "Введите название",
-  "directions.error.title": "Не удалось загрузить направления"
+  "directions.error.title": "Не удалось загрузить направления",
+  "report.directions.label": "Направления",
+  "report.directions.hint": "Ничего не выбрано — все операции. Как только направления выбраны, операции без направления в отчёт не попадают."
 }

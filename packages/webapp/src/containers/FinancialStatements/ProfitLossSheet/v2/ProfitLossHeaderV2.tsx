@@ -29,6 +29,7 @@ import {
   type ProfitLossHeaderFormValues,
 } from './ProfitLossHeader.zod';
 import { ReportLegalEntitiesField } from '@/containers/FinancialStatements/v2/FinancialHeaderLegalEntitiesField';
+import { ReportDirectionsField } from '@/containers/FinancialStatements/v2/FinancialHeaderDirectionsField';
 
 // ---------------------------------------------------------------------------
 // Типы и локальные касты легаси-модулей (redux-HOC и хуки без типов).
@@ -400,6 +401,9 @@ function ProfitLossHeaderV2Root({
                   {/* Разрез по юрлицам (этап 7 ТЗ). Поля нет вовсе, пока
                       юрлицо одно: выбор из одного — не выбор. */}
                   <ReportLegalEntitiesField />
+                  {/* Разрез по направлениям (остаток О6 ТЗ). Поля нет,
+                      пока направление одно: выбор из одного — не выбор. */}
+                  <ReportDirectionsField />
                 </div>
               </TabsContent>
             ) : null}

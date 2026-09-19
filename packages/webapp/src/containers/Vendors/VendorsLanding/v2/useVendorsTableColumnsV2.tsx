@@ -31,7 +31,7 @@ export function useVendorsTableColumnsV2(actions: VendorRowActions) {
         width: 220,
         Cell: ({ row }: { row: { original: VendorRow } }) => (
           <span className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-elevated text-[11px] font-semibold text-text-secondary">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-surface-elevated text-[11px] font-semibold text-text-secondary">
               {initials(row.original.display_name ?? '')}
             </span>
             <span className="truncate font-medium">

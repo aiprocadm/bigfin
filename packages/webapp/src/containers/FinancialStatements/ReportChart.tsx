@@ -90,7 +90,7 @@ export default function ReportChart({
   );
 
   return (
-    <div className="mb-4 rounded-lg border border-border bg-surface p-4">
+    <div className="mb-4 rounded-default border border-border bg-surface p-4">
       <div className="h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={rows}>

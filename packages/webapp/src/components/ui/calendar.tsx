@@ -30,16 +30,16 @@ export function Calendar({
         // Навигация поверх подписи месяца: «назад» слева, «вперёд» справа.
         nav: 'absolute inset-x-0 top-0 z-10 flex h-9 items-center justify-between px-1',
         button_previous:
-          'inline-flex h-7 w-7 items-center justify-center rounded-md text-text-secondary hover:bg-surface-elevated hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action disabled:pointer-events-none disabled:opacity-40',
+          'inline-flex h-7 w-7 items-center justify-center rounded-control text-text-secondary hover:bg-surface-elevated hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action disabled:pointer-events-none disabled:opacity-40',
         button_next:
-          'inline-flex h-7 w-7 items-center justify-center rounded-md text-text-secondary hover:bg-surface-elevated hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action disabled:pointer-events-none disabled:opacity-40',
+          'inline-flex h-7 w-7 items-center justify-center rounded-control text-text-secondary hover:bg-surface-elevated hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action disabled:pointer-events-none disabled:opacity-40',
         month_grid: 'w-full border-collapse',
         weekdays: 'flex',
         weekday: 'w-9 text-xs font-normal text-text-muted',
         week: 'mt-1 flex w-full',
         day: 'h-9 w-9 p-0 text-center text-sm',
         day_button:
-          'inline-flex h-9 w-9 items-center justify-center rounded-md font-normal text-text-primary hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
+          'inline-flex h-9 w-9 items-center justify-center rounded-control font-normal text-text-primary hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
         // react-day-picker ставит класс `selected` на ячейку дня (td), поэтому
         // красим кнопку внутри неё: чернильная заливка, белый текст.
         selected:

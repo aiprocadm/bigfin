@@ -23,7 +23,7 @@ import t from '@/hooks/query/types';
 import { MoneyField } from '@/components/ui/money-field';
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 const safeNum = (raw: string) => {
   const n = parseFloat(raw);

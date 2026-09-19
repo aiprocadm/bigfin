@@ -158,7 +158,8 @@ const BankAccountBalanceAmount = styled.div`
 `;
 
 const BankAccountBalanceLabel = styled.div`
-  text-transform: uppercase;
+  /* ПРОПИСНЫЕ сняты: подпись кричала громче данных, ради которых стоит,
+     и читалась медленнее — у слова из прописных нет привычного глазу силуэта. */
   font-size: 10px;
   letter-spacing: 0.5px;
   margin-top: 3px;

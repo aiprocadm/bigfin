@@ -41,7 +41,7 @@ import {
 } from './legalEntityView';
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 const emptyValues = {
   name: '',
@@ -167,7 +167,7 @@ export default function LegalEntitiesPage() {
       </p>
 
       {/* Таблица скроллится по горизонтали на телефоне. */}
-      <div className="overflow-x-auto rounded-md border border-border">
+      <div className="overflow-x-auto rounded-control border border-border">
         <table className="w-full min-w-[48rem] text-sm">
           <thead>
             <tr className="border-b border-border text-left text-text-muted">
@@ -242,7 +242,7 @@ export default function LegalEntitiesPage() {
       </div>
 
       {isFormOpen && (
-        <section className="rounded-md border border-border p-4">
+        <section className="rounded-control border border-border p-4">
           <h2 className="mb-3 text-sm font-medium">
             {intl.get(
               editing ? 'legal_entities.edit_title' : 'legal_entities.add',

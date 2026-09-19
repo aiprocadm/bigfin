@@ -41,7 +41,7 @@ export function BreakEvenPanel({ breakEven }: { breakEven?: BreakEvenResult }) {
       </h2>
 
       {/* Сводка + визуализация */}
-      <div className="flex flex-col gap-3 rounded-md border p-4">
+      <div className="flex flex-col gap-3 rounded-control border p-4">
         {!be?.hasFixedArticles ? (
           <div className="py-2 text-sm text-muted-foreground">
             {intl.get('financial_model.breakeven.hint_mark')}
@@ -106,7 +106,7 @@ export function BreakEvenPanel({ breakEven }: { breakEven?: BreakEvenResult }) {
       </div>
 
       {/* Пометка статей постоянная/переменная */}
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <div className="mb-2 text-sm font-medium">
           {intl.get('financial_model.breakeven.mark_title')}
         </div>

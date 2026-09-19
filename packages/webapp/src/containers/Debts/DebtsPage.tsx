@@ -57,13 +57,13 @@ export default function DebtsPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        <div className="rounded-md border p-3">
+        <div className="rounded-control border p-3">
           <div className="text-muted-foreground text-sm">
             {intl.get('debts.total')}
           </div>
           <div className="text-lg font-semibold">{fmt(summary?.total ?? 0)}</div>
         </div>
-        <div className="rounded-md border p-3">
+        <div className="rounded-control border p-3">
           <div className="text-muted-foreground text-sm">
             {intl.get('debts.overdue')}
           </div>
@@ -72,7 +72,7 @@ export default function DebtsPage() {
           </div>
         </div>
         {overview?.net != null && (
-          <div className="rounded-md border p-3">
+          <div className="rounded-control border p-3">
             <div className="text-muted-foreground text-sm">
               {intl.get('debts.net')}
             </div>
@@ -83,7 +83,7 @@ export default function DebtsPage() {
 
       <div className="flex flex-wrap gap-3">
         {buckets.map((b, i) => (
-          <div key={i} className="rounded-md border px-3 py-2 text-sm">
+          <div key={i} className="rounded-control border px-3 py-2 text-sm">
             <div className="text-muted-foreground">
               {intl.get(BUCKET_LABELS[i])}
             </div>
@@ -95,7 +95,7 @@ export default function DebtsPage() {
       <h2 className="text-lg font-medium">
         {intl.get(side === 'receivable' ? 'debts.debtors' : 'debts.creditors')}
       </h2>
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {contacts.length === 0 && (
           <EmptyState
             title={intl.get('debts.empty_status.title')}
@@ -111,7 +111,7 @@ export default function DebtsPage() {
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-medium">{intl.get('debts.plan.title')}</h2>
           {plansList.map((p) => (
-            <div key={p.id} className="rounded-md border p-3 text-sm">
+            <div key={p.id} className="rounded-control border p-3 text-sm">
               <div className="flex justify-between">
                 <span>{p.description || `#${p.id}`}</span>
                 <span className="text-muted-foreground">

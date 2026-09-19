@@ -39,7 +39,7 @@ interface AccountRow {
 }
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 export function PaymentRequestDialog({ onDone, onCancel }: Props) {
   const createMutation = useCreatePaymentRequest({});

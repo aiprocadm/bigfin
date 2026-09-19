@@ -6,7 +6,12 @@ export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
     <div
       ref={ref}
       className={cn(
-        'rounded-xl border border-border bg-surface text-text-primary shadow-sm',
+        // Тени НЕТ намеренно: структура держится на волосяной линии.
+        // Тень остаётся только у того, что и правда всплывает над
+        // страницей, — меню, всплывающих окон, шторок. Одинаковая мягкая
+        // тень под каждым блоком уравнивает их по важности и делает
+        // страницу однородной кашей из плиток.
+        'rounded-default border border-border bg-surface text-text-primary',
         className,
       )}
       {...props}
@@ -28,7 +33,9 @@ export const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn('text-2xl font-medium leading-none tracking-tight', className)}
+    // 15px/600 — заголовок блока по шкале. 24px здесь спорил бы
+    // с заголовком страницы и с суммой-героем.
+    className={cn('text-[0.9375rem] font-semibold leading-tight tracking-[-0.01em]', className)}
     {...props}
   />
 ));

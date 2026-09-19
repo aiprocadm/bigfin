@@ -61,7 +61,7 @@ export function UnbalancedTab({ fromDate, toDate }: Props) {
         {intl.get('data_quality.unbalanced.hint')}
       </p>
 
-      <div className="bg-muted/40 flex flex-col gap-2 rounded-md border p-3">
+      <div className="bg-muted/40 flex flex-col gap-2 rounded-control border p-3">
         <p className="text-muted-foreground text-sm">
           {intl.get('data_quality.repost.hint')}
         </p>
@@ -120,7 +120,7 @@ export function UnbalancedTab({ fromDate, toDate }: Props) {
         </div>
       )}
 
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {journals.length === 0 && (
           <div className="text-muted-foreground p-4 text-sm">
             {intl.get('data_quality.unbalanced.empty')}

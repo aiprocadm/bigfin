@@ -136,7 +136,7 @@ export default function PayrollPage() {
       {/* Runs tab */}
       {tab === 'runs' && (
         <>
-          <div className="flex flex-col divide-y rounded-md border">
+          <div className="flex flex-col divide-y rounded-control border">
             {runRows.length === 0 && (
               <div className="text-muted-foreground p-4 text-sm">
                 {intl.get('payroll.runs.empty')}
@@ -193,7 +193,7 @@ export default function PayrollPage() {
             <h2 className="text-base font-semibold">
               {intl.get('payroll.taxes.title')}
             </h2>
-            <div className="rounded-md border">
+            <div className="rounded-control border">
               {taxRows.length === 0 ? (
                 <div className="text-muted-foreground p-4 text-sm">
                   {intl.get('payroll.taxes.empty')}
@@ -237,7 +237,7 @@ export default function PayrollPage() {
 
       {/* Employees tab */}
       {tab === 'employees' && (
-        <div className="flex flex-col divide-y rounded-md border">
+        <div className="flex flex-col divide-y rounded-control border">
           {employeeRows.length === 0 && (
             <div className="text-muted-foreground p-4 text-sm">
               {intl.get('payroll.employees.empty')}
@@ -251,7 +251,7 @@ export default function PayrollPage() {
               }
               className={
                 'flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm hover:bg-muted/40' +
-                (emp.id === foundId ? ' ring-2 ring-action rounded-md' : '')
+                (emp.id === foundId ? ' ring-2 ring-action rounded-control' : '')
               }
               onClick={() => {
                 setEditEmployee(emp);

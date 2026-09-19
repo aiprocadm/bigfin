@@ -21,7 +21,7 @@ export const BackupCodesList = ({ codes }: BackupCodesListProps) => {
         </AlertDescription>
       </Alert>
 
-      <div className="grid grid-cols-2 gap-2 rounded-md border p-4 font-mono text-sm">
+      <div className="grid grid-cols-2 gap-2 rounded-control border p-4 font-mono text-sm">
         {codes.map((code) => (
           <span key={code}>{code}</span>
         ))}

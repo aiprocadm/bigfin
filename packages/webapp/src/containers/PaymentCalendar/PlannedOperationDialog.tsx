@@ -46,7 +46,7 @@ interface AccountRow {
 }
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
   const isEdit = !!operation?.id;
@@ -294,7 +294,7 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
               )}
             />
             {repeat && (
-              <div className="flex flex-col gap-4 rounded-md border p-3">
+              <div className="flex flex-col gap-4 rounded-control border p-3">
                 <FormField
                   control={form.control}
                   name="frequency"

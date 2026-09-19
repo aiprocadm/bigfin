@@ -428,7 +428,7 @@ function MoneyInFormInner({
               <FormItem>
                 <FormLabel>{intl.get('amount')}</FormLabel>
                 <FormControl>
-                  <div className="flex items-center gap-3 rounded-md border border-border bg-surface-elevated px-4 focus-within:border-action focus-within:ring-2 focus-within:ring-action">
+                  <div className="flex items-center gap-3 rounded-control border border-border bg-surface-elevated px-4 focus-within:border-action focus-within:ring-2 focus-within:ring-action">
                     <input
                       {...field}
                       value={field.value ?? ''}

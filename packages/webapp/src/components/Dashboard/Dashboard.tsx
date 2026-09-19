@@ -15,6 +15,7 @@ import { DashboardSockets } from './DashboardSockets';
 import { DashboardShell } from '@/components/Dashboard/DashboardShell';
 import { ConnectedSidebar } from '@/components/Dashboard/ConnectedSidebar';
 import { ConnectedTopbar } from '@/components/Dashboard/ConnectedTopbar';
+import { ConnectedBottomNav } from '@/components/Dashboard/ConnectedBottomNav';
 import { Toaster } from '@/components/ui/sonner';
 
 /**
@@ -22,7 +23,11 @@ import { Toaster } from '@/components/ui/sonner';
  */
 function DashboardPreferences() {
   return (
-    <DashboardShell sidebar={<ConnectedSidebar />} topbar={<ConnectedTopbar />}>
+    <DashboardShell
+      sidebar={<ConnectedSidebar />}
+      topbar={<ConnectedTopbar />}
+      bottomNav={(openMenu) => <ConnectedBottomNav onOpenMenu={openMenu} />}
+    >
       <PreferencesPage />
     </DashboardShell>
   );
@@ -33,7 +38,11 @@ function DashboardPreferences() {
  */
 function DashboardAnyPage() {
   return (
-    <DashboardShell sidebar={<ConnectedSidebar />} topbar={<ConnectedTopbar />}>
+    <DashboardShell
+      sidebar={<ConnectedSidebar />}
+      topbar={<ConnectedTopbar />}
+      bottomNav={(openMenu) => <ConnectedBottomNav onOpenMenu={openMenu} />}
+    >
       <DashboardContent />
     </DashboardShell>
   );

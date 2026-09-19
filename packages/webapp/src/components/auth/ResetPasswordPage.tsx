@@ -25,6 +25,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { useAuthResetPassword } from '@/hooks/query/authentication';
 
 import { resetPasswordSchema, type ResetPasswordInput } from './schemas';
+import intl from 'react-intl-universal';
 
 type ResetPasswordVars = { password: string; confirm_password: string };
 type AuthMutation<V> = {
@@ -143,13 +144,13 @@ export const ResetPasswordPage = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Новый пароль</FormLabel>
+                    <FormLabel>{intl.get('new_password')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? 'text' : 'password'}
                           autoComplete="new-password"
-                          placeholder="Минимум 10 символов"
+                          placeholder={intl.get('auth.password_hint')}
                           className="pr-10"
                           {...field}
                         />
@@ -179,7 +180,7 @@ export const ResetPasswordPage = () => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Подтвердите пароль</FormLabel>
+                    <FormLabel>{intl.get('confirm_password')}</FormLabel>
                     <FormControl>
                       <Input
                         type={showPassword ? 'text' : 'password'}

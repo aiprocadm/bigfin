@@ -74,7 +74,7 @@ export function VendorCreditDetailOverviewTabV2({
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead className="bg-surface-elevated">
-              <tr className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              <tr className="text-[0.8125rem] font-medium text-text-secondary">
                 <th className="px-3 py-2 text-left">
                   {intl.get('product_and_service')}
                 </th>

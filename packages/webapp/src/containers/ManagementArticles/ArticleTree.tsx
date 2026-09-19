@@ -24,7 +24,7 @@ export function ArticleTree({
       {nodes.map((node) => (
         <li key={node.id}>
           <div
-            className="flex items-center justify-between rounded-md px-2 py-1 hover:bg-muted"
+            className="flex items-center justify-between rounded-control px-2 py-1 hover:bg-muted"
             style={{ paddingLeft: `${level * 20 + 8}px` }}
           >
             <span className="flex items-center gap-2">

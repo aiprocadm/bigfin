@@ -14,32 +14,40 @@ interface ShortcutSection {
   shortcuts: Shortcut[];
 }
 
-function ShortcutBox({ title, link, description }: Shortcut) {
+/**
+ * Колонка быстрых переходов.
+ *
+ * БЫЛО: сетка карточек — у каждой ссылки своя рамка, заголовок и строка
+ * описания. Пять таких сеток подряд занимали на главной больше места, чем
+ * все настоящие цифры, и дублировали боковое меню: человек пришёл посмотреть
+ * деньги, а получил оглавление в двух экземплярах.
+ *
+ * СТАЛО: простой список ссылок в колонке. Все ссылки целы до единой — они
+ * просто перестали спорить с деньгами за внимание.
+ *
+ * Описания убраны намеренно: «Счета покупателям» не нуждается в пояснении
+ * «ведите счета покупателям». Там, где название и правда непонятно, лечить
+ * надо название, а не приписку под ним.
+ */
+function ShortcutColumn({ sectionTitle, shortcuts }: ShortcutSection) {
   return (
-    <Link
-      to={link}
-      className="group flex flex-col gap-1 rounded-xl border border-border bg-surface p-4 transition-colors hover:bg-surface-elevated"
-    >
-      <span className="text-sm font-semibold text-text-primary">{title}</span>
-      <span className="text-xs leading-relaxed text-text-secondary">
-        {description}
-      </span>
-    </Link>
-  );
-}
-
-function ShortcutBoxes({ sectionTitle, shortcuts }: ShortcutSection) {
-  return (
-    <section className="flex flex-col gap-3">
-      <h2 className="text-sm font-semibold text-text-primary">
+    <div className="flex flex-col gap-2">
+      <h3 className="text-[0.8125rem] font-semibold text-text-primary">
         {sectionTitle}
-      </h2>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      </h3>
+      <ul className="flex flex-col gap-1.5">
         {shortcuts.map((shortcut, i) => (
-          <ShortcutBox key={i} {...shortcut} />
+          <li key={i}>
+            <Link
+              to={shortcut.link}
+              className="text-sm text-text-secondary underline-offset-4 transition-colors hover:text-text-primary hover:underline"
+            >
+              {shortcut.title}
+            </Link>
+          </li>
         ))}
-      </div>
-    </section>
+      </ul>
+    </div>
   );
 }
 
@@ -55,7 +63,7 @@ export default function ShortcutBoxesSection({
   return (
     <>
       {sections.map((s, i) => (
-        <ShortcutBoxes key={i} {...s} />
+        <ShortcutColumn key={i} {...s} />
       ))}
     </>
   );

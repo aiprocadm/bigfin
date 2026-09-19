@@ -70,7 +70,7 @@ function ImportFileMappingGroup({
   fields,
 }: ImportFileMappingGroupProps) {
   return (
-    <section className="overflow-hidden rounded-lg border border-border bg-surface">
+    <section className="overflow-hidden rounded-default border border-border bg-surface">
       {groupLabel && (
         <h3 className="border-b border-border px-4 py-3 text-sm font-medium text-text-primary">
           {groupLabel}
@@ -81,10 +81,10 @@ function ImportFileMappingGroup({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-surface-elevated">
-              <th className="w-1/2 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              <th className="w-1/2 px-4 py-2 text-left text-[0.8125rem] font-medium text-text-secondary">
                 {intl.get('import.mapping.column.bigfin_fields')}
               </th>
-              <th className="w-1/2 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              <th className="w-1/2 px-4 py-2 text-left text-[0.8125rem] font-medium text-text-secondary">
                 {intl.get('import.mapping.column.sheet_headers')}
               </th>
             </tr>

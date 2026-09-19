@@ -55,14 +55,14 @@ interface MetricProps {
 }
 
 const Metric = ({ label, value, tone, icon: Icon }: MetricProps) => (
-  <div className="rounded-lg border border-border bg-surface p-4">
+  <div className="rounded-default border border-border bg-surface p-4">
     <div className="mb-2 flex items-center justify-between gap-2">
       <span className="truncate text-sm text-text-secondary">{label}</span>
       <Icon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden />
     </div>
     <div
       className={cn(
-        'text-xl font-medium tabular-nums sm:text-2xl',
+        'text-xl font-semibold tracking-[-0.01em] tabular-nums sm:text-2xl',
         tone === 'income' && 'text-success',
         tone === 'expense' && 'text-danger',
         !tone && 'text-text-primary',
@@ -86,7 +86,7 @@ export function DashboardSummary({
         разметку. На живом экране это баг — продукт обязан говорить на
         языке организации.
       */}
-      <h1 className="mb-4 text-xl font-medium text-text-primary">
+      <h1 className="mb-4 text-xl font-semibold tracking-[-0.01em] text-text-primary">
         {intl.get('dashboard.summary.title')}
       </h1>
 
@@ -116,7 +116,7 @@ export function DashboardSummary({
         />
       </div>
 
-      <div className="rounded-lg border border-border bg-surface p-4">
+      <div className="rounded-default border border-border bg-surface p-4">
         <h2 className="mb-4 text-sm font-medium text-text-secondary">
           Доходы и расходы по месяцам
         </h2>

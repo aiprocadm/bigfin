@@ -11,6 +11,7 @@ import { useFeatureCan } from '@/hooks/state/feature';
 import { Features } from '@/constants/features';
 import { useUnreadCount } from '@/hooks/query/notifications';
 import { NotificationsList } from './NotificationsList';
+import intl from 'react-intl-universal';
 
 /**
  * Колокольчик уведомлений в верхней панели (слот notificationsSlot новой
@@ -36,7 +37,7 @@ export function NotificationBell() {
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Уведомления"
+          aria-label={intl.get('notifications')}
           className="relative"
         >
           <Bell className="h-4 w-4" />

@@ -11,7 +11,7 @@ const money = (v: number): string => formatOrganizationMoney(v);
 
 function Card({ title, value }: { title: string; value: string }) {
   return (
-    <div className="rounded-md border p-4">
+    <div className="rounded-control border p-4">
       <div className="text-sm text-muted-foreground">{title}</div>
       <div className="text-2xl font-semibold">{value}</div>
     </div>

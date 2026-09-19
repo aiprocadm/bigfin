@@ -20,9 +20,9 @@ export function BillDetailsSkeletonV2() {
       </DrawerHeader>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
-        <Skeleton className="h-10 w-72 max-w-full rounded-md" />
-        <Skeleton className="h-44 rounded-xl" />
-        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-10 w-72 max-w-full rounded-control" />
+        <Skeleton className="h-44 rounded-default" />
+        <Skeleton className="h-64 rounded-default" />
       </div>
     </div>
   );

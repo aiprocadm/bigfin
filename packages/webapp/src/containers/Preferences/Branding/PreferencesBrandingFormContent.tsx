@@ -52,16 +52,16 @@ export function PreferencesBrandingFormContent() {
             const file = e.dataTransfer.files?.[0];
             if (file) applyLogoFile(file);
           }}
-          className="flex items-center gap-4 rounded-lg border border-dashed border-border bg-surface p-5"
+          className="flex items-center gap-4 rounded-default border border-dashed border-border bg-surface p-5"
         >
           {logoUri ? (
             <img
               src={logoUri}
               alt={intl.get('preferences.branding.company_logo')}
-              className="h-16 w-16 rounded-lg bg-surface-elevated object-contain"
+              className="h-16 w-16 rounded-default bg-surface-elevated object-contain"
             />
           ) : (
-            <span className="flex h-16 w-16 items-center justify-center rounded-lg bg-surface-elevated text-text-muted">
+            <span className="flex h-16 w-16 items-center justify-center rounded-default bg-surface-elevated text-text-muted">
               <ImageIcon className="h-7 w-7" aria-hidden />
             </span>
           )}
@@ -124,7 +124,7 @@ export function PreferencesBrandingFormContent() {
                   aria-label={intl.get('preferences.branding.primary_color')}
                   value={HEX_RE.test(field.value ?? '') ? field.value : '#ffffff'}
                   onChange={(e) => field.onChange(e.target.value)}
-                  className="h-10 w-14 cursor-pointer rounded-md border border-border bg-surface p-1"
+                  className="h-10 w-14 cursor-pointer rounded-control border border-border bg-surface p-1"
                 />
                 <Input
                   {...field}

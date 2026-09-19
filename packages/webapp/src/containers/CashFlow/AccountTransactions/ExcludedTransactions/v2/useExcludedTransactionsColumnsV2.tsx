@@ -38,7 +38,7 @@ export function useExcludedTransactionsColumnsV2({ onRestore }: ColumnsHandlers)
               e.stopPropagation();
               onRestore(row.original);
             }}
-            className="rounded-md px-2 py-1 text-sm font-medium text-action hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action"
+            className="rounded-control px-2 py-1 text-sm font-medium text-action hover:bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action"
           >
             {intl.get('restore')}
           </button>

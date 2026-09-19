@@ -64,7 +64,7 @@ export default function CreditsPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-sm text-muted-foreground">
             {intl.get('credits.summary.outstanding')}
           </span>
@@ -73,7 +73,7 @@ export default function CreditsPage() {
           </span>
         </div>
         {summary?.nextPaymentDate && (
-          <div className="flex flex-col gap-1 rounded-md border p-4">
+          <div className="flex flex-col gap-1 rounded-control border p-4">
             <span className="text-sm text-muted-foreground">
               {intl.get('credits.summary.next_payment')}
             </span>
@@ -96,7 +96,7 @@ export default function CreditsPage() {
       )}
 
       {/* Credits table */}
-      <div className="overflow-x-auto rounded-md border">
+      <div className="overflow-x-auto rounded-control border">
         {creditRows.length === 0 ? (
           <EmptyState
             title={intl.get('credits.empty_status.title')}

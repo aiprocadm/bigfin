@@ -53,7 +53,7 @@ export function DayRow({
           ref={(node) => found && node?.scrollIntoView({ block: 'center' })}
           className={`flex items-center justify-between px-4 text-sm ${
             line.direction === 'inflow' ? 'text-green-600' : 'text-red-500'
-          }${found ? ' ring-2 ring-action rounded-md' : ''}`}
+          }${found ? ' ring-2 ring-action rounded-control' : ''}`}
         >
           <span>{line.label}</span>
           <span className="flex items-center gap-2">

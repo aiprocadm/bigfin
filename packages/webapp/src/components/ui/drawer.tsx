@@ -4,6 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { X } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
+import intl from 'react-intl-universal';
 
 // Drawer = боковая/выезжающая панель. Построена на том же Radix Dialog,
 // что и модалка, но содержимое выезжает с края экрана.
@@ -73,7 +74,7 @@ export const DrawerContent = React.forwardRef<
         )}
       >
         <X className="h-4 w-4" aria-hidden />
-        <span className="sr-only">Закрыть</span>
+        <span className="sr-only">{intl.get('close')}</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DrawerPortal>

@@ -69,7 +69,7 @@ export default function ZenmoneyPage() {
         </p>
       </div>
 
-      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+      <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
         {connected ? (
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm text-green-700">
@@ -102,7 +102,7 @@ export default function ZenmoneyPage() {
       </div>
 
       {connected && (
-        <div className="flex max-w-xl flex-col gap-2 rounded-md border p-4">
+        <div className="flex max-w-xl flex-col gap-2 rounded-control border p-4">
           <h2 className="font-medium">{intl.get('zenmoney.import.title')}</h2>
           <label className="text-sm">{intl.get('zenmoney.import.account_id')}</label>
           <CashAccountField value={accountId} onChange={setAccountId} />

@@ -389,7 +389,7 @@ export function ReportTable({
               <th
                 key={column.key}
                 className={cn(
-                  'px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
+                  'px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary',
                   column.align === 'right' && 'text-right',
                   column.align === 'center' && 'text-center',
                 )}
@@ -473,13 +473,13 @@ export function ReportSheet({
   return (
     <div
       className={cn(
-        'bigfin-ui rounded-xl border border-border bg-surface p-6',
+        'bigfin-ui rounded-default border border-border bg-surface p-6',
         className,
       )}
     >
       <div className="mb-5">
         {companyName && (
-          <div className="text-xs uppercase tracking-wide text-text-muted">
+          <div className="text-[0.8125rem] text-text-muted">
             {companyName}
           </div>
         )}

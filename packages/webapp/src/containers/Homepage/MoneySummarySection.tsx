@@ -110,7 +110,7 @@ export default function MoneySummarySection() {
           <Link
             key={tile.key}
             to={tile.to}
-            className="rounded-lg border border-border bg-surface p-4 transition-colors hover:bg-surface-elevated"
+            className="rounded-default border border-border bg-surface p-4 transition-colors hover:bg-surface-elevated"
           >
             <div className="text-sm text-text-secondary">{tile.title}</div>
             <div className="mt-1 text-xl font-semibold tabular-nums text-text-primary">

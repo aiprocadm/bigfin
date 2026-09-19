@@ -78,7 +78,7 @@ function PreviewSection({
   const [isOpen, setIsOpen] = useState(!collapsible);
 
   return (
-    <section className="overflow-hidden rounded-lg border border-border bg-surface">
+    <section className="overflow-hidden rounded-default border border-border bg-surface">
       {collapsible ? (
         <button
           type="button"

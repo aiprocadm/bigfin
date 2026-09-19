@@ -145,7 +145,7 @@ export default function DealsPage() {
       </div>
 
       {/* Список */}
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {rows.length === 0 && (
           <EmptyState
             title={intl.get('deals.empty_status.title')}

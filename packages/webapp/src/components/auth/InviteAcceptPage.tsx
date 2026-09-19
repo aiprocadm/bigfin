@@ -27,6 +27,7 @@ import {
 } from '@/containers/Authentication/InviteAcceptProvider';
 
 import { inviteAcceptSchema, type InviteAcceptInput } from './schemas';
+import intl from 'react-intl-universal';
 
 type InviteAcceptApiPayload = {
   first_name: string;
@@ -63,7 +64,7 @@ const InviteAcceptForm = () => {
     return (
       <div className="flex flex-col items-center gap-3 py-12">
         <Spinner size="md" />
-        <p className="text-text-secondary">Загружаем приглашение...</p>
+        <p className="text-text-secondary">{intl.get('auth.loading_invite')}</p>
       </div>
     );
   }
@@ -122,7 +123,7 @@ const InviteAcceptForm = () => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Имя</FormLabel>
+                <FormLabel>{intl.get('first_name')}</FormLabel>
                 <FormControl>
                   <Input autoComplete="given-name" {...field} />
                 </FormControl>
@@ -136,7 +137,7 @@ const InviteAcceptForm = () => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Фамилия</FormLabel>
+                <FormLabel>{intl.get('last_name')}</FormLabel>
                 <FormControl>
                   <Input autoComplete="family-name" {...field} />
                 </FormControl>
@@ -150,13 +151,13 @@ const InviteAcceptForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Пароль</FormLabel>
+                <FormLabel>{intl.get('password')}</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       autoComplete="new-password"
-                      placeholder="Минимум 10 символов"
+                      placeholder={intl.get('auth.password_hint')}
                       className="pr-10"
                       {...field}
                     />
@@ -186,7 +187,7 @@ const InviteAcceptForm = () => {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Подтвердите пароль</FormLabel>
+                <FormLabel>{intl.get('confirm_password')}</FormLabel>
                 <FormControl>
                   <Input
                     type={showPassword ? 'text' : 'password'}

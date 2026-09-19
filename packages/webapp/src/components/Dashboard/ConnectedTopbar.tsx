@@ -1,21 +1,23 @@
-import { Plus, Search } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, Plus, Search } from 'lucide-react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { OPEN_SEARCH } from '@/store/types';
+import { DialogsName } from '@/constants/dialogs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Topbar } from '@/components/ui/Topbar';
-import { useAuthActions } from '@/hooks/state';
+import { useAuthActions, useDialogActions } from '@/hooks/state';
 import { useAuthenticatedAccount } from '@/hooks/query';
 import { firstLettersArgs } from '@/utils';
 import { NotificationBell } from '@/containers/Notifications/InApp/NotificationBell';
@@ -26,6 +28,7 @@ export const ConnectedTopbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { setLogout } = useAuthActions();
+  const { openDialog } = useDialogActions();
   const { data: user } = useAuthenticatedAccount();
 
   // Открыть оверлей универсального поиска (как по горячей клавише «/»).
@@ -52,7 +55,7 @@ export const ConnectedTopbar = () => {
     <Topbar
       titleSlot={
         pageTitle ? (
-          <h1 className="truncate text-sm font-medium text-text-primary">
+          <h1 className="truncate text-[0.9375rem] font-semibold tracking-[-0.01em] text-text-primary">
             {pageTitle}
           </h1>
         ) : null
@@ -80,19 +83,48 @@ export const ConnectedTopbar = () => {
       quickActionsSlot={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Быстрое создание">
-              <Plus className="h-4 w-4" />
+            {/* Подпись видна на обычных экранах: главное действие панели не
+                должно быть загадкой из одного значка. На телефоне остаётся
+                только значок — там дорога каждая точка ширины. */}
+            <Button variant="primary" size="sm" className="gap-1.5">
+              <Plus className="h-4 w-4" aria-hidden />
+              <span className="hidden sm:inline">
+                {intl.get('topbar.add')}
+              </span>
+              <span className="sr-only sm:hidden">
+                {intl.get('topbar.add')}
+              </span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-60">
+            {/* ЕЖЕДНЕВНОЕ — СВЕРХУ. Владелец заходит в продукт учёта денег
+                чаще всего затем, чтобы записать движение денег, а не чтобы
+                выставить счёт: счета выставляют раз в неделю, деньги ходят
+                каждый день. Прежний список начинался со счетов. */}
+            <DropdownMenuLabel>{intl.get('topbar.add.money')}</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => openDialog(DialogsName.MoneyInForm)}>
+              <ArrowDownLeft className="mr-2 h-4 w-4 text-success" aria-hidden />
+              {intl.get('banking.label.add_money_in')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => openDialog(DialogsName.MoneyOutForm)}
+            >
+              <ArrowUpRight className="mr-2 h-4 w-4 text-text-secondary" aria-hidden />
+              {intl.get('banking.label.add_money_out')}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>
+              {intl.get('topbar.add.documents')}
+            </DropdownMenuLabel>
             <DropdownMenuItem onClick={() => history.push('/invoices/new')}>
-              Счёт покупателю
+              {intl.get('topbar.add.invoice')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => history.push('/bills/new')}>
-              Счёт поставщика
+              {intl.get('topbar.add.bill')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => history.push('/customers/new')}>
-              Контрагента
+              {intl.get('topbar.add.contact')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -102,7 +134,7 @@ export const ConnectedTopbar = () => {
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              aria-label="Меню профиля"
+              aria-label={intl.get('topbar.profile_menu')}
               className="ml-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-action"
             >
               <Avatar>
@@ -112,11 +144,11 @@ export const ConnectedTopbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => history.push('/preferences')}>
-              Настройки
+              {intl.get('preferences')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setLogout()}>
-              Выйти
+              {intl.get('logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -45,7 +45,7 @@ export function CashAccountField({
     <select
       className={
         className ??
-        'border-input bg-background h-9 rounded-md border px-3 text-sm'
+        'border-input bg-background h-9 rounded-control border px-3 text-sm'
       }
       value={value}
       onChange={(event) => onChange(event.target.value)}

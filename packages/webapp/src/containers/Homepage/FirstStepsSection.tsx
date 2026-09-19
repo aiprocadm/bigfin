@@ -31,7 +31,7 @@ export default function FirstStepsSection() {
         </span>
       </div>
 
-      <div className="flex flex-col divide-y rounded-xl border border-border bg-surface">
+      <div className="flex flex-col divide-y rounded-default border border-border bg-surface">
         {steps.map((step) => (
           <Link
             key={step.key}

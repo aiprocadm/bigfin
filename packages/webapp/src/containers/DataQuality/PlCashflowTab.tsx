@@ -20,7 +20,7 @@ export function PlCashflowTab({ fromDate, toDate }: Props) {
       <h2 className="text-base font-semibold">
         {intl.get('data_quality.pl_cashflow.title')}
       </h2>
-      <div className="rounded-md border">
+      <div className="rounded-control border">
         {months.length === 0 ? (
           <div className="text-muted-foreground p-4 text-sm">
             {intl.get('data_quality.pl_cashflow.empty')}

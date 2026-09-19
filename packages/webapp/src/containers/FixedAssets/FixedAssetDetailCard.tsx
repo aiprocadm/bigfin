@@ -52,7 +52,7 @@ const fmtPeriod = (p: string | null | undefined) => {
 };
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
@@ -114,7 +114,7 @@ function DisposeForm({
   };
 
   return (
-    <div className="rounded-md border p-4">
+    <div className="rounded-control border p-4">
       <p className="mb-3 font-medium text-sm">
         {intl.get('fixed_assets.dispose.title')}
       </p>

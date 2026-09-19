@@ -74,7 +74,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
             aria-expanded={open}
             disabled={disabled}
             className={cn(
-              'flex h-11 w-full items-center justify-between gap-2 rounded-md border border-border bg-surface-elevated px-3 py-2 text-sm sm:h-10',
+              'flex h-11 w-full items-center justify-between gap-2 rounded-control border border-border bg-surface-elevated px-3 py-2 text-sm sm:h-10',
               'focus:outline-none focus-visible:border-action focus-visible:ring-2 focus-visible:ring-action',
               'disabled:cursor-not-allowed disabled:opacity-50',
               selected ? 'text-text-primary' : 'text-text-muted',

@@ -188,7 +188,7 @@ function ModulesPage({ changePreferencesPageTitle }: ModulesPageProps) {
                     ].join(' ')}
                   >
                     {Icon ? (
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-elevated text-text-secondary">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-default bg-surface-elevated text-text-secondary">
                         <Icon className="h-5 w-5" strokeWidth={1.75} />
                       </span>
                     ) : null}

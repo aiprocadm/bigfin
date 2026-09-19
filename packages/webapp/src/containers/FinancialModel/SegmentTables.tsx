@@ -25,7 +25,7 @@ function TableShell({
   empty: boolean;
 }) {
   return (
-    <div className="rounded-md border p-4">
+    <div className="rounded-control border p-4">
       <div className="mb-2 text-sm font-medium">{title}</div>
       {empty ? (
         <div className="py-6 text-center text-sm text-muted-foreground">

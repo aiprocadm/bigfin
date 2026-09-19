@@ -25,7 +25,7 @@ export default function PreferencesSidebar() {
       <nav className="flex flex-col gap-4 p-2" aria-label={intl.get('preferences')}>
         {PreferencesMenu.map((section) => (
           <div key={section.titleId} className="flex flex-col gap-0.5">
-            <div className="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+            <div className="px-3 pb-1 text-[0.8125rem] font-medium text-text-muted">
               {intl.get(section.titleId)}
             </div>
 
@@ -40,7 +40,7 @@ export default function PreferencesSidebar() {
                   aria-current={active ? 'page' : undefined}
                   onClick={() => history.push(item.href)}
                   className={cn(
-                    'relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors',
+                    'relative flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-sm transition-colors',
                     'disabled:cursor-not-allowed disabled:opacity-50',
                     active
                       ? 'bg-surface-elevated font-medium text-text-primary'

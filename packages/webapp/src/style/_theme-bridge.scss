@@ -1,0 +1,273 @@
+/* Мост темы: старые экраны в новом языке оформления.
+ *
+ * ЗАЧЕМ. В продукте около семисот экранов, собранных на прежней библиотеке
+ * компонентов, и ещё около четырёхсот — на новой. Переписать все разом нельзя,
+ * а жить с двумя разными на вид продуктами — тем более: человек не знает, что
+ * у нас внутри «переезд», он видит, что половина программы выглядит иначе.
+ *
+ * Этот файл переводит ВНЕШНИЙ ВИД прежних компонентов на новые токены. Он не
+ * трогает разметку и поведение: только цвет, скругление, линии и ритм. Одна
+ * правка здесь меняет вид сразу всех старых экранов.
+ *
+ * Правила те же, что у новых экранов (docs/design/2026-09-19-ux-redesign-plan.md):
+ * структура линиями, а не тенями; два скругления; тень только у того, что и
+ * правда всплывает; расход не красный.
+ *
+ * Подключается ПОСЛЕДНИМ в App.scss — после самой библиотеки, иначе её
+ * собственные правила перебивают эти. */
+
+// ---------------------------------------------------------------------------
+// Общее
+// ---------------------------------------------------------------------------
+
+body,
+.bp4-button,
+.bp4-input,
+.bp4-menu,
+.bp4-dialog,
+.bp4-popover2-content {
+  font-family: 'Inter Variable', system-ui, sans-serif;
+}
+
+// ---------------------------------------------------------------------------
+// Кнопки
+// ---------------------------------------------------------------------------
+
+.bp4-button {
+  border-radius: var(--radius-ctl, 0.375rem);
+  box-shadow: none;
+  background-image: none;
+  font-weight: 500;
+
+  &:not([class*='bp4-intent-']) {
+    background-color: rgb(var(--c-surface));
+    border: 1px solid rgb(var(--c-border));
+    color: rgb(var(--c-text-primary));
+
+    &:hover {
+      background-color: rgb(var(--c-surface-elevated));
+      box-shadow: none;
+    }
+  }
+
+  // Главное действие — чернильное, а не синее: синий у нас ничего не значит,
+  // а чернильный держит всю иерархию нового интерфейса.
+  &.bp4-intent-primary {
+    background-color: rgb(var(--c-action));
+    border: 1px solid rgb(var(--c-action));
+    color: rgb(var(--c-action-fg));
+    box-shadow: none;
+
+    &:hover {
+      background-color: rgb(var(--c-action-hover));
+      border-color: rgb(var(--c-action-hover));
+    }
+  }
+
+  &.bp4-intent-danger {
+    background-color: rgb(var(--c-danger));
+    border: 1px solid rgb(var(--c-danger));
+    color: #fff;
+    box-shadow: none;
+  }
+
+  &.bp4-intent-success {
+    background-color: rgb(var(--c-success));
+    border: 1px solid rgb(var(--c-success));
+    color: #fff;
+    box-shadow: none;
+  }
+
+  &.bp4-minimal {
+    border-color: transparent;
+    background-color: transparent;
+
+    &:hover {
+      background-color: rgb(var(--c-surface-elevated));
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgb(var(--c-action));
+    outline-offset: 2px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Поля ввода
+// ---------------------------------------------------------------------------
+
+.bp4-input,
+.bp4-tag-input,
+.bp4-html-select select {
+  border-radius: var(--radius-ctl, 0.375rem);
+  box-shadow: none;
+  border: 1px solid rgb(var(--c-border));
+  background-color: rgb(var(--c-surface));
+  color: rgb(var(--c-text-primary));
+
+  &::placeholder {
+    color: rgb(var(--c-text-muted));
+  }
+
+  &:focus,
+  &.bp4-active {
+    border-color: rgb(var(--c-action));
+    box-shadow: 0 0 0 2px rgb(var(--c-action) / 0.15);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Карточки
+// ---------------------------------------------------------------------------
+
+.bp4-card {
+  border-radius: var(--radius, 0.625rem);
+  border: 1px solid rgb(var(--c-border));
+  background-color: rgb(var(--c-surface));
+  // Тени нет намеренно: карточка не всплывает над страницей, она её часть.
+  box-shadow: none;
+}
+
+// ---------------------------------------------------------------------------
+// Всплывающее: меню, подсказки, окна. ВОТ ЗДЕСЬ тень уместна — эти вещи и
+// правда лежат поверх страницы, и тень объясняет, почему они перекрывают её.
+// ---------------------------------------------------------------------------
+
+.bp4-popover2-content,
+.bp4-menu,
+.bp4-dialog {
+  border-radius: var(--radius, 0.625rem);
+  border: 1px solid rgb(var(--c-border));
+  background-color: rgb(var(--c-surface));
+  box-shadow:
+    0 4px 6px -2px rgb(0 0 0 / 0.04),
+    0 12px 24px -6px rgb(0 0 0 / 0.12);
+}
+
+.bp4-menu-item {
+  border-radius: var(--radius-ctl, 0.375rem);
+  color: rgb(var(--c-text-primary));
+
+  &:hover {
+    background-color: rgb(var(--c-surface-elevated));
+  }
+
+  &.bp4-active,
+  &.bp4-selected {
+    background-color: rgb(var(--c-surface-elevated));
+    color: rgb(var(--c-text-primary));
+  }
+}
+
+.bp4-dialog-header {
+  border-bottom: 1px solid rgb(var(--c-border));
+  box-shadow: none;
+  background-color: rgb(var(--c-surface));
+}
+
+// ---------------------------------------------------------------------------
+// Таблицы — ритм строки выписки
+//
+// Плотно, без зебры, с волосяной линией между строками. Это вернакуляр самого
+// предмета: человек видел такие строки в банковской выписке и читает их без
+// обучения. Зебра же добавляет полосы, которые ничего не означают.
+// ---------------------------------------------------------------------------
+
+table.bp4-html-table.bp4-html-table-striped tbody tr:nth-child(odd) td {
+  background: transparent;
+}
+
+.bp4-html-table {
+  th {
+    color: rgb(var(--c-text-secondary));
+    font-weight: 500;
+    border-bottom: 1px solid rgb(var(--c-border));
+    box-shadow: none !important;
+  }
+
+  td {
+    border-top: 1px solid rgb(var(--c-border));
+    box-shadow: none !important;
+    color: rgb(var(--c-text-primary));
+  }
+
+  // Зебра снимается селектором С ИМЕНЕМ ТЕГА: своё правило библиотека
+  // записывает как `table.bp4-html-table.bp4-html-table-striped ...`, и без
+  // имени тега вес оказывается ниже — правило молча не срабатывает.
+  //
+  // Зачем снимать: полосы через строку ничего не означают. Строки разделяет
+  // волосяная линия, как в банковской выписке, и этого достаточно.
+  &.bp4-html-table-striped tbody tr:nth-child(odd) td {
+    background: transparent;
+  }
+
+  tbody tr:hover td {
+    background-color: rgb(var(--c-surface-elevated));
+  }
+}
+
+// Суммы в старых таблицах — моноширинными цифрами и вправо, как и везде.
+.bp4-html-table td.amount,
+.bp4-html-table td[data-align='right'],
+td.money-cell {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+// ---------------------------------------------------------------------------
+// Вкладки — подчёркивание, а не заливка
+// ---------------------------------------------------------------------------
+
+.bp4-tab {
+  color: rgb(var(--c-text-secondary));
+  font-weight: 500;
+
+  &[aria-selected='true'] {
+    color: rgb(var(--c-text-primary));
+    box-shadow: inset 0 -2px 0 rgb(var(--c-action));
+  }
+}
+
+.bp4-tab-indicator {
+  background-color: rgb(var(--c-action));
+}
+
+// ---------------------------------------------------------------------------
+// Метки состояний
+// ---------------------------------------------------------------------------
+
+.bp4-tag {
+  border-radius: var(--radius-ctl, 0.375rem);
+  font-weight: 500;
+
+  &:not([class*='bp4-intent-']) {
+    background-color: rgb(var(--c-surface-elevated));
+    color: rgb(var(--c-text-secondary));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Разделители и приглушённый текст
+// ---------------------------------------------------------------------------
+
+.bp4-divider {
+  border-color: rgb(var(--c-border));
+}
+
+.bp4-text-muted {
+  color: rgb(var(--c-text-secondary));
+}
+
+// ---------------------------------------------------------------------------
+// Заголовки
+//
+// Тема библиотеки красит заголовки в тёмно-синий. В новом языке оформления
+// синий ничего не значит: весь текст — чернила, а иерархию держат размер и
+// начертание.
+// ---------------------------------------------------------------------------
+
+h1, h2, h3, h4, h5, h6,
+.bp4-heading {
+  color: rgb(var(--c-text-primary));
+}

@@ -56,7 +56,7 @@ function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileP
   return (
     <Link
       to={to}
-      className="rounded-lg border border-border bg-surface p-4 transition-colors hover:border-action hover:bg-surface-elevated"
+      className="rounded-default border border-border bg-surface p-4 transition-colors hover:border-action hover:bg-surface-elevated"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="truncate text-sm text-text-secondary">{label}</span>
@@ -64,7 +64,7 @@ function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileP
       </div>
       <div
         className={cn(
-          'text-xl font-medium tabular-nums sm:text-2xl',
+          'text-xl font-semibold tracking-[-0.01em] tabular-nums sm:text-2xl',
           tone === 'income' && 'text-success',
           tone === 'expense' && 'text-danger',
           !tone && 'text-text-primary',
@@ -222,7 +222,7 @@ export default function OverviewSection() {
       <AttentionList items={attention ?? []} />
 
       {/* Главный график продукта: доходы и расходы столбцами, прибыль линией. */}
-      <div className="rounded-lg border border-border bg-surface p-4">
+      <div className="rounded-default border border-border bg-surface p-4">
         <h2 className="mb-3 text-base font-medium text-text-primary">
           {intl.get('dashboard.chart.title')}
         </h2>
@@ -260,7 +260,7 @@ export default function OverviewSection() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Остатки по счетам: клик ведёт в операции этого счёта. */}
-        <div className="rounded-lg border border-border bg-surface p-4">
+        <div className="rounded-default border border-border bg-surface p-4">
           <h2 className="mb-3 text-base font-medium text-text-primary">
             {intl.get('dashboard.accounts.title')}
           </h2>
@@ -282,7 +282,7 @@ export default function OverviewSection() {
         </div>
 
         {/* Топ статей расходов: полосой видно долю каждой. */}
-        <div className="rounded-lg border border-border bg-surface p-4">
+        <div className="rounded-default border border-border bg-surface p-4">
           <h2 className="mb-3 text-base font-medium text-text-primary">
             {intl.get('dashboard.top_expenses.title')}
           </h2>

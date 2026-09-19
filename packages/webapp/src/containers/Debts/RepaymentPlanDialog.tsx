@@ -114,7 +114,7 @@ export function RepaymentPlanDialog({
               {fields.map((f, idx) => (
                 <div
                   key={f.id}
-                  className="flex items-end gap-2 rounded-md border p-2"
+                  className="flex items-end gap-2 rounded-control border p-2"
                 >
                   <FormField
                     control={form.control}

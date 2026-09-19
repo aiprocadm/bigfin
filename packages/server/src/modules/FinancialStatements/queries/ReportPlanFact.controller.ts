@@ -8,6 +8,7 @@ import {
   GetReportPlanFactService,
   PlanFactReportKind,
 } from './GetReportPlanFact.service';
+import { ReportDateRangeQueryDto } from '@/common/dtos/DateRangeQuery.dto';
 
 /**
  * План по строкам отчёта (этап 4 ТЗ, п. 4.4).
@@ -31,14 +32,10 @@ export class ReportPlanFactController {
       'раньше. План статьи попадает на строку счёта, только когда счёт у ' +
       'статьи единственный; иначе он виден лишь в итоге по виду.',
   })
-  getPlanFact(
-    @Query('report') report: PlanFactReportKind,
-    @Query('from') from: string,
-    @Query('to') to: string,
-  ) {
+  getPlanFact(@Query() query: ReportDateRangeQueryDto) {
     const kind: PlanFactReportKind =
-      report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
+      query.report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
 
-    return this.planFact.getPlanFact(kind, from, to);
+    return this.planFact.getPlanFact(kind, query.from, query.to);
   }
 }

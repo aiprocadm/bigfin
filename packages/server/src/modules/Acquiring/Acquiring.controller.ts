@@ -15,6 +15,7 @@ import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { DateRangeQueryDto } from '@/common/dtos/DateRangeQuery.dto';
 
 class ConnectYookassaDto {
   @IsString()
@@ -43,11 +44,8 @@ export class AcquiringController {
 
   @Get('yookassa/summary')
   @ApiOperation({ summary: 'Сводка эквайринга YooKassa за период.' })
-  summary(
-    @Query('from') from: string,
-    @Query('to') to: string,
-  ) {
-    return this.app.yookassaSummary(from, to);
+  summary(@Query() query: DateRangeQueryDto) {
+    return this.app.yookassaSummary(query.from, query.to);
   }
 
   @Post('yookassa/connect')

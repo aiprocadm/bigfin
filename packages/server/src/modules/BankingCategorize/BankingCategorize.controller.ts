@@ -25,6 +25,7 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { CashflowAction } from '@/modules/BankingTransactions/types/BankingTransactions.types';
+import { UncategorizedTransactionIdsQueryDto } from '@/common/dtos/UncategorizedTransactionIdsQuery.dto';
 
 @Controller('banking/categorize')
 @ApiTags('Banking Categorization')
@@ -84,14 +85,10 @@ export class BankingCategorizeController {
     description: 'The bank transactions have been uncategorized successfully.',
   })
   public uncategorizeTransactionsBulk(
-    @Query('uncategorizedTransactionIds')
-    uncategorizedTransactionIds: number[] | number,
+    @Query() query: UncategorizedTransactionIdsQueryDto,
   ) {
-    const ids = castArray(uncategorizedTransactionIds).map((id) =>
-      Number(id),
-    );
     return this.bankingCategorizeApplication.uncategorizeTransactionsBulk(
-      ids,
+      query.uncategorizedTransactionIds,
     );
   }
 

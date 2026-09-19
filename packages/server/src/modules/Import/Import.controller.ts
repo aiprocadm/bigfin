@@ -21,6 +21,7 @@ import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { ImportSampleQueryDto } from '@/common/dtos/ImportSampleQuery.dto';
 
 /**
  * Мастер импорта заводит записи любого вида — контрагентов, товары, счета,
@@ -96,11 +97,8 @@ export class ImportController {
   @Get('/sample')
   @ApiOperation({ summary: 'Get import sample' })
   @ApiResponse({ status: 200, description: 'Sample data' })
-  async downloadImportSample(
-    @Query('resource') resource: string,
-    @Query('format') format?: 'csv' | 'xlsx',
-  ) {
-    return this.importResourceApp.sample(resource, format);
+  async downloadImportSample(@Query() query: ImportSampleQueryDto) {
+    return this.importResourceApp.sample(query.resource, query.format);
   }
 
   /**

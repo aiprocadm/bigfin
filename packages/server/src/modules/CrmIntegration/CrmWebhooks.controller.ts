@@ -18,6 +18,7 @@ import { OWNCRM_KEY } from './constants';
 import { PublicRoute } from '@/modules/Auth/guards/jwt.guard';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
 import { Features } from '@/common/types/Features';
+import { CrmWebhookTokenQueryDto } from '@/common/dtos/CrmWebhookTokenQuery.dto';
 
 /**
  * Публичный приёмник входящих webhook собственной CRM (⑯c). Без auth-сессии:
@@ -38,8 +39,11 @@ export class CrmWebhooksController {
   @Post('inbound')
   @HttpCode(200)
   @ApiOperation({ summary: 'Входящий webhook собственной CRM (по токену).' })
-  async inbound(@Query('token') token: string, @Body() body: any) {
-    if (!token) throw new BadRequestException('Не передан token.');
+  async inbound(@Query() query: CrmWebhookTokenQueryDto, @Body() body: any) {
+    // Проверку «не передан token» делает вид-описание ДО входа в метод:
+    // раньше она стояла здесь и была единственной такой на весь сервер,
+    // то есть держалась на внимательности автора.
+    const token = query.token;
 
     // Плохой payload → 400 (а не 500): разбираем ДО входа в тенант-контекст.
     let entities: InboundCrmEntities;

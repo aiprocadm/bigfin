@@ -1,7 +1,7 @@
 import { Transformer } from '../Transformer/Transformer';
 import { ItemEntry } from './models/ItemEntry';
 
-interface ItemEntryTransformerContext{
+interface ItemEntryTransformerContext {
   currencyCode: string;
 }
 
@@ -20,7 +20,12 @@ export class ItemEntryTransformer extends Transformer<{}, ItemEntryTransformerCo
    * @returns {string}
    */
   protected quantityFormatted = (entry: ItemEntry): string => {
-    return this.formatNumber(entry.quantity, { money: false });
+    // Количество — не деньги, но разделитель дробной части у него тот же:
+    // «1,00», а не «1.00».
+    return this.formatNumber(entry.quantity, {
+      currencyCode: this.entryCurrencyCode,
+      money: false,
+    });
   };
 
   /**
@@ -28,9 +33,32 @@ export class ItemEntryTransformer extends Transformer<{}, ItemEntryTransformerCo
    * @param {IItemEntry} itemEntry -
    * @returns {string}
    */
+  /**
+   * Валюта строки документа.
+   *
+   * ЧИТАЕТСЯ ИЗ НАСТРОЕК, А НЕ ИЗ ОКРУЖЕНИЯ. Все вызывающие — счёт, смета,
+   * счёт поставщика, чек — кладут валюту ТРЕТЬИМ доводом в `item(...)`, а он
+   * отправляет её в `setOptions`. Здесь же её читали из `context`, куда она
+   * не попадает никогда.
+   *
+   * Из-за этого строки документов выводились ПО-АНГЛИЙСКИ: «200,000.00»
+   * вместо «200 000,00» — при том что итог того же счёта выводился верно.
+   * Найдено обходом ответов сервера после живого прохода.
+   *
+   * Запасной вариант — валюта организации: строка документа без валюты
+   * невозможна, но молчать о том, что её не передали, тоже нельзя.
+   */
+  private get entryCurrencyCode(): string {
+    return (
+      this.options?.currencyCode ??
+      this.context?.currencyCode ??
+      this.context?.organization?.baseCurrency
+    );
+  }
+
   protected rateFormatted = (entry: ItemEntry): string => {
     return this.formatNumber(entry.rate, {
-      currencyCode: this.context.currencyCode,
+      currencyCode: this.entryCurrencyCode,
       money: false,
     });
   };
@@ -42,7 +70,7 @@ export class ItemEntryTransformer extends Transformer<{}, ItemEntryTransformerCo
    */
   protected totalFormatted = (entry: ItemEntry): string => {
     return this.formatNumber(entry.total, {
-      currencyCode: this.context.currencyCode,
+      currencyCode: this.entryCurrencyCode,
       money: false,
     });
   };

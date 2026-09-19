@@ -114,9 +114,23 @@ describe('английская подпись сервера не попадае
       // Объявления типа в интерфейсах (`account_type_label: string`)
       // разрешены — поле в ответе сервера остаётся. Запрещён именно ПОКАЗ:
       // столбец таблицы по этому полю и подстановка в разметку.
+      // СЛЕПОЕ ПЯТНО, НАЙДЕННОЕ ОБХОДОМ: правило требовало, чтобы поле
+      // стояло ВПЛОТНУЮ к закрывающей скобке. А в карточке счёта было
+      // `{account.account_type_label || EMPTY_VALUE}` — и сторож молчал,
+      // пока на экране висело английское «Accounts Receivable».
+      //
+      // Теперь запрещён любой показ поля в разметке; объявления в описаниях
+      // типов и передача его помощнику перевода по-прежнему разрешены.
+      const showsInMarkup = code
+        .split('\n')
+        .some(
+          (line) =>
+            /\{[^}]*\.account_type_label\b/.test(line) &&
+            !/accountTypeLabel\(/.test(line),
+        );
+
       const shown =
-        /accessor:\s*['"]account_type_label['"]/.test(code) ||
-        /\{[^}]*\.account_type_label\s*\}/.test(code);
+        /accessor:\s*['"]account_type_label['"]/.test(code) || showsInMarkup;
 
       if (shown) offenders.push(path.relative(SRC, file));
     });

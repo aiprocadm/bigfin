@@ -11,25 +11,6 @@ const OrganizationRoute = {
   Build: '/organization/build',
 };
 
-/**
- * Retrieve organizations of the authenticated user.
- */
-export function useOrganizations(props: any) {
-  return useRequestQuery(
-    [t.ORGANIZATIONS],
-    { method: 'get', url: `organization/all` },
-    {
-      select: (res: any) => res.data.organizations,
-      initialDataUpdatedAt: 0,
-      initialData: {
-        data: {
-          organizations: [],
-        },
-      },
-      ...props,
-    },
-  );
-}
 
 /**
  * Retrieve the current organization metadata.

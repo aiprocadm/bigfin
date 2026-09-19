@@ -174,33 +174,61 @@ if ! (cd packages/server && node dist/cli.js system:migrate:latest) >>"$STAND_LO
     log "ПРЕДУПРЕЖДЕНИЕ: системные миграции не применились, продолжаю"
 fi
 
-rm -rf packages/webapp/dist.bak packages/server/dist.bak
+# ВНИМАНИЕ: снимок рабочей версии (`dist.bak`) НЕ УДАЛЯЕТСЯ ЗДЕСЬ.
+# Раньше он стирался до перезапуска, и откатываться после неудачного старта
+# было уже нечем. Удаляем только после того, как новый код и правда ответил.
 
-main_pid="$(systemctl show -p MainPID --value "$STAND_UNIT" 2>/dev/null)"
-if [[ -n "$main_pid" && "$main_pid" != "0" ]]; then
-    kill "$main_pid" 2>>"$STAND_LOG"
-else
-    # Безобидно: служба сейчас в паузе перезапуска и стартует уже с новым кодом.
-    log "ПРЕДУПРЕЖДЕНИЕ: не нашёл процесс службы $STAND_UNIT, перезапуск пропущен"
-fi
+restart_service() {
+    local pid
+    pid="$(systemctl show -p MainPID --value "$STAND_UNIT" 2>/dev/null)"
+
+    if [[ -n "$pid" && "$pid" != "0" ]]; then
+        kill "$pid" 2>>"$STAND_LOG"
+        echo "$pid"
+    else
+        # Безобидно: служба сейчас в паузе перезапуска и стартует уже с новым кодом.
+        log "ПРЕДУПРЕЖДЕНИЕ: не нашёл процесс службы $STAND_UNIT, перезапуск пропущен"
+        echo ""
+    fi
+}
 
 # Ждём, пока служба реально начнёт отвечать. Без этой проверки неудачный старт
 # обнаруживается только тогда, когда на него пожалуется живой человек.
-if [[ -n "$main_pid" && "$main_pid" != "0" ]]; then
-    deadline=$((SECONDS + STAND_HEALTH_TIMEOUT))
-    healthy=0
+wait_healthy() {
+    local deadline=$((SECONDS + STAND_HEALTH_TIMEOUT))
+
     while (( SECONDS < deadline )); do
         if curl -s -o /dev/null --max-time 5 "$STAND_HEALTH_URL" 2>/dev/null; then
-            healthy=1
-            break
+            return 0
         fi
         sleep 3
     done
-    if [[ "$healthy" -eq 1 ]]; then
-        log "стенд отвечает после перезапуска"
+    return 1
+}
+
+main_pid="$(restart_service)"
+
+if [[ -n "$main_pid" ]] && ! wait_healthy; then
+    # СЕРВЕР СОБРАЛСЯ, НО НЕ ЗАПУСКАЕТСЯ. Так бывает при незамкнутой
+    # зависимости: сборка проходит, типы сходятся, а Nest отказывается
+    # собрать модуль и падает на старте. Стенд в этом состоянии не просто
+    # показывает старые данные — он не отвечает вовсе.
+    log "ВНИМАНИЕ: за ${STAND_HEALTH_TIMEOUT} с стенд так и не ответил — откатываюсь"
+    rollback
+    restart_service >/dev/null
+
+    if wait_healthy; then
+        log "стенд поднялся на прежней версии ${prev:0:8}"
     else
-        log "ВНИМАНИЕ: за ${STAND_HEALTH_TIMEOUT} с стенд так и не ответил — смотреть journalctl -u $STAND_UNIT"
+        log "ОШИБКА: стенд не отвечает и после отката — смотреть journalctl -u $STAND_UNIT"
     fi
+    rm -rf packages/webapp/dist.bak packages/server/dist.bak
+    exit 1
 fi
+
+if [[ -n "$main_pid" ]]; then
+    log "стенд отвечает после перезапуска"
+fi
+rm -rf packages/webapp/dist.bak packages/server/dist.bak
 
 log "готово: стенд обновлён до ${target:0:8} — $(git log -1 --format='%s' | head -c 80)"

@@ -1,10 +1,13 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { I18nService } from 'nestjs-i18n';
-import { ITableColumn } from '../../types/Table.types';
+import {
+  ITableColumn,
+  ITableColumnAccessor,
+} from '../../types/Table.types';
 import { GConstructor } from '@/common/types/Constructor';
 import { BalanceSheetQuery } from './BalanceSheetQuery';
 import { FinancialSheet } from '../../common/FinancialSheet';
+import { toMutableList } from '../../utils/Table.utils';
 
 export const BalanceSheetTablePercentage = <
   T extends GConstructor<FinancialSheet>,
@@ -23,7 +26,8 @@ export const BalanceSheetTablePercentage = <
      * @returns {ITableColumn[]}
      */
     public percentageColumns = (): ITableColumn[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         R.when(
           this.query.isColumnsPercentageActive,
           R.append({
@@ -38,7 +42,8 @@ export const BalanceSheetTablePercentage = <
             label: this.i18n.t('balance_sheet.percentage_of_row'),
           }),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     // --------------------
@@ -48,8 +53,9 @@ export const BalanceSheetTablePercentage = <
      * Retrieves percentage of column/row accessors.
      * @returns {ITableColumn[]}
      */
-    public percentageColumnsAccessor = (): ITableColumn[] => {
-      return R.pipe(
+    public percentageColumnsAccessor = (): ITableColumnAccessor[] => {
+      return toMutableList(
+        R.pipe(
         R.when(
           this.query.isColumnsPercentageActive,
           R.append({
@@ -64,7 +70,8 @@ export const BalanceSheetTablePercentage = <
             accessor: 'percentageRow.formattedAmount',
           }),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     /**
@@ -74,8 +81,9 @@ export const BalanceSheetTablePercentage = <
      */
     public percetangeDatePeriodColumnsAccessor = (
       index: number,
-    ): ITableColumn[] => {
-      return R.pipe(
+    ): ITableColumnAccessor[] => {
+      return toMutableList(
+        R.pipe(
         R.when(
           this.query.isColumnsPercentageActive,
           R.append({
@@ -90,6 +98,7 @@ export const BalanceSheetTablePercentage = <
             accessor: `horizontalTotals[${index}].percentageRow.formattedAmount`,
           }),
         ),
-      )([]);
+      )([]),
+      );
     };
   };

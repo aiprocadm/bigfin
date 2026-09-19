@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   IBalanceSheetDOO,
   IBalanceSheetQuery,
@@ -12,6 +11,7 @@ import { BalanceSheet } from './BalanceSheet';
 import { getBalanceSheetDefaultQuery } from './constants';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { I18nService } from 'nestjs-i18n';
+import { IBalanceSheetDataNode } from './BalanceSheet.types';
 
 @Injectable()
 export class BalanceSheetInjectable {
@@ -35,7 +35,9 @@ export class BalanceSheetInjectable {
       ...getBalanceSheetDefaultQuery(),
       ...query,
     };
-    const tenantMetadata = await this.tenancyContext.getTenantMetadata(true);
+    const tenantMetadata = // Довод здесь лишний: метод не принимает ни одного и всегда отдаёт
+    // реквизиты организации целиком. Он просто игнорировался.
+    await this.tenancyContext.getTenantMetadata();
 
     // Loads all resources.
     await this.balanceSheetRepository.asyncInitialize(filter);
@@ -51,7 +53,10 @@ export class BalanceSheetInjectable {
       { baseCurrency: tenantMetadata.baseCurrency, dateFormat: meta.dateFormat },
     );
     // Balance sheet data.
-    const data = balanceSheetInstanace.reportData();
+    // `reportData()` собирается цепочками ramda и потому не объявляет вид
+    // результата. Это узлы отчёта — то же, что уходит наружу.
+    const data =
+      balanceSheetInstanace.reportData() as unknown as IBalanceSheetDataNode[];
 
     // Triggers `onBalanceSheetViewed` event.
     await this.eventPublisher.emitAsync(events.reports.onBalanceSheetViewed, {

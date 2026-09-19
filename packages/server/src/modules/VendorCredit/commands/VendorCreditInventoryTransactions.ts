@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Knex } from 'knex';
 import { Injectable } from '@nestjs/common';
 import { VendorCredit } from '../models/VendorCredit';
@@ -29,11 +28,14 @@ export class VendorCreditInventoryTransactions {
 
     const transaction = {
       transactionId: vendorCredit.id,
-      transactionType: 'VendorCredit',
+      // `as const` обязателен: без него TypeScript расширяет строку до
+      // обычного `string`, и вызов перестаёт сходиться с перечнем видов
+      // операций и направлений склада.
+      transactionType: 'VendorCredit' as const,
       transactionNumber: vendorCredit.vendorCreditNumber,
       exchangeRate: vendorCredit.exchangeRate,
       date: vendorCredit.vendorCreditDate,
-      direction: 'OUT',
+      direction: 'OUT' as const,
       entries: inventoryEntries,
       warehouseId: vendorCredit.warehouseId,
       createdAt: vendorCredit.createdAt,

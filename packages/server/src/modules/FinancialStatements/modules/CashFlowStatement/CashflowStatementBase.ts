@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { map } from 'lodash';
 import { Account } from "@/modules/Accounts/models/Account.model";
@@ -39,9 +38,12 @@ export class CashflowStatementBase extends FinancialSheet {
    * @return {number}
    */
   public amountAdjustment = (direction: 'mines' | 'plus', amount): number => {
+    // `R.when` из ramda отдаёт `unknown`: по своим типам она не берётся
+    // утверждать, что вернётся именно число. Здесь это всегда число —
+    // либо сама сумма, либо она же со знаком минус.
     return R.when(
       R.always(R.equals(direction, 'mines')),
       R.multiply(-1),
-    )(amount);
+    )(amount) as number;
   };
 }

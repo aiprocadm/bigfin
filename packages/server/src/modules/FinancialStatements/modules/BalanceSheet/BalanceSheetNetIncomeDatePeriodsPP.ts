@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { BalanceSheetComparsionPreviousPeriod } from './BalanceSheetComparsionPreviousPeriod';
 import { FinancialPreviousPeriod } from '../../common/FinancialPreviousPeriod';
@@ -11,6 +10,8 @@ import { BalanceSheetQuery } from './BalanceSheetQuery';
 import { BalanceSheetRepository } from './BalanceSheetRepository';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from '../../common/FinancialSheet';
+import { sameNodeShape } from '../../utils/Table.utils';
+import { IFinancialDatePeriodsUnit } from './BalanceSheet.types';
 
 export const BalanceSheetNetIncomeDatePeriodsPP = <
   T extends GConstructor<FinancialSheet>,
@@ -79,9 +80,12 @@ export const BalanceSheetNetIncomeDatePeriodsPP = <
      */
     public assocPreviousPeriodNetIncomeHorizTotal = R.curry(
       (node: IBalanceSheetNetIncomeNode, totalNode) => {
+        // `R.curry` из ramda не умеет сказать, что при передаче всех
+        // доводов вернётся число: по её типам это «то ли число, то ли ещё
+        // одна функция». Здесь доводы переданы полностью.
         const total = this.getPPNetIncomeDatePeriodTotal(
           totalNode.previousPeriodToDate.date,
-        );
+        ) as unknown as number;
         return R.assoc('previousPeriod', this.getAmountMeta(total), totalNode);
       },
     );
@@ -96,7 +100,8 @@ export const BalanceSheetNetIncomeDatePeriodsPP = <
         node: IBalanceSheetNetIncomeNode,
         horiontalTotalNode: IBalanceSheetTotal,
       ): IBalanceSheetTotal => {
-        return R.compose(
+        return sameNodeShape<IBalanceSheetTotal>(
+          R.compose(
           R.when(
             this.query.isPreviousPeriodPercentageActive,
             this.assocPreviousPeriodTotalPercentageNode,
@@ -112,10 +117,15 @@ export const BalanceSheetNetIncomeDatePeriodsPP = <
           R.when(
             this.query.isPreviousPeriodActive,
             this.assocPreviousPeriodHorizNodeFromToDates(
-              this.query.displayColumnsBy,
+              // Та же обёртка, что и в `BalanceSheetTablePreviousPeriod`:
+              // единица периода лежит внутри неё, а не на ней самой.
+              // Единица периода объявлена в запросе просто строкой;
+              // здесь нужен её узкий вид. Значения задаёт сам отчёт.
+              this.query.query.displayColumnsBy as IFinancialDatePeriodsUnit,
             ),
           ),
-        )(horiontalTotalNode);
+        )(horiontalTotalNode),
+        );
       },
     );
 

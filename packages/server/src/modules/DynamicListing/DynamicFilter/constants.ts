@@ -32,6 +32,14 @@ export const COMPARATOR_TYPE = {
   END_WITH: 'end_with'
 };
 
+/**
+ * Виды полей фильтра.
+ *
+ * `as const` обязателен. Без него каждое значение — просто «строка», и
+ * проверка вида `field.fieldType === FIELD_TYPE.RELATION` перестаёт
+ * сужать вид поля: дальше по коду обращаются к `relationKey`, которого
+ * у прочих видов нет.
+ */
 export const FIELD_TYPE = {
   TEXT: 'text',
   NUMBER: 'number',
@@ -39,5 +47,5 @@ export const FIELD_TYPE = {
   BOOLEAN: 'boolean',
   RELATION: 'relation',
   DATE: 'date',
-  COMPUTED: 'computed'
-};
+  COMPUTED: 'computed',
+} as const;

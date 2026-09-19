@@ -1,6 +1,14 @@
-// @ts-nocheck
 import * as _ from 'lodash';
-import * as addDeepdash from 'deepdash';
+/**
+ * Подключение deepdash к lodash.
+ *
+ * Берётся через `require`, а не импортом. Причина: пакет для обычной сборки
+ * отдаёт ФУНКЦИЮ (`module.exports = apply` в `deepdash.js`), а его собственные
+ * описания типов написаны для другой, модульной сборки и описывают набор
+ * отдельных функций. Импорт по этим описаниям даёт объект, который нельзя
+ * вызвать, — хотя во время работы вызов проходит.
+ */
+const addDeepdash = require('deepdash') as (lodash: typeof _) => any;
 
 const {
   condense,

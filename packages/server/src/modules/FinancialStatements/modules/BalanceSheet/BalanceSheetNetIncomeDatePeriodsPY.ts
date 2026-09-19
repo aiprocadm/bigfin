@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { BalanceSheetComparsionPreviousYear } from './BalanceSheetComparsionPreviousYear';
 import { FinancialPreviousPeriod } from '../../common/FinancialPreviousPeriod';
@@ -11,6 +10,7 @@ import { BalanceSheetQuery } from './BalanceSheetQuery';
 import { BalanceSheetRepository } from './BalanceSheetRepository';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from '../../common/FinancialSheet';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetNetIncomeDatePeriodsPY = <
   T extends GConstructor<FinancialSheet>,
@@ -76,9 +76,11 @@ export const BalanceSheetNetIncomeDatePeriodsPY = <
      */
     public assocPreviousYearNetIncomeHorizTotal = R.curry(
       (node: IBalanceSheetNetIncomeNode, totalNode) => {
+        // `R.curry` из ramda не умеет сказать, что при передаче всех
+        // доводов вернётся число. Здесь доводы переданы полностью.
         const total = this.getPYNetIncomeDatePeriodTotal(
           totalNode.previousYearToDate.date,
-        );
+        ) as unknown as number;
         return R.assoc('previousYear', this.getAmountMeta(total), totalNode);
       },
     );
@@ -93,7 +95,8 @@ export const BalanceSheetNetIncomeDatePeriodsPY = <
         node: IBalanceSheetNetIncomeNode,
         horiontalTotalNode: IBalanceSheetTotal,
       ): IBalanceSheetTotal => {
-        return R.compose(
+        return sameNodeShape<IBalanceSheetTotal>(
+          R.compose(
           R.when(
             this.query.isPreviousYearPercentageActive,
             this.assocPreviousYearTotalPercentageNode,
@@ -108,9 +111,13 @@ export const BalanceSheetNetIncomeDatePeriodsPY = <
           ),
           R.when(
             this.query.isPreviousYearActive,
-            this.assocPreviousYearHorizNodeFromToDates,
+            // Узел итога и узел с датами периода описаны разными перечнями,
+            // хотя в этой цепочке это один и тот же узел: сюда он приходит
+            // уже с проставленными датами прошлого года.
+            this.assocPreviousYearHorizNodeFromToDates as any,
           ),
-        )(horiontalTotalNode);
+        )(horiontalTotalNode as any),
+        );
       },
     );
 

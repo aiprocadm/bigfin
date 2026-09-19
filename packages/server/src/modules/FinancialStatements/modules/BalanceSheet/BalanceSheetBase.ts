@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import {
   IBalanceSheetDataNode,
@@ -42,6 +41,23 @@ export const BalanceSheetBase = <T extends GConstructor<FinancialSheet>>(
      * @returns {boolean}
      */
     public isDisplayColumnsBy = (displayColumnsBy: string): boolean => {
-      return this.query.displayColumnsType === displayColumnsBy;
+      // БЫЛО: `this.query.displayColumnsType === displayColumnsBy`.
+      //
+      // `this.query` здесь — не сам запрос, а обёртка `BalanceSheetQuery`;
+      // поля `displayColumnsType` у неё нет (оно лежит внутри, в
+      // `query.query`). Сравнение всегда получалось `undefined === 'что-то'`,
+      // то есть ВСЕГДА «нет».
+      //
+      // Чем это оборачивалось: по этому ответу баланс выбирает, брать
+      // значения ячеек по периодам или одной итоговой колонкой
+      // (`BalanceSheetTable.commonColumnsAccessors`). Заголовки колонок при
+      // этом строятся другим путём, который работал правильно. Выбрал человек
+      // «по периодам» — шапка показывала периоды, а значения приходили из
+      // итоговой колонки.
+      //
+      // Сравниваемое поле оставлено прежним (`displayColumnsType`): именно его
+      // и хотел автор — сюда передают «total» или «date_periods», а не единицу
+      // периода.
+      return this.query.isDisplayColumnsType(displayColumnsBy);
     };
   };

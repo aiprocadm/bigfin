@@ -3,6 +3,7 @@ import { UncategorizedBankTransaction } from '../models/UncategorizedBankTransac
 import { BankTransaction } from '../models/BankTransaction';
 import { CreateBankTransactionDto } from '../dtos/CreateBankTransaction.dto';
 import { INumberFormatQuery } from '@/modules/FinancialStatements/types/Report.types';
+import { ISortOrder } from '@/modules/DynamicListing/DynamicFilter/DynamicFilter.types';
 
 export interface IPendingTransactionRemovingEventPayload {
   uncategorizedTransactionId: number;
@@ -55,7 +56,11 @@ export interface ICashflowNewCommandDTO extends ICashflowCommandDTO {
 export interface IBankAccountsFilter {
   inactiveMode: boolean;
   stringifiedFilterRoles?: string;
-  sortOrder: string;
+
+  // Порядок сортировки — не любая строка, а «по возрастанию» или «по
+  // убыванию»: этот отбор уходит в общий механизм списков, который принимает
+  // именно их.
+  sortOrder: ISortOrder;
   columnSortBy: string;
 }
 

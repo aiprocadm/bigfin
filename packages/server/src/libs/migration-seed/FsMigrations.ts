@@ -92,10 +92,13 @@ class FsMigrations {
 
   /**
    * Retrieve the migrate file content from given migrate item.
+   *
+   * Возвращает ОБЕЩАНИЕ, а не строку: подгрузка файла асинхронная. Раньше в
+   * подписи стояло `string` — она просто не соответствовала телу метода.
    * @param {MigrateItem} migration
-   * @returns {string}
+   * @returns {Promise<any>}
    */
-  public getMigration(migration: MigrateItem): string {
+  public getMigration(migration: MigrateItem): Promise<any> {
     return importWebpackSeedModule(
       migration.file.replace('.ts', ''),
       this.seedsDirectory,

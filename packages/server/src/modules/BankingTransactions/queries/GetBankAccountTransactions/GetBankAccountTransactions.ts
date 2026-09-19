@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import * as moment from 'moment';
 import { first, isEmpty } from 'lodash';
@@ -203,7 +202,11 @@ export class GetBankAccountTransactions extends FinancialSheet {
    * @returns {ICashflowAccountTransaction[]}
    */
   private transactionsNode = (transactions): ICashflowAccountTransaction[] => {
-    return R.map(this.transactionTransformer)(transactions);
+    // `R.map` по неизвестному списку отдаёт словарь, а не массив — она не
+    // берётся угадать, что пришло. Здесь всегда приходит список операций.
+    return R.map(this.transactionTransformer)(
+      transactions,
+    ) as unknown as ICashflowAccountTransaction[];
   };
 
   /**

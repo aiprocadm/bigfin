@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import {
   IBalanceSheetDataNode,
@@ -12,6 +11,7 @@ import { BalanceSheetQuery } from './BalanceSheetQuery';
 import { BalanceSheetNetIncomeDatePeriodsPP } from './BalanceSheetNetIncomeDatePeriodsPP';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { GConstructor } from '@/common/types/Constructor';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetNetIncomePP = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -61,7 +61,11 @@ export const BalanceSheetNetIncomePP = <T extends GConstructor<FinancialSheet>>(
     public previousPeriodNetIncomeNodeCompose = (
       node: IBalanceSheetNetIncomeNode,
     ): IBalanceSheetNetIncomeNode => {
-      return R.compose(
+      return sameNodeShape<IBalanceSheetNetIncomeNode>(
+        // `R.compose` перестаёт подбирать вид, когда шагов в цепочке
+        // много: у неё описано ограниченное число сочетаний. Вид
+        // результата объявлен снаружи, через `sameNodeShape`.
+        (R.compose as any)(
         R.when(
           this.isNodeHasHorizTotals,
           this.assocPreviousPeriodNetIncomeHorizNode,
@@ -75,6 +79,7 @@ export const BalanceSheetNetIncomePP = <T extends GConstructor<FinancialSheet>>(
           this.assocPreviousPeriodChangeNode,
         ),
         this.assocPreviousPeriodNetIncomeNode,
-      )(node);
+      )(node as any),
+      );
     };
   };

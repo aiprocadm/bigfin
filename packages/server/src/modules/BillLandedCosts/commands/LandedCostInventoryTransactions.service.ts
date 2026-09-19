@@ -31,7 +31,9 @@ export class LandedCostInventoryTransactions {
     const inventoryTransactions = allocateEntries.map((allocateEntry) => ({
       date: bill.billDate,
       itemId: allocateEntry.entry.itemId,
-      direction: 'IN',
+      // `as const`: без него строка расширяется до обычной `string`
+      // и перестаёт сходиться с направлением склада.
+      direction: 'IN' as const,
       quantity: null,
       rate: allocateEntry.cost,
       transactionType: 'LandedCost',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { ProfitLossSheetQuery } from './ProfitLossSheetQuery';
 import { GConstructor } from '@/common/types/Constructor';
@@ -7,6 +6,7 @@ import { ITableColumn, ITableColumnAccessor } from '../../types/Table.types';
 import { IDateRange } from '../CashFlowStatement/Cashflow.types';
 import { FinancialTablePreviousYear } from '../../common/FinancialTablePreviousYear';
 import { FinancialDateRanges } from '../../common/FinancialDateRanges';
+import { toMutableList } from '../../utils/Table.utils';
 
 export const ProfitLossTablePreviousYear = <
   T extends GConstructor<FinancialSheet>,
@@ -26,7 +26,8 @@ export const ProfitLossTablePreviousYear = <
     protected getPreviousYearColumns = (
       dateRange?: IDateRange,
     ): ITableColumn[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         // Previous year columns.
         R.append(this.getPreviousYearTotalColumn(dateRange)),
         R.when(
@@ -37,7 +38,8 @@ export const ProfitLossTablePreviousYear = <
           this.query.isPreviousYearPercentageActive,
           R.append(this.getPreviousYearPercentageColumn()),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     /**
@@ -74,7 +76,8 @@ export const ProfitLossTablePreviousYear = <
      * @returns {ITableColumnAccessor[]}
      */
     protected previousYearColumnAccessor = (): ITableColumnAccessor[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         // Previous year columns.
         R.append(this.getPreviousYearTotalAccessor()),
         R.when(
@@ -85,7 +88,8 @@ export const ProfitLossTablePreviousYear = <
           this.query.isPreviousYearPercentageActive,
           R.append(this.getPreviousYearPercentageAccessor()),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     /**
@@ -96,7 +100,8 @@ export const ProfitLossTablePreviousYear = <
     protected previousYearHorizontalColumnAccessors = (
       index: number,
     ): ITableColumnAccessor[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         // Previous year columns.
         R.append(this.getPreviousYearTotalHorizAccessor(index)),
         R.when(
@@ -107,6 +112,7 @@ export const ProfitLossTablePreviousYear = <
           this.query.isPreviousYearPercentageActive,
           R.append(this.getPreviousYearPercentageHorizAccessor(index)),
         ),
-      )([]);
+      )([]),
+      );
     };
   };

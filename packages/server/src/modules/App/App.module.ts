@@ -38,6 +38,7 @@ import { ManagementArticlesModule } from '../ManagementArticles/ManagementArticl
 import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module';
 import { BudgetsModule } from '../Budgets/Budgets.module';
 import { LegalEntitiesModule } from '../LegalEntities/LegalEntities.module';
+import { ProjectsModule } from '../Projects/Projects.module';
 import { PublicApiModule } from '../PublicApi/PublicApi.module';
 import { AiAnalystModule } from '../AiAnalyst/AiAnalyst.module';
 import { AiChatModule } from '../AiChat/AiChat.module';
@@ -248,6 +249,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     PaymentCalendarModule,
     BudgetsModule,
     LegalEntitiesModule,
+    ProjectsModule,
     // Публичный API и вебхуки (этап 15 ТЗ).
     PublicApiModule,
     // ИИ-аналитик (этап 13 ТЗ). Флаг по умолчанию выключен.

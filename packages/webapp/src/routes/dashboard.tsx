@@ -1183,6 +1183,15 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     breadcrumb: intl.get('legal_entities.page.title'),
     pageTitle: intl.get('legal_entities.page.title'),
   },
+  // Справочник направлений (проектов). Поля «Проект» стояли в формах
+  // операций с самого начала, но заводить направления было негде:
+  // серверных ручек не существовало ни одной.
+  {
+    path: `/directions`,
+    component: lazy(() => import('@/containers/Directions/DirectionsPage')),
+    breadcrumb: intl.get('directions.page.title'),
+    pageTitle: intl.get('directions.page.title'),
+  },
   // Анализ расходов (этап 9 ТЗ): постоянные и переменные, доля расходов
   // в выручке, точка безубыточности и запас прочности.
   {

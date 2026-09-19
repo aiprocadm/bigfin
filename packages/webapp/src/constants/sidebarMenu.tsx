@@ -357,6 +357,17 @@ export const SidebarMenu = [
         },
       },
       {
+        // Направления (проекты) — разрез операций наравне со статьёй.
+        // Пункт есть всегда: первое направление надо откуда-то завести.
+        text: <T id={'sidebar.directions'} />,
+        href: '/directions',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Preferences,
+          ability: PreferencesAbility.Mutate,
+        },
+      },
+      {
         text: <T id={'sidebar.management_articles'} />,
         href: '/management-articles',
         type: ISidebarMenuItemType.Link,

@@ -19,15 +19,37 @@ export const LEGAL_ENTITY_ERRORS = {
   LAST_LEGAL_ENTITY: 'LAST_LEGAL_ENTITY',
 };
 
+/**
+ * Строка справочника юрлиц.
+ *
+ * ЗДЕСЬ ЛЕЖИТ ВСЁ, ЧТО ФОРМА УМЕЕТ ИЗМЕНИТЬ, а не только то, что видно в
+ * таблице. Причина не в удобстве, а в потере данных: форма правки шлёт на
+ * сервер ВСЕ свои поля. Поле, которого в этом списке нет, форме нечем
+ * заполнить — она отправляет пустое, и сервер честно затирает КПП, ОГРН,
+ * директора и адрес. Ничего при этом не падает: человек открыл юрлицо,
+ * поправил название, сохранил — и половина реквизитов исчезла.
+ *
+ * За полнотой следит `listReturnsEditableFields.spec.ts`.
+ */
 export interface LegalEntityRow {
   id: number;
   name: string;
+  fullName: string | null;
   form: string;
   inn: string | null;
+  kpp: string | null;
+  ogrn: string | null;
   taxSystem: string | null;
+  vatPayer: boolean;
+  baseCurrency: string | null;
+  directorName: string | null;
+  legalAddress: string | null;
+  actualAddress: string | null;
+  bankDetails: Record<string, unknown> | null;
   ownershipShare: number;
   isPrimary: boolean;
   active: boolean;
+  sortOrder: number;
   /** Сколько счетов закреплено — колонка таблицы из §6.4. */
   accountsCount: number;
 }
@@ -39,6 +61,31 @@ export interface LegalEntityRow {
  * умолчанию из реквизитов организации. Пустой справочник заставил бы человека
  * заводить юрлицо руками, чтобы увидеть то, что у него и так одно.
  */
+/**
+ * Банковские реквизиты из базы.
+ *
+ * В MySQL они лежат в колонке JSON, и драйвер отдаёт их то объектом, то
+ * строкой — зависит от версии и от того, как строка туда попала. Форма,
+ * получившая строку вместо объекта, покажет пустые поля банка и затрёт их
+ * при сохранении.
+ */
+function parseBankDetails(value: unknown): Record<string, unknown> | null {
+  if (!value) return null;
+  if (typeof value === 'object') return value as Record<string, unknown>;
+
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+
+      return parsed && typeof parsed === 'object' ? parsed : null;
+    } catch {
+      // Испорченное значение не должно ронять весь справочник.
+      return null;
+    }
+  }
+  return null;
+}
+
 @Injectable()
 export class LegalEntitiesApplication {
   constructor(
@@ -65,12 +112,22 @@ export class LegalEntitiesApplication {
     return entities.map((entity) => ({
       id: entity.id,
       name: entity.name,
+      fullName: entity.fullName ?? null,
       form: entity.form,
       inn: entity.inn ?? null,
+      kpp: entity.kpp ?? null,
+      ogrn: entity.ogrn ?? null,
       taxSystem: entity.taxSystem ?? null,
+      vatPayer: Boolean(entity.vatPayer),
+      baseCurrency: entity.baseCurrency ?? null,
+      directorName: entity.directorName ?? null,
+      legalAddress: entity.legalAddress ?? null,
+      actualAddress: entity.actualAddress ?? null,
+      bankDetails: parseBankDetails(entity.bankDetails),
       ownershipShare: Number(entity.ownershipShare ?? 0),
       isPrimary: Boolean(entity.isPrimary),
       active: Boolean(entity.active),
+      sortOrder: Number(entity.sortOrder ?? 0),
       accountsCount: accountsCount.get(entity.id) ?? 0,
     }));
   }

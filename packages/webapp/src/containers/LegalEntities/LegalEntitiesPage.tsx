@@ -34,6 +34,7 @@ import {
   getLegalEntitySchema,
   type LegalEntityFormValues,
 } from './legalEntity.zod';
+import { legalEntityFromForm, legalEntityToForm } from './legalEntityView';
 import {
   canDeleteLegalEntity,
   formatOwnershipShare,
@@ -51,8 +52,15 @@ const emptyValues = {
   kpp: '',
   ogrn: '',
   taxSystem: '',
+  vatPayer: false,
+  baseCurrency: '',
   directorName: '',
   legalAddress: '',
+  actualAddress: '',
+  bankName: '',
+  bik: '',
+  account: '',
+  correspondentAccount: '',
   ownershipShare: '100',
   isPrimary: false,
   active: true,
@@ -87,25 +95,20 @@ export default function LegalEntitiesPage() {
 
   const openEdit = (entity: LegalEntityRow) => {
     setEditing(entity);
-    form.reset({
-      ...emptyValues,
-      name: entity.name,
-      form: entity.form,
-      inn: entity.inn ?? '',
-      taxSystem: entity.taxSystem ?? '',
-      ownershipShare: String(entity.ownershipShare ?? 100),
-      isPrimary: entity.isPrimary,
-      active: entity.active,
-    } as any);
+    // ВАЖНО: подставляем ВСЕ поля, а не только видимые в таблице. Форма
+    // отправляет на сервер всё разом, и поле, которое нечем заполнить,
+    // уходит пустым — сервер честно затирает настоящее значение. Так
+    // терялись КПП, ОГРН, директор и адрес: человек правил название, а
+    // пропадали реквизиты.
+    form.reset({ ...emptyValues, ...legalEntityToForm(entity) } as any);
     setFormOpen(true);
   };
 
   const onSubmit = async (values: LegalEntityFormValues) => {
     // Доля уходит числом: запятую с цифрового блока сервер не поймёт.
-    const payload = {
-      ...values,
-      ownershipShare: Number(String(values.ownershipShare).replace(',', '.')),
-    };
+    // Банковские поля собираются в один объект — сервер хранит их вместе,
+    // и печатные формы читают оттуда же.
+    const payload = legalEntityFromForm(values);
 
     try {
       if (editing) {
@@ -175,6 +178,7 @@ export default function LegalEntitiesPage() {
               <th className="p-3">{intl.get('legal_entities.col.form')}</th>
               <th className="p-3">{intl.get('legal_entities.col.inn')}</th>
               <th className="p-3">{intl.get('legal_entities.col.tax')}</th>
+              <th className="p-3">{intl.get('legal_entities.col.state')}</th>
               <th className="p-3 text-right">
                 {intl.get('legal_entities.col.share')}
               </th>
@@ -204,6 +208,18 @@ export default function LegalEntitiesPage() {
                 <td className="p-3">{entity.form}</td>
                 <td className="p-3 tabular-nums">{entity.inn ?? '—'}</td>
                 <td className="p-3">{entity.taxSystem ?? '—'}</td>
+                {/*
+                  Состояние — отдельной колонкой, а не только приглушённой
+                  строкой (остаток Ю4). Приглушение легко не заметить, и
+                  человек ищет, почему юрлица нет в отборах отчёта.
+                */}
+                <td className="p-3">
+                  {intl.get(
+                    entity.active
+                      ? 'legal_entities.state.active'
+                      : 'legal_entities.state.inactive',
+                  )}
+                </td>
                 <td className="p-3 text-right tabular-nums">
                   {formatOwnershipShare(entity.ownershipShare)}
                 </td>
@@ -378,6 +394,193 @@ export default function LegalEntitiesPage() {
                       {intl.get('legal_entities.share.hint')}
                     </p>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <h3 className="mt-2 border-t border-border pt-4 text-sm font-medium text-text-secondary">
+                {intl.get('legal_entities.section.requisites')}
+              </h3>
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.full_name')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="vatPayer"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-border"
+                        checked={Boolean(field.value)}
+                        onChange={(event) => field.onChange(event.target.checked)}
+                      />
+                    </FormControl>
+                    <FormLabel className="!mt-0">
+                      {intl.get('legal_entities.vat_payer')}
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="baseCurrency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.base_currency')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="directorName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.director_name')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <h3 className="mt-2 border-t border-border pt-4 text-sm font-medium text-text-secondary">
+                {intl.get('legal_entities.section.addresses')}
+              </h3>
+              <FormField
+                control={form.control}
+                name="legalAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.legal_address')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="actualAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.actual_address')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <h3 className="mt-2 border-t border-border pt-4 text-sm font-medium text-text-secondary">
+                {intl.get('legal_entities.section.bank')}
+              </h3>
+              <FormField
+                control={form.control}
+                name="bankName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.bank_name')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="bik"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.bik')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="account"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.account')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="correspondentAccount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{intl.get('legal_entities.correspondent_account')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <h3 className="mt-2 border-t border-border pt-4 text-sm font-medium text-text-secondary">
+                {intl.get('legal_entities.section.group')}
+              </h3>
+              <FormField
+                control={form.control}
+                name="isPrimary"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-border"
+                        checked={Boolean(field.value)}
+                        onChange={(event) => field.onChange(event.target.checked)}
+                      />
+                    </FormControl>
+                    <FormLabel className="!mt-0">
+                      {intl.get('legal_entities.is_primary')}
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="active"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-border"
+                        checked={Boolean(field.value)}
+                        onChange={(event) => field.onChange(event.target.checked)}
+                      />
+                    </FormControl>
+                    <FormLabel className="!mt-0">
+                      {intl.get('legal_entities.active')}
+                    </FormLabel>
                   </FormItem>
                 )}
               />

@@ -21,6 +21,12 @@ import { BUDGET_TYPES } from '@/modules/Budgets/constants';
  */
 
 const buildService = (options: {
+  /** Узлы отчёта ОПиУ — теперь именно они и есть факт (остаток О4). */
+  reportNodes?: any[];
+  /** Узлы того же отчёта по оплате: по кассовому методу числа другие. */
+  cashReportNodes?: any[];
+  /** Тест может подсмотреть, с чем позвали отчёт. */
+  spy?: any;
   budget?: any;
   lines?: any[];
   articles?: any[];

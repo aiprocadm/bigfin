@@ -28,6 +28,7 @@ import {
   chartablePoints,
   expensesWarning,
   isMetricShown,
+  shouldShowUnmapped,
 } from './expensesAnalysisView';
 
 const money = (value: number | null | undefined) =>
@@ -113,6 +114,37 @@ export default function ExpensesAnalysisPage() {
               ? 'expenses_analysis.warning.no_fixed'
               : 'expenses_analysis.warning.partly_unmarked',
           )}
+        </div>
+      )}
+
+      {/*
+        Деньги, прошедшие мимо статей. Стоят рядом с предупреждением и ВЫШЕ
+        цифр по той же причине: отчёт, недосчитавший части расходов,
+        выглядит так же уверенно, как полный. Раньше эта разница пропадала.
+      */}
+      {shouldShowUnmapped(data?.unmapped) && (
+        <div className="rounded-control border border-warning bg-warning/10 p-3 text-sm">
+          <p>
+            {intl.get('expenses_analysis.unmapped.title', {
+              count: data?.unmapped?.accountsCount ?? 0,
+            })}
+          </p>
+          <p className="mt-1 tabular-nums text-text-secondary">
+            {(data?.unmapped?.expense ?? 0) !== 0 &&
+              intl.get('expenses_analysis.unmapped.expense', {
+                amount: money(data?.unmapped?.expense),
+              })}
+            {(data?.unmapped?.expense ?? 0) !== 0 &&
+              (data?.unmapped?.income ?? 0) !== 0 &&
+              ' · '}
+            {(data?.unmapped?.income ?? 0) !== 0 &&
+              intl.get('expenses_analysis.unmapped.income', {
+                amount: money(data?.unmapped?.income),
+              })}
+          </p>
+          <p className="mt-1 text-text-muted">
+            {intl.get('expenses_analysis.unmapped.hint')}
+          </p>
         </div>
       )}
 

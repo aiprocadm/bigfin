@@ -4525,5 +4525,9 @@
   "auth.footer.privacy": "Политика",
   "auth.footer.terms": "Условия",
   "dashboard.summary.income_expenses_by_month": "Доходы и расходы по месяцам",
-  "legal.russian_only_note": "Документ приведён на русском языке — языке, на котором он имеет юридическую силу."
+  "legal.russian_only_note": "Документ приведён на русском языке — языке, на котором он имеет юридическую силу.",
+  "expenses_analysis.unmapped.title": "Часть денег не попала ни в одну статью — счетов: {count}",
+  "expenses_analysis.unmapped.expense": "Расходы: {amount}",
+  "expenses_analysis.unmapped.income": "Доходы: {amount}",
+  "expenses_analysis.unmapped.hint": "Этих сумм нет в цифрах ниже. Привяжите счета к статьям в справочнике статей."
 }

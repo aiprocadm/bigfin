@@ -4525,5 +4525,9 @@
   "auth.footer.privacy": "Privacy",
   "auth.footer.terms": "Terms",
   "dashboard.summary.income_expenses_by_month": "Income and expenses by month",
-  "legal.russian_only_note": "This document is provided in Russian — the language in which it has legal force."
+  "legal.russian_only_note": "This document is provided in Russian — the language in which it has legal force.",
+  "expenses_analysis.unmapped.title": "Some money did not reach any article — accounts: {count}",
+  "expenses_analysis.unmapped.expense": "Expenses: {amount}",
+  "expenses_analysis.unmapped.income": "Income: {amount}",
+  "expenses_analysis.unmapped.hint": "These amounts are missing from the numbers below. Link the accounts to articles in the management articles directory."
 }

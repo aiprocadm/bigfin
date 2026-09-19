@@ -125,3 +125,29 @@ export function chartablePoints<T extends { share: number | null }>(
 ): T[] {
   return (monthly ?? []).filter((point) => point.share != null);
 }
+
+/** Деньги, прошедшие мимо статей (остаток Р4 этапа 9). */
+export interface UnmappedTotals {
+  income: number;
+  expense: number;
+  accountsCount: number;
+}
+
+/**
+ * Показывать ли строку «мимо статей».
+ *
+ * ЗАЧЕМ ВООБЩЕ. Счёт, не привязанный ни к одной статье, молча выпадал из
+ * анализа: итог оказывался меньше, чем в ОПиУ, и ничто на это не указывало.
+ * Человек замечал расхождение через месяц и не знал, где искать.
+ *
+ * Показываем, ТОЛЬКО когда за период по таким счетам и правда были деньги.
+ * У размеченной фирмы вечная плашка «всё в порядке» — шум, который перестают
+ * читать, а вместе с ним перестают читать и настоящие предупреждения.
+ */
+export function shouldShowUnmapped(
+  unmapped: UnmappedTotals | undefined,
+): boolean {
+  if (!unmapped) return false;
+
+  return unmapped.expense !== 0 || unmapped.income !== 0;
+}

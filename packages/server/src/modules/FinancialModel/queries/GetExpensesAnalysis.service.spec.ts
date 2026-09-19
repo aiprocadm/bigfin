@@ -26,6 +26,7 @@ const buildService = (options: {
   own?: any[];
   rolled?: any[];
   breakEven?: any;
+  unmapped?: any;
   onQuery?: (kind: string, query: any) => void;
 } = {}) => {
   const rollup = {
@@ -33,9 +34,22 @@ const buildService = (options: {
       options.onQuery?.('own', query);
       return options.own ?? [];
     },
+    // Помесячная линия зовёт обычную свёртку: пробел «мимо статей» ей не
+    // нужен, он показывается один раз за период.
     getRollup: async (query: any) => {
       options.onQuery?.('rollup', query);
       return options.rolled ?? [];
+    },
+    getRollupWithUnmapped: async (query: any) => {
+      options.onQuery?.('rollup', query);
+      return {
+        rows: options.rolled ?? [],
+        unmapped: options.unmapped ?? {
+          income: 0,
+          expense: 0,
+          accountsCount: 0,
+        },
+      };
     },
   };
 

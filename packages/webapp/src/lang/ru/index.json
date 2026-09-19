@@ -4650,5 +4650,8 @@
   "reports.drill_down.truncated": "Показано {shown} операций из {total}.",
   "reports.structure.assets": "Во что вложены деньги",
   "reports.structure.liabilities_equity": "Откуда деньги взялись",
-  "reports.structure.negative_groups": "Не показано на полосе (минус): {groups}."
+  "reports.structure.negative_groups": "Не показано на полосе (минус): {groups}.",
+  "cash_flow_statement.previous_period": "Прошлый период",
+  "cash_flow_statement.total_change": "Изменение",
+  "cash_flow_statement.change": "Изменение, %"
 }

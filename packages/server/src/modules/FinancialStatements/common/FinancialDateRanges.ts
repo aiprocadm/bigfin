@@ -3,6 +3,10 @@ import { IDateRange, IFinancialDatePeriodsUnit } from '../types/Report.types';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from './FinancialSheet';
 import { DateInput } from '@/common/types/Date';
+import {
+  previousPeriodDiffDays,
+  previousPeriodTotalRange,
+} from './previousPeriodRange';
 
 export const FinancialDateRanges = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -30,7 +34,10 @@ export const FinancialDateRanges = <T extends GConstructor<FinancialSheet>>(
      * @returns {number}
      */
     public getPreviousPeriodDiff = (fromDate: DateInput, toDate: DateInput) => {
-      return moment(toDate).diff(fromDate, 'days') + 1;
+      // Правило живёт в `previousPeriodRange.ts` — одно на все отчёты.
+      // Своя копия здесь означала бы, что Баланс и Движение денег могут
+      // однажды сравнивать с разными отрезками, оба выглядя правильными.
+      return previousPeriodDiffDays(fromDate, toDate);
     };
 
     /**
@@ -63,14 +70,8 @@ export const FinancialDateRanges = <T extends GConstructor<FinancialSheet>>(
       fromDate: DateInput,
       toDate: DateInput,
     ): IDateRange => {
-      const unit = this.getPreviousPeriodDiff(fromDate, toDate);
-
-      return this.getPreviousPeriodDateRange(
-        fromDate,
-        toDate,
-        IFinancialDatePeriodsUnit.Day,
-        unit,
-      );
+      // Тот же общий расчёт, что у Движения денег.
+      return previousPeriodTotalRange(fromDate, toDate);
     };
 
     /**

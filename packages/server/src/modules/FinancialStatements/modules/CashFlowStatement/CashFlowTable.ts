@@ -70,7 +70,10 @@ export class CashFlowTable {
    * Retrieve the total column accessor.
    */
   private totalColumnAccessor = () => {
-    return [{ key: 'total', accessor: 'total.formattedAmount' }];
+    return [
+      { key: 'total', accessor: 'total.formattedAmount' },
+      ...this.previousPeriodAccessors(),
+    ];
   };
 
   /**
@@ -250,6 +253,13 @@ export class CashFlowTable {
       label,
       periods: section.periods,
       total: section.total,
+      // Итоговая строка собирается ЗДЕСЬ, уже после того как значения
+      // прошлого периода развешаны по секциям. Без этих трёх полей у итога
+      // колонки сравнения остались бы пустыми — и выглядело бы это как
+      // «сравнивать нечего», а не как потерянные числа.
+      previousPeriod: section.previousPeriod,
+      previousPeriodChange: section.previousPeriodChange,
+      previousPeriodPercentage: section.previousPeriodPercentage,
     });
     return section;
   };
@@ -305,7 +315,67 @@ export class CashFlowTable {
    * @returns {ITableColumn}
    */
   private totalColumns = (): ITableColumn[] => {
-    return [{ key: 'total', label: this.i18n.t('cash_flow_statement.total') }];
+    return [
+      { key: 'total', label: this.i18n.t('cash_flow_statement.total') },
+      ...this.previousPeriodColumns(),
+    ];
+  };
+
+  /**
+   * Колонки сравнения с прошлым периодом (остаток О3 ТЗ).
+   *
+   * Каждая приходит только по своему выключателю. Три колонки сразу на узком
+   * экране прячут сами числа — ради этого выключатели и разделены.
+   */
+  private previousPeriodColumns = (): ITableColumn[] => {
+    const query: any = this.report.query ?? {};
+    const columns: ITableColumn[] = [];
+
+    if (query.previousPeriod) {
+      columns.push({
+        key: 'previous_period',
+        label: this.i18n.t('cash_flow_statement.previous_period'),
+      });
+    }
+    if (query.previousPeriodAmountChange) {
+      columns.push({
+        key: 'previous_period_change',
+        label: this.i18n.t('cash_flow_statement.previous_period_change'),
+      });
+    }
+    if (query.previousPeriodPercentageChange) {
+      columns.push({
+        key: 'previous_period_percentage',
+        label: this.i18n.t('cash_flow_statement.previous_period_percentage'),
+      });
+    }
+    return columns;
+  };
+
+  /** Ячейки сравнения — в том же порядке, что и колонки выше. */
+  private previousPeriodAccessors = () => {
+    const query: any = this.report.query ?? {};
+    const accessors = [];
+
+    if (query.previousPeriod) {
+      accessors.push({
+        key: 'previous_period',
+        accessor: 'previousPeriod.formattedAmount',
+      });
+    }
+    if (query.previousPeriodAmountChange) {
+      accessors.push({
+        key: 'previous_period_change',
+        accessor: 'previousPeriodChange.formattedAmount',
+      });
+    }
+    if (query.previousPeriodPercentageChange) {
+      accessors.push({
+        key: 'previous_period_percentage',
+        accessor: 'previousPeriodPercentage.formattedAmount',
+      });
+    }
+    return accessors;
   };
 
   /**

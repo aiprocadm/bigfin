@@ -14,5 +14,8 @@
   "total": "Итого",
   "sheet_name": "Отчёт о движении денежных средств",
   "from_date": "С",
-  "to_date": "По"
+  "to_date": "По",
+  "previous_period": "Прошлый период",
+  "previous_period_change": "Изменение",
+  "previous_period_percentage": "Изменение, %"
 }

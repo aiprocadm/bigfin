@@ -13,6 +13,47 @@ import { parseBoolean } from '@/utils/parse-boolean';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CashFlowStatementQueryDto extends FinancialSheetBranchesQueryDto {
+  /**
+   * Сравнение с прошлым периодом (остаток О3 ТЗ).
+   *
+   * Три отдельных выключателя, как в Балансе и ОПиУ: показать сам прошлый
+   * период, показать изменение в рублях, показать изменение в процентах.
+   * Разделены не ради гибкости, а ради ширины экрана: три колонки на каждый
+   * период превращают таблицу в простыню.
+   */
+  @ApiProperty({
+    description: 'Показать колонку прошлого периода',
+    required: false,
+    type: Boolean,
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => parseBoolean(value, false))
+  previousPeriod: boolean = false;
+
+  @ApiProperty({
+    description: 'Показать изменение к прошлому периоду в деньгах',
+    required: false,
+    type: Boolean,
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => parseBoolean(value, false))
+  previousPeriodAmountChange: boolean = false;
+
+  @ApiProperty({
+    description: 'Показать изменение к прошлому периоду в процентах',
+    required: false,
+    type: Boolean,
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => parseBoolean(value, false))
+  previousPeriodPercentageChange: boolean = false;
+
   @ApiProperty({
     description: 'Start date for the cash flow statement period',
     required: false,

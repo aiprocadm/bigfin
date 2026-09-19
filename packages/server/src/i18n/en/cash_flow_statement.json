@@ -14,5 +14,8 @@
   "total": "Total",
   "sheet_name": "Statement of Cash Flow",
   "from_date": "From",
-  "to_date": "To"
+  "to_date": "To",
+  "previous_period": "Previous period",
+  "previous_period_change": "Change",
+  "previous_period_percentage": "Change, %"
 }

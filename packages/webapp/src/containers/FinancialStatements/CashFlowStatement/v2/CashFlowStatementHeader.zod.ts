@@ -24,6 +24,13 @@ export const getCashFlowStatementHeaderSchema = () =>
       filterByOption: z.string(),
       basis: z.string(),
 
+      // Сравнение с прошлым периодом (остаток О3 ТЗ). Три отдельных
+      // выключателя — как в Балансе и ОПиУ, чтобы настройки отчётов не
+      // расходились между собой.
+      previousPeriod: z.boolean(),
+      previousPeriodAmountChange: z.boolean(),
+      previousPeriodPercentageChange: z.boolean(),
+
       // Из URL идентификаторы филиалов могут прийти строками — не приводим.
       branchesIds: z.array(z.union([z.number(), z.string()])),
     })

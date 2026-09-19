@@ -23,15 +23,26 @@ import { sameNodeShape } from '../../utils/Table.utils';
 export const BalanceSheetAggregators = <T extends GConstructor<FinancialSheet>>(
   Base: T,
 ) =>
-  class extends R.pipe(
-    BalanceSheetDatePeriods,
-    BalanceSheetComparsionPreviousPeriod,
-    BalanceSheetComparsionPreviousYear,
-    BalanceSheetPercentage,
-    BalanceSheetSchema,
-    FinancialSheetStructure,
-    BalanceSheetBase,
-  )(Base) {
+  class extends
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая примесь
+  // оборачивает базу), но проверка типов ВИДИТ, что получилось.
+  // Через `R.pipe` она считает, что у класса нет ни одного метода
+  // примесей.
+  BalanceSheetBase(
+    FinancialSheetStructure(
+      BalanceSheetSchema(
+        BalanceSheetPercentage(
+          BalanceSheetComparsionPreviousYear(
+            BalanceSheetComparsionPreviousPeriod(
+              BalanceSheetDatePeriods(
+                Base,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ) {
     public readonly i18n: I18nService;
 
     /**

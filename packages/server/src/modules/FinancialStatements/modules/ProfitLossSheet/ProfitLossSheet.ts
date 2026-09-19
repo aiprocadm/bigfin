@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
 import { ModelObject } from 'objection';
@@ -31,18 +30,32 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { flatToNestedArray } from '@/utils/flat-to-nested-array';
 import { IFinancialReportMeta, DEFAULT_REPORT_META } from '../../types/Report.types';
 
-export default class ProfitLossSheet extends R.pipe(
-  ProfitLossSheetPreviousYear,
-  ProfitLossSheetPreviousPeriod,
-  ProfitLossSheetPercentage,
-  ProfitLossSheetDatePeriods,
-  ProfitLossSheetFilter,
-  ProfitLossShema,
-  ProfitLossSheetBase,
-  FinancialDateRanges,
-  FinancialEvaluateEquation,
-  FinancialSheetStructure,
-)(FinancialSheet) {
+export default class ProfitLossSheet extends 
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая
+  // примесь оборачивает базу), но проверка типов ВИДИТ, что
+  // получилось. Через `R.pipe` она считает, что у класса нет ни
+  // одного метода примесей.
+  FinancialSheetStructure(
+    FinancialEvaluateEquation(
+      FinancialDateRanges(
+        ProfitLossSheetBase(
+          ProfitLossShema(
+            ProfitLossSheetFilter(
+              ProfitLossSheetDatePeriods(
+                ProfitLossSheetPercentage(
+                  ProfitLossSheetPreviousPeriod(
+                    ProfitLossSheetPreviousYear(
+                      FinancialSheet,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ) {
   /**
    * Profit/Loss sheet query.
    * @param {ProfitLossSheetQuery}
@@ -130,7 +143,12 @@ export default class ProfitLossSheet extends R.pipe(
   private accountNodeCompose = (
     account: ModelObject<Account>,
   ): IProfitLossSheetAccountNode => {
-    let result: IProfitLossSheetAccountNode = account;
+    // Узел МЕНЯЕТ ВИД по ходу проходов: на входе — описание из схемы
+    // (или счёт из справочника), на выходе — готовый узел отчёта.
+    // Объявление «он таков с самого начала» было неправдой про
+    // собственный код; здесь сказано, что превращение начинается.
+    // ПРОМЕЖУТОЧНЫЙ ВИД. Узел меняет вид на КАЖДОМ проходе, и один вид на всю цепочку был бы неправдой. Ответ объявлен в подписи самой цепочки — он и есть обещание вызывающему.
+    let result: any = account;
     result = sameNodeShape<IProfitLossSheetAccountNode>(this.accountNodeMapper(result));
     if (this.query.isDatePeriodsColumnsType()) {
       result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocAccountNodeDatePeriod(result));
@@ -191,7 +209,8 @@ export default class ProfitLossSheet extends R.pipe(
   private accountsSchemaNodeCompose = (
     node: IProfitLossSchemaNode,
   ): IProfitLossSheetAccountsNode => {
-    let result: IProfitLossSheetAccountsNode = node;
+    // ПРОМЕЖУТОЧНЫЙ ВИД. Узел меняет вид на КАЖДОМ проходе, и один вид на всю цепочку был бы неправдой. Ответ объявлен в подписи самой цепочки — он и есть обещание вызывающему.
+    let result: any = node;
     result = sameNodeShape<IProfitLossSheetAccountsNode>(this.accountsSchemaNodeMapper(result));
     if (this.query.isDatePeriodsColumnsType()) {
       result = sameNodeShape<IProfitLossSheetAccountsNode>(this.assocAggregateDatePeriod(result));
@@ -243,10 +262,13 @@ export default class ProfitLossSheet extends R.pipe(
       accNodes: (IProfitLossSchemaNode | IProfitLossSheetNode)[],
       node: IProfitLossEquationSchemaNode,
     ): IProfitLossSheetEquationNode => {
-      let result: IProfitLossSheetEquationNode = node;
-      result = sameNodeShape<IProfitLossSheetEquationNode>(this.equationSchemaNodeParser(accNodes)(result));
+      // ПРОМЕЖУТОЧНЫЙ ВИД. Узел меняет вид на КАЖДОМ проходе, и один вид на всю цепочку был бы неправдой. Ответ объявлен в подписи самой цепочки — он и есть обещание вызывающему.
+      let result: any = node;
+      result = sameNodeShape<IProfitLossSheetEquationNode>(
+        this.equationSchemaNodeParser(accNodes as any)(result),
+      );
       if (this.query.isDatePeriodsColumnsType()) {
-        result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocEquationNodeDatePeriod(accNodes, node.equation)(result));
+        result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocEquationNodeDatePeriod(accNodes as any, node.equation)(result));
       }
       if (this.query.isPreviousYearActive()) {
         result = sameNodeShape<IProfitLossSheetEquationNode>(this.previousYearEquationNodeCompose(accNodes, node.equation)(result));
@@ -289,7 +311,8 @@ export default class ProfitLossSheet extends R.pipe(
     accNodes: (IProfitLossSheetNode | IProfitLossSchemaNode)[],
     context,
   ): IProfitLossSheetEquationNode => {
-    let result: IProfitLossSheetEquationNode = node;
+    // ПРОМЕЖУТОЧНЫЙ ВИД. Узел меняет вид на КАЖДОМ проходе, и один вид на всю цепочку был бы неправдой. Ответ объявлен в подписи самой цепочки — он и есть обещание вызывающему.
+    let result: any = node;
     if (this.isNodeType(ProfitLossNodeType.EQUATION)(result)) {
       result = sameNodeShape<IProfitLossSheetEquationNode>(this.equationSchemaNodeCompose(accNodes)(result));
     }
@@ -323,14 +346,28 @@ export default class ProfitLossSheet extends R.pipe(
    * @return {IProfitLossSheetStatement}
    */
   public reportData = (): Array<IProfitLossSheetNode> => {
-    const schema = this.getSchema();
+    // ПЯТЬ ПРОХОДОВ, и на каждом узлы меняют вид: из ОПИСАНИЯ схемы (что
+    // показать) получаются УЗЛЫ ОТЧЁТА (что вышло), потом к ним добавляются
+    // проценты и отбор. Объявить один вид на всю цепочку — неправда про
+    // собственный код. Ответ объявлен в подписи.
+    let result: any = this.getSchema();
 
-    let result: Array<IProfitLossSheetNode> = schema;
-     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportSchemaAccountsNodesCompose(result));
-     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportSchemaEquationNodesCompose(result));
-     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportColumnsPerentageCompose(result));
-     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportRowsPercentageCompose(result));
-     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportFilterPlugin(result));
-     return result;
+    result = sameNodeShape<Array<IProfitLossSheetNode>>(
+      this.reportSchemaAccountsNodesCompose(result),
+    );
+    result = sameNodeShape<Array<IProfitLossSheetNode>>(
+      this.reportSchemaEquationNodesCompose(result),
+    );
+    result = sameNodeShape<Array<IProfitLossSheetNode>>(
+      this.reportColumnsPerentageCompose(result),
+    );
+    result = sameNodeShape<Array<IProfitLossSheetNode>>(
+      this.reportRowsPercentageCompose(result),
+    );
+    result = sameNodeShape<Array<IProfitLossSheetNode>>(
+      this.reportFilterPlugin(result),
+    );
+
+    return result;
   };
 }

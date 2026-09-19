@@ -35,10 +35,16 @@ import { accumSum } from '@/utils/accum-sum';
 import { ModelObject } from 'objection';
 import { CashflowStatementBase } from './CashflowStatementBase';
 
-export class CashFlowStatement extends R.pipe(
-  CashFlowStatementDatePeriods,
-  FinancialSheetStructure,
-)(CashflowStatementBase) {
+export class CashFlowStatement extends 
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая
+  // примесь оборачивает базу), но проверка типов ВИДИТ, что
+  // получилось. Через `R.pipe` она считает, что у класса нет ни
+  // одного метода примесей.
+  FinancialSheetStructure(
+    CashFlowStatementDatePeriods(
+      CashflowStatementBase,
+    ),
+  ) {
   readonly baseCurrency: string;
   readonly i18n: I18nService;
   readonly sectionsByIds = {};

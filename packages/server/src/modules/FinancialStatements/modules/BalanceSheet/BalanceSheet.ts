@@ -1,14 +1,3 @@
-// @ts-nocheck
-// ОСТАЛОСЬ 7 ЗАМЕЧАНИЙ (слой «девять и ниже», 19.09). Композиция
-// примесей уже развёрнута из `R.pipe` во вложенные вызовы — это
-// уменьшило слепую зону с 9 до 7 и изменило её суть: раньше проверка
-// типов не видела у класса НИ ОДНОГО метода примесей, теперь видит
-// почти все.
-//
-// Что осталось: одна примесь в цепочке не удовлетворяет
-// `GConstructor<FinancialSheet>`, и на ней поток типов обрывается;
-// плюс перечни путают узлы СХЕМЫ и узлы ДАННЫХ — это разные вещи, и
-// разводить их надо отдельной работой.
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
 import { I18nService } from 'nestjs-i18n';
@@ -119,7 +108,10 @@ export class BalanceSheet extends
    * @returns {IBalanceSheetDataNode[]}
    */
   public parseSchemaNodes = (
-    schema: IBalanceSheetSchemaNode[],
+    // Принимает И описание схемы, И уже разобранные узлы: разборщики внутри
+    // идут друг за другом, и второй получает то, что отдал первый. Объявление
+    // «только схема» было неправдой про собственный код.
+    schema: (IBalanceSheetSchemaNode | IBalanceSheetDataNode)[],
   ): IBalanceSheetDataNode[] => {
     return sameNodeShape<IBalanceSheetDataNode[]>(
       R.compose(
@@ -134,13 +126,17 @@ export class BalanceSheet extends
    * Retrieve the report statement data.
    * @returns {IBalanceSheetDataNode[]}
    */
-  public reportData = () => {
-    const balanceSheetSchema = this.getSchema();
+  public reportData = (): IBalanceSheetDataNode[] => {
+    // Отчёт строится в четыре прохода, и на каждом узлы меняют свой вид:
+    // из ОПИСАНИЯ схемы (что показать) получаются УЗЛЫ ДАННЫХ (что вышло).
+    // Без явного объявления проверка выводит вид из первого прохода и
+    // считает ошибкой каждый следующий.
+    let result = this.getSchema() as unknown as IBalanceSheetDataNode[];
 
-    let result = balanceSheetSchema;
-     result = this.parseSchemaNodes(result);
-     result = this.reportPercentageCompose(result);
-     result = this.reportFilterPlugin(result);
-     return result;
+    result = this.parseSchemaNodes(result);
+    result = this.reportPercentageCompose(result);
+    result = this.reportFilterPlugin(result);
+
+    return result;
   };
 }

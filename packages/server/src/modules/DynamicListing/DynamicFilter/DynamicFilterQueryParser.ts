@@ -1,7 +1,15 @@
-// @ts-nocheck
 import { OPERATION } from '@/libs/logic-evaluation/Parser';
 
 export class DynamicFilterQueryParser {
+  /** Дерево условий отбора. */
+  private tree: any;
+
+  /** Готовые куски запроса по имени поля. */
+  private queries: any;
+
+  /** Запрос, к которому применяются условия. Ставится через `setQuery`. */
+  private query: any;
+
   constructor(tree, queries) {
     this.tree = tree;
     this.queries = queries;

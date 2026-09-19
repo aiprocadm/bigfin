@@ -2,12 +2,13 @@ import { sumBy } from 'lodash';
 import {
   IFinancialDatePeriodsUnit,
   IFinancialNodeWithPreviousPeriod,
+  IFinancialPreviousPeriodTarget,
 } from '../types/Report.types';
 import * as R from 'ramda';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from './FinancialSheet';
 import { FinancialDatePeriods } from './FinancialDatePeriods';
-import { IProfitLossSheetAccountNode } from '../modules/ProfitLossSheet/ProfitLossSheet.types';
+import { sameNodeShape } from '../utils/Table.utils';
 
 export const FinancialPreviousPeriod = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -18,39 +19,47 @@ export const FinancialPreviousPeriod = <T extends GConstructor<FinancialSheet>>(
     // ---------------------------
     /**
      * Assoc previous period percentage attribute to account node.
-     * @param {IProfitLossSheetAccountNode} accountNode
+     * @param {IFinancialPreviousPeriodTarget} accountNode
      * @returns {IFinancialNodeWithPreviousPeriod}
      */
-    public assocPreviousPeriodPercentageNode = (
-      accountNode: IProfitLossSheetAccountNode,
-    ): IFinancialNodeWithPreviousPeriod => {
+    public assocPreviousPeriodPercentageNode = <
+      N extends IFinancialPreviousPeriodTarget,
+    >(
+      accountNode: N,
+    ): N & IFinancialNodeWithPreviousPeriod => {
       const percentage = this.getPercentageBasis(
         accountNode.previousPeriod.amount,
         accountNode.previousPeriodChange.amount,
       );
-      return R.assoc(
-        'previousPeriodPercentage',
-        this.getPercentageAmountMeta(percentage),
-        accountNode,
+      return sameNodeShape<N & IFinancialNodeWithPreviousPeriod>(
+        R.assoc(
+          'previousPeriodPercentage',
+          this.getPercentageAmountMeta(percentage),
+          accountNode,
+        ),
       );
     };
 
     /**
      * Assoc previous period total attribute to account node.
-     * @param   {IProfitLossSheetAccountNode} accountNode
+     * @param   {IFinancialPreviousPeriodTarget} accountNode
      * @returns {IFinancialNodeWithPreviousPeriod}
      */
-    public assocPreviousPeriodChangeNode = (
-      accountNode: IProfitLossSheetAccountNode,
-    ): IFinancialNodeWithPreviousPeriod => {
+    public assocPreviousPeriodChangeNode = <
+      N extends IFinancialPreviousPeriodTarget,
+    >(
+      accountNode: N,
+    ): N & IFinancialNodeWithPreviousPeriod => {
       const change = this.getAmountChange(
         accountNode.total.amount,
         accountNode.previousPeriod.amount,
       );
-      return R.assoc(
-        'previousPeriodChange',
-        this.getAmountMeta(change),
-        accountNode,
+      return sameNodeShape<N & IFinancialNodeWithPreviousPeriod>(
+        R.assoc(
+          'previousPeriodChange',
+          this.getAmountMeta(change),
+          accountNode,
+        ),
       );
     };
 
@@ -59,39 +68,47 @@ export const FinancialPreviousPeriod = <T extends GConstructor<FinancialSheet>>(
      *
      * % change = Change ÷ Original Number × 100.
      *
-     * @param   {IProfitLossSheetAccountNode} accountNode
+     * @param   {IFinancialPreviousPeriodTarget} accountNode
      * @returns {IFinancialNodeWithPreviousPeriod}
      */
-    public assocPreviousPeriodTotalPercentageNode = (
-      accountNode: IProfitLossSheetAccountNode,
-    ): IFinancialNodeWithPreviousPeriod => {
+    public assocPreviousPeriodTotalPercentageNode = <
+      N extends IFinancialPreviousPeriodTarget,
+    >(
+      accountNode: N,
+    ): N & IFinancialNodeWithPreviousPeriod => {
       const percentage = this.getPercentageBasis(
         accountNode.previousPeriod.amount,
         accountNode.previousPeriodChange.amount,
       );
-      return R.assoc(
-        'previousPeriodPercentage',
-        this.getPercentageTotalAmountMeta(percentage),
-        accountNode,
+      return sameNodeShape<N & IFinancialNodeWithPreviousPeriod>(
+        R.assoc(
+          'previousPeriodPercentage',
+          this.getPercentageTotalAmountMeta(percentage),
+          accountNode,
+        ),
       );
     };
 
     /**
      * Assoc previous period total attribute to account node.
-     * @param   {IProfitLossSheetAccountNode} accountNode
+     * @param   {IFinancialPreviousPeriodTarget} accountNode
      * @returns {IFinancialNodeWithPreviousPeriod}
      */
-    public assocPreviousPeriodTotalChangeNode = (
-      accountNode: any,
-    ): IFinancialNodeWithPreviousPeriod => {
+    public assocPreviousPeriodTotalChangeNode = <
+      N extends IFinancialPreviousPeriodTarget,
+    >(
+      accountNode: N,
+    ): N & IFinancialNodeWithPreviousPeriod => {
       const change = this.getAmountChange(
         accountNode.total.amount,
         accountNode.previousPeriod.amount,
       );
-      return R.assoc(
-        'previousPeriodChange',
-        this.getTotalAmountMeta(change),
-        accountNode,
+      return sameNodeShape<N & IFinancialNodeWithPreviousPeriod>(
+        R.assoc(
+          'previousPeriodChange',
+          this.getTotalAmountMeta(change),
+          accountNode,
+        ),
       );
     };
 

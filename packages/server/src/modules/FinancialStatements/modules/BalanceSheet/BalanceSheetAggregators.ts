@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { I18nService } from 'nestjs-i18n';
 import {
@@ -19,6 +18,7 @@ import { FinancialSheetStructure } from '../../common/FinancialSheetStructure';
 import { GConstructor } from '@/common/types/Constructor';
 import { INumberFormatQuery } from '../../types/Report.types';
 import { FinancialSheet } from '../../common/FinancialSheet';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetAggregators = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -53,32 +53,28 @@ export const BalanceSheetAggregators = <T extends GConstructor<FinancialSheet>>(
     readonly baseCurrency: string;
 
     /**
-     * Localization.
-     */
-    readonly i18n: any;
-
-    /**
      * Sets total amount that calculated from node children.
      * @param {IBalanceSheetSection} node
      * @returns {IBalanceSheetDataNode}
      */
     public aggregateNodeTotalMapper = (
-      node: IBalanceSheetDataNode,
-    ): IBalanceSheetDataNode => {
-      return R.compose(
-        R.when(
-          this.query.isPreviousYearActive,
-          this.previousYearAggregateNodeComposer,
-        ),
-        R.when(
-          this.query.isPreviousPeriodActive,
-          this.previousPeriodAggregateNodeComposer,
-        ),
-        R.when(
-          this.query.isDatePeriodsColumnsType,
-          this.assocAggregateNodeDatePeriods,
-        ),
-      )(node);
+      node: IBalanceSheetAggregateNode,
+    ): IBalanceSheetAggregateNode => {
+      // Шаги перечислены сверху вниз в том порядке, в каком выполняются.
+      // Через `R.compose` их приходилось читать снизу вверх, а условия там
+      // выглядели как значения, хотя это вызовы (`isPreviousYearActive()`).
+      let result = node;
+
+      if (this.query.isDatePeriodsColumnsType()) {
+        result = this.assocAggregateNodeDatePeriods(result);
+      }
+      if (this.query.isPreviousPeriodActive()) {
+        result = this.previousPeriodAggregateNodeComposer(result);
+      }
+      if (this.query.isPreviousYearActive()) {
+        result = this.previousYearAggregateNodeComposer(result);
+      }
+      return result;
     };
 
     /**
@@ -97,7 +93,11 @@ export const BalanceSheetAggregators = <T extends GConstructor<FinancialSheet>>(
         nodeType: BALANCE_SHEET_SCHEMA_NODE_TYPE.AGGREGATE,
         type: BALANCE_SHEET_SCHEMA_NODE_TYPE.AGGREGATE,
         total: this.getTotalAmountMeta(total),
-        children: node.children,
+        // Потомки к этому мигу УЖЕ превращены в узлы отчёта: обход идёт
+        // снизу вверх (`mapNodesDeepReverse`), сначала дети, потом родитель.
+        // В перечне у узла-схемы потомки описаны как узлы схемы — здесь
+        // это уже не так.
+        children: sameNodeShape<IBalanceSheetDataNode[]>(node.children),
       };
     };
 
@@ -123,16 +123,17 @@ export const BalanceSheetAggregators = <T extends GConstructor<FinancialSheet>>(
     public reportAggregateSchemaParser = (
       node: IBalanceSheetSchemaNode,
     ): IBalanceSheetDataNode => {
-      return R.compose(
-        R.when(
-          this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.AGGREGATE),
-          this.schemaAggregateNodeCompose,
-        ),
-        R.when(
-          this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS),
-          this.schemaAggregateNodeCompose,
-        ),
-      )(node);
+      // Узлы-свёртки и узлы-группы счетов собираются ОДИНАКОВО; всё
+      // остальное проходит насквозь без изменений.
+      const isAggregateOrAccounts =
+        this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.AGGREGATE, node) ||
+        this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS, node);
+
+      return isAggregateOrAccounts
+        ? this.schemaAggregateNodeCompose(
+            node as IBalanceSheetSchemaAggregateNode,
+          )
+        : sameNodeShape<IBalanceSheetDataNode>(node);
     };
 
     /**

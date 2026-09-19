@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { sumBy } from 'lodash';
 import {
@@ -12,6 +11,7 @@ import { IDateRange, IFormatNumberSettings } from '../../types/Report.types';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { BalanceSheetQuery } from './BalanceSheetQuery';
+import { BalanceSheetRepository } from './BalanceSheetRepository';
 
 /**
  * Balance sheet date periods.
@@ -24,6 +24,11 @@ export const BalanceSheetDatePeriods = <T extends GConstructor<FinancialSheet>>(
      * @param {IBalanceSheetQuery}
      */
     public readonly query: BalanceSheetQuery;
+
+    // Приходит из соседней примеси того же класса. Объявление ничего не
+    // создаёт — оно только показывает проверке типов то, что во время
+    // работы и так есть.
+    declare repository: BalanceSheetRepository;
 
     /**
      * Retrieves the date periods based on the report query.

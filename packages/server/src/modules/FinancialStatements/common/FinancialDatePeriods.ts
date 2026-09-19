@@ -72,27 +72,24 @@ export const FinancialDatePeriods = <T extends GConstructor<FinancialSheet>>(
      * @param  {(fromDate: Date, toDate: Date, index: number) => any}
      * @return {}
      */
-    public getNodeDatePeriods = R.curry(
-      (
-        fromDate: Date,
-        toDate: Date,
-        periodsUnit: string,
-        node: any,
-        callback: (
-          node: any,
-          fromDate: Date,
-          toDate: Date,
-          index: number,
-        ) => any,
-      ) => {
-        const curriedCallback = R.curry(callback)(node);
-        // Retrieves memorized date ranges.
-        const dateRanges = this.getDateRanges(fromDate, toDate, periodsUnit);
-        return dateRanges.map((dateRange, index) => {
-          return curriedCallback(dateRange.fromDate, dateRange.toDate, index);
-        });
-      },
-    );
+    // Обёртка `R.curry` снята: все четыре места зовут этот помощник сразу со
+    // всеми доводами. Наполовину применённым он не используется нигде, а
+    // проверке типов мешал — она не могла понять, вернули список или ещё
+    // одну функцию.
+    public getNodeDatePeriods = (
+      fromDate: Date,
+      toDate: Date,
+      periodsUnit: string,
+      node: any,
+      callback: (node: any, fromDate: Date, toDate: Date, index: number) => any,
+    ) => {
+      // Retrieves memorized date ranges.
+      const dateRanges = this.getDateRanges(fromDate, toDate, periodsUnit);
+
+      return dateRanges.map((dateRange, index) =>
+        callback(node, dateRange.fromDate, dateRange.toDate, index),
+      );
+    };
     /**
      * Retrieve the accounts transactions group type from display columns by.
      * @param   {IAccountTransactionsGroupBy} columnsBy

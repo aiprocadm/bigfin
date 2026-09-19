@@ -4436,5 +4436,10 @@
   "screen_state.error": "Не удалось загрузить данные. Проверьте связь и попробуйте ещё раз.",
   "screen_state.retry": "Повторить",
   "expenses_analysis.error": "Не удалось посчитать расходы. Попробуйте ещё раз.",
-  "legal_entities.error": "Не удалось загрузить список юрлиц. Попробуйте ещё раз."
+  "legal_entities.error": "Не удалось загрузить список юрлиц. Попробуйте ещё раз.",
+  "invite_users.error.email_invalid": "Введите правильный адрес почты",
+  "invite_users.error.email_required": "Укажите адрес почты",
+  "invite_users.error.email_duplicate": "Этот адрес уже есть в списке",
+  "invite_users.error.role_required": "Выберите роль",
+  "invite_users.role.placeholder": "Выберите роль"
 }

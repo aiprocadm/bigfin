@@ -90,8 +90,8 @@ export const BalanceSheetComparsionPreviousYear = <
      * @returns {IBalanceSheetAccountNode}
      */
     protected previousYearAggregateNodeComposer = (
-      node: IBalanceSheetAccountNode,
-    ): IBalanceSheetAccountNode => {
+      node: IBalanceSheetAggregateNode,
+    ): IBalanceSheetAggregateNode => {
       return R.compose(
         R.when(
           this.query.isPreviousYearPercentageActive,

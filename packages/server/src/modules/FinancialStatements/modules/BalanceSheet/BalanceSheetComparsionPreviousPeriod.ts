@@ -1,11 +1,10 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { sumBy } from 'lodash';
 import {
   IBalanceSheetAccountNode,
   IBalanceSheetDataNode,
   IBalanceSheetAggregateNode,
-  IBalanceSheetTotal,
+  IBalanceSheetTotalPeriod,
   IBalanceSheetCommonNode,
 } from './BalanceSheet.types';
 import { FinancialPreviousPeriod } from '../../common/FinancialPreviousPeriod';
@@ -32,12 +31,16 @@ export const BalanceSheetComparsionPreviousPeriod = <
     // ------------------------------
     /**
      * Associates the previous period to account node.
-     * @param {IBalanceSheetDataNode} node
-     * @returns {IBalanceSheetDataNode}
+     *
+     * Довод сужен до узла-СЧЁТА: только у него номер счёта — число, а у
+     * узла-свёртки это строка вроде «current-assets». Применяется он и так
+     * только к счетам.
+     * @param {IBalanceSheetAccountNode} node
+     * @returns {IBalanceSheetAccountNode}
      */
     public assocPreviousPeriodAccountNode = (
-      node: IBalanceSheetDataNode,
-    ): IBalanceSheetDataNode => {
+      node: IBalanceSheetAccountNode,
+    ): IBalanceSheetAccountNode => {
       const total = this.repository.PPTotalAccountsLedger.whereAccountId(
         node.id,
       ).getClosingBalance();
@@ -91,12 +94,15 @@ export const BalanceSheetComparsionPreviousPeriod = <
 
     /**
      * Previous period aggregate node composer.
-     * @param {IBalanceSheetAccountNode} node
-     * @returns {IBalanceSheetAccountNode}
+     *
+     * В подписи стоял узел-счёт, хотя собиратель — для узлов-СВЁРТОК, и
+     * зовут его из `aggregateNodeTotalMapper`.
+     * @param {IBalanceSheetAggregateNode} node
+     * @returns {IBalanceSheetAggregateNode}
      */
     public previousPeriodAggregateNodeComposer = (
-      node: IBalanceSheetAccountNode,
-    ): IBalanceSheetAccountNode => {
+      node: IBalanceSheetAggregateNode,
+    ): IBalanceSheetAggregateNode => {
       return R.compose(
         R.when(
           this.isNodeHasHorizTotals,
@@ -127,21 +133,23 @@ export const BalanceSheetComparsionPreviousPeriod = <
      * @param {Date} toDate - To date.
      * @returns {number}
      */
-    private getAccountPPDatePeriodTotal = R.curry(
-      (accountId: number, fromDate: Date, toDate: Date): number => {
-        const PPPeriodsTotal =
-          this.repository.PPPeriodsAccountsLedger.whereAccountId(accountId)
-            .whereToDate(toDate)
-            .getClosingBalance();
+    private getAccountPPDatePeriodTotal = (
+      accountId: number,
+      fromDate: Date,
+      toDate: Date,
+    ): number => {
+      const PPPeriodsTotal =
+        this.repository.PPPeriodsAccountsLedger.whereAccountId(accountId)
+          .whereToDate(toDate)
+          .getClosingBalance();
 
-        const PPPeriodsOpeningTotal =
-          this.repository.PPPeriodsOpeningAccountLedger.whereAccountId(
-            accountId,
-          ).getClosingBalance();
+      const PPPeriodsOpeningTotal =
+        this.repository.PPPeriodsOpeningAccountLedger.whereAccountId(
+          accountId,
+        ).getClosingBalance();
 
-        return PPPeriodsOpeningTotal + PPPeriodsTotal;
-      },
-    );
+      return PPPeriodsOpeningTotal + PPPeriodsTotal;
+    };
 
     /**
      * Assoc preivous period to account horizontal total node.
@@ -162,14 +170,14 @@ export const BalanceSheetComparsionPreviousPeriod = <
     /**
      * Previous year account horizontal node composer.
      * @param {IBalanceSheetAccountNode} node -
-     * @param {IBalanceSheetTotal}
-     * @returns {IBalanceSheetTotal}
+     * @param {IBalanceSheetTotalPeriod}
+     * @returns {IBalanceSheetTotalPeriod}
      */
     private previousPeriodAccountHorizNodeCompose = R.curry(
       (
         node: IBalanceSheetAccountNode,
-        horizontalTotalNode: IBalanceSheetTotal,
-      ): IBalanceSheetTotal => {
+        horizontalTotalNode: IBalanceSheetTotalPeriod,
+      ): IBalanceSheetTotalPeriod => {
         return R.compose(
           R.when(
             this.query.isPreviousPeriodPercentageActive,
@@ -230,15 +238,15 @@ export const BalanceSheetComparsionPreviousPeriod = <
 
     /**
      * Compose previous period to aggregate horizontal nodes.
-     * @param   {IBalanceSheetTotal} node
-     * @returns {IBalanceSheetTotal}
+     * @param   {IBalanceSheetTotalPeriod} node
+     * @returns {IBalanceSheetTotalPeriod}
      */
     private previousPeriodAggregateHorizNodeComposer = R.curry(
       (
         node: IBalanceSheetCommonNode,
-        horiontalTotalNode: IBalanceSheetTotal,
+        horiontalTotalNode: IBalanceSheetTotalPeriod,
         index: number,
-      ): IBalanceSheetTotal => {
+      ): IBalanceSheetTotalPeriod => {
         return R.compose(
           R.when(
             this.query.isPreviousPeriodPercentageActive,

@@ -1,10 +1,24 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { get } from 'lodash';
 import { BalanceSheetQuery } from './BalanceSheetQuery';
-import { IBalanceSheetDataNode } from './BalanceSheet.types';
+import {
+  IBalanceSheetDataNode,
+  IBalanceSheetTotalPeriod,
+} from './BalanceSheet.types';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from '../../common/FinancialSheet';
+import { sameNodeShape } from '../../utils/Table.utils';
+
+/**
+ * Всё, чему можно дописать долю в процентах.
+ *
+ * Доля дописывается и узлу отчёта, и итогу колонки-периода. Общее у них
+ * ровно одно — итог с суммой, от неё доля и считается. Раньше в подписях
+ * везде стоял «узел отчёта», хотя половина вызовов передавала итог периода.
+ */
+interface IPercentageTarget {
+  total: { amount: number };
+}
 
 export const BalanceSheetPercentage = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -12,167 +26,171 @@ export const BalanceSheetPercentage = <T extends GConstructor<FinancialSheet>>(
   class extends Base {
     readonly query: BalanceSheetQuery;
 
+    // Приходит из соседней примеси того же класса. Объявление ничего
+    // не создаёт — оно только показывает проверке типов то, что во
+    // время работы и так есть.
+    declare mapNodesDeep: (nodes: any, callback: (node: any) => any) => any;
+
     /**
-     * Assoc percentage of column to report node.
-     * @param {IBalanceSheetDataNode} node
-     * @returns {IBalanceSheetDataNode}
+     * Дописывает долю по КОЛОНКЕ (от итога родителя).
      */
-    public assocReportNodeColumnPercentage = R.curry(
-      (
-        parentTotal: number,
-        node: IBalanceSheetDataNode,
-      ): IBalanceSheetDataNode => {
-        const percentage = this.getPercentageBasis(
-          parentTotal,
-          node.total.amount,
-        );
-        return R.assoc(
+    public assocReportNodeColumnPercentage = <N extends IPercentageTarget>(
+      parentTotal: number,
+      node: N,
+    ): N => {
+      const percentage = this.getPercentageBasis(
+        parentTotal,
+        node.total.amount,
+      );
+
+      return sameNodeShape<N>(
+        R.assoc(
           'percentageColumn',
           this.getPercentageAmountMeta(percentage),
           node,
-        );
-      },
-    );
+        ),
+      );
+    };
 
     /**
-     * Assoc percentage of row to report node.
-     * @param   {IBalanceSheetDataNode} node
-     * @returns {IBalanceSheetDataNode}
+     * Дописывает долю по СТРОКЕ (от собственного итога узла).
      */
-    public assocReportNodeRowPercentage = R.curry(
-      (
-        parentTotal: number,
-        node: IBalanceSheetDataNode,
-      ): IBalanceSheetDataNode => {
-        const percenatage = this.getPercentageBasis(
-          parentTotal,
-          node.total.amount,
-        );
-        return R.assoc(
+    public assocReportNodeRowPercentage = <N extends IPercentageTarget>(
+      parentTotal: number,
+      node: N,
+    ): N => {
+      const percenatage = this.getPercentageBasis(
+        parentTotal,
+        node.total.amount,
+      );
+      return sameNodeShape<N>(
+        R.assoc(
           'percentageRow',
           this.getPercentageAmountMeta(percenatage),
           node,
-        );
-      },
-    );
+        ),
+      );
+    };
 
     /**
-     * Assoc percentage of row to horizontal total.
-     * @param   {number} parentTotal -
-     * @param   {IBalanceSheetDataNode} node
-     * @returns {IBalanceSheetDataNode}
+     * Дописывает долю по строке каждому итогу колонки-периода.
      */
-    public assocRowPercentageHorizTotals = R.curry(
-      (
-        parentTotal: number,
-        node: IBalanceSheetDataNode,
-      ): IBalanceSheetDataNode => {
-        const assocRowPercen = this.assocReportNodeRowPercentage(parentTotal);
-        const horTotals = R.map(assocRowPercen)(node.horizontalTotals);
-
-        return R.assoc('horizontalTotals', horTotals, node);
-      },
-    );
+    public assocRowPercentageHorizTotals = <N extends IBalanceSheetDataNode>(
+      parentTotal: number,
+      node: N,
+    ): N => {
+      const horTotals = R.map(
+        (horTotal) => this.assocReportNodeRowPercentage(parentTotal, horTotal),
+        node.horizontalTotals,
+      );
+      return sameNodeShape<N>(R.assoc('horizontalTotals', horTotals, node));
+    };
 
     /**
-     *
-     * @param {} parentNode -
-     * @param {} horTotalNode -
-     * @param {number} index -
+     * Дописывает долю по колонке одному итогу периода.
+     * Итог родителя берётся из ТОЙ ЖЕ по счёту колонки родительского узла.
      */
-    private assocColumnPercentageHorizTotal = R.curry(
-      (parentNode, horTotalNode, index) => {
-        const parentTotal = get(
-          parentNode,
-          `horizontalTotals[${index}].total.amount`,
-          0,
-        );
-        return this.assocReportNodeColumnPercentage(parentTotal, horTotalNode);
-      },
-    );
+    private assocColumnPercentageHorizTotal = (
+      parentNode: IBalanceSheetDataNode,
+      horTotalNode: IBalanceSheetTotalPeriod,
+      index: number,
+    ): IBalanceSheetTotalPeriod => {
+      const parentTotal = get(
+        parentNode,
+        `horizontalTotals[${index}].total.amount`,
+        0,
+      );
+      return this.assocReportNodeColumnPercentage(parentTotal, horTotalNode);
+    };
 
     /**
-     * Assoc column percentage to horizontal totals nodes.
-     * @param   {IBalanceSheetDataNode} node
-     * @returns {IBalanceSheetDataNode}
+     * Дописывает долю по колонке всем итогам периодов узла.
      */
-    public assocColumnPercentageHorizTotals = R.curry(
-      (
-        parentNode: IBalanceSheetDataNode,
-        node: IBalanceSheetDataNode,
-      ): IBalanceSheetDataNode => {
-        // Horizontal totals.
-        const assocColPerc = this.assocColumnPercentageHorizTotal(parentNode);
-        const horTotals = R.addIndex(R.map)(assocColPerc)(
-          node.horizontalTotals,
-        );
-        return R.assoc('horizontalTotals', horTotals, node);
-      },
-    );
+    public assocColumnPercentageHorizTotals = <N extends IBalanceSheetDataNode>(
+      parentNode: IBalanceSheetDataNode,
+      node: N,
+    ): N => {
+      const horTotals = R.addIndex(R.map)(
+        (horTotal: IBalanceSheetTotalPeriod, index: number) =>
+          this.assocColumnPercentageHorizTotal(parentNode, horTotal, index),
+        node.horizontalTotals,
+      );
+      return sameNodeShape<N>(R.assoc('horizontalTotals', horTotals, node));
+    };
 
     /**
-     *
-     * @param {number} parentTotal -
-     * @param {} node
-     * @returns
+     * Доля узла по колонке: сначала самому узлу, затем его колонкам-периодам.
      */
-    public reportNodeColumnPercentageComposer = R.curry((parentNode, node) => {
+    public reportNodeColumnPercentageComposer = (
+      parentNode: IBalanceSheetDataNode,
+      node: IBalanceSheetDataNode,
+    ): IBalanceSheetDataNode => {
       const parentTotal = parentNode.total.amount;
 
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizoTotals,
-          this.assocColumnPercentageHorizTotals(parentNode),
-        ),
-        this.assocReportNodeColumnPercentage(parentTotal),
-      )(node);
-    });
-
-    /**
-     *
-     * @param node
-     * @returns
-     */
-    private reportNodeRowPercentageComposer = (node) => {
-      const total = node.total.amount;
-
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizoTotals,
-          this.assocRowPercentageHorizTotals(total),
-        ),
-        this.assocReportNodeRowPercentage(total),
-      )(node);
-    };
-
-    /**
-     *
-     */
-    private assocNodeColumnPercentageChildren = (node) => {
-      const children = this.mapNodesDeep(
-        node.children,
-        this.reportNodeColumnPercentageComposer(node),
+      // Шаги перечислены сверху вниз в том порядке, в каком выполняются.
+      // Через `R.compose` их приходилось читать снизу вверх, да ещё и с
+      // наполовину применёнными помощниками.
+      const withColumn = this.assocReportNodeColumnPercentage(
+        parentTotal,
+        node,
       );
-      return R.assoc('children', children, node);
+
+      return this.isNodeHasHorizoTotals(withColumn)
+        ? this.assocColumnPercentageHorizTotals(parentNode, withColumn)
+        : withColumn;
     };
 
     /**
-     *
-     * @param node
-     * @returns
+     * Доля узла по строке: сначала самому узлу, затем его колонкам-периодам.
      */
-    private reportNodeColumnPercentageDeepMap = (node) => {
+    private reportNodeRowPercentageComposer = (
+      node: IBalanceSheetDataNode,
+    ): IBalanceSheetDataNode => {
+      const total = node.total.amount;
+      const withRow = this.assocReportNodeRowPercentage(total, node);
+
+      return this.isNodeHasHorizoTotals(withRow)
+        ? this.assocRowPercentageHorizTotals(total, withRow)
+        : withRow;
+    };
+
+    /**
+     * Считает долю по колонке всем потомкам узла.
+     */
+    private assocNodeColumnPercentageChildren = (
+      node: IBalanceSheetDataNode,
+    ): IBalanceSheetDataNode => {
+      // Потомки читаются через `get`, а не напрямую: у узла «чистая прибыль»
+      // поля с потомками нет вовсе. Поведение то же, что и раньше, — просто
+      // теперь это видно и проверке типов.
+      const children = this.mapNodesDeep(get(node, 'children'), (child) =>
+        this.reportNodeColumnPercentageComposer(node, child),
+      );
+      return sameNodeShape<IBalanceSheetDataNode>(
+        R.assoc('children', children, node),
+      );
+    };
+
+    /**
+     * Доля по колонке для узла вместе со всеми его потомками.
+     */
+    private reportNodeColumnPercentageDeepMap = (
+      node: IBalanceSheetDataNode,
+    ): IBalanceSheetDataNode => {
+      // Доля считается от итога РОДИТЕЛЯ, каким он был ДО обхода потомков, —
+      // поэтому `parentTotal` и `parentNode` берутся из исходного узла.
       const parentTotal = node.total.amount;
       const parentNode = node;
 
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizoTotals,
-          this.assocColumnPercentageHorizTotals(parentNode),
-        ),
-        this.assocReportNodeColumnPercentage(parentTotal),
-        this.assocNodeColumnPercentageChildren,
-      )(node);
+      const withChildren = this.assocNodeColumnPercentageChildren(node);
+      const withColumn = this.assocReportNodeColumnPercentage(
+        parentTotal,
+        withChildren,
+      );
+
+      return this.isNodeHasHorizoTotals(withColumn)
+        ? this.assocColumnPercentageHorizTotals(parentNode, withColumn)
+        : withColumn;
     };
 
     /**

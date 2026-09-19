@@ -94,7 +94,16 @@ export interface IBalanceSheetDOO {
 
 export interface IBalanceSheetCommonNode {
   total: IBalanceSheetTotal;
-  horizontalTotals?: IBalanceSheetTotal[];
+  /**
+   * Итоги по колонкам-периодам (когда отчёт разбит по месяцам/кварталам).
+   *
+   * Вид был указан неверно — `IBalanceSheetTotal[]`. У такого итога нет поля
+   * `total`, а весь код читает у элемента именно `horizontalTotals[i].total.amount`
+   * и дописывает ему `percentageRow`/`percentageColumn`. То есть во время
+   * работы здесь всегда лежал `IBalanceSheetTotalPeriod`. Соседний отчёт
+   * «Прибыли и убытки» уже описан правильно.
+   */
+  horizontalTotals?: IBalanceSheetTotalPeriod[];
 
   percentageRow?: IBalanceSheetPercentageAmount;
   percentageColumn?: IBalanceSheetPercentageAmount;
@@ -112,6 +121,12 @@ export interface IBalanceSheetAggregateNode extends IBalanceSheetCommonNode {
   id: string;
   name: string;
   nodeType: BALANCE_SHEET_SCHEMA_NODE_TYPE.AGGREGATE;
+
+  // Узел собирается СРАЗУ С ДВУМЯ полями вида — `nodeType` и `type`; второе
+  // в перечне не значилось. Ровно то же самое уже описано у узла-группы
+  // счетов ниже. Сводить их в одно без нужды не стали — только описали.
+  type?: BALANCE_SHEET_SCHEMA_NODE_TYPE;
+
   children?: IBalanceSheetDataNode[];
 }
 
@@ -146,7 +161,10 @@ export interface IBalanceSheetAccountNode extends IBalanceSheetCommonNode {
 }
 
 export interface IBalanceSheetNetIncomeNode extends IBalanceSheetCommonNode {
-  id: number;
+  // Номер — СТРОКА («NET_INCOME»), как и в схеме отчёта. Стояло «число»,
+  // хотя такого номера у этого узла не бывает: он не счёт из справочника,
+  // а итоговая строка.
+  id: string;
   name: string;
   nodeType: BALANCE_SHEET_SCHEMA_NODE_TYPE.NET_INCOME;
 }

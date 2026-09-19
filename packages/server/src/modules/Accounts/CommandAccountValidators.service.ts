@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Inject, Injectable, Scope } from '@nestjs/common';
 // import { IAccountDTO, IAccount, IAccountCreateDTO } from './Accounts.types';
 // import AccountTypesUtils from '@/lib/AccountTypes';
@@ -17,7 +16,7 @@ export class CommandAccountValidators {
     @Inject(Account.name)
     private readonly accountModel: TenantModelProxy<typeof Account>,
     private readonly accountRepository: AccountRepository,
-  ) { }
+  ) {}
 
   /**
    * Throws error if the account was prefined.
@@ -147,10 +146,16 @@ export class CommandAccountValidators {
 
   /**
    * Validates the given account type supports multi-currency.
-   * @param {CreateAccountDTO | EditAccountDTO} accountDTO -
+   *
+   * Довод сужен до `CreateAccountDTO` намеренно. В подписи стояло
+   * «создание ИЛИ правка», но у правки счёта поля `currencyCode` нет вовсе:
+   * валюта задаётся один раз при создании и дальше не меняется. При таком
+   * доводе `accountDTO.currencyCode` всегда было бы `undefined`, и проверка
+   * молча пропускала бы всё. Зовут её и правда только из создания счёта.
+   * @param {CreateAccountDTO} accountDTO -
    */
   public validateAccountTypeSupportCurrency = (
-    accountDTO: CreateAccountDTO | EditAccountDTO,
+    accountDTO: CreateAccountDTO,
     baseCurrency: string,
   ) => {
     // Can't continue to validate the type has multi-currency feature
@@ -169,13 +174,15 @@ export class CommandAccountValidators {
   /**
    * Validates the account DTO currency code whether equals the currency code of
    * parent account.
-   * @param {CreateAccountDTO | EditAccountDTO} accountDTO
+   * Довод сужен до `CreateAccountDTO` по той же причине, что и у
+   * `validateAccountTypeSupportCurrency`: валюта есть только при создании.
+   * @param {CreateAccountDTO} accountDTO
    * @param {Account} parentAccount
    * @param {string} baseCurrency -
    * @throws {ServiceError(ERRORS.ACCOUNT_CURRENCY_NOT_SAME_PARENT_ACCOUNT)}
    */
   public validateCurrentSameParentAccount = (
-    accountDTO: CreateAccountDTO | EditAccountDTO,
+    accountDTO: CreateAccountDTO,
     parentAccount: Account,
     baseCurrency: string,
   ) => {

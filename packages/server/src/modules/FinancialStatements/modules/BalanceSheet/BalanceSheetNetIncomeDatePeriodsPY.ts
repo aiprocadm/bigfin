@@ -4,7 +4,7 @@ import { FinancialPreviousPeriod } from '../../common/FinancialPreviousPeriod';
 import { FinancialHorizTotals } from '../../common/FinancialHorizTotals';
 import {
   IBalanceSheetNetIncomeNode,
-  IBalanceSheetTotal,
+  IBalanceSheetTotalPeriod,
 } from './BalanceSheet.types';
 import { BalanceSheetQuery } from './BalanceSheetQuery';
 import { BalanceSheetRepository } from './BalanceSheetRepository';
@@ -87,36 +87,36 @@ export const BalanceSheetNetIncomeDatePeriodsPY = <
 
     /**
      * Compose PY to net income horizontal nodes.
-     * @param {IBalanceSheetTotal} node
-     * @returns {IBalanceSheetTotal}
+     * @param {IBalanceSheetTotalPeriod} node
+     * @returns {IBalanceSheetTotalPeriod}
      */
     public previousYearNetIncomeHorizNodeComposer = R.curry(
       (
         node: IBalanceSheetNetIncomeNode,
-        horiontalTotalNode: IBalanceSheetTotal,
-      ): IBalanceSheetTotal => {
-        return sameNodeShape<IBalanceSheetTotal>(
+        horiontalTotalNode: IBalanceSheetTotalPeriod,
+      ): IBalanceSheetTotalPeriod => {
+        return sameNodeShape<IBalanceSheetTotalPeriod>(
           R.compose(
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearTotalChangeNode,
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearNetIncomeHorizTotal(node),
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            // Узел итога и узел с датами периода описаны разными перечнями,
-            // хотя в этой цепочке это один и тот же узел: сюда он приходит
-            // уже с проставленными датами прошлого года.
-            this.assocPreviousYearHorizNodeFromToDates as any,
-          ),
-        )(horiontalTotalNode as any),
+            R.when(
+              this.query.isPreviousYearPercentageActive,
+              this.assocPreviousYearTotalPercentageNode,
+            ),
+            R.when(
+              this.query.isPreviousYearChangeActive,
+              this.assocPreviousYearTotalChangeNode,
+            ),
+            R.when(
+              this.query.isPreviousYearActive,
+              this.assocPreviousYearNetIncomeHorizTotal(node),
+            ),
+            R.when(
+              this.query.isPreviousYearActive,
+              // Узел итога и узел с датами периода описаны разными перечнями,
+              // хотя в этой цепочке это один и тот же узел: сюда он приходит
+              // уже с проставленными датами прошлого года.
+              this.assocPreviousYearHorizNodeFromToDates as any,
+            ),
+          )(horiontalTotalNode as any),
         );
       },
     );
@@ -132,7 +132,7 @@ export const BalanceSheetNetIncomeDatePeriodsPY = <
       const horizontalTotals = R.addIndex(R.map)(
         this.previousYearNetIncomeHorizNodeComposer(node),
         node.horizontalTotals,
-      ) as IBalanceSheetTotal[];
+      ) as IBalanceSheetTotalPeriod[];
 
       return R.assoc('horizontalTotals', horizontalTotals, node);
     };

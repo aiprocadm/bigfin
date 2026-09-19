@@ -43,7 +43,11 @@ export default function ReportDrillDownPanel({
     ['REPORT_DRILL_DOWN', target?.accountId, target?.fromDate, target?.toDate],
     () =>
       apiRequest
-        .get('financial-reports/drill-down', {
+        // Путь именно такой: контроллер объявлен как
+        // `@Controller('financial-reports/chart')`, а ручка внутри — как
+        // `@Get('drill-down')`. Без `chart` сервер отвечает «Cannot GET»,
+        // и панель раскрытия суммы не работала вовсе.
+        .get('financial-reports/chart/drill-down', {
           params: {
             accountId: target?.accountId,
             from: target?.fromDate,

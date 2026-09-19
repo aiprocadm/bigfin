@@ -16,6 +16,8 @@ const Schema = Yup.object().shape({
   date: Yup.date().required().label(intl.get('date')),
   currency_code: Yup.string().max(3),
   publish: Yup.boolean(),
+  // Отметка «операция внутри своей группы» (остаток К2 ТЗ).
+  is_intercompany: Yup.boolean(),
   branch_id: Yup.string(),
   reference: Yup.string().nullable().min(1).max(DATATYPES_LENGTH.STRING),
   description: Yup.string().min(1).max(DATATYPES_LENGTH.STRING).nullable(),

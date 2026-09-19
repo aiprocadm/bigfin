@@ -4673,5 +4673,7 @@
   "legal_entities.section.addresses": "Addresses",
   "legal_entities.section.bank": "Bank details",
   "legal_entities.section.group": "In the group",
-  "validation.account.length": "The account number must contain 20 digits"
+  "validation.account.length": "The account number must contain 20 digits",
+  "intercompany.label": "Internal transfer inside the group",
+  "intercompany.hint": "Such operations are excluded from the consolidated report so that the same money is not counted twice."
 }

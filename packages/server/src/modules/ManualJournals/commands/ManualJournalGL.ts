@@ -81,6 +81,11 @@ export class ManualJournalGL {
       transactionId: this.manualJournal.id,
 
       userId: this.manualJournal.userId,
+
+      // Человек отметил операцию как внутригрупповую (остаток К2).
+      // Признак живёт у документа, потому что проводки при каждой правке
+      // пересобираются заново, а выбор человека обязан её пережить.
+      isIntercompany: Boolean((this.manualJournal as any).isIntercompany),
     };
   }
 

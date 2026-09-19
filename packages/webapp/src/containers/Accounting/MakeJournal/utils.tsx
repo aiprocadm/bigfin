@@ -55,6 +55,9 @@ export const defaultManualJournal = {
   reference: '',
   currency_code: '',
   publish: '',
+  // Выключена по умолчанию: включённая отметка вычитает из сводного
+  // отчёта настоящую выручку (остаток К2 ТЗ).
+  is_intercompany: false,
   branch_id: '',
   exchange_rate: 1,
   entries: [...repeatValue(defaultEntry, DEFAULT_LINES_NUMBER)],

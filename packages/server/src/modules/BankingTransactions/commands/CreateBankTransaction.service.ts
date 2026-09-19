@@ -85,6 +85,10 @@ export class CreateBankTransactionService {
       'contactId',
       'plaidTransactionId',
       'uncategorizedTransactionId',
+      // Отметка «внутригрупповая» (остаток К2). Список полей здесь БЕЛЫЙ:
+      // забыть в нём поле — значит молча потерять выбор человека, ничего
+      // при этом не сломав.
+      'isIntercompany',
     ]);
     // Retreive the next invoice number.
     const autoNextNumber = await this.autoIncrement.getNextTransactionNumber();

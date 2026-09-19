@@ -49,10 +49,20 @@ export class LedgerEntriesStorageService {
       entries,
       trx,
     );
-    const isIntercompany = this.detectIntercompany(
-      entries,
-      legalEntityByAccount,
+    // Автоматика видит только то, что записано у СЧЕТОВ. Перевод собственной
+    // компании, оформленный документом на контрагента, она не увидит никогда:
+    // юрлица у такого счёта нет, а «неизвестное юрлицо не считается другим».
+    // Для этого случая человеку и дан выключатель (остаток К2).
+    //
+    // Ручная отметка только ДОБАВЛЯЕТ признак. Снять автоматический ею
+    // нельзя: если ноги и правда у разных юрлиц, операция внутригрупповая по
+    // определению, и «нет» означало бы дважды посчитанную выручку в сводном
+    // отчёте.
+    const markedByHand = entries.some(
+      (entry) => (entry as any).isIntercompany === true,
     );
+    const isIntercompany =
+      this.detectIntercompany(entries, legalEntityByAccount) || markedByHand;
 
     entries.forEach((entry) => {
       saveEntryQueue.push({

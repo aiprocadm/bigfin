@@ -60,6 +60,11 @@ export const getMoneyOutSchema = () =>
     transaction_number: z.string().optional().default(''),
     reference_no: z.string().optional().default(''),
     branch_id: z.number().nullable(),
+
+    // Отметка «внутригрупповая операция» (остаток К2).
+    // Выключена по умолчанию: подавляющее большинство операций
+    // обычные, а включённая отметка вычитает выручку из отчёта.
+    is_intercompany: z.boolean().optional().default(false),
     exchange_rate: z
       .string()
       .refine(

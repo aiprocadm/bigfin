@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 /** Одна часть разделённой операции. */
 export interface SplitLine {
@@ -31,7 +32,7 @@ export function useTransactionSplits(
       url: `transaction-splits/${referenceType}/${referenceId}`,
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as SplitLine[],
       enabled: Boolean(referenceType && referenceId),
       ...props,

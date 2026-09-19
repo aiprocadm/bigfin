@@ -3,6 +3,7 @@ import { useMutation, useQueryClient, UseMutationOptions } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 export interface DataQualityPeriodQuery {
   fromDate: string;
@@ -18,7 +19,7 @@ export function useDataQualityUnmapped(
     [t.DATA_QUALITY_UNMAPPED, query],
     { method: 'get', url: 'data-quality/unmapped-operations', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { accounts: [], totalCount: 0 },
       ...props,
     },
@@ -34,7 +35,7 @@ export function useDataQualityDuplicates(
     [t.DATA_QUALITY_DUPLICATES, query],
     { method: 'get', url: 'data-quality/duplicates', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { groups: [], totalGroups: 0 },
       ...props,
     },
@@ -47,7 +48,7 @@ export function useDataQualityFailedMails(props?: any) {
     [t.DATA_QUALITY_FAILED_MAILS],
     { method: 'get', url: 'data-quality/failed-mails' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { count: 0, items: [], truncated: false },
       ...props,
     },
@@ -63,7 +64,7 @@ export function useDataQualityUnbalanced(
     [t.DATA_QUALITY_UNBALANCED, query],
     { method: 'get', url: 'data-quality/unbalanced-journals', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { journals: [], totalJournals: 0, totalDifference: 0 },
       ...props,
     },
@@ -86,7 +87,7 @@ export function useDataQualityCrookedJournals(
       params: query,
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { journals: [], totalJournals: 0, totalDifference: 0 },
       ...props,
     },
@@ -159,7 +160,7 @@ export function useDataQualityPlCashflow(
     [t.DATA_QUALITY_PL_CASHFLOW, query],
     { method: 'get', url: 'data-quality/pl-cashflow', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { months: [], totals: { plNet: 0, cashNet: 0, diff: 0 } },
       ...props,
     },

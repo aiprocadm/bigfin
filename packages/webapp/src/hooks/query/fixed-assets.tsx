@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -89,7 +90,7 @@ export function useFixedAssets(query?: any, props?: any) {
   return useRequestQuery(
     [t.FIXED_ASSETS, query],
     { method: 'get', url: 'fixed-assets', params: query },
-    { select: (res: any) => res.data?.data ?? res.data, defaultData: [], ...props },
+    { select: (res: any) => fromApi(res.data?.data ?? res.data), defaultData: [], ...props },
   );
 }
 
@@ -99,7 +100,7 @@ export function useFixedAssetsSummary(props?: any) {
     [t.FIXED_ASSETS_SUMMARY],
     { method: 'get', url: 'fixed-assets/summary' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         count: 0,
         totalCost: 0,
@@ -117,7 +118,7 @@ export function useFixedAsset(id: number | string | undefined, props?: any) {
     [t.FIXED_ASSET, id],
     { method: 'get', url: `fixed-assets/${id}` },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: null,
       enabled: !!id,
       ...props,

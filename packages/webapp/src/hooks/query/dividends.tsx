@@ -12,6 +12,7 @@ import {
   mapDividendsSummary,
   mapDividendPayouts,
 } from '@/containers/Dividends/mapDividends';
+import { fromApi } from '@/utils/fromApi';
 
 export interface DividendsSummary {
   netProfit: number;
@@ -52,7 +53,7 @@ export function useDividendsSummary(props?: any) {
     { method: 'get', url: 'dividends/summary' },
     {
       // Ответ приходит в snake_case — приводим к виду, привычному странице.
-      select: (res: any) => mapDividendsSummary(res.data?.data ?? res.data),
+      select: (res: any) => mapDividendsSummary(fromApi(res.data?.data ?? res.data)),
       defaultData: {
         netProfit: 0,
         totalPaidOut: 0,
@@ -71,7 +72,7 @@ export function useDividendPayouts(props?: any) {
     [t.DIVIDENDS_PAYOUTS],
     { method: 'get', url: 'dividends/payouts' },
     {
-      select: (res: any) => mapDividendPayouts(res.data?.data ?? res.data),
+      select: (res: any) => mapDividendPayouts(fromApi(res.data?.data ?? res.data)),
       defaultData: [],
       ...props,
     },

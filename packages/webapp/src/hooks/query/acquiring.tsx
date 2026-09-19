@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 const STATUS_KEY = 'acquiring_status';
 const invalidateStatus = (c: QueryClient) => c.invalidateQueries(STATUS_KEY);
@@ -24,7 +25,7 @@ export function useAcquiringStatus(props?: any) {
     [STATUS_KEY],
     { method: 'get', url: 'acquiring/status' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { yookassaConnected: false },
       ...props,
     },
@@ -41,7 +42,7 @@ export function useYookassaSummary(from: string, to: string, props?: any) {
       params: { from, to },
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: null,
       ...props,
     },

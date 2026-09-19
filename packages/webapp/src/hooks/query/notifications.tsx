@@ -7,6 +7,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -42,7 +43,7 @@ export function useNotificationPreferences(props?: any) {
     [t.NOTIFICATION_PREFERENCES],
     { method: 'get', url: 'notifications/preferences' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: null,
       ...props,
     },
@@ -126,7 +127,7 @@ export function useUnreadCount(props?: any) {
     [t.NOTIFICATIONS_UNREAD],
     { method: 'get', url: 'notifications/unread-count' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { count: 0 },
       refetchInterval: 60_000,
       ...props,
@@ -179,7 +180,7 @@ export function useTelegramEntryAccount(props?: any) {
     { method: 'get', url: 'notifications/telegram/entry-account' },
     {
       select: (res: any) => {
-        const d = res.data?.data ?? res.data;
+        const d = fromApi(res.data?.data ?? res.data);
         return { accountId: d?.account_id ?? d?.accountId ?? null };
       },
       defaultData: { accountId: null },
@@ -210,7 +211,7 @@ export function usePullTelegramEntries(props?: UseMutationOptions<any, any, void
     () =>
       api
         .post('notifications/telegram/entries/pull', {})
-        .then((res: any) => res.data?.data ?? res.data),
+        .then((res: any) => fromApi(res.data?.data ?? res.data)),
     props,
   );
 }

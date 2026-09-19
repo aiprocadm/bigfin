@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 export interface MarginPoint {
   month: string;
@@ -33,7 +34,7 @@ export function useFinancialOverview(query?: any, props?: any) {
     [t.FINANCIAL_OVERVIEW, query],
     { method: 'get', url: 'financial-model/overview', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         revenue: 0,
         costs: 0,
@@ -84,7 +85,7 @@ export function useFinancialSegments(query?: any, props?: any) {
     [t.FINANCIAL_SEGMENTS, query],
     { method: 'get', url: 'financial-model/segments', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         byDeal: [],
         byManager: [],
@@ -142,7 +143,7 @@ export function useMarketingMetrics(query?: any, props?: any) {
     [t.FINANCIAL_MARKETING, query],
     { method: 'get', url: 'financial-model/marketing', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         revenue: 0,
         margin: 0,
@@ -168,7 +169,7 @@ export function useMarketingChannels(props?: any) {
     [t.MARKETING_CHANNELS],
     { method: 'get', url: 'financial-model/marketing/channels' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as MarketingChannel[],
       ...props,
     },
@@ -271,7 +272,7 @@ export function useBreakEven(query?: any, props?: any) {
     [t.FINANCIAL_BREAK_EVEN, query],
     { method: 'get', url: 'financial-model/break-even', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         revenue: 0,
         margin: 0,
@@ -297,7 +298,7 @@ export function useExpenseArticles(props?: any) {
     [t.EXPENSE_ARTICLES],
     { method: 'get', url: 'financial-model/articles' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as ExpenseArticle[],
       ...props,
     },
@@ -385,7 +386,7 @@ export function useExpensesAnalysis(query?: any, props?: any) {
       params: query,
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         fromDate: '',
         toDate: '',

@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 const STATUS_KEY = 'bank_api_status';
 
@@ -37,7 +38,7 @@ export function useBankApiStatus(props?: any) {
     { method: 'get', url: 'bank-api-sync/status' },
     {
       select: (res: any) => {
-        const data = res.data?.data ?? res.data;
+        const data = fromApi(res.data?.data ?? res.data);
         return {
           connected: data?.connected ?? {
             // Ответ сервера до мультипровайдерности.

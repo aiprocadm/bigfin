@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 const STATUS_KEY = 'marketplaces_status';
 
@@ -29,7 +30,7 @@ export function useMarketplacesStatus(props?: any) {
     {
       select: (res: any) => {
         // Ответы сервера сериализуются в snake_case.
-        const d = res.data?.data ?? res.data ?? {};
+        const d = fromApi(res.data?.data ?? res.data) ?? {};
         return {
           wildberriesConnected: Boolean(
             d.wildberries_connected ?? d.wildberriesConnected,
@@ -57,7 +58,7 @@ export function useWildberriesSummary(
       params: { fromDate, toDate },
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: null,
       ...props,
     },
@@ -98,7 +99,7 @@ export function useOzonSummary(fromDate: string, toDate: string, props?: any) {
       params: { fromDate, toDate },
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: null,
       ...props,
     },

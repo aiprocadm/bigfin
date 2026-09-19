@@ -1,5 +1,6 @@
 // © 2026 Bigfin
 import { useRequestQuery } from '../useQueryRequest';
+import { fromApi } from '@/utils/fromApi';
 
 export interface FinancialRatios {
   roe: number | null;
@@ -66,7 +67,7 @@ export function useFinancialRatios(
       params: { fromDate, toDate },
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { ratios: null, vertical: [], horizontal: [], meta: null },
       ...props,
     },

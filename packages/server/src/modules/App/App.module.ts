@@ -50,6 +50,7 @@ import { DataQualityModule } from '../DataQuality/DataQuality.module';
 import { DividendsModule } from '../Dividends/Dividends.module';
 import { CreditsModule } from '../Credits/Credits.module';
 import { FinancialModelModule } from '../FinancialModel/FinancialModel.module';
+import { CapitalizationModule } from '../Capitalization/Capitalization.module';
 import { BankStatementImportModule } from '../BankStatementImport/BankStatementImport.module';
 import { MoySkladModule } from '../MoySklad/MoySklad.module';
 import { MarketplacesModule } from '../Marketplaces/Marketplaces.module';
@@ -262,6 +263,7 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     DividendsModule,
     CreditsModule,
     FinancialModelModule,
+    CapitalizationModule,
     BankStatementImportModule,
     MoySkladModule,
     MarketplacesModule,

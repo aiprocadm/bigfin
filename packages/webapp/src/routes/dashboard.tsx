@@ -1193,6 +1193,16 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     breadcrumb: intl.get('expenses_analysis.page.title'),
     pageTitle: intl.get('expenses_analysis.page.title'),
   },
+  // Капитализация (этап 11 ТЗ): «сколько стоит мой бизнес» — чистые активы,
+  // оценка по мультипликатору прибыли и доля владельца.
+  {
+    path: `/capitalization`,
+    component: lazy(
+      () => import('@/containers/Capitalization/CapitalizationPage'),
+    ),
+    breadcrumb: intl.get('capitalization.page.title'),
+    pageTitle: intl.get('capitalization.page.title'),
+  },
   // Financial model (Финмодель)
   {
     path: `/financial-model`,

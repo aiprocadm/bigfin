@@ -28,6 +28,8 @@ function BillsListProvider({ query, tableStateChanged, ...props }: any) {
     data: { bills, pagination, filterMeta },
     isLoading: isBillsLoading,
     isFetching: isBillsFetching,
+    isError: isBillsError,
+    refetch: refetchBills,
   } = useBills(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -53,6 +55,8 @@ function BillsListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isBillsError}
+      onRetry={refetchBills}
       name={'bills'}
     >
       <BillsListContext.Provider value={provider} {...props} />

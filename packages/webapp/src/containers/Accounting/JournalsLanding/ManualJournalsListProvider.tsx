@@ -17,6 +17,8 @@ function ManualJournalsListProvider({ query, tableStateChanged, ...props }: any)
     data: { manualJournals, pagination, filterMeta },
     isLoading: isManualJournalsLoading,
     isFetching: isManualJournalsFetching,
+    isError: isManualJournalsError,
+    refetch: refetchManualJournals,
   } = useJournals(query, { keepPreviousData: true });
 
   // Fetch the accounts resource fields.
@@ -49,7 +51,12 @@ function ManualJournalsListProvider({ query, tableStateChanged, ...props }: any)
   const isPageLoading = isViewsLoading || isResourceMetaLoading;
 
   return (
-    <DashboardInsider loading={isPageLoading} name={'manual-journals'}>
+    <DashboardInsider
+      loading={isPageLoading}
+      error={isManualJournalsError}
+      onRetry={refetchManualJournals}
+      name={'manual-journals'}
+    >
       <ManualJournalsContext.Provider value={state} {...props} />
     </DashboardInsider>
   );

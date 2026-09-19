@@ -28,6 +28,8 @@ function WarehouseTransfersListProvider({
     data: { warehousesTransfers, pagination, filterMeta },
     isFetching: isWarehouseTransfersFetching,
     isLoading: isWarehouseTransfersLoading,
+    isError: isWarehouseTransfersError,
+    refetch: refetchWarehouseTransfers,
   } = useWarehousesTransfers(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -69,6 +71,8 @@ function WarehouseTransfersListProvider({
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isWarehouseTransfersError}
+      onRetry={refetchWarehouseTransfers}
       name={'warehouse-transfers-list'}
     >
       <WarehouseTransfersListContext.Provider value={provider} {...props} />

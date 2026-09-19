@@ -27,6 +27,8 @@ function InvoicesListProvider({ query, tableStateChanged, ...props }: any) {
     data: { invoices, pagination, filterMeta },
     isFetching: isInvoicesFetching,
     isLoading: isInvoicesLoading,
+    isError: isInvoicesError,
+    refetch: refetchInvoices,
   } = useInvoices(query, { keepPreviousData: true });
 
   // Detarmines whether the table should show empty state.
@@ -53,6 +55,8 @@ function InvoicesListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isInvoicesError}
+      onRetry={refetchInvoices}
       name={'sales-invoices-list'}
     >
       <InvoicesListContext.Provider value={provider} {...props} />

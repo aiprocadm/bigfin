@@ -43,6 +43,8 @@ function ItemsListProvider({
     data: { items, pagination, filterMeta },
     isFetching: isItemsFetching,
     isLoading: isItemsLoading,
+    isError: isItemsError,
+    refetch: refetchItems,
   } = useItems(
     {
       ...transformTableQueryToParams(tableQuery),
@@ -72,6 +74,8 @@ function ItemsListProvider({
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isItemsError}
+      onRetry={refetchItems}
       name={'items-list'}
     >
       <ItemsContext.Provider value={state} {...props} />

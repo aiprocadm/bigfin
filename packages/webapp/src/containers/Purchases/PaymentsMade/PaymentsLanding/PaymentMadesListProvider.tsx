@@ -31,6 +31,8 @@ function PaymentMadesListProvider({ query, tableStateChanged, ...props }: any) {
     data: { paymentMades, pagination, filterMeta },
     isLoading: isPaymentsLoading,
     isFetching: isPaymentsFetching,
+    isError: isPaymentsError,
+    refetch: refetchPayments,
   } = usePaymentMades(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -58,6 +60,8 @@ function PaymentMadesListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceMetaLoading}
+      error={isPaymentsError}
+      onRetry={refetchPayments}
       name={'payment-mades-list'}
     >
       <PaymentMadesListContext.Provider value={provider} {...props} />

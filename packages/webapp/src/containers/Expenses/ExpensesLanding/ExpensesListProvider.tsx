@@ -20,6 +20,8 @@ function ExpensesListProvider({ query, tableStateChanged, ...props }: any) {
     data: { expenses, pagination, filterMeta },
     isLoading: isExpensesLoading,
     isFetching: isExpensesFetching,
+    isError: isExpensesError,
+    refetch: refetchExpenses,
   } = useExpenses(query, { keepPreviousData: true });
 
   // Fetch the expenses resource fields.
@@ -54,6 +56,8 @@ function ExpensesListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceMetaLoading}
+      error={isExpensesError}
+      onRetry={refetchExpenses}
       name={'expenses'}
     >
       <ExpensesListContext.Provider value={provider} {...props} />

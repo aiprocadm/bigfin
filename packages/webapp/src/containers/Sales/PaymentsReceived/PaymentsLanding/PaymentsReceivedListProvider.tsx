@@ -31,6 +31,8 @@ function PaymentsReceivedListProvider({ query, tableStateChanged, ...props }: an
     data: { paymentReceives, pagination, filterMeta },
     isLoading: isPaymentReceivesLoading,
     isFetching: isPaymentReceivesFetching,
+    isError: isPaymentReceivesError,
+    refetch: refetchPaymentReceives,
   } = usePaymentReceives(query);
 
   // Detarmines the datatable empty status.
@@ -58,6 +60,8 @@ function PaymentsReceivedListProvider({ query, tableStateChanged, ...props }: an
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isPaymentReceivesError}
+      onRetry={refetchPaymentReceives}
       name={'payment-receives-list'}
     >
       <PaymentsReceivedListContext.Provider value={state} {...props} />

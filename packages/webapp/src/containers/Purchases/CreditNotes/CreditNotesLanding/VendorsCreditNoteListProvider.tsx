@@ -36,6 +36,8 @@ function VendorsCreditNoteListProvider({ query, tableStateChanged, ...props }: a
     data: { vendorCredits, pagination, filterMeta },
     isLoading: isVendorCreditsLoading,
     isFetching: isVendorCreditsFetching,
+    isError: isVendorCreditsError,
+    refetch: refetchVendorCredits,
   } = useVendorCredits(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -63,6 +65,8 @@ function VendorsCreditNoteListProvider({ query, tableStateChanged, ...props }: a
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isVendorCreditsError}
+      onRetry={refetchVendorCredits}
       name={'vendor-credits'}
     >
       <VendorsCreditNoteListContext.Provider value={provider} {...props} />

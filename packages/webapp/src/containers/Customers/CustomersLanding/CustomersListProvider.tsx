@@ -28,6 +28,8 @@ function CustomersListProvider({ tableState, tableStateChanged, ...props }: any)
     data: { customers, pagination, filterMeta },
     isLoading: isCustomersLoading,
     isFetching: isCustomersFetching,
+    isError: isCustomersError,
+    refetch: refetchCustomers,
   } = useCustomers(tableQuery, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -54,6 +56,8 @@ function CustomersListProvider({ tableState, tableStateChanged, ...props }: any)
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceMetaLoading}
+      error={isCustomersError}
+      onRetry={refetchCustomers}
       name={'customers-list'}
     >
       <CustomersListContext.Provider value={state} {...props} />

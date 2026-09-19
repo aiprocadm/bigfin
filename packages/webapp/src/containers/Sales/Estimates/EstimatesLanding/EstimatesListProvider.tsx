@@ -29,6 +29,8 @@ function EstimatesListProvider({ query, tableStateChanged, ...props }: any) {
     data: { estimates, pagination, filterMeta },
     isLoading: isEstimatesLoading,
     isFetching: isEstimatesFetching,
+    isError: isEstimatesError,
+    refetch: refetchEstimates,
   } = useEstimates(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -56,6 +58,8 @@ function EstimatesListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isEstimatesError}
+      onRetry={refetchEstimates}
       name={'sale_estimate'}
     >
       <EstimatesListContext.Provider value={provider} {...props} />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { I18nService } from 'nestjs-i18n';
 import {
@@ -19,6 +18,7 @@ import { BalanceSheetNetIncomePP } from './BalanceSheetNetIncomePP';
 import { BalanceSheetNetIncomePY } from './BalanceSheetNetIncomePY';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { GConstructor } from '@/common/types/Constructor';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetNetIncome = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -179,6 +179,13 @@ export const BalanceSheetNetIncome = <T extends GConstructor<FinancialSheet>>(
      * @param {IBalanceSheetNetIncomeNode} node
      * @returns {IBalanceSheetNetIncomeNode}
      */
+    // Приходят из соседних примесей того же класса. Объявление ничего
+    // не создаёт — оно только показывает проверке типов то, что во
+    // время работы и так есть.
+    declare getReportNodeDatePeriods: (node: any, callback: any) => any;
+    declare isSchemaNodeType: any;
+    declare mapNodesDeep: (nodes: any, callback: any) => any;
+
     public getNetIncomeDatePeriodsNode = (
       node: IBalanceSheetNetIncomeNode,
     ): IBalanceSheetTotalPeriod[] => {
@@ -212,12 +219,14 @@ export const BalanceSheetNetIncome = <T extends GConstructor<FinancialSheet>>(
     public reportNetIncomeNodeSchemaParser = (
       schemaNode: IBalanceSheetSchemaNode,
     ): IBalanceSheetDataNode => {
-      return R.compose(
-        R.when(
-          this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.NET_INCOME),
-          this.schemaNetIncomeNodeCompose,
-        ),
-      )(schemaNode);
+      // `R.compose` с одним-единственным шагом ничего не давал, а вид узла
+      // терялся: на выходе получалось «неизвестно что».
+      return this.isSchemaNodeType(
+        BALANCE_SHEET_SCHEMA_NODE_TYPE.NET_INCOME,
+        schemaNode,
+      )
+        ? this.schemaNetIncomeNodeCompose(schemaNode)
+        : sameNodeShape<IBalanceSheetDataNode>(schemaNode);
     };
 
     /**

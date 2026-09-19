@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { GetSaleInvoice } from '../queries/GetSaleInvoice.service';
 import { GetInvoicePaymentMail } from '../queries/GetInvoicePaymentMail.service';
 import { GenerateShareLink } from './GenerateInvoicePaymentLink.service';
@@ -103,7 +102,6 @@ export class SendSaleInvoiceMailCommon {
    * @param {string} text - The given text.
    * @returns {Promise<string>}
    */
-  // @ts-nocheck
   public getInvoiceFormatterArgs = async (
     invoiceId: number,
   ): Promise<Record<string, string | number>> => {

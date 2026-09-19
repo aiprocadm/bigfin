@@ -4,7 +4,7 @@ import { FinancialPreviousPeriod } from '../../common/FinancialPreviousPeriod';
 import { FinancialHorizTotals } from '../../common/FinancialHorizTotals';
 import {
   IBalanceSheetNetIncomeNode,
-  IBalanceSheetTotal,
+  IBalanceSheetTotalPeriod,
 } from './BalanceSheet.types';
 import { BalanceSheetQuery } from './BalanceSheetQuery';
 import { BalanceSheetRepository } from './BalanceSheetRepository';
@@ -92,39 +92,39 @@ export const BalanceSheetNetIncomeDatePeriodsPP = <
 
     /**
      * Compose previous period to aggregate horizontal nodes.
-     * @param   {IBalanceSheetTotal} node
-     * @returns {IBalanceSheetTotal}
+     * @param   {IBalanceSheetTotalPeriod} node
+     * @returns {IBalanceSheetTotalPeriod}
      */
     public previousPeriodNetIncomeHorizNodeComposer = R.curry(
       (
         node: IBalanceSheetNetIncomeNode,
-        horiontalTotalNode: IBalanceSheetTotal,
-      ): IBalanceSheetTotal => {
-        return sameNodeShape<IBalanceSheetTotal>(
+        horiontalTotalNode: IBalanceSheetTotalPeriod,
+      ): IBalanceSheetTotalPeriod => {
+        return sameNodeShape<IBalanceSheetTotalPeriod>(
           R.compose(
-          R.when(
-            this.query.isPreviousPeriodPercentageActive,
-            this.assocPreviousPeriodTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodChangeActive,
-            this.assocPreviousPeriodTotalChangeNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodActive,
-            this.assocPreviousPeriodNetIncomeHorizTotal(node),
-          ),
-          R.when(
-            this.query.isPreviousPeriodActive,
-            this.assocPreviousPeriodHorizNodeFromToDates(
-              // Та же обёртка, что и в `BalanceSheetTablePreviousPeriod`:
-              // единица периода лежит внутри неё, а не на ней самой.
-              // Единица периода объявлена в запросе просто строкой;
-              // здесь нужен её узкий вид. Значения задаёт сам отчёт.
-              this.query.query.displayColumnsBy as IFinancialDatePeriodsUnit,
+            R.when(
+              this.query.isPreviousPeriodPercentageActive,
+              this.assocPreviousPeriodTotalPercentageNode,
             ),
-          ),
-        )(horiontalTotalNode),
+            R.when(
+              this.query.isPreviousPeriodChangeActive,
+              this.assocPreviousPeriodTotalChangeNode,
+            ),
+            R.when(
+              this.query.isPreviousPeriodActive,
+              this.assocPreviousPeriodNetIncomeHorizTotal(node),
+            ),
+            R.when(
+              this.query.isPreviousPeriodActive,
+              this.assocPreviousPeriodHorizNodeFromToDates(
+                // Та же обёртка, что и в `BalanceSheetTablePreviousPeriod`:
+                // единица периода лежит внутри неё, а не на ней самой.
+                // Единица периода объявлена в запросе просто строкой;
+                // здесь нужен её узкий вид. Значения задаёт сам отчёт.
+                this.query.query.displayColumnsBy as IFinancialDatePeriodsUnit,
+              ),
+            ),
+          )(horiontalTotalNode),
         );
       },
     );
@@ -140,7 +140,7 @@ export const BalanceSheetNetIncomeDatePeriodsPP = <
       const horizontalTotals = R.addIndex(R.map)(
         this.previousPeriodNetIncomeHorizNodeComposer(node),
         node.horizontalTotals,
-      ) as IBalanceSheetTotal[];
+      ) as IBalanceSheetTotalPeriod[];
 
       return R.assoc('horizontalTotals', horizontalTotals, node);
     };

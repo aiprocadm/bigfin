@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { get } from 'lodash';
 import {
@@ -20,6 +19,11 @@ export const BalanceSheetFiltering = <T extends GConstructor<FinancialSheet>>(
     FinancialSheetStructure,
     BalanceSheetBase,
   )(Base) {
+    // Приходят из соседних примесей того же класса. Объявление ничего
+    // не создаёт — оно только показывает проверке типов то, что во
+    // время работы и так есть.
+    declare getSchemaNodeById: (id: any) => any;
+
     /**
      * @description Repository.
      */
@@ -36,11 +40,11 @@ export const BalanceSheetFiltering = <T extends GConstructor<FinancialSheet>>(
     private accountNoneZeroNodesFilterDetarminer = (
       node: IBalanceSheetDataNode,
     ): boolean => {
-      return R.ifElse(
-        this.isNodeType(BALANCE_SHEET_NODE_TYPE.ACCOUNT),
-        this.isNodeNoneZero,
-        R.always(true),
-      )(node);
+      // Раньше та же проверка собиралась через `R.ifElse` с наполовину
+      // применённым `isNodeType`. Условие читается прямо.
+      return this.isNodeType(BALANCE_SHEET_NODE_TYPE.ACCOUNT, node)
+        ? this.isNodeNoneZero(node)
+        : true;
     };
 
     /**
@@ -51,11 +55,11 @@ export const BalanceSheetFiltering = <T extends GConstructor<FinancialSheet>>(
     private accountNoneTransFilterDetarminer = (
       node: IBalanceSheetDataNode,
     ): boolean => {
-      return R.ifElse(
-        this.isNodeType(BALANCE_SHEET_NODE_TYPE.ACCOUNT),
-        this.isNodeNoneZero,
-        R.always(true),
-      )(node);
+      // Раньше та же проверка собиралась через `R.ifElse` с наполовину
+      // применённым `isNodeType`. Условие читается прямо.
+      return this.isNodeType(BALANCE_SHEET_NODE_TYPE.ACCOUNT, node)
+        ? this.isNodeNoneZero(node)
+        : true;
     };
 
     /**

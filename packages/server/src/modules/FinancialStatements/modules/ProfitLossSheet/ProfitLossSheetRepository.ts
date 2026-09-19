@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { ModelObject } from 'objection';
 import { castArray } from 'lodash';
@@ -13,6 +12,7 @@ import { IProfitLossSheetQuery } from './ProfitLossSheet.types';
 import { IAccountTransactionsGroupBy } from '../BalanceSheet/BalanceSheet.types';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { FinancialDatePeriods } from '../../common/FinancialDatePeriods';
+import { FinancialSheet } from '../../common/FinancialSheet';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
@@ -29,6 +29,7 @@ import {
 } from './recognizeSettledPnlLegs';
 import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentReceivedEntry';
 import { BillPaymentEntry } from '@/modules/BillPayments/models/BillPaymentEntry';
+import { INamedModifiableQuery } from '../../common/queryTypes';
 
 /** Как документ-оплата связан с тем, что он гасит. */
 const SETTLEMENT_SOURCES = [
@@ -51,8 +52,13 @@ const SETTLEMENT_SOURCES = [
 ];
 
 @Injectable({ scope: Scope.TRANSIENT })
+// Основой примеси стоял пустой класс. Примесь при этом рассчитывает на
+// помощников отчёта (`getAmountMeta`, `getDateMeta`) — у пустого класса их
+// нет вовсе. Работало лишь потому, что справочник зовёт только те методы,
+// которые до них не доходят. Теперь основа — настоящий отчёт: та же работа,
+// но без ловушки на будущее.
 export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
-  class {},
+  FinancialSheet,
 ) {
   @Inject(Account.name)
   public accountModel: TenantModelProxy<typeof Account>;
@@ -61,7 +67,9 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
   public accountTransactionModel: TenantModelProxy<typeof AccountTransaction>;
 
   @Inject(PaymentReceivedEntry.name)
-  public paymentReceivedEntryModel: TenantModelProxy<typeof PaymentReceivedEntry>;
+  public paymentReceivedEntryModel: TenantModelProxy<
+    typeof PaymentReceivedEntry
+  >;
 
   @Inject(BillPaymentEntry.name)
   public billPaymentEntryModel: TenantModelProxy<typeof BillPaymentEntry>;
@@ -186,7 +194,13 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
    * @param {IBalanceSheetQuery} query
    * @param {{ cashBasisActive?: boolean }} options
    */
-  setFilter(query: IProfitLossSheetQuery, options = {}) {
+  setFilter(
+    query: IProfitLossSheetQuery,
+    // Вид настроек объявлен явно: без него `options` — пустой объект,
+    // и обращение к `cashBasisActive` не проходит проверку, хотя
+    // вызывающие его и правда передают.
+    options: { cashBasisActive?: boolean } = {},
+  ) {
     this.query = new ProfitLossSheetQuery(query);
 
     this.transactionsGroupType = this.getGroupByFromDisplayColumnsBy(
@@ -420,7 +434,7 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
    * Common branches filter query.
    * @param {Knex.QueryBuilder} query
    */
-  private commonFilterBranchesQuery = (query: Knex.QueryBuilder) => {
+  private commonFilterBranchesQuery = (query: INamedModifiableQuery) => {
     if (!isEmpty(this.query.query.branchesIds)) {
       query.modify('filterByBranches', this.query.query.branchesIds);
     }
@@ -445,7 +459,15 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
       });
     const cashAccountsIds = new Set(
       this.accounts
-        .filter((account) => CASH_ACCOUNT_TYPES.includes(account.accountType))
+        // Перечень видов денежных счетов объявлен узким набором (`as const`),
+        // а вид счёта приходит обычной строкой. Сверяем как строки: иначе
+        // проверка требует, чтобы строка ЗАРАНЕЕ была одной из трёх, чего
+        // про данные из базы утверждать нельзя.
+        .filter((account) =>
+          (CASH_ACCOUNT_TYPES as readonly string[]).includes(
+            account.accountType,
+          ),
+        )
         .map((account) => account.id),
     );
     const settledLegs = filterCashSettledLegs(legs, (accountId) =>

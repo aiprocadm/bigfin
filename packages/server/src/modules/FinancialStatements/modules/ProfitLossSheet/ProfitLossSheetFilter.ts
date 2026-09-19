@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { get } from 'lodash';
 import { ProfitLossSheetBase } from './ProfitLossSheetBase';
@@ -19,6 +18,19 @@ export const ProfitLossSheetFilter = <T extends GConstructor<FinancialSheet>>(
     query: ProfitLossSheetQuery;
     repository: ProfitLossSheetRepository;
 
+    // Приходит из соседней примеси того же класса. Объявление ничего
+    // не создаёт — оно только показывает проверке типов то, что во
+    // время работы и так есть.
+    declare filterNodesDeep: (
+      nodes: any,
+      callback: (node: any) => boolean,
+    ) => any;
+    declare filterNodesDeep2: (
+      predicate: (node: any) => boolean,
+      nodes: any,
+    ) => any;
+    declare getSchemaNodeById: (id: string | number) => any;
+
     // ----------------
     // # Account.
     // ----------------
@@ -30,11 +42,12 @@ export const ProfitLossSheetFilter = <T extends GConstructor<FinancialSheet>>(
     private accountNoneZeroNodesFilterDetarminer = (
       node: IProfitLossSheetNode,
     ): boolean => {
-      return R.ifElse(
-        this.isNodeType(ProfitLossNodeType.ACCOUNT),
-        this.isNodeNoneZero,
-        R.always(true),
-      )(node);
+      // Раньше та же проверка собиралась через `R.ifElse` с наполовину
+      // применённым `isNodeType`. Условие читается прямо, и проверка типов
+      // видит то же самое, что и человек.
+      return this.isNodeType(ProfitLossNodeType.ACCOUNT, node)
+        ? this.isNodeNoneZero(node)
+        : true;
     };
 
     /**
@@ -45,11 +58,9 @@ export const ProfitLossSheetFilter = <T extends GConstructor<FinancialSheet>>(
     private accountNoneTransFilterDetarminer = (
       node: IProfitLossSheetNode,
     ): boolean => {
-      return R.ifElse(
-        this.isNodeType(ProfitLossNodeType.ACCOUNT),
-        this.isNodeNoneZero,
-        R.always(true),
-      )(node);
+      return this.isNodeType(ProfitLossNodeType.ACCOUNT, node)
+        ? this.isNodeNoneZero(node)
+        : true;
     };
 
     /**

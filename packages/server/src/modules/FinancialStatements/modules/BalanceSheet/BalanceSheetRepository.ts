@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import * as R from 'ramda';
 import { Knex } from 'knex';
@@ -16,6 +15,7 @@ import { transformToMapBy } from '@/utils/transform-to-map-by';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { INamedModifiableQuery } from '../../common/queryTypes';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class BalanceSheetRepository extends R.compose(
@@ -56,6 +56,15 @@ export class BalanceSheetRepository extends R.compose(
    *
    */
   public accountsByType: any;
+
+  /**
+   * Счета, разложенные по РОДИТЕЛЬСКОМУ виду.
+   *
+   * Поле собиралось в `initAccounts`, но нигде не объявлялось. Читает его
+   * расчёт чистой прибыли (`BalanceSheetRepositoryNetIncome`) — то есть поле
+   * живое, просто невидимое для проверки типов.
+   */
+  public accountsByParentType: any;
 
   /**
    * PY from date.
@@ -397,7 +406,7 @@ export class BalanceSheetRepository extends R.compose(
    * Common branches filter query.
    * @param {Knex.QueryBuilder} query
    */
-  public commonFilterBranchesQuery = (query: Knex.QueryBuilder) => {
+  public commonFilterBranchesQuery = (query: INamedModifiableQuery) => {
     if (!isEmpty(this.query.branchesIds)) {
       query.modify('filterByBranches', this.query.branchesIds);
     }

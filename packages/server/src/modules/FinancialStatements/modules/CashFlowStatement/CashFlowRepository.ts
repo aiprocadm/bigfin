@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Inject, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 import { Knex } from 'knex';
@@ -8,6 +7,7 @@ import { ICashFlowStatementQuery } from './Cashflow.types';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { INamedModifiableQuery } from '../../common/queryTypes';
 
 @Injectable()
 export class CashFlowRepository {
@@ -168,7 +168,7 @@ export class CashFlowRepository {
    */
   private commonFilterBranchesQuery = (
     query: ICashFlowStatementQuery,
-    knexQuery: Knex.QueryBuilder,
+    knexQuery: INamedModifiableQuery,
   ) => {
     if (!isEmpty(query.branchesIds)) {
       knexQuery.modify('filterByBranches', query.branchesIds);

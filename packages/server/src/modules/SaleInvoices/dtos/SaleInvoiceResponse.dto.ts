@@ -234,4 +234,56 @@ export class SaleInvoiceResponseDto {
     required: false,
   })
   updatedAt?: Date;
+
+  // -------------------------------------------------------------------------
+  // Поля ниже добавляет преобразователь ответа (`SaleInvoiceTransformer`) и
+  // сам счёт как расчётные. В ответе они были всегда, а вот в описании —
+  // нет. Из-за этого письмо покупателю читало их «вслепую»: опечатайся кто
+  // в имени — и в письме молча оказалась бы пустота вместо суммы.
+  //
+  // Описаны те, что и правда читаются кодом. Остальные форматированные поля
+  // (их около полутора десятков) в описании по-прежнему отсутствуют — это
+  // отдельная работа.
+  // -------------------------------------------------------------------------
+
+  @ApiProperty({
+    description: 'The customer the invoice is issued to',
+    required: false,
+  })
+  customer?: Record<string, any>;
+
+  @ApiProperty({
+    description: 'The invoice date, formatted for display',
+    example: '2023-01-01',
+    required: false,
+  })
+  invoiceDateFormatted?: string;
+
+  @ApiProperty({
+    description: 'The due date, formatted for display',
+    example: '2023-02-01',
+    required: false,
+  })
+  dueDateFormatted?: string;
+
+  @ApiProperty({
+    description: 'The due amount, formatted for display',
+    example: '$500.00',
+    required: false,
+  })
+  dueAmountFormatted?: string;
+
+  @ApiProperty({
+    description: 'The invoice total, formatted for display',
+    example: '$1,000.00',
+    required: false,
+  })
+  totalFormatted?: string;
+
+  @ApiProperty({
+    description: 'How many days the invoice is overdue',
+    example: 12,
+    required: false,
+  })
+  overdueDays?: number;
 }

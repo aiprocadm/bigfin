@@ -93,14 +93,28 @@ interface FinancialDateMeta {
 }
 
 interface IFinancialSheetTotal {
-    amount: number;
-    formattedAmount: string;
-    currencyCode: string;
+  amount: number;
+  formattedAmount: string;
+  currencyCode: string;
 }
 
 interface IFinancialSheetPercentage {
   amount: number;
   formattedAmount: string;
+}
+
+/**
+ * То, чему можно досчитать сравнение с прошлым периодом.
+ *
+ * Помощники из `FinancialPreviousPeriod` применяются и к узлам отчёта, и к
+ * итогам колонок-периодов, и в трёх разных отчётах. В подписях у них стоял
+ * узел одного конкретного отчёта («Прибыли и убытки»), хотя ничего кроме
+ * итогов они не трогают. Здесь описано ровно то, что им и правда нужно.
+ */
+export interface IFinancialPreviousPeriodTarget {
+  total?: { amount: number };
+  previousPeriod?: { amount: number };
+  previousPeriodChange?: { amount: number };
 }
 
 export interface IFinancialNodeWithPreviousPeriod {

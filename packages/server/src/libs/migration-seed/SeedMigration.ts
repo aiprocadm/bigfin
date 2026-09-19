@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Knex } from 'knex';
 import * as Bluebird from 'bluebird';
 import { getTable, getTableName, getLockTableName } from './TableUtils';
@@ -98,7 +97,7 @@ export class SeedMigration {
    * @param trx
    * @returns
    */
-  private latestBatchNumber(trx = this.knex): number {
+  private latestBatchNumber(trx = this.knex): Promise<number> {
     return trx
       .from(getTableName(this.config.tableName, this.config.schemaName))
       .max('batch as max_batch')
@@ -122,26 +121,26 @@ export class SeedMigration {
   ): Promise<void> {
     const { tableName } = this.config;
 
-    return Bluebird.each(migrations, (migration) => {
+    // Шаги записаны через `await`, а не цепочкой `.then`. Раньше последний
+    // шаг возвращал то запись в журнал, то удаление из него — два разных
+    // вида запроса, — и проверка типов не могла свести их воедино.
+    return Bluebird.each(migrations, async (migration) => {
       const name = this.migrationSource.getMigrationName(migration);
+      const migrationContent =
+        await this.migrationSource.getMigration(migration);
 
-      return this.migrationSource
-        .getMigration(migration)
-        .then((migrationContent) =>
-          this.runMigrationContent(migrationContent.default, direction, trx),
-        )
-        .then(() => {
-          if (direction === 'up') {
-            return trx.into(getTableName(tableName)).insert({
-              name,
-              batch: batchNo,
-              migration_time: new Date(),
-            });
-          }
-          if (direction === 'down') {
-            return trx.from(getTableName(tableName)).where({ name }).del();
-          }
+      await this.runMigrationContent(migrationContent.default, direction, trx);
+
+      if (direction === 'up') {
+        await trx.into(getTableName(tableName)).insert({
+          name,
+          batch: batchNo,
+          migration_time: new Date(),
         });
+      }
+      if (direction === 'down') {
+        await trx.from(getTableName(tableName)).where({ name }).del();
+      }
     });
   }
 
@@ -164,7 +163,9 @@ export class SeedMigration {
    * @param {MigrateItem} migration
    * @returns {MigrateItem}
    */
-  async validateMigrationStructure(migration: MigrateItem): MigrateItem {
+  async validateMigrationStructure(
+    migration: MigrateItem,
+  ): Promise<MigrateItem> {
     const migrationName = this.migrationSource.getMigrationName(migration);
 
     // maybe promise

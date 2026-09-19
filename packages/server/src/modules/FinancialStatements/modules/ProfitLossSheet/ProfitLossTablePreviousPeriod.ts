@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { ITableColumn, ITableColumnAccessor } from '../../types/Table.types';
 import { ProfitLossSheetQuery } from './ProfitLossSheetQuery';
@@ -6,6 +5,7 @@ import { GConstructor } from '@/common/types/Constructor';
 import { FinancialTablePreviousPeriod } from '../../common/FinancialTablePreviousPeriod';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { IDateRange } from '../../types/Report.types';
+import { toMutableList } from '../../utils/Table.utils';
 
 export const ProfitLossTablePreviousPeriod = <
   T extends GConstructor<FinancialSheet>,
@@ -14,6 +14,15 @@ export const ProfitLossTablePreviousPeriod = <
 ) =>
   class extends R.pipe(FinancialTablePreviousPeriod)(Base) {
     query: ProfitLossSheetQuery;
+
+    // Приходит из соседней примеси того же класса. Объявление ничего
+    // не создаёт — оно только показывает проверке типов то, что во
+    // время работы и так есть.
+    declare getPPDatePeriodDateRange: (
+      fromDate: Date,
+      toDate: Date,
+      periodsUnit: string,
+    ) => IDateRange;
 
     // ----------------------------
     // # Columns
@@ -25,18 +34,20 @@ export const ProfitLossTablePreviousPeriod = <
     protected getPreviousPeriodColumns = (
       dateRange?: IDateRange,
     ): ITableColumn[] => {
-      return R.pipe(
-        // Previous period columns.
-        R.append(this.getPreviousPeriodTotalColumn(dateRange)),
-        R.when(
-          this.query.isPreviousPeriodChangeActive,
-          R.append(this.getPreviousPeriodChangeColumn()),
-        ),
-        R.when(
-          this.query.isPreviousPeriodPercentageActive,
-          R.append(this.getPreviousPeriodPercentageColumn()),
-        ),
-      )([]);
+      return toMutableList(
+        R.pipe(
+          // Previous period columns.
+          R.append(this.getPreviousPeriodTotalColumn(dateRange)),
+          R.when(
+            this.query.isPreviousPeriodChangeActive,
+            R.append(this.getPreviousPeriodChangeColumn()),
+          ),
+          R.when(
+            this.query.isPreviousPeriodPercentageActive,
+            R.append(this.getPreviousPeriodPercentageColumn()),
+          ),
+        )([]),
+      );
     };
 
     /**
@@ -63,18 +74,20 @@ export const ProfitLossTablePreviousPeriod = <
      * @returns {ITableColumn[]}
      */
     protected previousPeriodColumnAccessor = (): ITableColumnAccessor[] => {
-      return R.pipe(
-        // Previous period columns.
-        R.append(this.getPreviousPeriodTotalAccessor()),
-        R.when(
-          this.query.isPreviousPeriodChangeActive,
-          R.append(this.getPreviousPeriodChangeAccessor()),
-        ),
-        R.when(
-          this.query.isPreviousPeriodPercentageActive,
-          R.append(this.getPreviousPeriodPercentageAccessor()),
-        ),
-      )([]);
+      return toMutableList(
+        R.pipe(
+          // Previous period columns.
+          R.append(this.getPreviousPeriodTotalAccessor()),
+          R.when(
+            this.query.isPreviousPeriodChangeActive,
+            R.append(this.getPreviousPeriodChangeAccessor()),
+          ),
+          R.when(
+            this.query.isPreviousPeriodPercentageActive,
+            R.append(this.getPreviousPeriodPercentageAccessor()),
+          ),
+        )([]),
+      );
     };
 
     /**
@@ -85,17 +98,19 @@ export const ProfitLossTablePreviousPeriod = <
     protected previousPeriodHorizontalColumnAccessors = (
       index: number,
     ): ITableColumnAccessor[] => {
-      return R.pipe(
-        // Previous period columns.
-        R.append(this.getPreviousPeriodTotalHorizAccessor(index)),
-        R.when(
-          this.query.isPreviousPeriodChangeActive,
-          R.append(this.getPreviousPeriodChangeHorizAccessor(index)),
-        ),
-        R.when(
-          this.query.isPreviousPeriodPercentageActive,
-          R.append(this.getPreviousPeriodPercentageHorizAccessor(index)),
-        ),
-      )([]);
+      return toMutableList(
+        R.pipe(
+          // Previous period columns.
+          R.append(this.getPreviousPeriodTotalHorizAccessor(index)),
+          R.when(
+            this.query.isPreviousPeriodChangeActive,
+            R.append(this.getPreviousPeriodChangeHorizAccessor(index)),
+          ),
+          R.when(
+            this.query.isPreviousPeriodPercentageActive,
+            R.append(this.getPreviousPeriodPercentageHorizAccessor(index)),
+          ),
+        )([]),
+      );
     };
   };

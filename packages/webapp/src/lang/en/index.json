@@ -4436,5 +4436,10 @@
   "screen_state.error": "Could not load the data. Check your connection and try again.",
   "screen_state.retry": "Retry",
   "expenses_analysis.error": "Could not calculate expenses. Please try again.",
-  "legal_entities.error": "Could not load the legal entities. Please try again."
+  "legal_entities.error": "Could not load the legal entities. Please try again.",
+  "invite_users.error.email_invalid": "Enter a valid email",
+  "invite_users.error.email_required": "Email is required",
+  "invite_users.error.email_duplicate": "This email is already in the list",
+  "invite_users.error.role_required": "Choose a role",
+  "invite_users.role.placeholder": "Choose a role"
 }

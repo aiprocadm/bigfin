@@ -18,13 +18,16 @@ export function useEditRolePermissionSchema(props?) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
-  return useMutation(([id, values]: [any, any]) => apiRequest.put(`roles/${id}`, values), {
-    onSuccess: () => {
-      // Common invalidate queries.
-      commonInvalidateQueries(queryClient);
+  return useMutation(
+    ([id, values]: [any, any]) => apiRequest.put(`roles/${id}`, values),
+    {
+      onSuccess: () => {
+        // Common invalidate queries.
+        commonInvalidateQueries(queryClient);
+      },
+      ...props,
     },
-    ...props,
-  });
+  );
 }
 
 /**
@@ -95,10 +98,22 @@ export function useRolePermission(role_id, props, requestProps?) {
 }
 
 /**
+ * Роль пользователя в организации — так, как её отдаёт сервер
+ * (см. модель `Role` на сервере).
+ */
+export interface IUserRole {
+  id: number;
+  name: string;
+  description: string;
+  slug: string;
+  predefined: boolean;
+}
+
+/**
  * Retrieve the roles.
  */
 export function useRoles(props?, query?) {
-  return useRequestQuery(
+  return useRequestQuery<IUserRole[]>(
     [t.ROLES, query],
     { method: 'get', url: `roles`, params: query },
     {

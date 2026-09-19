@@ -17,6 +17,8 @@ function VendorsListProvider({ tableState, tableStateChanged, ...props }: any) {
     data: { vendors, pagination, filterMeta },
     isLoading: isVendorsLoading,
     isFetching: isVendorsFetching,
+    isError: isVendorsError,
+    refetch: refetchVendors,
   } = useVendors(tableQuery, { keepPreviousData: true });
 
   // Fetch vendors resource views and fields.
@@ -54,6 +56,8 @@ function VendorsListProvider({ tableState, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isVendorsViewsLoading || isResourceMetaLoading}
+      error={isVendorsError}
+      onRetry={refetchVendors}
       name={'vendors-list'}
     >
       <VendorsListContext.Provider value={provider} {...props} />

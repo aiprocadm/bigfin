@@ -25,6 +25,8 @@ function ReceiptsListProvider({ query, tableStateChanged, ...props }: any) {
     data: { receipts, pagination, filterMeta },
     isLoading: isReceiptsLoading,
     isFetching: isReceiptsFetching,
+    isError: isReceiptsError,
+    refetch: refetchReceipts,
   } = useReceipts(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.
@@ -51,6 +53,8 @@ function ReceiptsListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isReceiptsError}
+      onRetry={refetchReceipts}
       name={'sales_receipts'}
     >
       <ReceiptsListContext.Provider value={provider} {...props} />

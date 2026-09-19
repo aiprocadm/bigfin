@@ -36,6 +36,8 @@ function CreditNotesListProvider({ query, tableStateChanged, ...props }: any) {
     data: { creditNotes, pagination, filterMeta },
     isFetching: isCreditNotesFetching,
     isLoading: isCreditNotesLoading,
+    isError: isCreditNotesError,
+    refetch: refetchCreditNotes,
   } = useCreditNotes(query, { keepPreviousData: true });
 
   // Detarmines the datatable empty status.S
@@ -64,6 +66,8 @@ function CreditNotesListProvider({ query, tableStateChanged, ...props }: any) {
   return (
     <DashboardInsider
       loading={isViewsLoading || isResourceLoading}
+      error={isCreditNotesError}
+      onRetry={refetchCreditNotes}
       name={'credit-notes-list'}
     >
       <CreditNoteListContext.Provider value={provider} {...props} />

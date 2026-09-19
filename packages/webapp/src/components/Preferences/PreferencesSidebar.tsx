@@ -43,12 +43,19 @@ export default function PreferencesSidebar() {
                     'relative flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-sm transition-colors',
                     'disabled:cursor-not-allowed disabled:opacity-50',
                     active
-                      ? 'bg-surface-elevated font-medium text-text-primary'
-                      : 'text-text-secondary hover:bg-surface-elevated/60 hover:text-text-primary',
+                      ? 'bg-surface font-semibold text-text-primary'
+                      : 'font-medium text-text-secondary hover:bg-surface hover:text-text-primary',
                   )}
                 >
+                  {/* Метка текущего раздела — та же, что в главном меню:
+                      жёлтая полоса у края, 3 точки шириной. Была чернильная
+                      и вдвое тоньше, и «текущий» в настройках выглядел иначе,
+                      чем «текущий» в продукте. */}
                   {active ? (
-                    <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-action" />
+                    <span
+                      aria-hidden
+                      className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-accent"
+                    />
                   ) : null}
                   <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
                   <span className="truncate">{intl.get(item.labelId)}</span>

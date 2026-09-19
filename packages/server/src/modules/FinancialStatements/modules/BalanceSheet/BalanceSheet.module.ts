@@ -24,6 +24,10 @@ import { AccountsModule } from '@/modules/Accounts/Accounts.module';
     BalanceSheetPdfInjectable,
     TenancyContext,
   ],
-  exports: [BalanceSheetInjectable],
+  // `BalanceSheetApplication` отдаётся наружу: его берёт картинка структуры
+  // баланса (`GetBalanceStructureService`). Без экспорта класс объявлен, но
+  // недоступен другим модулям — и СЕРВЕР ПРОСТО НЕ СТАРТУЕТ. Ни один тест
+  // этого не видит: сборка проходит, типы сходятся, падает только запуск.
+  exports: [BalanceSheetInjectable, BalanceSheetApplication],
 })
 export class BalanceSheetModule {}

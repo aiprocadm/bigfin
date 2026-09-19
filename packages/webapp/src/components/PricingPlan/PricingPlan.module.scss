@@ -23,7 +23,8 @@
   color: #fff;
   text-align: center;
   font-size: 12px;
-  text-transform: uppercase;
+  /* ПРОПИСНЫЕ сняты: подпись кричала громче данных, ради которых стоит,
+     и читалась медленнее — у слова из прописных нет привычного глазу силуэта. */
 }
 .label {
   font-size: 16px;
@@ -71,7 +72,8 @@
   font-size: 12px
 }
 .featurePopoverLabel {
-  text-transform: uppercase;
+  /* ПРОПИСНЫЕ сняты: подпись кричала громче данных, ради которых стоит,
+     и читалась медленнее — у слова из прописных нет привычного глазу силуэта. */
   letter-spacing: 0.4px;
   font-size: 12px;
   font-weight: 500;

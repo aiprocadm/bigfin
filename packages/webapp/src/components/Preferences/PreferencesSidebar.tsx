@@ -25,7 +25,7 @@ export default function PreferencesSidebar() {
       <nav className="flex flex-col gap-4 p-2" aria-label={intl.get('preferences')}>
         {PreferencesMenu.map((section) => (
           <div key={section.titleId} className="flex flex-col gap-0.5">
-            <div className="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-text-muted">
+            <div className="px-3 pb-1 text-[0.8125rem] font-medium text-text-muted">
               {intl.get(section.titleId)}
             </div>
 

@@ -192,7 +192,7 @@ export default function FinancialRatiosPage() {
                 {verticalTotals.length > 0 && (
                   <tr className="border-t-2">
                     <td
-                      className="text-muted-foreground pt-3 pb-1 text-xs uppercase"
+                      className="text-muted-foreground pt-3 pb-1 text-[0.8125rem]"
                       colSpan={3}
                     >
                       {intl.get('financial_ratios.vertical.totals')}

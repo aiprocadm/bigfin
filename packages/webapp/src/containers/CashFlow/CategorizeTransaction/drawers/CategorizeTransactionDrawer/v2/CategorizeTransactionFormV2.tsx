@@ -110,7 +110,7 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
         <div className="flex flex-col gap-4 p-5">
           {/* Сумма — только показ */}
           <div>
-            <div className="text-xs uppercase tracking-wide text-text-muted">
+            <div className="text-[0.8125rem] text-text-muted">
               {intl.get('amount')}
             </div>
             <div className={isDeposit ? 'text-xl font-medium text-success' : 'text-xl font-medium text-danger'}>

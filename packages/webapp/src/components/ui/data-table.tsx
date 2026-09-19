@@ -293,7 +293,7 @@ export function DataTable({
   return (
     <div
       className={cn(
-        'rounded-lg border border-border bg-surface',
+        'rounded-default border border-border bg-surface',
         virtualizedEnabled ? 'overflow-auto' : 'overflow-x-auto',
       )}
       style={virtualizedEnabled ? { maxHeight: maxBodyHeight } : undefined}
@@ -306,8 +306,12 @@ export function DataTable({
       <table {...getTableProps()} className="w-full border-collapse text-sm">
         <thead
           className={cn(
-            'bg-surface-elevated',
-            virtualizedEnabled && 'sticky top-0 z-10',
+            // Шапка отделяется ЛИНИЕЙ, а не заливкой: серая полоса поверх
+            // страницы — ещё одна поверхность, которую глаз обязан разобрать.
+            // При закреплённой шапке фон нужен непрозрачный, иначе сквозь неё
+            // просвечивают строки.
+            'border-b border-border',
+            virtualizedEnabled && 'sticky top-0 z-10 bg-surface',
           )}
         >
           {headerGroups.map((hg: any) => (
@@ -323,7 +327,11 @@ export function DataTable({
                       : undefined
                   }
                   className={cn(
-                    'relative px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-text-secondary',
+                    // Заголовок колонки — обычным строчным письмом.
+                    // ПРОПИСНЫЕ вразрядку кричат громче самих данных, ради
+                    // которых таблица и нарисована, и читаются медленнее:
+                    // у слова из прописных нет привычного глазу силуэта.
+                    'relative px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary',
                     col.align === 'right' && 'text-right',
                     // col.canSort учитывает и колоночный disableSortBy, и табличный
                     // (выставляется выше при отсутствии onSortChange).

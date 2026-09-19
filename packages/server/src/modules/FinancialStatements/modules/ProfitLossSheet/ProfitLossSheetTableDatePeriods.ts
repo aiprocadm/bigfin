@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
 import * as moment from 'moment';
@@ -51,27 +50,42 @@ export const ProfitLossSheetTableDatePeriods = <
      * @param {IDateRange} dateRange -
      * @param {number} index -
      */
-    private datePeriodColumnsAccessor = R.curry(
-      (dateRange: IDateRange, index: number) => {
-        return R.pipe(
-          R.when(
-            this.query.isPreviousPeriodActive,
-            R.concat(this.previousPeriodHorizontalColumnAccessors(index)),
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            R.concat(this.previousYearHorizontalColumnAccessors(index)),
-          ),
-          R.concat(this.percetangeHorizontalColumnsAccessor(index)),
-          R.concat([
-            {
-              key: `date-range-${index}`,
-              accessor: `horizontalTotals[${index}].total.formattedAmount`,
-            },
-          ]),
-        )([]);
-      },
-    );
+    // Цепочка `R.pipe` + `R.when` + `R.concat` развёрнута в обычные условия.
+    //
+    // Смысл тот же, а читается сразу: ячейки периода собираются в том же
+    // порядке — сначала сравнения, потом проценты, в конце сама сумма.
+    // Каррирование снято: частичных вызовов у этой функции нет.
+    private datePeriodColumnsAccessor = (
+      dateRange: IDateRange,
+      index: number,
+    ): any[] => {
+      let accessors: any[] = [];
+
+      if (this.query.isPreviousPeriodActive()) {
+        accessors = [
+          ...this.previousPeriodHorizontalColumnAccessors(index),
+          ...accessors,
+        ];
+      }
+      if (this.query.isPreviousYearActive()) {
+        accessors = [
+          ...this.previousYearHorizontalColumnAccessors(index),
+          ...accessors,
+        ];
+      }
+      accessors = [
+        ...this.percetangeHorizontalColumnsAccessor(index),
+        ...accessors,
+      ];
+
+      return [
+        {
+          key: `date-range-${index}`,
+          accessor: `horizontalTotals[${index}].total.formattedAmount`,
+        },
+        ...accessors,
+      ];
+    };
 
     /**
      * Retrieve the date periods columns accessors.
@@ -104,16 +118,19 @@ export const ProfitLossSheetTableDatePeriods = <
         ['quarter', monthFormat],
         ['week', dayFormat],
       ];
-      const conditionsPairs = R.map(
-        ([type, formatFn]) => [
-          R.always(this.query.isDisplayColumnsBy(type)),
-          formatFn,
-        ],
-        conditions,
+      // Вместо `R.cond` — обычный поиск первой подходящей единицы времени.
+      // Так видно, что происходит, и типы не теряются.
+      const matched = conditions.find(([type]) =>
+        this.query.isDisplayColumnsBy(type as string),
       );
-      let result = dateRange;
-      result = R.cond(conditionsPairs)(result);
-      return result;
+
+      // Единица времени не опознана — берём самую подробную подпись (день).
+      // Прежний `R.cond` в этом случае возвращал ВООБЩЕ НИЧЕГО, и колонка
+      // оставалась без подписи: человек видел столбец чисел без заголовка и
+      // не мог понять, за какой он период.
+      const format = (matched?.[1] ?? dayFormat) as (range: any) => string;
+
+      return format(dateRange);
     };
 
     /**
@@ -126,14 +143,22 @@ export const ProfitLossSheetTableDatePeriods = <
       index: number,
       dateRange: IDateRange,
     ) => {
-      let result = [];
+      // Обычные списки вместо `R.concat`: порядок тот же, типы целы.
+      let result: any[] = [];
+
       if (this.query.isPreviousPeriodActive()) {
-        result = R.concat(this.getPreviousPeriodDatePeriodsPlugin(dateRange))(result);
+        result = [
+          ...this.getPreviousPeriodDatePeriodsPlugin(dateRange),
+          ...result,
+        ];
       }
       if (this.query.isPreviousYearActive()) {
-        result = R.concat(this.getPreviousYearDatePeriodColumnPlugin(dateRange))(result);
+        result = [
+          ...this.getPreviousYearDatePeriodColumnPlugin(dateRange),
+          ...result,
+        ];
       }
-      result = R.concat(this.percentageColumns())(result);
+      result = [...this.percentageColumns(), ...result];
       result = R.unless(
           R.isEmpty,
           R.concat([

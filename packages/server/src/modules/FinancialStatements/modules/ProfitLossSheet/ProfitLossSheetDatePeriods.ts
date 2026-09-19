@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { sumBy } from 'lodash';
 import {
@@ -145,18 +144,25 @@ export const ProfitLossSheetDatePeriods = <
      * @param {number} index
      * @returns  {IProfitLossSheetAccount}
      */
-    private getAggregateNodeDatePeriodTotal = R.curry(
-      (
-        node: IProfitLossSheetAccountsNode,
-        fromDate: Date,
-        toDate: Date,
-        index: number,
-      ): IProfitLossHorizontalDatePeriodNode => {
-        const periodTotal = this.getAggregateDatePeriodIndexTotal(node, index);
+    // Каррирование снято: ни одного частичного вызова у этой функции нет
+    // (проверено поиском), а каррированную функцию проверка типов вызывать
+    // не разрешает — её результат для неё «что-то».
+    //
+    // Узел принимается ОБЩИМ: сюда приходят и разделы, и уравнения, а
+    // внутри читается только то, что есть у всех.
+    private getAggregateNodeDatePeriodTotal = (
+      node: IProfitLossSheetCommonNode,
+      fromDate: Date,
+      toDate: Date,
+      index: number,
+    ): IProfitLossHorizontalDatePeriodNode => {
+      const periodTotal = this.getAggregateDatePeriodIndexTotal(
+        node as IProfitLossSheetAccountsNode,
+        index,
+      );
 
-        return this.getDatePeriodTotalMeta(periodTotal, fromDate, toDate);
-      },
-    );
+      return this.getDatePeriodTotalMeta(periodTotal, fromDate, toDate);
+    };
 
     /**
      * Retrieves aggregate horizontal date periods.
@@ -197,11 +203,16 @@ export const ProfitLossSheetDatePeriods = <
      * @param {number} index
      * @returns {IProfitLossHorizontalDatePeriodNode}
      */
-    private getEquationNodeDatePeriod = R.curry(
+    // Частичное применение сохранено, но записано явно: сначала подставляются
+    // узлы и само уравнение, потом функция ходит по периодам.
+    //
+    // Каррирование делало то же самое, но скрывало типы: для проверки типов
+    // результат каррированной функции — «что-то», и передать его дальше как
+    // обработчик она не разрешает.
+    private getEquationNodeDatePeriod =
+      (accNodes: IProfitLossSheetNode[], equation: string) =>
       (
-        accNodes: IProfitLossSheetNode[],
-        equation: string,
-        node: IProfitLossSheetNode,
+        node: IProfitLossSheetCommonNode,
         fromDate: Date,
         toDate: Date,
         index: number,
@@ -214,8 +225,7 @@ export const ProfitLossSheetDatePeriods = <
         const total = this.evaluateEquation(equation, tableNodes);
 
         return this.getDatePeriodTotalMeta(total, fromDate, toDate);
-      },
-    );
+      };
 
     /**
      * Retrieves the equation node date periods.

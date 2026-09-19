@@ -1,4 +1,14 @@
 // @ts-nocheck
+// ОСТАЛОСЬ 7 ЗАМЕЧАНИЙ (слой «девять и ниже», 19.09). Композиция
+// примесей уже развёрнута из `R.pipe` во вложенные вызовы — это
+// уменьшило слепую зону с 9 до 7 и изменило её суть: раньше проверка
+// типов не видела у класса НИ ОДНОГО метода примесей, теперь видит
+// почти все.
+//
+// Что осталось: одна примесь в цепочке не удовлетворяет
+// `GConstructor<FinancialSheet>`, и на ней поток типов обрывается;
+// плюс перечни путают узлы СХЕМЫ и узлы ДАННЫХ — это разные вещи, и
+// разводить их надо отдельной работой.
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
 import { I18nService } from 'nestjs-i18n';
@@ -23,19 +33,35 @@ import { BalanceSheetAccounts } from './BalanceSheetAccounts';
 import { INumberFormatQuery, IFinancialReportMeta, DEFAULT_REPORT_META } from '../../types/Report.types';
 import { FinancialSheet } from '../../common/FinancialSheet';
 
-export class BalanceSheet extends R.pipe(
-  BalanceSheetAggregators,
-  BalanceSheetAccounts,
-  BalanceSheetNetIncome,
-  BalanceSheetFiltering,
-  BalanceSheetDatePeriods,
-  BalanceSheetComparsionPreviousPeriod,
-  BalanceSheetComparsionPreviousYear,
-  BalanceSheetPercentage,
-  BalanceSheetSchema,
-  BalanceSheetBase,
-  FinancialSheetStructure,
-)(FinancialSheet) {
+export class BalanceSheet extends
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая примесь
+  // оборачивает базу), но проверка типов ВИДИТ, что получилось.
+  //
+  // Через `R.pipe` она этого не видит и считает, что у класса нет ни
+  // одного метода примесей — отсюда и брались все замечания в этом файле.
+  FinancialSheetStructure(
+    BalanceSheetBase(
+      BalanceSheetSchema(
+        BalanceSheetPercentage(
+          BalanceSheetComparsionPreviousYear(
+            BalanceSheetComparsionPreviousPeriod(
+              BalanceSheetDatePeriods(
+                BalanceSheetFiltering(
+                  BalanceSheetNetIncome(
+                    BalanceSheetAccounts(
+                      BalanceSheetAggregators(
+                        FinancialSheet,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ) {
   /**
    * Balance sheet query.
    * @param {BalanceSheetQuery}

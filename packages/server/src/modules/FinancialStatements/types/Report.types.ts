@@ -154,8 +154,16 @@ export interface IFinancialNodeWithPreviousPeriod {
   previousPeriodPercentage?: IFinancialSheetPercentage;
 }
 export interface IFinancialNodeWithPreviousYear {
-  previousYearFromDate: FinancialDateMeta;
-  previousYearToDate: FinancialDateMeta;
+  /**
+   * Даты прошлого года ПОЯВЛЯЮТСЯ ТОЛЬКО ПРИ ВКЛЮЧЁННОМ СРАВНЕНИИ.
+   *
+   * Раньше они были объявлены обязательными, и любой узел, собранный без
+   * сравнения, считался неправильным. На самом деле неправ был перечень:
+   * сравнение — это выключатель, а не часть каждого узла. Ровно так же
+   * устроены поля прошлого периода строкой выше.
+   */
+  previousYearFromDate?: FinancialDateMeta;
+  previousYearToDate?: FinancialDateMeta;
 
   previousYear?: IFinancialSheetTotal;
   previousYearChange?: IFinancialSheetTotal;

@@ -1,6 +1,6 @@
-// @ts-nocheck
 import * as R from 'ramda';
-import { sumBy, mapValues, get } from 'lodash';
+import {
+  ICashFlowStatementAccountMeta, sumBy, mapValues, get } from 'lodash';
 import { ACCOUNT_ROOT_TYPE } from '@/constants/accounts';
 import {
   ICashFlowDatePeriod,
@@ -181,7 +181,9 @@ export const CashFlowStatementDatePeriods = <
      * @return {number}
      */
     public getAccountTotalDateRange = (
-      node: ICashFlowStatementAccountSection,
+      // Здесь нужен САМ СЧЁТ, а не раздел со счетами: ниже читаются его номер
+      // и вид поправки, а у раздела их нет вовсе. Перечень отставал от кода.
+      node: ICashFlowStatementAccountMeta,
       fromDate: Date,
       toDate: Date,
     ): number => {
@@ -245,7 +247,13 @@ export const CashFlowStatementDatePeriods = <
       node: ICashFlowStatementSection,
       index: number,
     ): number => {
-      return sumBy(node.children, `periods[${index}].total.amount`);
+      // В общем перечне разделов есть и БЕЗДЕТНЫЕ — например итоговая строка.
+      // Складывать у них нечего, и это не ошибка: ноль здесь правильный
+      // ответ. Раньше код читал `children` так, будто они есть у всех.
+      const children =
+        (node as { children?: ICashFlowStatementSection[] }).children ?? [];
+
+      return sumBy(children, `periods[${index}].total.amount`);
     };
 
     /**
@@ -270,12 +278,10 @@ export const CashFlowStatementDatePeriods = <
      * @param {ICashFlowStatementSection} node
      */
     public getAggregateNodeDatePeriods(node: ICashFlowStatementSection) {
-      const getChildrenTotalPeriodMetaByIndex = R.curry(
-        this.getChildrenTotalPeriodMetaByIndex.bind(this),
-      )(node);
-
+      // Обычное замыкание вместо каррирования: смысл тот же, а типы целы.
       return this.dateRangeSet.map((dateRange, index) =>
-        getChildrenTotalPeriodMetaByIndex(
+        this.getChildrenTotalPeriodMetaByIndex(
+          node,
           index,
           dateRange.fromDate,
           dateRange.toDate,
@@ -353,12 +359,22 @@ export const CashFlowStatementDatePeriods = <
      * @param {}
      * @return {}
      */
-    public getNodeDatePeriods = (node, callback) => {
-      const curriedCallback = R.curry(callback)(node);
-
-      return this.dateRangeSet.map((dateRange, index) => {
-        return curriedCallback(dateRange.fromDate, dateRange.toDate, index);
-      });
+    public getNodeDatePeriods = (
+      node: ICashFlowStatementSection,
+      callback: (
+        node: ICashFlowStatementSection,
+        fromDate: Date,
+        toDate: Date,
+        index: number,
+      ) => ICashFlowDatePeriod,
+    ): ICashFlowDatePeriod[] => {
+      // Раньше здесь узел «подставлялся» каррированием. Обычное замыкание
+      // делает то же самое, но читается сразу и не теряет типы: у
+      // каррированной функции результат для проверки типов — «что-то», и
+      // вызвать его она не разрешает.
+      return this.dateRangeSet.map((dateRange, index) =>
+        callback(node, dateRange.fromDate, dateRange.toDate, index),
+      );
     };
 
     /**
@@ -407,7 +423,9 @@ export const CashFlowStatementDatePeriods = <
      */
     public getBeginningCashAccountPeriods = (
       node: ICashFlowStatementSection,
-    ): ICashFlowDatePeriod => {
+      // Периодов несколько — по одному на колонку. Раньше здесь был обещан
+      // ОДИН период, и перечень спорил с кодом.
+    ): ICashFlowDatePeriod[] => {
       return this.getNodeDatePeriods(node, this.getBeginningCashDatePeriod);
     };
 

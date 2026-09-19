@@ -55,7 +55,7 @@ export const EmailConfirmationPage = () => {
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-text-primary">
-            Подтверждение email
+            {intl.get('auth.confirm.title')}
           </h1>
         </div>
 
@@ -71,11 +71,11 @@ export const EmailConfirmationPage = () => {
             <Alert>
               <CheckCircle2 className="h-4 w-4" />
               <AlertDescription>
-                Email подтверждён. Перенаправляем ко входу...
+                {intl.get('auth.confirm.success')}
               </AlertDescription>
             </Alert>
             <Button type="button" onClick={() => history.push('/auth/login')}>
-              Войти в Bigfin
+              {intl.get('auth.confirm.go_to_bigfin')}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </>
@@ -87,12 +87,12 @@ export const EmailConfirmationPage = () => {
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 {mode === 'invalid-link'
-                  ? 'Ссылка повреждена. Проверьте, что вы открыли её целиком.'
-                  : 'Не удалось подтвердить email. Возможно, ссылка устарела.'}
+                  ? intl.get('auth.confirm.invalid_link')
+                  : intl.get('auth.confirm.failed')}
               </AlertDescription>
             </Alert>
             <Button type="button" onClick={() => history.push('/auth/login')}>
-              Перейти ко входу
+              {intl.get('auth.confirm.go_to_login')}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </>
@@ -100,7 +100,7 @@ export const EmailConfirmationPage = () => {
 
         <p className="mt-2 text-center text-sm text-text-secondary">
           <Link to="/auth/login" variant="muted">
-            ← Вернуться к входу
+            {intl.get('auth.back_to_login')}
           </Link>
         </p>
       </div>

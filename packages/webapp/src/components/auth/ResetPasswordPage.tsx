@@ -57,7 +57,7 @@ export const ResetPasswordPage = () => {
   ) as unknown as AuthMutation<ResetPasswordVars>;
 
   const form = useForm<ResetPasswordInput>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordSchema()),
     defaultValues: { password: '', confirmPassword: '' },
   });
 
@@ -82,7 +82,8 @@ export const ResetPasswordPage = () => {
         setMode('token-expired');
         return;
       }
-      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
+      const message =
+        err instanceof Error ? err.message : intl.get('auth.error.network');
       toast.error(`Не удалось сменить пароль: ${message}`);
     }
   };
@@ -93,10 +94,10 @@ export const ResetPasswordPage = () => {
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-text-primary">
-            Новый пароль
+            {intl.get('auth.reset.title')}
           </h1>
           <p className="mt-1 text-text-secondary">
-            Придумайте новый пароль для входа в Bigfin.
+            {intl.get('auth.reset.subtitle')}
           </p>
         </div>
 
@@ -105,7 +106,7 @@ export const ResetPasswordPage = () => {
             <Alert>
               <CheckCircle2 className="h-4 w-4" />
               <AlertDescription>
-                Пароль обновлён. Перенаправляем ко входу...
+                {intl.get('auth.reset.done')}
               </AlertDescription>
             </Alert>
             <div className="flex justify-center">
@@ -119,15 +120,14 @@ export const ResetPasswordPage = () => {
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Ссылка устарела или уже использована. Запросите новую — мы
-                отправим её на email.
+                {intl.get('auth.reset.link_expired')}
               </AlertDescription>
             </Alert>
             <Button
               type="button"
               onClick={() => history.push('/auth/forgot-password')}
             >
-              Запросить новую ссылку
+              {intl.get('auth.reset.request_new_link')}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </>
@@ -159,7 +159,9 @@ export const ResetPasswordPage = () => {
                           onClick={() => setShowPassword((v) => !v)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-accent"
                           aria-label={
-                            showPassword ? 'Скрыть пароль' : 'Показать пароль'
+                            showPassword
+                            ? intl.get('auth.password.hide')
+                            : intl.get('auth.password.show')
                           }
                         >
                           {showPassword ? (
@@ -197,11 +199,11 @@ export const ResetPasswordPage = () => {
                 {form.formState.isSubmitting ? (
                   <>
                     <Spinner size="sm" />
-                    Сохраняем...
+                    {intl.get('auth.reset.submitting')}
                   </>
                 ) : (
                   <>
-                    Сохранить новый пароль
+                    {intl.get('auth.reset.submit')}
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -212,7 +214,7 @@ export const ResetPasswordPage = () => {
 
         <p className="mt-2 text-center text-sm text-text-secondary">
           <Link to="/auth/login" variant="muted">
-            ← Вернуться к входу
+            {intl.get('auth.back_to_login')}
           </Link>
         </p>
       </div>

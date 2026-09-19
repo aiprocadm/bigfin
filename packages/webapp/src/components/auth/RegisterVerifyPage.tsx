@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import { useState } from 'react';
 import { CheckCircle2, Mail } from 'lucide-react';
 import { toast } from 'sonner';
@@ -24,9 +25,9 @@ export const RegisterVerifyPage = () => {
     try {
       await resend();
       setJustResent(true);
-      toast.success('Письмо отправлено повторно — проверьте почту.');
+      toast.success(intl.get('auth.verify.resent_toast'));
     } catch {
-      toast.error('Не удалось отправить письмо. Попробуйте ещё раз.');
+      toast.error(intl.get('auth.verify.resend_failed'));
     }
   };
 
@@ -42,15 +43,15 @@ export const RegisterVerifyPage = () => {
             <Mail className="h-6 w-6" />
           </span>
           <h1 className="text-3xl font-semibold text-text-primary">
-            Подтвердите ваш email
+            {intl.get('auth.verify.title')}
           </h1>
+          {/* Адрес подставляется В ПРЕДЛОЖЕНИЕ, а не приклеивается к его
+              обрывкам: разрезанное предложение нельзя перевести — в другом
+              языке части встают в другом порядке. */}
           <p className="text-text-secondary">
-            Мы отправили письмо на{' '}
-            <strong className="text-text-primary">
-              {emailAddress ?? 'ваш email'}
-            </strong>
-            . Откройте его и перейдите по ссылке, чтобы начать пользоваться
-            Bigfin.
+            {intl.get('auth.verify.sent_to', {
+              email: emailAddress ?? intl.get('auth.verify.fallback_email'),
+            })}
           </p>
         </div>
 
@@ -58,8 +59,7 @@ export const RegisterVerifyPage = () => {
           <Alert>
             <CheckCircle2 className="h-4 w-4" />
             <AlertDescription>
-              Письмо отправлено повторно. Если не пришло за минуту — проверьте
-              папку «Спам».
+              {intl.get('auth.verify.resent')}
             </AlertDescription>
           </Alert>
         )}
@@ -69,15 +69,15 @@ export const RegisterVerifyPage = () => {
             {isLoading ? (
               <>
                 <Spinner size="sm" />
-                Отправляем...
+                {intl.get('auth.verify.sending')}
               </>
             ) : (
-              'Отправить письмо ещё раз'
+              intl.get('auth.verify.resend')
             )}
           </Button>
 
           <Button type="button" variant="secondary" onClick={setLogout}>
-            Это не мой email — выйти
+            {intl.get('auth.verify.not_my_email')}
           </Button>
         </div>
       </div>

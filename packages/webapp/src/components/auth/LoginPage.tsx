@@ -19,7 +19,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link } from '@/components/ui/Link';
-import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/Spinner';
 import { Toaster } from '@/components/ui/sonner';
 // The hooks module is @ts-nocheck legacy JS — useMutation params are
@@ -60,12 +59,12 @@ export const LoginPage = () => {
   ) as unknown as AuthMutation<TwoFactorVars>;
 
   const form = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema()),
     defaultValues: { email: '', password: '', rememberMe: false },
   });
 
   const codeForm = useForm<TwoFactorCodeInput>({
-    resolver: zodResolver(twoFactorCodeSchema),
+    resolver: zodResolver(twoFactorCodeSchema()),
     defaultValues: { code: '' },
   });
 
@@ -90,10 +89,11 @@ export const LoginPage = () => {
           ? (err as { response?: { status?: number } }).response?.status
           : undefined;
       if (status === 401 || status === 403) {
-        setServerError('Неверный email или пароль');
+        setServerError(intl.get('auth.login.bad_credentials'));
         return;
       }
-      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
+      const message =
+        err instanceof Error ? err.message : intl.get('auth.error.network');
       toast.error(`Сетевая ошибка: ${message}`);
     }
   };
@@ -119,11 +119,11 @@ export const LoginPage = () => {
           : undefined;
       // Полу-токен живёт 5 минут: истёк — возвращаемся к паролю.
       if (response?.data?.code === 'TWO_FACTOR_TOKEN_INVALID') {
-        backToPassword('Время вышло, войдите заново');
+        backToPassword(intl.get('auth.two_factor.expired'));
         return;
       }
       if (response?.status === 401 || response?.status === 403) {
-        setServerError('Неверный код, попробуйте ещё раз');
+        setServerError(intl.get('auth.two_factor.bad_code'));
         return;
       }
       const message = err instanceof Error ? err.message : 'Сетевая ошибка';
@@ -143,8 +143,8 @@ export const LoginPage = () => {
             </h1>
             <p className="mt-1 text-text-secondary">
               {useBackupCode
-                ? 'Введите один из резервных кодов'
-                : 'Введите код из приложения-аутентификатора'}
+                ? intl.get('auth.two_factor.hint_backup')
+                : intl.get('auth.two_factor.hint_app')}
             </p>
           </div>
 
@@ -170,7 +170,9 @@ export const LoginPage = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {useBackupCode ? 'Резервный код' : 'Код из приложения'}
+                      {useBackupCode
+                        ? intl.get('auth.two_factor.label_backup')
+                        : intl.get('auth.two_factor.label_app')}
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -194,11 +196,11 @@ export const LoginPage = () => {
                 {codeForm.formState.isSubmitting ? (
                   <>
                     <Spinner size="sm" />
-                    Проверяем...
+                    {intl.get('auth.two_factor.verifying')}
                   </>
                 ) : (
                   <>
-                    Подтвердить
+                    {intl.get('auth.two_factor.submit')}
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -214,8 +216,8 @@ export const LoginPage = () => {
                 }}
               >
                 {useBackupCode
-                  ? 'Ввести код из приложения'
-                  : 'Использовать резервный код'}
+                  ? intl.get('auth.two_factor.use_app_code')
+                  : intl.get('auth.two_factor.use_backup_code')}
               </button>
 
               <button
@@ -223,7 +225,7 @@ export const LoginPage = () => {
                 className="text-sm text-text-muted underline-offset-4 hover:underline"
                 onClick={() => backToPassword()}
               >
-                Назад ко входу
+                {intl.get('auth.two_factor.back')}
               </button>
             </form>
           </Form>
@@ -238,10 +240,10 @@ export const LoginPage = () => {
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-text-primary">
-            Войдите в Bigfin
+            {intl.get('auth.login.title')}
           </h1>
           <p className="mt-1 text-text-secondary">
-            Введите данные, чтобы продолжить работу
+            {intl.get('auth.login.subtitle')}
           </p>
         </div>
 
@@ -296,7 +298,9 @@ export const LoginPage = () => {
                         onClick={() => setShowPassword((v) => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-accent"
                         aria-label={
-                          showPassword ? 'Скрыть пароль' : 'Показать пароль'
+                          showPassword
+                            ? intl.get('auth.password.hide')
+                            : intl.get('auth.password.show')
                         }
                       >
                         {showPassword ? (
@@ -326,7 +330,7 @@ export const LoginPage = () => {
                       />
                     </FormControl>
                     <Label htmlFor="remember" className="cursor-pointer">
-                      Запомнить меня
+                      {intl.get('auth.login.remember_me')}
                     </Label>
                   </FormItem>
                 )}
@@ -336,7 +340,7 @@ export const LoginPage = () => {
                 variant="muted"
                 className="text-sm"
               >
-                Забыли пароль?
+                {intl.get('auth.login.forgot_password')}
               </Link>
             </div>
 
@@ -344,25 +348,22 @@ export const LoginPage = () => {
               {form.formState.isSubmitting ? (
                 <>
                   <Spinner size="sm" />
-                  Входим...
+                  {intl.get('auth.login.submitting')}
                 </>
               ) : (
                 <>
-                  Войти
+                  {intl.get('auth.login.submit')}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
             </Button>
 
-            <div className="flex items-center gap-3">
-              <Separator className="flex-1" />
-              <span className="text-xs text-text-muted">{intl.get('or')}</span>
-              <Separator className="flex-1" />
-            </div>
-
-            <Button variant="secondary" type="button" disabled>
-              {intl.get('auth.google_soon')}
-            </Button>
+            {/* РЕШЕНИЕ 19.09: кнопка «Войти через Google (скоро)» убрана.
+                Она была всегда выключена — то есть обещала то, чего продукт
+                не делает, и занимала место у настоящей кнопки входа. Ровно
+                тот же довод уже применён строчкой ниже: когда регистрация
+                закрыта, звать на неё — обман.
+                Вернуть: разделитель «или» + кнопка, три строки. */}
 
             {/* Когда регистрация закрыта, звать на неё — обман: человек
                 уйдёт по ссылке и упрётся в «закрыто» (М4 карты v15). */}

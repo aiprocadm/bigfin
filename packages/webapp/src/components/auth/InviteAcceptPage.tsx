@@ -51,7 +51,7 @@ const InviteAcceptForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<InviteAcceptInput>({
-    resolver: zodResolver(inviteAcceptSchema),
+    resolver: zodResolver(inviteAcceptSchema()),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -86,7 +86,7 @@ const InviteAcceptForm = () => {
       history.push('/auth/login');
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Не удалось принять приглашение';
+        err instanceof Error ? err.message : intl.get('auth.invite.failed');
       toast.error(message);
     }
   };
@@ -95,21 +95,22 @@ const InviteAcceptForm = () => {
     <>
       <div>
         <h1 className="text-3xl font-semibold text-text-primary">
-          Приглашение в Bigfin
+          {intl.get('auth.invite.title')}
         </h1>
+        {/* Название организации подставляется В ПРЕДЛОЖЕНИЕ, а не
+            приклеивается к его обрывкам: разрезанное предложение нельзя
+            перевести — в другом языке части встают в другом порядке. */}
         <p className="mt-1 text-text-secondary">
-          Вас пригласили в организацию{' '}
-          <strong className="text-text-primary">
-            «{ctx.inviteMeta.organizationName}»
-          </strong>
-          . Заполните данные, чтобы создать аккаунт.
+          {intl.get('auth.invite.invited_to', {
+            organization: ctx.inviteMeta.organizationName,
+          })}
         </p>
       </div>
 
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          Приглашение отправлено на <strong>{ctx.inviteMeta.email}</strong>.
+          {intl.get('auth.invite.sent_to', { email: ctx.inviteMeta.email })}
         </AlertDescription>
       </Alert>
 
@@ -166,7 +167,9 @@ const InviteAcceptForm = () => {
                       onClick={() => setShowPassword((v) => !v)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-accent"
                       aria-label={
-                        showPassword ? 'Скрыть пароль' : 'Показать пароль'
+                        showPassword
+                            ? intl.get('auth.password.hide')
+                            : intl.get('auth.password.show')
                       }
                     >
                       {showPassword ? (
@@ -204,11 +207,11 @@ const InviteAcceptForm = () => {
             {form.formState.isSubmitting ? (
               <>
                 <Spinner size="sm" />
-                Создаём аккаунт...
+                {intl.get('auth.invite.submitting')}
               </>
             ) : (
               <>
-                Принять приглашение
+                {intl.get('auth.invite.submit')}
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
@@ -218,7 +221,7 @@ const InviteAcceptForm = () => {
 
       <p className="mt-2 text-center text-sm text-text-secondary">
         <Link to="/auth/login" variant="muted">
-          ← У меня уже есть аккаунт
+          {intl.get('auth.invite.have_account')}
         </Link>
       </p>
     </>

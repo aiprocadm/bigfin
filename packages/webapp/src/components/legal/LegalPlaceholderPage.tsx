@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import * as React from 'react';
 
 import { Logo } from '@/components/ui/Logo';
@@ -25,7 +26,7 @@ export const LegalPlaceholderPage = ({
           <p className="mt-4 text-base text-text-secondary">{description}</p>
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link to="/auth/login" variant="muted">
-              ← Вернуться ко входу
+              {intl.get('auth.back_to_login')}
             </Link>
           </div>
         </div>

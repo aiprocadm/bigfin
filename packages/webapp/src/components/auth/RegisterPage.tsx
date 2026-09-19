@@ -61,7 +61,7 @@ export const RegisterPage = () => {
   const { mutateAsync: login } = useAuthLogin({}) as unknown as AuthMutation<LoginVars>;
 
   const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerSchema()),
     defaultValues: {
       name: '',
       email: '',
@@ -90,11 +90,12 @@ export const RegisterPage = () => {
           ? (err as { response?: { status?: number } }).response?.status
           : undefined;
       if (status === 400 || status === 409) {
-        setServerError('Этот email уже зарегистрирован');
+        setServerError(intl.get('auth.register.email_taken'));
         return;
       }
-      const message = err instanceof Error ? err.message : 'Сетевая ошибка';
-      toast.error(`Сетевая ошибка: ${message}`);
+      const message =
+        err instanceof Error ? err.message : intl.get('auth.error.network');
+      toast.error(intl.get('auth.error.network_with_reason', { reason: message }));
     }
   };
 
@@ -106,14 +107,14 @@ export const RegisterPage = () => {
       <AuthLayout>
         <div className="flex flex-col gap-4">
           <h1 className="text-3xl font-semibold text-text-primary">
-            Регистрация закрыта
+            {intl.get('auth.register.closed_title')}
           </h1>
           <p className="text-text-secondary">
-            Новые аккаунты сейчас не создаются. Если вас пригласили в
-            организацию — откройте ссылку из приглашения.
+            {intl.get('auth.register.closed_text')}
           </p>
           <p className="text-sm text-text-secondary">
-            Уже есть аккаунт? <Link to="/auth/login">{intl.get('auth.login_link')}</Link>
+            {intl.get('auth.register.have_account')}{' '}
+            <Link to="/auth/login">{intl.get('auth.login_link')}</Link>
           </p>
         </div>
       </AuthLayout>
@@ -125,7 +126,7 @@ export const RegisterPage = () => {
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-text-primary">
-            Создайте аккаунт
+            {intl.get('auth.register.title')}
           </h1>
           <p className="mt-1 text-text-secondary">{intl.get('auth.free_no_card')}</p>
         </div>
@@ -195,7 +196,9 @@ export const RegisterPage = () => {
                         onClick={() => setShowPassword((v) => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-accent"
                         aria-label={
-                          showPassword ? 'Скрыть пароль' : 'Показать пароль'
+                          showPassword
+                            ? intl.get('auth.password.hide')
+                            : intl.get('auth.password.show')
                         }
                       >
                         {showPassword ? (
@@ -243,13 +246,18 @@ export const RegisterPage = () => {
                   </FormControl>
                   <div className="flex flex-col gap-1">
                     <Label htmlFor="terms" className="cursor-pointer leading-snug">
-                      Я принимаю{' '}
+                      {/* Предложение разрезано на части НАМЕРЕННО: внутри
+                          него две ссылки, а подставить готовую ссылку внутрь
+                          строки словаря нельзя — получилась бы разметка
+                          строкой, и переход по ней перезагружал бы страницу,
+                          теряя заполненную форму. */}
+                      {intl.get('auth.register.accept_prefix')}{' '}
                       <Link to="/terms" variant="default" className="text-sm">
-                        Условия
+                        {intl.get('auth.register.terms_link')}
                       </Link>{' '}
-                      и{' '}
+                      {intl.get('auth.register.accept_and')}{' '}
                       <Link to="/privacy" variant="default" className="text-sm">
-                        Политику конфиденциальности
+                        {intl.get('auth.register.privacy_link')}
                       </Link>
                     </Label>
                     <FormMessage />
@@ -262,18 +270,19 @@ export const RegisterPage = () => {
               {form.formState.isSubmitting ? (
                 <>
                   <Spinner size="sm" />
-                  Создаём...
+                  {intl.get('auth.register.submitting')}
                 </>
               ) : (
                 <>
-                  Зарегистрироваться
+                  {intl.get('auth.register.submit')}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
             </Button>
 
             <p className="mt-2 text-center text-sm text-text-secondary">
-              Уже есть аккаунт? <Link to="/auth/login">{intl.get('auth.login_link')}</Link>
+              {intl.get('auth.register.have_account')}{' '}
+              <Link to="/auth/login">{intl.get('auth.login_link')}</Link>
             </p>
           </form>
         </Form>

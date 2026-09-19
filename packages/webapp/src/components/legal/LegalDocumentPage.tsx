@@ -1,3 +1,4 @@
+import intl from 'react-intl-universal';
 import * as React from 'react';
 
 import { Logo } from '@/components/ui/Logo';
@@ -30,12 +31,20 @@ export const LegalDocumentPage = ({
         <article className="w-full max-w-3xl">
           <h1 className="text-3xl font-semibold text-text-primary">{title}</h1>
           <p className="mt-2 text-sm text-text-muted">{revision}</p>
+          {/* РЕШЕНИЕ 19.09 по вопросу В1: документ остаётся ТОЛЬКО на
+              русском. Машинный перевод соглашения опаснее отсутствия
+              перевода: он выглядит официально и при этом не имеет силы.
+              Но человек в английской локали должен понимать, что перед ним,
+              — поэтому пояснение переводится, а сам документ нет. */}
+          <p className="mt-2 text-sm text-text-muted">
+            {intl.get('legal.russian_only_note')}
+          </p>
           <div className="mt-8 flex flex-col gap-6 text-base leading-relaxed text-text-secondary [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-text-primary [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-1">
             {children}
           </div>
           <div className="mt-12">
             <Link to="/auth/login" variant="muted">
-              ← Вернуться ко входу
+              {intl.get('auth.back_to_login')}
             </Link>
           </div>
         </article>

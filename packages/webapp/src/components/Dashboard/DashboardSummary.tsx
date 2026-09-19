@@ -121,7 +121,7 @@ export function DashboardSummary({
 
       <div className="rounded-default border border-border bg-surface p-4">
         <h2 className="mb-4 text-sm font-medium text-text-secondary">
-          Доходы и расходы по месяцам
+          {intl.get('dashboard.summary.income_expenses_by_month')}
         </h2>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">

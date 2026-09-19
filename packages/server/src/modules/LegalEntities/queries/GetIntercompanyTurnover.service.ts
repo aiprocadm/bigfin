@@ -104,7 +104,12 @@ export class GetIntercompanyTurnoverService {
     const byReference = new Map<string, any[]>();
 
     legs.forEach((leg) => {
-      const key = `${leg.reference_type}:${leg.reference_id}`;
+      // Имена в ВЕРБЛЮЖЬЕМ виде: отображение knex переводит их в ответе
+      // обратно из `REFERENCE_TYPE` в `referenceType`. Со змеиными именами
+      // ключ получался «undefined:undefined» — ВСЕ ноги сваливались в одну
+      // группу, и отчёт «кто кому» показывал одну строку-бессмыслицу вместо
+      // переводов между юрлицами.
+      const key = `${leg.referenceType}:${leg.referenceId}`;
       const list = byReference.get(key) ?? [];
       list.push(leg);
       byReference.set(key, list);
@@ -125,7 +130,7 @@ export class GetIntercompanyTurnoverService {
       );
 
       const entityId = (leg: any) =>
-        leg?.legal_entity_id != null ? Number(leg.legal_entity_id) : null;
+        leg?.legalEntityId != null ? Number(leg.legalEntityId) : null;
 
       rows.push({
         referenceType,

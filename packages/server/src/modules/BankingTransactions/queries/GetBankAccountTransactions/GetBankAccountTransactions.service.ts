@@ -30,9 +30,15 @@ export class GetBankAccountTransactionsService {
 
     await this.getBankAccountTransactionsRepository.asyncInit();
 
-    // Retrieve the tenant metadata to get the date format.
+    // Данные организации: формат даты И ВАЛЮТА УЧЁТА.
+    //
+    // Валюту раньше не передавали, и общий помощник формата считал её
+    // неизвестной — а значит выводил суммы ПО-АНГЛИЙСКИ: «500,000.00»
+    // вместо «500 000,00 ₽». Найдено живым проходом на самом частом экране
+    // продукта — «Все операции».
     const tenantMetadata = await this.tenancyContext.getTenantMetadata();
     const dateFormat = tenantMetadata?.dateFormat;
+    const baseCurrency = tenantMetadata?.baseCurrency;
 
     // Retrieve the computed report.
     const report = new GetBankAccountTransactions(
@@ -40,6 +46,7 @@ export class GetBankAccountTransactionsService {
       parsedQuery,
       this.i18nService,
       dateFormat,
+      baseCurrency,
     );
     const transactions = report.reportData();
     const pagination = this.getBankAccountTransactionsRepository.pagination;

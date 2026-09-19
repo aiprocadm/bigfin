@@ -1,0 +1,7 @@
+{
+  "transaction_status": {
+    "categorized": "Categorized",
+    "matched": "Matched",
+    "manual": "Manual"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "transaction_status": {
+    "categorized": "Разнесена",
+    "matched": "Сопоставлена",
+    "manual": "Ручная"
+  }
+}

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Classes, Intent } from '@blueprintjs/core';
@@ -35,7 +34,7 @@ function TaxRateFormDialogForm({
 
   // #withDrawerActions
   closeDrawer,
-}) {
+}: any) {
   // Account form context.
   const { taxRate, taxRateId, isNewMode, dialogName } =
     useTaxRateFormDialogContext();
@@ -52,7 +51,7 @@ function TaxRateFormDialogForm({
   const initialValues = transformTaxRateToForm(taxRate);
 
   // Callbacks handles form submit.
-  const handleFormSubmit = (values, { setSubmitting, setErrors }) => {
+  const handleFormSubmit = (values: any, { setSubmitting, setErrors }: any) => {
     const isTaxChanged = isTaxRateChange(initialValues, values);
 
     // Detarmines whether in edit mode and tax rate has been changed
@@ -67,7 +66,7 @@ function TaxRateFormDialogForm({
     const form = transformFormToReq(values);
 
     // Handle request success on edit.
-    const handleSuccessOnEdit = (response) => {
+    const handleSuccessOnEdit = (response: any) => {
       if (response?.data?.data?.id !== taxRateId) {
         closeDrawer(DRAWERS.TAX_RATE_DETAILS);
       }
@@ -81,7 +80,7 @@ function TaxRateFormDialogForm({
       });
     };
     // Handle request error.
-    const handleError = (error) => {
+    const handleError = (error: any) => {
       const {
         response: {
           data: { errors },

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -17,6 +16,10 @@ import {
 import { withSalesTaxLiabilitySummary } from './withSalesTaxLiabilitySummary';
 import { withSalesTaxLiabilitySummaryActions } from './withSalesTaxLiabilitySummaryActions';
 import { SalesTaxLiabilitySummaryHeaderGeneral } from './SalesTaxLiabilitySummaryHeaderGeneralPanel';
+import {
+  FormikSubmitHelpers,
+  ReportFilterHeaderProps,
+} from '../reportFilterHeader';
 
 /**
  * Sales tax liability summary header.
@@ -31,6 +34,10 @@ function SalesTaxLiabilitySummaryHeader({
 
   // #withSalesTaxLiabilitySummaryActions
   toggleSalesTaxLiabilitySummaryFilterDrawer: toggleFilterDrawer,
+}: ReportFilterHeaderProps & {
+  toggleSalesTaxLiabilitySummaryFilterDrawer: (isOpen: boolean) => void;
+  /** Открыта ли шторка отбора — приходит от обёртки отдельным именем. */
+  salesTaxLiabilitySummaryFilter?: boolean;
 }) {
   const defaultValues = getDefaultSalesTaxLiablitySummaryQuery();
 
@@ -49,7 +56,7 @@ function SalesTaxLiabilitySummaryHeader({
   );
 
   // Handle form submit.
-  const handleSubmit = (values, actions) => {
+  const handleSubmit = (values: any, actions: any) => {
     onSubmitFilter(values);
     toggleFilterDrawer(false);
     actions.setSubmitting(false);
@@ -101,7 +108,7 @@ function SalesTaxLiabilitySummaryHeader({
 }
 
 export default compose(
-  withSalesTaxLiabilitySummary(({ salesTaxLiabilitySummaryFilter }) => ({
+  withSalesTaxLiabilitySummary(({ salesTaxLiabilitySummaryFilter }: any) => ({
     salesTaxLiabilitySummaryFilter,
   })),
   withSalesTaxLiabilitySummaryActions,

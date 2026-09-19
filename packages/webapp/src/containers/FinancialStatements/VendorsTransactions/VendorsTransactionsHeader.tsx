@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import moment from 'moment';
@@ -17,6 +16,10 @@ import {
   getVendorTransactionsQuerySchema,
   getVendorsTransactionsDefaultQuery,
 } from './_utils';
+import {
+  FormikSubmitHelpers,
+  ReportFilterHeaderProps,
+} from '../reportFilterHeader';
 
 /**
  * Vendors transactions header.
@@ -31,6 +34,8 @@ function VendorsTransactionsHeader({
 
   //#withVendorsTransactionsActions
   toggleVendorsTransactionsFilterDrawer: toggleFilterDrawer,
+}: ReportFilterHeaderProps & {
+  toggleVendorsTransactionsFilterDrawer: (isOpen: boolean) => void;
 }) {
   // Default form values.
   const defaultValues = getVendorsTransactionsDefaultQuery();
@@ -49,7 +54,7 @@ function VendorsTransactionsHeader({
   const validationSchema = getVendorTransactionsQuerySchema();
 
   // Handle form submit.
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = (values: any, { setSubmitting }: FormikSubmitHelpers) => {
     onSubmitFilter(values);
     toggleFilterDrawer(false);
     setSubmitting(false);
@@ -93,7 +98,7 @@ function VendorsTransactionsHeader({
 }
 export default compose(
   withVendorsTransactionsActions,
-  withVendorsTransaction(({ vendorsTransactionsDrawerFilter }) => ({
+  withVendorsTransaction(({ vendorsTransactionsDrawerFilter }: any) => ({
     isFilterDrawerOpen: vendorsTransactionsDrawerFilter,
   })),
 )(VendorsTransactionsHeader);

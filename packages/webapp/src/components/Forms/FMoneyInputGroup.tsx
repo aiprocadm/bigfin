@@ -1,15 +1,15 @@
-// @ts-nocheck
 import React from 'react';
 import { Intent } from '@blueprintjs/core';
 import { Field, FastField, getIn } from 'formik';
 import { MoneyInputGroup } from './MoneyInputGroup';
+import { FormikFieldBag } from './formikFieldTypes';
 
 const fieldToMoneyInputGroup = ({
   field: { onBlur: onFieldBlur, ...field },
   form: { setFieldValue, touched, errors },
   onBlur,
   ...props
-}) => {
+}: FormikFieldBag & { onBlur?: (event?: any) => void }) => {
   const fieldError = getIn(errors, field.name);
   const showError = getIn(touched, field.name) && !!fieldError;
 
@@ -17,18 +17,18 @@ const fieldToMoneyInputGroup = ({
     intent: showError ? Intent.DANGER : Intent.NONE,
     onBlurValue:
       onBlur ??
-      function (e) {
-        onFieldBlur(e ?? field.name);
+      function (e: any) {
+        onFieldBlur?.(e ?? field.name);
       },
     ...field,
-    onChange: (value) => {
+    onChange: (value: any) => {
       setFieldValue(field.name, value);
     },
     ...props,
   };
 };
 
-function FieldToMoneyInputGroup({ ...props }) {
+function FieldToMoneyInputGroup({ ...props }: any) {
   return <MoneyInputGroup {...fieldToMoneyInputGroup(props)} />;
 }
 

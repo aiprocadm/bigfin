@@ -1,8 +1,3 @@
-// @ts-nocheck
-// ОСТАЛОСЬ 1 ЗАМЕЧАНИЕ (слой хуков запросов, 19.09). Было 16.
-// Оставшееся: у отправки письма объявлен один вид ответа, а запрос
-// возвращает другой. Разводить это надо вместе с описанием ответа на
-// сервере — иначе получится третий вид того же самого.
 import {
   useMutation,
   useQueryClient,
@@ -264,10 +259,21 @@ interface SendPaymentReceiveMailValues {
   attachPdf?: boolean;
 }
 
-interface SendPaymentReceiveMailResponse {
+/**
+ * Что отдаёт ручка отправки письма ВНУТРИ ответа.
+ *
+ * Помощник запросов отдаёт ОТВЕТ ЦЕЛИКОМ, а не его содержимое. Объявлено
+ * было содержимое — и это неправда: чтобы добраться до `success`,
+ * вызывающему пришлось бы читать `res.data.success`. Сегодня результат
+ * никто не читает, но первый, кто прочтёт, получил бы `undefined`.
+ */
+interface SendPaymentReceiveMailBody {
   success: boolean;
   message?: string;
 }
+
+/** Ответ целиком — то, что и приходит на самом деле. */
+type SendPaymentReceiveMailResponse = { data: SendPaymentReceiveMailBody };
 
 type SendPaymentReceiveMailMutation = UseMutationResult<
   SendPaymentReceiveMailResponse,

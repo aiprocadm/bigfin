@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import styled from 'styled-components';
 import { useUncontrolled } from '@/hooks/useUncontrolled';
@@ -9,6 +8,12 @@ const ContentTabsRoot = styled('div')`
 `;
 interface ContentTabItemRootProps {
   active?: boolean;
+  /**
+   * Сжатая вкладка. Свойство ИСПОЛЬЗУЕТСЯ в оформлении ниже, но объявлено
+   * не было: директива `@ts-nocheck` прятала это вместе с опечаткой
+   * `booean` в соседнем описании.
+   */
+  small?: boolean;
 }
 const ContentTabItemRoot = styled.button<ContentTabItemRootProps>`
   flex: 1 0;
@@ -61,7 +66,8 @@ interface ContentTabsItemProps {
   description?: React.ReactNode;
   active?: boolean;
   className?: string;
-  small?: booean;
+  small?: boolean;
+  onClick?: () => void;
 }
 
 const ContentTabsItem = ({
@@ -108,7 +114,11 @@ export function ContentTabs({
     onChange,
     finalValue: '',
   });
-  const tabs = React.Children.toArray(children);
+  // `toArray` отдаёт «что угодно»: строку, число, элемент. Нам нужны
+  // только элементы — у строки нет ни `key`, ни `props`.
+  const tabs = React.Children.toArray(children).filter(
+    React.isValidElement,
+  ) as React.ReactElement<ContentTabsItemProps & { id?: string }>[];
 
   return (
     <ContentTabsRoot className={className}>

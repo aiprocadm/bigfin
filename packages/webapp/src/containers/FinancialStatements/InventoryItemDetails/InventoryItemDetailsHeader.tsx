@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 import moment from 'moment';
@@ -22,6 +21,10 @@ import {
 import { compose, transformToForm } from '@/utils';
 import { useFeatureCan } from '@/hooks/state';
 import { Features } from '@/constants';
+import {
+  FormikSubmitHelpers,
+  ReportFilterHeaderProps,
+} from '../reportFilterHeader';
 
 /**
  * Inventory item details header.
@@ -36,6 +39,8 @@ function InventoryItemDetailsHeader({
 
   // #withInventoryItemDetailsActions
   toggleInventoryItemDetailsFilterDrawer: toggleFilterDrawer,
+}: ReportFilterHeaderProps & {
+  toggleInventoryItemDetailsFilterDrawer: (isOpen: boolean) => void;
 }) {
   // Default form values.
   const defaultValues = getInventoryItemDetailsDefaultQuery();
@@ -55,7 +60,7 @@ function InventoryItemDetailsHeader({
   const validationSchema = getInventoryItemDetailsQuerySchema();
 
   // Handle form submit.
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = (values: any, { setSubmitting }: FormikSubmitHelpers) => {
     onSubmitFilter(values);
     toggleFilterDrawer(false);
     setSubmitting(false);
@@ -112,7 +117,7 @@ function InventoryItemDetailsHeader({
 }
 
 export default compose(
-  withInventoryItemDetails(({ inventoryItemDetailDrawerFilter }) => ({
+  withInventoryItemDetails(({ inventoryItemDetailDrawerFilter }: any) => ({
     isFilterDrawerOpen: inventoryItemDetailDrawerFilter,
   })),
   withInventoryItemDetailsActions,

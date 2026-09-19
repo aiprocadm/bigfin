@@ -1,29 +1,44 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { Position, Drawer } from '@blueprintjs/core';
+import { Position, Drawer, DrawerProps } from '@blueprintjs/core';
 import '@/style/containers/FinancialStatements/DrawerHeader.scss';
 
+interface FinancialStatementHeaderProps {
+  children?: React.ReactNode;
+  /** Открыта ли шторка с настройками отчёта. */
+  isOpen?: boolean;
+  /** Что передать самой шторке: обычно только `onClose`. */
+  drawerProps?: Partial<DrawerProps>;
+  className?: string;
+}
+
 /**
- * Financial statement header.
- * @returns {JSX.Element}
+ * Шапка отчёта со шторкой настроек.
+ *
+ * ВСЕ СВОЙСТВА, КРОМЕ ДЕТЕЙ, НЕОБЯЗАТЕЛЬНЫ — и это не послабление. Пять
+ * шапок отчётов зовут этот компонент, и ни одна не передаёт `className`.
+ * Пока свойства не были объявлены вовсе, проверка молчала; стоило объявить
+ * их обязательными — и пять живых экранов оказались бы «сломанными», хотя
+ * работают годами.
  */
 export default function FinancialStatementHeader({
   children,
   isOpen,
   drawerProps,
   className,
-}) {
-  const timeoutRef = React.useRef();
+}: FinancialStatementHeaderProps) {
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Hides the content scrollbar and scroll to the top of the page once the drawer open.
   useEffect(() => {
-    const contentPanel = document.querySelector('body');
+    const contentPanel = document.body;
     contentPanel.classList.toggle('hide-scrollbar', isOpen);
 
     if (isOpen) {
-      document.querySelector('.Pane2').scrollTo(0, 0);
+      // Панель содержимого может отсутствовать: у отчёта, открытого в
+      // отдельном окне печати, разделителя нет вовсе.
+      document.querySelector('.Pane2')?.scrollTo(0, 0);
     }
     return () => {
       contentPanel.classList.remove('hide-scrollbar');
@@ -36,7 +51,7 @@ export default function FinancialStatementHeader({
     if (isOpen) {
       setIsDrawerOpen(isOpen);
     } else {
-      timeoutRef.current = setTimeout(() => setIsDrawerOpen(isOpen), 300);
+      timeoutRef.current = setTimeout(() => setIsDrawerOpen(!!isOpen), 300);
     }
   }, [isOpen]);
 

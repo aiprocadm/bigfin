@@ -55,8 +55,12 @@ export function useCreateCashflowTransaction(props?: any) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
+  // Вид значений объявлен свободно: ручка принимает и перевод, и приход, и
+  // расход — у них разные поля. Без объявления вовсе проверка считала, что
+  // ручка не принимает НИЧЕГО, и любой вызов с данными был ошибкой.
   return useMutation(
-    (values) => apiRequest.post('banking/transactions', values),
+    (values: Record<string, any>) =>
+      apiRequest.post('banking/transactions', values),
     {
       onSuccess: () => {
         // Invalidate queries.

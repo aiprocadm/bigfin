@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { Button, Intent, Position, Tag } from '@blueprintjs/core';
@@ -31,12 +30,21 @@ import { useCreateCashflowTransaction } from '@/hooks/query';
 import { useAccountTransactionsContext } from '../../AccountTransactions/AccountTransactionsProvider';
 import { MatchingReconcileFormSchema } from './MatchingReconcileTransactionForm.schema';
 import { initialValues, transformToReq } from './_utils';
+import { MatchingReconcileTransactionValues } from './_types';
 import { withBanking } from '../../withBanking';
 import { Features } from '@/constants';
 import { showApiError } from '@/utils/showApiError';
 
 interface MatchingReconcileTransactionFormProps {
   onSubmitSuccess?: (values: any) => void;
+  /**
+   * Закрыть боковую панель сверки. Приходит от обёртки `withBanking` и
+   * потому ОБЯЗАТЕЛЕН: без обёртки внутренний компонент не отрисовывается
+   * никогда, и «необязательный» здесь был бы неправдой.
+   */
+  closeReconcileMatchingTransaction: () => void;
+  /** Сколько ещё осталось свести — тоже от обёртки. */
+  reconcileMatchingTransactionPendingAmount: number;
 }
 
 function MatchingReconcileTransactionFormRoot({
@@ -83,7 +91,7 @@ function MatchingReconcileTransactionFormRoot({
         setSubmitting(false);
         if (
           error.response?.data?.errors?.find(
-            (e) => e.type === 'BRANCH_ID_REQUIRED',
+            (e: any) => e.type === 'BRANCH_ID_REQUIRED',
           )
         ) {
           setErrors({
@@ -95,7 +103,10 @@ function MatchingReconcileTransactionFormRoot({
       });
   };
 
-  const _initialValues = {
+  // Вид объявлен явно: иначе проверка выводит его ИЗ ЗНАЧЕНИЙ (сумма —
+  // число) и считает, что отправка формы, объявленная по-честному, ей не
+  // подходит. Значения и отправка обязаны говорить об одном и том же.
+  const _initialValues: MatchingReconcileTransactionValues = {
     ...initialValues,
     amount: round(Math.abs(reconcileMatchingTransactionPendingAmount), 2) || 0,
     date: moment().format('YYYY-MM-DD'),
@@ -139,11 +150,12 @@ export const MatchingReconcileTransactionForm = R.compose(
 
 function ReconcileMatchingType() {
   const { setFieldValue, values } =
-    useFormikContext<MatchingReconcileFormValues>();
+    useFormikContext<MatchingReconcileTransactionValues>();
 
   const handleChange = (value: string) => {
     setFieldValue('type', value);
-    setFieldValue('category');
+    // Смена вида операции обнуляет статью: она у прихода и расхода разная.
+    setFieldValue('category', null);
   };
   return (
     <ContentTabs

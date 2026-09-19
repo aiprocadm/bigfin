@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Button, Intent, Menu, MenuItem } from '@blueprintjs/core';
@@ -44,7 +43,7 @@ const ActionsCellRenderer = ({
   cell: { value: initialValue },
   data,
   payload,
-}) => {
+}: any) => {
   const handleClickRemoveRole = () => {
     payload.removeRow(index);
   };
@@ -84,14 +83,22 @@ const LandedCostHeaderCell = () => {
 /**
  * Expense amount header cell.
  */
-export function ExpenseAmountHeaderCell({ payload: { currencyCode } }) {
+export function ExpenseAmountHeaderCell({
+  payload: { currencyCode },
+}: {
+  payload: { currencyCode?: string };
+}) {
   return intl.get('amount_currency', { currency: currencyCode });
 }
 
 /**
  * Retrieve expense form table entries columns.
  */
-export function useExpenseFormTableColumns({ landedCost }) {
+export function useExpenseFormTableColumns({
+  landedCost,
+}: {
+  landedCost?: boolean;
+}) {
   const { featureCan } = useFeatureCan();
 
   return React.useMemo(
@@ -166,7 +173,17 @@ export function useExpenseFormTableColumns({ landedCost }) {
  * Expense exchange rate input field.
  * @returns {JSX.Element}
  */
-export function ExpensesExchangeRateInputField({ ...props }) {
+export function ExpensesExchangeRateInputField({
+  ...props
+}: {
+  /**
+   * Имя поля ОБЯЗАТЕЛЬНО: поле курса без него не знает, куда писать
+   * значение. Оно и так приходило — через раскрытие свойств ячейки, — но
+   * объявлено не было, и проверка считала вызов ниже неполным.
+   */
+  name: string;
+  [key: string]: any;
+}) {
   const currentOrganization = useCurrentOrganization();
   const { values } = useFormikContext<any>();
 

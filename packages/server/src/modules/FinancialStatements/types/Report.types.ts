@@ -55,6 +55,8 @@ export interface IFinancialSheetBranchesQuery {
    * страницами.
    */
   legalEntityIds?: number[];
+  /** Разрез по направлениям (остаток О6 ТЗ). Пусто — все операции. */
+  projectsIds?: number[];
 }
 
 export interface IFinancialSheetCommonMeta {

@@ -17,6 +17,7 @@ import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { INamedModifiableQuery } from '../../common/queryTypes';
 import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
+import { applyProjectScope } from '@/modules/Projects/utils/projectScope';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class BalanceSheetRepository extends R.compose(
@@ -417,6 +418,9 @@ export class BalanceSheetRepository extends R.compose(
     }
     applyLegalEntityScope(query, {
       legalEntityIds: this.query.legalEntityIds,
+    });
+    applyProjectScope(query as any, {
+      projectsIds: (this.query as any).projectsIds,
     });
   };
 }

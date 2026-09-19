@@ -8,7 +8,7 @@ import {
   GetReportPlanFactService,
   PlanFactReportKind,
 } from './GetReportPlanFact.service';
-import { ReportDateRangeQueryDto } from '@/common/dtos/DateRangeQuery.dto';
+import { ReportPlanFactQueryDto } from './ReportPlanFactQuery.dto';
 
 /**
  * План по строкам отчёта (этап 4 ТЗ, п. 4.4).
@@ -32,10 +32,12 @@ export class ReportPlanFactController {
       'раньше. План статьи попадает на строку счёта, только когда счёт у ' +
       'статьи единственный; иначе он виден лишь в итоге по виду.',
   })
-  getPlanFact(@Query() query: ReportDateRangeQueryDto) {
+  getPlanFact(@Query() query: ReportPlanFactQueryDto) {
     const kind: PlanFactReportKind =
       query.report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
 
-    return this.planFact.getPlanFact(kind, query.from, query.to);
+    // Метод учёта передаём дальше: факт в колонке «Отклонение» обязан
+    // считаться так же, как считает сам отчёт (остаток О4 ТЗ).
+    return this.planFact.getPlanFact(kind, query.from, query.to, query.basis);
   }
 }

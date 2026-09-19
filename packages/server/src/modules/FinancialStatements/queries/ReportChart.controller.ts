@@ -9,8 +9,10 @@ import {
   ReportChartKind,
 } from './GetReportChart.service';
 import { GetReportDrillDownService } from './GetReportDrillDown.service';
+import { GetBalanceStructureService } from './GetBalanceStructure.service';
 import {
   AccountDateRangeQueryDto,
+  DateRangeQueryDto,
   ReportDateRangeQueryDto,
 } from '@/common/dtos/DateRangeQuery.dto';
 
@@ -28,6 +30,7 @@ export class ReportChartController {
   constructor(
     private readonly reportChart: GetReportChartService,
     private readonly drillDown: GetReportDrillDownService,
+    private readonly balanceStructure: GetBalanceStructureService,
   ) {}
 
   @Get()
@@ -42,6 +45,19 @@ export class ReportChartController {
       query.report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
 
     return this.reportChart.getChart(kind, query.from, query.to);
+  }
+
+  @Get('structure')
+  @ApiOperation({ summary: 'Структура баланса: имущество и его источники.' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Две половины баланса, разложенные по группам второго уровня. ' +
+      'Отрицательные группы возвращаются с нулевой долей: ширины у них нет, ' +
+      'но прятать их нельзя — сумма перестала бы сходиться с таблицей.',
+  })
+  getStructure(@Query() query: DateRangeQueryDto) {
+    return this.balanceStructure.getStructure(query.from, query.to);
   }
 
   @Get('drill-down')

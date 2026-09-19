@@ -3,6 +3,7 @@ import { useCashflowTransaction } from '@/hooks/query';
 import { CashflowTransactionCardsV2 } from './CashflowTransactionCardsV2';
 import { CashflowTransactionHeaderV2 } from './CashflowTransactionHeaderV2';
 import { CashflowTransactionSkeletonV2 } from './CashflowTransactionSkeletonV2';
+import { TransactionSplitPanel } from './TransactionSplitPanel';
 import type { CashflowTransactionDetail } from './types';
 
 interface CashflowTransactionContentV2Props {
@@ -14,6 +15,24 @@ interface CashflowTransactionContentV2Props {
 interface UseCashflowTransactionResult {
   data: CashflowTransactionDetail | undefined;
   isLoading: boolean;
+}
+
+/**
+ * Сумма операции целиком — с ней обязаны сойтись части.
+ *
+ * Берётся из проводок, а не из показанной строки `formatted_amount`: та
+ * отформатирована для чтения («1 234,50 ₽»), и разбирать её обратно в число
+ * значило бы зависеть от настроек показа. Одна и та же операция в разных
+ * валютах читалась бы по-разному, а сходиться должна всегда.
+ */
+function splitParentAmount(transaction: CashflowTransactionDetail): number {
+  const entries = transaction?.transactions ?? [];
+
+  return entries.reduce(
+    (sum, entry) =>
+      sum + Math.max(Number(entry.debit ?? 0), Number(entry.credit ?? 0)),
+    0,
+  );
 }
 
 /**
@@ -39,6 +58,20 @@ export function CashflowTransactionContentV2({
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
         <CashflowTransactionCardsV2 transaction={transaction} />
+
+        {/*
+          Разделение операции (этап 10 ТЗ). Стоит ЗДЕСЬ, а не отдельным
+          экраном: делить платёжку человек решает, глядя на неё саму.
+          Родительская операция при этом не трогается — в отчёты идут части,
+          в сверку с банком родитель.
+        */}
+        {transaction?.id != null && (
+          <TransactionSplitPanel
+            referenceType={String(transaction.transaction_type ?? '')}
+            referenceId={Number(transaction.id)}
+            parentAmount={splitParentAmount(transaction)}
+          />
+        )}
       </div>
     </div>
   );

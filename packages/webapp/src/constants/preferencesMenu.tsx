@@ -10,6 +10,7 @@ import {
   FileMinus,
   FileText,
   KeyRound,
+  Webhook,
   LayoutDashboard,
   type LucideIcon,
   Package,
@@ -80,6 +81,11 @@ export const PreferencesMenu: PreferencesMenuSection[] = [
       // единственный способ найти её без прямого URL (приёмка ㉒).
       { labelId: 'notifications.settings.menu', href: '/settings/notifications', icon: Bell },
       { labelId: 'api_keys', href: '/preferences/api-keys', icon: KeyRound },
+      {
+        labelId: 'public_api.menu',
+        href: '/preferences/public-api',
+        icon: Webhook,
+      },
     ],
   },
 ];

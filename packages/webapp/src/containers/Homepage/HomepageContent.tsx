@@ -1,3 +1,5 @@
+import intl from 'react-intl-universal';
+
 import CashTimelineSection from './CashTimelineSection';
 import FirstStepsSection from './FirstStepsSection';
 import OverviewSection from './OverviewSection';
@@ -13,12 +15,17 @@ import ProductsServicesSection from './ProductsServicesSection';
  * Порядок отвечает на то, зачем человек сюда зашёл.
  *
  * 1. ЛЕНТА ДЕНЕГ — герой. Не «сколько у меня сейчас» (это одно число), а
- *    «доживу ли я до конца месяца». Раньше первым блоком шли подсказки по
- *    настройке и плитки показателей, то есть оглавление.
- * 2. Показатели за период и график — разбор того же вопроса вглубь.
- * 3. Сводка по деньгам, долги, справочники — реже и ниже.
- * 4. Подсказки по настройке — В КОНЦЕ. Они нужны в первую неделю жизни
+ *    «доживу ли я до конца месяца».
+ * 2. Показатели за период, график и «требует внимания» — разбор того же
+ *    вопроса вглубь.
+ * 3. Сводка по деньгам: остатки, долги, ближайшие платежи, налог.
+ * 4. Подсказки по настройке — ниже: они нужны в первую неделю жизни
  *    организации, а место занимали всегда и у всех.
+ * 5. Быстрые переходы — в самом конце, ОДНИМ блоком в колонках.
+ *
+ * Раньше пункт 5 был пятью отдельными блоками с сетками карточек-ссылок.
+ * Вместе они занимали больше места, чем все настоящие цифры страницы, и
+ * дублировали боковое меню. Все ссылки целы — они собраны в один блок.
  *
  * Между блоками нет карточек с тенями: страница держится на волосяных линиях
  * и воздухе. Одинаковые карточки уравнивали блоки по важности, и глазу было
@@ -30,11 +37,19 @@ function HomepageContent() {
       <CashTimelineSection />
       <OverviewSection />
       <MoneySummarySection />
-      <AccountsReceivableSection />
-      <AccountsPayableSection />
-      <FinancialAccountingSection />
-      <ProductsServicesSection />
       <FirstStepsSection />
+
+      <section className="border-t border-border pt-6">
+        <h2 className="text-[0.8125rem] font-medium text-text-muted">
+          {intl.get('homepage.quick_links')}
+        </h2>
+        <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3 lg:grid-cols-4">
+          <AccountsReceivableSection />
+          <AccountsPayableSection />
+          <FinancialAccountingSection />
+          <ProductsServicesSection />
+        </div>
+      </section>
     </div>
   );
 }

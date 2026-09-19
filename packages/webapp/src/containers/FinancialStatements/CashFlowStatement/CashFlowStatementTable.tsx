@@ -15,6 +15,7 @@ import {
   drillDownAccountId,
   reportDrillDownRange,
 } from '../reportDrillDownRange';
+import { ReportScopeNote } from '../ReportScopeNote';
 
 /**
  * Таблица отчёта о движении денежных средств (ДДС) на движке ReportTable
@@ -99,6 +100,9 @@ export default function CashFlowStatementTable({
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
       basis={query.basis}
     >
+      {/* Что показано: сводно или по одному юрлицу (этап 7 ТЗ). */}
+      <ReportScopeNote scope={(meta as any)?.legal_entity_scope} />
+
       <ReportTable
         columns={reportColumns}
         rows={tableRows}

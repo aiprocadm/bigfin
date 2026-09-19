@@ -12,7 +12,7 @@ export class PaymentReceiveTransfromer extends Transformer {
   public includeAttributes = (): string[] => {
     return [
       'subtotalFormatted',
-      'formatttedTotal',
+      'formattedTotal',
       'formattedPaymentDate',
       'formattedCreatedAt',
       'formattedAmount',
@@ -56,7 +56,15 @@ export class PaymentReceiveTransfromer extends Transformer {
    * @param {PaymentReceived} payment
    * @returns {string}
    */
-  protected formatttedTotal = (payment: PaymentReceived): string => {
+  /**
+   * Итог оплаты строкой.
+   *
+   * Поле называлось `formatttedTotal` — с лишней буквой. Читать его было
+   * НЕЧЕМ: витрина считает итог сама, а имя с опечаткой не совпадало ни с
+   * чем. Такая опечатка не падает и не находится поиском по правильному
+   * имени: поле просто уезжает в ответ и лежит там мёртвым грузом.
+   */
+  protected formattedTotal = (payment: PaymentReceived): string => {
     return this.formatNumber(payment.amount, {
       currencyCode: payment.currencyCode,
       money: true,

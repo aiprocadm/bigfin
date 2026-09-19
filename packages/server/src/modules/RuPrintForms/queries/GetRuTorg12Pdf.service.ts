@@ -20,6 +20,7 @@ import {
   mapInvoiceToRuVatLines,
   buildSignerProps,
 } from '../utils/ruFormMapping';
+import { sellerMetadataFor } from '../utils/resolveSellerRequisites';
 
 /**
  * Печатная форма РФ «Товарная накладная» (ТОРГ-12) по счёту-продаже.
@@ -63,7 +64,13 @@ export class GetRuTorg12Pdf {
   ): Promise<RuTorg12PaperTemplateProps> {
     const invoice = await this.getInvoiceService.getSaleInvoice(invoiceId);
     const tenant = await this.tenancyContext.getTenant(true);
-    const metadata = tenant.metadata;
+    // Реквизиты продавца — ЮРЛИЦА документа (§8.3 ТЗ), а не общие настройки
+    // аккаунта: документ от ООО обязан содержать реквизиты ООО. Контрагент
+    // платит и отчитывается по тем реквизитам, что видит.
+    const metadata = sellerMetadataFor(
+      tenant.metadata,
+      (invoice as any)?.legalEntity ?? null,
+    );
 
     return transformToRuTorg12Props(invoice, metadata);
   }

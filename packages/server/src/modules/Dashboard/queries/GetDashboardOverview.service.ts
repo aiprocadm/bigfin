@@ -2,6 +2,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 
+import { formatNumber } from '@/utils/format-number';
+
 import { ACCOUNT_TYPE } from '@/constants/accounts';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
@@ -448,7 +450,20 @@ export class GetDashboardOverviewService {
     return Math.round(value * 10) / 10;
   }
 
+  /**
+   * Сумма для показа человеку.
+   *
+   * НАЙДЕНО ЖИВЫМ ПРОХОДОМ. Здесь стоял самодельный формат в одну строку —
+   * `${amount.toFixed(2)} ${currencyCode}`. На главной рядом оказывались
+   * «1 749 839,09 ₽» (из сводки по деньгам, где формат общий) и
+   * «0.00 RUB» (отсюда): точка вместо запятой, латинские буквы вместо
+   * знака рубля, без разделителя разрядов.
+   *
+   * ТЗ (§5.2) запрещает это прямо: «Ни одного места, где формат собирается
+   * вручную». Общий помощник уже знает и про неразрывный пробел, и про то,
+   * что настоящий знак рубля лежит не там, где его ищут по умолчанию.
+   */
   private format(amount: number, currencyCode: string): string {
-    return `${amount.toFixed(2)} ${currencyCode}`;
+    return formatNumber(amount, { currencyCode, money: true });
   }
 }

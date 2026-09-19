@@ -39,6 +39,37 @@ describe('GetAutofillCategorizeTransctionTransformer — подсказки по
     });
   });
 
+  describe('description (назначение платежа)', () => {
+    it('отдаётся из строки выписки', () => {
+      // По назначению человек и решает, к какой статье отнести операцию.
+      // Без него окно разноса заставляло помнить строку, которую само же
+      // и закрыло собой.
+      const t = makeTransformer({
+        firstUncategorizedTransaction: {
+          description: 'Оплата по счёту 1042 за аренду',
+        },
+      });
+
+      expect(t.description()).toBe('Оплата по счёту 1042 за аренду');
+    });
+
+    it('пустое назначение — это null, а не пустая строка', () => {
+      // Пустая строка отрисовалась бы пустым местом там, где должен быть
+      // прочерк: человек не поймёт, назначения нет или его не догрузили.
+      expect(makeTransformer({ firstUncategorizedTransaction: {} }).description())
+        .toBeNull();
+      expect(
+        makeTransformer({
+          firstUncategorizedTransaction: { description: '' },
+        }).description(),
+      ).toBeNull();
+    });
+
+    it('строки выписки нет — назначения нет', () => {
+      expect(makeTransformer({}).description()).toBeNull();
+    });
+  });
+
   describe('transactionType (тип операции)', () => {
     it('тип из памяти, если правила нет', () => {
       const t = makeTransformer({

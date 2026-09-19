@@ -30,6 +30,7 @@ import {
   type CategorizeTransactionFormValues,
 } from './categorizeTransaction.schema';
 import { CategorizeTransactionSubFields } from './CategorizeTransactionSubFields';
+import { TransactionContextHeader } from './TransactionContextHeader';
 import { showApiError } from '@/utils/showApiError';
 
 function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any) {
@@ -108,15 +109,15 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
         className="flex flex-1 flex-col bigfin-ui"
       >
         <div className="flex flex-col gap-4 p-5">
-          {/* Сумма — только показ */}
-          <div>
-            <div className="text-[0.8125rem] text-text-muted">
-              {intl.get('amount')}
-            </div>
-            <div className={isDeposit ? 'text-xl font-semibold tracking-[-0.01em] text-success' : 'text-xl font-semibold tracking-[-0.01em] text-danger'}>
-              {formattedAmount}
-            </div>
-          </div>
+          <TransactionContextHeader
+            formattedDate={autofillCategorizeValues?.formattedDate}
+            formattedAmount={formattedAmount}
+            isDeposit={isDeposit}
+            payee={payee}
+            description={autofillCategorizeValues?.description}
+            recognizedByRuleName={autofillCategorizeValues?.recognizedByRuleName}
+            suggestedByContact={suggestedByContact}
+          />
 
           {/* Категория (тип операции) */}
           <FormField
@@ -164,11 +165,6 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
                         {intl.get('bank_import.counterparty_inn')}: {payeeInn}
                       </span>
                     )}
-                    {suggestedByContact && (
-                      <p className="text-xs text-text-muted">
-                        {intl.get('bank_import.suggested_by_contact')}
-                      </p>
-                    )}
                     {canCreateContact && (
                       <Button
                         type="button"
@@ -192,9 +188,14 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
 
         {/* Футер */}
         <div className="mt-auto flex gap-2 border-t border-border p-4">
+          {/* Кнопка называет ДЕЙСТВИЕ, а не «сохранить вообще»: человек
+              разносит операцию, и уведомление потом говорит теми же словами
+              — «операция разнесена». Одно имя действия на весь путь. */}
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting && <Spinner size="sm" />}
-            {intl.get('save')}
+            {form.formState.isSubmitting
+              ? intl.get('categorize.submitting')
+              : intl.get('categorize.submit')}
           </Button>
           <Button
             type="button"

@@ -590,6 +590,8 @@ export interface GetAutofillCategorizeTransaction {
   recognizedByRuleId: number | null;
   recognizedByRuleName: string | null;
   referenceNo: null | string;
+  /** Назначение платежа — по нему и решают, к какой статье отнести. */
+  description: null | string;
   isDepositTransaction: boolean;
   isWithdrawalTransaction: boolean;
   payeeInn: string | null;

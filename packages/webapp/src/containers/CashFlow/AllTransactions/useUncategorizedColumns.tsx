@@ -1,6 +1,8 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 
+import { Money } from '@/components/ui/money';
+
 import { CategorizeInlineCell } from './CategorizeInlineCell';
 
 /**
@@ -66,18 +68,14 @@ export function useUncategorizedColumns(accounts: any[] = []) {
           } = row.original;
           const isDeposit = Number(deposit) > 0;
 
+          // РАСХОД НЕ КРАСНЫЙ: строка выписки — это работа бизнеса, а не
+          // авария. Красный в этом продукте значит «проблема».
           return (
-            <span
-              className={
-                isDeposit
-                  ? 'font-medium text-success tabular-nums'
-                  : 'text-danger tabular-nums'
-              }
-            >
+            <Money tone={isDeposit ? 'positive' : 'default'}>
               {isDeposit
                 ? formatted_deposit_amount
                 : formatted_withdrawal_amount}
-            </span>
+            </Money>
           );
         },
       },

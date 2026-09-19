@@ -1,10 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import classNames from 'classnames';
 import { Classes, Switch, FormGroup, Intent } from '@blueprintjs/core';
 
 import { CellType } from '@/constants';
 import { safeInvoke } from '@/utils';
+import { DataTableCellProps } from './cellProps';
 
 /**
  * Switch editable cell.
@@ -14,11 +14,11 @@ const SwitchEditableCell = ({
   column: { id, switchProps, onSwitchChange },
   cell: { value: initialValue },
   payload,
-}) => {
+}: DataTableCellProps) => {
   const [value, setValue] = React.useState(initialValue);
 
   // Handle the switch change.
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.checked;
 
     setValue(newValue);
@@ -35,7 +35,7 @@ const SwitchEditableCell = ({
 
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={classNames(Classes.FILL)}
     >
       <Switch

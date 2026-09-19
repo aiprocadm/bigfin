@@ -1,18 +1,18 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { FormGroup, Intent, Classes } from '@blueprintjs/core';
 import classNames from 'classnames';
 
 import { CellType } from '@/constants';
 import { ContactsSuggestField } from '@/components';
+import { DataTableCellProps } from './cellProps';
 export default function ContactsListCellRenderer({
   column: { id },
   row: { index, original },
   cell: { value },
   payload: { contacts, updateData, errors },
-}) {
+}: DataTableCellProps) {
   const handleContactSelected = useCallback(
-    (contact) => {
+    (contact: { id: number }) => {
       updateData(index, 'contact_id', contact.id);
     },
     [updateData, index, id],
@@ -22,7 +22,7 @@ export default function ContactsListCellRenderer({
 
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={classNames(
         'form-group--select-list',
         'form-group--contacts-list',

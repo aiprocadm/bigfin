@@ -13,6 +13,7 @@ import { SystemSeedLatestCommand } from './commands/SystemSeedLatest.command';
 import { TenantsSeedLatestCommand } from './commands/TenantsSeedLatest.command';
 import { TenantsTranslateAccountsCommand } from './commands/TenantsTranslateAccounts.command';
 import { OpenApiExportCommand } from './commands/OpenApiExport.command';
+import { TenantsLegalEntityBackfillCommand } from './commands/TenantsLegalEntityBackfill.command';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { OpenApiExportCommand } from './commands/OpenApiExport.command';
     TenantsSeedLatestCommand,
     OpenApiExportCommand,
     TenantsTranslateAccountsCommand,
+    TenantsLegalEntityBackfillCommand,
   ],
 })
 export class CLIModule { }

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import {
   IProfitLossSheetQuery,
   IProfitLossSheetAccountsNode,
@@ -58,7 +59,8 @@ export class ProfitLossSheetTable extends R.pipe(
    * @return {ITableColumnAccessor[]}
    */
   private totalColumnAccessor = (): ITableColumnAccessor[] => {
-    return R.pipe(
+    return sameNodeShape<ITableColumnAccessor[]>(
+      R.pipe(
       R.when(
         this.query.isPreviousPeriodActive,
         R.concat(this.previousPeriodColumnAccessor()),
@@ -69,7 +71,8 @@ export class ProfitLossSheetTable extends R.pipe(
       ),
       R.concat(this.percentageColumnsAccessor()),
       R.concat([{ key: 'total', accessor: 'total.formattedAmount' }]),
-    )([]);
+    )([]),
+    );
   };
 
   /**
@@ -77,14 +80,12 @@ export class ProfitLossSheetTable extends R.pipe(
    * @returns {ITableColumnAccessor}
    */
   private commonColumnsAccessors = (): ITableColumnAccessor[] => {
-    return R.compose(
-      R.concat([{ key: 'name', accessor: 'name' }]),
-      R.ifElse(
-        this.query.isDatePeriodsColumnsType,
-        R.concat(this.datePeriodsColumnsAccessors()),
-        R.concat(this.totalColumnAccessor()),
-      ),
-    )([]);
+    let result: ITableColumnAccessor[] = [];
+    result = this.query.isDatePeriodsColumnsType(result)
+          ? R.concat(this.datePeriodsColumnsAccessors())(result)
+          : R.concat(this.totalColumnAccessor())(result);
+    result = sameNodeShape<ITableColumnAccessor[]>(R.concat([{ key: 'name', accessor: 'name' }])(result));
+    return result;
   };
 
   /**
@@ -171,10 +172,10 @@ export class ProfitLossSheetTable extends R.pipe(
    * @returns {ITableRow[]}
    */
   public tableRows = (): ITableRow[] => {
-    return R.compose(
-      this.addTotalRows,
-      this.nodesToTableRowsCompose,
-    )(this.reportData);
+    let result: ITableRow[] = this.reportData;
+    result = sameNodeShape<ITableRow[]>(this.nodesToTableRowsCompose(result));
+    result = sameNodeShape<ITableRow[]>(this.addTotalRows(result));
+    return result;
   };
 
   // ----------------------------------
@@ -185,23 +186,21 @@ export class ProfitLossSheetTable extends R.pipe(
    * @returns {ITableColumn[]}
    */
   private tableColumnChildren = (): ITableColumn[] => {
-    return R.compose(
-      R.unless(
+    let result: ITableColumn[] = [];
+    if (this.query.isPreviousPeriodActive()) {
+      result = sameNodeShape<ITableColumn[]>(R.concat(this.getPreviousPeriodColumns())(result));
+    }
+    if (this.query.isPreviousYearActive()) {
+      result = R.concat(this.getPreviousYearColumns())(result);
+    }
+    result = R.concat(this.percentageColumns())(result);
+    result = R.unless(
         R.isEmpty,
         R.concat([
           { key: 'total', label: this.i18n.t('profit_loss_sheet.total') },
         ]),
-      ),
-      R.concat(this.percentageColumns()),
-      R.when(
-        this.query.isPreviousYearActive,
-        R.concat(this.getPreviousYearColumns()),
-      ),
-      R.when(
-        this.query.isPreviousPeriodActive,
-        R.concat(this.getPreviousPeriodColumns()),
-      ),
-    )([]);
+      )(result);
+    return result;
   };
 
   /**
@@ -223,16 +222,14 @@ export class ProfitLossSheetTable extends R.pipe(
    * @returns {ITableColumn[]}
    */
   public tableColumns = (): ITableColumn[] => {
-    return R.compose(
-      this.tableColumnsCellIndexing,
-      R.concat([
+    let result: ITableColumn[] = [];
+    result = this.query.isDatePeriodsColumnsType(result)
+          ? R.concat(this.datePeriodsColumns())(result)
+          : R.concat(this.totalColumn())(result);
+    result = R.concat([
         { key: 'name', label: this.i18n.t('profit_loss_sheet.account_name') },
-      ]),
-      R.ifElse(
-        this.query.isDatePeriodsColumnsType,
-        R.concat(this.datePeriodsColumns()),
-        R.concat(this.totalColumn()),
-      ),
-    )([]);
+      ])(result);
+    result = sameNodeShape<ITableColumn[]>(this.tableColumnsCellIndexing(result));
+    return result;
   };
 }

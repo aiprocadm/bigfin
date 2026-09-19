@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { defaultTo, set, sumBy, isEmpty, mapValues, get } from 'lodash';
 import * as mathjs from 'mathjs';
 import * as moment from 'moment';
@@ -129,12 +130,11 @@ export class CashFlowStatement extends R.pipe(
       total: this.getAmountMeta(netIncome),
       sectionType: ICashFlowStatementSectionType.NET_INCOME,
     };
-    return R.compose(
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        this.assocPeriodsToNetIncomeNode,
-      ),
-    )(node);
+    let result: ICashFlowStatementNetIncomeSection = node;
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = sameNodeShape<ICashFlowStatementNetIncomeSection>(this.assocPeriodsToNetIncomeNode(result));
+    }
+    return result;
   };
 
   // --------------------------------------------
@@ -168,12 +168,11 @@ export class CashFlowStatement extends R.pipe(
       total: this.getAmountMeta(closingBalance),
       sectionType: ICashFlowStatementSectionType.ACCOUNT,
     };
-    return R.compose(
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        this.assocPeriodsToAccountNode,
-      ),
-    )(node);
+    let result: ICashFlowStatementAccountMeta = node;
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = sameNodeShape<ICashFlowStatementAccountMeta>(this.assocPeriodsToAccountNode(result));
+    }
+    return result;
   };
 
   /**
@@ -197,10 +196,12 @@ export class CashFlowStatement extends R.pipe(
   private getAccountsBySchemaRelations = (
     relations: ICashFlowSchemaAccountRelation[],
   ): ICashFlowStatementAccountMeta[] => {
-    return R.pipe(
+    return sameNodeShape<ICashFlowStatementAccountMeta[]>(
+      R.pipe(
       R.append(R.map(this.getAccountsBySchemaRelation)(relations)),
       R.flatten,
-    )([]);
+    )([]),
+    );
   };
 
   /**
@@ -236,12 +237,11 @@ export class CashFlowStatement extends R.pipe(
       children: accounts,
       total,
     };
-    return R.compose(
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        this.assocPeriodsToAggregateNode,
-      ),
-    )(node);
+    let result: ICashFlowStatementAccountSection = node;
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = sameNodeShape<ICashFlowStatementAccountSection>(this.assocPeriodsToAggregateNode(result));
+    }
+    return result;
   };
 
   /**
@@ -276,19 +276,17 @@ export class CashFlowStatement extends R.pipe(
         sectionType: ICashFlowStatementSectionType.AGGREGATE,
         children,
       };
-      return R.compose(
-        R.when(
-          this.isSchemaSectionType(ICashFlowStatementSectionType.AGGREGATE),
-          this.assocRegularSectionTotal,
-        ),
-        R.when(
-          this.isSchemaSectionType(ICashFlowStatementSectionType.AGGREGATE),
-          R.when(
+      let result: ICashFlowStatementAggregateSection = node;
+      if (this.isSchemaSectionType(ICashFlowStatementSectionType.AGGREGATE)(result)) {
+        result = R.when(
             R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
             this.assocPeriodsToAggregateNode,
-          ),
-        ),
-      )(node);
+          )(result);
+      }
+      if (this.isSchemaSectionType(ICashFlowStatementSectionType.AGGREGATE)(result)) {
+        result = sameNodeShape<ICashFlowStatementAggregateSection>(this.assocRegularSectionTotal(result));
+      }
+      return result;
     },
   );
 
@@ -341,20 +339,19 @@ export class CashFlowStatement extends R.pipe(
 
     const total = this.evaluateEquation(sectionSchema.equation, nodesTotalById);
 
-    return R.compose(
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        R.curry(this.assocTotalEquationDatePeriods)(
-          mappedSectionsById,
-          sectionSchema.equation,
-        ),
-      ),
-    )({
+    let result: ICashFlowStatementTotalSection = {
       sectionType: ICashFlowStatementSectionType.TOTAL,
       id: sectionSchema.id,
       label: this.i18n.t(sectionSchema.label),
       total: this.getTotalAmountMeta(total),
-    });
+    };
+     if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+       result = R.curry(this.assocTotalEquationDatePeriods)(
+          mappedSectionsById,
+          sectionSchema.equation,
+        )(result);
+     }
+     return result;
   };
 
   /**
@@ -392,12 +389,11 @@ export class CashFlowStatement extends R.pipe(
       total: this.getAmountMeta(closingBalance),
       sectionType: ICashFlowStatementSectionType.ACCOUNT,
     };
-    return R.compose(
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        this.assocCashAtBeginningAccountDatePeriods,
-      ),
-    )(node);
+    let result: ICashFlowStatementAccountMeta = node;
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = sameNodeShape<ICashFlowStatementAccountMeta>(this.assocCashAtBeginningAccountDatePeriods(result));
+    }
+    return result;
   };
 
   /**
@@ -443,12 +439,11 @@ export class CashFlowStatement extends R.pipe(
       children,
       total: this.getTotalAmountMeta(total),
     };
-    return R.compose(
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        this.assocCashAtBeginningDatePeriods,
-      ),
-    )(node);
+    let result: ICashFlowCashBeginningNode = node;
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = sameNodeShape<ICashFlowCashBeginningNode>(this.assocCashAtBeginningDatePeriods(result));
+    }
+    return result;
   };
 
   /**
@@ -460,30 +455,24 @@ export class CashFlowStatement extends R.pipe(
     schemaNode: ICashFlowSchemaSection,
     children,
   ): ICashFlowSchemaSection | ICashFlowStatementSection => {
-    return R.compose(
-      // Accounts node.
-      R.when(
-        this.isSchemaSectionType(ICashFlowStatementSectionType.ACCOUNTS),
-        this.accountsSectionParser,
-      ),
-      // Net income node.
-      R.when(
-        this.isSchemaSectionType(ICashFlowStatementSectionType.NET_INCOME),
-        this.netIncomeSectionMapper,
-      ),
-      // Cash at beginning node.
-      R.when(
-        this.isSchemaSectionType(
-          ICashFlowStatementSectionType.CASH_AT_BEGINNING,
-        ),
-        this.cashAtBeginningSectionParser,
-      ),
-      // Aggregate node. (that has no section type).
-      R.when(
-        this.isSchemaSectionType(ICashFlowStatementSectionType.AGGREGATE),
-        this.regularSectionParser(children),
-      ),
-    )(schemaNode);
+    let result: ICashFlowSchemaSection | ICashFlowStatementSection = schemaNode;
+    if (this.isSchemaSectionType(ICashFlowStatementSectionType.AGGREGATE)(result)) {
+      result = sameNodeShape<ICashFlowSchemaSection | ICashFlowStatementSection>(this.regularSectionParser(children)(result));
+    }
+    if (
+      this.isSchemaSectionType(
+        ICashFlowStatementSectionType.CASH_AT_BEGINNING,
+      )(result)
+    ) {
+      result = this.cashAtBeginningSectionParser(result);
+    }
+    if (this.isSchemaSectionType(ICashFlowStatementSectionType.NET_INCOME)(result)) {
+      result = this.netIncomeSectionMapper(result);
+    }
+    if (this.isSchemaSectionType(ICashFlowStatementSectionType.ACCOUNTS)(result)) {
+      result = this.accountsSectionParser(result);
+    }
+    return result;
   };
 
   /**
@@ -501,13 +490,11 @@ export class CashFlowStatement extends R.pipe(
     context,
     accumulatedSections: (ICashFlowSchemaSection | ICashFlowStatementSection)[],
   ): ICashFlowSchemaSection | ICashFlowStatementSection => {
-    return R.compose(
-      // Total equation section.
-      R.when(
-        this.isSchemaSectionType(ICashFlowStatementSectionType.TOTAL),
-        R.curry(this.totalEquationSectionParser)(accumulatedSections),
-      ),
-    )(section);
+    let result: ICashFlowSchemaSection | ICashFlowStatementSection = section;
+    if (this.isSchemaSectionType(ICashFlowStatementSectionType.TOTAL)(result)) {
+      result = sameNodeShape<ICashFlowSchemaSection | ICashFlowStatementSection>(R.curry(this.totalEquationSectionParser)(accumulatedSections)(result));
+    }
+    return result;
   };
 
   /**
@@ -584,11 +571,9 @@ export class CashFlowStatement extends R.pipe(
   private isAccountsSectionHasChildren = (
     section: ICashFlowStatementSection[],
   ): boolean => {
-    return R.ifElse(
-      this.isSchemaSectionType(ICashFlowStatementSectionType.ACCOUNTS),
-      this.isSectionHasChildren,
-      R.always(true),
-    )(section);
+    return this.isSchemaSectionType(ICashFlowStatementSectionType.ACCOUNTS)(section)
+          ? this.isSectionHasChildren(section)
+          : true;
   };
 
   /**
@@ -599,11 +584,9 @@ export class CashFlowStatement extends R.pipe(
   private isAccountLeafNoneZero = (
     section: ICashFlowStatementSection[],
   ): boolean => {
-    return R.ifElse(
-      this.isSchemaSectionType(ICashFlowStatementSectionType.ACCOUNT),
-      this.isSectionNoneZero,
-      R.always(true),
-    )(section);
+    return this.isSchemaSectionType(ICashFlowStatementSectionType.ACCOUNT)(section)
+          ? this.isSectionNoneZero(section)
+          : true;
   };
 
   /**
@@ -636,10 +619,10 @@ export class CashFlowStatement extends R.pipe(
   private filterReportData = (
     sections: ICashFlowStatementSection[],
   ): ICashFlowStatementSection[] => {
-    return R.compose(
-      this.filterNoneChildrenSections,
-      this.filterNoneZeroAccountsLeafs,
-    )(sections);
+    let result: ICashFlowStatementSection[] = sections;
+    result = sameNodeShape<ICashFlowStatementSection[]>(this.filterNoneZeroAccountsLeafs(result));
+    result = sameNodeShape<ICashFlowStatementSection[]>(this.filterNoneChildrenSections(result));
+    return result;
   };
 
   /**
@@ -650,14 +633,13 @@ export class CashFlowStatement extends R.pipe(
   private schemaParser = (
     schema: ICashFlowSchemaSection[],
   ): ICashFlowSchemaSection[] => {
-    return R.compose(
-      R.when(
-        R.always(this.query.noneTransactions || this.query.noneZero),
-        this.filterReportData,
-      ),
-      this.totalSectionsParser,
-      this.schemaSectionsParser,
-    )(schema);
+    let result: ICashFlowSchemaSection[] = schema;
+    result = sameNodeShape<ICashFlowSchemaSection[]>(this.schemaSectionsParser(result));
+    result = sameNodeShape<ICashFlowSchemaSection[]>(this.totalSectionsParser(result));
+    if (this.query.noneTransactions || this.query.noneZero) {
+      result = sameNodeShape<ICashFlowSchemaSection[]>(this.filterReportData(result));
+    }
+    return result;
   };
 
   /**

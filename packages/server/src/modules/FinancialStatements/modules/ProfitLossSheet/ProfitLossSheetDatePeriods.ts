@@ -22,6 +22,17 @@ export const ProfitLossSheetDatePeriods = <
   Base: T,
 ) =>
   class extends R.pipe(FinancialDatePeriods)(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare evaluateEquation: any;
+    declare getNodesTableForEvaluating: any;
     query: ProfitLossSheetQuery;
     repository: ProfitLossSheetRepository;
 

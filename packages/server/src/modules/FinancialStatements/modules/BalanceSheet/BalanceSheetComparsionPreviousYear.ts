@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { sumBy, isEmpty } from 'lodash';
 import {
   IBalanceSheetAccountNode,
@@ -51,21 +52,18 @@ export const BalanceSheetComparsionPreviousYear = <
     protected previousYearAccountNodeComposer = (
       node: IBalanceSheetAccountNode,
     ): IBalanceSheetAccountNode => {
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizontalTotals,
-          this.assocPreviousYearAccountHorizNodeComposer,
-        ),
-        R.when(
-          this.query.isPreviousYearPercentageActive,
-          this.assocPreviousYearPercentageNode,
-        ),
-        R.when(
-          this.query.isPreviousYearChangeActive,
-          this.assocPreviousYearChangetNode,
-        ),
-        this.assocPreviousYearAccountNode,
-      )(node);
+      let result: IBalanceSheetAccountNode = node;
+      result = sameNodeShape<IBalanceSheetAccountNode>(this.assocPreviousYearAccountNode(result));
+      if (this.query.isPreviousYearChangeActive()) {
+        result = sameNodeShape<IBalanceSheetAccountNode>(this.assocPreviousYearChangetNode(result));
+      }
+      if (this.query.isPreviousYearPercentageActive()) {
+        result = sameNodeShape<IBalanceSheetAccountNode>(this.assocPreviousYearPercentageNode(result));
+      }
+      if (this.isNodeHasHorizontalTotals(result)) {
+        result = sameNodeShape<IBalanceSheetAccountNode>(this.assocPreviousYearAccountHorizNodeComposer(result));
+      }
+      return result;
     };
 
     // ------------------------------
@@ -92,21 +90,18 @@ export const BalanceSheetComparsionPreviousYear = <
     protected previousYearAggregateNodeComposer = (
       node: IBalanceSheetAggregateNode,
     ): IBalanceSheetAggregateNode => {
-      return R.compose(
-        R.when(
-          this.query.isPreviousYearPercentageActive,
-          this.assocPreviousYearTotalPercentageNode,
-        ),
-        R.when(
-          this.query.isPreviousYearChangeActive,
-          this.assocPreviousYearTotalChangeNode,
-        ),
-        R.when(
-          this.isNodeHasHorizontalTotals,
-          this.assocPreviousYearAggregateHorizNode,
-        ),
-        this.assocPreviousYearAggregateNode,
-      )(node);
+      let result: IBalanceSheetAggregateNode = node;
+      result = sameNodeShape<IBalanceSheetAggregateNode>(this.assocPreviousYearAggregateNode(result));
+      if (this.isNodeHasHorizontalTotals(result)) {
+        result = sameNodeShape<IBalanceSheetAggregateNode>(this.assocPreviousYearAggregateHorizNode(result));
+      }
+      if (this.query.isPreviousYearChangeActive()) {
+        result = sameNodeShape<IBalanceSheetAggregateNode>(this.assocPreviousYearTotalChangeNode(result));
+      }
+      if (this.query.isPreviousYearPercentageActive()) {
+        result = sameNodeShape<IBalanceSheetAggregateNode>(this.assocPreviousYearTotalPercentageNode(result));
+      }
+      return result;
     };
 
     // ------------------------------
@@ -140,24 +135,20 @@ export const BalanceSheetComparsionPreviousYear = <
         horiontalTotalNode: IBalanceSheetTotal,
         index: number,
       ): IBalanceSheetTotal => {
-        return R.compose(
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearTotalChangeNode,
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearAggregateHorizTotalNode(node, index),
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearHorizNodeFromToDates,
-          ),
-        )(horiontalTotalNode);
+        let result: IBalanceSheetTotal = horiontalTotalNode;
+        if (this.query.isPreviousYearActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearHorizNodeFromToDates(result));
+        }
+        if (this.query.isPreviousYearActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearAggregateHorizTotalNode(node, index)(result));
+        }
+        if (this.query.isPreviousYearChangeActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearTotalChangeNode(result));
+        }
+        if (this.query.isPreviousYearPercentageActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearTotalPercentageNode(result));
+        }
+        return result;
       },
     );
 
@@ -230,24 +221,20 @@ export const BalanceSheetComparsionPreviousYear = <
         node: IBalanceSheetAccountNode,
         horizontalTotalNode: IBalanceSheetTotal,
       ): IBalanceSheetTotal => {
-        return R.compose(
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearChangetNode,
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearAccountHorizTotal(node),
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearHorizNodeFromToDates,
-          ),
-        )(horizontalTotalNode);
+        let result: IBalanceSheetTotal = horizontalTotalNode;
+        if (this.query.isPreviousYearActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearHorizNodeFromToDates(result));
+        }
+        if (this.query.isPreviousYearActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearAccountHorizTotal(node)(result));
+        }
+        if (this.query.isPreviousYearChangeActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearChangetNode(result));
+        }
+        if (this.query.isPreviousYearPercentageActive()) {
+          result = sameNodeShape<IBalanceSheetTotal>(this.assocPreviousYearPercentageNode(result));
+        }
+        return result;
       },
     );
 

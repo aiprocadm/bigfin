@@ -6,6 +6,33 @@ import { TransformerInjectable } from '../../Transformer/TransformerInjectable.s
 import { ServiceError } from '../../Items/ServiceError';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
+
+/**
+ * Поступление ВМЕСТЕ с тем, что дописывает преобразователь ответа.
+ *
+ * Метод объявлял, что возвращает запись из базы, а возвращает её
+ * преобразованный вид: форматы сумм и дат дописывает
+ * `PaymentReceivedTransformer`. Из-за этого печатная форма читала поля
+ * «вслепую» — проверка типов не могла сказать о них ни слова.
+ *
+ * Описаны те, что и правда читаются кодом.
+ */
+export type PaymentReceivedWithFormatted = PaymentReceived & {
+  subtotalFormatted: string;
+  formattedPaymentDate: string;
+  formattedAmount: string;
+  formattedCreatedAt: string;
+  formattedExchangeRate: string;
+
+  // Связи, которые подтягивает сам запрос (`withGraphFetched`). В модели их
+  // нет: там объявлены только колонки таблицы.
+  customer: Record<string, any>;
+  entries: Array<{
+    invoice: { invoiceNo: string; totalFormatted: string };
+    paymentAmountFormatted: string;
+  }>;
+};
+
 @Injectable()
 export class GetPaymentReceivedService {
   constructor(
@@ -24,7 +51,7 @@ export class GetPaymentReceivedService {
    */
   public async getPaymentReceive(
     paymentReceiveId: number,
-  ): Promise<PaymentReceived> {
+  ): Promise<PaymentReceivedWithFormatted> {
     const paymentReceive = await this.paymentReceiveModel()
       .query()
       .withGraphFetched('customer')

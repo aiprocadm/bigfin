@@ -18,6 +18,7 @@ import { CashflowStatementModule } from './modules/CashFlowStatement/CashflowSta
 import { VendorBalanceSummaryModule } from './modules/VendorBalanceSummary/VendorBalanceSummary.module';
 import { BalanceSheetModule } from './modules/BalanceSheet/BalanceSheet.module';
 import { GetReportChartService } from './queries/GetReportChart.service';
+import { GetBalanceStructureService } from './queries/GetBalanceStructure.service';
 import { GetReportDrillDownService } from './queries/GetReportDrillDown.service';
 import { TenancyContext } from '../Tenancy/TenancyContext.service';
 import { ReportChartController } from './queries/ReportChart.controller';
@@ -50,6 +51,7 @@ import { ReportPlanFactController } from './queries/ReportPlanFact.controller';
   // это и стережёт `tenancyModuleImports.spec.ts`.
   providers: [
     GetReportChartService,
+    GetBalanceStructureService,
     GetReportDrillDownService,
     GetReportPlanFactService,
     TenancyContext,

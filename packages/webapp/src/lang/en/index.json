@@ -4647,5 +4647,8 @@
   "reports.drill_down.opening_balance": "Opening balance",
   "reports.drill_down.closing_balance": "Closing balance",
   "reports.drill_down.period_change": "Change over the period",
-  "reports.drill_down.truncated": "Showing {shown} of {total} operations."
+  "reports.drill_down.truncated": "Showing {shown} of {total} operations.",
+  "reports.structure.assets": "What the money is in",
+  "reports.structure.liabilities_equity": "Where the money came from",
+  "reports.structure.negative_groups": "Not shown on the bar (negative): {groups}."
 }

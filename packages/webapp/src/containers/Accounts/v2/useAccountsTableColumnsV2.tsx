@@ -9,6 +9,11 @@ import {
   type AccountRowActions,
 } from './AccountsActionsMenuV2';
 import { accountBalanceText } from '@/utils/accountBalance';
+import { useLegalEntities } from '@/hooks/query/legalEntities';
+import {
+  shouldShowLegalEntityBreakdown,
+  type LegalEntityRow,
+} from '@/containers/LegalEntities/legalEntityView';
 
 /** Id колонки «Имя»: в ней DataTable рисует шеврон/отступ дерева. */
 export const ACCOUNTS_TREE_COLUMN_ID = 'name';
@@ -18,6 +23,23 @@ export const ACCOUNTS_TREE_COLUMN_ID = 'name';
  * код, имя (с деревом), тип, валюта, баланс (вправо, tabular-nums).
  */
 export function useAccountsTableColumnsV2(actions: AccountRowActions) {
+  const { data: entities } = useLegalEntities() as {
+    data?: LegalEntityRow[];
+  };
+
+  /**
+   * Колонка «Юрлицо» — правило «не навязывать» (§6.4 ТЗ, остаток Ю5).
+   *
+   * Пока юрлицо одно, колонка не появляется ВОВСЕ: она была бы столбцом с
+   * одним и тем же словом в каждой строке. Именно юрлицо счёта решает, чьей
+   * считается операция, поэтому как только юрлиц становится больше одного —
+   * видеть это надо сразу, а не открывая каждый счёт.
+   */
+  const showLegalEntity = shouldShowLegalEntityBreakdown(entities);
+  const entityNameById = new Map(
+    (entities ?? []).map((entity) => [Number(entity.id), entity.name]),
+  );
+
   return useMemo(
     () => [
       {
@@ -83,6 +105,23 @@ export function useAccountsTableColumnsV2(actions: AccountRowActions) {
           </span>
         ),
       },
+      ...(showLegalEntity
+        ? [
+            {
+              id: 'legal_entity',
+              Header: intl.get('legal_entities.col.entity'),
+              accessor: 'legal_entity_id',
+              width: 160,
+              Cell: ({ row }: { row: { original: AccountRow } }) => (
+                <span className="text-text-secondary">
+                  {entityNameById.get(
+                    Number((row.original as any).legal_entity_id),
+                  ) ?? '—'}
+                </span>
+              ),
+            },
+          ]
+        : []),
       {
         id: 'balance',
         Header: intl.get('balance'),
@@ -110,6 +149,6 @@ export function useAccountsTableColumnsV2(actions: AccountRowActions) {
         ),
       },
     ],
-    [actions],
+    [actions, showLegalEntity, entities],
   );
 }

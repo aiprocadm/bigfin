@@ -101,7 +101,10 @@ export default function CashFlowStatementTable({
       basis={query.basis}
     >
       {/* Что показано: сводно или по одному юрлицу (этап 7 ТЗ). */}
-      <ReportScopeNote scope={(meta as any)?.legal_entity_scope} />
+      <ReportScopeNote
+        scope={(meta as any)?.legal_entity_scope}
+        currency={(meta as any)?.group_currency}
+      />
 
       <ReportTable
         columns={reportColumns}

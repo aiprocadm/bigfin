@@ -117,6 +117,7 @@ export default function BalanceSheetTable({
       {/* Что показано: сводно или по одному юрлицу (этап 7 ТЗ). */}
       <ReportScopeNote
         scope={(meta as any)?.legal_entity_scope}
+        currency={(meta as any)?.group_currency}
         withBalanceWarning
       />
 

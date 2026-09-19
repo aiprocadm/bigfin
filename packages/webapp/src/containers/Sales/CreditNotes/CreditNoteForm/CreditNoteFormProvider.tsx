@@ -24,7 +24,8 @@ import {
 import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
 
 interface CreditNoteFormProviderValue {
-  creditNoteState: CreditNoteStateResponse;
+  /** Пока состояние не загружено, его нет — форма это учитывает. */
+  creditNoteState: CreditNoteStateResponse | undefined;
   isCreditNoteStateLoading: boolean;
   // Остальное, что кладёт поставщик. Тип пока не описан — до этой карты
   // эти поля не были объявлены вовсе, и каждое чтение считалось ошибкой.

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   useQueryClient,
   useMutation,
@@ -13,9 +12,21 @@ import { transformPagination, transformToCamelCase } from '@/utils';
 import useApiRequest from '../useRequest';
 import { useRequestPdf } from '../useRequestPdf';
 import t from './types';
+import type {
+  QueryCacheClient,
+  QueryHookOptions,
+} from './hookTypes';
+
+// Номер записи МОЖЕТ БЫТЬ НЕ ИЗВЕСТЕН: шторка ещё не открыта, окно
+// предпросмотра не выбрало документ. Запрос в этом случае просто не
+// выполняется. Требовать номер всегда значило бы заставить каждого
+// вызывающего врать — подставлять ноль или пустую строку.
+
+/** Ответ сервера: разбирается прямо в хуке. */
+type ApiResponse = { data: any };
 
 // Common invalidate queries.
-const commonInvalidateQueries = (queryClient) => {
+const commonInvalidateQueries = (queryClient: QueryCacheClient) => {
   // Invalidate invoices.
   queryClient.invalidateQueries(t.SALE_INVOICES);
   queryClient.invalidateQueries(t.SALE_INVOICE);
@@ -57,7 +68,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale invoice.
  */
-export function useCreateInvoice(props?) {
+export function useCreateInvoice(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -80,7 +91,7 @@ export function useCreateInvoice(props?) {
 /**
  * Edits the given sale invoice.
  */
-export function useEditInvoice(props?) {
+export function useEditInvoice(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -105,7 +116,7 @@ export function useEditInvoice(props?) {
 /**
  * Deletes the given sale invoice.
  */
-export function useDeleteInvoice(props) {
+export function useDeleteInvoice(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -128,7 +139,7 @@ export function useDeleteInvoice(props) {
 /**
  * Deletes multiple sale invoices in bulk.
  */
-export function useBulkDeleteInvoices(props?) {
+export function useBulkDeleteInvoices(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -178,12 +189,12 @@ export function useValidateBulkDeleteInvoices(
     (ids) =>
       apiRequest
         .post('sale-invoices/validate-bulk-delete', { ids })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     props,
   );
 }
 
-const transformInvoices = (res) => ({
+const transformInvoices = (res: ApiResponse) => ({
   invoices: res.data.sales_invoices,
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
@@ -192,7 +203,10 @@ const transformInvoices = (res) => ({
 /**
  * Retrieve sale invoices list with pagination meta.
  */
-export function useInvoices(query, props?) {
+export function useInvoices(
+  query?: Record<string, any>,
+  props?: QueryHookOptions,
+) {
   return useRequestQuery(
     [t.SALE_INVOICES, query],
     { method: 'get', url: 'sale-invoices', params: query },
@@ -215,12 +229,12 @@ export function useInvoices(query, props?) {
 /**
  * Дублирует счёт в черновик-копию (О2 карты v13).
  */
-export function useDuplicateInvoice(props?) {
+export function useDuplicateInvoice(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation<any, any, number>(
-    (invoiceId) => apiRequest.post(`sale-invoices/${invoiceId}/duplicate`),
+    (invoiceId: number | string | null | undefined) => apiRequest.post(`sale-invoices/${invoiceId}/duplicate`),
     {
       onSuccess: () => {
         commonInvalidateQueries(queryClient);
@@ -233,12 +247,12 @@ export function useDuplicateInvoice(props?) {
 /**
  * Marks the sale invoice as delivered.
  */
-export function useDeliverInvoice(props) {
+export function useDeliverInvoice(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    (invoiceId) => apiRequest.post(`sale-invoices/${invoiceId}/deliver`),
+    (invoiceId: number | string | null | undefined) => apiRequest.post(`sale-invoices/${invoiceId}/deliver`),
     {
       onSuccess: (res, invoiceId) => {
         // Invalidate specific invoice.
@@ -256,12 +270,12 @@ export function useDeliverInvoice(props) {
  * Retrieve the sale invoice details.
  * @param {number} invoiceId - Invoice id.
  */
-export function useInvoice(invoiceId, props, requestProps?) {
+export function useInvoice(invoiceId: number | string | null | undefined, props?: QueryHookOptions, requestProps?: QueryHookOptions) {
   return useRequestQuery(
     [t.SALE_INVOICE, invoiceId],
     { method: 'get', url: `sale-invoices/${invoiceId}`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -271,7 +285,7 @@ export function useInvoice(invoiceId, props, requestProps?) {
 /**
  * Retrieve the invoice pdf document data.
  */
-export function usePdfInvoice(invoiceId) {
+export function usePdfInvoice(invoiceId: number | string | null | undefined) {
   return useRequestPdf({
     url: `sale-invoices/${invoiceId}`,
   });
@@ -301,7 +315,7 @@ export const useInvoiceHtml = (
             Accept: 'application/json+html',
           },
         })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
   );
 };
 
@@ -309,7 +323,7 @@ export const useInvoiceHtml = (
  * Retrieve due invoices of the given customer id.
  * @param {number} customerId - Customer id.
  */
-export function useDueInvoices(customerId, props) {
+export function useDueInvoices(customerId: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.SALE_INVOICES, t.SALE_INVOICES_DUE, customerId],
     {
@@ -318,7 +332,7 @@ export function useDueInvoices(customerId, props) {
       params: { customer_id: customerId },
     },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: [],
       ...props,
     },
@@ -335,7 +349,7 @@ export function useRefreshInvoices() {
   };
 }
 
-export function useCreateBadDebt(props?) {
+export function useCreateBadDebt(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -354,12 +368,12 @@ export function useCreateBadDebt(props?) {
   );
 }
 
-export function useCancelBadDebt(props) {
+export function useCancelBadDebt(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    (id) => apiRequest.post(`sale-invoices/${id}/cancel-writeoff`),
+    (id: number | string | null | undefined) => apiRequest.post(`sale-invoices/${id}/cancel-writeoff`),
     {
       onSuccess: (res, id) => {
         // Invalidate
@@ -373,7 +387,7 @@ export function useCancelBadDebt(props) {
   );
 }
 
-export function useInvoicePaymentTransactions(invoiceId, props) {
+export function useInvoicePaymentTransactions(invoiceId: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.SALE_INVOICE_PAYMENT_TRANSACTIONS, invoiceId],
     {
@@ -381,7 +395,7 @@ export function useInvoicePaymentTransactions(invoiceId, props) {
       url: `sale-invoices/${invoiceId}/payments`,
     },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: [],
       ...props,
     },
@@ -428,7 +442,7 @@ export function useSendSaleInvoiceMail(
   >(
     (value) => apiRequest.post(`sale-invoices/${value.id}/mail`, value.values),
     {
-      onSuccess: (res) => {
+      onSuccess: () => {
         commonInvalidateQueries(queryClient);
       },
       ...options,
@@ -501,7 +515,7 @@ export function useSaleInvoiceMailState(
     () =>
       apiRequest
         .get(`/sale-invoices/${invoiceId}/mail`)
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     options,
   );
 }
@@ -522,7 +536,7 @@ export function useGetSaleInvoiceState(
     () =>
       apiRequest
         .get(`/sale-invoices/state`)
-        .then((res) => transformToCamelCase(res.data?.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data?.data)),
     { ...options },
   );
 }
@@ -587,7 +601,7 @@ export function useGetSaleInvoiceBrandingTemplate(
     () =>
       apiRequest
         .get(`/sale-invoices/${invoiceId}/template`)
-        .then((res) => transformToCamelCase(res.data?.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data?.data)),
     { ...options },
   );
 }

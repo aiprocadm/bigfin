@@ -1,11 +1,22 @@
-// @ts-nocheck
 import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination, transformToCamelCase } from '@/utils';
 import useApiRequest from '../useRequest';
 import t from './types';
+import type {
+  QueryCacheClient,
+  QueryHookOptions,
+} from './hookTypes';
 
-const commonInvalidateQueries = (client) => {
+// Номер записи МОЖЕТ БЫТЬ НЕ ИЗВЕСТЕН: шторка ещё не открыта, окно
+// предпросмотра не выбрало документ. Запрос в этом случае просто не
+// выполняется. Требовать номер всегда значило бы заставить каждого
+// вызывающего врать — подставлять ноль или пустую строку.
+
+/** Ответ сервера: разбирается прямо в хуке. */
+type ApiResponse = { data: any };
+
+const commonInvalidateQueries = (client: QueryCacheClient) => {
   // Invalidate manual journals.
   client.invalidateQueries(t.MANUAL_JOURNALS);
 
@@ -35,7 +46,7 @@ const commonInvalidateQueries = (client) => {
 /**
  * Creates a new manual journal.
  */
-export function useCreateJournal(props?) {
+export function useCreateJournal(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -51,7 +62,7 @@ export function useCreateJournal(props?) {
 /**
  * Edits the given manual journal.
  */
-export function useEditJournal(props?) {
+export function useEditJournal(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -60,7 +71,7 @@ export function useEditJournal(props?) {
     {
       onSuccess: (res, [id]) => {
         // Invalidate specific manual journal.
-        queryClient.invalidateQueries(t.MANUAL_JOURNAL, id);
+        queryClient.invalidateQueries([t.MANUAL_JOURNAL, id]);
 
         // Common invalidate queries.
         commonInvalidateQueries(queryClient);
@@ -73,14 +84,14 @@ export function useEditJournal(props?) {
 /**
  * Deletes the given manual jouranl.
  */
-export function useDeleteJournal(props) {
+export function useDeleteJournal(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation((id: number) => apiRequest.delete(`manual-journals/${id}`), {
     onSuccess: (res, id) => {
       // Invalidate specific manual journal.
-      queryClient.invalidateQueries(t.MANUAL_JOURNAL, id);
+      queryClient.invalidateQueries([t.MANUAL_JOURNAL, id]);
 
       commonInvalidateQueries(queryClient);
     },
@@ -91,7 +102,7 @@ export function useDeleteJournal(props) {
 /**
  * Deletes multiple manual journals in bulk.
  */
-export function useBulkDeleteManualJournals(props?) {
+export function useBulkDeleteManualJournals(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -117,14 +128,14 @@ export function useBulkDeleteManualJournals(props?) {
   );
 }
 
-export function useValidateBulkDeleteManualJournals(props?) {
+export function useValidateBulkDeleteManualJournals(props?: QueryHookOptions) {
   const apiRequest = useApiRequest();
 
   return useMutation(
     (ids: number[]) =>
       apiRequest
         .post('manual-journals/validate-bulk-delete', { ids })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     {
       ...props,
     },
@@ -134,14 +145,14 @@ export function useValidateBulkDeleteManualJournals(props?) {
 /**
  * Publishes the given manual journal.
  */
-export function usePublishJournal(props) {
+export function usePublishJournal(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation((id: number) => apiRequest.patch(`manual-journals/${id}/publish`), {
     onSuccess: (res, id) => {
       // Invalidate specific manual journal.
-      queryClient.invalidateQueries(t.MANUAL_JOURNAL, id);
+      queryClient.invalidateQueries([t.MANUAL_JOURNAL, id]);
 
       commonInvalidateQueries(queryClient);
     },
@@ -149,7 +160,7 @@ export function usePublishJournal(props) {
   });
 }
 
-const transformJournals = (response) => ({
+const transformJournals = (response: ApiResponse) => ({
   manualJournals: response.data.manual_journals,
   pagination: transformPagination(response.data.pagination),
   filterMeta: response.data.filter_meta,
@@ -158,7 +169,7 @@ const transformJournals = (response) => ({
 /**
  * Retrieve the manual journals with pagination meta.
  */
-export function useJournals(query, props) {
+export function useJournals(query?: Record<string, any>, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.MANUAL_JOURNALS, query],
     { method: 'get', url: 'manual-journals', params: query },
@@ -177,12 +188,12 @@ export function useJournals(query, props) {
 /**
  * Retrieve the manual journal details.
  */
-export function useJournal(id, props) {
+export function useJournal(id: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.MANUAL_JOURNAL, id],
     { method: 'get', url: `manual-journals/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },

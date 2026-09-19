@@ -1,4 +1,8 @@
 // @ts-nocheck
+// ОСТАЛОСЬ 1 ЗАМЕЧАНИЕ (слой хуков запросов, 19.09). Было 16.
+// Оставшееся: у отправки письма объявлен один вид ответа, а запрос
+// возвращает другой. Разводить это надо вместе с описанием ответа на
+// сервере — иначе получится третий вид того же самого.
 import {
   useMutation,
   useQueryClient,
@@ -13,9 +17,16 @@ import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination, saveInvoke, transformToCamelCase } from '@/utils';
 import { useRequestPdf } from '../useRequestPdf';
 import t from './types';
+import type {
+  QueryCacheClient,
+  QueryHookOptions,
+} from './hookTypes';
+
+/** Ответ сервера: разбирается прямо в хуке. */
+type ApiResponse = { data: any };
 
 // Common invalidate queries.
-const commonInvalidateQueries = (client) => {
+const commonInvalidateQueries = (client: QueryCacheClient) => {
   // Invalidate payment receives.
   client.invalidateQueries(t.PAYMENT_RECEIVES);
   client.invalidateQueries(t.PAYMENT_RECEIVE_EDIT_PAGE);
@@ -54,7 +65,7 @@ const commonInvalidateQueries = (client) => {
 };
 
 // Transform payment receives.
-const transformPaymentReceives = (res) => ({
+const transformPaymentReceives = (res: ApiResponse) => ({
   paymentReceives: res.data.payment_receives,
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
@@ -63,7 +74,10 @@ const transformPaymentReceives = (res) => ({
 /**
  * Retrieve accounts list.
  */
-export function usePaymentReceives(query, props?) {
+export function usePaymentReceives(
+  query?: Record<string, any>,
+  props?: QueryHookOptions,
+) {
   return useRequestQuery(
     [t.PAYMENT_RECEIVES, query],
     { method: 'get', url: 'payments-received', params: query },
@@ -82,7 +96,7 @@ export function usePaymentReceives(query, props?) {
 /**
  * Creates payment receive.
  */
-export function useCreatePaymentReceive(props?) {
+export function useCreatePaymentReceive(props?: QueryHookOptions) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -106,7 +120,7 @@ export function useCreatePaymentReceive(props?) {
 /**
  * Edits payment receive.
  */
-export function useEditPaymentReceive(props?) {
+export function useEditPaymentReceive(props?: QueryHookOptions) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -130,12 +144,12 @@ export function useEditPaymentReceive(props?) {
 /**
  * Deletes payment receive.
  */
-export function useDeletePaymentReceive(props) {
+export function useDeletePaymentReceive(props?: QueryHookOptions) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    (id) => apiRequest.delete(`payments-received/${id}`),
+    (id: number | string | null | undefined) => apiRequest.delete(`payments-received/${id}`),
     {
       onSuccess: (data, id) => {
         // Invalidate specific payment receive.
@@ -153,7 +167,7 @@ export function useDeletePaymentReceive(props) {
 /**
  * Deletes multiple payments received in bulk.
  */
-export function useBulkDeletePaymentReceives(props?) {
+export function useBulkDeletePaymentReceives(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -179,14 +193,14 @@ export function useBulkDeletePaymentReceives(props?) {
   );
 }
 
-export function useValidateBulkDeletePaymentReceives(props?) {
+export function useValidateBulkDeletePaymentReceives(props?: QueryHookOptions) {
   const apiRequest = useApiRequest();
 
   return useMutation(
     (ids: number[]) =>
       apiRequest
         .post('payments-received/validate-bulk-delete', { ids })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     {
       ...props,
     },
@@ -197,12 +211,12 @@ export function useValidateBulkDeletePaymentReceives(props?) {
  * Retrieve specific payment receive.
  * @param {number} id - Payment receive.
  */
-export function usePaymentReceive(id, props) {
+export function usePaymentReceive(id: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.PAYMENT_RECEIVE, id],
     { method: 'get', url: `payments-received/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -213,7 +227,7 @@ export function usePaymentReceive(id, props) {
  * Retrieve information of payment receive in edit page.
  * @param {number} id - Payment receive id.
  */
-export function usePaymentReceiveEditPage(id, props) {
+export function usePaymentReceiveEditPage(id: number | string | null | undefined, props?: QueryHookOptions) {
   const apiRequest = useApiRequest();
   return useQuery(
     [t.PAYMENT_RECEIVE_EDIT_PAGE, id],
@@ -236,7 +250,7 @@ export function useRefreshPaymentReceive() {
  * Retrieve the payment receive pdf document data.
  * @param {number} paymentReceiveId - Payment receive id.
  */
-export function usePdfPaymentReceive(paymentReceiveId) {
+export function usePdfPaymentReceive(paymentReceiveId: number | string | null | undefined) {
   return useRequestPdf({ url: `payments-received/${paymentReceiveId}` });
 }
 
@@ -330,7 +344,7 @@ export function usePaymentReceivedMailState(
     () =>
       apiRequest
         .get(`payments-received/${paymentReceiveId}/mail`)
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
   );
 }
 
@@ -354,7 +368,7 @@ export function usePaymentReceivedState(
     () =>
       apiRequest
         .get('/payments-received/state')
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     {
       ...options,
     },
@@ -386,7 +400,7 @@ export function useGetPaymentReceiveHtml(
             Accept: 'application/json+html',
           },
         })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     {
       ...options,
     },

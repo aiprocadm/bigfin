@@ -1,4 +1,8 @@
 // @ts-nocheck
+// ОСТАЛОСЬ 2 ЗАМЕЧАНИЯ (слой хуков запросов, 19.09). Было 16.
+// Оставшееся: у чека в HTML объявлен свой вид ответа, и он спорит с
+// тем, что отдаёт общий помощник запросов. Чинится вместе с ним, а не
+// здесь.
 import {
   useQueryClient,
   useMutation,
@@ -12,8 +16,15 @@ import { transformPagination, transformToCamelCase } from '@/utils';
 import { useRequestPdf } from '../useRequestPdf';
 import t from './types';
 import { unwrapData } from '@/utils/unwrapData';
+import type {
+  QueryCacheClient,
+  QueryHookOptions,
+} from './hookTypes';
 
-const commonInvalidateQueries = (queryClient) => {
+/** Ответ сервера: разбирается прямо в хуке. */
+type ApiResponse = { data: any };
+
+const commonInvalidateQueries = (queryClient: QueryCacheClient) => {
   // Invalidate receipts.
   queryClient.invalidateQueries(t.SALE_RECEIPTS);
 
@@ -51,7 +62,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Creates a new sale invoice.
  */
-export function useCreateReceipt(props?) {
+export function useCreateReceipt(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -67,7 +78,7 @@ export function useCreateReceipt(props?) {
 /**
  * Edits the given sale invoice.
  */
-export function useEditReceipt(props?) {
+export function useEditReceipt(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -89,7 +100,7 @@ export function useEditReceipt(props?) {
 /**
  * Deletes the given sale invoice.
  */
-export function useDeleteReceipt(props) {
+export function useDeleteReceipt(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -108,7 +119,7 @@ export function useDeleteReceipt(props) {
 /**
  * Deletes multiple receipts in bulk.
  */
-export function useBulkDeleteReceipts(props?) {
+export function useBulkDeleteReceipts(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -134,14 +145,14 @@ export function useBulkDeleteReceipts(props?) {
   );
 }
 
-export function useValidateBulkDeleteReceipts(props?) {
+export function useValidateBulkDeleteReceipts(props?: QueryHookOptions) {
   const apiRequest = useApiRequest();
 
   return useMutation(
     (ids: number[]) =>
       apiRequest
         .post('sale-receipts/validate-bulk-delete', { ids })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     {
       ...props,
     },
@@ -151,7 +162,7 @@ export function useValidateBulkDeleteReceipts(props?) {
 /**
  * Deletes the given sale invoice.
  */
-export function useCloseReceipt(props) {
+export function useCloseReceipt(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -166,7 +177,7 @@ export function useCloseReceipt(props) {
   });
 }
 
-const transformReceipts = (res) => ({
+const transformReceipts = (res: ApiResponse) => ({
   receipts: unwrapData(res),
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
@@ -175,7 +186,7 @@ const transformReceipts = (res) => ({
 /**
  * Retrieve sale invoices list with pagination meta.
  */
-export function useReceipts(query, props) {
+export function useReceipts(query?: Record<string, any>, props?: QueryHookOptions) {
   return useRequestQuery(
     ['SALE_RECEIPTS', query],
     { method: 'get', url: 'sale-receipts', params: query },
@@ -198,12 +209,12 @@ export function useReceipts(query, props) {
 /**
  * Retrieve sale invoices list with pagination meta.
  */
-export function useReceipt(id, props) {
+export function useReceipt(id: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     ['SALE_RECEIPT', id],
     { method: 'get', url: `sale-receipts/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -231,7 +242,7 @@ export function useRefreshReceipts() {
 /**
  *
  */
-export function useSendSaleReceiptMail(props?) {
+export function useSendSaleReceiptMail(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -314,7 +325,7 @@ export function useSaleReceiptMailState(
     () =>
       apiRequest
         .get(`sale-receipts/${receiptId}/mail`)
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
   );
 }
 
@@ -332,7 +343,7 @@ export function useGetReceiptState(
     () =>
       apiRequest
         .get(`/sale-receipts/state`)
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     { ...options },
   );
 }
@@ -362,7 +373,7 @@ export const useGetSaleReceiptHtml = (
             Accept: 'application/json+html',
           },
         })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     { ...options },
   );
 };

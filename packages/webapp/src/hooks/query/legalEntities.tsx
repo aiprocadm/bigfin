@@ -6,6 +6,7 @@ import useApiRequest from '../useRequest';
 import t from './types';
 
 import type { LegalEntityRow } from '@/containers/LegalEntities/legalEntityView';
+import { fromApi } from '@/utils/fromApi';
 
 /**
  * Справочник юрлиц (этап 6 ТЗ, §6.4).
@@ -18,7 +19,7 @@ export function useLegalEntities(props?: any) {
     [t.LEGAL_ENTITIES],
     { method: 'get', url: 'legal-entities' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as LegalEntityRow[],
       ...props,
     },

@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 const STATUS_KEY = 'moysklad_status';
 
@@ -71,7 +72,7 @@ export function useMoyskladStatus(props?: any) {
     [STATUS_KEY],
     { method: 'get', url: 'moysklad/status' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { connected: false },
       ...props,
     },
@@ -85,7 +86,7 @@ export function useMoyskladPreview(props?: any) {
     { method: 'get', url: 'moysklad/preview' },
     {
       select: (res: any) => {
-        const raw = res.data?.data ?? res.data;
+        const raw = fromApi(res.data?.data ?? res.data);
         return {
           products: (raw?.products ?? []).map(toProduct),
           sales: (raw?.sales ?? []).map(toSale),
@@ -125,7 +126,7 @@ export function useMoyskladImportPreview(props?: any) {
     ['moysklad_import_preview'],
     { method: 'get', url: 'moysklad/import/preview' },
     {
-      select: (res: any) => toImportPreview(res.data?.data ?? res.data),
+      select: (res: any) => toImportPreview(fromApi(res.data?.data ?? res.data)),
       defaultData: { toCreate: 0, toUpdate: 0, skipped: 0, sample: [] },
       ...props,
     },

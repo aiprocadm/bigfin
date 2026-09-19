@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 const CRM_STATUS_KEY = 'crm_status';
 
@@ -32,7 +33,7 @@ export function useCrmStatus(props?: any) {
     [CRM_STATUS_KEY],
     { method: 'get', url: 'crm/status' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         activeConnector: null,
         bitrix24Connected: false,

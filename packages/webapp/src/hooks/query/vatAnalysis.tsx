@@ -1,5 +1,6 @@
 // © 2026 Bigfin
 import { useRequestQuery } from '../useQueryRequest';
+import { fromApi } from '@/utils/fromApi';
 
 export interface VatByAccount {
   accountId: number;
@@ -41,7 +42,7 @@ export function useVatSummary(fromDate: string, toDate: string, props?: any) {
       params: { fromDate, toDate },
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         charged: 0,
         deductible: 0,

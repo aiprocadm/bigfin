@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 /** Строка списка токенов. Самого токена здесь нет и быть не может. */
 export interface ApiTokenRow {
@@ -41,7 +42,7 @@ export function useApiScopes(props?: any) {
     [t.PUBLIC_API_SCOPES],
     { method: 'get', url: 'public-api/scopes' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [],
       ...props,
     },
@@ -54,7 +55,7 @@ export function useWebhookEvents(props?: any) {
     [t.PUBLIC_API_EVENTS],
     { method: 'get', url: 'public-api/events' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [],
       ...props,
     },
@@ -66,7 +67,7 @@ export function useApiTokens(props?: any) {
     [t.PUBLIC_API_TOKENS],
     { method: 'get', url: 'public-api/tokens' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as ApiTokenRow[],
       ...props,
     },
@@ -111,7 +112,7 @@ export function useWebhooks(props?: any) {
     [t.PUBLIC_API_WEBHOOKS],
     { method: 'get', url: 'public-api/webhooks' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as WebhookRow[],
       ...props,
     },
@@ -153,7 +154,7 @@ export function useWebhookDeliveries(webhookId?: number, props?: any) {
       url: `public-api/webhooks/${webhookId}/deliveries`,
     },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [] as WebhookDeliveryRow[],
       enabled: Boolean(webhookId),
       ...props,

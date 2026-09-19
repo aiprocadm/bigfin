@@ -7,6 +7,7 @@ import {
 } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 const STATUS_KEY = 'zenmoney_status';
 const invalidateStatus = (c: QueryClient) => c.invalidateQueries(STATUS_KEY);
@@ -17,7 +18,7 @@ export function useZenmoneyStatus(props?: any) {
     [STATUS_KEY],
     { method: 'get', url: 'zenmoney/status' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { connected: false },
       ...props,
     },

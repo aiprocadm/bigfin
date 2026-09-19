@@ -1,5 +1,6 @@
 import { useMutation } from 'react-query';
 import useApiRequest from '../useRequest';
+import { fromApi } from '@/utils/fromApi';
 
 interface Import1CStatementValues {
   accountId: string | number;
@@ -114,7 +115,7 @@ export function usePreviewTableStatement(props = {}) {
           tableFormData(values),
           { headers: { 'Content-Type': 'multipart/form-data' } },
         )
-        .then((res) => toPreview(res.data?.data ?? res.data)),
+        .then((res) => toPreview(fromApi(res.data?.data ?? res.data))),
     { ...props },
   );
 }
@@ -131,7 +132,7 @@ export function useImportTableStatement(props = {}) {
           tableFormData(values),
           { headers: { 'Content-Type': 'multipart/form-data' } },
         )
-        .then((res) => res.data?.data ?? res.data),
+        .then((res) => fromApi(res.data?.data ?? res.data)),
     { ...props },
   );
 }

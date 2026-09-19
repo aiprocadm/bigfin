@@ -9,6 +9,7 @@ import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
 import { unwrapData } from '@/utils/unwrapData';
+import { fromApi } from '@/utils/fromApi';
 
 export interface EmployeeValues {
   fullName: string;
@@ -204,7 +205,7 @@ export function useKpiTargets(query?: { year?: number }, props?: any) {
     { method: 'get', url: 'payroll/kpi/targets', params: query },
     {
       select: (res: any) => {
-        const payload = res.data?.data ?? res.data;
+        const payload = fromApi(res.data?.data ?? res.data);
         return payload?.targets ?? payload ?? [];
       },
       defaultData: [],
@@ -219,7 +220,7 @@ export function useKpiSummary(month: string, props?: any) {
     { method: 'get', url: 'payroll/kpi/summary', params: { month } },
     {
       select: (res: any) => {
-        const payload = res.data?.data ?? res.data;
+        const payload = fromApi(res.data?.data ?? res.data);
         return payload?.rows ?? payload ?? [];
       },
       defaultData: [],

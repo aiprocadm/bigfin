@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 export interface MetricValue {
   value: number;
@@ -49,7 +50,7 @@ export function useCapitalization(query?: any, props?: any) {
     [t.CAPITALIZATION, query],
     { method: 'get', url: 'capitalization', params: query },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         fromDate: '',
         toDate: '',
@@ -75,7 +76,7 @@ export function useCapitalizationSettings(props?: any) {
     [t.CAPITALIZATION_SETTINGS],
     { method: 'get', url: 'capitalization/settings' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { profitMultiple: null },
       ...props,
     },

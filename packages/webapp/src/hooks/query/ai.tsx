@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 export interface AiInsight {
   text: string;
@@ -50,7 +51,7 @@ export function useAiInsights(scope: string, props?: any) {
     [t.AI_INSIGHTS, scope],
     { method: 'get', url: `ai-analyst/insights/${scope}` },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         available: false,
         reason: null,
@@ -70,7 +71,7 @@ export function useAiAvailability(props?: any) {
     [t.AI_AVAILABILITY],
     { method: 'get', url: 'ai-analyst/availability' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: { available: false, reason: null },
       ...props,
     },
@@ -82,7 +83,7 @@ export function useAiAnalystSettings(props?: any) {
     [t.AI_SETTINGS],
     { method: 'get', url: 'ai-analyst/settings' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         provider: '',
         endpoint: null,
@@ -126,7 +127,7 @@ export function useAiChatTools(props?: any) {
     [t.AI_CHAT_TOOLS],
     { method: 'get', url: 'ai-chat/tools' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: [],
       ...props,
     },

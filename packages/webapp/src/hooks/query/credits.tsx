@@ -8,6 +8,7 @@ import {
 import { useRequestQuery } from '../useQueryRequest';
 import useApiRequest from '../useRequest';
 import t from './types';
+import { fromApi } from '@/utils/fromApi';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -82,7 +83,7 @@ export function useCredits(query?: any, props?: any) {
   return useRequestQuery(
     [t.CREDITS, query],
     { method: 'get', url: 'credits', params: query },
-    { select: (res: any) => res.data?.data ?? res.data, defaultData: [], ...props },
+    { select: (res: any) => fromApi(res.data?.data ?? res.data), defaultData: [], ...props },
   );
 }
 
@@ -92,7 +93,7 @@ export function useCredit(id: number | string | undefined, props?: any) {
     [t.CREDIT, id],
     { method: 'get', url: `credits/${id}` },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: null,
       enabled: !!id,
       ...props,
@@ -106,7 +107,7 @@ export function useCreditsSummary(props?: any) {
     [t.CREDITS_SUMMARY],
     { method: 'get', url: 'credits/summary' },
     {
-      select: (res: any) => res.data?.data ?? res.data,
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
       defaultData: {
         totalOutstanding: 0,
         nextPaymentDate: null,

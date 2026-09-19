@@ -8,6 +8,7 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { INamedModifiableQuery } from '../../common/queryTypes';
+import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 
 @Injectable()
 export class CashFlowRepository {
@@ -163,8 +164,11 @@ export class CashFlowRepository {
   }
 
   /**
-   * Common branches filter query.
-   * @param {Knex.QueryBuilder} query
+   * Общий отбор отчёта: подразделения и юрлица.
+   *
+   * ОДНО МЕСТО НА ВСЕ ЗАПРОСЫ отчёта: ДДС собирается четырьмя запросами, и
+   * отбор, забытый хотя бы в одном, даёт отчёт, который не сходится сам с
+   * собой.
    */
   private commonFilterBranchesQuery = (
     query: ICashFlowStatementQuery,
@@ -173,5 +177,8 @@ export class CashFlowRepository {
     if (!isEmpty(query.branchesIds)) {
       knexQuery.modify('filterByBranches', query.branchesIds);
     }
+    applyLegalEntityScope(knexQuery, {
+      legalEntityIds: (query as any).legalEntityIds,
+    });
   };
 }

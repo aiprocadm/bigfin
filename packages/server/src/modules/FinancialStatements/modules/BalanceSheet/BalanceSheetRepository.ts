@@ -16,6 +16,7 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { INamedModifiableQuery } from '../../common/queryTypes';
+import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class BalanceSheetRepository extends R.compose(
@@ -403,12 +404,19 @@ export class BalanceSheetRepository extends R.compose(
   };
 
   /**
-   * Common branches filter query.
-   * @param {Knex.QueryBuilder} query
+   * Общий отбор отчёта: подразделения и юрлица.
+   *
+   * ОДНО МЕСТО НА ВСЕ ЗАПРОСЫ отчёта. Баланс собирается несколькими
+   * запросами — обороты за период, остатки на начало, разрез по периодам, —
+   * и отбор, забытый хотя бы в одном из них, даёт отчёт, который не сходится
+   * сам с собой.
    */
   public commonFilterBranchesQuery = (query: INamedModifiableQuery) => {
     if (!isEmpty(this.query.branchesIds)) {
       query.modify('filterByBranches', this.query.branchesIds);
     }
+    applyLegalEntityScope(query, {
+      legalEntityIds: this.query.legalEntityIds,
+    });
   };
 }

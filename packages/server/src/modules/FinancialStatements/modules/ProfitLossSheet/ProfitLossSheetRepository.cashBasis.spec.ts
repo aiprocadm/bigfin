@@ -39,6 +39,11 @@ const buildRepository = (cashBasisActive: boolean) => {
     groupBy: jest.fn(),
     select: jest.fn(),
     modify: jest.fn(),
+    // Отбор по юрлицу зовёт `where`/`whereIn` на этом же
+    // построителе. Подставной построитель, не знающий слова из
+    // настоящего кода, ломает тест на ровном месте.
+    where: jest.fn(),
+    whereIn: jest.fn(),
     withGraphFetched: jest.fn(),
   };
   repository.accountTransactionModel = () => ({
@@ -86,6 +91,11 @@ const buildPaidInvoiceRepository = () => {
             groupBy: jest.fn(),
             select: jest.fn(),
             modify: jest.fn(),
+            // Отбор по юрлицу зовёт `where`/`whereIn` на этом же
+            // построителе. Подставной построитель, не знающий слова из
+            // настоящего кода, ломает тест на ровном месте.
+            where: jest.fn(),
+            whereIn: jest.fn(),
             withGraphFetched: jest.fn(),
           });
           return Promise.resolve(paymentLegs);

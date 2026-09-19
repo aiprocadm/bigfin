@@ -6,6 +6,7 @@ import {
   IProfitLossSheetQuery,
 } from './ProfitLossSheet.types';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
+import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 
 @Injectable()
 export class ProfitLossSheetMeta {
@@ -39,6 +40,9 @@ export class ProfitLossSheetMeta {
       formattedFromDate,
       formattedToDate,
       formattedDateRange,
+      legalEntityScope: describeLegalEntityScope({
+        legalEntityIds: (query as any).legalEntityIds,
+      }),
     };
   }
 }

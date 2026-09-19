@@ -30,6 +30,7 @@ import {
 import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentReceivedEntry';
 import { BillPaymentEntry } from '@/modules/BillPayments/models/BillPaymentEntry';
 import { INamedModifiableQuery } from '../../common/queryTypes';
+import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 
 /** Как документ-оплата связан с тем, что он гасит. */
 const SETTLEMENT_SOURCES = [
@@ -438,6 +439,11 @@ export class ProfitLossSheetRepository extends R.compose(FinancialDatePeriods)(
     if (!isEmpty(this.query.query.branchesIds)) {
       query.modify('filterByBranches', this.query.query.branchesIds);
     }
+    // Разрез по юрлицу — тем же одним местом, что и подразделения: отчёты,
+    // отбирающие по-разному, расходятся цифрами между страницами.
+    applyLegalEntityScope(query, {
+      legalEntityIds: (this.query.query as any).legalEntityIds,
+    });
   };
 
   /**

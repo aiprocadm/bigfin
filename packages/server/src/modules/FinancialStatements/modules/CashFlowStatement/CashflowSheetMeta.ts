@@ -1,3 +1,4 @@
+import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import * as moment from 'moment';
 import { Injectable } from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
@@ -37,6 +38,9 @@ export class CashflowSheetMeta {
       formattedToDate,
       formattedFromDate,
       formattedDateRange,
+      legalEntityScope: describeLegalEntityScope({
+        legalEntityIds: (query as any).legalEntityIds,
+      }),
     };
   }
 }

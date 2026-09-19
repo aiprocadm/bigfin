@@ -4625,5 +4625,7 @@
   "ai_settings.external_forbidden": "Организация запретила передачу данных во внешние сервисы, поэтому ИИ-аналитик выключен даже с настроенным провайдером.",
   "ai_settings.unavailable.feature_disabled": "Раздел выключен в настройках модулей.",
   "ai_settings.unavailable.external_data_forbidden": "Организация запретила передачу данных во внешние сервисы.",
-  "ai_settings.unavailable.provider_not_configured": "Провайдер пока не настроен."
+  "ai_settings.unavailable.provider_not_configured": "Провайдер пока не настроен.",
+  "report.legal_entities.label": "Юрлица",
+  "report.legal_entities.hint": "Ничего не выбрано — вся группа, без внутренних переводов."
 }

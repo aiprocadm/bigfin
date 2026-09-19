@@ -1,10 +1,10 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import { FormGroup, Intent, Classes } from '@blueprintjs/core';
 import classNames from 'classnames';
 
 import { CellType } from '@/constants';
 import { ProjectSuggestField } from '@/containers/Projects/components';
+import { DataTableCellProps } from './cellProps';
 
 /**
  * projects list field cell.
@@ -14,9 +14,9 @@ export function ProjectsListFieldCell({
   column: { id },
   row: { index, original },
   payload: { projects, updateData, errors },
-}) {
+}: DataTableCellProps) {
   const handleProjectSelected = useCallback(
-    (project) => {
+    (project: { id: number }) => {
       updateData(index, 'project_id', project.id);
     },
     [updateData, index],
@@ -25,7 +25,7 @@ export function ProjectsListFieldCell({
   const error = errors?.[index]?.[id];
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={classNames(
         'form-group--select-list',
         'form-group--contacts-list',

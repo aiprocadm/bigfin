@@ -1,10 +1,10 @@
-// @ts-nocheck
 import React, { useCallback, useState, useEffect } from 'react';
 import { FormGroup, Intent } from '@blueprintjs/core';
 
 import { MoneyInputGroup } from '@/components';
 import { CLASSES } from '@/constants/classes';
 import { CellType } from '@/constants';
+import { DataTableCellProps } from './cellProps';
 
 // Input form cell renderer.
 const MoneyFieldCellRenderer = ({
@@ -12,16 +12,21 @@ const MoneyFieldCellRenderer = ({
   column: { id },
   cell: { value: initialValue },
   payload: { errors, updateData },
-}) => {
+}: DataTableCellProps) => {
   const [value, setValue] = useState(initialValue);
 
-  const handleFieldChange = useCallback((value) => {
+  const handleFieldChange = useCallback((value: string | number) => {
     setValue(value);
   }, [setValue]);
 
-  function isNumeric(data) {
+  // Проверка «это число» принимает и строку из поля, и уже готовое число.
+  // `parseFloat` и `isFinite` объявлены под строку и число соответственно,
+  // поэтому приводим явно — вместо того чтобы прятать вопрос под `any`.
+  function isNumeric(data: string | number) {
     return (
-      !isNaN(parseFloat(data)) && isFinite(data) && data.constructor !== Array
+      !isNaN(parseFloat(String(data))) &&
+      isFinite(Number(data)) &&
+      data.constructor !== Array
     );
   }
 
@@ -38,7 +43,7 @@ const MoneyFieldCellRenderer = ({
 
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={CLASSES.FILL}>
       <MoneyInputGroup
         value={value}

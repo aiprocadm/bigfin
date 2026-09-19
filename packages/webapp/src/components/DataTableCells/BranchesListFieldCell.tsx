@@ -1,10 +1,10 @@
-// @ts-nocheck
 import React from 'react';
 import { FormGroup, Intent, Classes } from '@blueprintjs/core';
 import classNames from 'classnames';
 
 import { CellType } from '@/constants';
 import { BranchSuggestField } from '../Branches';
+import { DataTableCellProps } from './cellProps';
 
 /**
  * Branches list field cell.
@@ -14,9 +14,9 @@ export default function BranchesListFieldCell({
   column: { id },
   row: { index, original },
   payload: { branches, updateData, errors },
-}) {
+}: DataTableCellProps) {
   const handleBranchSelected = React.useCallback(
-    (branch) => {
+    (branch: { id: number }) => {
       updateData(index, 'branch_id', branch.id);
     },
     [updateData, index],
@@ -26,7 +26,7 @@ export default function BranchesListFieldCell({
 
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={classNames(
         'form-group--select-list',
         'form-group--contacts-list',

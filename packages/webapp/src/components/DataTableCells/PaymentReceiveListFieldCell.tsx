@@ -1,18 +1,18 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { FormGroup, Classes, Intent } from '@blueprintjs/core';
 
 import { PaymentReceiveListField } from '@/components';
 import { CellType } from '@/constants';
+import { DataTableCellProps } from './cellProps';
 function PaymentReceiveListFieldCell({
   column: { id },
   row: { index },
   cell: { value: initialValue },
   payload: { invoices, updateData, errors },
-}) {
+}: DataTableCellProps) {
   const handleInvoicesSelected = useCallback(
-    (_item) => {
+    (_item: { id: number }) => {
       updateData(index, id, _item.id);
     },
     [updateData, index, id],
@@ -22,7 +22,7 @@ function PaymentReceiveListFieldCell({
 
   return (
     <FormGroup
-      intent={error ? Intent.DANGER : null}
+      intent={error ? Intent.DANGER : undefined}
       className={classNames('form-group--selcet-list', Classes.FILL)}
     >
       <PaymentReceiveListField

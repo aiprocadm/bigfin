@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef, useCallback, useMemo } from 'react';
 import classNames from 'classnames';
 import { FormGroup, Classes, Intent } from '@blueprintjs/core';
@@ -7,6 +6,7 @@ import intl from 'react-intl-universal';
 import { CellType } from '@/constants';
 import { useCellAutoFocus } from '@/hooks';
 import { AccountsSuggestField } from '@/components';
+import { DataTableCellProps } from './cellProps';
 
 /**
  * Account cell renderer.
@@ -29,13 +29,16 @@ export default function AccountCellRenderer({
     autoFocus,
     ...restPayloadProps
   },
-}) {
-  const accountRef = useRef();
+}: DataTableCellProps) {
+  // Ссылка на поле ввода: сюда кладётся живой элемент страницы, поэтому и
+  // объявляем его. Раньше тип выводился как «пусто», и присвоение элемента
+  // считалось ошибкой.
+  const accountRef = useRef<HTMLInputElement | null>(null);
 
   useCellAutoFocus(accountRef, autoFocus, id, index);
 
   const handleAccountSelected = useCallback(
-    (account) => {
+    (account: { id: number }) => {
       updateData(index, id, account.id);
     },
     [updateData, index, id],

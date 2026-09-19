@@ -65,9 +65,20 @@ const buildKnex = (options: {
     return chain;
   };
 
-  knex.schema = {
-    hasTable: async (table: string) =>
-      !(options.missingTables ?? []).includes(table),
+  /**
+   * Вопрос «есть ли таблица» задаётся запросом к `information_schema`, а не
+   * через `schema.hasTable`: тот сравнивает имя с учётом регистра и отвечает
+   * «нет» про существующую таблицу, если в базе имена заглавные. Подделка
+   * повторяет настоящий способ, иначе тесты стерегли бы не то, что работает.
+   */
+  knex.raw = async (_sql: string, bindings: any[]) => {
+    const table = String(bindings?.[0] ?? '');
+    const missing = (options.missingTables ?? []).map((name) =>
+      name.toLowerCase(),
+    );
+    const found = missing.includes(table.toLowerCase()) ? 0 : 1;
+
+    return [[{ count: found }]];
   };
 
   return { knex, calls };

@@ -8,8 +8,31 @@
 // ВЕРХНИМ регистром (NOTIFICATIONS), и сырой SQL со строчными именами их не
 // находит. Проверка hasColumn — защита от полудоехавшей базы: DDL в MySQL
 // необратим, упавший после alterTable прогон оставляет колонку созданной.
+/**
+ * Есть ли колонка — сравнение имён БЕЗ учёта регистра.
+ *
+ * `knex.schema.hasColumn` и `knex.schema.hasTable` ведут себя ПО-РАЗНОМУ на
+ * базе, где имена таблиц заглавные (продукт отображает их
+ * `knexSnakeCaseMappers({ upperCase: true })`): первый отвечает верно, второй
+ * — «нет» про существующую таблицу. Разница невидима и однажды уже стоила
+ * целой миграции этапа 6, прошедшей мимо всех таблиц. Поэтому спрашиваем сами.
+ *
+ * Помощник написан здесь, а не взят из общего модуля: миграция — исторический
+ * документ, она обязана работать одинаково и через год.
+ */
+const notificationsHasColumn = async (knex, table, column) => {
+  const [rows] = await knex.raw(
+    `SELECT COUNT(*) AS count FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND LOWER(table_name) = ?
+        AND LOWER(column_name) = ?`,
+    [String(table).toLowerCase(), String(column).toLowerCase()],
+  );
+  return Number(rows[0].count) > 0;
+};
+
 exports.up = async (knex) => {
-  const hasColumn = await knex.schema.hasColumn('notifications', 'superseded_at');
+  const hasColumn = await notificationsHasColumn(knex, 'notifications', 'superseded_at');
   if (!hasColumn) {
     await knex.schema.alterTable('notifications', (table) => {
       table.dateTime('superseded_at').nullable().index();

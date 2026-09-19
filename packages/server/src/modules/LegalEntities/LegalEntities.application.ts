@@ -10,6 +10,7 @@ import { LegalEntity } from './models/LegalEntity.model';
 import { EnsureDefaultLegalEntityService } from './commands/EnsureDefaultLegalEntity.service';
 import { CreateLegalEntityDto, EditLegalEntityDto } from './dtos/LegalEntity.dto';
 import { LEGAL_ENTITY_TABLES } from './constants';
+import { hasTableAnyCase } from '@/common/utils/schemaAnyCase';
 
 export const LEGAL_ENTITY_ERRORS = {
   /** На юрлице висят операции — удаление осиротило бы разрез. */
@@ -142,7 +143,11 @@ export class LegalEntitiesApplication {
     const knex = this.tenantKnex();
 
     for (const table of LEGAL_ENTITY_TABLES) {
-      const exists = await knex.schema.hasTable(table);
+      // Через помощника, а не `schema.hasTable`: тот сравнивает имя таблицы
+      // с учётом регистра и про существующую `ACCOUNTS_TRANSACTIONS` отвечает
+      // «нет». Ответ «нет» здесь читался бы как «юрлицо ничем не занято» —
+      // и удалить его дали бы вместе со всем, что на него ссылается.
+      const exists = await hasTableAnyCase(knex, table);
       if (!exists) continue;
 
       const row = await knex(table).where('legal_entity_id', id).first();
@@ -155,7 +160,7 @@ export class LegalEntitiesApplication {
   private async countAccountsByEntity(): Promise<Map<number, number>> {
     const knex = this.tenantKnex();
 
-    const exists = await knex.schema.hasTable('accounts');
+    const exists = await hasTableAnyCase(knex, 'accounts');
     if (!exists) return new Map();
 
     const rows: any[] = await knex('accounts')

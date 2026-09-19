@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import { LEGAL_ENTITY_TABLES } from '../constants';
 import { BACKFILL_BATCH_SIZE, BACKFILL_MAX_BATCHES } from '../constants';
+import { hasTableAnyCase } from '@/common/utils/schemaAnyCase';
 
 export interface BackfillTableResult {
   table: string;
@@ -58,7 +59,11 @@ async function backfillOneTable(
 ): Promise<BackfillTableResult> {
   // Таблицы могло не быть: организации заводились в разное время, и модуль,
   // которого у них нет, таблицу не создавал.
-  const exists = await knex.schema.hasTable(table);
+  //
+  // Через помощника, а не `schema.hasTable`: тот отвечает «нет» про
+  // существующую таблицу, если её имя в базе в другом регистре, — и
+  // заполнение молча проходило бы мимо всех таблиц сразу.
+  const exists = await hasTableAnyCase(knex, table);
   if (!exists) return { table, updated: 0, incomplete: false };
 
   let updated = 0;

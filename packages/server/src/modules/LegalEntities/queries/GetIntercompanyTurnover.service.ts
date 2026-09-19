@@ -6,6 +6,7 @@ import { TENANCY_DB_CONNECTION } from '@/modules/Tenancy/TenancyDB/TenancyDB.con
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
 import { LegalEntity } from '../models/LegalEntity.model';
+import { hasColumnAnyCase } from '@/common/utils/schemaAnyCase';
 
 export interface IntercompanyRow {
   referenceType: string;
@@ -54,7 +55,8 @@ export class GetIntercompanyTurnoverService {
   ): Promise<IntercompanyTurnoverResult> {
     const knex = this.tenantKnex();
 
-    const hasColumn = await knex.schema.hasColumn(
+    const hasColumn = await hasColumnAnyCase(
+      knex,
       'accounts_transactions',
       'is_intercompany',
     );

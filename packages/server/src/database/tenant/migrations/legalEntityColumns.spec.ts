@@ -4,6 +4,8 @@ import * as path from 'path';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const migration = require('./20260918100100_add_legal_entity_id_columns');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const repair = require('./20260919120000_repair_legal_entity_id_columns');
 
 /**
  * Этап 6 ТЗ, §6.2. Колонка `legal_entity_id` во всех нужных таблицах.
@@ -54,6 +56,13 @@ describe('колонка юрлица в таблицах', () => {
   it('список таблиц не пустой и покрывает требование ТЗ', () => {
     // Иначе проверка ниже стала бы пустой и зелёной.
     expect(migration.TABLES.length).toBeGreaterThanOrEqual(13);
+  });
+
+  it('догоняющая миграция знает ровно те же таблицы', () => {
+    // Список продублирован НАМЕРЕННО: миграция должна работать одинаково и
+    // через год, когда общий модуль переедет. Но две копии обязаны совпадать,
+    // иначе в базе, которую догоняли, часть колонок так и не появится.
+    expect(repair.TABLES).toEqual(migration.TABLES);
   });
 
   it('модели вообще читаются', () => {

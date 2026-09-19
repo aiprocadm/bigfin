@@ -30,13 +30,11 @@ function InvoiceExchangeRateChangeDialog({
       <DialogSuspense>
         <div className={Classes.DIALOG_BODY}>
           <p>
-            The item rates have been <strong>adjusted</strong> to the new
-            currency using realtime exchange rate.
+            {intl.get('invoice.exchange_rate_change.rates_adjusted')}
           </p>
 
           <p style={{ marginBottom: '30px' }}>
-            Make sure to check that the item rates match the current exchange
-            rate of the newly selected currency before saving the transaction.
+            {intl.get('invoice.exchange_rate_change.check_rates')}
           </p>
         </div>
 

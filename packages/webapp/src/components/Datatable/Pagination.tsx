@@ -298,7 +298,7 @@ export function Pagination({
 
       <x.div display="flex" alignItems="center" ml="auto">
         <x.div display="none">
-          Go to
+          {intl.get('datatable.pagination.go_to')}
           <StyledHTMLSelect
             minimal={true}
             options={range(1, state.totalPages + 1)}

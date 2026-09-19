@@ -74,7 +74,7 @@ export function StripePreSetupDialogContent() {
               onClick={handleSetUpBtnClick}
               loading={isRedirecting}
             >
-              Set Up Stripe
+              {intl.get('payment_methods.stripe.action.set_up')}
             </Button>
           </>
         }

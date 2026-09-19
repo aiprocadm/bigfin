@@ -71,8 +71,9 @@ function ExcessPaymentDialogContentForm({
     <>
       <div className={Classes.DIALOG_BODY}>
         <p style={{ marginBottom: 20 }}>
-          Would you like to record the excess amount of{' '}
-          <strong>{excessAmount}</strong> as credit payment from the vendor.
+          {intl.get('payment_made_form.excess_payment.question', {
+            amount: excessAmount,
+          })}
         </p>
       </div>
 
@@ -83,7 +84,7 @@ function ExcessPaymentDialogContentForm({
             loading={isSubmitting}
             onClick={() => submitForm()}
           >
-            Save Payment as Credit
+            {intl.get('excess_payment.action.save_as_credit')}
           </Button>
           <Button onClick={handleCloseBtn}>{intl.get('cancel')}</Button>
         </div>

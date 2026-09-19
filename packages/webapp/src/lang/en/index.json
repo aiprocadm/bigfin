@@ -4627,5 +4627,21 @@
   "ai_settings.unavailable.external_data_forbidden": "The organization forbids sending data to external services.",
   "ai_settings.unavailable.provider_not_configured": "The provider is not set up yet.",
   "report.legal_entities.label": "Legal entities",
-  "report.legal_entities.hint": "Nothing selected means the whole group, with internal transfers excluded."
+  "report.legal_entities.hint": "Nothing selected means the whole group, with internal transfers excluded.",
+  "subscription.action.upgrade_plan": "Upgrade the Plan",
+  "subscription.action.resume": "Resume Subscription",
+  "subscription.action.cancel": "Cancel Subscription",
+  "subscription.action.change_payment_method": "Change Payment Method",
+  "datatable.pagination.go_to": "Go to",
+  "async_toast.preparing_document": "Preparing the document.",
+  "locking_transactions.unlock_modules_first": "Unlock {modules} first, then you can lock all transactions at once.",
+  "branding_template.mark_default.confirm": "Make this branding template the default one?",
+  "payment_link.action.copy_link": "Copy Link",
+  "payment_methods.stripe.action.set_up": "Set Up Stripe",
+  "send_mail.action.send": "Send Mail",
+  "invoice.exchange_rate_change.rates_adjusted": "The item rates have been adjusted to the new currency using the current exchange rate.",
+  "invoice.exchange_rate_change.check_rates": "Check that the item rates match the current exchange rate of the selected currency before saving.",
+  "payment_receive_form.excess_payment.question": "Record the excess amount of {amount} as credit payment from the customer?",
+  "payment_made_form.excess_payment.question": "Record the excess amount of {amount} as credit payment to the vendor?",
+  "excess_payment.action.save_as_credit": "Save Payment as Credit"
 }

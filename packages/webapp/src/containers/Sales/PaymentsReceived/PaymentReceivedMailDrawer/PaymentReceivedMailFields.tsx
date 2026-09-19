@@ -72,7 +72,7 @@ function PaymentReceivedSendMailFooter() {
           style={{ minWidth: '85px' }}
           type="submit"
         >
-          Send Mail
+          {intl.get('send_mail.action.send')}
         </Button>
       </Group>
     </Group>

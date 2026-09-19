@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/report-table';
 
 import { useProfitLossSheetContext } from './ProfitLossProvider';
+import { ReportScopeNote } from '../ReportScopeNote';
 
 /** Колонка таблицы ОПиУ в формате сервера (snake_case на клиенте). */
 interface ProfitLossServerColumn {
@@ -165,6 +166,9 @@ export default function ProfitLossSheetTable({
       dateText={meta?.formatted_date_range ?? meta?.formatted_as_date}
       basis={query?.basis}
     >
+      {/* Что показано: сводно или по одному юрлицу (этап 7 ТЗ). */}
+      <ReportScopeNote scope={(meta as any)?.legal_entity_scope} />
+
       <ReportTable
         columns={columns}
         rows={rows}

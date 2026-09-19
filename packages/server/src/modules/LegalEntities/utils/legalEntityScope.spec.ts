@@ -121,6 +121,7 @@ describe('describeLegalEntityScope — что показать в шапке', (
       isConsolidated: true,
       excludesIntercompany: true,
       selectedCount: 0,
+      balanceMayNotConverge: false,
     });
   });
 
@@ -129,6 +130,11 @@ describe('describeLegalEntityScope — что показать в шапке', (
       isConsolidated: false,
       excludesIntercompany: false,
       selectedCount: 1,
+      // Баланс ОДНОГО юрлица может не сойтись: вторая нога внутреннего
+      // перевода лежит на счёте другого юрлица, а встречного требования к
+      // своему же в балансе нет. Найдено живой проверкой на стенде —
+      // перевод 500 000 развёл стороны ровно на 500 000.
+      balanceMayNotConverge: true,
     });
   });
 
@@ -137,6 +143,9 @@ describe('describeLegalEntityScope — что показать в шапке', (
       isConsolidated: true,
       excludesIntercompany: true,
       selectedCount: 2,
+      // Двух и больше юрлиц уже достаточно, чтобы внутренние обороты
+      // исключались: обе ноги перевода внутри выбранной части группы.
+      balanceMayNotConverge: false,
     });
   });
 });

@@ -5,6 +5,8 @@ import { getLegalEntitySchema } from './legalEntity.zod';
 import {
   canDeleteLegalEntity,
   formatOwnershipShare,
+  legalEntityFromForm,
+  legalEntityToForm,
   shouldShowLegalEntityBreakdown,
   type LegalEntityRow,
 } from './legalEntityView';
@@ -12,9 +14,18 @@ import {
 const entity = (over: Partial<LegalEntityRow> = {}): LegalEntityRow => ({
   id: 1,
   name: 'ООО Ромашка',
+  fullName: 'Общество с ограниченной ответственностью «Ромашка»',
   form: 'ООО',
   inn: '7707083893',
+  kpp: '770701001',
+  ogrn: '1027700132195',
   taxSystem: 'УСН_Д',
+  vatPayer: false,
+  baseCurrency: 'RUB',
+  directorName: 'Иванов И. И.',
+  legalAddress: 'Москва, ул. Тверская, 1',
+  actualAddress: null,
+  bankDetails: null,
   ownershipShare: 100,
   isPrimary: true,
   active: true,
@@ -152,5 +163,78 @@ describe('форма юрлица — доля владельца', () => {
     const result = parse(base);
     if (!result.success) throw new Error('форма должна была пройти');
     expect(result.data.ownershipShare).toBe('100');
+  });
+});
+
+describe('правка юрлица не теряет реквизиты (остаток Ю3)', () => {
+  it('в форму переносится всё, что пришло из списка', () => {
+    // Форма отправляет на сервер ВСЕ свои поля разом. Поле, которое здесь
+    // забыли, уйдёт пустым — и сервер честно затрёт настоящее значение.
+    // Так пропадали КПП, ОГРН, директор и адрес при правке названия.
+    const values = legalEntityToForm(entity());
+
+    expect(values.kpp).toBe('770701001');
+    expect(values.ogrn).toBe('1027700132195');
+    expect(values.directorName).toBe('Иванов И. И.');
+    expect(values.legalAddress).toBe('Москва, ул. Тверская, 1');
+    expect(values.fullName).toContain('Ромашка');
+  });
+
+  it('пустые значения приходят пустой строкой, а не словом «null»', () => {
+    // Иначе человек увидел бы в поле адреса надпись «null».
+    const values = legalEntityToForm(entity({ actualAddress: null }));
+
+    expect(values.actualAddress).toBe('');
+  });
+
+  it('банковские реквизиты раскладываются по полям', () => {
+    const values = legalEntityToForm(
+      entity({
+        bankDetails: {
+          bankName: 'Сбербанк',
+          bik: '044525225',
+          account: '40702810100000000001',
+        },
+      }),
+    );
+
+    expect(values.bankName).toBe('Сбербанк');
+    expect(values.bik).toBe('044525225');
+    expect(values.account).toBe('40702810100000000001');
+    // Чего не было — то пустое, а не «undefined».
+    expect(values.correspondentAccount).toBe('');
+  });
+
+  it('банк собирается обратно в один объект', () => {
+    // Сервер хранит реквизиты вместе, и печатные формы читают оттуда же.
+    const payload: any = legalEntityFromForm({
+      ...legalEntityToForm(entity()),
+      bankName: 'Сбербанк',
+      bik: '044525225',
+    });
+
+    expect(payload.bankDetails).toEqual({
+      bankName: 'Сбербанк',
+      bik: '044525225',
+    });
+    expect(payload.bankName).toBeUndefined();
+  });
+
+  it('пустые банковские поля не уходят вовсе', () => {
+    // Пустая строка в реквизите выглядит как «заполнено» и ломает печатную
+    // форму: по такому счёту нельзя заплатить.
+    const payload: any = legalEntityFromForm(legalEntityToForm(entity()));
+
+    expect(payload.bankDetails).toBeNull();
+  });
+
+  it('доля уходит числом', () => {
+    // Запятую с цифрового блока сервер не поймёт.
+    const payload: any = legalEntityFromForm({
+      ...legalEntityToForm(entity()),
+      ownershipShare: '51,5',
+    });
+
+    expect(payload.ownershipShare).toBe(51.5);
   });
 });

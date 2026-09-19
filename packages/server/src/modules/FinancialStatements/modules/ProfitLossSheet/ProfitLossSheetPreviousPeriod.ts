@@ -1,8 +1,8 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
 import { sumBy } from 'lodash';
 import {
+  IProfitLossSheetCommonNode,
   IProfitLossHorizontalDatePeriodNode,
   IProfitLossSchemaNode,
   IProfitLossSheetAccountNode,
@@ -207,9 +207,14 @@ export const ProfitLossSheetPreviousPeriod = <
         index: number,
       ): IProfitLossHorizontalDatePeriodNode => {
         let result: IProfitLossHorizontalDatePeriodNode = horizontalTotalNode;
-        result = this.assocPreviousPeriodHorizNodeFromToDates(
+        // Помощник дат каррирован в общей примеси: для проверки типов его
+        // результат — «что-то». Приводим к виду узла тем же способом, что и
+        // соседние строки этого файла.
+        result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(
+          this.assocPreviousPeriodHorizNodeFromToDates(
             this.query.displayColumnsBy,
-          )(result);
+          )(result),
+        );
         result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPerviousPeriodAccountHorizTotal(node)(result));
         if (this.query.isPreviousPeriodChangeActive()) {
           result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodChangeNode(result));
@@ -246,21 +251,22 @@ export const ProfitLossSheetPreviousPeriod = <
      * @param  {any} totalNode
      * @return {}
      */
-    private assocPreviousPeriodAggregateHorizTotal = R.curry(
+    // Частичное применение записано явно вместо каррирования.
+    private assocPreviousPeriodAggregateHorizTotal =
+      (node: IProfitLossSheetCommonNode, index: number) =>
       (
-        node: IProfitLossSheetAccountsNode,
-        index: number,
         totalNode: IProfitLossHorizontalDatePeriodNode,
-      ) => {
-        const total = this.getPPHorizNodesTotalSumation(index, node);
-
-        return R.assoc(
-          'previousPeriod',
-          this.getTotalAmountMeta(total),
-          totalNode,
+      ): IProfitLossHorizontalDatePeriodNode => {
+        const total = this.getPPHorizNodesTotalSumation(
+          index,
+          node as IProfitLossSheetAccountsNode,
         );
-      },
-    );
+
+        return {
+          ...totalNode,
+          previousPeriod: this.getTotalAmountMeta(total),
+        };
+      };
 
     /**
      *
@@ -269,17 +275,21 @@ export const ProfitLossSheetPreviousPeriod = <
      * @param   {number} index
      * @returns {IProfitLossHorizontalDatePeriodNode}
      */
-    private previousPeriodAggregateHorizNodeCompose = R.curry(
+    // Частичное применение записано явно вместо каррирования: смысл тот же,
+    // но проверка типов видит, что получилось, и разрешает вызвать.
+    private previousPeriodAggregateHorizNodeCompose =
+      (node: IProfitLossSheetCommonNode) =>
       (
-        node: IProfitLossSheetAccountsNode,
         horizontalTotalNode: IProfitLossHorizontalDatePeriodNode,
         index: number,
       ): IProfitLossHorizontalDatePeriodNode => {
         let result: IProfitLossHorizontalDatePeriodNode = horizontalTotalNode;
         if (this.query.isPreviousPeriodActive()) {
-          result = this.assocPreviousPeriodHorizNodeFromToDates(
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(
+            this.assocPreviousPeriodHorizNodeFromToDates(
               this.query.displayColumnsBy,
-            )(result);
+            )(result),
+          );
         }
         if (this.query.isPreviousPeriodActive()) {
           result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodAggregateHorizTotal(node, index)(result));
@@ -291,22 +301,26 @@ export const ProfitLossSheetPreviousPeriod = <
           result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodTotalPercentageNode(result));
         }
         return result;
-      },
-    );
+      };
 
     /**
      * Assoc previous period to aggregate horizontal nodes.
      * @param {IProfitLossSheetAccountsNode} node
      * @returns
      */
+    // Узел принимается ОБЩИМ: сюда приходят и разделы, и строки-счета, а
+    // читаются только горизонтальные итоги — они есть у всех.
     private assocPreviousPeriodAggregateHorizNode = (
-      node: IProfitLossSheetAccountsNode,
-    ): IProfitLossSheetAccountsNode => {
-      const horizontalTotals = R.addIndex(R.map)(
-        this.previousPeriodAggregateHorizNodeCompose(node),
-        node.horizontalTotals,
+      node: IProfitLossSheetCommonNode,
+    ): IProfitLossSheetCommonNode => {
+      // Обычный обход списка вместо `R.addIndex(R.map)` с каррированием:
+      // делает то же самое, читается сразу и не теряет типы.
+      const compose = this.previousPeriodAggregateHorizNodeCompose(node);
+      const horizontalTotals = (node.horizontalTotals ?? []).map(
+        (horizontalTotal, index) => compose(horizontalTotal, index),
       );
-      return R.assoc('horizontalTotals', horizontalTotals, node);
+
+      return { ...node, horizontalTotals };
     };
 
     // ----------------------------------
@@ -319,26 +333,27 @@ export const ProfitLossSheetPreviousPeriod = <
      * @param {index} number
      * @param {} totalNode
      */
-    private assocPreviousPeriodEquationHorizTotal = R.curry(
+    // Частичное применение записано явно вместо каррирования.
+    private assocPreviousPeriodEquationHorizTotal =
       (
-        accNodes: IProfitLossSheetNode[],
+        accNodes: (IProfitLossSchemaNode | IProfitLossSheetNode)[],
         equation: string,
         index: number,
-        totalNode,
-      ): IProfitLossSheetNode => {
+      ) =>
+      (
+        totalNode: IProfitLossHorizontalDatePeriodNode,
+      ): IProfitLossHorizontalDatePeriodNode => {
         const scopes = this.getNodesTableForEvaluating(
           `horizontalTotals[${index}].previousPeriod.amount`,
-          accNodes,
+          accNodes as IProfitLossSheetNode[],
         );
         const total = this.evaluateEquation(equation, scopes);
 
-        return R.assoc(
-          'previousPeriod',
-          this.getTotalAmountMeta(total),
-          totalNode,
-        );
-      },
-    );
+        return {
+          ...totalNode,
+          previousPeriod: this.getTotalAmountMeta(total),
+        };
+      };
 
     /**
      *
@@ -347,13 +362,16 @@ export const ProfitLossSheetPreviousPeriod = <
      * @param {} horizontalTotalNode
      * @param {number} index
      */
-    private previousPeriodEquationHorizNodeCompose = R.curry(
+    // Частичное применение записано явно вместо каррирования.
+    private previousPeriodEquationHorizNodeCompose =
       (
-        accNodes: IProfitLossSheetNode[],
+        accNodes: (IProfitLossSchemaNode | IProfitLossSheetNode)[],
         equation: string,
-        horizontalTotalNode,
+      ) =>
+      (
+        horizontalTotalNode: IProfitLossHorizontalDatePeriodNode,
         index: number,
-      ) => {
+      ): IProfitLossHorizontalDatePeriodNode => {
         const assocHorizTotal = this.assocPreviousPeriodEquationHorizTotal(
           accNodes,
           equation,
@@ -361,9 +379,11 @@ export const ProfitLossSheetPreviousPeriod = <
         );
         let result = horizontalTotalNode;
         if (this.query.isPreviousPeriodActive()) {
-          result = this.assocPreviousPeriodHorizNodeFromToDates(
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(
+            this.assocPreviousPeriodHorizNodeFromToDates(
               this.query.displayColumnsBy,
-            )(result);
+            )(result),
+          );
         }
         if (this.query.isPreviousPeriodActive()) {
           result = assocHorizTotal(result);
@@ -375,8 +395,7 @@ export const ProfitLossSheetPreviousPeriod = <
           result = this.assocPreviousPeriodTotalPercentageNode(result);
         }
         return result;
-      },
-    );
+      };
 
     /**
      * Assoc previous period equation to horizontal nodes.
@@ -385,17 +404,24 @@ export const ProfitLossSheetPreviousPeriod = <
      * @param  {IProfitLossSheetEquationNode} node
      * @return {IProfitLossSheetEquationNode}
      */
-    private assocPreviousPeriodEquationHorizNode = R.curry(
+    // Частичное применение записано явно; обход списка — обычный.
+    private assocPreviousPeriodEquationHorizNode =
       (
-        accNodes: IProfitLossSheetNode[],
+        // Сюда приходят и узлы отчёта, и узлы схемы — так их и передаёт
+        // вызывающий. Перечень, обещавший только узлы отчёта, отставал
+        // от кода.
+        accNodes: (IProfitLossSchemaNode | IProfitLossSheetNode)[],
         equation: string,
-        node: IProfitLossSheetEquationNode,
-      ): IProfitLossSheetEquationNode => {
-        const horizontalTotals = R.addIndex(R.map)(
-          this.previousPeriodEquationHorizNodeCompose(accNodes, equation),
-          node.horizontalTotals,
+      ) =>
+      (node: IProfitLossSheetEquationNode): IProfitLossSheetEquationNode => {
+        const compose = this.previousPeriodEquationHorizNodeCompose(
+          accNodes,
+          equation,
         );
-        return R.assoc('horizontalTotals', horizontalTotals, node);
-      },
-    );
+        const horizontalTotals = (node.horizontalTotals ?? []).map(
+          (horizontalTotal, index) => compose(horizontalTotal, index),
+        );
+
+        return { ...node, horizontalTotals };
+      };
   };

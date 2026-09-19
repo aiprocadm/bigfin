@@ -40,9 +40,23 @@ export interface IFinancialNodeWithPreviousPeriod {
   previousPeriodPercentage?: IProfitLossSheetPercentage;
 }
 
+/**
+ * ВНИМАНИЕ: это ВТОРАЯ копия перечня — такой же есть в `types/Report.types.ts`
+ * и используется Балансом и Движением денег.
+ *
+ * Две копии одного правила однажды расходятся, и расхождение видно только по
+ * странным замечаниям типов в одном из отчётов. Так и вышло: там даты уже
+ * сделали необязательными, а здесь они оставались обязательными, и любой узел
+ * ОПиУ, собранный без сравнения, считался неправильным.
+ *
+ * Сводить копии в одну — отдельная работа: перечни ОПиУ ссылаются на свои
+ * `IProfitLossSheetTotal`, а общий — на `IFinancialSheetTotal`. Пока держим их
+ * СОГЛАСОВАННЫМИ и подписываем это вслух.
+ */
 export interface IFinancialNodeWithPreviousYear {
-  previousYearFromDate: FinancialDateMeta;
-  previousYearToDate: FinancialDateMeta;
+  /** Появляются только при включённом сравнении с прошлым годом. */
+  previousYearFromDate?: FinancialDateMeta;
+  previousYearToDate?: FinancialDateMeta;
 
   previousYear?: IProfitLossSheetTotal;
   previousYearChange?: IProfitLossSheetTotal;
@@ -114,7 +128,15 @@ export interface IProfitLossHorizontalDatePeriodNode
 export interface IProfitLossSheetCommonNode
   extends IFinancialNodeWithPreviousYear,
     IFinancialNodeWithPreviousPeriod {
-  id: ProfitLossAggregateNodeId;
+  /**
+   * Номер узла.
+   *
+   * У РАЗДЕЛОВ это НАЗВАНИЕ (`INCOME`, `EXPENSES`, `NET_INCOME`), у СТРОК-СЧЕТОВ
+   * — номер счёта. Раньше здесь стояло только название раздела, и код,
+   * передававший номер счёта в поиск проводок, считался ошибочным — а на самом
+   * деле ошибался перечень.
+   */
+  id: ProfitLossAggregateNodeId | number;
   name: string;
 
   children?: IProfitLossSheetNode[];
@@ -128,6 +150,8 @@ export interface IProfitLossSheetCommonNode
 export interface IProfitLossSheetAccountNode
   extends IProfitLossSheetCommonNode {
   nodeType: ProfitLossNodeType.ACCOUNT;
+  /** У строки-счёта номер всегда числовой: это номер самого счёта. */
+  id: number;
 }
 export interface IProfitLossSheetEquationNode
   extends IProfitLossSheetCommonNode {

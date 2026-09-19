@@ -69,11 +69,16 @@ const buildService = (options: {
   const profitLoss = {
     profitLossSheet: async (query: any) => {
       calls.push(query);
-      if (query.displayColumnsBy === 'date_periods') {
+      // Разрез по периодам различаем по `displayColumnsType` — это и есть
+      // РЕЖИМ КОЛОНОК. Раньше здесь стояло `displayColumnsBy`, то есть
+      // ЕДИНИЦА ВРЕМЕНИ: заглушка повторяла ту же путаницу, что и код, и
+      // потому не могла её заметить. А в самом коде эта путаница вешала
+      // сервер бесконечным циклом по датам.
+      if (query.displayColumnsType === 'date_periods') {
         return options.periods ?? { data: [] };
       }
       // Первый вызов — текущий период, второй — предыдущий.
-      return calls.filter((c) => !c.displayColumnsBy).length === 1
+      return calls.filter((c) => !c.displayColumnsType).length === 1
         ? options.current
         : options.previous;
     },

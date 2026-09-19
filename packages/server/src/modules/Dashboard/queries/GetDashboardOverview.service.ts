@@ -352,7 +352,12 @@ export class GetDashboardOverviewService {
     const report = await this.profitLoss.profitLossSheet({
       fromDate: start.format('YYYY-MM-DD'),
       toDate: end.format('YYYY-MM-DD'),
-      displayColumnsBy: 'date_periods',
+      // РАЗРЕЗ ПО МЕСЯЦАМ. Здесь стояло `displayColumnsBy: 'date_periods'` —
+      // это не единица времени, а название режима колонок. `moment` на
+      // неизвестную единицу не ругается: он молча не двигает дату, и цикл по
+      // периодам становится БЕСКОНЕЧНЫМ. Главная страница убивала весь сервер
+      // сообщением «JavaScript heap out of memory».
+      displayColumnsBy: 'month',
       displayColumnsType: 'date_periods',
     } as any);
 

@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
 
-import DashboardTopbarUser from '@/components/Dashboard/TopbarUser';
 import UsersActions from '@/containers/Preferences/Users/UsersActions';
 import CurrenciesActions from '@/containers/Preferences/Currencies/CurrenciesActions';
 import WarehousesActions from '@/containers/Preferences/Warehouses/WarehousesActions';
@@ -16,7 +15,15 @@ import { compose } from '@/utils';
 import '@/style/pages/Preferences/Topbar.scss';
 
 /**
- * Preferences topbar.
+ * Шапка раздела настроек: название раздела и его действия.
+ *
+ * ЭТО НЕ ВТОРАЯ ВЕРХНЯЯ ПАНЕЛЬ. Раньше здесь стояло ещё одно меню профиля —
+ * и, войдя в настройки, человек видел ДВА аватара, два меню и две панели
+ * одна под другой. Продукт менял форму при переходе в раздел, а два одинаковых
+ * меню профиля заставляют гадать, чем они отличаются (ничем).
+ *
+ * Меню профиля осталось одно — в верхней панели продукта. Здесь только то,
+ * что относится к разделу: его название и его кнопки.
  */
 interface PreferencesTopbarProps {
   /** Заголовок раздела настроек. Подставляет обёртка `withDashboard`. */
@@ -67,9 +74,6 @@ function PreferencesTopbar({
         </Route>
       </div>
 
-      <div className="preferences-topbar__user">
-        <DashboardTopbarUser />
-      </div>
     </div>
   );
 }

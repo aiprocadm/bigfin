@@ -10,15 +10,21 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--color-preferences-topbar-background);
-  border-bottom: 1px solid var(--color-preferences-topbar-border);
+  // Цвета — общими токенами продукта, а не своими: у раздела настроек не
+  // должно быть отдельной палитры.
+  background-color: rgb(var(--c-background));
+  border-bottom: 1px solid rgb(var(--c-border));
 
   &__title {
     h2 {
-      font-size: 22px;
-      font-weight: 400;
+      // Заголовок раздела по общей шкале: 20/600. Прежние 22/400 не
+      // отличались от подзаголовка блока, и заголовок не читался
+      // заголовком.
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       margin: 0;
-      color: var(--color-preferences-topbar-title);
+      color: rgb(var(--c-text-primary));
     }
   }
 

@@ -20,7 +20,7 @@ export function usePendingBankAccountTransactions(
     [BANK_QUERY_KEY.PENDING_BANK_ACCOUNT_TRANSACTIONS],
     () =>
       apiRequest
-        .get(`/banking/bank_account/pending_transactions`)
+        .get(`/banking/pending`)
         .then((res) => res.data),
     { ...options },
   );

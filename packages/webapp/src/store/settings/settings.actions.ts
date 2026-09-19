@@ -4,7 +4,7 @@ import type { SettingOption } from './settings.type';
 
 export const submitOptions = ({ form }: { form: { options?: Array<SettingOption> } }) => {
   return (dispatch: any) =>
-    ApiService.post('settings', form).then((response) => {
+    ApiService.put('settings', form).then((response) => {
       dispatch({ type: SETTING_SET, options: form.options });
       return response;
     });

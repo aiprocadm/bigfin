@@ -1,7 +1,10 @@
 // © 2026 Bigfin
 import { BalanceSheetRepository } from './BalanceSheetRepository';
-import { INTERCOMPANY_SETTLEMENT_ACCOUNT_ID } from '@/modules/LegalEntities/utils/intercompanySettlement';
-import { ACCOUNT_TYPE } from '@/constants/accounts';
+import {
+  INTERCOMPANY_PAYABLE_ACCOUNT_ID,
+  INTERCOMPANY_RECEIVABLE_ACCOUNT_ID,
+  isSettlementAccountId,
+} from '@/modules/LegalEntities/utils/intercompanySettlement';
 
 /**
  * Сторож остатка К9: строка расчётов внутри группы ПОДКЛЮЧЕНА.
@@ -40,12 +43,17 @@ function fakeRepository(rows: any[]) {
 
   repository.accountTransactionModel = () => ({ query: () => queryResult });
   repository.accountModel = () => ({
-    // Настоящая модель вычисляет «дебетовый ли счёт» из типа; подставная
-    // обязана вести себя так же, иначе книга посчитает остаток наоборот.
+    // Настоящая модель выводит «дебетовый ли счёт» из типа. Подставная
+    // обязана делать ТО ЖЕ САМОЕ: заглушка, у которой всё дебетовое, не
+    // заметила бы, что строка долга встала не в ту сторону.
     fromJson: (json: any) => ({
       ...json,
-      accountNormal: 'debit',
-      accountParentType: 'current-asset',
+      accountNormal:
+        json.accountType === 'other-current-liability' ? 'credit' : 'debit',
+      accountParentType:
+        json.accountType === 'other-current-liability'
+          ? 'current-liability'
+          : 'current-asset',
     }),
     query: () => Promise.resolve([]),
   });
@@ -55,9 +63,7 @@ function fakeRepository(rows: any[]) {
 
 /** Остаток вычисляемой строки среди полученных строк. */
 function settlementOf(rows: any[]): number {
-  const row = rows.find(
-    (r) => r.accountId === INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
-  );
+  const row = rows.find((r) => isSettlementAccountId(r.accountId));
   if (!row) return 0;
 
   return (Number(row.debit) || 0) - (Number(row.credit) || 0);
@@ -129,8 +135,8 @@ describe('строка расчётов внутри группы подключ
         new Date('2026-02-28'),
         'month',
       );
-      const extra = result.filter(
-        (r: any) => r.accountId === INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
+      const extra = result.filter((r: any) =>
+        isSettlementAccountId(r.accountId),
       );
 
       expect(extra).toHaveLength(2);
@@ -147,16 +153,50 @@ describe('строка расчётов внутри группы подключ
   describe('вычисляемый счёт', () => {
     it('попадает в список счетов отчёта и он оборотный актив', async () => {
       const repository = fakeRepository([]);
-      repository.query = { legalEntityIds: [1] };
+      repository.query = { legalEntityIds: [1], toDate: '2026-12-31' };
 
       await repository.initAccounts();
 
-      const settlement = repository.accounts.find(
-        (a: any) => a.id === INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
+      const settlement = repository.accounts.find((a: any) =>
+        isSettlementAccountId(a.id),
       );
 
       expect(settlement).toBeDefined();
-      expect(settlement.accountType).toBe(ACCOUNT_TYPE.OTHER_CURRENT_ASSET);
+      expect(settlement.accountType).toBe('other-current-asset');
+    });
+
+    it('получившему деньги строка встаёт в ОБЯЗАТЕЛЬСТВА', async () => {
+      // ЖИВАЯ ПРОВЕРКА: у ИП при единственной имущественной строке выходило
+      // «Активы 0» — деньги на счету есть, а отчёт показывает ноль.
+      const repository = fakeRepository([
+        { accountId: 10, debit: 500_000, credit: 0 },
+      ]);
+      repository.query = { legalEntityIds: [2], toDate: '2026-12-31' };
+
+      await repository.initAccounts();
+
+      const settlement = repository.accounts.find((a: any) =>
+        isSettlementAccountId(a.id),
+      );
+
+      expect(settlement.id).toBe(INTERCOMPANY_PAYABLE_ACCOUNT_ID);
+      expect(settlement.accountType).toBe('other-current-liability');
+      expect(settlement.accountNormal).toBe('credit');
+    });
+
+    it('отдавшему деньги строка встаёт в ИМУЩЕСТВО', async () => {
+      const repository = fakeRepository([
+        { accountId: 10, debit: 0, credit: 500_000 },
+      ]);
+      repository.query = { legalEntityIds: [1], toDate: '2026-12-31' };
+
+      await repository.initAccounts();
+
+      const settlement = repository.accounts.find((a: any) =>
+        isSettlementAccountId(a.id),
+      );
+
+      expect(settlement.id).toBe(INTERCOMPANY_RECEIVABLE_ACCOUNT_ID);
     });
 
     it('в режиме всех юрлиц счёта в списке нет', async () => {
@@ -166,9 +206,7 @@ describe('строка расчётов внутри группы подключ
       await repository.initAccounts();
 
       expect(
-        repository.accounts.some(
-          (a: any) => a.id === INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
-        ),
+        repository.accounts.some((a: any) => isSettlementAccountId(a.id)),
       ).toBe(false);
     });
   });

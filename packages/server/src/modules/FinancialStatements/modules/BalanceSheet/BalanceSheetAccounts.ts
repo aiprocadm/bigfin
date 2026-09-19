@@ -26,6 +26,7 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { flatToNestedArray } from '@/utils/flat-to-nested-array';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { ACCOUNT_TYPE } from '@/constants/accounts';
+import { INTERCOMPANY_SETTLEMENT_ACCOUNT_ID } from '@/modules/LegalEntities/utils/intercompanySettlement';
 import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
@@ -124,7 +125,14 @@ export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
       return {
         id: account.id,
         index: account.index,
-        name: account.name,
+        // Названия настоящих счетов переводятся ОДИН РАЗ, при заведении
+        // организации, и лежат в базе уже готовым текстом. Вычисляемый счёт
+        // расчётов внутри группы в базе не лежит — его название приходится
+        // переводить здесь, иначе человек увидит служебный ключ.
+        name:
+          account.id === INTERCOMPANY_SETTLEMENT_ACCOUNT_ID
+            ? this.i18n.t(account.name)
+            : account.name,
         code: account.code,
         total: this.getAmountMeta(total),
         nodeType: BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNT,

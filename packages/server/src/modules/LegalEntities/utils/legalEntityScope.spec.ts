@@ -121,7 +121,9 @@ describe('describeLegalEntityScope — что показать в шапке', (
       isConsolidated: true,
       excludesIntercompany: true,
       selectedCount: 0,
-      balanceMayNotConverge: false,
+      // В режиме всех юрлиц строки расчётов нет: обе ноги любого внутреннего
+      // перевода уже внутри отчёта.
+      hasIntercompanySettlement: false,
     });
   });
 
@@ -130,11 +132,10 @@ describe('describeLegalEntityScope — что показать в шапке', (
       isConsolidated: false,
       excludesIntercompany: false,
       selectedCount: 1,
-      // Баланс ОДНОГО юрлица может не сойтись: вторая нога внутреннего
-      // перевода лежит на счёте другого юрлица, а встречного требования к
-      // своему же в балансе нет. Найдено живой проверкой на стенде —
-      // перевод 500 000 развёл стороны ровно на 500 000.
-      balanceMayNotConverge: true,
+      // У одного юрлица появляется строка «Расчёты внутри группы»: вторая
+      // нога внутреннего перевода лежит на счёте другого юрлица, и встречное
+      // требование к своему же считается по перекосу отбора.
+      hasIntercompanySettlement: true,
     });
   });
 
@@ -145,7 +146,9 @@ describe('describeLegalEntityScope — что показать в шапке', (
       selectedCount: 2,
       // Двух и больше юрлиц уже достаточно, чтобы внутренние обороты
       // исключались: обе ноги перевода внутри выбранной части группы.
-      balanceMayNotConverge: false,
+      // Но строка расчётов НУЖНА и здесь: у выбранной части есть настоящие
+      // требования к оставшейся.
+      hasIntercompanySettlement: true,
     });
   });
 });

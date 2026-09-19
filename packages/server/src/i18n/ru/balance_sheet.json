@@ -18,5 +18,6 @@
   "total": "Итого",
   "percentage_of_column": "% от столбца",
   "percentage_of_row": "% от строки",
-  "founder_loan": "Заём от учредителя"
+  "founder_loan": "Заём от учредителя",
+  "intercompany_settlement": "Расчёты внутри группы"
 }

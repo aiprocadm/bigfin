@@ -16,12 +16,12 @@ export interface LegalEntityScopeMeta {
   isConsolidated?: boolean;
   excludesIntercompany?: boolean;
   selectedCount?: number;
-  balanceMayNotConverge?: boolean;
+  hasIntercompanySettlement?: boolean;
 }
 
 export function ReportScopeNote({
   scope,
-  /** Показывать ли оговорку про несходящийся баланс — только у Баланса. */
+  /** Пояснять ли строку расчётов внутри группы — только у Баланса. */
   withBalanceWarning = false,
 }: {
   scope?: LegalEntityScopeMeta;
@@ -41,16 +41,14 @@ export function ReportScopeNote({
       )}
 
       {/*
-        ЧЕСТНАЯ ОГОВОРКА. Баланс одного юрлица может не сойтись: внутренний
-        перевод кладёт вторую ногу на счёт ДРУГОГО юрлица, а встречного
-        требования к своим же расчёты внутри группы пока не ведут. Молчать
-        нельзя — человек увидит несходящиеся стороны и решит, что врёт вся
-        программа.
+        ПОЯСНЕНИЕ, А НЕ ПРЕДУПРЕЖДЕНИЕ. Раньше здесь висела оговорка «стороны
+        баланса могут не сойтись»: внутренний перевод оставлял вторую ногу у
+        другого юрлица, и разница повисала в воздухе. Теперь разница
+        показана строкой «Расчёты внутри группы», и объяснять надо уже её:
+        откуда строка взялась и что значит её знак.
       */}
-      {withBalanceWarning && scope.balanceMayNotConverge && (
-        <p className="text-warning">
-          {intl.get('report.scope.balance_may_not_converge')}
-        </p>
+      {withBalanceWarning && scope.hasIntercompanySettlement && (
+        <p>{intl.get('report.scope.intercompany_settlement')}</p>
       )}
     </div>
   );

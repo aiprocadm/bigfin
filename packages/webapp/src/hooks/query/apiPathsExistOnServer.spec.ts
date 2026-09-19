@@ -43,8 +43,6 @@ const ROUTE_RE = /@(Get|Post|Put|Patch|Delete)\(\s*(?:'([^']*)')?\s*\)/g;
 const KNOWN_DEBT: Record<string, string> = {
   'GET organization/all':
     'у контроллера организации есть только `current`; списка организаций сервер не отдаёт вовсе',
-  'POST projects':
-    'раздел «Проекты» без серверной части — известный остаток ТЗ, контроллера нет вовсе',
   'POST subscription/license/payment':
     'старое действие Redux; живой путь оплаты — `subscription/lemon/checkout_url`, но у него другой состав данных',
   'POST views':
@@ -210,9 +208,24 @@ describe('адрес, который зовёт витрина, есть на с
     expect(broken).toEqual([]);
   });
 
+  it('долг не протухает', () => {
+    // Слепое пятно, найденное разбором остатка: строка долга говорит «ручки
+    // нет», но ручку УЖЕ сделали. Никто этого не замечает — оба прежних
+    // сторожа смотрят только в другую сторону: «не появилось нового» и
+    // «список не вырос». Список долга обязан быть правдой в обе стороны,
+    // иначе он превращается в список отговорок.
+    const healed = Object.keys(KNOWN_DEBT).filter((key) => {
+      const [method, route] = key.split(' ');
+
+      return routes.some((r) => r.method === method && r.matches(route));
+    });
+
+    expect(healed).toEqual([]);
+  });
+
   it('долг не разрастается', () => {
     // Список известных расхождений может только уменьшаться.
-    expect(Object.keys(KNOWN_DEBT)).toHaveLength(4);
+    expect(Object.keys(KNOWN_DEBT)).toHaveLength(3);
   });
 
   it('каждая строка долга объясняет причину', () => {

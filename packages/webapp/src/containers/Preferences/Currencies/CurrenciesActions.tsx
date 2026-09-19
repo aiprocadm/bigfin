@@ -1,9 +1,17 @@
 import React, { useCallback } from 'react';
-import { Button, Intent } from '@blueprintjs/core';
+import { Plus } from 'lucide-react';
+
 import { compose } from '@/utils';
-import { Icon, FormattedMessage as T } from '@/components';
+import { FormattedMessage as T } from '@/components';
+import { Button } from '@/components/ui/button';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 
+/**
+ * Настройки — действия над валютами.
+ *
+ * Кнопка переведена на новую (остаток Д1): на телефоне у неё высота под
+ * палец, а значок берётся из общего набора, а не из старой библиотеки.
+ */
 function CurrenciesActions({ openDialog }: any) {
   const handleClickNewCurrency = useCallback(() => {
     openDialog('currency-form');
@@ -11,11 +19,8 @@ function CurrenciesActions({ openDialog }: any) {
 
   return (
     <div className="users-actions">
-      <Button
-        icon={<Icon icon="plus" iconSize={12} />}
-        onClick={handleClickNewCurrency}
-        intent={Intent.PRIMARY}
-      >
+      <Button onClick={handleClickNewCurrency}>
+        <Plus className="h-4 w-4" aria-hidden />
         <T id={'new_currency'} />
       </Button>
     </div>

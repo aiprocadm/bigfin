@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { ErrorMessage, useFormikContext } from 'formik';
@@ -33,10 +32,13 @@ export default function AllocateLandedCostFormFields() {
   const { costTransactionEntries, landedCostTransactions, isLandedCostTransactionsLoading } =
     useAllocateLandedConstDialogContext();
 
-  const { values, setFieldValue, form } = useFormikContext<any>();
+  // `form` здесь разбиралось и НЕ использовалось ни разу, а у Formik
+  // такого поля нет вовсе. Слепая зона типов прятала обе половины
+  // ошибки сразу.
+  const { values, setFieldValue } = useFormikContext<any>();
 
   // Handle transaction type select change.
-  const handleTransactionTypeChange = (type) => {
+  const handleTransactionTypeChange = (type: any) => {
     const { items } = values;
 
     setFieldValue('transaction_type', type.value);
@@ -47,7 +49,7 @@ export default function AllocateLandedCostFormFields() {
   };
 
   // Handle transaction select change.
-  const handleTransactionChange = (transaction) => {
+  const handleTransactionChange = (transaction: any) => {
     const { items } = values;
     setFieldValue('transaction_id', transaction.id);
     setFieldValue('transaction_entry_id', '');
@@ -56,7 +58,7 @@ export default function AllocateLandedCostFormFields() {
   };
 
   // Handle transaction entry select change.
-  const handleTransactionEntryChange = (entry) => {
+  const handleTransactionEntryChange = (entry: any) => {
     const { id, unallocated_cost_amount: unallocatedAmount } = entry;
     const { items, allocation_method } = values;
 
@@ -169,12 +171,11 @@ export default function AllocateLandedCostFormFields() {
       <FFormGroup
         name={'allocation_method'}
         label={<T id={'allocation_method'} />}
-        medium
         inline
       >
         <FRadioGroup
           name={'allocation_method'}
-          onChange={handleStringChange((_value) => {
+          onChange={handleStringChange((_value: any) => {
             const { amount, items } = values;
 
             setFieldValue('allocation_method', _value);
@@ -185,8 +186,8 @@ export default function AllocateLandedCostFormFields() {
           })}
           inline={true}
         >
-          <Radio label={<T id={'quantity'} />} value="quantity" />
-          <Radio label={<T id={'valuation'} />} value="value" />
+          <Radio labelElement={<T id={'quantity'} />} value="quantity" />
+          <Radio labelElement={<T id={'valuation'} />} value="value" />
         </FRadioGroup>
       </FFormGroup>
 

@@ -18,6 +18,12 @@ interface TaxRateFormDialogBootContext {
   isTaxRateLoading: boolean;
   isTaxRateSuccess: boolean;
   isNewMode: boolean;
+  /**
+   * Имя окна. Оно КЛАДЁТСЯ в контекст ниже и читается формой, но объявлено
+   * не было: слепая зона типов прятала расхождение между тем, что кладут,
+   * и тем, что обещают.
+   */
+  dialogName: string;
 }
 
 /**

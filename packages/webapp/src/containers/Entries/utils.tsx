@@ -80,7 +80,18 @@ export const isLandedCostDisabled = (item) =>
  * Handle fetch item row details and retrieves the new table row.
  */
 export function useFetchItemRow({ landedCost, itemType, notifyNewRow }) {
-  const [itemRow, setItemRow] = React.useState(null);
+  /**
+   * Какую строку таблицы сейчас подгружаем.
+   *
+   * Было `useState(null)` — проверка выводила из этого, что состояние
+   * ВСЕГДА пусто, и запись строки в него была ошибкой. Слепая зона типов
+   * это прятала.
+   */
+  const [itemRow, setItemRow] = React.useState<{
+    rowIndex: number;
+    columnId: string;
+    itemId: number | string;
+  } | null>(null);
   const [cellsLoading, setCellsLoading] = React.useState(null);
 
   // Fetches the item details.

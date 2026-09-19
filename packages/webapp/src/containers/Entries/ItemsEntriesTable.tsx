@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import classNames from 'classnames';
 
@@ -20,7 +19,12 @@ import { useUncontrolled } from '@/hooks/useUncontrolled';
 import { ItemEntry } from '@/interfaces/ItemEntries';
 
 interface ItemsEntriesTableProps {
-  initialValue?: ItemEntry;
+  /**
+   * Начальный НАБОР строк. Было объявлено одной строкой — опечатка: таблица
+   * строк начинается со списка, как и её `value`. Слепая зона типов прятала
+   * расхождение прямо внутри одного описания.
+   */
+  initialValue?: ItemEntry[];
   value?: ItemEntry[];
   onChange?: (entries: ItemEntry[]) => void;
   taxRates?: any[];
@@ -86,7 +90,7 @@ function ItemEntriesTableRoot() {
   const { setItemRow, cellsLoading, isItemFetching } = useFetchItemRow({
     landedCost,
     itemType,
-    notifyNewRow: (newRow, rowIndex) => {
+    notifyNewRow: (newRow: any, rowIndex: any) => {
       // Update the rate, description and quantity data of the row.
       const newRows = composeRowsOnNewRow(rowIndex, newRow, localValue);
       handleChange(newRows);
@@ -94,7 +98,7 @@ function ItemEntriesTableRoot() {
   });
   // Handles the editor data update.
   const handleUpdateData = useCallback(
-    (rowIndex, columnId, value) => {
+    (rowIndex: any, columnId: any, value: any) => {
       if (columnId === 'item_id') {
         setItemRow({ rowIndex, columnId, itemId: value });
       }
@@ -105,7 +109,7 @@ function ItemEntriesTableRoot() {
   );
 
   // Handle table rows removing by index.
-  const handleRemoveRow = (rowIndex) => {
+  const handleRemoveRow = (rowIndex: any) => {
     const newRows = composeRowsOnDeleteRow(rowIndex);
     handleChange(newRows);
   };

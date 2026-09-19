@@ -1,8 +1,3 @@
-// @ts-nocheck
-// ОСТАЛОСЬ 2 ЗАМЕЧАНИЯ (слой хуков запросов, 19.09). Было 16.
-// Оставшееся: у чека в HTML объявлен свой вид ответа, и он спорит с
-// тем, что отдаёт общий помощник запросов. Чинится вместе с ним, а не
-// здесь.
 import {
   useQueryClient,
   useMutation,
@@ -360,7 +355,10 @@ interface GetReceiptHtmlResponse {
  */
 export const useGetSaleReceiptHtml = (
   receiptId: number,
-  options?: UseQueryOptions<string, Error>,
+  // Настройки объявлены ПРО ТОТ ЖЕ вид ответа, что и сам запрос. Стояло
+  // «строка», хотя запрос отдаёт разобранный ответ, — два объявления об
+  // одном и том же спорили друг с другом.
+  options?: UseQueryOptions<GetReceiptHtmlResponse, Error>,
 ): UseQueryResult<GetReceiptHtmlResponse, Error> => {
   const apiRequest = useApiRequest();
 

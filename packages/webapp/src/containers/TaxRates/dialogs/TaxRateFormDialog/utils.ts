@@ -1,4 +1,3 @@
-// @ts-nocheck
 import intl from 'react-intl-universal';
 import { useFormikContext } from 'formik';
 import { omit } from 'lodash';
@@ -19,10 +18,13 @@ export const defaultInitialValues = {
  * Transformers response errors to form errors.
  * @returns {Record<string, string>}
  */
-export const transformApiErrors = (errors) => {
-  const fields = {};
+export const transformApiErrors = (errors: any) => {
+  // Объявлено ЯВНО: пустой объект `{}` проверка считает «объектом без
+  // полей», и любое присваивание в него — ошибка. Слепая зона это прятала,
+  // и следующий, кто добавит сюда вторую ошибку, потерял бы день.
+  const fields: Record<string, string> = {};
 
-  if (errors.find((e) => e.type === 'TAX_CODE_NOT_UNIQUE')) {
+  if (errors.find((e: any) => e.type === 'TAX_CODE_NOT_UNIQUE')) {
     fields.code = intl.get('tax_rates.error.not_unique');
   }
   return fields;
@@ -31,7 +33,7 @@ export const transformApiErrors = (errors) => {
 /**
  * Tranformes form values to request values.
  */
-export const transformFormToReq = (form) => {
+export const transformFormToReq = (form: any) => {
   return omit({ ...form }, ['confirm_edit']);
 };
 
@@ -41,7 +43,7 @@ export const transformFormToReq = (form) => {
  * @param formValues 
  * @returns {boolean}
  */
-export const isTaxRateChange = (initialValues, formValues) => {
+export const isTaxRateChange = (initialValues: any, formValues: any) => {
   return initialValues.rate !== formValues.rate;
 };
 
@@ -55,7 +57,7 @@ export const useIsTaxRateChanged = () => {
   return isTaxRateChange(initialValues, values);
 };
 
-const convertFormAttrsToBoolean = (form) => {
+const convertFormAttrsToBoolean = (form: any) => {
   return {
     ...form,
     is_compound: !!form.is_compound,
@@ -63,7 +65,7 @@ const convertFormAttrsToBoolean = (form) => {
   };
 };
 
-export const transformTaxRateToForm = (taxRate) => {
+export const transformTaxRateToForm = (taxRate: any) => {
   return compose(convertFormAttrsToBoolean)({
     ...defaultInitialValues,
     /**

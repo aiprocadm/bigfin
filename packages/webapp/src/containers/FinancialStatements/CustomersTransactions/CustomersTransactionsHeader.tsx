@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import moment from 'moment';
 import styled from 'styled-components';
@@ -17,6 +16,10 @@ import {
   getCustomersTransactionsDefaultQuery,
   getCustomersTransactionsQuerySchema,
 } from './_utils';
+import {
+  FormikSubmitHelpers,
+  ReportFilterHeaderProps,
+} from '../reportFilterHeader';
 
 /**
  * Customers transactions header.
@@ -31,6 +34,8 @@ function CustomersTransactionsHeader({
 
   //#withCustomersTransactionsActions
   toggleCustomersTransactionsFilterDrawer: toggleFilterDrawer,
+}: ReportFilterHeaderProps & {
+  toggleCustomersTransactionsFilterDrawer: (isOpen: boolean) => void;
 }) {
   // Default form values.
   const defaultValues = getCustomersTransactionsDefaultQuery();
@@ -50,7 +55,7 @@ function CustomersTransactionsHeader({
   const validationSchema = getCustomersTransactionsQuerySchema();
 
   // Handle form submit.
-  const handleSubmit = (values, { setSubmitting }) => {
+  const handleSubmit = (values: any, { setSubmitting }: FormikSubmitHelpers) => {
     onSubmitFilter(values);
     toggleFilterDrawer(false);
     setSubmitting(false);
@@ -94,7 +99,7 @@ function CustomersTransactionsHeader({
 }
 
 export default compose(
-  withCustomersTransactions(({ customersTransactionsDrawerFilter }) => ({
+  withCustomersTransactions(({ customersTransactionsDrawerFilter }: any) => ({
     isFilterDrawerOpen: customersTransactionsDrawerFilter,
   })),
   withCustomersTransactionsActions,

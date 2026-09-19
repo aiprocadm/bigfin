@@ -4625,5 +4625,7 @@
   "ai_settings.external_forbidden": "The organization forbids sending data to external services, so the AI analyst stays off even with a provider set.",
   "ai_settings.unavailable.feature_disabled": "The section is switched off in modules.",
   "ai_settings.unavailable.external_data_forbidden": "The organization forbids sending data to external services.",
-  "ai_settings.unavailable.provider_not_configured": "The provider is not set up yet."
+  "ai_settings.unavailable.provider_not_configured": "The provider is not set up yet.",
+  "report.legal_entities.label": "Legal entities",
+  "report.legal_entities.hint": "Nothing selected means the whole group, with internal transfers excluded."
 }

@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { I18nService } from 'nestjs-i18n';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
 import { IBalanceSheetMeta, IBalanceSheetQuery } from './BalanceSheet.types';
+import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 
 @Injectable()
 export class BalanceSheetMetaInjectable {
@@ -28,6 +29,9 @@ export class BalanceSheetMetaInjectable {
       sheetName,
       formattedAsDate,
       formattedDateRange,
+      legalEntityScope: describeLegalEntityScope({
+        legalEntityIds: query.legalEntityIds,
+      }),
     };
   }
 }

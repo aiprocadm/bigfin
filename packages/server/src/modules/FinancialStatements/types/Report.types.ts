@@ -42,6 +42,19 @@ export enum ReportsAction {
 
 export interface IFinancialSheetBranchesQuery {
   branchesIds?: number[];
+
+  /**
+   * Разрез по юрлицам (этап 7 ТЗ, §7.1).
+   *
+   * Пусто или отсутствует — ВСЕ юрлица, то есть сводный отчёт по группе.
+   * Именно так отчёт и вёл себя до появления разреза, поэтому у тех, кто
+   * ничего не выбирал, ничего и не изменится.
+   *
+   * Отбор накладывается в одном месте на все отчёты: разные отчёты,
+   * отбирающие по-разному, — это гарантированное расхождение цифр между
+   * страницами.
+   */
+  legalEntityIds?: number[];
 }
 
 export interface IFinancialSheetCommonMeta {
@@ -50,6 +63,19 @@ export interface IFinancialSheetCommonMeta {
   dateFormat: string;
   isCostComputeRunning: boolean;
   sheetName: string;
+
+  /**
+   * Что именно показано: сводно по группе или по выбранным юрлицам.
+   *
+   * Человек должен ВИДЕТЬ это, а не гадать, почему сумма меньше, чем у него
+   * в голове. Сводный отчёт без внутренних переводов и отчёт по одному
+   * юрлицу дают разные числа — и оба правильные.
+   */
+  legalEntityScope?: {
+    isConsolidated: boolean;
+    excludesIntercompany: boolean;
+    selectedCount: number;
+  };
 }
 
 /**

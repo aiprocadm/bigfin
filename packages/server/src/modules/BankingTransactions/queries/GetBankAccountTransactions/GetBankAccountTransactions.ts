@@ -30,6 +30,7 @@ export class GetBankAccountTransactions extends FinancialSheet {
     query: ICashflowAccountTransactionsQuery,
     i18n: I18nService,
     dateFormat?: string,
+    baseCurrency?: string,
   ) {
     super();
 
@@ -37,6 +38,8 @@ export class GetBankAccountTransactions extends FinancialSheet {
     this.query = query;
     this.i18n = i18n;
     this.dateFormat = dateFormat || this.dateFormat;
+    // Без валюты общий помощник формата выводит суммы по-английски.
+    this.baseCurrency = baseCurrency || this.baseCurrency;
 
     this.runningBalance = runningBalance(this.repo.openingBalance);
   }
@@ -129,7 +132,9 @@ export class GetBankAccountTransactions extends FinancialSheet {
       balance: 0,
       formattedBalance: '',
       status,
-      formattedStatus: formatBankTransactionsStatus(status),
+      formattedStatus: this.i18n.t(
+        `banking.transaction_status.${status}`,
+      ),
       uncategorizedTransactionId,
     };
   };

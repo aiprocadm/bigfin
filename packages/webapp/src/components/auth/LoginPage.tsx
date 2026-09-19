@@ -31,6 +31,8 @@ import {
 
 import { useAuthMetaBoot } from '@/containers/Authentication/AuthMetaBoot';
 
+import intl from 'react-intl-universal';
+
 import {
   loginSchema,
   twoFactorCodeSchema,
@@ -279,7 +281,7 @@ export const LoginPage = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Пароль</FormLabel>
+                  <FormLabel>{intl.get('password')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
@@ -354,20 +356,20 @@ export const LoginPage = () => {
 
             <div className="flex items-center gap-3">
               <Separator className="flex-1" />
-              <span className="text-xs text-text-muted">или</span>
+              <span className="text-xs text-text-muted">{intl.get('or')}</span>
               <Separator className="flex-1" />
             </div>
 
             <Button variant="secondary" type="button" disabled>
-              Войти через Google (скоро)
+              {intl.get('auth.google_soon')}
             </Button>
 
             {/* Когда регистрация закрыта, звать на неё — обман: человек
                 уйдёт по ссылке и упрётся в «закрыто» (М4 карты v15). */}
             {!signupDisabled && (
               <p className="mt-2 text-center text-sm text-text-secondary">
-                Нет аккаунта?{' '}
-                <Link to="/auth/register">Зарегистрируйтесь</Link>
+                {intl.get('auth.no_account')}{' '}
+                <Link to="/auth/register">{intl.get('auth.register_link')}</Link>
               </p>
             )}
           </form>

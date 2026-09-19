@@ -3,6 +3,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
+import intl from 'react-intl-universal';
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
@@ -54,7 +55,7 @@ export const DialogContent = React.forwardRef<
         )}
       >
         <X className="h-4 w-4" aria-hidden />
-        <span className="sr-only">Закрыть</span>
+        <span className="sr-only">{intl.get('close')}</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>

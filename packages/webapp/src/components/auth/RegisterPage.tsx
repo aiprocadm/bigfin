@@ -28,6 +28,7 @@ import { useAuthLogin, useAuthRegister } from '@/hooks/query/authentication';
 import { useAuthMetaBoot } from '@/containers/Authentication/AuthMetaBoot';
 
 import { registerSchema, type RegisterInput } from './schemas';
+import intl from 'react-intl-universal';
 
 type LoginVars = { email: string; password: string };
 type RegisterVars = LoginVars & { first_name: string; last_name: string };
@@ -112,7 +113,7 @@ export const RegisterPage = () => {
             организацию — откройте ссылку из приглашения.
           </p>
           <p className="text-sm text-text-secondary">
-            Уже есть аккаунт? <Link to="/auth/login">Войдите</Link>
+            Уже есть аккаунт? <Link to="/auth/login">{intl.get('auth.login_link')}</Link>
           </p>
         </div>
       </AuthLayout>
@@ -126,7 +127,7 @@ export const RegisterPage = () => {
           <h1 className="text-3xl font-semibold text-text-primary">
             Создайте аккаунт
           </h1>
-          <p className="mt-1 text-text-secondary">Бесплатно. Без карты.</p>
+          <p className="mt-1 text-text-secondary">{intl.get('auth.free_no_card')}</p>
         </div>
 
         {serverError ? (
@@ -146,9 +147,9 @@ export const RegisterPage = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Имя</FormLabel>
+                  <FormLabel>{intl.get('first_name')}</FormLabel>
                   <FormControl>
-                    <Input autoComplete="name" placeholder="Иван" {...field} />
+                    <Input autoComplete="name" placeholder={intl.get('auth.first_name_example')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -179,13 +180,13 @@ export const RegisterPage = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Пароль</FormLabel>
+                  <FormLabel>{intl.get('password')}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         autoComplete="new-password"
-                        placeholder="Минимум 10 символов"
+                        placeholder={intl.get('auth.password_hint')}
                         className="pr-10"
                         {...field}
                       />
@@ -215,7 +216,7 @@ export const RegisterPage = () => {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Подтвердите пароль</FormLabel>
+                  <FormLabel>{intl.get('confirm_password')}</FormLabel>
                   <FormControl>
                     <Input
                       type={showPassword ? 'text' : 'password'}
@@ -272,7 +273,7 @@ export const RegisterPage = () => {
             </Button>
 
             <p className="mt-2 text-center text-sm text-text-secondary">
-              Уже есть аккаунт? <Link to="/auth/login">Войдите</Link>
+              Уже есть аккаунт? <Link to="/auth/login">{intl.get('auth.login_link')}</Link>
             </p>
           </form>
         </Form>

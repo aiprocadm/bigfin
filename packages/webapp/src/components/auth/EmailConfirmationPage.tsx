@@ -9,6 +9,7 @@ import { Link } from '@/components/ui/Link';
 import { Spinner } from '@/components/ui/Spinner';
 // Legacy JS hook (// @ts-nocheck) — мы передаём { token, email } и получаем mutation.
 import { useAuthSignUpVerify } from '@/hooks/query';
+import intl from 'react-intl-universal';
 
 type Mode = 'verifying' | 'success' | 'invalid-link' | 'failed';
 
@@ -61,7 +62,7 @@ export const EmailConfirmationPage = () => {
         {mode === 'verifying' && (
           <div className="flex flex-col items-center gap-3 py-6">
             <Spinner size="md" />
-            <p className="text-text-secondary">Подтверждаем ваш email...</p>
+            <p className="text-text-secondary">{intl.get('auth.confirming_email')}</p>
           </div>
         )}
 

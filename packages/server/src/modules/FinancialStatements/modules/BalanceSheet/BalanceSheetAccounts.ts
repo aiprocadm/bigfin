@@ -32,17 +32,30 @@ import { sameNodeShape } from '../../utils/Table.utils';
 export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
   Base: T,
 ) =>
-  class extends R.pipe(
-    BalanceSheetNetIncome,
-    BalanceSheetFiltering,
-    BalanceSheetDatePeriods,
-    BalanceSheetComparsionPreviousPeriod,
-    BalanceSheetComparsionPreviousYear,
-    BalanceSheetPercentage,
-    BalanceSheetSchema,
-    BalanceSheetBase,
-    FinancialSheetStructure,
-  )(Base) {
+  class extends
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая примесь
+  // оборачивает базу), но проверка типов ВИДИТ, что получилось.
+  // Через `R.pipe` она считает, что у класса нет ни одного метода
+  // примесей.
+  FinancialSheetStructure(
+    BalanceSheetBase(
+      BalanceSheetSchema(
+        BalanceSheetPercentage(
+          BalanceSheetComparsionPreviousYear(
+            BalanceSheetComparsionPreviousPeriod(
+              BalanceSheetDatePeriods(
+                BalanceSheetFiltering(
+                  BalanceSheetNetIncome(
+                    Base,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ) {
     /**
      * Balance sheet query.
      * @param {BalanceSheetQuery}

@@ -14,11 +14,18 @@ import { FinancialSheetStructure } from '../../common/FinancialSheetStructure';
 export const BalanceSheetFiltering = <T extends GConstructor<FinancialSheet>>(
   Base: T,
 ) =>
-  class extends R.pipe(
-    FinancialFilter,
-    FinancialSheetStructure,
-    BalanceSheetBase,
-  )(Base) {
+  class extends
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая примесь
+  // оборачивает базу), но проверка типов ВИДИТ, что получилось.
+  // Через `R.pipe` она считает, что у класса нет ни одного метода
+  // примесей.
+  BalanceSheetBase(
+    FinancialSheetStructure(
+      FinancialFilter(
+        Base,
+      ),
+    ),
+  ) {
     // Приходят из соседних примесей того же класса. Объявление ничего
     // не создаёт — оно только показывает проверке типов то, что во
     // время работы и так есть.

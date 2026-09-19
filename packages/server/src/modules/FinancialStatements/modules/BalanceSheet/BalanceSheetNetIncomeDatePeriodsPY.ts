@@ -17,11 +17,18 @@ export const BalanceSheetNetIncomeDatePeriodsPY = <
 >(
   Base: T,
 ) =>
-  class extends R.pipe(
-    BalanceSheetComparsionPreviousYear,
-    FinancialPreviousPeriod,
-    FinancialHorizTotals,
-  )(Base) {
+  class extends
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая примесь
+  // оборачивает базу), но проверка типов ВИДИТ, что получилось.
+  // Через `R.pipe` она считает, что у класса нет ни одного метода
+  // примесей.
+  FinancialHorizTotals(
+    FinancialPreviousPeriod(
+      BalanceSheetComparsionPreviousYear(
+        Base,
+      ),
+    ),
+  ) {
     query: BalanceSheetQuery;
     repository: BalanceSheetRepository;
 

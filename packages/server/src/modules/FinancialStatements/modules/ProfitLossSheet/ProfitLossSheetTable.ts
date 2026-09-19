@@ -1,9 +1,3 @@
-// @ts-nocheck
-// ОСТАЛОСЬ 9 ЗАМЕЧАНИЙ (слой «девять и ниже», 19.09). Все — из
-// композиции примесей через `R.pipe`: проверка типов не видит у
-// класса методов примесей и считает их несуществующими. Лечится тем
-// же разворотом во вложенные вызовы, что сделан в Балансе, но здесь
-// он тянет за собой перечни таблицы.
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
 import {
@@ -22,6 +16,8 @@ import {
 } from '../../types/Table.types';
 import { ProfitLossSheetBase } from './ProfitLossSheetBase';
 import { ProfitLossSheetTablePercentage } from './ProfitLossSheetTablePercentage';
+import { GConstructor } from '@/common/types/Constructor';
+import { FinancialSheet } from '../../common/FinancialSheet';
 import { ProfitLossSheetQuery } from './ProfitLossSheetQuery';
 import { ProfitLossTablePreviousPeriod } from './ProfitLossTablePreviousPeriod';
 import { ProfitLossTablePreviousYear } from './ProfitLossTablePreviousYear';
@@ -31,17 +27,40 @@ import { FinancialSheetStructure } from '../../common/FinancialSheetStructure';
 import { FinancialTable } from '../../common/FinancialTable';
 import { tableRowMapper } from '../../utils/Table.utils';
 
-export class ProfitLossSheetTable extends R.pipe(
-  ProfitLossTablePreviousPeriod,
-  ProfitLossTablePreviousYear,
-  ProfitLossSheetTablePercentage,
-  ProfitLossSheetTableDatePeriods,
-  ProfitLossSheetBase,
-  FinancialSheetStructure,
-  FinancialTable,
-)(class {}) {
+export class ProfitLossSheetTable extends 
+  // Вложенные вызовы вместо `R.pipe`: порядок тот же (первая
+  // примесь оборачивает базу), но проверка типов ВИДИТ, что
+  // получилось. Через `R.pipe` она считает, что у класса нет ни
+  // одного метода примесей.
+  FinancialTable(
+    FinancialSheetStructure(
+      ProfitLossSheetBase(
+        ProfitLossSheetTableDatePeriods(
+          ProfitLossSheetTablePercentage(
+            ProfitLossTablePreviousYear(
+              ProfitLossTablePreviousPeriod(
+                // База — ПУСТОЙ класс: всё нужное дают примеси. Проверке это
+                // надо сказать прямо, потому что примеси объявлены как
+                // надстройка над общим листом отчёта. Поведение не меняется
+                // ни на шаг: раньше сюда передавался тот же пустой класс,
+                // просто через `R.pipe`, где проверка ничего не видела.
+                class {} as unknown as GConstructor<FinancialSheet>,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ) {
   readonly query: ProfitLossSheetQuery;
   readonly i18n: I18nService;
+
+  /**
+   * Готовые данные отчёта. Поле ЗАПОЛНЯЕТСЯ в конструкторе, но объявлено не
+   * было — слепая зона типов прятала это, и любое обращение к нему считалось
+   * бы ошибкой, если бы проверку включили.
+   */
+  readonly reportData: any;
 
   /**
    * Constructor method.
@@ -86,7 +105,7 @@ export class ProfitLossSheetTable extends R.pipe(
    */
   private commonColumnsAccessors = (): ITableColumnAccessor[] => {
     let result: ITableColumnAccessor[] = [];
-    result = this.query.isDatePeriodsColumnsType(result)
+    result = this.query.isDatePeriodsColumnsType()
           ? R.concat(this.datePeriodsColumnsAccessors())(result)
           : R.concat(this.totalColumnAccessor())(result);
     result = sameNodeShape<ITableColumnAccessor[]>(R.concat([{ key: 'name', accessor: 'name' }])(result));
@@ -148,7 +167,10 @@ export class ProfitLossSheetTable extends R.pipe(
    * @returns {ITableRow}
    */
   private nodeToTableRowCompose = (node: IProfitLossSheetNode): ITableRow => {
-    return R.cond([
+    // `R.cond` выбирает превращение по виду узла. Что именно вернётся,
+    // проверка вывести не может: у каждой ветки свой вид узла на входе.
+    // Ответ объявлен здесь — в подписи самого превращения.
+    const compose = R.cond([
       [
         this.isNodeType(ProfitLossNodeType.ACCOUNTS),
         this.accountsNodeToTableRow,
@@ -158,7 +180,9 @@ export class ProfitLossSheetTable extends R.pipe(
         this.equationNodeToTableRow,
       ],
       [this.isNodeType(ProfitLossNodeType.ACCOUNT), this.accountNodeToTableRow],
-    ])(node);
+    ] as any) as (node: IProfitLossSheetNode) => ITableRow;
+
+    return compose(node);
   };
 
   /**
@@ -177,9 +201,16 @@ export class ProfitLossSheetTable extends R.pipe(
    * @returns {ITableRow[]}
    */
   public tableRows = (): ITableRow[] => {
-    let result: ITableRow[] = this.reportData;
-    result = sameNodeShape<ITableRow[]>(this.nodesToTableRowsCompose(result));
+    // Таблица строится в два прохода, и на первом узлы отчёта ПРЕВРАЩАЮТСЯ
+    // в строки таблицы. Значит на входе первого прохода — ещё узлы, а не
+    // строки: объявление «строки с самого начала» было неправдой.
+    const nodes = this.reportData as IProfitLossSheetNode[];
+
+    let result = sameNodeShape<ITableRow[]>(
+      this.nodesToTableRowsCompose(nodes),
+    );
     result = sameNodeShape<ITableRow[]>(this.addTotalRows(result));
+
     return result;
   };
 
@@ -228,7 +259,7 @@ export class ProfitLossSheetTable extends R.pipe(
    */
   public tableColumns = (): ITableColumn[] => {
     let result: ITableColumn[] = [];
-    result = this.query.isDatePeriodsColumnsType(result)
+    result = this.query.isDatePeriodsColumnsType()
           ? R.concat(this.datePeriodsColumns())(result)
           : R.concat(this.totalColumn())(result);
     result = R.concat([

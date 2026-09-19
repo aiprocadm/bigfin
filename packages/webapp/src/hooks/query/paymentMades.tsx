@@ -1,11 +1,28 @@
-// @ts-nocheck
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination } from '@/utils';
 import useApiRequest from '../useRequest';
 import t from './types';
+import type {
+  QueryCacheClient,
+  QueryHookOptions,
+} from './hookTypes';
 
-const commonInvalidateQueries = (client) => {
+// Номер записи МОЖЕТ БЫТЬ НЕ ИЗВЕСТЕН: шторка ещё не открыта, окно
+// предпросмотра не выбрало документ. Запрос в этом случае просто не
+// выполняется. Требовать номер всегда значило бы заставить каждого
+// вызывающего врать — подставлять ноль или пустую строку.
+
+/** Ответ сервера: разбирается прямо в хуке. */
+type ApiResponse = { data: any };
+
+const commonInvalidateQueries = (client: QueryCacheClient) => {
   // Invalidate payment mades.
   client.invalidateQueries(t.PAYMENT_MADES);
 
@@ -39,12 +56,12 @@ const commonInvalidateQueries = (client) => {
 /**
  * Retrieve payment mades list.
  */
-export function usePaymentMades(query, props) {
+export function usePaymentMades(query?: Record<string, any>, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.PAYMENT_MADES, query],
     { url: 'bill-payments', params: query },
     {
-      select: (res) => ({
+      select: (res: ApiResponse) => ({
         paymentMades: res.data.bill_payments,
         pagination: transformPagination(res.data.pagination),
         filterMeta: res.data.filter_meta,
@@ -62,7 +79,7 @@ export function usePaymentMades(query, props) {
 /**
  * Creates payment made.
  */
-export function useCreatePaymentMade(props?) {
+export function useCreatePaymentMade(props?: QueryHookOptions) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -78,7 +95,7 @@ export function useCreatePaymentMade(props?) {
 /**
  * Edits payment made.
  */
-export function useEditPaymentMade(props?) {
+export function useEditPaymentMade(props?: QueryHookOptions) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -100,7 +117,7 @@ export function useEditPaymentMade(props?) {
 /**
  * Deletes payment made.
  */
-export function useDeletePaymentMade(props) {
+export function useDeletePaymentMade(props?: QueryHookOptions) {
   const client = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -121,11 +138,13 @@ export function useDeletePaymentMade(props) {
  */
 export function usePaymentMadeEditPage(
   id: number,
-  props?: UseQueryOptions<any, Error>,
+  // Ключ запроса здесь — список из имени и номера, и это надо сказать
+  // прямо: по умолчанию тип ключа шире, и настройки к нему не подходят.
+  props?: UseQueryOptions<any, Error, any, (string | number)[]>,
 ) {
   const apiRequest = useApiRequest();
   return useQuery([t.PAYMENT_MADE_EDIT_PAGE, id], () =>
-    apiRequest.get(`bill-payments/${id}/edit-page`).then((res) => res.data),
+    apiRequest.get(`bill-payments/${id}/edit-page`).then((res: ApiResponse) => res.data),
     props
   );
 }
@@ -134,7 +153,7 @@ export function usePaymentMadeEditPage(
  * Retreive payment made new page entries.
  * @param {number} vendorId -
  */
-export function usePaymentMadeNewPageEntries(vendorId, props) {
+export function usePaymentMadeNewPageEntries(vendorId: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.PAYMENT_MADE_NEW_ENTRIES, vendorId],
     {
@@ -143,7 +162,7 @@ export function usePaymentMadeNewPageEntries(vendorId, props) {
       params: { vendor_id: vendorId },
     },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: [],
       ...props,
     },
@@ -164,12 +183,12 @@ export function useRefreshPaymentMades() {
  * Retrieve specific payment made.
  * @param {number} id - Payment made.
  */
-export function usePaymentMade(id, props) {
+export function usePaymentMade(id: number | string | null | undefined, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.PAYMENT_MADE, id],
     { method: 'get', url: `bill-payments/${id}` },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },

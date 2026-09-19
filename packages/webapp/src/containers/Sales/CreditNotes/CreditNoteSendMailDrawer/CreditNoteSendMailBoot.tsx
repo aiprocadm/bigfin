@@ -9,7 +9,12 @@ import {
 interface CreditNoteSendMailBootValues {
   creditNoteId: number;
 
-  creditNoteMailState: GetCreditNoteMailStateResponse | null;
+  /**
+   * Пока письмо не загружено, его НЕТ — и это `undefined`, а не `null`.
+   * Разница не косметическая: `null` здесь читался бы как «загрузили и
+   * ничего не нашли», а мы ещё даже не спрашивали.
+   */
+  creditNoteMailState: GetCreditNoteMailStateResponse | null | undefined;
   isCreditNoteMailStateLoading: boolean;
 }
 interface CreditNoteSendMailBootProps {

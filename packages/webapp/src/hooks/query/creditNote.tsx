@@ -1,12 +1,29 @@
-// @ts-nocheck
-import { useQueryClient, useMutation, useQuery } from 'react-query';
+import {
+  useQueryClient,
+  useMutation,
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from 'react-query';
 import { useRequestQuery } from '../useQueryRequest';
 import { transformPagination, transformToCamelCase } from '@/utils';
 import useApiRequest from '../useRequest';
 import { useRequestPdf } from '../useRequestPdf';
 import t from './types';
+import type {
+  QueryCacheClient,
+  QueryHookOptions,
+} from './hookTypes';
 
-const commonInvalidateQueries = (queryClient) => {
+// Номер записи МОЖЕТ БЫТЬ НЕ ИЗВЕСТЕН: шторка ещё не открыта, окно
+// предпросмотра не выбрало документ. Запрос в этом случае просто не
+// выполняется. Требовать номер всегда значило бы заставить каждого
+// вызывающего врать — подставлять ноль или пустую строку.
+
+/** Ответ сервера: разбирается прямо в хуке. */
+type ApiResponse = { data: any };
+
+const commonInvalidateQueries = (queryClient: QueryCacheClient) => {
   // Invalidate credit note.
   queryClient.invalidateQueries(t.CREDIT_NOTES);
   queryClient.invalidateQueries(t.CREDIT_NOTE);
@@ -54,7 +71,7 @@ const commonInvalidateQueries = (queryClient) => {
 /**
  * Create a new credit note.
  */
-export function useCreateCreditNote(props?) {
+export function useCreateCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -70,7 +87,7 @@ export function useCreateCreditNote(props?) {
 /**
  * Edit the given credit note.
  */
-export function useEditCreditNote(props?) {
+export function useEditCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -92,7 +109,7 @@ export function useEditCreditNote(props?) {
 /**
  * Delete the given credit note.
  */
-export function useDeleteCreditNote(props) {
+export function useDeleteCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -111,7 +128,7 @@ export function useDeleteCreditNote(props) {
 /**
  * Deletes multiple credit notes in bulk.
  */
-export function useBulkDeleteCreditNotes(props?) {
+export function useBulkDeleteCreditNotes(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -137,21 +154,21 @@ export function useBulkDeleteCreditNotes(props?) {
   );
 }
 
-export function useValidateBulkDeleteCreditNotes(props?) {
+export function useValidateBulkDeleteCreditNotes(props?: QueryHookOptions) {
   const apiRequest = useApiRequest();
 
   return useMutation(
     (ids: number[]) =>
       apiRequest
         .post('credit-notes/validate-bulk-delete', { ids })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     {
       ...props,
     },
   );
 }
 
-const transformCreditNotes = (res) => ({
+const transformCreditNotes = (res: ApiResponse) => ({
   creditNotes: res.data.credit_notes,
   pagination: transformPagination(res.data.pagination),
   filterMeta: res.data.filter_meta,
@@ -160,7 +177,7 @@ const transformCreditNotes = (res) => ({
 /**
  * Retrieve credit notes list with pagination meta.
  */
-export function useCreditNotes(query, props) {
+export function useCreditNotes(query?: Record<string, any>, props?: QueryHookOptions) {
   return useRequestQuery(
     [t.CREDIT_NOTES, query],
     { method: 'get', url: 'credit-notes', params: query },
@@ -185,12 +202,12 @@ export function useCreditNotes(query, props) {
  * @param {number} id
  *
  */
-export function useCreditNote(id, props, requestProps?) {
+export function useCreditNote(id: number | string | null | undefined, props?: QueryHookOptions, requestProps?: QueryHookOptions) {
   return useRequestQuery(
     [t.CREDIT_NOTE, id],
     { method: 'get', url: `credit-notes/${id}`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -210,7 +227,7 @@ export function useRefreshCreditNotes() {
 /**
  * Create Round creidt note
  */
-export function useCreateRefundCreditNote(props?) {
+export function useCreateRefundCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -232,7 +249,7 @@ export function useCreateRefundCreditNote(props?) {
 /**
  * Delete the given refund credit note.
  */
-export function useDeleteRefundCreditNote(props) {
+export function useDeleteRefundCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -253,12 +270,12 @@ export function useDeleteRefundCreditNote(props) {
  * @param {number} id
  *
  */
-export function useRefundCreditNote(id, props, requestProps?) {
+export function useRefundCreditNote(id: number | string | null | undefined, props?: QueryHookOptions, requestProps?: QueryHookOptions) {
   return useRequestQuery(
     [t.REFUND_CREDIT_NOTE, id],
     { method: 'get', url: `credit-notes/${id}/refunds`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -268,7 +285,7 @@ export function useRefundCreditNote(id, props, requestProps?) {
 /**
  * Mark the given credit note as opened.
  */
-export function useOpenCreditNote(props) {
+export function useOpenCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -289,7 +306,7 @@ export function useOpenCreditNote(props) {
  * @param {number} id
  *
  */
-export function useReconcileCreditNote(id, props, requestProps?) {
+export function useReconcileCreditNote(id: number | string | null | undefined, props?: QueryHookOptions, requestProps?: QueryHookOptions) {
   return useRequestQuery(
     [t.RECONCILE_CREDIT_NOTE, id],
     {
@@ -298,7 +315,7 @@ export function useReconcileCreditNote(id, props, requestProps?) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: [],
       ...props,
     },
@@ -308,7 +325,7 @@ export function useReconcileCreditNote(id, props, requestProps?) {
 /**
  * Create Reconcile credit note.
  */
-export function useCreateReconcileCreditNote(props?) {
+export function useCreateReconcileCreditNote(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -331,7 +348,7 @@ export function useCreateReconcileCreditNote(props?) {
 /**
  * Retrieve reconcile credit notes.
  */
-export function useReconcileCreditNotes(id, props, requestProps?) {
+export function useReconcileCreditNotes(id: number | string | null | undefined, props?: QueryHookOptions, requestProps?: QueryHookOptions) {
   return useRequestQuery(
     [t.RECONCILE_CREDIT_NOTES, id],
     {
@@ -340,7 +357,7 @@ export function useReconcileCreditNotes(id, props, requestProps?) {
       ...requestProps,
     },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -350,12 +367,12 @@ export function useReconcileCreditNotes(id, props, requestProps?) {
 /**
  * Delete the given reconcile credit note.
  */
-export function useDeleteReconcileCredit(props) {
+export function useDeleteReconcileCredit(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
   return useMutation(
-    (id) => apiRequest.delete(`credit-notes/applied-invoices/${id}`),
+    (id: number | string | null | undefined) => apiRequest.delete(`credit-notes/applied-invoices/${id}`),
     {
       onSuccess: (res, id) => {
         // Common invalidate queries.
@@ -374,12 +391,12 @@ export function useDeleteReconcileCredit(props) {
  * @param {number} id
  *
  */
-export function useRefundCreditTransaction(id, props, requestProps?) {
+export function useRefundCreditTransaction(id: number | string | null | undefined, props?: QueryHookOptions, requestProps?: QueryHookOptions) {
   return useRequestQuery(
     [t.REFUND_CREDIT_NOTE_TRANSACTION, id],
     { method: 'get', url: `credit-notes/refunds/${id}`, ...requestProps },
     {
-      select: (res) => res.data,
+      select: (res: ApiResponse) => res.data,
       defaultData: {},
       ...props,
     },
@@ -389,14 +406,14 @@ export function useRefundCreditTransaction(id, props, requestProps?) {
 /**
  * Retrieve the credit note pdf document data,
  */
-export function usePdfCreditNote(creditNoteId) {
+export function usePdfCreditNote(creditNoteId: number | string | null | undefined) {
   return useRequestPdf({ url: `credit-notes/${creditNoteId}` });
 }
 
 /**
  * Отправляет письмо кредит-ноты (Р3б карты v18).
  */
-export function useSendCreditNoteMail(props?) {
+export function useSendCreditNoteMail(props?: QueryHookOptions) {
   const queryClient = useQueryClient();
   const apiRequest = useApiRequest();
 
@@ -474,7 +491,7 @@ export function useCreditNoteMailState(
     () =>
       apiRequest
         .get(`credit-notes/${creditNoteId}/mail`)
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     { ...props },
   );
 }
@@ -499,7 +516,7 @@ export const useGetCreditNoteHtml = (
         .get(`credit-notes/${creditNoteId}`, {
           headers: { Accept: 'application/json+html' },
         })
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     { ...options },
   );
 };
@@ -517,7 +534,7 @@ export function useGetCreditNoteState(
     () =>
       apiRequest
         .get('/credit-notes/state')
-        .then((res) => transformToCamelCase(res.data)),
+        .then((res: ApiResponse) => transformToCamelCase(res.data)),
     { ...options },
   );
 }

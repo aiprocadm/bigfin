@@ -16,6 +16,7 @@ import { DRAWERS } from '@/constants/drawers';
 import { useBillingPageBoot } from './BillingPageBoot';
 import { getSubscriptionStatusText } from './_utils';
 import { compose } from '@/utils';
+import intl from 'react-intl-universal';
 
 function SubscriptionRoot({
   openAlert,
@@ -81,7 +82,7 @@ function SubscriptionRoot({
           intent={Intent.PRIMARY}
           onClick={handleUpgradeBtnClick}
         >
-          Upgrade the Plan
+          {intl.get('subscription.action.upgrade_plan')}
         </Button>
 
         {mainSubscription.canceled && (
@@ -91,7 +92,7 @@ function SubscriptionRoot({
             intent={Intent.PRIMARY}
             onClick={handleResumeSubBtnClick}
           >
-            Resume Subscription
+            {intl.get('subscription.action.resume')}
           </Button>
         )}
         {!mainSubscription.canceled && (
@@ -101,7 +102,7 @@ function SubscriptionRoot({
             intent={Intent.PRIMARY}
             onClick={handleCancelSubBtnClick}
           >
-            Cancel Subscription
+            {intl.get('subscription.action.cancel')}
           </Button>
         )}
         <Button
@@ -110,7 +111,7 @@ function SubscriptionRoot({
           intent={Intent.PRIMARY}
           onClick={handleUpdatePaymentMethod}
         >
-          Change Payment Method
+          {intl.get('subscription.action.change_payment_method')}
         </Button>
       </Stack>
 
@@ -138,7 +139,7 @@ function SubscriptionRoot({
               onClick={handleResumeSubBtnClick}
               className={styles.subscribeButton}
             >
-              Resume Subscription
+              {intl.get('subscription.action.resume')}
             </Button>
           )}
         </Box>

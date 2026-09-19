@@ -8,6 +8,7 @@ import {
   ToastProps,
 } from '@blueprintjs/core';
 import { AppToaster } from '@/components';
+import intl from 'react-intl-universal';
 
 interface AsyncToastProgress {
   renderProgressProps?: (amount: number) => ToastProps;
@@ -30,7 +31,7 @@ export function asyncToastProgress({
       message: (
         <>
           <Text style={{ fontSize: 12, marginBottom: 6 }}>
-            Preparing the document.
+            {intl.get('async_toast.preparing_document')}
           </Text>
           <ProgressBar
             className={clsx({

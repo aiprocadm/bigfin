@@ -33,17 +33,18 @@ export function TransactionsLockingHeader() {
     const activeModules = validateMoveToFullLocking(
       transactionsLocking.modules,
     );
-    const modulesStrong = activeModules.map((module: { formatted_module: string }) => (
-      <strong>{module.formatted_module}</strong>
-    ));
+    // Названия разделов склеиваем в строку, а не вставляем компонентом
+    // в середину фразы: порядок слов в разных языках разный, и разорванная
+    // фраза переводится только на тот язык, на котором её писали.
+    const moduleNames = activeModules
+      .map((module: { formatted_module: string }) => module.formatted_module)
+      .join(', ');
+
     if (activeModules.length > 0) {
       AppToaster.show({
-        message: (
-          <span>
-            You should unlock <Join items={modulesStrong} sep={', '} /> modules
-            first, than you can lock all transactions at once.
-          </span>
-        ),
+        message: intl.get('locking_transactions.unlock_modules_first', {
+          modules: moduleNames,
+        }),
         intent: Intent.DANGER,
       });
     } else {

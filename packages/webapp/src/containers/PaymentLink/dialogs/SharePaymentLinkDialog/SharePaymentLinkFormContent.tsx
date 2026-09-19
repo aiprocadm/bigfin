@@ -119,7 +119,7 @@ export function SharePaymentLinkFormContent() {
         <DialogFooterActions>
           {url ? (
             <Button intent={Intent.PRIMARY} onClick={handleCopyBtnClick}>
-              Copy Link
+              {intl.get('payment_link.action.copy_link')}
             </Button>
           ) : (
             <>

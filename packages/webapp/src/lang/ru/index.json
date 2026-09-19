@@ -4627,5 +4627,21 @@
   "ai_settings.unavailable.external_data_forbidden": "Организация запретила передачу данных во внешние сервисы.",
   "ai_settings.unavailable.provider_not_configured": "Провайдер пока не настроен.",
   "report.legal_entities.label": "Юрлица",
-  "report.legal_entities.hint": "Ничего не выбрано — вся группа, без внутренних переводов."
+  "report.legal_entities.hint": "Ничего не выбрано — вся группа, без внутренних переводов.",
+  "subscription.action.upgrade_plan": "Сменить тариф",
+  "subscription.action.resume": "Возобновить подписку",
+  "subscription.action.cancel": "Отменить подписку",
+  "subscription.action.change_payment_method": "Сменить способ оплаты",
+  "datatable.pagination.go_to": "Перейти к",
+  "async_toast.preparing_document": "Готовим документ.",
+  "locking_transactions.unlock_modules_first": "Сначала снимите блокировку в разделах: {modules}. После этого можно закрыть все операции разом.",
+  "branding_template.mark_default.confirm": "Сделать этот шаблон оформления основным?",
+  "payment_link.action.copy_link": "Скопировать ссылку",
+  "payment_methods.stripe.action.set_up": "Настроить Stripe",
+  "send_mail.action.send": "Отправить письмо",
+  "invoice.exchange_rate_change.rates_adjusted": "Цены позиций пересчитаны в новую валюту по текущему курсу.",
+  "invoice.exchange_rate_change.check_rates": "Перед сохранением проверьте, что цены позиций сходятся с текущим курсом выбранной валюты.",
+  "payment_receive_form.excess_payment.question": "Записать излишек {amount} как аванс от покупателя?",
+  "payment_made_form.excess_payment.question": "Записать излишек {amount} как аванс поставщику?",
+  "excess_payment.action.save_as_credit": "Записать как аванс"
 }

@@ -59,7 +59,7 @@ function MarkDefaultBrandingTemplateAlert({
       onConfirm={handleConfirmDelete}
     >
       <p>
-        Are you sure want to mark the given branding template as a default template?
+        {intl.get('branding_template.mark_default.confirm')}
       </p>
     </Alert>
   );

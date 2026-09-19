@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { FFormGroup, FEditableText, FormattedMessage as T } from '@/components';
+import { IntercompanyFieldLegacy } from '@/components/legal-entities/IntercompanyField';
 
 export function MakeJournalFormFooterLeft() {
   return (
@@ -18,6 +19,10 @@ export function MakeJournalFormFooterLeft() {
           fastField
         />
       </DescriptionFormGroup>
+
+      {/* Внутригрупповая операция (остаток К2 ТЗ). Поля нет вовсе,
+          пока юрлицо одно: внутригрупповых операций не бывает. */}
+      <IntercompanyFieldLegacy name={'is_intercompany'} />
     </React.Fragment>
   );
 }

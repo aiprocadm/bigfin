@@ -55,6 +55,7 @@ import {
   type MoneyInFormValues,
 } from './MoneyIn.zod';
 import { showApiError } from '@/utils/showApiError';
+import { IntercompanyField } from '@/components/legal-entities/IntercompanyField';
 
 // ---------------------------------------------------------------------------
 // Типы данных и локальные касты легаси-хуков (сами хуки без типов).
@@ -289,6 +290,7 @@ function MoneyInFormInner({
       branch_id: primaryBranch ? primaryBranch.id : null,
       exchange_rate: '1',
       description: '',
+      is_intercompany: false,
     },
   });
 
@@ -397,6 +399,10 @@ function MoneyInFormInner({
       exchange_rate:
         values.exchange_rate === '' ? 1 : parseFormNumber(values.exchange_rate),
       publish: true,
+      // БЕЛЫЙ СПИСОК: поле, не перечисленное здесь, до сервера не доедет.
+      // Без этой строки галочка «внутригрупповая» была бы пустой кнопкой —
+      // нажимается, а ничего не меняет (остаток К2).
+      is_intercompany: Boolean(values.is_intercompany),
       ...(transactionNoManually
         ? { transaction_number_manually: transactionNoManually }
         : {}),
@@ -690,6 +696,10 @@ function MoneyInFormInner({
                   />
                 )}
               </div>
+
+              {/* Внутригрупповая операция (остаток К2). Поля нет вовсе,
+                  пока юрлицо одно: внутригрупповых операций не бывает. */}
+              <IntercompanyField name="is_intercompany" />
 
               {/* Описание */}
               <FormField

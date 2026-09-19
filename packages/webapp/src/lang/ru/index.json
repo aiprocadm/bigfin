@@ -4673,5 +4673,7 @@
   "legal_entities.section.addresses": "Адреса",
   "legal_entities.section.bank": "Банковские реквизиты",
   "legal_entities.section.group": "В группе",
-  "validation.account.length": "Номер счёта должен содержать 20 цифр"
+  "validation.account.length": "Номер счёта должен содержать 20 цифр",
+  "intercompany.label": "Операция внутри своей группы",
+  "intercompany.hint": "Такие операции не попадают в сводный отчёт по группе — иначе одни и те же деньги посчитались бы дважды."
 }

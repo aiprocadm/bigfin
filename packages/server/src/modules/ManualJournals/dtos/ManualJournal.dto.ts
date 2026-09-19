@@ -122,6 +122,27 @@ export class CommandManualJournalDto {
   @IsBoolean()
   publish?: boolean;
 
+  /**
+   * Внутригрупповая операция (этап 7 ТЗ, §7.2, остаток К2).
+   *
+   * Автоматика помечает операцию сама, когда её ноги принадлежат разным
+   * известным юрлицам. Но юрлицо она берёт со СЧЕТА, а «неизвестное юрлицо
+   * не считается другим» — перевод собственной компании, оформленный
+   * документом на контрагента, автоматика не увидит никогда.
+   *
+   * Этот выключатель только ДОБАВЛЯЕТ признак. Снять автоматический им
+   * нельзя: если ноги и правда у разных юрлиц, операция внутригрупповая по
+   * определению.
+   */
+  @ApiPropertyOptional({
+    description: 'Отметить операцию как внутригрупповую',
+    type: Boolean,
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isIntercompany?: boolean;
+
   @ApiProperty({ description: 'Journal entries', type: [ManualJournalEntryDto] })
   @IsArray()
   @ValidateNested({ each: true })

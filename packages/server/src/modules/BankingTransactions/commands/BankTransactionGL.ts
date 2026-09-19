@@ -36,6 +36,13 @@ export class BankTransactionGL {
 
       branchId: this.bankTransactionModel.branchId,
       userId: this.bankTransactionModel.userId,
+
+      // Человек отметил операцию как внутригрупповую (остаток К2).
+      // Признак живёт у документа: проводки при правке пересобираются
+      // заново, а выбор человека обязан её пережить.
+      isIntercompany: Boolean(
+        (this.bankTransactionModel as any).isIntercompany,
+      ),
     };
   }
 

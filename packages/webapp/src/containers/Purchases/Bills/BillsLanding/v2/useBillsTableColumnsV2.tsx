@@ -20,7 +20,7 @@ const FormatDateV2 = FormatDate as unknown as ComponentType<{
  * Статус счёта поставщика пилюлями Badge.
  * Красный (destructive) — только просрочка; остальные статусы сдержанные.
  */
-function BillStatusBadgesV2({ bill }: { bill: BillRow }) {
+export function BillStatusBadgesV2({ bill }: { bill: BillRow }) {
   if (bill.is_fully_paid && bill.is_open) {
     return <Badge variant="success">{intl.get('paid')}</Badge>;
   }

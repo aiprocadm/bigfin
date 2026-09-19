@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { AbilitySubject, SaleInvoiceAction } from '@/constants/abilityOption';
 import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
@@ -21,7 +22,10 @@ import { compose } from '@/utils';
 import { useInvoicesListContext } from '../InvoicesListProvider';
 import { withInvoices } from '../withInvoices';
 import { withInvoiceActions } from '../withInvoiceActions';
-import { useInvoicesTableColumnsV2 } from './useInvoicesTableColumnsV2';
+import {
+  InvoiceStatusBadgeV2,
+  useInvoicesTableColumnsV2,
+} from './useInvoicesTableColumnsV2';
 import type { InvoiceRow } from './InvoicesActionsMenuV2';
 
 const getInvoiceRowId = (row: InvoiceRow) => String(row.id);
@@ -138,6 +142,18 @@ function InvoicesTableV2Root({
         onRowClick={(row: InvoiceRow) =>
           openDrawer(DRAWERS.INVOICE_DETAILS, { invoiceId: row.id })
         }
+        // На телефоне строка выкладывается блоком: в таблице счёта семь
+        // столбцов, а на экране в 390 точек помещаются два, и чтобы
+        // увидеть сумму, приходится увести из вида покупателя.
+        renderMobileRow={(row: InvoiceRow) => (
+          <DocumentMobileRow
+            title={row.customer?.display_name}
+            number={row.invoice_no}
+            date={row.invoice_date_formatted}
+            amount={row.total_formatted}
+            status={<InvoiceStatusBadgeV2 invoice={row} />}
+          />
+        )}
         emptyState={<InvoicesEmptyStateV2 />}
       />
       <DataTablePagination

@@ -21,7 +21,11 @@ import { compose } from '@/utils';
 import { useBillsListContext } from '../BillsListProvider';
 import { withBills } from '../withBills';
 import { withBillsActions } from '../withBillsActions';
-import { useBillsTableColumnsV2 } from './useBillsTableColumnsV2';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
+import {
+  BillStatusBadgesV2,
+  useBillsTableColumnsV2,
+} from './useBillsTableColumnsV2';
 import type { BillRow } from './BillsActionsMenuV2';
 
 const getBillRowId = (row: BillRow) => String(row.id);
@@ -130,6 +134,17 @@ function BillsTableV2Root({
         onRowClick={(row: BillRow) =>
           openDrawer(DRAWERS.BILL_DETAILS, { billId: row.id })
         }
+        // На телефоне строка выкладывается блоком — как в счетах
+        // покупателям: раскладка у списков документов одна.
+        renderMobileRow={(row: BillRow) => (
+          <DocumentMobileRow
+            title={row.vendor?.display_name}
+            number={row.bill_number}
+            date={row.formatted_bill_date}
+            amount={row.total_formatted}
+            status={<BillStatusBadgesV2 bill={row} />}
+          />
+        )}
         emptyState={<BillsEmptyStateV2 />}
       />
       <DataTablePagination

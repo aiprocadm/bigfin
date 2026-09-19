@@ -101,6 +101,34 @@ describe('английская подпись сервера не попадае
       return [full];
     });
 
+  it('никто не показывает account_normal_formatted напрямую', () => {
+    // Симметрия правила. Сторона счёта приходит с сервера теми же
+    // английскими словами («Debit», «Credit»), и показывать её как есть —
+    // ровно та же ошибка, что и с типом. Найдено обходом ответов сервера:
+    // карточка счёта показывала оба поля сразу.
+    const offenders: string[] = [];
+
+    sourceFiles(SRC).forEach((file) => {
+      const code = fs.readFileSync(file, 'utf8');
+
+      const showsInMarkup = code
+        .split('\n')
+        .some(
+          (line) =>
+            /\{[^}]*\.account_normal_formatted\b/.test(line) &&
+            // Проверка НАЛИЧИЯ значения — не показ: `{x ? (…) : null}`
+            // ничего на экран не выводит. Без этой оговорки сторож
+            // краснеет на собственном исправленном файле.
+            !/account_normal_formatted\s*\?/.test(line) &&
+            !/accountNormalLabel\(/.test(line),
+        );
+
+      if (showsInMarkup) offenders.push(path.relative(SRC, file));
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
   it('никто не показывает account_type_label напрямую', () => {
     const offenders: string[] = [];
 
@@ -126,6 +154,8 @@ describe('английская подпись сервера не попадае
         .some(
           (line) =>
             /\{[^}]*\.account_type_label\b/.test(line) &&
+            // Проверка наличия значения — не показ.
+            !/account_type_label\s*\?/.test(line) &&
             !/accountTypeLabel\(/.test(line),
         );
 

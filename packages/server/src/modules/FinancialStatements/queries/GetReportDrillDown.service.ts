@@ -32,6 +32,22 @@ export interface DrillDownResult {
   /** Итог: обязан совпасть с суммой в отчёте до копейки. */
   total: number;
   formattedTotal: string;
+  /**
+   * Остаток на начало периода — всё, что накопилось ДО первого дня.
+   *
+   * Нужен Балансу и Движению денег. Их строка — не оборот за период, а
+   * ОСТАТОК на дату, и сумма операций периода с ним никогда не сойдётся.
+   * Сходится другое равенство: остаток на начало + оборот = остаток на конец.
+   */
+  openingBalance: number;
+  formattedOpeningBalance: string;
+  /** Остаток на конец: начало плюс оборот. Именно он стоит в Балансе. */
+  closingBalance: number;
+  formattedClosingBalance: string;
+  /** Сколько операций в периоде всего — список может быть обрезан. */
+  transactionsCount: number;
+  /** Список показан не целиком. */
+  isTruncated: boolean;
   transactions: DrillDownRow[];
   currencyCode: string;
 }
@@ -113,7 +129,33 @@ export class GetReportDrillDownService {
       };
     });
 
-    const total = transactions.reduce((sum, row) => sum + row.amount, 0);
+    // ИТОГ СЧИТАЕТСЯ ОТДЕЛЬНЫМ ЗАПРОСОМ, А НЕ ПО ПОКАЗАННЫМ СТРОКАМ.
+    // Список обрезан до 200 операций; сложив только их, мы показали бы
+    // человеку итог меньше, чем в отчёте, — ровно то недоверие к цифрам,
+    // ради устранения которого раскрытие и делалось.
+    const total = await this.netOverPeriod(
+      accountId,
+      fromDate,
+      toDate,
+      isCreditNormal,
+    );
+
+    // Остаток на начало: всё, что накоплено ДО первого дня периода.
+    // Границы нет — у остатка нет «начала времён», он считается от самой
+    // первой проводки счёта.
+    const openingBalance = await this.netOverPeriod(
+      accountId,
+      null,
+      this.dayBefore(fromDate),
+      isCreditNormal,
+    );
+
+    const closingBalance = openingBalance + total;
+    const transactionsCount = await this.countOverPeriod(
+      accountId,
+      fromDate,
+      toDate,
+    );
 
     return {
       accountId,
@@ -122,9 +164,79 @@ export class GetReportDrillDownService {
       toDate,
       total,
       formattedTotal: this.format(total, currencyCode),
+      openingBalance,
+      formattedOpeningBalance: this.format(openingBalance, currencyCode),
+      closingBalance,
+      formattedClosingBalance: this.format(closingBalance, currencyCode),
+      transactionsCount,
+      isTruncated: transactionsCount > transactions.length,
       transactions,
       currencyCode,
     };
+  }
+
+  /**
+   * Чистый оборот счёта за отрезок — одним запросом к базе.
+   *
+   * `from = null` означает «с самой первой проводки»: у остатка на начало
+   * нижней границы нет.
+   */
+  private async netOverPeriod(
+    accountId: number,
+    from: string | null,
+    to: string,
+    isCreditNormal: boolean,
+  ): Promise<number> {
+    const query = this.transactionModel()
+      .query()
+      .where('accountId', accountId)
+      .where('date', '<=', to);
+
+    if (from !== null) {
+      query.where('date', '>=', from);
+    }
+    const row: any = await query
+      .sum('debit as debit')
+      .sum('credit as credit')
+      .first();
+
+    return reportAccountNet(
+      Number(row?.debit ?? 0),
+      Number(row?.credit ?? 0),
+      isCreditNormal,
+    );
+  }
+
+  /** Сколько операций в периоде — чтобы честно сказать, что список обрезан. */
+  private async countOverPeriod(
+    accountId: number,
+    fromDate: string,
+    toDate: string,
+  ): Promise<number> {
+    const row: any = await this.transactionModel()
+      .query()
+      .where('accountId', accountId)
+      .where('date', '>=', fromDate)
+      .where('date', '<=', toDate)
+      .count('id as total')
+      .first();
+
+    return Number(row?.total ?? 0);
+  }
+
+  /**
+   * День перед началом периода.
+   *
+   * Остаток на начало — это состояние на КОНЕЦ предыдущего дня. Взять сам
+   * `fromDate` нельзя: операции первого дня попали бы и в остаток, и в
+   * оборот, и равенство «начало + оборот = конец» разошлось бы ровно на них.
+   */
+  private dayBefore(date: string): string {
+    const value = new Date(`${date}T00:00:00Z`);
+
+    value.setUTCDate(value.getUTCDate() - 1);
+
+    return value.toISOString().slice(0, 10);
   }
 
   private format(amount: number, currencyCode: string): string {

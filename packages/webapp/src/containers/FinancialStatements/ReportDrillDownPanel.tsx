@@ -24,6 +24,21 @@ interface DrillDownRow {
 }
 
 /**
+ * Что показывать внизу панели.
+ *
+ * `turnover` — строка отчёта это ОБОРОТ за период (ОПиУ). Итог списка обязан
+ * совпасть с числом, по которому щёлкнули, и этого достаточно.
+ *
+ * `balance` — строка это ОСТАТОК на дату (Баланс, Движение денег). Сумма
+ * операций периода с остатком не сойдётся НИКОГДА: в остатке сидит всё, что
+ * накопилось раньше. Показывать один только итог здесь — значит показывать
+ * число, которое не сходится с отчётом, и терять доверие ровно там, где
+ * раскрытие должно было его вернуть. Поэтому показываем цепочку целиком:
+ * остаток на начало + оборот за период = остаток на конец.
+ */
+export type DrillDownKind = 'turnover' | 'balance';
+
+/**
  * Панель «из чего сложилась сумма» (этап 4 ТЗ, п. 4.2).
  *
  * ТЗ называет это ключевым требованием: «без него пользователь не доверяет
@@ -33,9 +48,11 @@ interface DrillDownRow {
 export default function ReportDrillDownPanel({
   target,
   onClose,
+  kind = 'turnover',
 }: {
   target: DrillDownTarget | null;
   onClose: () => void;
+  kind?: DrillDownKind;
 }) {
   const apiRequest = useApiRequest();
 
@@ -129,13 +146,56 @@ export default function ReportDrillDownPanel({
         по которому человек щёлкнул в отчёте.
       */}
       {(data as any)?.formattedTotal && (
-        <footer className="flex items-center justify-between gap-3 border-t border-border p-4 text-sm">
-          <span className="text-text-secondary">
-            {intl.get('reports.drill_down.total')}
-          </span>
-          <span className="font-medium tabular-nums text-text-primary">
-            {(data as any).formattedTotal}
-          </span>
+        <footer className="flex flex-col gap-2 border-t border-border p-4 text-sm">
+          {kind === 'balance' && (
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-text-secondary">
+                {intl.get('reports.drill_down.opening_balance')}
+              </span>
+              <span className="tabular-nums text-text-primary">
+                {(data as any).formattedOpeningBalance}
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-text-secondary">
+              {kind === 'balance'
+                ? intl.get('reports.drill_down.period_change')
+                : intl.get('reports.drill_down.total')}
+            </span>
+            <span
+              className={
+                kind === 'balance'
+                  ? 'tabular-nums text-text-primary'
+                  : 'font-medium tabular-nums text-text-primary'
+              }
+            >
+              {(data as any).formattedTotal}
+            </span>
+          </div>
+
+          {kind === 'balance' && (
+            <div className="flex items-center justify-between gap-3 border-t border-border pt-2">
+              <span className="text-text-secondary">
+                {intl.get('reports.drill_down.closing_balance')}
+              </span>
+              <span className="font-medium tabular-nums text-text-primary">
+                {(data as any).formattedClosingBalance}
+              </span>
+            </div>
+          )}
+
+          {/* Список обрезан — говорим об этом прямо. Молчание здесь читается
+              как «это все операции», и итог внизу выглядит ошибкой. */}
+          {(data as any).isTruncated && (
+            <p className="text-xs text-text-muted">
+              {intl.get('reports.drill_down.truncated', {
+                shown: rows.length,
+                total: (data as any).transactionsCount,
+              })}
+            </p>
+          )}
         </footer>
       )}
     </aside>

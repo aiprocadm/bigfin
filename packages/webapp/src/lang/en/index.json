@@ -4679,7 +4679,7 @@
   "roles.legal_entities.title": "Legal entities available to the role",
   "roles.legal_entities.hint": "Nothing selected means access to all legal entities. Tick only when the access must be narrowed.",
   "report.scope.excludes_intercompany": "Transfers between your own legal entities are excluded: the same money must not be counted twice.",
-  "report.scope.balance_may_not_converge": "For a single legal entity the two sides may differ: settlements with other entities of the group are not shown yet.",
+  "report.scope.intercompany_settlement": "The «Intercompany settlements» line shows debts between your legal entities: a plus means others owe this entity, a minus means it owes them.",
   "legal_entities.col.entity": "Legal entity",
   "sidebar.directions": "Directions",
   "directions.page.title": "Directions",

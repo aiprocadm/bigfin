@@ -18,6 +18,13 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { INamedModifiableQuery } from '../../common/queryTypes';
 import { applyLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { applyProjectScope } from '@/modules/Projects/utils/projectScope';
+import {
+  INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
+  INTERCOMPANY_SETTLEMENT_NAME,
+  needsSettlementLine,
+  settlementEntry,
+} from '@/modules/LegalEntities/utils/intercompanySettlement';
+import { ACCOUNT_TYPE } from '@/constants/accounts';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class BalanceSheetRepository extends R.compose(
@@ -221,10 +228,14 @@ export class BalanceSheetRepository extends R.compose(
   // ----------------------------
   public initAccounts = async () => {
     const accounts = await this.getAccounts();
+    const withSettlement = this.withSettlementAccount(accounts);
 
-    this.accounts = accounts;
-    this.accountsByType = transformToMapBy(accounts, 'accountType');
-    this.accountsByParentType = transformToMapBy(accounts, 'accountParentType');
+    this.accounts = withSettlement;
+    this.accountsByType = transformToMapBy(withSettlement, 'accountType');
+    this.accountsByParentType = transformToMapBy(
+      withSettlement,
+      'accountParentType',
+    );
   };
 
   /**
@@ -368,7 +379,7 @@ export class BalanceSheetRepository extends R.compose(
     toDate: Date,
     datePeriodsType: string,
   ) => {
-    return this.accountTransactionModel()
+    const rows = await this.accountTransactionModel()
       .query()
       .onBuild((query) => {
         query.sum('credit as credit');
@@ -382,6 +393,8 @@ export class BalanceSheetRepository extends R.compose(
 
         this.commonFilterBranchesQuery(query);
       });
+
+    return this.withSettlementPeriods(rows, fromDate, toDate, datePeriodsType);
   };
 
   /**
@@ -389,7 +402,7 @@ export class BalanceSheetRepository extends R.compose(
    * @param {Date|string} openingDate -
    */
   public closingAccountsTotal = async (openingDate: Date | string) => {
-    return this.accountTransactionModel()
+    const rows = await this.accountTransactionModel()
       .query()
       .onBuild((query) => {
         query.sum('credit as credit');
@@ -402,6 +415,126 @@ export class BalanceSheetRepository extends R.compose(
 
         this.commonFilterBranchesQuery(query);
       });
+
+    return this.withSettlementTotal(rows, openingDate);
+  };
+
+  // ----------------------------
+  // # Расчёты внутри группы (остаток К9)
+  // ----------------------------
+  /**
+   * Нужна ли отчёту строка расчётов внутри группы.
+   *
+   * Спрашивается в трёх местах, поэтому вынесено сюда: три отдельных условия
+   * рано или поздно разъезжаются, и тогда счёт в списке есть, а проводки к
+   * нему нет — строка молча показывает ноль.
+   */
+  private get needsSettlement(): boolean {
+    return needsSettlementLine(this.query?.legalEntityIds);
+  }
+
+  /**
+   * Вычисляемый счёт «Расчёты внутри группы» в списке счетов отчёта.
+   *
+   * Собирается ЧЕРЕЗ МОДЕЛЬ, а не простым объектом: «дебетовый ли счёт» и
+   * «к какому разделу относится» — вычисляемые свойства модели. Простой
+   * объект их не имеет, и книга отчёта посчитала бы остаток задом наперёд.
+   */
+  private withSettlementAccount = (accounts: any[]): any[] => {
+    if (!this.needsSettlement) return accounts;
+
+    const settlement = this.accountModel().fromJson({
+      id: INTERCOMPANY_SETTLEMENT_ACCOUNT_ID,
+      name: INTERCOMPANY_SETTLEMENT_NAME,
+      slug: 'intercompany-settlement',
+      accountType: ACCOUNT_TYPE.OTHER_CURRENT_ASSET,
+      parentAccountId: null,
+      code: null,
+      index: 1,
+      active: true,
+      predefined: true,
+      description: '',
+    });
+
+    return [...accounts, settlement];
+  };
+
+  /**
+   * Перекос отбора: насколько дебет не сошёлся с кредитом.
+   *
+   * Считается ИЗ УЖЕ ПОЛУЧЕННЫХ СТРОК, без отдельного запроса. Строки — это и
+   * есть всё, что отчёт видит; складывать их второй раз в базе значило бы
+   * просить её посчитать то, что уже лежит в памяти.
+   */
+  private scopeNet = (rows: any[]): { debit: number; credit: number } =>
+    (rows ?? []).reduce(
+      (acc, row) => ({
+        debit: acc.debit + (Number(row.debit) || 0),
+        credit: acc.credit + (Number(row.credit) || 0),
+      }),
+      { debit: 0, credit: 0 },
+    );
+
+  /**
+   * Строка проводки вычисляемого счёта.
+   *
+   * `account` кладётся рядом намеренно: книга отчёта читает «дебетовый ли
+   * счёт» именно оттуда, а не из списка счетов.
+   */
+  private settlementRow = (
+    net: { debit: number; credit: number },
+    date?: string,
+  ): any => {
+    const entry = settlementEntry(net);
+    const account = this.withSettlementAccount([]).at(-1);
+
+    return { ...entry, accountId: INTERCOMPANY_SETTLEMENT_ACCOUNT_ID, account, date };
+  };
+
+  /** Досылает строку расчётов к остаткам на дату. */
+  private withSettlementTotal = (
+    rows: any[],
+    _openingDate: Date | string,
+  ): any[] => {
+    if (!this.needsSettlement) return rows;
+
+    const net = this.scopeNet(rows);
+    if (net.debit === net.credit) return rows;
+
+    return [...rows, this.settlementRow(net)];
+  };
+
+  /**
+   * Досылает строку расчётов к разрезу по периодам — по строке НА КАЖДЫЙ
+   * период.
+   *
+   * Одной строкой на весь отчёт обойтись нельзя: колонки периодов считаются
+   * порознь, и общая сумма легла бы целиком в один месяц.
+   */
+  private withSettlementPeriods = (
+    rows: any[],
+    _fromDate: Date,
+    _toDate: Date,
+    _datePeriodsType: string,
+  ): any[] => {
+    if (!this.needsSettlement) return rows;
+
+    const byPeriod = new Map<string, { debit: number; credit: number }>();
+
+    (rows ?? []).forEach((row) => {
+      const key = String(row.date ?? '');
+      const acc = byPeriod.get(key) ?? { debit: 0, credit: 0 };
+
+      acc.debit += Number(row.debit) || 0;
+      acc.credit += Number(row.credit) || 0;
+      byPeriod.set(key, acc);
+    });
+
+    const extra = [...byPeriod.entries()]
+      .filter(([, net]) => net.debit !== net.credit)
+      .map(([date, net]) => this.settlementRow(net, date));
+
+    return [...rows, ...extra];
   };
 
   /**

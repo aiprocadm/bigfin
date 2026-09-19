@@ -1,5 +1,8 @@
 import { ComponentType, ReactNode, useMemo, useState } from 'react';
 import intl from 'react-intl-universal';
+
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
+import { accountNormalLabel } from '@/utils/accountNormalLabel';
 import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 
@@ -120,12 +123,16 @@ function AccountDetailsCardsV2Root({
 
         <dl className="m-0 mt-4">
           <DetailRow label={intl.get('account_type')}>
-            {account.account_type_label || EMPTY_VALUE}
+            {accountTypeLabel(account.account_type, account.account_type_label) ||
+              EMPTY_VALUE}
           </DetailRow>
           <DetailRow label={intl.get('account_normal')}>
             {account.account_normal_formatted ? (
               <span className="inline-flex items-center gap-1">
-                {account.account_normal_formatted}
+                {accountNormalLabel(
+                  account.account_normal,
+                  account.account_normal_formatted,
+                )}
                 {account.account_normal === 'credit' ? (
                   <ArrowDown
                     className="h-3.5 w-3.5 text-text-muted"

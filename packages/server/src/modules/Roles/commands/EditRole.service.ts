@@ -45,6 +45,11 @@ export class EditRoleService {
         id: roleId,
         name: editRoleDTO.roleName,
         description: editRoleDTO.roleDescription,
+        // Юрлица роли (§8.4). Пустой список кладём как `null`: «не
+        // настраивали» и «настроили пустым» должны различаться.
+        allowedLegalEntityIds: editRoleDTO.allowedLegalEntityIds?.length
+          ? editRoleDTO.allowedLegalEntityIds
+          : null,
         permissions,
       });
       // Triggers `onRoleEdited` event.

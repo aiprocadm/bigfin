@@ -25,6 +25,7 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { ReportsAction } from '../../types/Report.types';
+import { GetLegalEntityAccessService } from '@/modules/LegalEntities/queries/GetLegalEntityAccess.service';
 
 @Controller('/reports/balance-sheet')
 @ApiTags('Reports')
@@ -32,7 +33,10 @@ import { ReportsAction } from '../../types/Report.types';
 @UseGuards(AuthorizationGuard, PermissionGuard)
 @ApiExtraModels(BalanceSheetResponseDto, BalanceSheetTableResponseDto)
 export class BalanceSheetStatementController {
-  constructor(private readonly balanceSheetApp: BalanceSheetApplication) {}
+  constructor(
+    private readonly balanceSheetApp: BalanceSheetApplication,
+    private readonly legalEntityAccess: GetLegalEntityAccessService,
+  ) {}
 
   /**
    * Retrieve the balance sheet.
@@ -69,6 +73,12 @@ export class BalanceSheetStatementController {
     @Res({ passthrough: true }) res: Response,
     @Headers('accept') acceptHeader: string,
   ) {
+    // Отбор сужается до юрлиц, к которым допущена роль (§8.4 ТЗ). Запрос
+    // чужого юрлица — отказ, а не пустой отчёт: пустота читается как «у
+    // этого юрлица нет операций», и человек ей поверит.
+    query.legalEntityIds = await this.legalEntityAccess.narrowToAllowed(
+      query.legalEntityIds,
+    );
     const accept = acceptHeader || '';
     // Retrieves the json table format.
     if (accept.includes(AcceptType.ApplicationJsonTable)) {

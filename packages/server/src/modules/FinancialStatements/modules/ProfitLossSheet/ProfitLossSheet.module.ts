@@ -11,9 +11,10 @@ import { FinancialSheetCommonModule } from '../../common/FinancialSheetCommon.mo
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ProfitLossSheetController } from './ProfitLossSheet.controller';
 import { ProfitLossSheetApplication } from './ProfitLossSheetApplication';
+import { LegalEntitiesModule } from '@/modules/LegalEntities/LegalEntities.module';
 
 @Module({
-  imports: [FinancialSheetCommonModule, AccountsModule, FeaturesModule],
+  imports: [FinancialSheetCommonModule, AccountsModule, FeaturesModule, LegalEntitiesModule],
   controllers: [ProfitLossSheetController],
   providers: [
     ProfitLossSheetApplication,

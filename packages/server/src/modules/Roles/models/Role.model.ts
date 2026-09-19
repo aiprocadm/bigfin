@@ -10,10 +10,30 @@ export class Role extends TenantBaseModel {
   permissions: Array<RolePermission>;
 
   /**
+   * Юрлица, к которым допущена роль (этап 8 ТЗ, §8.4).
+   *
+   * Пусто или `null` — допущена ко ВСЕМ. Владелец и администратор не должны
+   * ничего настраивать, чтобы видеть свою же организацию целиком.
+   */
+  allowedLegalEntityIds: number[] | null;
+
+  /**
    * Table name
    */
   static get tableName() {
     return 'roles';
+  }
+
+  /**
+   * Колонка со списком юрлиц — JSON.
+   *
+   * MySQL отдаёт её то массивом, то строкой: зависит от версии драйвера и от
+   * того, как значение туда попало. Прочитанная строкой, она превратилась бы
+   * в «список из одного непонятного элемента» — и роль потеряла бы доступ ко
+   * всем юрлицам сразу.
+   */
+  static get jsonAttributes() {
+    return ['allowedLegalEntityIds'];
   }
 
   /**

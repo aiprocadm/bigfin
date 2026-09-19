@@ -286,4 +286,114 @@ export class SaleInvoiceResponseDto {
     required: false,
   })
   overdueDays?: number;
+
+  // ---------------------------------------------------------------------
+  // Поля, которые сервер отдавал, НЕ ОБЪЯВЛЯЯ (остаток О-v90-1).
+  //
+  // Описание ответа — это не документация «для красоты»: из него собирается
+  // библиотека типов для витрины и внешних интеграций. Поле, которого здесь
+  // нет, для них НЕ СУЩЕСТВУЕТ — и тот, кто его читает, делает это в обход
+  // договора. Именно так уже терялся номер чека.
+  //
+  // За полнотой теперь следит `responseDtoMatchesTransformer.spec.ts`.
+  // ---------------------------------------------------------------------
+
+  @ApiProperty({
+    description: 'Дата создания строкой',
+    example: '12 Sep 2026',
+    required: false,
+  })
+  createdAtFormatted?: string;
+
+  @ApiProperty({
+    description: 'Оплачено строкой',
+    example: '$300.00',
+    required: false,
+  })
+  paymentAmountFormatted?: string;
+
+  @ApiProperty({
+    description: 'Остаток строкой',
+    example: '$700.00',
+    required: false,
+  })
+  balanceAmountFormatted?: string;
+
+  @ApiProperty({
+    description: 'Курс строкой',
+    example: '1.0000',
+    required: false,
+  })
+  exchangeRateFormatted?: string;
+
+  @ApiProperty({
+    description: 'Сумма без налога строкой',
+    example: '$900.00',
+    required: false,
+  })
+  subtotalFormatted?: string;
+
+  @ApiProperty({
+    description: 'Сумма без налога в валюте учёта строкой',
+    example: '900,00 ₽',
+    required: false,
+  })
+  subtotalLocalFormatted?: string;
+
+  @ApiProperty({
+    description: 'Сумма без учёта налога строкой',
+    example: '$900.00',
+    required: false,
+  })
+  subtotalExludingTaxFormatted?: string;
+
+  @ApiProperty({
+    description: 'Удержанный налог строкой',
+    example: '$50.00',
+    required: false,
+  })
+  taxAmountWithheldFormatted?: string;
+
+  @ApiProperty({
+    description: 'Удержанный налог в валюте учёта строкой',
+    example: '50,00 ₽',
+    required: false,
+  })
+  taxAmountWithheldLocalFormatted?: string;
+
+  @ApiProperty({
+    description: 'Итог в валюте учёта строкой',
+    example: '1 000,00 ₽',
+    required: false,
+  })
+  totalLocalFormatted?: string;
+
+  @ApiProperty({
+    description: 'Скидка строкой',
+    example: '$100.00',
+    required: false,
+  })
+  discountAmountFormatted?: string;
+
+  @ApiProperty({
+    description: 'Скидка в процентах строкой',
+    example: '10%',
+    required: false,
+  })
+  discountPercentageFormatted?: string;
+
+  @ApiProperty({
+    description: 'Корректировка строкой',
+    example: '$0.00',
+    required: false,
+  })
+  adjustmentFormatted?: string;
+
+  @ApiProperty({
+    description: 'Налоги счёта: ставка, основание, сумма',
+    required: false,
+    type: 'array',
+    items: { type: 'object' },
+  })
+  taxes?: Array<Record<string, unknown>>;
 }

@@ -114,7 +114,9 @@ export class WarehouseTransferInventoryTransactions {
         itemId: entry.itemId,
         quantity: entry.quantity,
         rate: entry.cost,
-        direction: 'OUT',
+        // `as const`: без него строка расширяется до обычной `string`
+        // и перестаёт сходиться с направлением склада.
+        direction: 'OUT' as const,
         warehouseId: warehouseTransfer.fromWarehouseId,
       }),
     );
@@ -140,7 +142,7 @@ export class WarehouseTransferInventoryTransactions {
         itemId: entry.itemId,
         quantity: entry.quantity,
         rate: entry.cost,
-        direction: 'IN',
+        direction: 'IN' as const,
         warehouseId: warehouseTransfer.toWarehouseId,
       }),
     );

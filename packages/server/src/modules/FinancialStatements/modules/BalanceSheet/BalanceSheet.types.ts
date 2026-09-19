@@ -126,6 +126,12 @@ export interface IBalanceSheetAccountsNode extends IBalanceSheetCommonNode {
   id: number | string;
   name: string;
   nodeType: BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS;
+
+  // Узел собирается СРАЗУ С ДВУМЯ полями вида — `nodeType` и `type`; второе
+  // в перечне не значилось. Их не сводили в одно намеренно или по недосмотру
+  // — неизвестно, поэтому оставлено как есть и лишь описано.
+  type?: BALANCE_SHEET_SCHEMA_NODE_TYPE;
+
   children: IBalanceSheetAccountNode[];
 }
 
@@ -169,6 +175,10 @@ export interface IBalanceSheetSchemaAccountNode {
   id: string;
   type: BALANCE_SHEET_SCHEMA_NODE_TYPE;
   accountsTypes: string[];
+
+  // Дети у узла схемы ЕСТЬ — их читает `reportSchemaAccountsNodeMapper`.
+  // В перечне их не было: он отстал от кода.
+  children?: IBalanceSheetSchemaAccountNode[];
 }
 
 export interface IBalanceSheetSchemaNetIncomeNode {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * A simple dependency graph
  */
@@ -40,7 +39,12 @@ function createDFS(edges, leavesOnly, result, circular) {
               continue;
             }
             currentPath.push(node);
-            throw new DepGraphCycleError(currentPath);
+            // Заимствованный код старого стиля: `DepGraphCycleError` —
+            // обычная функция, которая сама возвращает готовую ошибку.
+            // TypeScript разрешает `new` только для функции без
+            // возвращаемого значения, поэтому приведение. Поведение
+            // не меняется — трогать чужой код здесь незачем.
+            throw new (DepGraphCycleError as any)(currentPath);
           }
   
           inCurrentPath[node] = true;
@@ -330,7 +334,9 @@ function createDFS(edges, leavesOnly, result, circular) {
   var DepGraphCycleError = (exports.DepGraphCycleError = function (cyclePath) {
     var message = 'Dependency Cycle Found: ' + cyclePath.join(' -> ');
     var instance = new Error(message);
-    instance.cyclePath = cyclePath;
+    // Путь цикла дописывается к обычной ошибке — у `Error` такого поля
+    // нет, но именно по нему вызывающий узнаёт, что за цикл нашёлся.
+    (instance as Error & { cyclePath: string[] }).cyclePath = cyclePath;
     Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
     if (Error.captureStackTrace) {
       Error.captureStackTrace(instance, DepGraphCycleError);

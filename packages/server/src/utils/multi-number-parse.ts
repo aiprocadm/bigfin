@@ -1,4 +1,10 @@
-// @ts-nocheck
+/** Сколько раз встретился разделитель и где встретился последний раз. */
+interface ISeparatorStat {
+  sep: string;
+  cnt: number;
+  lastIdx: number;
+}
+
 const validGrouping = (integerPart, sep) =>
   integerPart.split(sep).reduce((acc, group, idx) => {
     if (idx > 0) {
@@ -34,10 +40,18 @@ export const multiNumberParse = (number: number | string, standardDecSep = '.') 
     .slice(negative ? 1 : 0);
 
   // analyze separators
-  const separators = (stripped.match(/[^\d]/g) || []).reduce(
+  //
+  // Список разделителей и вид накопителя объявлены явно. Без этого вывод типов
+  // сходился к пустому виду (`match` отдаёт либо совпадения, либо `null`, и
+  // `|| []` давал объединение), а дальше всё внутри свёртки становилось
+  // «ничем». Поведение не менялось — менялось только то, что проверка типов
+  // ничего здесь не видела.
+  const separatorChars: string[] = stripped.match(/[^\d]/g) ?? [];
+
+  const separators = separatorChars.reduce<Record<string, ISeparatorStat>>(
     (acc, sep, idx) => {
       const sepChr = `str_${sep.codePointAt(0)}`;
-      const cnt = ((acc[sepChr] || {}).cnt || 0) + 1;
+      const cnt = (acc[sepChr]?.cnt || 0) + 1;
 
       return {
         ...acc,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import { InventoryTransactionsService } from '@/modules/InventoryCost/commands/InventoryTransactions.service';
 import { ItemsEntriesService } from '@/modules/Items/ItemsEntries.service';
@@ -26,11 +25,14 @@ export class CreditNoteInventoryTransactions {
 
     const transaction = {
       transactionId: creditNote.id,
-      transactionType: 'CreditNote',
+      // `as const` обязателен: без него TypeScript расширяет строку до
+      // обычного `string`, и вызов перестаёт сходиться с перечнем видов
+      // операций и направлений склада.
+      transactionType: 'CreditNote' as const,
       transactionNumber: creditNote.creditNoteNumber,
       exchangeRate: creditNote.exchangeRate,
       date: creditNote.creditNoteDate,
-      direction: 'IN',
+      direction: 'IN' as const,
       entries: inventoryEntries,
       createdAt: creditNote.createdAt,
       warehouseId: creditNote.warehouseId,

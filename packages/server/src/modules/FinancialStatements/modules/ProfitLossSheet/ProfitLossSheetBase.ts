@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { TOTAL_NODE_TYPES } from './constants';
 import { FinancialSheet } from '../../common/FinancialSheet';
@@ -28,6 +27,10 @@ export const ProfitLossSheetBase = <T extends GConstructor<FinancialSheet>>(
     /**
      *
      */
+    // Метод приходит из соседней примеси того же класса — объявление
+    // только показывает его проверке типов, ничего не создавая.
+    declare findNodeDeep: (nodes: any, callback: (node: any) => boolean) => any;
+
     protected findNodeById = R.curry((id, nodes) => {
       return this.findNodeDeep(nodes, (node) => node.id === id);
     });

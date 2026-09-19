@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { IBalanceSheetNetIncomeNode } from './BalanceSheet.types';
 import { BalanceSheetComparsionPreviousYear } from './BalanceSheetComparsionPreviousYear';
@@ -8,6 +7,7 @@ import { FinancialHorizTotals } from '../../common/FinancialHorizTotals';
 import { BalanceSheetNetIncomeDatePeriodsPY } from './BalanceSheetNetIncomeDatePeriodsPY';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { GConstructor } from '@/common/types/Constructor';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetNetIncomePY = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -59,7 +59,11 @@ export const BalanceSheetNetIncomePY = <T extends GConstructor<FinancialSheet>>(
     public previousYearNetIncomeNodeCompose = (
       node: IBalanceSheetNetIncomeNode,
     ): IBalanceSheetNetIncomeNode => {
-      return R.compose(
+      return sameNodeShape<IBalanceSheetNetIncomeNode>(
+        // `R.compose` перестаёт подбирать вид, когда шагов в цепочке
+        // много: у неё описано ограниченное число сочетаний. Вид
+        // результата объявлен снаружи, через `sameNodeShape`.
+        (R.compose as any)(
         R.when(
           this.query.isPreviousYearPercentageActive,
           this.assocPreviousYearTotalPercentageNode,
@@ -74,6 +78,7 @@ export const BalanceSheetNetIncomePY = <T extends GConstructor<FinancialSheet>>(
           this.assocPreviousYearNetIncomeHorizNode,
         ),
         this.assocPreviousYearNetIncomeNode,
-      )(node);
+      )(node as any),
+      );
     };
   };

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import {
   IBalanceSheetNetIncomeNode,
@@ -13,6 +12,7 @@ import { BalanceSheetNetIncomePP } from './BalanceSheetNetIncomePP';
 import { BalanceSheetNetIncomePY } from './BalanceSheetNetIncomePY';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { GConstructor } from '@/common/types/Constructor';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetNetIncomeDatePeriods = <
   T extends GConstructor<FinancialSheet>,
@@ -101,6 +101,10 @@ export const BalanceSheetNetIncomeDatePeriods = <
      * @param {IBalanceSheetNetIncomeNode} node
      * @returns {IBalanceSheetNetIncomeNode}
      */
+    // Метод приходит из соседней примеси того же класса — объявление
+    // только показывает его проверке типов, ничего не создавая.
+    declare getReportNodeDatePeriods: (node: any, callback: any) => any;
+
     private getNetIncomeDatePeriodsNode = (
       node: IBalanceSheetNetIncomeNode,
     ): IBalanceSheetTotalPeriod[] => {
@@ -120,6 +124,8 @@ export const BalanceSheetNetIncomeDatePeriods = <
     ): IBalanceSheetNetIncomeNode => {
       const datePeriods = this.getNetIncomeDatePeriodsNode(node);
 
-      return R.assoc('horizontalTotals', datePeriods, node);
+      return sameNodeShape<IBalanceSheetNetIncomeNode>(
+        R.assoc('horizontalTotals', datePeriods, node),
+      );
     };
   };

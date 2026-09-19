@@ -138,6 +138,19 @@ export interface ISaleReceiptBrandingTemplateAttributes {
   receiptDate: string;
   showReceiptDate: boolean;
   receiptDateLabel: string;
+
+  // Скидка и корректировка.
+  //
+  // ДОБАВЛЕНЫ: печатная форма чека читает эти поля (`ReceiptPaperTemplate`),
+  // и сервер их и правда отдаёт — но в перечне их не было, перечень просто
+  // отстал. Пока файл стоял вне проверки типов, расхождение молчало.
+  showDiscount?: boolean;
+  discount?: string;
+  discountLabel?: string;
+
+  showAdjustment?: boolean;
+  adjustment?: string;
+  adjustmentLabel?: string;
 }
 
 export interface ISaleReceiptState {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { merge } from 'lodash';
 import * as R from 'ramda';
 import {
@@ -8,8 +7,12 @@ import {
 import { FinancialDateRanges } from '../../common/FinancialDateRanges';
 import { DISPLAY_COLUMNS_BY } from './constants';
 
+// Примесь объявляет, что берёт наследника `FinancialSheet`, но пользуется
+// только её помощниками по датам — самих полей отчёта здесь нет и не
+// нужно. Приведение говорит об этом прямо; заводить пустого наследника
+// значило бы добавить классу лишнее основание ради проверки типов.
 export class BalanceSheetQuery extends R.compose(FinancialDateRanges)(
-  class {},
+  class {} as any,
 ) {
   /**
    * Balance sheet query.

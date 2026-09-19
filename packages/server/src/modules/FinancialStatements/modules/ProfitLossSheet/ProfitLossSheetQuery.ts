@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { merge } from 'lodash';
 import * as R from 'ramda';
 import { IProfitLossSheetQuery } from './ProfitLossSheet.types';
@@ -7,7 +6,8 @@ import { IFinancialDatePeriodsUnit } from '../../types/Report.types';
 import { DISPLAY_COLUMNS_BY } from './constants';
 
 export class ProfitLossSheetQuery extends R.compose(FinancialDateRanges)(
-  class {},
+  // См. пояснение в `BalanceSheetQuery`.
+  class {} as any,
 ) {
   /**
    * P&L query.

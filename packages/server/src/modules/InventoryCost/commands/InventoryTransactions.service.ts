@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Knex } from 'knex';
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -13,6 +12,8 @@ import { IInventoryTransactionsCreatedPayload } from '../types/InventoryCost.typ
 import { transformItemEntriesToInventory } from '../utils';
 import { IItemEntryTransactionType } from '../../TransactionItemEntry/ItemEntry.types';
 import { ItemEntry } from '../../TransactionItemEntry/models/ItemEntry';
+import { ModelObject } from 'objection';
+import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
 @Injectable()
 export class InventoryTransactionsService {
@@ -43,7 +44,10 @@ export class InventoryTransactionsService {
    * @return {Promise<void>}
    */
   async recordInventoryTransactions(
-    transactions: ModelObject<InventoryTransaction>[],
+    // Сюда передают обычные записи для вставки, собранные вручную, а не
+    // готовые объекты модели: `ModelObject<InventoryTransaction>` требовал
+    // бы все поля модели целиком, которых у вставляемой строки нет.
+    transactions: Array<Partial<ModelObject<InventoryTransaction>>>,
     override: boolean = false,
     trx?: Knex.Transaction,
   ): Promise<void> {
@@ -175,7 +179,13 @@ export class InventoryTransactionsService {
   async recordInventoryCostLotTransaction(
     inventoryLotEntry: Partial<InventoryCostLotTracker>,
   ): Promise<InventoryCostLotTracker> {
-    return this.inventoryCostLotTracker.query().insert({
+    // БЫЛО: `this.inventoryCostLotTracker.query()` — без скобок вызова.
+    // Обёртка модели организации — это ФУНКЦИЯ: её сначала вызывают, и
+    // только потом просят запрос. Соседние места в этом же файле (строки
+    // 89, 148, 153) написаны правильно, а здесь скобки потеряли — метод
+    // упал бы с «query is not a function» в первый же вызов. Вызовов у
+    // него сейчас нет ни одного, так что поломка спала.
+    return this.inventoryCostLotTracker().query().insert({
       ...inventoryLotEntry,
     });
   }

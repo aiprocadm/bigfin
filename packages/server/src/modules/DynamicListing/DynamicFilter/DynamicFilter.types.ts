@@ -10,6 +10,15 @@ export interface IDynamicFilter {
   onInitialize(): void;
   buildQuery(): void;
   getResponseMeta();
+
+  /**
+   * Поля связей, которые надо подцепить к запросу.
+   *
+   * ДОБАВЛЕНО: `DynamicFilterAbstractor.buildFilterRolesJoins` читает это поле
+   * у каждого фильтра, а в перечне его не было. Не у всех фильтров оно есть,
+   * поэтому необязательное.
+   */
+  relationFields?: string[];
 }
 export interface IFilterRole {
   fieldKey: string;

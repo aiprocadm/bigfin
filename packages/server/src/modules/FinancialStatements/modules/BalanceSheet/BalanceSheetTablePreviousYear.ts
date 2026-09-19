@@ -1,12 +1,15 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { IDateRange } from '../../types/Report.types';
-import { ITableColumn } from '../../types/Table.types';
+import {
+  ITableColumn,
+  ITableColumnAccessor,
+} from '../../types/Table.types';
 import { FinancialTablePreviousYear } from '../../common/FinancialTablePreviousYear';
 import { FinancialDateRanges } from '../../common/FinancialDateRanges';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { BalanceSheetQuery } from './BalanceSheetQuery';
+import { toMutableList } from '../../utils/Table.utils';
 
 export const BalanceSheetTablePreviousYear = <
   T extends GConstructor<FinancialSheet>,
@@ -26,7 +29,8 @@ export const BalanceSheetTablePreviousYear = <
     public getPreviousYearColumns = (
       dateRange?: IDateRange,
     ): ITableColumn[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         // Previous year columns.
         R.when(
           this.query.isPreviousYearActive,
@@ -40,7 +44,8 @@ export const BalanceSheetTablePreviousYear = <
           this.query.isPreviousYearPercentageActive,
           R.append(this.getPreviousYearPercentageColumn()),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     /**
@@ -63,8 +68,9 @@ export const BalanceSheetTablePreviousYear = <
      * Retrieves previous year columns accessors.
      * @returns {ITableColumn[]}
      */
-    public previousYearColumnAccessor = (): ITableColumn[] => {
-      return R.pipe(
+    public previousYearColumnAccessor = (): ITableColumnAccessor[] => {
+      return toMutableList(
+        R.pipe(
         // Previous year columns.
         R.when(
           this.query.isPreviousYearActive,
@@ -78,7 +84,8 @@ export const BalanceSheetTablePreviousYear = <
           this.query.isPreviousYearPercentageActive,
           R.append(this.getPreviousYearPercentageAccessor()),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     /**
@@ -88,8 +95,9 @@ export const BalanceSheetTablePreviousYear = <
      */
     public previousYearHorizontalColumnAccessors = (
       index: number,
-    ): ITableColumn[] => {
-      return R.pipe(
+    ): ITableColumnAccessor[] => {
+      return toMutableList(
+        R.pipe(
         // Previous year columns.
         R.when(
           this.query.isPreviousYearActive,
@@ -103,6 +111,7 @@ export const BalanceSheetTablePreviousYear = <
           this.query.isPreviousYearPercentageActive,
           R.append(this.getPreviousYearPercentageHorizAccessor(index)),
         ),
-      )([]);
+      )([]),
+      );
     };
   };

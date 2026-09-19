@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Knex, knex } from 'knex';
 import { knexSnakeCaseMappers } from 'objection';
 import { TenantDBAlreadyExists } from './exceptions/TenantDBAlreadyExists';
@@ -100,14 +99,29 @@ export class TenantDBManager {
   }
 
   /**
-   * Seeds initial data to the tenant database.
-   * @return {Promise<void>}
+   * МЁРТВЫЙ МЕТОД. Наполнение базы организации начальными данными.
+   *
+   * Метод не работает и не работал никогда: он обращается к `tenantSeedConfig`
+   * и к `tenant`, а ни того ни другого не существует — ни объявления, ни
+   * импорта, ни параметра. Первый же вызов упал бы с «tenantSeedConfig is not
+   * defined».
+   *
+   * Вызовов у него тоже нет ни одного во всём коде: наполнение организации
+   * делает постройка организации своим путём. Пока файл стоял вне проверки
+   * типов, ничто на это не указывало.
+   *
+   * Метод ОСТАВЛЕН, а не удалён: удаление кода — решение владельца. Вместо
+   * обращения к несуществующему теперь стоит внятный отказ — так вызывающий
+   * (если он однажды появится) сразу поймёт, в чём дело, вместо загадочного
+   * «tenantSeedConfig is not defined».
+   *
+   * ПРЕДЛОЖЕНО К УДАЛЕНИЮ.
    */
   public async seed(): Promise<void> {
-    await this.tenantKnex().migrate.latest({
-      ...tenantSeedConfig(tenant),
-      disableMigrationsListValidation: true,
-    });
+    throw new Error(
+      'TenantDBManager.seed() не реализован: наполнение базы организации ' +
+        'делает постройка организации. Этот метод — незавершённый остаток.',
+    );
   }
 
   /**

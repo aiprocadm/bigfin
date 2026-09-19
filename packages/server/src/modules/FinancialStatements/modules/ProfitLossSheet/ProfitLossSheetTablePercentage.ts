@@ -1,10 +1,10 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { ProfitLossSheetQuery } from './ProfitLossSheetQuery';
 import { I18nService } from 'nestjs-i18n';
 import { GConstructor } from '@/common/types/Constructor';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { ITableColumn, ITableColumnAccessor } from '../../types/Table.types';
+import { toMutableList } from '../../utils/Table.utils';
 
 export const ProfitLossSheetTablePercentage = <
   T extends GConstructor<FinancialSheet>,
@@ -27,7 +27,8 @@ export const ProfitLossSheetTablePercentage = <
      * @returns {ITableColumn[]}
      */
     protected percentageColumns = (): ITableColumn[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         R.when(
           this.query.isIncomePercentage,
           R.append({
@@ -56,7 +57,8 @@ export const ProfitLossSheetTablePercentage = <
             label: this.i18n.t('profit_loss_sheet.percentage_of_row'),
           }),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     // ----------------------------------
@@ -67,7 +69,8 @@ export const ProfitLossSheetTablePercentage = <
      * @returns {ITableColumnAccessor[]}
      */
     protected percentageColumnsAccessor = (): ITableColumnAccessor[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         R.when(
           this.query.isIncomePercentage,
           R.append({
@@ -96,7 +99,8 @@ export const ProfitLossSheetTablePercentage = <
             accessor: 'percentageRow.formattedAmount',
           }),
         ),
-      )([]);
+      )([]),
+      );
     };
 
     /**
@@ -107,7 +111,8 @@ export const ProfitLossSheetTablePercentage = <
     protected percetangeHorizontalColumnsAccessor = (
       index: number,
     ): ITableColumnAccessor[] => {
-      return R.pipe(
+      return toMutableList(
+        R.pipe(
         R.when(
           this.query.isIncomePercentage,
           R.append({
@@ -136,6 +141,7 @@ export const ProfitLossSheetTablePercentage = <
             accessor: `horizontalTotals[${index}].percentageRow.formattedAmount`,
           }),
         ),
-      )([]);
+      )([]),
+      );
     };
   };

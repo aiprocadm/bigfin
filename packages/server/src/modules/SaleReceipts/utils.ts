@@ -1,12 +1,36 @@
-// @ts-nocheck
-import {
-  ISaleReceipt,
-  ISaleReceiptBrandingTemplateAttributes,
-} from '@/interfaces';
+// `@/interfaces` не существует, а `ISaleReceipt` не объявлен нигде — импорт
+// был сломан. Настоящий вид того, что сюда приходит, описан ниже.
+import { ISaleReceiptBrandingTemplateAttributes } from './types/SaleReceipts.types';
 import { contactAddressTextFormat } from '@/utils/address-text-format';
 
+/**
+ * Чек, подготовленный к печати.
+ *
+ * Поля «...Formatted» не объявлены в DTO ответа: их дописывает трансформер
+ * уже во время работы. Вид описан ровно тем, что читает эта функция.
+ */
+export interface IReceiptReadyForPrint {
+  totalFormatted?: string;
+  subtotalFormatted?: string;
+  receiptNumber?: string;
+  formattedReceiptDate?: string;
+  adjustmentFormatted?: string;
+  discountAmountFormatted?: string;
+  discountPercentageFormatted?: string;
+
+  entries?: Array<{
+    item?: { name?: string };
+    description?: string;
+    rateFormatted?: string;
+    quantityFormatted?: string;
+    totalFormatted?: string;
+  }>;
+
+  customer?: any;
+}
+
 export const transformReceiptToBrandingTemplateAttributes = (
-  saleReceipt: ISaleReceipt,
+  saleReceipt: IReceiptReadyForPrint,
   // Базовый лейбл скидки приходит из шаблона организации (он переведён);
   // раньше хардкод «Discount» затирал перевод в клиентском PDF (Р3 v18).
   { discountLabel = 'Discount' }: { discountLabel?: string } = {}
@@ -21,7 +45,18 @@ export const transformReceiptToBrandingTemplateAttributes = (
       quantity: entry.quantityFormatted,
       total: entry.totalFormatted,
     })),
-    receiptNumber: saleReceipt.receiptNumber,
+    // ВНИМАНИЕ, ОПЕЧАТКА НАРОЧНО. Печатная форма читает поле `receiptNumebr`
+    // (именно так, с перестановкой букв) — и в общем пакете шаблонов, и на
+    // экране настройки чека. Здесь же отдавалось правильное `receiptNumber`,
+    // поэтому номер до формы НЕ ДОХОДИЛ ВООБЩЕ: шаблон подставлял свою
+    // заглушку «346D3D40-0001», и её видел покупатель на каждом чеке.
+    //
+    // Переименовать поле в шаблонах нельзя: этим же ключом лежат сохранённые
+    // настройки шаблонов в базе (JSON-поле `pdf_templates.attributes`), и
+    // переименование осиротило бы их молча. Поэтому чиним сторону, которая
+    // ошибалась, а от повторного расхождения ставим сторожа
+    // (`receiptNumberReachesTemplate.spec.ts`).
+    receiptNumebr: saleReceipt.receiptNumber,
     receiptDate: saleReceipt.formattedReceiptDate,
     adjustment: saleReceipt.adjustmentFormatted,
     discount: saleReceipt.discountAmountFormatted,

@@ -121,6 +121,12 @@ export interface IFinancialNodeWithPreviousYear {
 }
 export interface IFinancialCommonNode {
   total: IFinancialSheetTotal;
+
+  // Дети ЕСТЬ у узлов отчётов — по ним и ходит фильтр
+  // (`FinancialFilter.isNodeHasChildren`). В перечне их не было: он
+  // просто отстал от кода, и пока файл стоял вне проверки типов, это
+  // ничем себя не выдавало.
+  children?: IFinancialCommonNode[];
 }
 export interface IFinancialCommonHorizDatePeriodNode {
   fromDate: FinancialDateMeta;

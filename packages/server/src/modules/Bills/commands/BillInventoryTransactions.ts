@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Knex } from 'knex';
 import { Bill } from '../models/Bill';
 import { Inject, Injectable } from '@nestjs/common';
@@ -38,11 +37,14 @@ export class BillInventoryTransactions {
       await this.itemsEntriesService.filterInventoryEntries(bill.entries);
     const transaction = {
       transactionId: bill.id,
-      transactionType: 'Bill',
+      // `as const` обязателен: без него TypeScript расширяет строку до
+      // обычного `string`, и вызов перестаёт сходиться с перечнем видов
+      // операций и направлений склада.
+      transactionType: 'Bill' as const,
       exchangeRate: bill.exchangeRate,
 
       date: bill.billDate,
-      direction: 'IN',
+      direction: 'IN' as const,
       entries: inventoryEntries,
       createdAt: bill.createdAt,
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { defaultTo, toArray } from 'lodash';
 import { I18nService } from 'nestjs-i18n';
@@ -27,6 +26,7 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { flatToNestedArray } from '@/utils/flat-to-nested-array';
 import { FinancialSheet } from '../../common/FinancialSheet';
 import { ACCOUNT_TYPE } from '@/constants/accounts';
+import { sameNodeShape } from '../../utils/Table.utils';
 
 export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
   Base: T,
@@ -127,7 +127,8 @@ export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
     private reportSchemaAccountNodeComposer = (
       account: Account,
     ): IBalanceSheetAccountNode => {
-      return R.compose(
+      return sameNodeShape<IBalanceSheetAccountNode>(
+        R.compose(
         R.when(
           this.query.isPreviousYearActive,
           this.previousYearAccountNodeComposer,
@@ -140,8 +141,9 @@ export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
           this.query.isDatePeriodsColumnsType,
           this.assocAccountNodeDatePeriods,
         ),
-        this.reportSchemaAccountNodeMapper,
-      )(account);
+          this.reportSchemaAccountNodeMapper,
+        )(account),
+      );
     };
 
     // -----------------------------
@@ -199,12 +201,14 @@ export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
     private reportAccountSchemaParser = (
       node: IBalanceSheetSchemaNode | IBalanceSheetDataNode,
     ): IBalanceSheetSchemaNode | IBalanceSheetDataNode => {
-      return R.compose(
-        R.when(
-          this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS),
-          this.reportSchemaAccountsNodeMapper,
-        ),
-      )(node);
+      return sameNodeShape<IBalanceSheetSchemaNode | IBalanceSheetDataNode>(
+        R.compose(
+          R.when(
+            this.isSchemaNodeType(BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS),
+            this.reportSchemaAccountsNodeMapper,
+          ),
+        )(node),
+      );
     };
 
     /**

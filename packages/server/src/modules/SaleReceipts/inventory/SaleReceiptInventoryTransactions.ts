@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
 import { SaleReceipt } from '../models/SaleReceipt';
@@ -30,12 +29,15 @@ export class SaleReceiptInventoryTransactions {
       );
     const transaction = {
       transactionId: saleReceipt.id,
-      transactionType: 'SaleReceipt',
+      // `as const` обязателен: без него TypeScript расширяет строку до
+      // обычного `string`, и вызов перестаёт сходиться с перечнем видов
+      // операций и направлений склада.
+      transactionType: 'SaleReceipt' as const,
       transactionNumber: saleReceipt.receiptNumber,
       exchangeRate: saleReceipt.exchangeRate,
 
       date: saleReceipt.receiptDate,
-      direction: 'OUT',
+      direction: 'OUT' as const,
       entries: inventoryEntries,
       createdAt: saleReceipt.createdAt,
 

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import * as R from 'ramda';
 import { sameNodeShape } from '../../utils/Table.utils';
+import { attachPreviousPeriod } from './cashFlowPreviousPeriod';
 import { defaultTo, set, sumBy, isEmpty, mapValues, get } from 'lodash';
 import * as mathjs from 'mathjs';
 import * as moment from 'moment';
@@ -648,5 +649,31 @@ export class CashFlowStatement extends R.pipe(
    */
   public reportData = (): ICashFlowStatementData => {
     return this.schemaParser(R.clone(CASH_FLOW_SCHEMA));
+  };
+
+  /**
+   * Развешивает суммы прошлого периода по секциям отчёта (остаток О3 ТЗ).
+   *
+   * Метод живёт здесь, а не в сервисе, по одной причине: ОФОРМЛЕНИЕ ЧИСЕЛ.
+   * Колонка сравнения обязана выглядеть ровно как соседняя — та же точность,
+   * тот же знак минуса, та же валюта. Стоит завести второй способ оформлять
+   * число, и в одной колонке появится «1 200,00 ₽», а в соседней «1200».
+   *
+   * Само правило сравнения лежит отдельно и проверяется отдельно.
+   */
+  public withPreviousPeriod = (
+    sections: any[],
+    previousTotals: Map<string, number>,
+    options: {
+      showPrevious: boolean;
+      showChange: boolean;
+      showPercentage: boolean;
+    },
+  ): any[] => {
+    return attachPreviousPeriod(sections, previousTotals, {
+      ...options,
+      formatAmount: (amount: number) => this.getTotalAmountMeta(amount),
+      formatPercentage: (amount: number) => this.getPercentageAmountMeta(amount),
+    });
   };
 }

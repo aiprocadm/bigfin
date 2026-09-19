@@ -4650,5 +4650,8 @@
   "reports.drill_down.truncated": "Showing {shown} of {total} operations.",
   "reports.structure.assets": "What the money is in",
   "reports.structure.liabilities_equity": "Where the money came from",
-  "reports.structure.negative_groups": "Not shown on the bar (negative): {groups}."
+  "reports.structure.negative_groups": "Not shown on the bar (negative): {groups}.",
+  "cash_flow_statement.previous_period": "Previous period",
+  "cash_flow_statement.total_change": "Change",
+  "cash_flow_statement.change": "Change, %"
 }

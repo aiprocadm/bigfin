@@ -25,6 +25,7 @@ import {
   type CashFlowStatementHeaderFormValues,
 } from './CashFlowStatementHeader.zod';
 import { ReportLegalEntitiesField } from '@/containers/FinancialStatements/v2/FinancialHeaderLegalEntitiesField';
+import { ReportPreviousPeriodFields } from '@/containers/FinancialStatements/v2/FinancialHeaderPreviousPeriodFields';
 
 // ---------------------------------------------------------------------------
 // Типы и локальные касты легаси-модулей (redux-HOC без типов).
@@ -70,6 +71,14 @@ const buildDefaultValues = (
   displayColumnsType: toStr(pageFilter.displayColumnsType, 'total'),
   filterByOption: toStr(pageFilter.filterByOption, 'with-transactions'),
   basis: toStr(pageFilter.basis, 'cash'),
+
+  // Сравнение выключено по умолчанию: лишние колонки на узком экране
+  // прячут сами числа.
+  previousPeriod: Boolean(pageFilter.previousPeriod),
+  previousPeriodAmountChange: Boolean(pageFilter.previousPeriodAmountChange),
+  previousPeriodPercentageChange: Boolean(
+    pageFilter.previousPeriodPercentageChange,
+  ),
 
   branchesIds: Array.isArray(pageFilter.branchesIds)
     ? (pageFilter.branchesIds as Array<number | string>)
@@ -146,6 +155,9 @@ function CashFlowStatementHeaderV2Root({
                 <ReportDateRangeFields />
                 <ReportDisplayColumnsByField />
                 <ReportFilterOptionField />
+                {/* Сравнение с прошлым периодом (остаток О3 ТЗ): ДДС был
+                    единственным из трёх главных отчётов без него. */}
+                <ReportPreviousPeriodFields />
               </div>
             </TabsContent>
 

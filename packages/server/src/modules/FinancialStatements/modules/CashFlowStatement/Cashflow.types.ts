@@ -16,6 +16,16 @@ export interface ICashFlowStatementQuery {
   basis: string;
 
   branchesIds?: number[];
+
+  /**
+   * Сравнение с прошлым периодом (остаток О3 ТЗ).
+   *
+   * Прошлый период — отрезок ТОЙ ЖЕ ДЛИНЫ, стоящий вплотную перед выбранным.
+   * Правило общее со всеми отчётами и живёт в `previousPeriodRange.ts`.
+   */
+  previousPeriod?: boolean;
+  previousPeriodAmountChange?: boolean;
+  previousPeriodPercentageChange?: boolean;
 }
 
 export interface ICashFlowStatementTotal {

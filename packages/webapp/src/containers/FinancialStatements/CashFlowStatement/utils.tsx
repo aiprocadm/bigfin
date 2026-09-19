@@ -13,6 +13,12 @@ export const getDefaultCashFlowSheetQuery = () => {
     fromDate: moment().startOf('year').format('YYYY-MM-DD'),
     toDate: moment().format('YYYY-MM-DD'),
     basis: 'cash',
+
+  // Сравнение с прошлым периодом выключено по умолчанию
+  // (остаток О3 ТЗ): лишние колонки прячут сами числа.
+  previousPeriod: false,
+  previousPeriodAmountChange: false,
+  previousPeriodPercentageChange: false,
     displayColumnsType: 'total',
     filterByOption: 'with-transactions',
     branchesIds: [],

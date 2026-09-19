@@ -50,4 +50,10 @@ export const getDefaultCashflowQuery = (): ICashFlowStatementQuery => ({
   noneZero: false,
   noneTransactions: false,
   basis: 'cash',
+
+  // Сравнение с прошлым периодом выключено по умолчанию:
+  // лишние колонки на узком экране прячут сами числа.
+  previousPeriod: false,
+  previousPeriodAmountChange: false,
+  previousPeriodPercentageChange: false,
 });

@@ -4643,5 +4643,9 @@
   "invoice.exchange_rate_change.check_rates": "Check that the item rates match the current exchange rate of the selected currency before saving.",
   "payment_receive_form.excess_payment.question": "Record the excess amount of {amount} as credit payment from the customer?",
   "payment_made_form.excess_payment.question": "Record the excess amount of {amount} as credit payment to the vendor?",
-  "excess_payment.action.save_as_credit": "Save Payment as Credit"
+  "excess_payment.action.save_as_credit": "Save Payment as Credit",
+  "reports.drill_down.opening_balance": "Opening balance",
+  "reports.drill_down.closing_balance": "Closing balance",
+  "reports.drill_down.period_change": "Change over the period",
+  "reports.drill_down.truncated": "Showing {shown} of {total} operations."
 }

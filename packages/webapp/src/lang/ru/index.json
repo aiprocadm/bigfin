@@ -4643,5 +4643,9 @@
   "invoice.exchange_rate_change.check_rates": "Перед сохранением проверьте, что цены позиций сходятся с текущим курсом выбранной валюты.",
   "payment_receive_form.excess_payment.question": "Записать излишек {amount} как аванс от покупателя?",
   "payment_made_form.excess_payment.question": "Записать излишек {amount} как аванс поставщику?",
-  "excess_payment.action.save_as_credit": "Записать как аванс"
+  "excess_payment.action.save_as_credit": "Записать как аванс",
+  "reports.drill_down.opening_balance": "Остаток на начало",
+  "reports.drill_down.closing_balance": "Остаток на конец",
+  "reports.drill_down.period_change": "Оборот за период",
+  "reports.drill_down.truncated": "Показано {shown} операций из {total}."
 }

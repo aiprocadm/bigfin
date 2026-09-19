@@ -8,6 +8,13 @@ import type {
 } from '@/components/ui/report-table';
 
 import { useCashFlowStatementContext } from './CashFlowStatementProvider';
+import ReportDrillDownPanel, {
+  type DrillDownTarget,
+} from '../ReportDrillDownPanel';
+import {
+  drillDownAccountId,
+  reportDrillDownRange,
+} from '../reportDrillDownRange';
 
 /**
  * Таблица отчёта о движении денежных средств (ДДС) на движке ReportTable
@@ -57,6 +64,12 @@ export default function CashFlowStatementTable({
     query,
   } = useTypedCashFlowStatementContext();
 
+  // Какая строка сейчас раскрыта до операций (этап 4 ТЗ, п. 4.2).
+  const [drillDown, setDrillDown] = React.useState<DrillDownTarget | null>(
+    null,
+  );
+  const range = reportDrillDownRange(query);
+
   // Колонки движка из колонок сервера: первая — название счёта (слева),
   // суммы («Итого», периоды) — справа, tabular-nums (движок сам).
   const reportColumns = React.useMemo<ReportTableColumn[]>(
@@ -91,6 +104,27 @@ export default function CashFlowStatementTable({
         rows={tableRows}
         defaultExpandedDepth={4}
         isFinalRow={(row) => row.id === FINAL_ROW_ID}
+        canDrillDown={(row) => drillDownAccountId(row.id) !== null}
+        onRowClick={(row) => {
+          const accountId = drillDownAccountId(row.id);
+
+          if (!accountId) return;
+
+          setDrillDown({
+            accountId,
+            accountName: row.cells?.[0]?.value,
+            fromDate: range.fromDate,
+            toDate: range.toDate,
+          });
+        }}
+      />
+
+      {/* Строка ДДС считается от остаточных счетов, поэтому панель показывает
+          цепочку: остаток на начало + оборот = остаток на конец. */}
+      <ReportDrillDownPanel
+        target={drillDown}
+        onClose={() => setDrillDown(null)}
+        kind="balance"
       />
     </ReportSheet>
   );

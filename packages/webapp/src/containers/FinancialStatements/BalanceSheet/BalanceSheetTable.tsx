@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import intl from 'react-intl-universal';
 
 import {
@@ -8,6 +8,13 @@ import {
   type ReportTableRow,
 } from '@/components/ui/report-table';
 import { useBalanceSheetContext } from './BalanceSheetProvider';
+import ReportDrillDownPanel, {
+  type DrillDownTarget,
+} from '../ReportDrillDownPanel';
+import {
+  drillDownAccountId,
+  reportDrillDownRange,
+} from '../reportDrillDownRange';
 
 /**
  * Колонка отчётной таблицы в формате сервера FinancialStatements
@@ -90,6 +97,10 @@ export default function BalanceSheetTable({
     balanceSheet: { table, query, meta },
   } = useTypedBalanceSheetContext();
 
+  // Какая строка сейчас раскрыта до операций (этап 4 ТЗ, п. 4.2).
+  const [drillDown, setDrillDown] = useState<DrillDownTarget | null>(null);
+  const range = reportDrillDownRange(query);
+
   const columns = useMemo(
     () => flattenServerColumns(table.columns),
     [table.columns],
@@ -109,6 +120,27 @@ export default function BalanceSheetTable({
         // итоги «Итого активы» и «Итого обязательства и капитал» — вложенные
         // TOTAL-строки, их выделяет стилизация TOTAL (полужирный + граница).
         isFinalRow={() => false}
+        canDrillDown={(row) => drillDownAccountId(row.id) !== null}
+        onRowClick={(row) => {
+          const accountId = drillDownAccountId(row.id);
+
+          if (!accountId) return;
+
+          setDrillDown({
+            accountId,
+            accountName: row.cells?.[0]?.value,
+            fromDate: range.fromDate,
+            toDate: range.toDate,
+          });
+        }}
+      />
+
+      {/* Строка баланса — ОСТАТОК на дату, а не оборот. Поэтому панель
+          показывает цепочку: остаток на начало + оборот = остаток на конец. */}
+      <ReportDrillDownPanel
+        target={drillDown}
+        onClose={() => setDrillDown(null)}
+        kind="balance"
       />
     </ReportSheet>
   );

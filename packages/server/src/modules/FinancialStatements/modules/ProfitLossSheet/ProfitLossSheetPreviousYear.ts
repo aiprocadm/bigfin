@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { sumBy } from 'lodash';
 import {
   IProfitLossSheetEquationNode,
@@ -21,6 +22,18 @@ export const ProfitLossSheetPreviousYear = <
   Base: T,
 ) =>
   class extends R.pipe(FinancialPreviousYear)(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare evaluateEquation: any;
+    declare getNodesTableForEvaluating: any;
+    declare isNodeHasHorizTotals: any;
     repository: ProfitLossSheetRepository;
     query: ProfitLossSheetQuery;
 
@@ -50,21 +63,18 @@ export const ProfitLossSheetPreviousYear = <
     protected previousYearAccountNodeCompose = (
       accountNode: IProfitLossSheetAccountNode,
     ): IProfitLossSheetAccountNode => {
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizTotals,
-          this.assocPreviousYearAccountHorizNodeCompose,
-        ),
-        R.when(
-          this.query.isPreviousYearPercentageActive,
-          this.assocPreviousYearPercentageNode,
-        ),
-        R.when(
-          this.query.isPreviousYearChangeActive,
-          this.assocPreviousYearChangetNode,
-        ),
-        this.assocPreviousYearTotalAccountNode,
-      )(accountNode);
+      let result: IProfitLossSheetAccountNode = accountNode;
+      result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearTotalAccountNode(result));
+      if (this.query.isPreviousYearChangeActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearChangetNode(result));
+      }
+      if (this.query.isPreviousYearPercentageActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearPercentageNode(result));
+      }
+      if (this.isNodeHasHorizTotals(result)) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearAccountHorizNodeCompose(result));
+      }
+      return result;
     };
 
     // ---------------------------
@@ -91,21 +101,18 @@ export const ProfitLossSheetPreviousYear = <
     protected previousYearAggregateNodeCompose = (
       accountNode: IProfitLossSheetAccountNode,
     ): IProfitLossSheetAccountNode => {
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizTotals,
-          this.assocPreviousYearAggregateHorizNode,
-        ),
-        R.when(
-          this.query.isPreviousYearPercentageActive,
-          this.assocPreviousYearTotalPercentageNode,
-        ),
-        R.when(
-          this.query.isPreviousYearChangeActive,
-          this.assocPreviousYearTotalChangeNode,
-        ),
-        this.assocPreviousYearTotalAggregateNode,
-      )(accountNode);
+      let result: IProfitLossSheetAccountNode = accountNode;
+      result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearTotalAggregateNode(result));
+      if (this.query.isPreviousYearChangeActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearTotalChangeNode(result));
+      }
+      if (this.query.isPreviousYearPercentageActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearTotalPercentageNode(result));
+      }
+      if (this.isNodeHasHorizTotals(result)) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousYearAggregateHorizNode(result));
+      }
+      return result;
     };
 
     // ---------------------------
@@ -149,21 +156,18 @@ export const ProfitLossSheetPreviousYear = <
         equation: string,
         node: IProfitLossSheetEquationNode,
       ) => {
-        return R.compose(
-          R.when(
-            this.isNodeHasHorizTotals,
-            this.assocPreviousYearEquationHorizNode(accNodes, equation),
-          ),
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearTotalChangeNode,
-          ),
-          this.assocPreviousYearTotalEquationNode(accNodes, equation),
-        )(node);
+        let result = node;
+        result = this.assocPreviousYearTotalEquationNode(accNodes, equation)(result);
+        if (this.query.isPreviousYearChangeActive()) {
+          result = this.assocPreviousYearTotalChangeNode(result);
+        }
+        if (this.query.isPreviousYearPercentageActive()) {
+          result = this.assocPreviousYearTotalPercentageNode(result);
+        }
+        if (this.isNodeHasHorizTotals(result)) {
+          result = this.assocPreviousYearEquationHorizNode(accNodes, equation)(result);
+        }
+        return result;
       },
     );
 
@@ -199,24 +203,20 @@ export const ProfitLossSheetPreviousYear = <
         node: IProfitLossSheetAccountNode,
         horizontalTotalNode: IProfitLossSheetTotal,
       ): IProfitLossSheetTotal => {
-        return R.compose(
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearChangetNode,
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearAccountHorizTotal(node),
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearHorizNodeFromToDates,
-          ),
-        )(horizontalTotalNode);
+        let result: IProfitLossSheetTotal = horizontalTotalNode;
+        if (this.query.isPreviousYearActive()) {
+          result = sameNodeShape<IProfitLossSheetTotal>(this.assocPreviousYearHorizNodeFromToDates(result));
+        }
+        if (this.query.isPreviousYearActive()) {
+          result = sameNodeShape<IProfitLossSheetTotal>(this.assocPreviousYearAccountHorizTotal(node)(result));
+        }
+        if (this.query.isPreviousYearChangeActive()) {
+          result = sameNodeShape<IProfitLossSheetTotal>(this.assocPreviousYearChangetNode(result));
+        }
+        if (this.query.isPreviousYearPercentageActive()) {
+          result = sameNodeShape<IProfitLossSheetTotal>(this.assocPreviousYearPercentageNode(result));
+        }
+        return result;
       },
     );
 
@@ -258,20 +258,17 @@ export const ProfitLossSheetPreviousYear = <
      */
     private previousYearAggregateHorizNodeCompose = R.curry(
       (node, horizontalTotalNode, index: number) => {
-        return R.compose(
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearTotalChangeNode,
-          ),
-          R.when(
-            this.query.isPreviousYearActive,
-            this.assocPreviousYearAggregateHorizTotal(node, index),
-          ),
-        )(horizontalTotalNode);
+        let result = horizontalTotalNode;
+        if (this.query.isPreviousYearActive()) {
+          result = this.assocPreviousYearAggregateHorizTotal(node, index)(result);
+        }
+        if (this.query.isPreviousYearChangeActive()) {
+          result = this.assocPreviousYearTotalChangeNode(result);
+        }
+        if (this.query.isPreviousYearPercentageActive()) {
+          result = this.assocPreviousYearTotalPercentageNode(result);
+        }
+        return result;
       },
     );
 
@@ -340,17 +337,17 @@ export const ProfitLossSheetPreviousYear = <
           equation,
           index,
         );
-        return R.compose(
-          R.when(
-            this.query.isPreviousYearPercentageActive,
-            this.assocPreviousYearTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousYearChangeActive,
-            this.assocPreviousYearTotalChangeNode,
-          ),
-          R.when(this.query.isPreviousYearActive, assocHorizTotal),
-        )(horizontalTotalNode);
+        let result = horizontalTotalNode;
+        if (this.query.isPreviousYearActive()) {
+          result = assocHorizTotal(result);
+        }
+        if (this.query.isPreviousYearChangeActive()) {
+          result = this.assocPreviousYearTotalChangeNode(result);
+        }
+        if (this.query.isPreviousYearPercentageActive()) {
+          result = this.assocPreviousYearTotalPercentageNode(result);
+        }
+        return result;
       },
     );
 

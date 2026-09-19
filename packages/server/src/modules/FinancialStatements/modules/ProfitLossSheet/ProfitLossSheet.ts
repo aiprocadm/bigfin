@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { ModelObject } from 'objection';
 import { I18nService } from 'nestjs-i18n';
 import {
@@ -129,21 +130,18 @@ export default class ProfitLossSheet extends R.pipe(
   private accountNodeCompose = (
     account: ModelObject<Account>,
   ): IProfitLossSheetAccountNode => {
-    return R.compose(
-      R.when(
-        this.query.isPreviousPeriodActive,
-        this.previousPeriodAccountNodeCompose,
-      ),
-      R.when(
-        this.query.isPreviousYearActive,
-        this.previousYearAccountNodeCompose,
-      ),
-      R.when(
-        this.query.isDatePeriodsColumnsType,
-        this.assocAccountNodeDatePeriod,
-      ),
-      this.accountNodeMapper,
-    )(account);
+    let result: IProfitLossSheetAccountNode = account;
+    result = sameNodeShape<IProfitLossSheetAccountNode>(this.accountNodeMapper(result));
+    if (this.query.isDatePeriodsColumnsType()) {
+      result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocAccountNodeDatePeriod(result));
+    }
+    if (this.query.isPreviousYearActive()) {
+      result = this.previousYearAccountNodeCompose(result);
+    }
+    if (this.query.isPreviousPeriodActive()) {
+      result = this.previousPeriodAccountNodeCompose(result);
+    }
+    return result;
   };
 
   /**
@@ -193,21 +191,18 @@ export default class ProfitLossSheet extends R.pipe(
   private accountsSchemaNodeCompose = (
     node: IProfitLossSchemaNode,
   ): IProfitLossSheetAccountsNode => {
-    return R.compose(
-      R.when(
-        this.query.isPreviousPeriodActive,
-        this.previousPeriodAggregateNodeCompose,
-      ),
-      R.when(
-        this.query.isPreviousYearActive,
-        this.previousYearAggregateNodeCompose,
-      ),
-      R.when(
-        this.query.isDatePeriodsColumnsType,
-        this.assocAggregateDatePeriod,
-      ),
-      this.accountsSchemaNodeMapper,
-    )(node);
+    let result: IProfitLossSheetAccountsNode = node;
+    result = sameNodeShape<IProfitLossSheetAccountsNode>(this.accountsSchemaNodeMapper(result));
+    if (this.query.isDatePeriodsColumnsType()) {
+      result = sameNodeShape<IProfitLossSheetAccountsNode>(this.assocAggregateDatePeriod(result));
+    }
+    if (this.query.isPreviousYearActive()) {
+      result = this.previousYearAggregateNodeCompose(result);
+    }
+    if (this.query.isPreviousPeriodActive()) {
+      result = this.previousPeriodAggregateNodeCompose(result);
+    }
+    return result;
   };
 
   /**
@@ -248,21 +243,18 @@ export default class ProfitLossSheet extends R.pipe(
       accNodes: (IProfitLossSchemaNode | IProfitLossSheetNode)[],
       node: IProfitLossEquationSchemaNode,
     ): IProfitLossSheetEquationNode => {
-      return R.compose(
-        R.when(
-          this.query.isPreviousPeriodActive,
-          this.previousPeriodEquationNodeCompose(accNodes, node.equation),
-        ),
-        R.when(
-          this.query.isPreviousYearActive,
-          this.previousYearEquationNodeCompose(accNodes, node.equation),
-        ),
-        R.when(
-          this.query.isDatePeriodsColumnsType,
-          this.assocEquationNodeDatePeriod(accNodes, node.equation),
-        ),
-        this.equationSchemaNodeParser(accNodes),
-      )(node);
+      let result: IProfitLossSheetEquationNode = node;
+      result = sameNodeShape<IProfitLossSheetEquationNode>(this.equationSchemaNodeParser(accNodes)(result));
+      if (this.query.isDatePeriodsColumnsType()) {
+        result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocEquationNodeDatePeriod(accNodes, node.equation)(result));
+      }
+      if (this.query.isPreviousYearActive()) {
+        result = sameNodeShape<IProfitLossSheetEquationNode>(this.previousYearEquationNodeCompose(accNodes, node.equation)(result));
+      }
+      if (this.query.isPreviousPeriodActive()) {
+        result = sameNodeShape<IProfitLossSheetEquationNode>(this.previousPeriodEquationNodeCompose(accNodes, node.equation)(result));
+      }
+      return result;
     },
   );
 
@@ -274,12 +266,11 @@ export default class ProfitLossSheet extends R.pipe(
   private accountsSchemaNodeMap = (
     schemaNode: IProfitLossSchemaNode,
   ): IProfitLossSheetNode | IProfitLossSchemaNode => {
-    return R.compose(
-      R.when(
-        this.isNodeType(ProfitLossNodeType.ACCOUNTS),
-        this.accountsSchemaNodeCompose,
-      ),
-    )(schemaNode);
+    let result: IProfitLossSheetNode | IProfitLossSchemaNode = schemaNode;
+    if (this.isNodeType(ProfitLossNodeType.ACCOUNTS)(result)) {
+      result = sameNodeShape<IProfitLossSheetNode | IProfitLossSchemaNode>(this.accountsSchemaNodeCompose(result));
+    }
+    return result;
   };
 
   /**
@@ -298,12 +289,11 @@ export default class ProfitLossSheet extends R.pipe(
     accNodes: (IProfitLossSheetNode | IProfitLossSchemaNode)[],
     context,
   ): IProfitLossSheetEquationNode => {
-    return R.compose(
-      R.when(
-        this.isNodeType(ProfitLossNodeType.EQUATION),
-        this.equationSchemaNodeCompose(accNodes),
-      ),
-    )(node);
+    let result: IProfitLossSheetEquationNode = node;
+    if (this.isNodeType(ProfitLossNodeType.EQUATION)(result)) {
+      result = sameNodeShape<IProfitLossSheetEquationNode>(this.equationSchemaNodeCompose(accNodes)(result));
+    }
+    return result;
   };
 
   /**
@@ -335,12 +325,12 @@ export default class ProfitLossSheet extends R.pipe(
   public reportData = (): Array<IProfitLossSheetNode> => {
     const schema = this.getSchema();
 
-    return R.compose(
-      this.reportFilterPlugin,
-      this.reportRowsPercentageCompose,
-      this.reportColumnsPerentageCompose,
-      this.reportSchemaEquationNodesCompose,
-      this.reportSchemaAccountsNodesCompose,
-    )(schema);
+    let result: Array<IProfitLossSheetNode> = schema;
+     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportSchemaAccountsNodesCompose(result));
+     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportSchemaEquationNodesCompose(result));
+     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportColumnsPerentageCompose(result));
+     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportRowsPercentageCompose(result));
+     result = sameNodeShape<Array<IProfitLossSheetNode>>(this.reportFilterPlugin(result));
+     return result;
   };
 }

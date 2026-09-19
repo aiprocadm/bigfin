@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { I18nService } from 'nestjs-i18n';
 import {
   IBalanceSheetStatementData,
@@ -95,14 +96,12 @@ export class BalanceSheetTable extends R.pipe(
    * @param {ITableColumnAccessor[]}
    */
   public commonColumnsAccessors = (): ITableColumnAccessor[] => {
-    return R.compose(
-      R.concat([{ key: 'name', accessor: 'name' }]),
-      R.ifElse(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        R.concat(this.datePeriodsColumnsAccessors()),
-        R.concat(this.totalColumnAccessor()),
-      ),
-    )([]);
+    let result: ITableColumnAccessor[] = [];
+    result = this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)
+          ? R.concat(this.datePeriodsColumnsAccessors())(result)
+          : R.concat(this.totalColumnAccessor())(result);
+    result = sameNodeShape<ITableColumnAccessor[]>(R.concat([{ key: 'name', accessor: 'name' }])(result));
+    return result;
   };
 
   /**
@@ -110,12 +109,14 @@ export class BalanceSheetTable extends R.pipe(
    * @return {ITableColumnAccessor[]}
    */
   public totalColumnAccessor = (): ITableColumnAccessor[] => {
-    return R.pipe(
+    return sameNodeShape<ITableColumnAccessor[]>(
+      R.pipe(
       R.concat(this.previousPeriodColumnAccessor()),
       R.concat(this.previousYearColumnAccessor()),
       R.concat(this.percentageColumnsAccessor()),
       R.concat([{ key: 'total', accessor: 'total.formattedAmount' }]),
-    )([]);
+    )([]),
+    );
   };
 
   /**
@@ -225,15 +226,15 @@ export class BalanceSheetTable extends R.pipe(
    * @returns {ITableColumn[]}
    */
   public totalColumnChildren = (): ITableColumn[] => {
-    return R.compose(
-      R.unless(
+    let result: ITableColumn[] = [];
+    result = sameNodeShape<ITableColumn[]>(R.concat(this.previousPeriodColumns())(result));
+    result = sameNodeShape<ITableColumn[]>(R.concat(this.getPreviousYearColumns())(result));
+    result = sameNodeShape<ITableColumn[]>(R.concat(this.percentageColumns())(result));
+    result = R.unless(
         R.isEmpty,
         R.concat([{ key: 'total', label: this.i18n.t('balance_sheet.total') }]),
-      ),
-      R.concat(this.percentageColumns()),
-      R.concat(this.getPreviousYearColumns()),
-      R.concat(this.previousPeriodColumns()),
-    )([]);
+      )(result);
+    return result;
   };
 
   /**
@@ -255,10 +256,10 @@ export class BalanceSheetTable extends R.pipe(
    * @returns {ITableRow[]}
    */
   public tableRows = (): ITableRow[] => {
-    return R.compose(
-      this.addTotalRows,
-      this.nodesToTableRowsMapper,
-    )(this.reportData);
+    let result: ITableRow[] = this.reportData;
+    result = sameNodeShape<ITableRow[]>(this.nodesToTableRowsMapper(result));
+    result = sameNodeShape<ITableRow[]>(this.addTotalRows(result));
+    return result;
   };
 
   // -------------------------
@@ -269,16 +270,14 @@ export class BalanceSheetTable extends R.pipe(
    * @returns {ITableColumn[]}
    */
   public tableColumns = (): ITableColumn[] => {
-    return R.compose(
-      this.tableColumnsCellIndexing,
-      R.concat([
+    let result: ITableColumn[] = [];
+    result = this.query.isDatePeriodsColumnsType(result)
+          ? R.concat(this.datePeriodsColumns())(result)
+          : R.concat(this.totalColumn())(result);
+    result = R.concat([
         { key: 'name', label: this.i18n.t('balance_sheet.account_name') },
-      ]),
-      R.ifElse(
-        this.query.isDatePeriodsColumnsType,
-        R.concat(this.datePeriodsColumns()),
-        R.concat(this.totalColumn()),
-      ),
-    )([]);
+      ])(result);
+    result = sameNodeShape<ITableColumn[]>(this.tableColumnsCellIndexing(result));
+    return result;
   };
 }

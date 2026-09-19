@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import * as moment from 'moment';
 import { ITableColumn, ITableColumnAccessor } from '../../types/Table.types';
 import { FinancialDatePeriods } from '../../common/FinancialDatePeriods';
@@ -13,6 +14,22 @@ export const BalanceSheetTableDatePeriods = <
   Base: T,
 ) =>
   class extends R.pipe(FinancialDatePeriods)(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare percetangeDatePeriodColumnsAccessor: any;
+    declare getPreviousYearHorizontalColumns: any;
+    declare percentageColumns: any;
+    declare previousPeriodHorizColumnAccessors: any;
+    declare previousPeriodHorizontalColumns: any;
+    declare previousYearHorizontalColumnAccessors: any;
+    declare query: any;
     public i18n: I18nService;
 
     /**
@@ -51,7 +68,9 @@ export const BalanceSheetTableDatePeriods = <
         ],
         conditions,
       );
-      return R.compose(R.cond(conditionsPairs))(dateRange);
+      let result = dateRange;
+      result = R.cond(conditionsPairs)(result);
+      return result;
     };
 
     // -------------------------
@@ -83,10 +102,10 @@ export const BalanceSheetTableDatePeriods = <
      * @returns {ITableColumnAccessor[]}
      */
     public datePeriodsColumnsAccessors = (): ITableColumnAccessor[] => {
-      return R.compose(
-        R.flatten,
-        R.addIndex(R.map)(this.datePeriodColumnsAccessor),
-      )(this.datePeriods);
+      let result: ITableColumnAccessor[] = this.datePeriods;
+      result = sameNodeShape<ITableColumnAccessor[]>(R.addIndex(R.map)(this.datePeriodColumnsAccessor)(result));
+      result = sameNodeShape<ITableColumnAccessor[]>(R.flatten(result));
+      return result;
     };
 
     // -------------------------
@@ -102,17 +121,17 @@ export const BalanceSheetTableDatePeriods = <
       index: number,
       dateRange: IDateRange,
     ) => {
-      return R.compose(
-        R.unless(
+      let result = [];
+      result = R.concat(this.previousPeriodHorizontalColumns(dateRange))(result);
+      result = R.concat(this.getPreviousYearHorizontalColumns(dateRange))(result);
+      result = R.concat(this.percentageColumns())(result);
+      result = R.unless(
           R.isEmpty,
           R.concat([
             { key: `total`, label: this.i18n.t('balance_sheet.total') },
           ]),
-        ),
-        R.concat(this.percentageColumns()),
-        R.concat(this.getPreviousYearHorizontalColumns(dateRange)),
-        R.concat(this.previousPeriodHorizontalColumns(dateRange)),
-      )([]);
+        )(result);
+      return result;
     };
 
     /**

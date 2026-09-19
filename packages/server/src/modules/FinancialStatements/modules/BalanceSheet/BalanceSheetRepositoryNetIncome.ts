@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as R from 'ramda';
 import { FinancialDatePeriods } from '../../common/FinancialDatePeriods';
 import { ModelObject } from 'objection';
@@ -14,6 +13,30 @@ export const BalanceSheetRepositoryNetIncome = <
   Base: T,
 ) =>
   class extends R.pipe(FinancialDatePeriods)(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare PPPeriodsAccountsLedger: any;
+    declare PPPeriodsOpeningAccountLedger: any;
+    declare PPTotalAccountsLedger: any;
+    declare PYPeriodsAccountsLedger: any;
+    declare PYPeriodsOpeningAccountLedger: any;
+    declare PYTotalAccountsLedger: any;
+    declare periodsAccountsLedger: any;
+    declare periodsOpeningAccountLedger: any;
+    declare accountsByParentType: any;
+    declare expensesLedger: any;
+    declare incomeLedger: any;
+    declare initAccounts: any;
+    declare initAccountsTotalLedger: any;
+    declare query: any;
+    declare totalAccountsLedger: any;
     // -----------------------
     // # Net Income
     // -----------------------

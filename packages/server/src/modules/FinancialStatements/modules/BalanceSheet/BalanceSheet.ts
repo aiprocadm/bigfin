@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { I18nService } from 'nestjs-i18n';
 import {
   IBalanceSheetQuery,
@@ -94,11 +95,13 @@ export class BalanceSheet extends R.pipe(
   public parseSchemaNodes = (
     schema: IBalanceSheetSchemaNode[],
   ): IBalanceSheetDataNode[] => {
-    return R.compose(
+    return sameNodeShape<IBalanceSheetDataNode[]>(
+      R.compose(
       this.aggregatesSchemaParser,
       this.netIncomeSchemaParser,
       this.accountsSchemaParser,
-    )(schema) as IBalanceSheetDataNode[];
+    )(schema) as IBalanceSheetDataNode[],
+    );
   };
 
   /**
@@ -108,10 +111,10 @@ export class BalanceSheet extends R.pipe(
   public reportData = () => {
     const balanceSheetSchema = this.getSchema();
 
-    return R.compose(
-      this.reportFilterPlugin,
-      this.reportPercentageCompose,
-      this.parseSchemaNodes,
-    )(balanceSheetSchema);
+    let result = balanceSheetSchema;
+     result = this.parseSchemaNodes(result);
+     result = this.reportPercentageCompose(result);
+     result = this.reportFilterPlugin(result);
+     return result;
   };
 }

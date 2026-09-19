@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import * as moment from 'moment';
 import { ITableColumn, ITableColumnAccessor } from '../../types/Table.types';
 import { ProfitLossSheetTablePercentage } from './ProfitLossSheetTablePercentage';
@@ -19,6 +20,17 @@ export const ProfitLossSheetTableDatePeriods = <
     ProfitLossTablePreviousPeriod,
     FinancialDatePeriods,
   )(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare getPreviousYearDatePeriodColumnPlugin: any;
+    declare previousYearHorizontalColumnAccessors: any;
     /**
      * Retrieves the date periods based on the report query.
      * @returns {IDateRange[]}
@@ -66,10 +78,10 @@ export const ProfitLossSheetTableDatePeriods = <
      * @returns {ITableColumnAccessor[]}
      */
     protected datePeriodsColumnsAccessors = (): ITableColumnAccessor[] => {
-      return R.compose(
-        R.flatten,
-        R.addIndex(R.map)(this.datePeriodColumnsAccessor),
-      )(this.datePeriods);
+      let result: ITableColumnAccessor[] = this.datePeriods;
+      result = sameNodeShape<ITableColumnAccessor[]>(R.addIndex(R.map)(this.datePeriodColumnsAccessor)(result));
+      result = sameNodeShape<ITableColumnAccessor[]>(R.flatten(result));
+      return result;
     };
 
     // --------------------------------
@@ -99,7 +111,9 @@ export const ProfitLossSheetTableDatePeriods = <
         ],
         conditions,
       );
-      return R.compose(R.cond(conditionsPairs))(dateRange);
+      let result = dateRange;
+      result = R.cond(conditionsPairs)(result);
+      return result;
     };
 
     /**
@@ -112,23 +126,21 @@ export const ProfitLossSheetTableDatePeriods = <
       index: number,
       dateRange: IDateRange,
     ) => {
-      return R.compose(
-        R.unless(
+      let result = [];
+      if (this.query.isPreviousPeriodActive()) {
+        result = R.concat(this.getPreviousPeriodDatePeriodsPlugin(dateRange))(result);
+      }
+      if (this.query.isPreviousYearActive()) {
+        result = R.concat(this.getPreviousYearDatePeriodColumnPlugin(dateRange))(result);
+      }
+      result = R.concat(this.percentageColumns())(result);
+      result = R.unless(
           R.isEmpty,
           R.concat([
             { key: `total`, label: this.i18n.t('profit_loss_sheet.total') },
           ]),
-        ),
-        R.concat(this.percentageColumns()),
-        R.when(
-          this.query.isPreviousYearActive,
-          R.concat(this.getPreviousYearDatePeriodColumnPlugin(dateRange)),
-        ),
-        R.when(
-          this.query.isPreviousPeriodActive,
-          R.concat(this.getPreviousPeriodDatePeriodsPlugin(dateRange)),
-        ),
-      )([]);
+        )(result);
+      return result;
     };
 
     /**

@@ -1,5 +1,5 @@
-// @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { GConstructor } from '@/common/types/Constructor';
 import {
   IProfitLossSheetNode,
@@ -15,6 +15,18 @@ export const ProfitLossSheetPercentage = <
   Base: T,
 ) =>
   class extends R.pipe(FinancialHorizTotals)(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare findNodeById: any;
+    declare isNodeTotal: any;
+    declare mapNodesDeep: any;
     query: ProfitLossSheetQuery;
 
     /**
@@ -119,17 +131,14 @@ export const ProfitLossSheetPercentage = <
       (netIncomeNode: IProfitLossSheetNode, node: IProfitLossSheetNode) => {
         const path = 'percentageColumn';
 
-        return R.compose(
-          R.when(
-            this.isNodeHasHorizTotals,
-            this.assocColumnPercentageHorizTotals(netIncomeNode),
-          ),
-          R.ifElse(
-            this.isNodeTotal,
-            this.assocColumnTotalPercentage(path, netIncomeNode),
-            this.assocColumnPercentage(path, netIncomeNode),
-          ),
-        )(node);
+        let result = node;
+         result = this.isNodeTotal(result)
+          ? this.assocColumnTotalPercentage(path, netIncomeNode)(result)
+          : this.assocColumnPercentage(path, netIncomeNode)(result);
+         if (this.isNodeHasHorizTotals(result)) {
+           result = this.assocColumnPercentageHorizTotals(netIncomeNode)(result);
+         }
+         return result;
       },
     );
 
@@ -143,14 +152,14 @@ export const ProfitLossSheetPercentage = <
     ): IProfitLossSheetNode => {
       const path = 'percentageRow';
 
-      return R.compose(
-        R.when(this.isNodeHasHorizTotals, this.assocRowPercentageHorizTotals),
-        R.ifElse(
-          this.isNodeTotal,
-          this.assocColumnTotalPercentage(path, node),
-          this.assocColumnPercentage(path, node),
-        ),
-      )(node);
+      let result: IProfitLossSheetNode = node;
+       result = this.isNodeTotal(result)
+          ? this.assocColumnTotalPercentage(path, node)(result)
+          : this.assocColumnPercentage(path, node)(result);
+       if (this.isNodeHasHorizTotals(result)) {
+         result = sameNodeShape<IProfitLossSheetNode>(this.assocRowPercentageHorizTotals(result));
+       }
+       return result;
     };
 
     /**
@@ -163,17 +172,14 @@ export const ProfitLossSheetPercentage = <
       (incomeNode: IProfitLossSheetNode, node: IProfitLossSheetNode) => {
         const path = 'percentageIncome';
 
-        return R.compose(
-          R.when(
-            this.isNodeHasHorizTotals,
-            this.assocIncomePercentageHorizTotals(incomeNode),
-          ),
-          R.ifElse(
-            this.isNodeTotal,
-            this.assocColumnTotalPercentage(path, incomeNode),
-            this.assocColumnPercentage(path, incomeNode),
-          ),
-        )(node);
+        let result = node;
+         result = this.isNodeTotal(result)
+          ? this.assocColumnTotalPercentage(path, incomeNode)(result)
+          : this.assocColumnPercentage(path, incomeNode)(result);
+         if (this.isNodeHasHorizTotals(result)) {
+           result = this.assocIncomePercentageHorizTotals(incomeNode)(result);
+         }
+         return result;
       },
     );
 
@@ -186,17 +192,14 @@ export const ProfitLossSheetPercentage = <
       (expenseNode: IProfitLossSheetNode, node: IProfitLossSheetNode) => {
         const path = 'percentageExpense';
 
-        return R.compose(
-          R.when(
-            this.isNodeHasHorizTotals,
-            this.assocExpensePercentageHorizTotals(expenseNode),
-          ),
-          R.ifElse(
-            this.isNodeTotal,
-            this.assocColumnTotalPercentage(path, expenseNode),
-            this.assocColumnPercentage(path, expenseNode),
-          ),
-        )(node);
+        let result = node;
+         result = this.isNodeTotal(result)
+          ? this.assocColumnTotalPercentage(path, expenseNode)(result)
+          : this.assocColumnPercentage(path, expenseNode)(result);
+         if (this.isNodeHasHorizTotals(result)) {
+           result = this.assocExpensePercentageHorizTotals(expenseNode)(result);
+         }
+         return result;
       },
     );
 
@@ -226,12 +229,20 @@ export const ProfitLossSheetPercentage = <
     protected reportColumnsPerentageCompose = (
       nodes: IProfitLossSheetNode[],
     ): IProfitLossSheetNode[] => {
-      return R.compose(
-        R.when(this.query.isIncomePercentage, this.incomePercetageCompose),
-        R.when(this.query.isColumnPercentage, this.columnPercentageCompose),
-        R.when(this.query.isExpensesPercentage, this.expensesPercentageCompose),
-        R.when(this.query.isRowPercentage, this.rowPercentageCompose),
-      )(nodes);
+      let result: IProfitLossSheetNode[] = nodes;
+      if (this.query.isRowPercentage()) {
+        result = sameNodeShape<IProfitLossSheetNode[]>(this.rowPercentageCompose(result));
+      }
+      if (this.query.isExpensesPercentage()) {
+        result = sameNodeShape<IProfitLossSheetNode[]>(this.expensesPercentageCompose(result));
+      }
+      if (this.query.isColumnPercentage()) {
+        result = sameNodeShape<IProfitLossSheetNode[]>(this.columnPercentageCompose(result));
+      }
+      if (this.query.isIncomePercentage()) {
+        result = sameNodeShape<IProfitLossSheetNode[]>(this.incomePercetageCompose(result));
+      }
+      return result;
     };
 
     /**

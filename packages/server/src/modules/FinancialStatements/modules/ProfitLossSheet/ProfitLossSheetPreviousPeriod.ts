@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { sumBy } from 'lodash';
 import {
   IProfitLossHorizontalDatePeriodNode,
@@ -21,6 +22,18 @@ export const ProfitLossSheetPreviousPeriod = <
   Base: T,
 ) =>
   class extends R.pipe(FinancialPreviousPeriod)(Base) {
+
+    // ЧЛЕНЫ ИЗ СОСЕДНИХ ПРИМЕСЕЙ.
+    //
+    // Класс собирается цепочкой `R.pipe(...)`, и через безымянный базовый
+    // класс проверка типов не видит того, что объявлено в соседних примесях
+    // той же цепочки. `declare` ничего не создаёт — он только показывает
+    // проверке то, что во время работы и так есть.
+    //
+    // Каждое имя сверено: оно объявлено в примеси, входящей в ту же цепочку.
+    declare evaluateEquation: any;
+    declare getNodesTableForEvaluating: any;
+    declare isNodeHasHorizTotals: any;
     query: ProfitLossSheetQuery;
     repository: ProfitLossSheetRepository;
 
@@ -50,21 +63,18 @@ export const ProfitLossSheetPreviousPeriod = <
     protected previousPeriodAccountNodeCompose = (
       accountNode: IProfitLossSheetAccountNode,
     ): IProfitLossSheetAccountNode => {
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizTotals,
-          this.assocPreviousPeriodAccountHorizNodeCompose,
-        ),
-        R.when(
-          this.query.isPreviousPeriodPercentageActive,
-          this.assocPreviousPeriodPercentageNode,
-        ),
-        R.when(
-          this.query.isPreviousPeriodChangeActive,
-          this.assocPreviousPeriodChangeNode,
-        ),
-        this.assocPreviousPeriodTotalAccountNode,
-      )(accountNode);
+      let result: IProfitLossSheetAccountNode = accountNode;
+      result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodTotalAccountNode(result));
+      if (this.query.isPreviousPeriodChangeActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodChangeNode(result));
+      }
+      if (this.query.isPreviousPeriodPercentageActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodPercentageNode(result));
+      }
+      if (this.isNodeHasHorizTotals(result)) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodAccountHorizNodeCompose(result));
+      }
+      return result;
     };
 
     // ---------------------------
@@ -91,21 +101,18 @@ export const ProfitLossSheetPreviousPeriod = <
     protected previousPeriodAggregateNodeCompose = (
       accountNode: IProfitLossSheetAccountNode,
     ): IProfitLossSheetAccountNode => {
-      return R.compose(
-        R.when(
-          this.isNodeHasHorizTotals,
-          this.assocPreviousPeriodAggregateHorizNode,
-        ),
-        R.when(
-          this.query.isPreviousPeriodPercentageActive,
-          this.assocPreviousPeriodTotalPercentageNode,
-        ),
-        R.when(
-          this.query.isPreviousPeriodChangeActive,
-          this.assocPreviousPeriodTotalChangeNode,
-        ),
-        this.assocPreviousPeriodTotalAggregateNode,
-      )(accountNode);
+      let result: IProfitLossSheetAccountNode = accountNode;
+      result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodTotalAggregateNode(result));
+      if (this.query.isPreviousPeriodChangeActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodTotalChangeNode(result));
+      }
+      if (this.query.isPreviousPeriodPercentageActive()) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodTotalPercentageNode(result));
+      }
+      if (this.isNodeHasHorizTotals(result)) {
+        result = sameNodeShape<IProfitLossSheetAccountNode>(this.assocPreviousPeriodAggregateHorizNode(result));
+      }
+      return result;
     };
 
     // ---------------------------
@@ -149,21 +156,18 @@ export const ProfitLossSheetPreviousPeriod = <
         equation: string,
         node: IProfitLossSheetEquationNode,
       ): IProfitLossSheetEquationNode => {
-        return R.compose(
-          R.when(
-            this.isNodeHasHorizTotals,
-            this.assocPreviousPeriodEquationHorizNode(accNodes, equation),
-          ),
-          R.when(
-            this.query.isPreviousPeriodPercentageActive,
-            this.assocPreviousPeriodTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodChangeActive,
-            this.assocPreviousPeriodTotalChangeNode,
-          ),
-          this.assocPreviousPeriodTotalEquationNode(accNodes, equation),
-        )(node);
+        let result: IProfitLossSheetEquationNode = node;
+        result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocPreviousPeriodTotalEquationNode(accNodes, equation)(result));
+        if (this.query.isPreviousPeriodChangeActive()) {
+          result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocPreviousPeriodTotalChangeNode(result));
+        }
+        if (this.query.isPreviousPeriodPercentageActive()) {
+          result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocPreviousPeriodTotalPercentageNode(result));
+        }
+        if (this.isNodeHasHorizTotals(result)) {
+          result = sameNodeShape<IProfitLossSheetEquationNode>(this.assocPreviousPeriodEquationHorizNode(accNodes, equation)(result));
+        }
+        return result;
       },
     );
 
@@ -202,20 +206,18 @@ export const ProfitLossSheetPreviousPeriod = <
         horizontalTotalNode: IProfitLossHorizontalDatePeriodNode,
         index: number,
       ): IProfitLossHorizontalDatePeriodNode => {
-        return R.compose(
-          R.when(
-            this.query.isPreviousPeriodPercentageActive,
-            this.assocPreviousPeriodPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodChangeActive,
-            this.assocPreviousPeriodChangeNode,
-          ),
-          this.assocPerviousPeriodAccountHorizTotal(node),
-          this.assocPreviousPeriodHorizNodeFromToDates(
+        let result: IProfitLossHorizontalDatePeriodNode = horizontalTotalNode;
+        result = this.assocPreviousPeriodHorizNodeFromToDates(
             this.query.displayColumnsBy,
-          ),
-        )(horizontalTotalNode);
+          )(result);
+        result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPerviousPeriodAccountHorizTotal(node)(result));
+        if (this.query.isPreviousPeriodChangeActive()) {
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodChangeNode(result));
+        }
+        if (this.query.isPreviousPeriodPercentageActive()) {
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodPercentageNode(result));
+        }
+        return result;
       },
     );
 
@@ -273,26 +275,22 @@ export const ProfitLossSheetPreviousPeriod = <
         horizontalTotalNode: IProfitLossHorizontalDatePeriodNode,
         index: number,
       ): IProfitLossHorizontalDatePeriodNode => {
-        return R.compose(
-          R.when(
-            this.query.isPreviousPeriodPercentageActive,
-            this.assocPreviousPeriodTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodChangeActive,
-            this.assocPreviousPeriodTotalChangeNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodActive,
-            this.assocPreviousPeriodAggregateHorizTotal(node, index),
-          ),
-          R.when(
-            this.query.isPreviousPeriodActive,
-            this.assocPreviousPeriodHorizNodeFromToDates(
+        let result: IProfitLossHorizontalDatePeriodNode = horizontalTotalNode;
+        if (this.query.isPreviousPeriodActive()) {
+          result = this.assocPreviousPeriodHorizNodeFromToDates(
               this.query.displayColumnsBy,
-            ),
-          ),
-        )(horizontalTotalNode);
+            )(result);
+        }
+        if (this.query.isPreviousPeriodActive()) {
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodAggregateHorizTotal(node, index)(result));
+        }
+        if (this.query.isPreviousPeriodChangeActive()) {
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodTotalChangeNode(result));
+        }
+        if (this.query.isPreviousPeriodPercentageActive()) {
+          result = sameNodeShape<IProfitLossHorizontalDatePeriodNode>(this.assocPreviousPeriodTotalPercentageNode(result));
+        }
+        return result;
       },
     );
 
@@ -361,23 +359,22 @@ export const ProfitLossSheetPreviousPeriod = <
           equation,
           index,
         );
-        return R.compose(
-          R.when(
-            this.query.isPreviousPeriodPercentageActive,
-            this.assocPreviousPeriodTotalPercentageNode,
-          ),
-          R.when(
-            this.query.isPreviousPeriodChangeActive,
-            this.assocPreviousPeriodTotalChangeNode,
-          ),
-          R.when(this.query.isPreviousPeriodActive, assocHorizTotal),
-          R.when(
-            this.query.isPreviousPeriodActive,
-            this.assocPreviousPeriodHorizNodeFromToDates(
+        let result = horizontalTotalNode;
+        if (this.query.isPreviousPeriodActive()) {
+          result = this.assocPreviousPeriodHorizNodeFromToDates(
               this.query.displayColumnsBy,
-            ),
-          ),
-        )(horizontalTotalNode);
+            )(result);
+        }
+        if (this.query.isPreviousPeriodActive()) {
+          result = assocHorizTotal(result);
+        }
+        if (this.query.isPreviousPeriodChangeActive()) {
+          result = this.assocPreviousPeriodTotalChangeNode(result);
+        }
+        if (this.query.isPreviousPeriodPercentageActive()) {
+          result = this.assocPreviousPeriodTotalPercentageNode(result);
+        }
+        return result;
       },
     );
 

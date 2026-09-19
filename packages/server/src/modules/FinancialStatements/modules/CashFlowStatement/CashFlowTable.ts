@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as R from 'ramda';
+import { sameNodeShape } from '../../utils/Table.utils';
 import { isEmpty } from 'lodash';
 import * as moment from 'moment';
 import { I18nService } from 'nestjs-i18n';
@@ -76,14 +77,13 @@ export class CashFlowTable {
    * Retrieve the common columns for all report nodes.
    */
   private commonColumns = () => {
-    return R.compose(
-      R.concat([{ key: 'name', accessor: 'label' }]),
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        R.concat(this.datePeriodsColumnsAccessors()),
-      ),
-      R.concat(this.totalColumnAccessor()),
-    )([]);
+    let result = [];
+    result = R.concat(this.totalColumnAccessor())(result);
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = R.concat(this.datePeriodsColumnsAccessors())(result);
+    }
+    result = R.concat([{ key: 'name', accessor: 'label' }])(result);
+    return result;
   };
 
   /**
@@ -191,7 +191,8 @@ export class CashFlowTable {
   ): ITableRow => {
     const isSectionHasType = R.curry(this.isSectionHasType);
 
-    return R.pipe(
+    return sameNodeShape<ITableRow>(
+      R.pipe(
       R.when(
         isSectionHasType(ICashFlowStatementSectionType.AGGREGATE),
         this.regularSectionMapper,
@@ -216,7 +217,8 @@ export class CashFlowTable {
         isSectionHasType(ICashFlowStatementSectionType.TOTAL),
         this.totalSectionMapper,
       ),
-    )(section);
+    )(section),
+    );
   };
 
   /**
@@ -262,12 +264,11 @@ export class CashFlowTable {
   ): ICashFlowStatementSection => {
     const isSectionHasChildren = (section) => !isEmpty(section.children);
 
-    return R.compose(
-      R.when(
-        isSectionHasChildren,
-        this.appendTotalToSectionChildren.bind(this),
-      ),
-    )(section);
+    let result: ICashFlowStatementSection = section;
+     if (isSectionHasChildren(result)) {
+       result = sameNodeShape<ICashFlowStatementSection>(this.appendTotalToSectionChildren.bind(this)(result));
+     }
+     return result;
   };
 
   /**
@@ -291,10 +292,12 @@ export class CashFlowTable {
   public tableRows = (): ITableRow[] => {
     const sections = this.report.data;
 
-    return R.pipe(
+    return sameNodeShape<ITableRow[]>(
+      R.pipe(
       this.appendTotalToChildren,
       this.mapSectionsToTableRows,
-    )(sections);
+    )(sections),
+    );
   };
 
   /**
@@ -329,7 +332,9 @@ export class CashFlowTable {
       ],
       conditions,
     );
-    return R.compose(R.cond(conditionsPairs))(dateRange);
+    let result = dateRange;
+    result = R.cond(conditionsPairs)(result);
+    return result;
   };
 
   /**
@@ -365,13 +370,12 @@ export class CashFlowTable {
    * @return {ITableColumn[]}
    */
   public tableColumns = (): ITableColumn[] => {
-    return R.compose(
-      R.concat([{ key: 'name', label: this.i18n.t('cash_flow_statement.account_name') }]),
-      R.when(
-        R.always(this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)),
-        R.concat(this.datePeriodsColumns()),
-      ),
-      R.concat(this.totalColumns()),
-    )([]);
+    let result: ITableColumn[] = [];
+    result = sameNodeShape<ITableColumn[]>(R.concat(this.totalColumns())(result));
+    if (this.isDisplayColumnsBy(DISPLAY_COLUMNS_BY.DATE_PERIODS)) {
+      result = sameNodeShape<ITableColumn[]>(R.concat(this.datePeriodsColumns())(result));
+    }
+    result = R.concat([{ key: 'name', label: this.i18n.t('cash_flow_statement.account_name') }])(result);
+    return result;
   };
 }

@@ -6,6 +6,7 @@ import { Wallet } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, PaymentMadeAction } from '@/constants/abilityOption';
@@ -89,6 +90,16 @@ function PaymentsMadeTableV2Root({
         onRowClick={(row: PaymentMadeRow) =>
           openDrawer(DRAWERS.PAYMENT_MADE_DETAILS, { paymentMadeId: row.id })
         }
+        renderMobileRow={(row: PaymentMadeRow) => (
+          <DocumentMobileRow
+            title={row.vendor?.display_name}
+            number={row.payment_number}
+            date={row.formatted_payment_date}
+            amount={row.amount}
+            currency={row.currency_code}
+            note={row.payment_account?.name}
+          />
+        )}
         emptyState={<PaymentsMadeEmptyStateV2 />}
       />
       <DataTablePagination

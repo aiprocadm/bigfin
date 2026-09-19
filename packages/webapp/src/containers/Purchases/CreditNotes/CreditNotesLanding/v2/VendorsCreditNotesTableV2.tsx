@@ -6,6 +6,7 @@ import { Undo2 } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, VendorCreditAction } from '@/constants/abilityOption';
@@ -107,6 +108,14 @@ function VendorsCreditNotesTableV2Root({
         onRowClick={(row: VendorCreditRow) =>
           openDrawer(DRAWERS.VENDOR_CREDIT_DETAILS, { vendorCreditId: row.id })
         }
+        renderMobileRow={(row: VendorCreditRow) => (
+          <DocumentMobileRow
+            title={row.vendor?.display_name}
+            number={row.vendor_credit_number}
+            date={row.formatted_vendor_credit_date}
+            amount={row.formatted_amount}
+          />
+        )}
         emptyState={<VendorsCreditNotesEmptyStateV2 />}
       />
       <DataTablePagination

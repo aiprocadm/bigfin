@@ -2,6 +2,7 @@ import intl from 'react-intl-universal';
 import { PackageSearch } from 'lucide-react';
 
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DRAWERS } from '@/constants/drawers';
@@ -49,6 +50,13 @@ function InventoryAdjustmentTableV2Root({
         onRowClick={(row: InventoryAdjustmentRow) =>
           openDrawer(DRAWERS.INVENTORY_ADJUSTMENT_DETAILS, { inventoryId: row.id })
         }
+        renderMobileRow={(row: InventoryAdjustmentRow) => (
+          <DocumentMobileRow
+            title={row.reason || row.formatted_type}
+            number={row.reference_no}
+            date={row.date}
+          />
+        )}
         emptyState={
           <EmptyState
             icon={<PackageSearch className="h-8 w-8" aria-hidden />}

@@ -6,6 +6,7 @@ import { Receipt } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, ExpenseAction } from '@/constants/abilityOption';
@@ -99,6 +100,14 @@ function ExpensesTableV2Root({
         onRowClick={(row: ExpenseRow) =>
           openDrawer(DRAWERS.EXPENSE_DETAILS, { expenseId: row.id })
         }
+        renderMobileRow={(row: ExpenseRow) => (
+          <DocumentMobileRow
+            title={row.payment_account?.name}
+            date={row.formatted_date}
+            amount={row.formatted_amount}
+            note={row.description}
+          />
+        )}
         emptyState={<ExpensesEmptyStateV2 />}
       />
       <DataTablePagination

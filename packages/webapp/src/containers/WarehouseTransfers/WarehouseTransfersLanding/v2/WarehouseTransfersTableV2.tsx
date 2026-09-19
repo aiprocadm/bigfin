@@ -4,6 +4,7 @@ import { ArrowLeftRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DRAWERS } from '@/constants/drawers';
@@ -87,6 +88,15 @@ function WarehouseTransfersTableV2Root({
             warehouseTransferId: row.id,
           })
         }
+        renderMobileRow={(row: WarehouseTransferRow) => (
+          <DocumentMobileRow
+            title={`${row.from_warehouse?.name ?? '—'} → ${
+              row.to_warehouse?.name ?? '—'
+            }`}
+            number={row.transaction_number}
+            date={row.formatted_date}
+          />
+        )}
         emptyState={<WarehouseTransfersEmptyStateV2 />}
       />
       <DataTablePagination

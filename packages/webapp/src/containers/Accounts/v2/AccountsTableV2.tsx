@@ -5,6 +5,8 @@ import { ListTree } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { EntityMobileRow } from '@/components/ui/entity-mobile-row';
+import { accountTypeLabel } from '@/utils/accountTypeLabel';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, AccountAction } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
@@ -119,6 +121,13 @@ function AccountsTableV2Root({
         onRowClick={(row: AccountRow) =>
           openDrawer(DRAWERS.ACCOUNT_DETAILS, { accountId: row.id })
         }
+        renderMobileRow={(row: AccountRow) => (
+          <EntityMobileRow
+            title={row.name}
+            subtitle={accountTypeLabel(row.account_type, row.account_type_label)}
+            amount={row.formatted_amount}
+          />
+        )}
         emptyState={<AccountsEmptyStateV2 onNewAccount={handleNewAccount} />}
       />
     </div>

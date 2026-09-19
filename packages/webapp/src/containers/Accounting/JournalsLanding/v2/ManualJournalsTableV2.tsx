@@ -4,6 +4,7 @@ import intl from 'react-intl-universal';
 import { BookOpen } from 'lucide-react';
 
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { DRAWERS } from '@/constants/drawers';
@@ -97,6 +98,14 @@ function ManualJournalsTableV2Root({
         onRowClick={(row: ManualJournalRow) =>
           openDrawer(DRAWERS.JOURNAL_DETAILS, { manualJournalId: row.id })
         }
+        renderMobileRow={(row: ManualJournalRow) => (
+          <DocumentMobileRow
+            title={row.description || row.journal_type}
+            number={row.journal_number}
+            date={row.formatted_date}
+            amount={row.amount_formatted}
+          />
+        )}
         emptyState={<ManualJournalsEmptyResultV2 />}
       />
       <DataTablePagination

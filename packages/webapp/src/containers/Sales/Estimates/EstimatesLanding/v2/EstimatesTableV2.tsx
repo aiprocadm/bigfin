@@ -6,6 +6,7 @@ import { FileText } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, SaleEstimateAction } from '@/constants/abilityOption';
@@ -112,6 +113,15 @@ function EstimatesTableV2Root({
         onRowClick={(row: EstimateRow) =>
           openDrawer(DRAWERS.ESTIMATE_DETAILS, { estimateId: row.id })
         }
+        renderMobileRow={(row: EstimateRow) => (
+          <DocumentMobileRow
+            title={row.customer?.display_name}
+            number={row.estimate_number}
+            date={row.formatted_estimate_date}
+            amount={row.amount}
+            currency={row.currency_code}
+          />
+        )}
         emptyState={<EstimatesEmptyStateV2 />}
       />
       <DataTablePagination

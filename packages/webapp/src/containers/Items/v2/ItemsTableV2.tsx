@@ -6,6 +6,7 @@ import { Package } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { EntityMobileRow } from '@/components/ui/entity-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, ItemAction } from '@/constants/abilityOption';
@@ -103,6 +104,13 @@ function ItemsTableV2Root({
         onRowClick={(row: ItemRow) =>
           openDrawer(DRAWERS.ITEM_DETAILS, { itemId: row.id })
         }
+        renderMobileRow={(row: ItemRow) => (
+          <EntityMobileRow
+            title={row.name}
+            subtitle={row.category?.name || row.type_formatted}
+            amount={row.sell_price_formatted}
+          />
+        )}
         emptyState={<ItemsEmptyStateV2 />}
       />
       <DataTablePagination

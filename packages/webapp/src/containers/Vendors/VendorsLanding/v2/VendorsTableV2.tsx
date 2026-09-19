@@ -6,6 +6,7 @@ import { Truck } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { EntityMobileRow } from '@/components/ui/entity-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, VendorAction } from '@/constants/abilityOption';
@@ -109,6 +110,14 @@ function VendorsTableV2Root({
         onRowClick={(row: VendorRow) =>
           openDrawer(DRAWERS.VENDOR_DETAILS, { vendorId: row.id })
         }
+        renderMobileRow={(row: VendorRow) => (
+          <EntityMobileRow
+            title={row.display_name}
+            subtitle={row.company_name || row.work_phone}
+            amount={row.closing_balance}
+            currency={row.currency_code}
+          />
+        )}
         emptyState={<VendorsEmptyStateV2 />}
       />
       <DataTablePagination

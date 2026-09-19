@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Money } from '@/components/ui/money';
+import { Money as LegacyMoney } from '@/components/Money/Money';
 
 /**
  * Строка ДОКУМЕНТА на телефоне: счёт, акт, смета, платёж.
@@ -23,12 +24,44 @@ export interface DocumentMobileRowProps {
   number?: React.ReactNode;
   /** Дата документа. */
   date?: React.ReactNode;
-  /** Сумма — уже отформатированная. */
+  /** Сумма: готовая строка ИЛИ число (тогда нужен `currency`). */
   amount?: React.ReactNode;
+  /** Код валюты — когда сумма пришла числом. */
+  currency?: string;
   /** Метка состояния: оплачен, просрочен, черновик. */
   status?: React.ReactNode;
   /** Срок оплаты и подобное — одной строкой под состоянием. */
   note?: React.ReactNode;
+}
+
+
+/**
+ * Сумма может прийти ДВУМЯ видами, и это не небрежность.
+ *
+ * Сервер отдаёт часть сумм уже готовой строкой («1 140 000 ₽»), а часть —
+ * голым числом плюс код валюты: у документа валюта своя, и форматировать её
+ * надо с ней. Оба вида живут в ответах рядом много лет.
+ *
+ * ЖИВАЯ ПРОВЕРКА НА ТЕЛЕФОНЕ: в карточке контрагента стояло «1140000» — без
+ * пробелов и без рубля. Число было передано туда, где ждали готовый текст, и
+ * напечаталось как есть. Ни один тест этого не увидел: строка есть, ошибки
+ * нет, просто нечитаемо.
+ *
+ * Поэтому блок разбирается сам, а не требует этого от каждого вызывающего:
+ * четырнадцать списков — четырнадцать шансов забыть.
+ */
+function MoneyCell({
+  amount,
+  currency,
+}: {
+  amount?: React.ReactNode;
+  currency?: string;
+}) {
+  if (typeof amount === 'number') {
+    return <LegacyMoney amount={amount} currency={currency} />;
+  }
+
+  return <Money>{amount || '—'}</Money>;
 }
 
 export const DocumentMobileRow = ({
@@ -36,6 +69,7 @@ export const DocumentMobileRow = ({
   number,
   date,
   amount,
+  currency,
   status,
   note,
 }: DocumentMobileRowProps) => (
@@ -47,7 +81,7 @@ export const DocumentMobileRow = ({
       {/* Сумма документа — обычные чернила: счёт не бывает «хорошим» или
           «плохим» сам по себе, это просто сумма. Тревогу несёт метка
           состояния, а не число. */}
-      <Money>{amount || '—'}</Money>
+      <MoneyCell amount={amount} currency={currency} />
     </div>
 
     <div className="flex items-center justify-between gap-3 text-[0.8125rem] text-text-secondary">

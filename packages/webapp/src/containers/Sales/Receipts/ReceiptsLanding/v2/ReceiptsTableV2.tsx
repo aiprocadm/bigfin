@@ -6,6 +6,7 @@ import { Receipt } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, SaleReceiptAction } from '@/constants/abilityOption';
@@ -105,6 +106,16 @@ function ReceiptsTableV2Root({
         onRowClick={(row: ReceiptRow) =>
           openDrawer(DRAWERS.RECEIPT_DETAILS, { receiptId: row.id })
         }
+        renderMobileRow={(row: ReceiptRow) => (
+          <DocumentMobileRow
+            title={row.customer?.display_name}
+            number={row.receipt_number}
+            date={row.formatted_receipt_date}
+            amount={row.amount}
+            currency={row.currency_code}
+            status={row.is_closed ? intl.get('closed') : intl.get('draft')}
+          />
+        )}
         emptyState={<ReceiptsEmptyStateV2 />}
       />
       <DataTablePagination

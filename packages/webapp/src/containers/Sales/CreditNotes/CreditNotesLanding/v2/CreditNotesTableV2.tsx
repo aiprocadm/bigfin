@@ -6,6 +6,7 @@ import { Undo2 } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, CreditNoteAction } from '@/constants/abilityOption';
@@ -109,6 +110,14 @@ function CreditNotesTableV2Root({
         onRowClick={(row: CreditNoteRow) =>
           openDrawer(DRAWERS.CREDIT_NOTE_DETAILS, { creditNoteId: row.id })
         }
+        renderMobileRow={(row: CreditNoteRow) => (
+          <DocumentMobileRow
+            title={row.customer?.display_name}
+            number={row.credit_note_number}
+            date={row.formatted_credit_note_date}
+            amount={row.formatted_amount}
+          />
+        )}
         emptyState={<CreditNotesEmptyStateV2 />}
       />
       <DataTablePagination

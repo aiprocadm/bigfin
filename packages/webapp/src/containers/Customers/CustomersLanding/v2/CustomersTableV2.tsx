@@ -6,6 +6,7 @@ import { Users } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { EntityMobileRow } from '@/components/ui/entity-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, CustomerAction } from '@/constants/abilityOption';
@@ -110,6 +111,14 @@ function CustomersTableV2Root({
         onRowClick={(row: CustomerRow) =>
           openDrawer(DRAWERS.CUSTOMER_DETAILS, { customerId: row.id })
         }
+        renderMobileRow={(row: CustomerRow) => (
+          <EntityMobileRow
+            title={row.display_name}
+            subtitle={row.company_name || row.personal_phone}
+            amount={row.closing_balance}
+            currency={row.currency_code}
+          />
+        )}
         emptyState={<CustomersEmptyStateV2 />}
       />
       <DataTablePagination

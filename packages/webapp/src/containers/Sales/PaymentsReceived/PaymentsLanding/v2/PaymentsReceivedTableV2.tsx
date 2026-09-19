@@ -6,6 +6,7 @@ import { HandCoins } from 'lucide-react';
 import { Can } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { DocumentMobileRow } from '@/components/ui/document-mobile-row';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
 import { EmptyState } from '@/components/ui/empty-state';
 import { AbilitySubject, PaymentReceiveAction } from '@/constants/abilityOption';
@@ -107,6 +108,16 @@ function PaymentsReceivedTableV2Root({
             paymentReceiveId: row.id,
           })
         }
+        renderMobileRow={(row: PaymentReceivedRow) => (
+          <DocumentMobileRow
+            title={row.customer?.display_name}
+            number={row.payment_receive_no}
+            date={row.formatted_payment_date}
+            amount={row.amount}
+            currency={row.currency_code}
+            note={row.deposit_account?.name}
+          />
+        )}
         emptyState={<PaymentsReceivedEmptyStateV2 />}
       />
       <DataTablePagination

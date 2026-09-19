@@ -2,6 +2,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsDateString,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -126,3 +127,28 @@ class CommandLegalEntityDto {
 
 export class CreateLegalEntityDto extends CommandLegalEntityDto {}
 export class EditLegalEntityDto extends CommandLegalEntityDto {}
+
+
+/**
+ * Период для отчёта «Внутригрупповые обороты».
+ *
+ * Обе даты ОБЯЗАТЕЛЬНЫ. Раньше их не проверял никто, и запрос без дат падал
+ * с «Internal server error» — ответ, который не говорит вызывающему ничего:
+ * ни что не так, ни что чинить. Для публичной ручки это особенно плохо:
+ * интеграцию пишет человек, у которого нет доступа к нашим журналам.
+ */
+export class IntercompanyTurnoverQueryDto {
+  @IsDateString()
+  @ApiProperty({
+    description: 'Начало периода, YYYY-MM-DD',
+    example: '2026-01-01',
+  })
+  from: string;
+
+  @IsDateString()
+  @ApiProperty({
+    description: 'Конец периода, YYYY-MM-DD',
+    example: '2026-12-31',
+  })
+  to: string;
+}

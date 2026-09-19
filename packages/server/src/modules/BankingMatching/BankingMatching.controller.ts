@@ -26,6 +26,7 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { CashflowAction } from '@/modules/BankingTransactions/types/BankingTransactions.types';
+import { UncategorizedTransactionIdsQueryDto } from '@/common/dtos/UncategorizedTransactionIdsQuery.dto';
 
 @Controller('banking/matching')
 @ApiTags('Banking Transactions Matching')
@@ -52,11 +53,11 @@ export class BankingMatchingController {
     schema: { $ref: getSchemaPath(GetMatchedTransactionsResponseDto) },
   })
   async getMatchedTransactions(
-    @Query('uncategorizedTransactionIds') uncategorizedTransactionIds: number[],
+    @Query() ids: UncategorizedTransactionIdsQueryDto,
     @Query() filter: GetMatchedTransactionsQueryDto,
   ) {
     return this.bankingMatchingApplication.getMatchedTransactions(
-      uncategorizedTransactionIds ?? [],
+      ids.uncategorizedTransactionIds,
       filter as any,
     );
   }

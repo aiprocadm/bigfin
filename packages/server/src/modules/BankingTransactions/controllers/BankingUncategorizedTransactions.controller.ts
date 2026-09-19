@@ -12,6 +12,7 @@ import { GetUncategorizedTransactionsQueryDto } from '../dtos/GetUncategorizedTr
 import { GetAutofillCategorizeTransactionResponseDto } from '../dtos/GetAutofillCategorizeTransactionResponse.dto';
 import { BankingTransactionsApplication } from '../BankingTransactionsApplication.service';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
+import { UncategorizedTransactionIdsQueryDto } from '@/common/dtos/UncategorizedTransactionIdsQuery.dto';
 
 @Controller('banking/uncategorized')
 @ApiTags('Banking Uncategorized Transactions')
@@ -37,14 +38,9 @@ export class BankingUncategorizedTransactionsController {
     schema: { $ref: getSchemaPath(GetAutofillCategorizeTransactionResponseDto) },
   })
   async getAutofillCategorizeTransaction(
-    @Query('uncategorizedTransactionIds')
-    uncategorizedTransactionIds: Array<number> | number,
+    @Query() query: UncategorizedTransactionIdsQueryDto,
   ) {
-    const ids = Array.isArray(uncategorizedTransactionIds)
-      ? uncategorizedTransactionIds
-      : uncategorizedTransactionIds != null
-        ? [uncategorizedTransactionIds]
-        : [];
+    const ids = query.uncategorizedTransactionIds;
     return this.bankingTransactionsApplication.getAutofillCategorizeTransaction(
       ids,
     );

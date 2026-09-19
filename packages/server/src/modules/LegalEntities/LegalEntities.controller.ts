@@ -21,7 +21,7 @@ import { PreferencesAction } from '@/modules/Settings/Settings.types';
 
 import { LegalEntitiesApplication } from './LegalEntities.application';
 import { GetIntercompanyTurnoverService } from './queries/GetIntercompanyTurnover.service';
-import {
+import { IntercompanyTurnoverQueryDto,
   CreateLegalEntityDto,
   EditLegalEntityDto,
 } from './dtos/LegalEntity.dto';
@@ -69,11 +69,8 @@ export class LegalEntitiesController {
       'Нужен для сверки: делает исключение внутренних оборотов из сводных ' +
       'отчётов проверяемым.',
   })
-  getIntercompanyTurnover(
-    @Query('from') from: string,
-    @Query('to') to: string,
-  ) {
-    return this.intercompany.getTurnover(from, to);
+  getIntercompanyTurnover(@Query() query: IntercompanyTurnoverQueryDto) {
+    return this.intercompany.getTurnover(query.from, query.to);
   }
 
   @Post()

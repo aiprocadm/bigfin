@@ -33,6 +33,7 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { IPaymentMadeAction } from './types/BillPayments.types';
+import { VendorIdQueryDto } from '@/common/dtos/VendorIdQuery.dto';
 
 @Controller('bill-payments')
 @ApiTags('Bill Payments')
@@ -99,9 +100,12 @@ export class BillPaymentsController {
     type: Number,
     description: 'The vendor id',
   })
-  async getBillPaymentNewPageEntries(@Query('vendorId') vendorId: number) {
-    const entries =
-      await this.billPaymentsPagesService.getNewPageEntries(vendorId);
+  async getBillPaymentNewPageEntries(
+    @Query() query: VendorIdQueryDto,
+  ) {
+    const entries = await this.billPaymentsPagesService.getNewPageEntries(
+      query.vendorId,
+    );
 
     return entries;
   }

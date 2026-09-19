@@ -9,6 +9,10 @@ import {
   ReportChartKind,
 } from './GetReportChart.service';
 import { GetReportDrillDownService } from './GetReportDrillDown.service';
+import {
+  AccountDateRangeQueryDto,
+  ReportDateRangeQueryDto,
+} from '@/common/dtos/DateRangeQuery.dto';
 
 /**
  * Ряды графика над таблицей отчёта (этап 4 ТЗ, п. 4.2).
@@ -33,15 +37,11 @@ export class ReportChartController {
     description:
       'ОПиУ: выручка и прибыль. ДДС: поступления и выплаты по денежным счетам.',
   })
-  getChart(
-    @Query('report') report: ReportChartKind,
-    @Query('from') from: string,
-    @Query('to') to: string,
-  ) {
+  getChart(@Query() query: ReportDateRangeQueryDto) {
     const kind: ReportChartKind =
-      report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
+      query.report === 'cash_flow' ? 'cash_flow' : 'profit_loss';
 
-    return this.reportChart.getChart(kind, from, to);
+    return this.reportChart.getChart(kind, query.from, query.to);
   }
 
   @Get('drill-down')
@@ -54,11 +54,11 @@ export class ReportChartController {
       'Итог списка совпадает с суммой в отчёте: вклад строки считается тем ' +
       'же правилом стороны счёта, что и в самом отчёте.',
   })
-  getDrillDown(
-    @Query('accountId') accountId: string,
-    @Query('from') from: string,
-    @Query('to') to: string,
-  ) {
-    return this.drillDown.getDrillDown(Number(accountId), from, to);
+  getDrillDown(@Query() query: AccountDateRangeQueryDto) {
+    return this.drillDown.getDrillDown(
+      query.accountId,
+      query.from,
+      query.to,
+    );
   }
 }

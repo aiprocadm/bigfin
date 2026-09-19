@@ -15,6 +15,7 @@ import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { DateRangeDatesQueryDto } from '@/common/dtos/DateRangeQuery.dto';
 
 class ConnectWbDto {
   @IsString()
@@ -50,11 +51,8 @@ export class MarketplacesController {
 
   @Get('wildberries/summary')
   @ApiOperation({ summary: 'Финансовая сводка Wildberries за период.' })
-  wbSummary(
-    @Query('fromDate') fromDate: string,
-    @Query('toDate') toDate: string,
-  ) {
-    return this.app.wildberriesSummary(fromDate, toDate);
+  wbSummary(@Query() query: DateRangeDatesQueryDto) {
+    return this.app.wildberriesSummary(query.fromDate, query.toDate);
   }
 
   @Post('wildberries/connect')
@@ -73,11 +71,8 @@ export class MarketplacesController {
 
   @Get('ozon/summary')
   @ApiOperation({ summary: 'Финансовая сводка Ozon за период.' })
-  ozonSummary(
-    @Query('fromDate') fromDate: string,
-    @Query('toDate') toDate: string,
-  ) {
-    return this.app.ozonSummary(fromDate, toDate);
+  ozonSummary(@Query() query: DateRangeDatesQueryDto) {
+    return this.app.ozonSummary(query.fromDate, query.toDate);
   }
 
   @Post('ozon/connect')

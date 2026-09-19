@@ -22,7 +22,9 @@ const buildService = (options: {
     };
     return chain;
   };
-  knex.schema = { hasColumn: async () => options.hasColumn ?? true };
+  // Наличие колонки спрашивают запросом к `information_schema`, а не через
+  // `schema.hasColumn` — подделка повторяет настоящий способ.
+  knex.raw = async () => [[{ count: (options.hasColumn ?? true) ? 1 : 0 }]];
 
   const legalEntityModel = () => ({
     query: async () => options.entities ?? [],

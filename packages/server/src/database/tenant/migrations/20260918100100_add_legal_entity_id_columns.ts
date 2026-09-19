@@ -13,9 +13,29 @@
 // `expenses` — `expenses_transactions`. Список ниже — настоящие имена,
 // сверенные с моделями; за этим следит `legalEntityColumns.spec.ts`.
 //
-// Проверка hasTable — не перестраховка: организации заводились в разное
+// Проверка существования — не перестраховка: организации заводились в разное
 // время, и модуль, которого у них нет, таблицу не создавал. Падать из-за
 // этого вся миграция не должна.
+//
+// ПОЧЕМУ НЕ `knex.schema.hasTable`. Продукт отображает имена в ВЕРХНИЙ регистр
+// (`knexSnakeCaseMappers({ upperCase: true })`): в коде `accounts_transactions`,
+// в базе `ACCOUNTS_TRANSACTIONS`. К имени, переданному в `hasTable`, отображение
+// НЕ применяется — оно уезжает значением, а не именем. На MySQL под Linux имена
+// таблиц чувствительны к регистру, и `hasTable('accounts_transactions')`
+// отвечает «нет» про существующую таблицу.
+//
+// В первой версии этой миграции стоял именно `hasTable`, и она прошла ВЕСЬ
+// список из 13 таблиц мимо, записавшись выполненной: ни одной колонки не
+// появилось, а журнал миграций утверждал, что всё применено. Ровно тот же
+// капкан описан в `20260824100000_add_build_job_to_oneclick_demos.js`.
+//
+// Помощники ниже намеренно написаны здесь, а не взяты из общего модуля:
+// миграция — исторический документ, она обязана работать одинаково через год,
+// когда общий модуль переедет или изменится.
+// ИМЕНА С ПРИСТАВКОЙ. Миграции — глобальные скрипты без ввозов, и объявления
+// верхнего уровня у всех файлов живут в ОДНОМ пространстве имён. Одинаковое
+// имя в двух миграциях — ошибка проверки типов. Поэтому у помощников здесь
+// приставка по смыслу файла.
 const TABLES = [
   // Основное: разрез всех отчётов.
   'accounts_transactions',
@@ -39,14 +59,40 @@ const TABLES = [
 
 exports.TABLES = TABLES;
 
+/** Есть ли таблица — сравнение имени БЕЗ учёта регистра. */
+const legalEntityColumnsHasTable = async (knex, table) => {
+  const [rows] = await knex.raw(
+    `SELECT COUNT(*) AS count FROM information_schema.tables
+      WHERE table_schema = DATABASE()
+        AND LOWER(table_name) = ?`,
+    [String(table).toLowerCase()],
+  );
+  return Number(rows[0].count) > 0;
+};
+
+/** Есть ли колонка — сравнение имён БЕЗ учёта регистра. */
+const legalEntityColumnsHasColumn = async (knex, table, column) => {
+  const [rows] = await knex.raw(
+    `SELECT COUNT(*) AS count FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND LOWER(table_name) = ?
+        AND LOWER(column_name) = ?`,
+    [String(table).toLowerCase(), String(column).toLowerCase()],
+  );
+  return Number(rows[0].count) > 0;
+};
+
+exports.legalEntityColumnsHasTable = legalEntityColumnsHasTable;
+exports.legalEntityColumnsHasColumn = legalEntityColumnsHasColumn;
+
 exports.up = async (knex) => {
   for (const tableName of TABLES) {
-    const exists = await knex.schema.hasTable(tableName);
+    const exists = await legalEntityColumnsHasTable(knex, tableName);
     if (!exists) continue;
 
     // DDL в MySQL необратим: прогон, упавший на середине списка, оставляет
     // уже созданные колонки. Повторный запуск не должен на них спотыкаться.
-    const hasColumn = await knex.schema.hasColumn(tableName, 'legal_entity_id');
+    const hasColumn = await legalEntityColumnsHasColumn(knex, tableName, 'legal_entity_id');
     if (hasColumn) continue;
 
     await knex.schema.alterTable(tableName, (table) => {
@@ -66,10 +112,10 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
   for (const tableName of TABLES) {
-    const exists = await knex.schema.hasTable(tableName);
+    const exists = await legalEntityColumnsHasTable(knex, tableName);
     if (!exists) continue;
 
-    const hasColumn = await knex.schema.hasColumn(tableName, 'legal_entity_id');
+    const hasColumn = await legalEntityColumnsHasColumn(knex, tableName, 'legal_entity_id');
     if (!hasColumn) continue;
 
     await knex.schema.alterTable(tableName, (table) => {

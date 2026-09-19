@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { BaseCommand } from './BaseCommand';
 import { buildDefaultLegalEntity } from '@/modules/LegalEntities/utils/buildDefaultLegalEntity';
 import { backfillLegalEntityIdInTables } from '@/modules/LegalEntities/utils/backfillLegalEntityId';
+import { LEGAL_ENTITY_TABLES } from '@/modules/LegalEntities/constants';
+import { hasTableAnyCase } from '@/common/utils/schemaAnyCase';
 
 interface BackfillOptions {
   tenant_id?: string;
@@ -82,22 +84,34 @@ export class TenantsLegalEntityBackfillCommand extends BaseCommand {
       const tenantKnex = this.initTenantKnex(tenant.organizationId);
 
       try {
-        const legalEntityId = await this.ensureDefaultLegalEntity(
-          tenantKnex,
-          tenant,
-          options.dry_run === true,
-        );
+        const existingId = await this.findLegalEntityId(tenantKnex);
 
-        if (legalEntityId === null) {
-          this.log(
-            `${tenant.organizationId}: справочник юрлиц пуст — в пробном прогоне ничего не создаём`,
-          );
+        // ПРОБА. Считаем строки ВСЕГДА, даже когда справочник ещё пуст:
+        // сколько строк ждёт заполнения, от будущего номера юрлица никак не
+        // зависит. Первая версия здесь выходила раньше счёта — и проба перед
+        // самым первым, самым важным прогоном показывала ровно ноль.
+        if (options.dry_run) {
+          const tables = await this.countPending(tenantKnex);
+          const pending = tables.reduce((sum, row) => sum + row.updated, 0);
+
+          updatedTotal += pending;
+
+          const note =
+            existingId === null
+              ? ' — юрлицо по умолчанию будет создано из реквизитов'
+              : ` (юрлицо #${existingId})`;
+
+          this.log(`${tenant.organizationId}: строк ${pending}${note}`);
           continue;
         }
 
-        const tables = options.dry_run
-          ? await this.countPending(tenantKnex)
-          : await backfillLegalEntityIdInTables(tenantKnex, legalEntityId);
+        const legalEntityId =
+          existingId ?? (await this.createDefaultLegalEntity(tenantKnex, tenant));
+
+        const tables = await backfillLegalEntityIdInTables(
+          tenantKnex,
+          legalEntityId,
+        );
 
         const updated = tables.reduce((sum, row) => sum + row.updated, 0);
         const incomplete = tables.some((row) => row.incomplete);
@@ -142,27 +156,34 @@ export class TenantsLegalEntityBackfillCommand extends BaseCommand {
   }
 
   /**
-   * Головное юрлицо организации; в обычном прогоне создаётся из реквизитов,
-   * если справочник пуст.
+   * Уже заведённое головное юрлицо, иначе `null`.
    *
-   * В пробном прогоне ничего не создаётся и возвращается `null` — проба не
-   * должна оставлять следов.
+   * «Иначе любое» — не придирка: головное могли снять руками, и заводить
+   * второе юрлицо по умолчанию поверх существующего справочника нельзя.
    */
-  private async ensureDefaultLegalEntity(
-    tenantKnex: any,
-    metadata: any,
-    dryRun: boolean,
-  ): Promise<number | null> {
+  private async findLegalEntityId(tenantKnex: any): Promise<number | null> {
     const existing = await tenantKnex('legal_entities')
       .select('id')
       .orderBy('isPrimary', 'desc')
       .orderBy('id', 'asc')
       .first();
 
-    if (existing) return Number(existing.id);
-    if (dryRun) return null;
+    return existing ? Number(existing.id) : null;
+  }
 
+  /**
+   * Заводит головное юрлицо из реквизитов организации.
+   *
+   * Реквизиты лежат в СИСТЕМНОЙ схеме (`tenants_metadata`), а справочник
+   * юрлиц — в тенантной. Путаница этих двух схем — известный источник
+   * ошибок проекта, поэтому чтение и запись здесь разведены явно.
+   */
+  private async createDefaultLegalEntity(
+    tenantKnex: any,
+    metadata: any,
+  ): Promise<number> {
     const draft = buildDefaultLegalEntity(metadata ?? {});
+
     const [id] = await tenantKnex('legal_entities').insert({
       ...draft,
       bankDetails: draft.bankDetails
@@ -180,9 +201,6 @@ export class TenantsLegalEntityBackfillCommand extends BaseCommand {
    * показывала бы одно, а прогон делал другое.
    */
   private async countPending(tenantKnex: any) {
-    const { LEGAL_ENTITY_TABLES } = await import(
-      '@/modules/LegalEntities/constants'
-    );
     const results: Array<{
       table: string;
       updated: number;
@@ -190,7 +208,7 @@ export class TenantsLegalEntityBackfillCommand extends BaseCommand {
     }> = [];
 
     for (const table of LEGAL_ENTITY_TABLES) {
-      const exists = await tenantKnex.schema.hasTable(table);
+      const exists = await hasTableAnyCase(tenantKnex, table);
       if (!exists) {
         results.push({ table, updated: 0, incomplete: false });
         continue;

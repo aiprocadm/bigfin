@@ -62,7 +62,10 @@ const buildApp = (options: {
     };
     return chain;
   };
-  knex.schema = { hasTable: async () => true };
+  // Существование таблицы спрашивают запросом к `information_schema`, а не
+  // через `schema.hasTable`: тот сравнивает имя с учётом регистра и отвечает
+  // «нет» про существующую таблицу. Подделка повторяет настоящий способ.
+  knex.raw = async () => [[{ count: 1 }]];
 
   const ensureDefault = { ensure: async () => ({ id: 1 }) };
 

@@ -13,8 +13,33 @@
 //
 // По умолчанию `false`, а не пусто: пустое значение в отчётах пришлось бы
 // трактовать, и каждый отчёт трактовал бы по-своему.
+
+/**
+ * Есть ли колонка — сравнение имён БЕЗ учёта регистра.
+ *
+ * `knex.schema.hasColumn` и `knex.schema.hasTable` ведут себя ПО-РАЗНОМУ на
+ * базе, где имена таблиц заглавные (продукт отображает их
+ * `knexSnakeCaseMappers({ upperCase: true })`): первый отвечает верно, второй
+ * — «нет» про существующую таблицу. Разница невидима и однажды уже стоила
+ * целой миграции этапа 6, прошедшей мимо всех таблиц. Поэтому спрашиваем сами.
+ *
+ * Помощник написан здесь, а не взят из общего модуля: миграция — исторический
+ * документ, она обязана работать одинаково и через год.
+ */
+const intercompanyHasColumn = async (knex, table, column) => {
+  const [rows] = await knex.raw(
+    `SELECT COUNT(*) AS count FROM information_schema.columns
+      WHERE table_schema = DATABASE()
+        AND LOWER(table_name) = ?
+        AND LOWER(column_name) = ?`,
+    [String(table).toLowerCase(), String(column).toLowerCase()],
+  );
+  return Number(rows[0].count) > 0;
+};
+
 exports.up = async (knex) => {
-  const hasColumn = await knex.schema.hasColumn(
+  const hasColumn = await intercompanyHasColumn(
+    knex,
     'accounts_transactions',
     'is_intercompany',
   );
@@ -26,7 +51,8 @@ exports.up = async (knex) => {
 };
 
 exports.down = async (knex) => {
-  const hasColumn = await knex.schema.hasColumn(
+  const hasColumn = await intercompanyHasColumn(
+    knex,
     'accounts_transactions',
     'is_intercompany',
   );

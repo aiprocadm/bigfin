@@ -404,7 +404,9 @@ function MoneyInFormInner({
     try {
       await onSubmitTransaction(payload);
       AppToaster.show({
-        message: intl.get('cash_flow_transaction_success_message'),
+        // Уведомление повторяет имя действия с кнопки. Было
+        // «банковская операция создана» — не то, что человек делал.
+        message: intl.get('money_in.saved'),
         intent: Intent.SUCCESS,
       });
       onClose();
@@ -717,11 +719,20 @@ function MoneyInFormInner({
               disabled={form.formState.isSubmitting}
               onClick={onClose}
             >
-              {intl.get('close')}
+              {/* «Отмена», а не «Закрыть»: в форме может быть
+                  набранное, и человек должен понимать, что оно
+                  пропадёт. */}
+              {intl.get('cancel')}
             </Button>
+            {/* Кнопка называет ДЕЙСТВИЕ. Было «Сохранить и
+                опубликовать» — для владельца малого бизнеса это набор
+                слов: «опубликовать» звучит как «выложить в интернет».
+                Уведомление после говорит теми же словами. */}
             <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting && <Spinner size="sm" />}
-              {intl.get('save_and_publish')}
+              {form.formState.isSubmitting
+                ? intl.get('money_in.submitting')
+                : intl.get('money_in.submit')}
             </Button>
           </DialogFooter>
         </form>

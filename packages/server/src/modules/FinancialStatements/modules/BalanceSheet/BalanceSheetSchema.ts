@@ -113,6 +113,25 @@ export const getBalanceSheetSchema = () => [
             type: BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS,
             accountsTypes: [ACCOUNT_TYPE.NON_CURRENT_LIABILITY],
           },
+          {
+            /**
+             * Заём от учредителя (§8.2 ТЗ, остаток К5).
+             *
+             * Собственник платит за фирму с личной карты — значит фирма
+             * должна ему. Счёт «Личные средства» ведёт себя как касса (с него
+             * платят), поэтому он дебетовый, но ПРИНАДЛЕЖИТ НЕ ФИРМЕ: в её
+             * балансе это обязательство, а не имущество.
+             *
+             * До этого узла такие счета не попадали в баланс ВООБЩЕ: тип
+             * помечен `balanceSheet: true`, но ни в одном разделе схемы его
+             * не было — и баланс просто не сходился у всех, кто платит
+             * личными деньгами.
+             */
+            name: 'balance_sheet.founder_loan',
+            id: BALANCE_SHEET_SCHEMA_NODE_ID.FOUNDER_LOAN,
+            type: BALANCE_SHEET_SCHEMA_NODE_TYPE.ACCOUNTS,
+            accountsTypes: [ACCOUNT_TYPE.PERSONAL_FUNDS],
+          },
         ],
       },
       {

@@ -17,5 +17,6 @@
   "account_name": "Название статьи",
   "total": "Итого",
   "percentage_of_column": "% от столбца",
-  "percentage_of_row": "% от строки"
+  "percentage_of_row": "% от строки",
+  "founder_loan": "Заём от учредителя"
 }

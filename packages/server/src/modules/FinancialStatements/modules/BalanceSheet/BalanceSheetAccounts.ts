@@ -104,10 +104,22 @@ export const BalanceSheetAccounts = <T extends GConstructor<FinancialSheet>>(
       // натуральный (кредитовый) остаток вычитается из первоначальной
       // стоимости (гросс − накопленная = остаточная), поэтому разворачиваем
       // знак — иначе раздел ОС задвоит износ и Баланс не сойдётся.
-      const total =
-        account.accountType === ACCOUNT_TYPE.ACCUMULATED_DEPRECIATION
-          ? -closingBalance
-          : closingBalance;
+      // Счета, чей остаток на балансе разворачивается.
+      //
+      // 1. Накопленная амортизация — контр-актив: её натуральный (кредитовый)
+      //    остаток вычитается из первоначальной стоимости
+      //    (гросс − накопленная = остаточная). Без разворота раздел ОС задвоит
+      //    износ и Баланс не сойдётся.
+      //
+      // 2. Личные средства собственника (§8.2 ТЗ) — счёт дебетовый, потому
+      //    что с него платят, как с кассы, но на балансе фирмы это ЗАЁМ ОТ
+      //    УЧРЕДИТЕЛЯ: потратил собственник — должна фирма. Без разворота
+      //    обязательство показывалось бы со знаком минус.
+      const isInverted =
+        account.accountType === ACCOUNT_TYPE.ACCUMULATED_DEPRECIATION ||
+        account.accountType === ACCOUNT_TYPE.PERSONAL_FUNDS;
+
+      const total = isInverted ? -closingBalance : closingBalance;
 
       return {
         id: account.id,

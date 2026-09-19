@@ -5,6 +5,7 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { formatNumber } from '@/utils/format-number';
 import {
   isCreditNormalAccount,
   reportAccountNet,
@@ -239,7 +240,15 @@ export class GetReportDrillDownService {
     return value.toISOString().slice(0, 10);
   }
 
+  /**
+   * Сумма для показа человеку — через ОБЩИЙ помощник (§5.2 ТЗ).
+   *
+   * Здесь стоял самодельный формат «число плюс код валюты»: раскрытие
+   * показывало «1140000.00 RUB» там, где сам отчёт показывает
+   * «1 140 000,00 ₽». Одна и та же сумма выглядела по-разному на экране и в
+   * раскрытии — это прямо то, от чего человек перестаёт верить цифрам.
+   */
   private format(amount: number, currencyCode: string): string {
-    return `${amount.toFixed(2)} ${currencyCode}`;
+    return formatNumber(amount, { currencyCode, money: true });
   }
 }

@@ -133,6 +133,23 @@ export const getPreferenceRoutes = () => [
     component: lazy(() => import('@/containers/Preferences/ApiKeys/ApiKeys')),
     exact: true,
   },
+  // Настройки ИИ-аналитика (этап 13 ТЗ): провайдер и ключ доступа.
+  {
+    path: `${BASE_URL}/ai-analyst`,
+    component: lazy(
+      () => import('@/containers/Preferences/AiAnalyst/AiAnalystPage'),
+    ),
+    exact: true,
+  },
+  // Публичный API (этап 15 ТЗ): токены и вебхуки. Отдельно от «Ключей API» —
+  // это разные вещи: там ключи внутренних интеграций, здесь доступ наружу.
+  {
+    path: `${BASE_URL}/public-api`,
+    component: lazy(
+      () => import('@/containers/Preferences/PublicApi/PublicApiPage'),
+    ),
+    exact: true,
+  },
   {
     path: `${BASE_URL}/interface-mode`,
     component: lazy(

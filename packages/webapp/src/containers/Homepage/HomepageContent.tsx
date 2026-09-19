@@ -3,6 +3,7 @@ import intl from 'react-intl-universal';
 import CashTimelineSection from './CashTimelineSection';
 import FirstStepsSection from './FirstStepsSection';
 import OverviewSection from './OverviewSection';
+import { AiInsightsBlock } from '@/components/ui/ai-insights';
 import MoneySummarySection from './MoneySummarySection';
 import AccountsReceivableSection from './AccountsReceivableSection';
 import AccountsPayableSection from './AccountsPayableSection';
@@ -35,6 +36,12 @@ function HomepageContent() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6">
       <CashTimelineSection />
+
+      {/* «Что говорят цифры» (этап 13 ТЗ). Стоит СРАЗУ ПОД лентой денег:
+          человек только что увидел, сколько у него денег, — и тут же читает,
+          что с этим не так. Блока нет вовсе, когда раздел выключен. */}
+      <AiInsightsBlock scope="dashboard" />
+
       <OverviewSection />
       <MoneySummarySection />
       <FirstStepsSection />

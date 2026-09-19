@@ -156,6 +156,18 @@ export const SidebarMenu = [
         },
       },
       {
+        // Этап 11 ТЗ: главный отчёт СОБСТВЕННИКА. Стоит рядом с отчётами,
+        // но отдельным пунктом — смотрят его не тогда же, когда сводят
+        // месяц, а когда думают о бизнесе целиком.
+        text: <T id={'sidebar.reports.capitalization'} />,
+        href: '/capitalization',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Report,
+          ability: ReportsAction.READ_BALANCE_SHEET,
+        },
+      },
+      {
         text: <T id={'sidebar.all_financial_reports'} />,
         href: '/financial-reports',
         type: ISidebarMenuItemType.Link,
@@ -252,6 +264,14 @@ export const SidebarMenu = [
         href: '/financial-model',
         type: ISidebarMenuItemType.Link,
         feature: Features.FinancialModel,
+      },
+      {
+        // Этап 14 ТЗ. Пункт появляется только с включённым разделом: вести
+        // человека туда, где ему ответят «раздел выключен», — обман.
+        text: <T id={'ai_chat.page.title'} />,
+        href: '/ai-chat',
+        type: ISidebarMenuItemType.Link,
+        feature: Features.AiAnalyst,
       },
     ],
   },

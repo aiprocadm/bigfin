@@ -1193,6 +1193,24 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     breadcrumb: intl.get('expenses_analysis.page.title'),
     pageTitle: intl.get('expenses_analysis.page.title'),
   },
+  // Капитализация (этап 11 ТЗ): «сколько стоит мой бизнес» — чистые активы,
+  // оценка по мультипликатору прибыли и доля владельца.
+  {
+    path: `/capitalization`,
+    component: lazy(
+      () => import('@/containers/Capitalization/CapitalizationPage'),
+    ),
+    breadcrumb: intl.get('capitalization.page.title'),
+    pageTitle: intl.get('capitalization.page.title'),
+  },
+  // Спросить о своих финансах (этап 14 ТЗ): модель без доступа к базе —
+  // она может только позвать готовый отчёт из закрытого перечня.
+  {
+    path: `/ai-chat`,
+    component: lazy(() => import('@/containers/AiChat/AiChatPage')),
+    breadcrumb: intl.get('ai_chat.page.title'),
+    pageTitle: intl.get('ai_chat.page.title'),
+  },
   // Financial model (Финмодель)
   {
     path: `/financial-model`,

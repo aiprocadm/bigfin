@@ -12,6 +12,7 @@ import { computeVariance } from '@/modules/Budgets/utils/computeVariance';
 import { cashSettledReferenceKeys } from '@/modules/Budgets/utils/cashSettledReferenceKeys';
 import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
 import { isCreditNormalAccount, reportAccountNet } from './reportAccountNet';
+import { ProfitLossSheetService } from '../modules/ProfitLossSheet/ProfitLossSheetService';
 
 /** Тип отчёта, к которому просят план. */
 export type PlanFactReportKind = 'profit_loss' | 'cash_flow';
@@ -183,6 +184,19 @@ export function attributePlanToAccounts(
 @Injectable()
 export class GetReportPlanFactService {
   constructor(
+    /**
+     * Сам отчёт о прибылях и убытках.
+     *
+     * Факт для колонки «Отклонение» берётся ИЗ ОТЧЁТА, а не считается
+     * вторым запросом (остаток О4 ТЗ). Причина — в кассовом методе: отчёт
+     * по оплате не просто отбирает оплаченные документы, он ещё и ПРИЗНАЁТ
+     * по ним выручку, потому что сами проводки платежа ходят по балансовым
+     * счетам и дохода не приносят. Повторить это вторым способом невозможно
+     * так, чтобы он не разошёлся; а разойдясь, колонка «Отклонение» сравнила
+     * бы план с фактом, которого в отчёте нет.
+     */
+    private readonly profitLoss: ProfitLossSheetService,
+
     @Inject(Budget.name)
     private readonly budgetModel: TenantModelProxy<typeof Budget>,
 
@@ -215,6 +229,7 @@ export class GetReportPlanFactService {
     report: PlanFactReportKind,
     fromDate: string,
     toDate: string,
+    basis?: string,
   ): Promise<ReportPlanFactResponse> {
     const empty: ReportPlanFactResponse = {
       available: false,
@@ -276,7 +291,7 @@ export class GetReportPlanFactService {
     const factByAccount =
       report === 'cash_flow'
         ? await this.getCashSettledFactByAccount(fromDate, toDate)
-        : await this.getFactByAccount(fromDate, toDate);
+        : await this.getReportFactByAccount(fromDate, toDate, basis);
     const { accounts, totals } = attributePlanToAccounts(
       articles,
       map,
@@ -290,6 +305,54 @@ export class GetReportPlanFactService {
       accounts,
       totals,
     };
+  }
+
+  /**
+   * Факт по счетам — ИЗ САМОГО ОТЧЁТА (остаток О4 ТЗ).
+   *
+   * ЧТО БЫЛО НЕ ТАК. Колонка «Отклонение» считала факт своим запросом:
+   * сумма проводок по счёту за период. Пока отчёт считался по начислению,
+   * числа совпадали. Но у ОПиУ есть переключатель метода, и по оплате
+   * отчёт показывает совсем другое: только оплаченные документы, причём
+   * выручка по ним ПРИЗНАЁТСЯ отдельно — сами проводки платежа ходят по
+   * балансовым счетам («пришло на счёт», «уменьшился долг») и дохода не
+   * приносят.
+   *
+   * В итоге колонка сравнивала план с фактом, которого в отчёте нет, и
+   * ничего при этом не падало: просто отклонение было неверным.
+   *
+   * ЛЕЧЕНИЕ. Спрашиваем у отчёта его собственные числа, передав тот же
+   * метод учёта. Разойтись они теперь не могут по устройству.
+   */
+  private async getReportFactByAccount(
+    fromDate: string,
+    toDate: string,
+    basis?: string,
+  ): Promise<Map<number, number>> {
+    const report: any = await this.profitLoss.profitLossSheet({
+      fromDate,
+      toDate,
+      ...(basis ? { basis } : {}),
+    } as any);
+
+    const totals = new Map<number, number>();
+
+    const walk = (nodes: any[]) => {
+      (nodes ?? []).forEach((node) => {
+        const accountId = Number(node?.id);
+
+        // Номер счёта числовой; у итогов и расчётных строк он словом
+        // («INCOME», «NET_INCOME») — своих проводок у них нет.
+        if (Number.isFinite(accountId) && accountId > 0) {
+          totals.set(accountId, Number(node?.total?.amount ?? 0));
+        }
+        walk(node?.children ?? []);
+      });
+    };
+
+    walk(report?.data ?? []);
+
+    return totals;
   }
 
   /**

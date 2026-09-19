@@ -79,7 +79,33 @@ const buildService = (options: {
     return { query: () => chain };
   };
 
+  /**
+   * Подставной отчёт ОПиУ.
+   *
+   * Факт теперь спрашивается у самого отчёта (остаток О4 ТЗ), поэтому
+   * заглушка запоминает, с каким методом учёта её позвали: именно это и
+   * проверяется — колонка «Отклонение» обязана считать тем же методом,
+   * каким посчитан отчёт на экране.
+   */
+  const profitLoss = {
+    lastFilter: null as any,
+    profitLossSheet: async (filter: any) => {
+      profitLoss.lastFilter = filter;
+
+      const nodes =
+        filter?.basis === 'cash'
+          ? options.cashReportNodes ?? options.reportNodes ?? []
+          : options.reportNodes ?? [];
+
+      return { data: nodes };
+    },
+  };
+
+  // Тест может подсмотреть, с чем отчёт позвали.
+  if (options.spy) options.spy.profitLoss = profitLoss;
+
   return new GetReportPlanFactService(
+    profitLoss as any,
     budgetModel as any,
     budgetLineModel as any,
     articleModel as any,
@@ -88,6 +114,7 @@ const buildService = (options: {
     transactionModel as any,
   );
 };
+
 
 describe('withoutDoubleCountedPlans — план не считается дважды', () => {
   it('план на группе отменяет планы статей внутри неё', () => {
@@ -229,9 +256,10 @@ describe('GetReportPlanFactService', () => {
     expect(result.available).toBe(false);
   });
 
-  it('факт считается стороной счёта, а не сложением дебета с кредитом', async () => {
-    // Доход лежит в кредите, расход — в дебете. Сложить «как есть» значит
-    // показать перерасход там, где его нет.
+  it('факт берётся из самого отчёта, а не считается вторым способом', async () => {
+    // Остаток О4 ТЗ. Свой подсчёт совпадал с отчётом только по начислению;
+    // по оплате отчёт показывает совсем другое, и колонка «Отклонение»
+    // сравнивала план с числом, которого на экране нет.
     const service = buildService({
       budget: { id: 1, name: 'Бюджет 2026', activeScenario: 'base' },
       lines: [
@@ -247,15 +275,17 @@ describe('GetReportPlanFactService', () => {
         { articleId: 10, accountId: 55 },
         { articleId: 11, accountId: 70 },
       ],
-      accounts: [
-        { id: 55, accountNormal: 'debit' },
-        { id: 70, accountNormal: 'credit' },
-      ],
-      sums: [
-        // Расход: дебет минус кредит (был возврат поставщика на 5 000).
-        { accountId: 55, debitSum: 130_000, creditSum: 5_000 },
-        // Доход: кредит минус дебет.
-        { accountId: 70, debitSum: 0, creditSum: 950_000 },
+      reportNodes: [
+        {
+          id: 'EXPENSES',
+          total: { amount: 125_000 },
+          children: [{ id: 55, total: { amount: 125_000 } }],
+        },
+        {
+          id: 'INCOME',
+          total: { amount: 950_000 },
+          children: [{ id: 70, total: { amount: 950_000 } }],
+        },
       ],
     });
 
@@ -286,6 +316,33 @@ describe('GetReportPlanFactService', () => {
     ]);
   });
 
+  it('итоги и расчётные строки отчёта в факт не попадают', async () => {
+    // У «INCOME» и «NET_INCOME» своих проводок нет, номер у них словом.
+    // Считать их значило бы удвоить факт.
+    const service = buildService({
+      budget: { id: 1, name: 'Бюджет 2026', activeScenario: 'base' },
+      lines: [{ articleId: 11, plannedAmount: 900_000 }],
+      articles: [{ id: 11, parentId: null, kind: 'income' }],
+      map: [{ articleId: 11, accountId: 70 }],
+      reportNodes: [
+        {
+          id: 'INCOME',
+          total: { amount: 950_000 },
+          children: [{ id: 70, total: { amount: 950_000 } }],
+        },
+        { id: 'NET_INCOME', total: { amount: 500_000 } },
+      ],
+    });
+
+    const result = await service.getPlanFact(
+      'profit_loss',
+      '2026-01-01',
+      '2026-03-31',
+    );
+
+    expect(result.totals.income.fact).toBe(950_000);
+  });
+
   it('год берётся из начала периода отчёта', async () => {
     // Отчёт за январь 2026 не должен подтягивать бюджет 2025 года.
     const seen: any = {};
@@ -304,6 +361,7 @@ describe('GetReportPlanFactService', () => {
     const stub = () => ({ query: async () => [] });
 
     const service = new GetReportPlanFactService(
+      { profitLossSheet: async () => ({ data: [] }) } as any,
       budgetModel as any,
       (() => ({ query: () => ({}) })) as any,
       stub as any,
@@ -455,5 +513,84 @@ describe('кассовый факт для движения денег', () => {
     );
 
     expect(result.totals.expense.fact).toBe(0);
+  });
+});
+
+describe('метод учёта колонки «Отклонение» (остаток О4)', () => {
+  const budgetOptions = {
+    budget: { id: 1, name: 'Бюджет 2026', activeScenario: 'base' },
+    lines: [{ articleId: 11, plannedAmount: 900_000 }],
+    articles: [{ id: 11, parentId: null, kind: 'income' }],
+    map: [{ articleId: 11, accountId: 70 }],
+    reportNodes: [
+      {
+        id: 'INCOME',
+        total: { amount: 950_000 },
+        children: [{ id: 70, total: { amount: 950_000 } }],
+      },
+    ],
+    // По оплате в отчёт попадает только оплаченное — это другое число.
+    cashReportNodes: [
+      {
+        id: 'INCOME',
+        total: { amount: 400_000 },
+        children: [{ id: 70, total: { amount: 400_000 } }],
+      },
+    ],
+  };
+
+  it('метод учёта доходит до отчёта', async () => {
+    const spy: any = {};
+    const service = buildService({ ...budgetOptions, spy });
+
+    await service.getPlanFact('profit_loss', '2026-01-01', '2026-03-31', 'cash');
+
+    expect(spy.profitLoss.lastFilter.basis).toBe('cash');
+  });
+
+  it('по оплате факт другой, чем по начислению', async () => {
+    // Ради этого остаток и заводили: колонка сравнивала план с фактом по
+    // начислению даже тогда, когда отчёт был переключён на оплату.
+    const service = buildService(budgetOptions);
+
+    const accrual = await service.getPlanFact(
+      'profit_loss',
+      '2026-01-01',
+      '2026-03-31',
+      'accrual',
+    );
+    const cash = await service.getPlanFact(
+      'profit_loss',
+      '2026-01-01',
+      '2026-03-31',
+      'cash',
+    );
+
+    expect(accrual.accounts[0].fact).toBe(950_000);
+    expect(cash.accounts[0].fact).toBe(400_000);
+  });
+
+  it('без метода учёта отчёт спрашивается как есть', async () => {
+    // Умолчание живёт в самом отчёте, а не повторяется здесь вторым местом.
+    const spy: any = {};
+    const service = buildService({ ...budgetOptions, spy });
+
+    await service.getPlanFact('profit_loss', '2026-01-01', '2026-03-31');
+
+    expect(spy.profitLoss.lastFilter.basis).toBeUndefined();
+  });
+
+  it('отклонение считается от факта отчёта, а не от своего', async () => {
+    const service = buildService(budgetOptions);
+
+    const cash = await service.getPlanFact(
+      'profit_loss',
+      '2026-01-01',
+      '2026-03-31',
+      'cash',
+    );
+
+    // План 900 000, факт по оплате 400 000 — недобор 500 000.
+    expect(cash.accounts[0].varianceAbs).toBe(-500_000);
   });
 });

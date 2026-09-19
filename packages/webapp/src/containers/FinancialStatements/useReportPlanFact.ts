@@ -20,15 +20,20 @@ export function useReportPlanFact(
   report: 'profit_loss' | 'cash_flow',
   fromDate?: string,
   toDate?: string,
+  basis?: string,
 ): PlanFactData | undefined {
   const apiRequest = useApiRequest();
 
   const { data, isError } = useQuery(
-    ['REPORT_PLAN_FACT', report, fromDate, toDate],
+    // Метод учёта входит в ключ: при переключении «кассовый / по начислению»
+    // факт и отклонение становятся другими, и старый ответ показывать нельзя.
+    ['REPORT_PLAN_FACT', report, fromDate, toDate, basis],
     () =>
       apiRequest
         .get('financial-reports/plan-fact', {
-          params: { report, from: fromDate, to: toDate },
+          // Метод учёта передаётся серверу: факт в колонке «Отклонение»
+          // обязан считаться так же, как считает сам отчёт (остаток О4 ТЗ).
+          params: { report, from: fromDate, to: toDate, basis },
         })
         .then((res: any) => transformToCamelCase(res.data) as PlanFactData),
     { enabled: Boolean(fromDate && toDate), keepPreviousData: true },

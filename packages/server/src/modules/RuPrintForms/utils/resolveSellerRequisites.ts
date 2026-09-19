@@ -77,3 +77,50 @@ export function resolveSellerRequisites(
     ),
   };
 }
+
+/**
+ * Настройки организации, в которых реквизиты продавца заменены на реквизиты
+ * ЮРЛИЦА документа.
+ *
+ * ЗАЧЕМ ИМЕННО ТАК. Печатные формы читают настройки организации напрямую и в
+ * десятке мест (`metadata?.name`, `metadata?.inn`, адрес, банк, юр. форма).
+ * Переписывать каждое место — значит десять раз повторить одно правило и
+ * однажды забыть его в одиннадцатом. Здесь правило применяется ОДИН раз, а
+ * формы продолжают читать то же, что читали.
+ *
+ * ПРАВИЛО «ВСЁ ИЛИ НИЧЕГО» СОХРАНЯЕТСЯ. Есть юрлицо — берутся ЕГО реквизиты
+ * целиком, включая пустые. ИНН одного юрлица рядом с расчётным счётом
+ * другого — это документ, по которому деньги уйдут не туда.
+ *
+ * ЧТО НЕ ЗАМЕНЯЕТСЯ: должность подписанта и имя главного бухгалтера. Это не
+ * реквизиты компании, а настройка того, КТО подписывает документы; у юрлица
+ * таких полей нет вовсе, и подставлять туда пустоту значило бы оставить
+ * бланк без подписей.
+ */
+export function sellerMetadataFor(
+  organizationMetadata: any,
+  legalEntity?: any | null,
+): any {
+  if (!legalEntity) return organizationMetadata;
+
+  const seller = resolveSellerRequisites(organizationMetadata, legalEntity);
+
+  return {
+    ...organizationMetadata,
+    name: seller.name,
+    inn: seller.inn,
+    kpp: seller.kpp,
+    ogrn: seller.ogrn,
+    address: {
+      ...(organizationMetadata?.address ?? {}),
+      address1: seller.legalAddress,
+    },
+    // Юр. форма влияет на бланк: у ИП подписи другие, чем у ООО.
+    legalForm: legalEntity?.form ?? organizationMetadata?.legalForm,
+    signerDirectorName: seller.directorName,
+    bankName: seller.bankName,
+    bankBik: seller.bankBik,
+    bankAccount: seller.bankAccount,
+    bankCorrespondentAccount: seller.bankCorrespondentAccount,
+  };
+}

@@ -15,6 +15,7 @@ import {
   mapEntriesToRuFormLines,
   buildSignerProps,
 } from '../utils/ruFormMapping';
+import { sellerMetadataFor } from '../utils/resolveSellerRequisites';
 
 /**
  * Печатная форма РФ «Акт выполненных работ (оказанных услуг)» по счёту-продаже.
@@ -55,7 +56,13 @@ export class GetRuActPdf {
   public async getActProps(invoiceId: number): Promise<RuActPaperTemplateProps> {
     const invoice = await this.getInvoiceService.getSaleInvoice(invoiceId);
     const tenant = await this.tenancyContext.getTenant(true);
-    const metadata = tenant.metadata;
+    // Реквизиты продавца — ЮРЛИЦА документа (§8.3 ТЗ), а не общие настройки
+    // аккаунта: документ от ООО обязан содержать реквизиты ООО. Контрагент
+    // платит и отчитывается по тем реквизитам, что видит.
+    const metadata = sellerMetadataFor(
+      tenant.metadata,
+      (invoice as any)?.legalEntity ?? null,
+    );
 
     return transformToRuActProps(invoice, metadata);
   }

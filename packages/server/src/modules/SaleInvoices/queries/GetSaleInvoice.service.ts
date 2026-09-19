@@ -37,6 +37,9 @@ export class GetSaleInvoice {
       .withGraphFetched('entries.tax')
       .withGraphFetched('customer')
       .withGraphFetched('branch')
+      // Юрлицо счёта нужно печатным формам (§8.3): счёт от ООО обязан
+      // содержать реквизиты ООО, а не общие настройки аккаунта.
+      .withGraphFetched('legalEntity')
       .withGraphFetched('taxes.taxRate')
       .withGraphFetched('attachments')
       .withGraphFetched('paymentMethods');

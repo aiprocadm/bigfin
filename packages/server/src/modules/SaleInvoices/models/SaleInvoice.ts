@@ -28,6 +28,7 @@ import { SaleInvoiceMeta } from './SaleInvoice.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleInvoiceDefaultViews } from '../constants';
 import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
+import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
 
 /**
  * Колонки, из которых складывается долг по счёту покупателю. Фильтры списка
@@ -656,6 +657,24 @@ export class SaleInvoice extends TenantBaseModel {
         join: {
           from: 'sales_invoices.branchId',
           to: 'branches.id',
+        },
+      },
+
+      /**
+       * Юрлицо счёта (этап 8 ТЗ, §8.3).
+       *
+       * Без этой связи реквизиты юрлица в печатные формы не попадали ВООБЩЕ:
+       * код спрашивал `invoice.legalEntity`, а такого поля не существовало —
+       * ответ всегда `undefined`, и формы молча печатали общие настройки
+       * аккаунта. Счёт от ООО уходил контрагенту с чужими реквизитами, и
+       * выглядел он совершенно нормально.
+       */
+      legalEntity: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: LegalEntity,
+        join: {
+          from: 'sales_invoices.legalEntityId',
+          to: 'legal_entities.id',
         },
       },
 

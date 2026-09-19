@@ -6,6 +6,7 @@ import { DashboardPageContent } from '@/components';
 
 // D-redesign: панель настроек на общем shadcn-каркасе (v2, тираж пилота ОПиУ).
 // Легаси BalanceSheetHeader остаётся на месте (не удаляем).
+import { ReportPeriodBar } from '../v2';
 import { BalanceSheetHeaderV2 } from './v2/BalanceSheetHeaderV2';
 import BalanceSheetActionsBar from './BalanceSheetActionsBar';
 import { BalanceSheetProvider } from './BalanceSheetProvider';
@@ -61,6 +62,17 @@ function BalanceSheet({
       <BalanceSheetAlerts />
 
       <DashboardPageContent>
+        {/* Период — НА СТРАНИЦЕ, а не внутри панели настроек.
+            Его меняют чаще, чем всё остальное в отчёте вместе взятое, а
+            стоил он четырёх действий: открыть панель, выбрать даты,
+            применить, закрыть. Произвольные даты остались в панели. */}
+        <ReportPeriodBar
+          range={query as { fromDate?: string; toDate?: string }}
+          onRangeChange={(range) => setLocationQuery({ ...query, ...range })}
+          onCustomizeClick={() => toggleBalanceSheetFilterDrawer(true)}
+          className="mb-4"
+        />
+
         <BalanceSheetHeaderV2
           pageFilter={query}
           onSubmitFilter={handleFilterSubmit}

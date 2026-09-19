@@ -36,7 +36,11 @@ function PreferencesPage({ toggleSidebarExpand }: any) {
           <PreferencesSidebar />
 
           <div className={CLASSES.PREFERENCES_PAGE_CONTENT}>
-            <PreferencesTopbar pageTitle={'asdad'} />
+            {/* Заголовок берётся из состояния (`preferencesPageTitle`),
+                свойства у шапки нет. Здесь стояла забытая заглушка
+                `pageTitle={'asdad'}` — она ничего не делала, но сбивала
+                с толку при чтении. */}
+            <PreferencesTopbar />
             <PreferencesContentRoute />
           </div>
         </div>

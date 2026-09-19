@@ -16,6 +16,7 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
       'creditAccountId',
       'debitAccountId',
       'referenceNo',
+      'description',
       'transactionType',
       'recognizedByRuleId',
       'recognizedByRuleName',
@@ -97,6 +98,19 @@ export class GetAutofillCategorizeTransctionTransformer extends Transformer {
    */
   public referenceNo() {
     return this.options.firstUncategorizedTransaction?.referenceNo || null;
+  }
+
+  /**
+   * Назначение платежа.
+   *
+   * ДОБАВЛЕНО: именно по нему человек и решает, к какой статье отнести
+   * операцию. В списке «Ждут разноски» назначение видно, а в окне разноса
+   * его не было — приходилось помнить строку, которую только что закрыл
+   * собой же открытый ящик.
+   * @returns {string|null}
+   */
+  public description() {
+    return this.options.firstUncategorizedTransaction?.description || null;
   }
 
   /**

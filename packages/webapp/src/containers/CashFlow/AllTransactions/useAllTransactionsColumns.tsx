@@ -1,5 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { Money } from '@/components/ui/money';
 
 /**
  * Колонки списка операций по всем счетам (этап 3 ТЗ).
@@ -59,15 +60,9 @@ export function useAllTransactionsColumns() {
           const isDeposit = Number(deposit) > 0;
 
           return (
-            <span
-              className={
-                isDeposit
-                  ? 'font-medium text-success tabular-nums'
-                  : 'text-text-primary tabular-nums'
-              }
-            >
+            <Money tone={isDeposit ? 'positive' : 'default'}>
               {isDeposit ? formatted_deposit : formatted_withdrawal}
-            </span>
+            </Money>
           );
         },
       },

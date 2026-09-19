@@ -8,6 +8,7 @@ import { DashboardInsider } from '@/components';
 import { PageHeader } from '@/components/ui/page-header';
 import { ListToolbar } from '@/components/ui/list-toolbar';
 import { DataTable } from '@/components/ui/data-table';
+import { TransactionMobileRow } from './TransactionMobileRow';
 import { DatePicker } from '@/components/ui/date-picker';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
@@ -323,6 +324,37 @@ export default function AllTransactionsPage() {
             enableSelection={isAwaiting}
             selectedIds={selectedIds}
             onSelectionChange={setSelectedIds}
+            // На телефоне строка выкладывается блоком, а не столбцами:
+            // таблица из шести колонок на экране в 390 точек прокручивается
+            // вбок, и человек не видит строку целиком. Это главный
+            // ежедневный экран, и смотрят его чаще всего с телефона.
+            renderMobileRow={(row: any) =>
+              isAwaiting ? (
+                <TransactionMobileRow
+                  formattedDate={row.formatted_date}
+                  payee={row.payee}
+                  description={row.description}
+                  formattedAmount={
+                    Number(row.deposit) > 0
+                      ? row.formatted_deposit_amount
+                      : row.formatted_withdrawal_amount
+                  }
+                  isDeposit={Number(row.deposit) > 0}
+                />
+              ) : (
+                <TransactionMobileRow
+                  formattedDate={row.formatted_date}
+                  payee={row.contact_name}
+                  description={row.note}
+                  formattedAmount={
+                    Number(row.deposit) > 0
+                      ? row.formatted_deposit
+                      : row.formatted_withdrawal
+                  }
+                  isDeposit={Number(row.deposit) > 0}
+                />
+              )
+            }
             emptyState={
               <EmptyState
                 title={intl.get(

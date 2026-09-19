@@ -72,6 +72,20 @@ export interface DataTableProps {
   onRowClick?: (row: any) => void;
   onSortChange?: (sortBy: { id: string; desc: boolean }[]) => void;
   emptyState?: React.ReactNode;
+  /**
+   * Как нарисовать строку НА ТЕЛЕФОНЕ.
+   *
+   * Таблица из шести столбцов на экране в 390 точек нечитаема: её можно
+   * прокручивать вбок, но человек не видит целой строки и не может
+   * сравнить две. Когда обработчик задан, на узком экране вместо таблицы
+   * рисуется список — каждая запись отдельным блоком, где важное стоит
+   * друг под другом.
+   *
+   * Не задан — остаётся прежняя прокручиваемая таблица: это хуже, но
+   * работает, и ни один экран не ломается от того, что его ещё не
+   * приспособили.
+   */
+  renderMobileRow?: (row: any) => React.ReactNode;
   // Виртуализация (опционально; выключена по умолчанию)
   virtualized?: boolean;
   rowHeight?: number;
@@ -110,6 +124,7 @@ export function DataTable({
   onRowClick,
   onSortChange,
   emptyState,
+  renderMobileRow,
   virtualized = false,
   rowHeight = 40,
   overscan = 8,
@@ -290,6 +305,36 @@ export function DataTable({
     return <>{emptyState}</>;
   }
 
+  // На телефоне — список блоков вместо таблицы, если экран это умеет.
+  // Таблица остаётся в разметке для больших экранов: переключение чисто
+  // на CSS, чтобы при повороте телефона ничего не перезагружалось.
+  const mobileList = renderMobileRow ? (
+    <div className="flex flex-col divide-y divide-border md:hidden">
+      {loading
+        ? [...Array(3)].map((_, i) => (
+            <div key={`sk-m-${i}`} className="p-3">
+              <Skeleton className="h-4 w-full" />
+            </div>
+          ))
+        : rows.map((row: any) => {
+            prepareRow(row);
+
+            return (
+              <div
+                key={row.id}
+                onClick={() => onRowClick?.(row.original)}
+                className={cn(
+                  'p-3',
+                  onRowClick && 'cursor-pointer active:bg-surface-elevated',
+                )}
+              >
+                {renderMobileRow(row.original)}
+              </div>
+            );
+          })}
+    </div>
+  ) : null;
+
   return (
     <div
       className={cn(
@@ -303,7 +348,16 @@ export function DataTable({
           : undefined
       }
     >
-      <table {...getTableProps()} className="w-full border-collapse text-sm">
+      {mobileList}
+
+      <table
+        {...getTableProps()}
+        className={cn(
+          'w-full border-collapse text-sm',
+          // Когда есть мобильный вид, таблица прячется на узком экране.
+          renderMobileRow && 'hidden md:table',
+        )}
+      >
         <thead
           className={cn(
             // Шапка отделяется ЛИНИЕЙ, а не заливкой: серая полоса поверх

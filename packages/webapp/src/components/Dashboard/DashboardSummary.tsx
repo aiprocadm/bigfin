@@ -64,7 +64,10 @@ const Metric = ({ label, value, tone, icon: Icon }: MetricProps) => (
       className={cn(
         'text-xl font-semibold tracking-[-0.01em] tabular-nums sm:text-2xl',
         tone === 'income' && 'text-success',
-        tone === 'expense' && 'text-danger',
+        // РАСХОД НЕ КРАСНЫЙ. Расходы за период — это работа бизнеса, а не
+        // авария. Покрасишь их красным — здоровый месяц выглядит тревожно,
+        // и настоящая беда (просрочка, кассовый разрыв) теряется среди неё.
+        tone === 'expense' && 'text-text-primary',
         !tone && 'text-text-primary',
       )}
     >

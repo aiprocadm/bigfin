@@ -38,6 +38,24 @@ const PERIOD_KINDS: Array<Exclude<DashboardPeriodKind, 'custom'>> = [
   'year',
 ];
 
+/**
+ * Хорошая ли новость это изменение.
+ *
+ * У доходов и прибыли хорошо — расти. У расходов — наоборот: рост расходов
+ * не радость, и красить его зелёным значит поздравлять человека с тем, что
+ * он стал больше тратить.
+ *
+ * Зелёным отмечается только хорошее. Плохое НЕ красится красным: красный в
+ * этом продукте значит «проблема», а выросшие расходы сами по себе ещё не
+ * проблема — они могут быть ростом закупок под выросшие продажи.
+ */
+export function isGoodChange(
+  tone: 'income' | 'expense' | undefined,
+  changePercent: number,
+): boolean {
+  return tone === 'expense' ? changePercent < 0 : changePercent >= 0;
+}
+
 interface TileProps {
   label: string;
   value: string;
@@ -66,7 +84,9 @@ function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileP
         className={cn(
           'text-xl font-semibold tracking-[-0.01em] tabular-nums sm:text-2xl',
           tone === 'income' && 'text-success',
-          tone === 'expense' && 'text-danger',
+          // РАСХОД НЕ КРАСНЫЙ. Расходы за период — работа бизнеса, а не
+          // авария; красный оставлен настоящим бедам.
+          tone === 'expense' && 'text-text-primary',
           !tone && 'text-text-primary',
         )}
       >
@@ -80,7 +100,12 @@ function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileP
         <div
           className={cn(
             'mt-1 text-sm tabular-nums',
-            changePercent >= 0 ? 'text-success' : 'text-danger',
+            // ХОРОШО ЛИ ЭТО — ЗАВИСИТ ОТ ПОКАЗАТЕЛЯ, А НЕ ОТ ЗНАКА.
+            // Раньше рост красился зелёным всегда: рост РАСХОДОВ на 20%
+            // выглядел хорошей новостью, а их снижение — плохой.
+            isGoodChange(tone, changePercent)
+              ? 'text-success'
+              : 'text-text-primary',
           )}
         >
           {changePercent >= 0 ? '+' : ''}

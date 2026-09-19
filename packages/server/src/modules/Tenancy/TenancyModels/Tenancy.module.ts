@@ -45,6 +45,7 @@ import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/Ma
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { Budget } from '@/modules/Budgets/models/Budget.model';
 import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
+import { Project } from '@/modules/Projects/models/Project.model';
 import { AiInsight } from '@/modules/AiAnalyst/models/AiInsight.model';
 import { Webhook } from '@/modules/PublicApi/models/Webhook.model';
 import { WebhookDelivery } from '@/modules/PublicApi/models/WebhookDelivery.model';
@@ -116,6 +117,8 @@ const models = [
   PlannedOperation,
   Budget,
   LegalEntity,
+  // Направления (проекты) — разрез операций наравне с подразделением.
+  Project,
   // Вебхуки (этап 15): подписка принадлежит одной организации.
   Webhook,
   WebhookDelivery,

@@ -46,7 +46,7 @@ export function AlfaCard({ connected }: AlfaCardProps) {
   };
 
   return (
-    <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+    <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
       <h2 className="font-medium">{intl.get('bank_api.alfa.title')}</h2>
       {connected ? (
         <div className="flex items-center justify-between gap-3">

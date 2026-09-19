@@ -121,7 +121,7 @@ export default function CrmIntegrationPage() {
         </p>
       </div>
 
-      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+      <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
         <h2 className="font-medium">{intl.get('crm_integration.bitrix24.title')}</h2>
 
         {connected ? (
@@ -160,7 +160,7 @@ export default function CrmIntegrationPage() {
         )}
       </div>
 
-      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+      <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
         <h2 className="font-medium">{intl.get('crm_integration.amocrm.title')}</h2>
 
         {amoConnected ? (
@@ -208,7 +208,7 @@ export default function CrmIntegrationPage() {
         )}
       </div>
 
-      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+      <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
         <h2 className="font-medium">{intl.get('crm_integration.owncrm.title')}</h2>
         <p className="text-sm text-muted-foreground">
           {intl.get('crm_integration.owncrm.hint')}
@@ -226,7 +226,7 @@ export default function CrmIntegrationPage() {
       </div>
 
       {anyConnected && (
-        <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+        <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
           <h2 className="font-medium">{intl.get('crm_integration.sync.title')}</h2>
           <div className="flex justify-end">
             <Button onClick={handleSync} disabled={sync.isLoading}>

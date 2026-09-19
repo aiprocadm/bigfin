@@ -207,7 +207,7 @@ export default function AllTransactionsPage() {
             разносить — пустая полоса ничего не сообщает.
           */}
           {awaitingTotal > 0 && (
-            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-md border border-border bg-surface-elevated px-3 py-2">
+            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-control border border-border bg-surface-elevated px-3 py-2">
               <span className="text-sm text-text-primary">
                 {intl.get('all_transactions.awaiting.banner', {
                   count: awaitingTotal,

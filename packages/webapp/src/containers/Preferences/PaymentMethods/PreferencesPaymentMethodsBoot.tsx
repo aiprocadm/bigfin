@@ -28,7 +28,7 @@ const PaymentMethodsBoot = ({ children }: PaymentMethodsProviderProps) => {
     return (
       <div className="bigfin-ui flex w-full flex-col gap-4">
         <Skeleton className="h-4 w-2/3" />
-        <Skeleton className="h-44 w-full rounded-xl" />
+        <Skeleton className="h-44 w-full rounded-default" />
       </div>
     );
   }

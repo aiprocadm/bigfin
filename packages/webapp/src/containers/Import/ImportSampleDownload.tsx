@@ -38,7 +38,7 @@ export function ImportSampleDownload() {
   };
 
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-border bg-surface p-5">
+    <div className="flex flex-wrap items-start justify-between gap-4 rounded-default border border-border bg-surface p-5">
       <div className="min-w-0 flex-1">
         <h3 className="text-sm font-medium text-text-primary">
           {exampleTitle}

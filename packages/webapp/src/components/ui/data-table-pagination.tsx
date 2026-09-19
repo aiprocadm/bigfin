@@ -36,7 +36,7 @@ export function DataTablePagination({
       </span>
       <div className="flex items-center gap-2">
         <select
-          className="h-8 rounded-md border border-border bg-surface-elevated px-2 text-text-primary"
+          className="h-8 rounded-control border border-border bg-surface-elevated px-2 text-text-primary"
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
         >

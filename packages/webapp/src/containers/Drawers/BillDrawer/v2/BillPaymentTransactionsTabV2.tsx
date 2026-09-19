@@ -198,7 +198,7 @@ function BillPaymentTransactionsTabV2Root({
       getRowId={getPaymentRowId}
       loading={isLoading || isFetching}
       emptyState={
-        <p className="m-0 rounded-lg border border-border bg-surface p-6 text-center text-sm text-text-muted">
+        <p className="m-0 rounded-default border border-border bg-surface p-6 text-center text-sm text-text-muted">
           {intl.get('no_results')}
         </p>
       }

@@ -89,16 +89,16 @@ export const TwoFactorEnableWizard = ({
             </DialogHeader>
             <div className="flex flex-col items-center gap-4">
               {otpauthUri ? (
-                <QrCode value={otpauthUri} className="rounded-md border" />
+                <QrCode value={otpauthUri} className="rounded-control border" />
               ) : (
-                <div className="h-48 w-48 animate-pulse rounded-md bg-muted" />
+                <div className="h-48 w-48 animate-pulse rounded-control bg-muted" />
               )}
               <div className="w-full">
                 <p className="mb-1 text-sm text-text-secondary">
                   {intl.get('two_factor.wizard.manual_entry_hint')}
                 </p>
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 break-all rounded-md border px-2 py-1 font-mono text-xs">
+                  <code className="flex-1 break-all rounded-control border px-2 py-1 font-mono text-xs">
                     {secret || '…'}
                   </code>
                   <Button

@@ -70,7 +70,7 @@ export default function OnecImportPage() {
         </p>
       </div>
 
-      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+      <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
         <label className="text-sm">{intl.get('onec_import.file')}</label>
         <input
           type="file"
@@ -97,7 +97,7 @@ export default function OnecImportPage() {
       </div>
 
       {preview && (
-        <div className="flex max-w-xl flex-col gap-2 rounded-md border p-4">
+        <div className="flex max-w-xl flex-col gap-2 rounded-control border p-4">
           <h2 className="font-medium">
             {intl.get('onec_import.preview.title')}
           </h2>
@@ -117,7 +117,7 @@ export default function OnecImportPage() {
       )}
 
       {result && (
-        <div className="flex max-w-xl flex-col gap-2 rounded-md border p-4">
+        <div className="flex max-w-xl flex-col gap-2 rounded-control border p-4">
           <h2 className="font-medium">
             {intl.get('onec_import.result.title')}
           </h2>

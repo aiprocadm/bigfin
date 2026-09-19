@@ -473,7 +473,7 @@ export function ReportSheet({
   return (
     <div
       className={cn(
-        'bigfin-ui rounded-xl border border-border bg-surface p-6',
+        'bigfin-ui rounded-default border border-border bg-surface p-6',
         className,
       )}
     >

@@ -44,7 +44,7 @@ function Card({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-md border border-border p-4">
+    <section className="rounded-control border border-border p-4">
       <h2 className="mb-3 text-sm font-medium text-text-muted">{title}</h2>
       {children}
     </section>
@@ -107,7 +107,7 @@ export default function ExpensesAnalysisPage() {
         по половине расходов, выглядит так же уверенно, как правильная.
       */}
       {warning && (
-        <div className="rounded-md border border-warning bg-warning/10 p-3 text-sm">
+        <div className="rounded-control border border-warning bg-warning/10 p-3 text-sm">
           {intl.get(
             warning === 'no_fixed'
               ? 'expenses_analysis.warning.no_fixed'

@@ -25,7 +25,7 @@ const money = (v: number): string => formatOrganizationMoney(v);
 
 function Card({ title, value, accent }: { title: string; value: string; accent?: string }) {
   return (
-    <div className="rounded-md border p-4">
+    <div className="rounded-control border p-4">
       <div className="text-sm text-muted-foreground">{title}</div>
       <div className={`text-2xl font-semibold ${accent ?? ''}`}>{value}</div>
     </div>
@@ -100,7 +100,7 @@ export default function VatAnalysisPage() {
         />
       </div>
 
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <h2 className="mb-1 font-medium">
           {intl.get('vat_analysis.by_rate.title')}
         </h2>
@@ -152,7 +152,7 @@ export default function VatAnalysisPage() {
         </div>
       </div>
 
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <h2 className="mb-2 font-medium">
           {intl.get('vat_analysis.by_account.title')}
         </h2>

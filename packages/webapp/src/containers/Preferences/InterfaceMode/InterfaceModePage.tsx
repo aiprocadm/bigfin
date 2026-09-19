@@ -73,7 +73,7 @@ function InterfaceModePage({
         <div
           role="radiogroup"
           aria-label={intl.get('interface_mode.title')}
-          className="mt-4 inline-flex gap-0.5 rounded-lg bg-surface-elevated p-1"
+          className="mt-4 inline-flex gap-0.5 rounded-default bg-surface-elevated p-1"
         >
           {MODES.map((m) => (
             <button
@@ -83,7 +83,7 @@ function InterfaceModePage({
               aria-checked={mode === m.value}
               onClick={() => setMode(m.value)}
               className={cn(
-                'rounded-md px-5 py-2 text-sm font-medium transition-colors',
+                'rounded-control px-5 py-2 text-sm font-medium transition-colors',
                 mode === m.value
                   ? 'bg-surface font-semibold text-text-primary shadow-sm'
                   : 'text-text-secondary hover:text-text-primary',

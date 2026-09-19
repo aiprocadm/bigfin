@@ -14,7 +14,7 @@ import { Info } from 'lucide-react';
  */
 export function ListTruncated({ shown }: { shown: number }) {
   return (
-    <div className="flex items-start gap-2 rounded-md border border-dashed border-border bg-surface px-3 py-2 text-sm text-text-secondary">
+    <div className="flex items-start gap-2 rounded-control border border-dashed border-border bg-surface px-3 py-2 text-sm text-text-secondary">
       <Info className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
       <span>
         {intl.get('list_truncated.notice', { shown })}{' '}

@@ -116,7 +116,7 @@ export function UnmappedTab({ fromDate, toDate }: Props) {
           })}
         </div>
       )}
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {accounts.length === 0 && (
           <div className="text-muted-foreground p-4 text-sm">
             {intl.get('data_quality.unmapped.empty')}

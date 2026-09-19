@@ -15,7 +15,7 @@ export const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-11 w-full items-center justify-between gap-2 rounded-md border border-border bg-surface-elevated px-3 py-2 text-sm text-text-primary sm:h-10',
+      'flex h-11 w-full items-center justify-between gap-2 rounded-control border border-border bg-surface-elevated px-3 py-2 text-sm text-text-primary sm:h-10',
       'data-[placeholder]:text-text-muted [&>span]:line-clamp-1',
       'focus:outline-none focus-visible:border-action focus-visible:ring-2 focus-visible:ring-action',
       'disabled:cursor-not-allowed disabled:opacity-50',
@@ -68,7 +68,7 @@ export const SelectContent = React.forwardRef<
       ref={ref}
       // Список в портале вне .bigfin-ui → подключаем шрифт и border-box вручную.
       className={cn(
-        'box-border font-sans relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-border bg-surface text-text-primary shadow-md',
+        'box-border font-sans relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-control border border-border bg-surface text-text-primary shadow-md',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         position === 'popper' &&

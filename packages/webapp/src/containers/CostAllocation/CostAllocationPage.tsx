@@ -89,7 +89,7 @@ export default function CostAllocationPage() {
         </Button>
       </div>
 
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {rows.length === 0 && (
           <EmptyState
             title={intl.get('cost_allocation.empty_status.title')}

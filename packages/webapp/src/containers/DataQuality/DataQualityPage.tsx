@@ -31,7 +31,7 @@ const TABS: { key: TabKey; label: string }[] = [
 const YEARS_BACK = 5;
 
 const selectClassName =
-  'border-input bg-background h-9 rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 rounded-control border px-3 text-sm';
 
 export default function DataQualityPage() {
   const { featureCan } = useFeatureCan();

@@ -39,7 +39,7 @@ interface AccountRow {
 }
 
 const filterSelectClassName =
-  'border-input bg-background h-9 rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 rounded-control border px-3 text-sm';
 
 export default function PaymentCalendarPage() {
   const { search } = useLocation();
@@ -111,7 +111,7 @@ export default function PaymentCalendarPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       {gap && (
-        <div className="sticky top-0 z-10 rounded-md bg-red-50 px-4 py-2 text-red-700">
+        <div className="sticky top-0 z-10 rounded-control bg-red-50 px-4 py-2 text-red-700">
           ⚠{' '}
           {intl.get('payment_calendar.gap_warning', {
             days: gap.daysFromStart,

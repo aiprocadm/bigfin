@@ -40,7 +40,7 @@ export default function PreferencesSidebar() {
                   aria-current={active ? 'page' : undefined}
                   onClick={() => history.push(item.href)}
                   className={cn(
-                    'relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors',
+                    'relative flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-sm transition-colors',
                     'disabled:cursor-not-allowed disabled:opacity-50',
                     active
                       ? 'bg-surface-elevated font-medium text-text-primary'

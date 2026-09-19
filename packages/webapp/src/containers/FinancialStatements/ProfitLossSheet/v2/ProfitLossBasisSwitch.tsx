@@ -49,7 +49,7 @@ export function ProfitLossBasisSwitch({
       <div
         role="group"
         aria-label={intl.get('accounting_basis').replace(/:\s*$/, '')}
-        className="inline-flex w-fit rounded-md border border-border p-0.5"
+        className="inline-flex w-fit rounded-control border border-border p-0.5"
       >
         {ACCOUNTING_BASIS_OPTIONS.map((option) => {
           const isActive = option.value === active;

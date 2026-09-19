@@ -41,7 +41,7 @@ interface AccountRow {
 }
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 /**
  * Collects the ids of every descendant of `rootId` from a flat article list,
@@ -364,7 +364,7 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
                       {intl.get('management_articles.field.accounts')}
                     </FormLabel>
                     <FormControl>
-                      <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-md border p-2">
+                      <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-control border p-2">
                         {kindAccounts.length === 0 ? (
                           <span className="text-muted-foreground text-sm">
                             —

@@ -172,7 +172,7 @@ export default function FixedAssetsPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-sm text-muted-foreground">
             {intl.get('fixed_assets.summary.count')}
           </span>
@@ -180,7 +180,7 @@ export default function FixedAssetsPage() {
             {summary?.count ?? 0}
           </span>
         </div>
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-sm text-muted-foreground">
             {intl.get('fixed_assets.summary.gross')}
           </span>
@@ -188,7 +188,7 @@ export default function FixedAssetsPage() {
             {fmt(summary?.totalCost)}
           </span>
         </div>
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-sm text-muted-foreground">
             {intl.get('fixed_assets.summary.accumulated')}
           </span>
@@ -196,7 +196,7 @@ export default function FixedAssetsPage() {
             {fmt(summary?.totalAccumulated)}
           </span>
         </div>
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-sm text-muted-foreground">
             {intl.get('fixed_assets.summary.net')}
           </span>
@@ -220,7 +220,7 @@ export default function FixedAssetsPage() {
       {/* Assets table */}
       {truncated && <ListTruncated shown={assetRows.length} />}
 
-      <div className="overflow-x-auto rounded-md border">
+      <div className="overflow-x-auto rounded-control border">
         {assetRows.length === 0 ? (
           <EmptyState
             title={intl.get('fixed_assets.empty_status.title')}

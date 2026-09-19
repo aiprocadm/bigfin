@@ -80,7 +80,7 @@ export function MarketingPanel({
       </h2>
 
       {/* Средний срок жизни клиента (для LTV) */}
-      <div className="flex flex-wrap items-end gap-2 rounded-md border p-4">
+      <div className="flex flex-wrap items-end gap-2 rounded-control border p-4">
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">
             {intl.get('financial_model.marketing.lifetime_label')}
@@ -99,7 +99,7 @@ export function MarketingPanel({
       </div>
 
       {/* Каналы + помесячный ввод за выбранный месяц */}
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <label className="mb-3 flex w-44 flex-col gap-1 text-sm">
           <span className="text-muted-foreground">
             {intl.get('financial_model.marketing.month_label')}
@@ -196,7 +196,7 @@ export function MarketingPanel({
       </div>
 
       {/* CAC по каналам за период */}
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <div className="mb-2 text-sm font-medium">
           {intl.get('financial_model.marketing.cac_by_channel')}
         </div>

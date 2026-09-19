@@ -20,9 +20,9 @@ export function CashflowTransactionSkeletonV2() {
       </DrawerHeader>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
-        <Skeleton className="h-44 rounded-xl" />
-        <Skeleton className="h-48 rounded-xl" />
-        <Skeleton className="h-24 rounded-xl" />
+        <Skeleton className="h-44 rounded-default" />
+        <Skeleton className="h-48 rounded-default" />
+        <Skeleton className="h-24 rounded-default" />
       </div>
     </div>
   );

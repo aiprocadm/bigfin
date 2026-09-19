@@ -21,7 +21,7 @@ interface ManualSharesFieldProps {
 }
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 /** Пара «сделка → вес» с собственным ключом, чтобы строки не прыгали. */
 interface ShareRow {

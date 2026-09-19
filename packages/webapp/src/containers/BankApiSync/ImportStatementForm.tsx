@@ -59,7 +59,7 @@ export function ImportStatementForm({ providers }: ImportStatementFormProps) {
   };
 
   return (
-    <div className="flex max-w-xl flex-col gap-2 rounded-md border p-4">
+    <div className="flex max-w-xl flex-col gap-2 rounded-control border p-4">
       <h2 className="font-medium">{intl.get('bank_api.import.title')}</h2>
 
       {providers.length > 1 && (

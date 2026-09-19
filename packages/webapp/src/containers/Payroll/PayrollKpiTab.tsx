@@ -75,7 +75,7 @@ export function PayrollKpiTab() {
       </div>
 
       {/* Summary table */}
-      <div className="rounded-md border">
+      <div className="rounded-control border">
         {summaryRows.length === 0 ? (
           <div className="text-muted-foreground p-4 text-sm">
             {intl.get('payroll.kpi.summary.empty')}
@@ -159,7 +159,7 @@ export function PayrollKpiTab() {
           {intl.get('payroll.kpi.target.add')}
         </Button>
       </div>
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {monthTargets.length === 0 && (
           <div className="text-muted-foreground p-4 text-sm">
             {intl.get('payroll.kpi.targets.empty')}

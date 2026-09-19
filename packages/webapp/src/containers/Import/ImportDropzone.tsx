@@ -64,7 +64,7 @@ function ImportDropzoneField({ value, onChange }: ImportDropzoneFieldProps) {
         if (file) applyFile(file);
       }}
       className={cn(
-        'flex flex-col items-center gap-3 rounded-lg border border-dashed border-border bg-surface px-6 py-10 text-center',
+        'flex flex-col items-center gap-3 rounded-default border border-dashed border-border bg-surface px-6 py-10 text-center',
         isDragOver && 'border-action bg-surface-elevated',
       )}
     >

@@ -20,7 +20,7 @@ interface ScreenErrorProps {
  */
 export function ScreenError({ message, onRetry }: ScreenErrorProps) {
   return (
-    <div className="flex flex-col items-start gap-3 rounded-md border border-border p-6">
+    <div className="flex flex-col items-start gap-3 rounded-control border border-border p-6">
       <p className="text-sm text-text-primary">
         {message ?? intl.get('screen_state.error')}
       </p>

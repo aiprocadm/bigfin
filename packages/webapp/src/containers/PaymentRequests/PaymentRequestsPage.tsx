@@ -87,7 +87,7 @@ export default function PaymentRequestsPage() {
         ))}
       </div>
 
-      <div className="flex flex-col divide-y rounded-md border">
+      <div className="flex flex-col divide-y rounded-control border">
         {rows.length === 0 && (
           <EmptyState
             title={intl.get('payment_requests.empty_status.title')}
@@ -103,7 +103,7 @@ export default function PaymentRequestsPage() {
             }
             className={
               'flex items-center justify-between gap-3 px-4 py-3 text-sm' +
-              (r.id === foundId ? ' ring-2 ring-action rounded-md' : '')
+              (r.id === foundId ? ' ring-2 ring-action rounded-control' : '')
             }
           >
             <div className="flex flex-col">

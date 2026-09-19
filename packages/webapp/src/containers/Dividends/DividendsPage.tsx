@@ -32,7 +32,7 @@ const fmtDate = (d: string) => {
 };
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -102,7 +102,7 @@ export default function DividendsPage() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-muted-foreground text-sm">
             {intl.get('dividends.card.available')}
           </span>
@@ -113,7 +113,7 @@ export default function DividendsPage() {
             {intl.get('dividends.card.available_hint')}
           </span>
         </div>
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-muted-foreground text-sm">
             {intl.get('dividends.card.safe')}
           </span>
@@ -124,7 +124,7 @@ export default function DividendsPage() {
             })}
           </span>
         </div>
-        <div className="flex flex-col gap-1 rounded-md border p-4">
+        <div className="flex flex-col gap-1 rounded-control border p-4">
           <span className="text-muted-foreground text-sm">
             {intl.get('dividends.card.paid_out')}
           </span>
@@ -140,7 +140,7 @@ export default function DividendsPage() {
       </div>
 
       {/* New payout form */}
-      <div className="flex flex-col gap-3 rounded-md border p-4">
+      <div className="flex flex-col gap-3 rounded-control border p-4">
         <h2 className="text-sm font-semibold">
           {intl.get('dividends.form.title')}
         </h2>
@@ -195,7 +195,7 @@ export default function DividendsPage() {
         </div>
 
         {exceedsSafe && (
-          <div className="rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-900">
+          <div className="rounded-control border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-900">
             {intl.get('dividends.form.exceeds_safe_warning', {
               safe: fmt(safe),
             })}
@@ -217,7 +217,7 @@ export default function DividendsPage() {
         <h2 className="text-sm font-semibold">
           {intl.get('dividends.history.title')}
         </h2>
-        <div className="flex flex-col divide-y rounded-md border">
+        <div className="flex flex-col divide-y rounded-control border">
           {payoutRows.length === 0 && (
             <EmptyState
             title={intl.get('dividends.empty_status.title')}

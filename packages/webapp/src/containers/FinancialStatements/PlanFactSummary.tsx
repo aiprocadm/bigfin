@@ -38,7 +38,7 @@ export default function PlanFactSummary({
   const money = (value: number) => formattedAmount(value, '');
 
   return (
-    <section className="mb-4 rounded-md border border-border p-4">
+    <section className="mb-4 rounded-control border border-border p-4">
       <h3 className="mb-3 text-sm font-medium text-text-primary">
         {intl.get('reports.plan_fact.summary_title')}
         {planFact?.budgetName ? ` — ${planFact.budgetName}` : ''}

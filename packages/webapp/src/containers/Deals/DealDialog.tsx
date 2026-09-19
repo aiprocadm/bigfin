@@ -36,7 +36,7 @@ interface CustomerRow {
 }
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 const STATUS_OPTIONS = ['in_progress', 'completed', 'cancelled'];
 

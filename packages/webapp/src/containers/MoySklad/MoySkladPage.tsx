@@ -71,7 +71,7 @@ export default function MoySkladPage() {
         </p>
       </div>
 
-      <div className="flex max-w-xl flex-col gap-3 rounded-md border p-4">
+      <div className="flex max-w-xl flex-col gap-3 rounded-control border p-4">
         {connected ? (
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm text-green-700">
@@ -162,7 +162,7 @@ function ImportBlock() {
   };
 
   return (
-    <div className="flex max-w-3xl flex-col gap-3 rounded-md border p-4">
+    <div className="flex max-w-3xl flex-col gap-3 rounded-control border p-4">
       <div>
         <h2 className="font-medium">{intl.get('moysklad.import.title')}</h2>
         <p className="text-sm text-muted-foreground">
@@ -220,7 +220,7 @@ function PreviewTable({
   rows: string[][];
 }) {
   return (
-    <div className="rounded-md border p-4">
+    <div className="rounded-control border p-4">
       <h2 className="mb-2 font-medium">{title}</h2>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">

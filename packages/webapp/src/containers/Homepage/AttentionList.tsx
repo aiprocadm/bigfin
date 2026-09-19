@@ -64,7 +64,7 @@ export default function AttentionList({ items }: { items: AttentionItem[] }) {
   if (!items || items.length === 0) return null;
 
   return (
-    <section className="rounded-lg border border-border bg-surface p-4">
+    <section className="rounded-default border border-border bg-surface p-4">
       <h2 className="mb-3 flex items-center gap-2 text-base font-medium text-text-primary">
         <AlertTriangle className="h-4 w-4 text-danger" />
         {intl.get('dashboard.attention.title')}

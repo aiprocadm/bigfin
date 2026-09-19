@@ -85,7 +85,7 @@ export function DealStagesSection({ dealId }: { dealId: number | string }) {
           </span>
         </div>
 
-        <div className="flex flex-col divide-y rounded-md border">
+        <div className="flex flex-col divide-y rounded-control border">
           {stages.length === 0 && (
             <div className="text-muted-foreground p-3">{intl.get('deal_stages.empty')}</div>
           )}

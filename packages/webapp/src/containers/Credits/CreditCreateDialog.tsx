@@ -24,7 +24,7 @@ import { MoneyField } from '@/components/ui/money-field';
 const CASH_ACCOUNT_TYPES = ['cash', 'bank'];
 
 const selectClassName =
-  'border-input bg-background h-9 w-full rounded-md border px-3 text-sm';
+  'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
 
 const today = () => new Date().toISOString().slice(0, 10);
 

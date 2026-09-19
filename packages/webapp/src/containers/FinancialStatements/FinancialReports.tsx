@@ -18,7 +18,7 @@ function FinancialReportsItem({ title, desc, link }: FinancialReportItem) {
   // Фон-карточку держим на <div> (легаси-стили перебивают bg на <a>),
   // а ссылку растягиваем на всю карточку через ::after (stretched link).
   return (
-    <div className="group relative flex flex-col rounded-lg border border-border bg-surface p-4 transition-colors hover:border-action hover:bg-surface-elevated focus-within:ring-2 focus-within:ring-action">
+    <div className="group relative flex flex-col rounded-default border border-border bg-surface p-4 transition-colors hover:border-action hover:bg-surface-elevated focus-within:ring-2 focus-within:ring-action">
       <Link
         to={link}
         className="font-medium !text-text-primary outline-none after:absolute after:inset-0 group-hover:!text-action"
@@ -49,7 +49,7 @@ function MainReportCard({
   return (
     <Link
       to={link}
-      className="flex flex-col rounded-lg border border-border bg-surface p-5 transition-colors hover:border-action hover:bg-surface-elevated"
+      className="flex flex-col rounded-default border border-border bg-surface p-5 transition-colors hover:border-action hover:bg-surface-elevated"
     >
       <span className="text-lg font-medium text-text-primary">
         {intl.get(titleKey)}
@@ -102,7 +102,7 @@ export default function FinancialReports() {
     <DashboardInsider name={'financial-reports'}>
       <div className="bigfin-ui min-h-full bg-background p-4 sm:p-6">
         <div className="mx-auto flex max-w-6xl flex-col gap-8">
-          <h1 className="text-xl font-medium text-text-primary">
+          <h1 className="text-xl font-semibold tracking-[-0.01em] text-text-primary">
             <T id={'all_financial_reports'} />
           </h1>
 

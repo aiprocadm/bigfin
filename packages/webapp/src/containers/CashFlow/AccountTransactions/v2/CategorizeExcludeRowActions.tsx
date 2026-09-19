@@ -30,7 +30,7 @@ export function CategorizeExcludeRowActions({
           type="button"
           aria-label={intl.get('actions')}
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-text-muted hover:bg-surface-elevated hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-control text-text-muted hover:bg-surface-elevated hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action"
         >
           <MoreHorizontal className="h-4 w-4" />
         </button>

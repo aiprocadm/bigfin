@@ -40,7 +40,7 @@
   --radius-default: var(--radius);
   /* Второе скругление — для органов управления (кнопки, поля). Разное
      скругление кодирует разный вес; одинаковое на всём не кодирует ничего. */
-  --radius-control: var(--radius-control);
+  --radius-control: var(--radius-ctl);
 
   --font-sans: 'Inter Variable', system-ui, sans-serif;
 }

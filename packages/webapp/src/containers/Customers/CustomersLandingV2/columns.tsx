@@ -81,7 +81,7 @@ export function useCustomersColumns({
             <DropdownMenuTrigger
               aria-label={intl.get('customers.row_actions')}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              className="rounded-md p-1 text-text-secondary hover:bg-surface-elevated"
+              className="rounded-control p-1 text-text-secondary hover:bg-surface-elevated"
             >
               <MoreHorizontal className="h-4 w-4" />
             </DropdownMenuTrigger>

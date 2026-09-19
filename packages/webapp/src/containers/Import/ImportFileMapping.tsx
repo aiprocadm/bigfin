@@ -70,7 +70,7 @@ function ImportFileMappingGroup({
   fields,
 }: ImportFileMappingGroupProps) {
   return (
-    <section className="overflow-hidden rounded-lg border border-border bg-surface">
+    <section className="overflow-hidden rounded-default border border-border bg-surface">
       {groupLabel && (
         <h3 className="border-b border-border px-4 py-3 text-sm font-medium text-text-primary">
           {groupLabel}

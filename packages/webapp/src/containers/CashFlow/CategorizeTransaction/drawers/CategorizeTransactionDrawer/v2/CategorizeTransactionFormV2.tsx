@@ -113,7 +113,7 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
             <div className="text-[0.8125rem] text-text-muted">
               {intl.get('amount')}
             </div>
-            <div className={isDeposit ? 'text-xl font-medium text-success' : 'text-xl font-medium text-danger'}>
+            <div className={isDeposit ? 'text-xl font-semibold tracking-[-0.01em] text-success' : 'text-xl font-semibold tracking-[-0.01em] text-danger'}>
               {formattedAmount}
             </div>
           </div>

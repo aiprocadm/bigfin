@@ -45,7 +45,7 @@ function Card({
   hint?: string;
 }) {
   return (
-    <div className="rounded-md border p-4">
+    <div className="rounded-control border p-4">
       <div className="text-sm text-muted-foreground">{title}</div>
       <div className="text-2xl font-semibold">{value}</div>
       {hint && <div className="text-xs text-muted-foreground">{hint}</div>}
@@ -125,7 +125,7 @@ export default function FinancialRatiosPage() {
       {!isLoading && !isError && r && (
         <>
           {r.equityNegative && (
-            <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
+            <div className="rounded-control border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
               {intl.get('financial_ratios.negative_equity')}
             </div>
           )}
@@ -150,7 +150,7 @@ export default function FinancialRatiosPage() {
         </div>
       )}
 
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <h2 className="mb-1 font-medium">
           {intl.get('financial_ratios.vertical.title')}
         </h2>
@@ -214,7 +214,7 @@ export default function FinancialRatiosPage() {
 
       {/* Горизонтальный анализ был написан и покрыт тестами, но не доведён
           до экрана — а именно он отвечает на вопрос «мы растём или падаем?». */}
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <h2 className="mb-1 font-medium">
           {intl.get('financial_ratios.horizontal.title')}
         </h2>

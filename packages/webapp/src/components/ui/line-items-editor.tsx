@@ -189,7 +189,7 @@ export function LineItemsEditor({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-border bg-surface',
+        'overflow-hidden rounded-default border border-border bg-surface',
         className,
       )}
     >

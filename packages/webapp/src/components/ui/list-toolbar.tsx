@@ -21,7 +21,7 @@ export function ListToolbar({
 }: ListToolbarProps) {
   if (selectedCount > 0 && bulkActions) {
     return (
-      <div className="mb-3 flex items-center gap-3 rounded-md border border-border bg-surface-elevated px-3 py-2">
+      <div className="mb-3 flex items-center gap-3 rounded-control border border-border bg-surface-elevated px-3 py-2">
         <span className="text-sm font-medium text-text-secondary tabular-nums">
           {selectedCount}
         </span>

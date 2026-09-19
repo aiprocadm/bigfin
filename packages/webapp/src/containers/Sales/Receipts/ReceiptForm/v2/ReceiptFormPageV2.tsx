@@ -36,9 +36,9 @@ function ReceiptFormPageV2Content() {
 function ReceiptFormSkeletonV2() {
   return (
     <div className="mx-auto w-full max-w-5xl flex-1 space-y-4 p-4 sm:p-6">
-      <Skeleton className="h-64 w-full rounded-xl" />
-      <Skeleton className="h-48 w-full rounded-xl" />
-      <Skeleton className="h-40 w-full rounded-xl" />
+      <Skeleton className="h-64 w-full rounded-default" />
+      <Skeleton className="h-48 w-full rounded-default" />
+      <Skeleton className="h-40 w-full rounded-default" />
     </div>
   );
 }

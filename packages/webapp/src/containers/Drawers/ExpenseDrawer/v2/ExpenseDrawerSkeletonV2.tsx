@@ -18,8 +18,8 @@ export function ExpenseDrawerSkeletonV2() {
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-6">
-        <Skeleton className="h-40 w-full rounded-xl" />
-        <Skeleton className="h-32 w-full rounded-xl" />
+        <Skeleton className="h-40 w-full rounded-default" />
+        <Skeleton className="h-32 w-full rounded-default" />
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ function MetricCard({
   value: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-md border p-4">
+    <div className="flex flex-col gap-1 rounded-control border p-4">
       <span className="text-sm text-muted-foreground">{label}</span>
       <span className="text-2xl font-semibold">{value}</span>
     </div>
@@ -118,7 +118,7 @@ export default function FinancialModelPage() {
       </div>
 
       {/* График «маржа во времени» */}
-      <div className="rounded-md border p-4">
+      <div className="rounded-control border p-4">
         <div className="mb-2 text-sm font-medium">
           {intl.get('financial_model.chart.margin_over_time')}
         </div>

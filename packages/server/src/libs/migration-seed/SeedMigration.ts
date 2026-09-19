@@ -98,10 +98,18 @@ export class SeedMigration {
    * @returns
    */
   private latestBatchNumber(trx = this.knex): Promise<number> {
-    return trx
-      .from(getTableName(this.config.tableName, this.config.schemaName))
-      .max('batch as max_batch')
-      .then((obj) => obj[0].max_batch || 0);
+    return (
+      trx
+        .from(getTableName(this.config.tableName, this.config.schemaName))
+        .max('batch as max_batch')
+        // Псевдоним возвращается в ВЕРБЛЮЖЬЕМ виде: отображение knex
+        // переводит имена в ответе, и `max_batch` приходит как `maxBatch`.
+        // Со змеиным именем здесь всегда получался ноль — каждая заготовка
+        // данных записывалась первой партией, и откат по партиям потерял бы
+        // смысл. Читаем оба вида: имя задано псевдонимом, и зависеть от
+        // настроек отображения тут не хочется.
+        .then((obj) => obj[0]?.maxBatch ?? obj[0]?.max_batch ?? 0)
+    );
   }
 
   /**

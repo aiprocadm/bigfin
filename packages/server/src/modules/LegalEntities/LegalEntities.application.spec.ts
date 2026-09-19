@@ -78,6 +78,16 @@ const buildApp = (options: {
   return { app, deleted, patchedOthers };
 };
 
+/**
+ * ВАЖНО ПРО ИМЕНА В ПОДДЕЛКЕ. Строки здесь отдаются в ВЕРБЛЮЖЬЕМ виде —
+ * ровно так, как их возвращает настоящий knex: отображение
+ * `knexSnakeCaseMappers` переводит `LEGAL_ENTITY_ID` в `legalEntityId`.
+ *
+ * Сначала подделка отдавала змеиные имена, и тесты были зелёными, пока
+ * отчёт на живой базе показывал бессмыслицу: ключ группировки получался
+ * «undefined:undefined». Подделка, говорящая не на языке базы, не стережёт
+ * ничего — она лишь повторяет ошибку кода.
+ */
 describe('LegalEntitiesApplication — список', () => {
   it('перед выдачей списка создаётся юрлицо по умолчанию', async () => {
     // Пустой справочник заставил бы человека заводить юрлицо руками,
@@ -102,7 +112,7 @@ describe('LegalEntitiesApplication — список', () => {
         { id: 1, name: 'Ромашка', form: 'ООО', isPrimary: true, active: true },
         { id: 2, name: 'Лютик', form: 'ИП', isPrimary: false, active: true },
       ],
-      accountsRows: [{ legal_entity_id: 1, total: 7 }],
+      accountsRows: [{ legalEntityId: 1, total: 7 }],
     });
 
     const rows = await app.getLegalEntities();

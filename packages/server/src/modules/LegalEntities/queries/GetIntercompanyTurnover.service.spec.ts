@@ -41,24 +41,34 @@ const entities = [
   { id: 2, name: 'ИП Иванов' },
 ];
 
+/**
+ * ВАЖНО ПРО ИМЕНА В ПОДДЕЛКЕ. Строки здесь отдаются в ВЕРБЛЮЖЬЕМ виде —
+ * ровно так, как их возвращает настоящий knex: отображение
+ * `knexSnakeCaseMappers` переводит `LEGAL_ENTITY_ID` в `legalEntityId`.
+ *
+ * Сначала подделка отдавала змеиные имена, и тесты были зелёными, пока
+ * отчёт на живой базе показывал бессмыслицу: ключ группировки получался
+ * «undefined:undefined». Подделка, говорящая не на языке базы, не стережёт
+ * ничего — она лишь повторяет ошибку кода.
+ */
 describe('GetIntercompanyTurnoverService', () => {
   it('складывает ноги в строку «кто кому»', async () => {
     const service = buildService({
       entities,
       legs: [
         {
-          reference_type: 'Transfer',
-          reference_id: 5,
+          referenceType: 'Transfer',
+          referenceId: 5,
           date: '2026-03-10',
-          legal_entity_id: 1,
+          legalEntityId: 1,
           credit: 500000,
           debit: 0,
         },
         {
-          reference_type: 'Transfer',
-          reference_id: 5,
+          referenceType: 'Transfer',
+          referenceId: 5,
           date: '2026-03-10',
-          legal_entity_id: 2,
+          legalEntityId: 2,
           credit: 0,
           debit: 500000,
         },
@@ -84,18 +94,18 @@ describe('GetIntercompanyTurnoverService', () => {
       entities,
       legs: [
         {
-          reference_type: 'Transfer',
-          reference_id: 5,
+          referenceType: 'Transfer',
+          referenceId: 5,
           date: '2026-03-10',
-          legal_entity_id: 1,
+          legalEntityId: 1,
           credit: 500000,
           debit: 0,
         },
         {
-          reference_type: 'Transfer',
-          reference_id: 5,
+          referenceType: 'Transfer',
+          referenceId: 5,
           date: '2026-03-10',
-          legal_entity_id: 2,
+          legalEntityId: 2,
           credit: 0,
           debit: 500000,
         },
@@ -112,18 +122,18 @@ describe('GetIntercompanyTurnoverService', () => {
       entities,
       legs: [
         {
-          reference_type: 'Transfer',
-          reference_id: 5,
+          referenceType: 'Transfer',
+          referenceId: 5,
           date: '2026-03-10',
-          legal_entity_id: 1,
+          legalEntityId: 1,
           credit: 100,
           debit: 0,
         },
         {
-          reference_type: 'Transfer',
-          reference_id: 6,
+          referenceType: 'Transfer',
+          referenceId: 6,
           date: '2026-03-11',
-          legal_entity_id: 2,
+          legalEntityId: 2,
           credit: 0,
           debit: 200,
         },
@@ -152,10 +162,10 @@ describe('GetIntercompanyTurnoverService', () => {
       entities,
       legs: [
         {
-          reference_type: 'Transfer',
-          reference_id: 7,
+          referenceType: 'Transfer',
+          referenceId: 7,
           date: '2026-03-10',
-          legal_entity_id: null,
+          legalEntityId: null,
           credit: 100,
           debit: 0,
         },

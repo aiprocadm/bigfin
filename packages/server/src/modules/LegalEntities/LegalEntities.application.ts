@@ -171,7 +171,12 @@ export class LegalEntitiesApplication {
 
     const counts = new Map<number, number>();
     rows.forEach((row) => {
-      counts.set(Number(row.legal_entity_id), Number(row.total));
+      // ИМЯ В ВЕРБЛЮЖЬЕМ ВИДЕ. Отображение knex
+      // (`knexSnakeCaseMappers`) переводит имена колонок в ответе обратно:
+      // в базе `LEGAL_ENTITY_ID`, в ответе `legalEntityId`. Чтение
+      // `row.legal_entity_id` давало `undefined` всегда — счётчик молча
+      // оставался нулевым, и в справочнике у каждого юрлица стояло «0 счетов».
+      counts.set(Number(row.legalEntityId), Number(row.total));
     });
     return counts;
   }

@@ -37,6 +37,11 @@ export class CreateRoleService {
       const role = await this.roleModel().query(trx).upsertGraph({
         name: createRoleDTO.roleName,
         description: createRoleDTO.roleDescription,
+        // Юрлица роли (§8.4). Пустой список кладём как `null`: «не
+        // настраивали» и «настроили пустым» должны различаться.
+        allowedLegalEntityIds: createRoleDTO.allowedLegalEntityIds?.length
+          ? createRoleDTO.allowedLegalEntityIds
+          : null,
         permissions,
       });
       // Triggers `onRoleCreated` event.

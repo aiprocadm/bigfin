@@ -65,6 +65,24 @@ class CommandRoleDto {
     description: 'The description of the role',
   })
   roleDescription: string;
+
+  /**
+   * Юрлица, к которым допущена роль (этап 8 ТЗ, §8.4, остаток К6).
+   *
+   * ПУСТО ЗНАЧИТ «ВСЕ». Это не мелочь оформления: для ограниченной роли «все
+   * юрлица» означает «все ЕЁ юрлица», а не все вообще. Список заполняется
+   * только там, где доступ и правда сужают.
+   */
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @Type(() => Number)
+  @ApiProperty({
+    required: false,
+    example: [1, 2],
+    description: 'Юрлица, к которым допущена роль. Пусто — ко всем.',
+  })
+  allowedLegalEntityIds?: number[];
 }
 
 export class CreateRoleDto extends CommandRoleDto {

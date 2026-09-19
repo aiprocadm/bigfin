@@ -64,6 +64,9 @@ export const transformToObject = (role) => {
   return {
     role_name: role.name,
     role_description: role.description,
+    // Юрлица роли (§8.4). Поле, которое форма не подставила, ушло бы на
+    // сервер пустым и молча сняло бы ограничение доступа.
+    allowed_legal_entity_ids: role.allowed_legal_entity_ids ?? [],
     permissions,
     serviceFullAccess,
   };
@@ -120,6 +123,9 @@ export const getNewRoleInitialValues = (schema) => {
   const serviceFullAccess = getInitialServicesFullAccess(permissions);
 
   return {
+    // Ничего не отмечено — доступ ко всем юрлицам. Так ведут себя владелец
+    // и администратор (§8.4).
+    allowed_legal_entity_ids: [],
     permissions,
     serviceFullAccess,
   };

@@ -22,6 +22,7 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { ReportsAction } from '../../types/Report.types';
+import { GetLegalEntityAccessService } from '@/modules/LegalEntities/queries/GetLegalEntityAccess.service';
 
 @Controller('/reports/profit-loss-sheet')
 @ApiTags('Reports')
@@ -31,6 +32,7 @@ import { ReportsAction } from '../../types/Report.types';
 export class ProfitLossSheetController {
   constructor(
     private readonly profitLossSheetApp: ProfitLossSheetApplication,
+    private readonly legalEntityAccess: GetLegalEntityAccessService,
   ) {}
 
   /**
@@ -67,6 +69,12 @@ export class ProfitLossSheetController {
     @Res({ passthrough: true }) res: Response,
     @Headers('accept') acceptHeader: string,
   ) {
+    // Отбор сужается до юрлиц, к которым допущена роль (§8.4 ТЗ). Запрос
+    // чужого юрлица — отказ, а не пустой отчёт: пустота читается как «у
+    // этого юрлица нет операций», и человек ей поверит.
+    query.legalEntityIds = await this.legalEntityAccess.narrowToAllowed(
+      query.legalEntityIds,
+    );
     const accept = acceptHeader || '';
     // Retrieves the csv format.
     if (accept.includes(AcceptType.ApplicationCsv)) {

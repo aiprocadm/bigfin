@@ -11,6 +11,7 @@ import { BackfillLegalEntityQueue } from './constants';
 import { LegalEntitiesApplication } from './LegalEntities.application';
 import { LegalEntitiesController } from './LegalEntities.controller';
 import { GetIntercompanyTurnoverService } from './queries/GetIntercompanyTurnover.service';
+import { GetLegalEntityAccessService } from './queries/GetLegalEntityAccess.service';
 
 /**
  * Юрлица группы (этап 6 ТЗ).
@@ -28,6 +29,7 @@ import { GetIntercompanyTurnoverService } from './queries/GetIntercompanyTurnove
   providers: [
     LegalEntitiesApplication,
     GetIntercompanyTurnoverService,
+    GetLegalEntityAccessService,
     EnsureDefaultLegalEntityService,
     BackfillLegalEntityService,
     BackfillLegalEntityProcessor,
@@ -35,6 +37,9 @@ import { GetIntercompanyTurnoverService } from './queries/GetIntercompanyTurnove
   ],
   exports: [
     LegalEntitiesApplication,
+    // Отбор по разрешённым юрлицам нужен отчётам (§8.4). Без экспорта класс
+    // объявлен, но недоступен другим модулям — и сервер не стартует вовсе.
+    GetLegalEntityAccessService,
     EnsureDefaultLegalEntityService,
     BackfillLegalEntityService,
   ],

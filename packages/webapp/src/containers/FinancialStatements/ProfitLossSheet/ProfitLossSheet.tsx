@@ -5,6 +5,7 @@ import * as R from 'ramda';
 
 // D-redesign: панель настроек и экшнбар на общем shadcn-каркасе (v2).
 // Легаси ProfitLossSheetHeader/ProfitLossActionsBar остаются на месте (не удаляем).
+import { ReportPeriodBar } from '../v2';
 import { ProfitLossHeaderV2 } from './v2/ProfitLossHeaderV2';
 import { ProfitLossToolbarV2 } from './v2/ProfitLossToolbarV2';
 import { ProfitLossBasisSwitch } from './v2/ProfitLossBasisSwitch';
@@ -74,18 +75,27 @@ function ProfitLossSheet({
       <ProfitLossSheetAlerts />
 
       <DashboardPageContent>
+        {/* Период — НА СТРАНИЦЕ, а не внутри панели настроек.
+            Его меняют чаще, чем всё остальное в отчёте вместе взятое, а
+            стоил он четырёх действий: открыть панель, выбрать даты,
+            применить, закрыть. Произвольные даты остались в панели — они
+            нужны редко. */}
+        <ReportPeriodBar
+          range={query as { fromDate?: string; toDate?: string }}
+          onRangeChange={(range) => setLocationQuery({ ...query, ...range })}
+          onCustomizeClick={() => toggleDisplayFilterDrawer(true)}
+          extraSlot={
+            <ProfitLossBasisSwitch
+              basis={query.basis}
+              onChange={handleBasisChange}
+            />
+          }
+          className="mb-4"
+        />
+
         <ProfitLossHeaderV2
           pageFilter={query}
           onSubmitFilter={handleSubmitFilter}
-        />
-        {/*
-          Переключатель метода учёта прямо в шапке (п. 4.3 ТЗ): раньше он
-          лежал в панели «Настроить отчёт», и человек не знал ни что метода
-          два, ни каким посчитаны цифры перед ним.
-        */}
-        <ProfitLossBasisSwitch
-          basis={query.basis}
-          onChange={handleBasisChange}
         />
         <ProfitLossBody />
       </DashboardPageContent>

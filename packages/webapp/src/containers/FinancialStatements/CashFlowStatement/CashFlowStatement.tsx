@@ -7,6 +7,7 @@ import { CashFlowStatementProvider } from './CashFlowStatementProvider';
 
 // D-redesign: панель настроек на общем shadcn-каркасе (v2, тираж пилота ОПиУ).
 // Легаси CashFlowStatementHeader остаётся на месте (не удаляем).
+import { ReportPeriodBar } from '../v2';
 import { CashFlowStatementHeaderV2 } from './v2/CashFlowStatementHeaderV2';
 import CashFlowStatementActionsBar from './CashFlowStatementActionsBar';
 
@@ -65,6 +66,17 @@ function CashFlowStatement({
       <CashFlowStatementAlerts />
 
       <DashboardPageContent>
+        {/* Период — НА СТРАНИЦЕ, а не внутри панели настроек.
+            Его меняют чаще, чем всё остальное в отчёте вместе взятое, а
+            стоил он четырёх действий: открыть панель, выбрать даты,
+            применить, закрыть. Произвольные даты остались в панели. */}
+        <ReportPeriodBar
+          range={query as { fromDate?: string; toDate?: string }}
+          onRangeChange={(range) => setLocationQuery({ ...query, ...range })}
+          onCustomizeClick={() => toggleCashFlowStatementFilterDrawer(true)}
+          className="mb-4"
+        />
+
         <CashFlowStatementHeaderV2
           pageFilter={query}
           onSubmitFilter={handleFilterSubmit}

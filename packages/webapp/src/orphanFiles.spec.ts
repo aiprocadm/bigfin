@@ -152,9 +152,12 @@ describe('файлы, до которых нельзя добраться', () =
     expect(
       isStoryFile(path.join(SRC, 'components', 'ui', 'alert.stories.tsx'), roots),
     ).toBe(true);
-    // Папка вне настройки историей-корнем не считается.
+    // Папка ВНЕ настройки историей-корнем не считается. Пример взят из
+    // `hooks`: там историй нет и не предполагается. Прежде примером служила
+    // `containers`, но она попала в настройку — блоки экранов тоже надо уметь
+    // посмотреть без поднятого сервера. Правило прежнее, пример другой.
     expect(
-      isStoryFile(path.join(SRC, 'containers', 'Nope', 'x.stories.tsx'), roots),
+      isStoryFile(path.join(SRC, 'hooks', 'Nope', 'x.stories.tsx'), roots),
     ).toBe(false);
   });
 

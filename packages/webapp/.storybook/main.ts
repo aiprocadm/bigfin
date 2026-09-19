@@ -9,6 +9,9 @@ const config: StorybookConfig = {
     '../src/components/auth/**/*.stories.@(ts|tsx|mdx)',
     '../src/components/legal/**/*.stories.@(ts|tsx|mdx)',
     '../src/components/Dashboard/**/*.stories.@(ts|tsx|mdx)',
+    // Блоки экранов: их тоже надо уметь посмотреть без поднятого
+    // сервера — это единственный способ проверить оформление глазами.
+    '../src/containers/**/*.stories.@(ts|tsx|mdx)',
   ],
   addons: [
     '@storybook/addon-essentials',

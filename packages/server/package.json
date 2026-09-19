@@ -25,6 +25,8 @@
     "cli:system:migrate:rollback": "ts-node -r tsconfig-paths/register src/cli.ts system:migrate:rollback",
     "cli:system:migrate:make": "ts-node -r tsconfig-paths/register src/cli.ts system:migrate:make",
     "cli:tenants:migrate:latest": "ts-node -r tsconfig-paths/register src/cli.ts tenants:migrate:latest",
+    "cli:tenants:legal-entity:backfill": "ts-node -r tsconfig-paths/register src/cli.ts tenants:legal-entity:backfill",
+    "cli:tenants:translate-accounts": "ts-node -r tsconfig-paths/register src/cli.ts tenants:translate-accounts",
     "cli:tenants:migrate:rollback": "ts-node -r tsconfig-paths/register src/cli.ts tenants:migrate:rollback",
     "cli:tenants:migrate:make": "ts-node -r tsconfig-paths/register src/cli.ts tenants:migrate:make",
     "cli:tenants:list": "ts-node -r tsconfig-paths/register src/cli.ts tenants:list",

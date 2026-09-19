@@ -17,5 +17,6 @@
   "account_name": "Account name",
   "total": "Total",
   "percentage_of_column": "% of Column",
-  "percentage_of_row": "% of Row"
+  "percentage_of_row": "% of Row",
+  "founder_loan": "Founder loan"
 }

@@ -12,6 +12,14 @@ import {
   matchQuickPeriod,
   reportRange,
 } from './reportPeriod';
+import {
+  REPORT_BASES,
+  REPORT_BUILD_BY,
+  REPORT_SCALES,
+  ReportBasis,
+  ReportBuildBy,
+  ReportScale,
+} from './reportControls';
 
 export interface ReportPeriodBarProps {
   /** Текущий отрезок отчёта. */
@@ -21,8 +29,26 @@ export interface ReportPeriodBarProps {
   onCustomizeClick?: () => void;
   /** Что показать справа: переключатель метода учёта и подобное. */
   extraSlot?: React.ReactNode;
+
+  /**
+   * Переключатели отчёта (FIN-012 ТЗ-2). Каждый показывается ТОЛЬКО когда
+   * отчёт его поддерживает — то есть когда передан обработчик.
+   *
+   * Неактивная кнопка хуже отсутствующей: она обещает возможность, которой
+   * нет, и человек тратит время, выясняя, почему она не нажимается.
+   */
+  scale?: ReportScale;
+  onScaleChange?: (scale: ReportScale) => void;
+  basis?: ReportBasis;
+  onBasisChange?: (basis: ReportBasis) => void;
+  buildBy?: ReportBuildBy;
+  onBuildByChange?: (buildBy: ReportBuildBy) => void;
+
   className?: string;
 }
+
+const selectClassName =
+  'border-input bg-background h-8 rounded-control border px-2 text-sm';
 
 /**
  * Полоса периода отчёта.
@@ -43,6 +69,12 @@ export const ReportPeriodBar = ({
   onRangeChange,
   onCustomizeClick,
   extraSlot,
+  scale,
+  onScaleChange,
+  basis,
+  onBasisChange,
+  buildBy,
+  onBuildByChange,
   className,
 }: ReportPeriodBarProps) => {
   const active = matchQuickPeriod(range);
@@ -85,7 +117,64 @@ export const ReportPeriodBar = ({
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex shrink-0 flex-wrap items-center gap-2">
+        {onScaleChange && (
+          <label className="flex items-center gap-1 text-xs text-text-secondary">
+            {intl.get('report_controls.scale')}
+            <select
+              className={selectClassName}
+              value={scale ?? 'month'}
+              onChange={(event) =>
+                onScaleChange(event.target.value as ReportScale)
+              }
+            >
+              {REPORT_SCALES.map((value) => (
+                <option key={value} value={value}>
+                  {intl.get(`report_controls.scale.${value}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        {onBuildByChange && (
+          <label className="flex items-center gap-1 text-xs text-text-secondary">
+            {intl.get('report_controls.build_by')}
+            <select
+              className={selectClassName}
+              value={buildBy ?? 'periods'}
+              onChange={(event) =>
+                onBuildByChange(event.target.value as ReportBuildBy)
+              }
+            >
+              {REPORT_BUILD_BY.map((value) => (
+                <option key={value} value={value}>
+                  {intl.get(`report_controls.build_by.${value}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        {onBasisChange && (
+          <label className="flex items-center gap-1 text-xs text-text-secondary">
+            {intl.get('report_controls.basis')}
+            <select
+              className={selectClassName}
+              value={basis ?? 'accrual'}
+              onChange={(event) =>
+                onBasisChange(event.target.value as ReportBasis)
+              }
+            >
+              {REPORT_BASES.map((value) => (
+                <option key={value} value={value}>
+                  {intl.get(`report_controls.basis.${value}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+
         {extraSlot}
         {onCustomizeClick && (
           <Button

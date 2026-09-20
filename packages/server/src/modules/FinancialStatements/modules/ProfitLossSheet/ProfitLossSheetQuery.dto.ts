@@ -17,6 +17,31 @@ import { parseBoolean } from '@/utils/parse-boolean';
 import { NumberFormatQueryDto } from '@/modules/BankingTransactions/dtos/NumberFormatQuery.dto';
 
 export class ProfitLossSheetQueryDto extends FinancialSheetBranchesQueryDto {
+  /**
+   * Какие ярусы прибыли показать (FIN-015 ТЗ-2).
+   *
+   * Пусто — прежний вид отчёта: ни одной дополнительной строки. Именно так
+   * он выглядел до этого требования, и у тех, кто ничего не выбирал,
+   * ничего не изменится.
+   *
+   * Домен проверяется строго: опечатка `ebidta` тихо дала бы отчёт без
+   * строки, которую человек просил, и он решил бы, что она не считается.
+   */
+  @Transform(({ value }) =>
+    value === undefined || value === null || value === ''
+      ? undefined
+      : (Array.isArray(value) ? value : [value]).filter(Boolean),
+  )
+  @IsOptional()
+  @IsArray()
+  @IsIn(['operating', 'ebitda', 'ebit', 'ebt', 'net'], { each: true })
+  @ApiPropertyOptional({
+    description: 'Ярусы прибыли: operating | ebitda | ebit | ebt | net',
+    example: ['operating', 'ebitda'],
+    type: [String],
+  })
+  profitTiers?: string[];
+
   // Раньше basis не проверялся: опечатка вроде basis=cach молча считалась
   // «по начислению». Теперь только два допустимых значения (как в ОСВ/Балансе).
   @IsString()

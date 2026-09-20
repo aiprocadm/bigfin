@@ -23,4 +23,9 @@ export interface PlanFactResponse {
   scenario: string;
   period: string;
   rows: PlanFactRow[];
+  /**
+   * Темп исполнения (FIN-022 ТЗ-2): сколько прошло времени, сколько
+   * выполнено и вывод словами.
+   */
+  pace?: unknown;
 }

@@ -43,6 +43,7 @@ import { TenantUser } from './models/TenantUser.model';
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
 import { AccountGroup } from '@/modules/BankingAccounts/models/AccountGroup.model';
+import { UserDisplayPreference } from '@/modules/Settings/models/UserDisplayPreference.model';
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { Budget } from '@/modules/Budgets/models/Budget.model';
 import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
@@ -116,6 +117,7 @@ const models = [
   ManagementArticle,
   ManagementArticleAccount,
   AccountGroup,
+  UserDisplayPreference,
   PlannedOperation,
   Budget,
   LegalEntity,

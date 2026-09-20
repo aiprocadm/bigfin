@@ -34,6 +34,16 @@ const OPEN_BY_DESIGN: string[] = [
   'Auth/Auth.controller.ts#resetPassword',
   'Auth/Authed.controller.ts#resendSignupConfirm',
 
+  // Личные настройки отображения (FIN-026 ТЗ-2): копейки, показ прошлых
+  // разрывов, выбранные ярусы прибыли. Права организации здесь НЕ
+  // спрашиваются намеренно: это настройка ЧЕЛОВЕКА, а не компании.
+  // Потребовать `Preferences: mutate` значило бы заставить того, кто просто
+  // смотрит отчёты, читать копейки, которых он видеть не хочет.
+  // Ручка не «открыта» в смысле доступа: вход по-прежнему нужен
+  // (`AuthorizationGuard`), и записывает она ТОЛЬКО строку самого
+  // вызывающего — `userId` берётся из его сессии, а не из тела запроса.
+  'Settings/Settings.controller.ts#saveDisplayPreferences',
+
   // Приглашение принимает тот, кого ещё нет в организации.
   'UsersModule/UsersInvitePublic.controller.ts#acceptInvite',
 

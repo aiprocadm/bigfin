@@ -164,6 +164,15 @@ export const getPreferenceRoutes = () => [
     exact: true,
   },
   {
+    // Личные настройки отображения (FIN-026 ТЗ-2): настройка ЧЕЛОВЕКА в
+    // контексте организации, а не настройка компании.
+    path: `${BASE_URL}/display`,
+    component: lazy(
+      () => import('@/containers/Preferences/Display/DisplayPreferencesPage'),
+    ),
+    exact: true,
+  },
+  {
     // Группы денежных счетов (FIN-017 ТЗ-2). Здесь, а не в списке счетов:
     // тот экран помечен `@ts-nocheck`, а ЧАСТЬ A2 ТЗ запрещает трогать
     // такие файлы в рамках работ по ТЗ.

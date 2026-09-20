@@ -8,6 +8,7 @@ import { ArticlesCashflowRollupService } from '@/modules/ManagementArticles/quer
 import { GetBudgetPlanFactQueryDto } from '../dtos/GetBudgetPlanFactQuery.dto';
 import { PlanFactResponse, PlanFactRow } from '../Budgets.interfaces';
 import { computeVariance } from '../utils/computeVariance';
+import { computeBudgetPace } from '../utils/computeBudgetPace';
 import { ERRORS } from '../constants';
 
 @Injectable()
@@ -82,12 +83,38 @@ export class GetBudgetPlanFactService {
       };
     });
 
+    /**
+     * Темп исполнения (FIN-022 ТЗ-2).
+     *
+     * «Выполнено 56 %» само по себе не значит ничего: в июле это хорошо, в
+     * декабре — беда. Рядом кладётся доля прошедшего времени и вывод
+     * словами — два процента рядом читаются не всеми, фраза — всеми.
+     */
+    const totals = rows.reduce(
+      (acc, row) => ({
+        plan: acc.plan + Number(row.plan ?? 0),
+        fact: acc.fact + Number(row.fact ?? 0),
+      }),
+      { plan: 0, fact: 0 },
+    );
+    const pace = computeBudgetPace(
+      {
+        fromDate: String(query.fromDate),
+        toDate: String(query.toDate),
+        planned: totals.plan,
+        actual: totals.fact,
+        kind: budget.type === 'bdir' ? 'income' : 'expense',
+      },
+      new Date().toISOString().slice(0, 10),
+    );
+
     return {
       budgetId,
       type: budget.type,
       scenario,
       period: `${query.fromDate}..${query.toDate}`,
       rows,
+      pace,
     };
   }
 }

@@ -47,6 +47,7 @@ export const PreferencesMenu: PreferencesMenuSection[] = [
       { labelId: 'branding', href: '/preferences/branding', icon: Palette },
       { labelId: 'users', href: '/preferences/users', icon: Users },
       { labelId: 'preferences.security.menu', href: '/preferences/security', icon: ShieldCheck },
+      { labelId: 'display_preferences.menu', href: '/preferences/display', icon: LayoutDashboard },
       { labelId: 'account_groups.menu', href: '/preferences/account-groups', icon: Blocks },
       { labelId: 'export_data.menu', href: '/preferences/export-data', icon: Download },
     ],

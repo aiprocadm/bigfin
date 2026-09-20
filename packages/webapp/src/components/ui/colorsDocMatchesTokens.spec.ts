@@ -67,3 +67,65 @@ describe('описание палитры сходится с палитрой',
     expect(doc).not.toContain('Тёмная тема — primary');
   });
 });
+
+/**
+ * Сторож §10.4 ТЗ-2: в компонентах нет цветов мимо токенов.
+ *
+ * ЗАЧЕМ. Блок `.dark` в `tokens.css` есть, а класс `dark` не ставится нигде —
+ * тёмная тема сейчас мертва. Настоящее ТЗ её не чинит, но обязывает: каждый
+ * новый компонент объявляет цвет ТОЛЬКО токеном. Тогда включение темы позже
+ * не потребует переписывать библиотеку по файлу.
+ *
+ * Зашитый цвет не виден глазами при обзоре: он не ломает светлую тему и
+ * проявится лишь у того, кто однажды включит тёмную, — чёрным текстом на
+ * чёрном фоне. Поэтому проверка машинная.
+ */
+const UI_DIR = path.resolve(__dirname);
+
+/**
+ * Файлы, которым зашитый цвет разрешён, и ПОЧЕМУ. Список не растёт «потому
+ * что так вышло»: каждая строка — решение, а не умолчание.
+ */
+const HEX_ALLOWED: Record<string, string> = {
+  'QrCode.tsx':
+    'QR-код обязан быть чистым чёрным на чистом белом: сканеры читают его ' +
+    'по контрасту, и токен темы сделал бы код нечитаемым.',
+};
+
+/** Комментарии вырезаются: цвет, НАЗВАННЫЙ в пояснении, ничего не красит. */
+const withoutComments = (source: string): string =>
+  source.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/\/\/[^\n]*/g, ' ');
+
+describe('в компонентах нет цветов мимо токенов', () => {
+  const files = fs
+    .readdirSync(UI_DIR)
+    .filter((name) => /\.tsx?$/.test(name))
+    .filter((name) => !/\.(spec|stories)\.tsx?$/.test(name));
+
+  it('файлы компонентов и правда найдены', () => {
+    // Иначе проверка ниже стала бы пустой и зелёной.
+    expect(files.length).toBeGreaterThan(50);
+  });
+
+  it('литеральных #HEX в коде компонентов нет', () => {
+    const offenders = files.filter((name) => {
+      if (name in HEX_ALLOWED) return false;
+
+      const source = withoutComments(
+        fs.readFileSync(path.join(UI_DIR, name), 'utf8'),
+      );
+
+      return /#[0-9A-Fa-f]{3,8}\b/.test(source);
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
+  it('у каждого исключения записана причина', () => {
+    Object.entries(HEX_ALLOWED).forEach(([name, reason]) => {
+      expect(fs.existsSync(path.join(UI_DIR, name))).toBe(true);
+      // Причина — не отписка: короткое «legacy» ничего не объясняет.
+      expect(reason.length).toBeGreaterThan(40);
+    });
+  });
+});

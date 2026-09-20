@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`«золотые» ответы прежних адресов итоги реестра операций 1`] = `
+{
+  "count": 3,
+  "currencyCode": "RUB",
+  "hasForeignCurrency": false,
+  "inflow": {
+    "amount": 120300.55,
+    "formatted": "120 300,55 ₽",
+  },
+  "net": {
+    "amount": 75200.3,
+    "formatted": "75 200,30 ₽",
+  },
+  "outflow": {
+    "amount": 45100.25,
+    "formatted": "45 100,25 ₽",
+  },
+  "transfers": {
+    "amount": 150000.4,
+    "formatted": "150 000,40 ₽",
+  },
+}
+`;
+
+exports[`«золотые» ответы прежних адресов раскрытие суммы отчёта по счёту 1`] = `
+{
+  "accountId": 7,
+  "accountName": "Выручка",
+  "closingBalance": 260001.8,
+  "currencyCode": "RUB",
+  "formattedClosingBalance": "260 001,80 ₽",
+  "formattedOpeningBalance": "130 000,90 ₽",
+  "formattedTotal": "130 000,90 ₽",
+  "fromDate": "2026-03-01",
+  "isTruncated": false,
+  "openingBalance": 130000.9,
+  "toDate": "2026-03-31",
+  "total": 130000.9,
+  "transactions": [
+    {
+      "amount": 100000.55,
+      "contactName": null,
+      "credit": 100000.55,
+      "date": "2026-03-02",
+      "debit": 0,
+      "formattedAmount": "100 000,55 ₽",
+      "note": null,
+      "referenceNumber": null,
+      "referenceType": null,
+      "transactionNumber": null,
+    },
+    {
+      "amount": 50000.45,
+      "contactName": null,
+      "credit": 50000.45,
+      "date": "2026-03-05",
+      "debit": 0,
+      "formattedAmount": "50 000,45 ₽",
+      "note": null,
+      "referenceNumber": null,
+      "referenceType": null,
+      "transactionNumber": null,
+    },
+    {
+      "amount": -20000.1,
+      "contactName": null,
+      "credit": 0,
+      "date": "2026-03-07",
+      "debit": 20000.1,
+      "formattedAmount": "-20 000,10 ₽",
+      "note": null,
+      "referenceNumber": null,
+      "referenceType": null,
+      "transactionNumber": null,
+    },
+  ],
+  "transactionsCount": 3,
+}
+`;

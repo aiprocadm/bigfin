@@ -5003,5 +5003,12 @@
   "data_quality.drifted_balances.difference": "Разница",
   "data_quality.drifted_balances.hint": "Продукт не исправляет это сам: какая сумма верна, решаете вы. Остаток в счёте мог отстать от проводок, а мог и правильно хранить начальные деньги, которых в проводках нет. Откройте счёт и сверьте его с выпиской банка.",
   "payment_calendar.fact_plan": "факт {fact} · план {plan}",
-  "payment_calendar.period_empty": "В этом периоде движений нет — ни поступлений, ни выплат."
+  "payment_calendar.period_empty": "В этом периоде движений нет — ни поступлений, ни выплат.",
+  "budgets.planfact.column.fact": "Факт",
+  "budgets.planfact.column.completion": "Вып. плана, %",
+  "budgets.planfact.column.varianceAbs": "Откл.",
+  "budgets.planfact.column.variancePct": "Откл., %",
+  "budgets.planfact.col_completion": "Вып. плана, %",
+  "budgets.planfact.needs_fact": "Сначала включите «Факт»: без него это отклонение не от чего считать.",
+  "budgets.planfact.not_applicable": "н/о"
 }

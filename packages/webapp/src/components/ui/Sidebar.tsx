@@ -1,6 +1,6 @@
 import * as React from 'react';
 import intl from 'react-intl-universal';
-import { LucideIcon } from 'lucide-react';
+import { ChevronDown, LucideIcon } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
 
@@ -30,6 +30,32 @@ interface SidebarProps {
   className?: string;
 }
 
+/**
+ * Боковое меню.
+ *
+ * ГЛАВНАЯ РАБОТА МЕНЮ — показывать, ГДЕ ТЫ НАХОДИШЬСЯ. Всё остальное вторично:
+ * список ссылок человек и так найдёт, а вот потерявшись, он теряет доверие ко
+ * всему экрану.
+ *
+ * ЗАМЕР ДО ПЕРЕДЕЛКИ (20.09, живой проход): 36 пунктов, высота 1710 точек при
+ * 843 видимых, и текущий пункт ТОГО ЖЕ ЦВЕТА, что остальные, — `rgb(0,82,204)`.
+ * Отличие было только в жирности: 600 против 500.
+ *
+ * ПОЧЕМУ ЦВЕТ НЕ РАБОТАЛ. Blueprint красит ВСЕ ссылки правилом `a, a:hover`, и
+ * это правило вне слоёв. Незаслоённое правило побеждает `@layer utilities`
+ * независимо от специфичности — значит классы цвета на ссылках молча не
+ * применялись вовсе. Лечение — в `globals.css`, там же и разбор.
+ *
+ * ТЕКУЩИЙ ПУНКТ РАЗЛИЧАЕТСЯ ПОВЕРХНОСТЬЮ, А НЕ КРАСКОЙ: белая «таблетка» на
+ * серой панели, чернила вместо приглушённого, полужирный вместо обычного —
+ * три отличия сразу, и ни одного нового цвета.
+ *
+ * ЖЁЛТОГО В МЕНЮ НЕТ, и это осознанно. Правило продукта: фирменный жёлтый
+ * метит ОДИН смысловой момент на экране. На главной он уже стоит на точке
+ * «сегодня» в ленте денег. Полоска в меню давала бы второй жёлтый момент — и
+ * правило переставало бы работать. Убрать акцент, чтобы акцент остался
+ * акцентом.
+ */
 export const Sidebar = ({
   items,
   groups,
@@ -51,22 +77,144 @@ export const Sidebar = ({
         className,
       )}
     >
-      {resolvedGroups.map((group, gi) => (
-        <div
-          key={gi}
+      {(() => {
+        // Когда текущая страница НЕ внутри раздела — а «Главная» именно
+        // такая, — открытым остаётся первый раздел.
+        //
+        // Замер после первой сборки: на главной не был раскрыт ни один
+        // раздел, и человек видел один пункт и семь закрытых заголовков.
+        // Это перебор: до ежедневной работы («Операции» — разнести
+        // вчерашнее) стало на клик дальше, чем было.
+        const activeInsideGroup = resolvedGroups.some(
+          (group) =>
+            group.title &&
+            group.items.some(
+              (item) => item.href === activeHref || item.active,
+            ),
+        );
+        const firstTitled = resolvedGroups.findIndex((group) => group.title);
+
+        return resolvedGroups.map((group, gi) => (
+          <SidebarGroup
+            key={gi}
+            group={group}
+            activeHref={activeHref}
+            mini={mini}
+            onItemClick={onItemClick}
+            isFirst={gi === 0}
+            openByDefault={!activeInsideGroup && gi === firstTitled}
+          />
+        ));
+      })()}
+    </nav>
+  );
+};
+
+interface SidebarGroupProps {
+  group: SidebarGroupData;
+  activeHref?: string;
+  mini?: boolean;
+  onItemClick?: (item: SidebarItemData) => void;
+  isFirst: boolean;
+  /** Раскрыть, даже если текущей страницы внутри нет. */
+  openByDefault?: boolean;
+}
+
+/**
+ * Раздел меню.
+ *
+ * РАЗДЕЛЫ СВОРАЧИВАЮТСЯ, И ОТКРЫТ ТОТ, В КОТОРОМ ТЫ СЕЙЧАС. Меню было вдвое
+ * длиннее экрана: 1710 точек при 843 видимых, половина за краем.
+ *
+ * Свёрнутый раздел остаётся ВИДИМОЙ ПОДПИСЬЮ, а не исчезает: у продукта уже
+ * была беда «страница есть, а кликнуть негде» — ради неё написан отдельный
+ * сторож достижимости. Прятать пункты совсем значит повторить её руками.
+ */
+const SidebarGroup = ({
+  group,
+  activeHref,
+  mini,
+  onItemClick,
+  isFirst,
+  openByDefault = false,
+}: SidebarGroupProps) => {
+  const hasActive = group.items.some(
+    (item) => item.href === activeHref || item.active,
+  );
+
+  // Раздел с текущей страницей открыт всегда — даже если человек его закрывал.
+  // Закрытый раздел, в котором ты находишься, прячет ответ на главный вопрос
+  // меню.
+  const [openedByHand, setOpenedByHand] = React.useState<boolean | null>(null);
+  const open = hasActive || (openedByHand ?? openByDefault);
+
+  // У раздела без заголовка сворачивать нечего: это отдельно стоящий пункт
+  // («Главная»), и заголовка у него нет по устройству меню.
+  if (!group.title || mini) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col gap-0.5',
+          // Линии между разделами убраны: восемь разделов давали семь
+          // горизонталей подряд — забор. Структуру держат заголовки и
+          // воздух; линия была нужна, пока заголовок был такой же тихой
+          // строкой, как пункты.
+          !isFirst && 'mt-1',
+        )}
+      >
+        {group.items.map((item) => (
+          <SidebarItem
+            key={item.href}
+            item={item}
+            active={item.href === activeHref || item.active}
+            mini={mini}
+            onClick={onItemClick}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn('flex flex-col', !isFirst && 'mt-1')}
+    >
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpenedByHand(!open)}
+        className={cn(
+          'mx-2 flex items-center gap-2 rounded-control px-3 py-2 text-left text-[0.8125rem] font-medium transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
+          // Заголовок раздела с текущей страницей — чернилами: он часть
+          // ответа «где я».
+          //
+          // ОСТАЛЬНЫЕ — ПРИГЛУШЁННЫЙ ТЕКСТ, А НЕ САМЫЙ БЛЕДНЫЙ. Посчитал
+          // контраст: #8C95A3 на панели #F6F7F9 даёт 2,82:1 при норме 4,5:1.
+          // Раньше под заголовком всегда стояли пункты и вытягивали раздел;
+          // теперь у свёрнутого раздела заголовок — ЕДИНСТВЕННОЕ, что видно,
+          // и читаться он обязан. #5B6472 даёт 5,58:1.
+          hasActive
+            ? 'text-text-primary'
+            : 'text-text-secondary hover:text-text-primary',
+        )}
+      >
+        <ChevronDown
+          aria-hidden
           className={cn(
-            'flex flex-col gap-0.5',
-            // Секции разделяются волосяной линией и воздухом, а не
-            // заголовком ПРОПИСНЫМИ вразрядку: такой заголовок кричит
-            // громче самих пунктов, ради которых он и стоит.
-            gi > 0 && 'mt-3 border-t border-border pt-3',
+            'h-3.5 w-3.5 shrink-0 transition-transform duration-150',
+            // Поворот, а не две разные стрелки: движение показывает, ЧТО
+            // изменилось, и отвечает на нажатие человека.
+            open ? 'rotate-0' : '-rotate-90',
           )}
-        >
-          {group.title && !mini && (
-            <div className="mx-2 mb-1 px-3 text-[0.8125rem] font-medium text-text-muted">
-              {group.title}
-            </div>
-          )}
+        />
+        <span className="truncate">{group.title}</span>
+      </button>
+
+      {open && (
+        // Отступ равен ширине стрелки с промежутком: текст пункта встаёт
+        // ровно под текст заголовка, и видно, чему пункт принадлежит.
+        <div className="flex flex-col gap-0.5 pl-[1.375rem]">
           {group.items.map((item) => (
             <SidebarItem
               key={item.href}
@@ -77,8 +225,8 @@ export const Sidebar = ({
             />
           ))}
         </div>
-      ))}
-    </nav>
+      )}
+    </div>
   );
 };
 
@@ -117,19 +265,14 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
         'relative mx-2 flex min-h-11 items-center gap-3 rounded-control px-3 py-2 text-sm no-underline transition-colors md:min-h-0',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
         active
-          ? 'bg-surface font-semibold text-text-primary'
-          : 'font-medium text-text-secondary hover:bg-surface hover:text-text-primary',
+          ? // ТЕКУЩИЙ ПУНКТ — БЕЛАЯ ТАБЛЕТКА НА СЕРОЙ ПАНЕЛИ. Контраст
+            // поверхности, а не цвета: ни одного нового оттенка, а видно
+            // мгновенно. Плюс чернила и полужирный — три отличия сразу.
+            'bg-surface font-semibold text-text-primary shadow-[0_1px_2px_rgba(16,24,40,0.06)]'
+          : 'font-medium text-text-secondary hover:bg-surface/70 hover:text-text-primary',
         mini && 'justify-center',
       )}
     >
-      {/* Текущий раздел отмечен полосой у самого края панели, а не точкой
-          справа: полоса видна и в узком режиме, где подписи нет вовсе. */}
-      {active && (
-        <span
-          aria-hidden
-          className="absolute -left-2 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-accent"
-        />
-      )}
       {Icon && <Icon className="h-[1.125rem] w-[1.125rem] shrink-0" aria-hidden />}
       {!mini && <span className="truncate">{item.label}</span>}
       {!mini && count !== null && (

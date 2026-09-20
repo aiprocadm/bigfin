@@ -1,5 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { setDisplayPreferences } from '@/utils/displayPreferences';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import useApiRequest from '@/hooks/useRequest';
@@ -39,12 +40,18 @@ export default function DisplayPreferencesPage() {
     (values: Record<string, unknown>) =>
       (apiRequest as any).put('settings/display-preferences', values),
     {
-      onSuccess: () => {
+      onSuccess: (_result: any, values: Record<string, unknown>) => {
+        // СРАЗУ ПРИМЕНЯЕМ К ПЕЧАТИ СУММ. Без этого галочка сохранялась и
+        // не меняла ничего до следующего входа: печать денег читает свой
+        // модуль, а не запрос (FIN-026).
+        setDisplayPreferences(values);
         client.invalidateQueries([KEY]);
         // Настройки меняют вид денег по всему продукту: виджет в шапке и
         // отчёты обязаны перерисоваться, иначе человек увидит копейки там,
         // где только что их выключил.
         client.invalidateQueries(['DASHBOARD_MONEY_WIDGET']);
+        client.invalidateQueries(['DASHBOARD_OVERVIEW']);
+        client.invalidateQueries(['DASHBOARD_MONEY_SUMMARY']);
       },
     },
   );

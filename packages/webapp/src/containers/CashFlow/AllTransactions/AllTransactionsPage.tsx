@@ -32,6 +32,13 @@ import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
 import { BulkActionsBar } from './BulkActionsBar';
 import {
+  DEFAULT_REGISTRY_COLUMNS,
+  OPTIONAL_COLUMNS,
+  RegistryColumnsState,
+  toggleRegistryColumn,
+  visibleRegistryColumns,
+} from './registryColumns';
+import {
   defaultPeriod,
   filtersFromSearch,
   searchFromFilters,
@@ -139,7 +146,16 @@ export default function AllTransactionsPage() {
   const total = (data as any)?.pages?.[0]?.pagination?.total ?? 0;
   const awaitingTotal = (awaitingData as any)?.pages?.[0]?.pagination?.total ?? 0;
 
-  const columns = useAllTransactionsColumns();
+  // СОСТАВ КОЛОНОК (T-34 ТЗ-2). «Дата» и «Сумма» не снимаются: список
+  // операций без них перестаёт быть списком операций.
+  const [columnsVisible, setColumnsVisible] =
+    React.useState<RegistryColumnsState>(DEFAULT_REGISTRY_COLUMNS);
+
+  const allColumns = useAllTransactionsColumns();
+  const columns = React.useMemo(
+    () => visibleRegistryColumns(allColumns as any[], columnsVisible),
+    [allColumns, columnsVisible],
+  );
   const awaitingColumns = useUncategorizedColumns(chartAccounts as any[]);
 
   // Что показываем сейчас — обычный список или «ждут разноски».
@@ -291,6 +307,32 @@ export default function AllTransactionsPage() {
                 </SelectItem>
               </SelectContent>
             </Select>
+
+            {/* СОСТАВ КОЛОНОК (T-34). Обязательных здесь нет вовсе: их
+                нельзя снять, и показывать заблокированную галочку значит
+                предлагать то, чего сделать нельзя. */}
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              <span className="text-text-secondary">
+                {intl.get('all_transactions.columns.label')}
+              </span>
+              {OPTIONAL_COLUMNS.map((columnId) => (
+                <label
+                  key={columnId}
+                  className="flex min-h-[44px] items-center gap-1.5"
+                >
+                  <input
+                    type="checkbox"
+                    checked={columnsVisible[columnId] !== false}
+                    onChange={() =>
+                      setColumnsVisible((current) =>
+                        toggleRegistryColumn(current, columnId),
+                      )
+                    }
+                  />
+                  {intl.get(`all_transactions.column.${columnId}`)}
+                </label>
+              ))}
+            </div>
 
             {/*
               ОТБОР ПО СОСТОЯНИЮ (FIN-003, T-32). Расчёт состояний и бейджи

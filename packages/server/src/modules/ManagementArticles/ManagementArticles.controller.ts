@@ -24,6 +24,8 @@ import {
   EditManagementArticleDto,
 } from './dtos/ManagementArticle.dto';
 import { GetManagementArticlesQueryDto } from './dtos/GetManagementArticlesQuery.dto';
+import { GetArticleReportMapQueryDto } from './dtos/GetArticleReportMapQuery.dto';
+import { GetArticleReportMapService } from './queries/GetArticleReportMap.service';
 import { ManagementArticleResponseDto } from './dtos/ManagementArticleResponse.dto';
 import { ArticlesRollupQueryDto } from './dtos/ArticlesRollupQuery.dto';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
@@ -45,6 +47,7 @@ import { AccountAction } from '@/interfaces/Account';
 export class ManagementArticlesController {
   constructor(
     private readonly application: ManagementArticlesApplication,
+    private readonly reportMap: GetArticleReportMapService,
   ) {}
 
   @Post()
@@ -66,6 +69,14 @@ export class ManagementArticlesController {
   })
   getManagementArticles(@Query() filterDto: GetManagementArticlesQueryDto) {
     return this.application.getManagementArticles(filterDto);
+  }
+
+  @Get('report-map')
+  @ApiOperation({
+    summary: 'Куда попадает статья: схема трёх отчётов с подсветкой.',
+  })
+  getReportMap(@Query() query: GetArticleReportMapQueryDto) {
+    return this.reportMap.getReportMap(query);
   }
 
   @Get('pl-rollup')

@@ -81,7 +81,7 @@ export class GetPaymentCalendarForecastService {
     const flows = this.groupByDay(lines, fromDate, toDate);
     const linesByDay = this.indexLinesByDay(lines);
 
-    const { days, gap } = computeRunningBalance(openingBalance, flows);
+    const { days, gap, gaps } = computeRunningBalance(openingBalance, flows);
     days.forEach((day) => {
       day.lines = linesByDay[day.date] || [];
     });
@@ -94,6 +94,7 @@ export class GetPaymentCalendarForecastService {
       toDate,
       days,
       gap,
+      gaps,
     };
   }
 

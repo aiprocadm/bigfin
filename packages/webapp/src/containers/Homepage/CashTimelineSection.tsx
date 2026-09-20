@@ -8,23 +8,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Features } from '@/constants/features';
 import { useFeatureCan } from '@/hooks/state';
 import { usePaymentCalendar } from '@/hooks/query/paymentCalendar';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formatDayMonth } from '@/utils/formatDayMonth';
 
 import { useMoneySummary } from './useMoneySummary';
 
 /** Насколько вперёд смотрит лента. Месяц — горизонт, которым живёт владелец. */
 const HORIZON_DAYS = 30;
-
-/** «2026-10-14» → «14 октября» на языке интерфейса. */
-const formatDay = (isoDate: string): string => {
-  const parsed = new Date(isoDate);
-
-  if (Number.isNaN(parsed.getTime())) return isoDate;
-
-  return new Intl.DateTimeFormat(
-    intl.getInitOptions?.()?.currentLocale || 'ru',
-    { day: 'numeric', month: 'long' },
-  ).format(parsed);
-};
 
 /**
  * Герой главной — лента денег.
@@ -77,15 +67,36 @@ export default function CashTimelineSection() {
     })) ?? [];
 
   const gap = forecast?.gap ?? null;
+  const lastDay = points.length > 0 ? points[points.length - 1] : null;
+
+  /**
+   * ВЕРДИКТ СЛОВАМИ — то, ради чего человек открывает главную.
+   *
+   * Продукт ЗНАЛ ответ и молчал: сервер считает разрыв, а на экране об этом
+   * не было ни слова. График показывает путь, но путь читают глазами и с
+   * ошибкой; фразу читают.
+   */
+  const verdict = gap
+    ? intl.get('cash_timeline.verdict_gap', {
+        date: formatDayMonth(gap.date),
+        amount: formatOrganizationMoney(Math.abs(Number(gap.amount ?? 0))),
+      })
+    : lastDay
+      ? intl.get('cash_timeline.verdict_ok', { date: formatDayMonth(lastDay.date) })
+      : null;
 
   return (
     <CashTimeline
       balanceFormatted={summary.cashBalance.formattedAmount}
       points={points}
-      gapDate={gap?.date ?? null}
-      gapNote={
-        gap ? intl.get('cash_timeline.gap_note', { date: formatDay(gap.date) }) : null
+      verdict={verdict}
+      verdictIsProblem={Boolean(gap)}
+      lastFormatted={
+        lastDay ? formatOrganizationMoney(lastDay.balance) : null
       }
+      lastDayLabel={lastDay ? formatDayMonth(lastDay.date) : null}
+      formatHoverDay={formatDayMonth}
+      formatHoverAmount={formatOrganizationMoney}
       fallback={
         <p className="mt-4 max-w-[60ch] text-sm text-text-secondary">
           {calendarOn

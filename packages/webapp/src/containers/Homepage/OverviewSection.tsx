@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { ArrowDownRight, ArrowUpRight, TrendingUp, Wallet } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
@@ -53,7 +53,12 @@ export function isGoodChange(
   tone: 'income' | 'expense' | undefined,
   changePercent: number,
 ): boolean {
-  return tone === 'expense' ? changePercent < 0 : changePercent >= 0;
+  // НОЛЬ — НЕ ХОРОШАЯ НОВОСТЬ, А ОТСУТСТВИЕ НОВОСТИ. Раньше «+0 %» красился
+  // зелёным: под убытком в 20 000 ₽ стояла зелёная подпись, и это читалось
+  // как поздравление. Ничего не изменилось — значит и красить нечего.
+  if (changePercent === 0) return false;
+
+  return tone === 'expense' ? changePercent < 0 : changePercent > 0;
 }
 
 interface TileProps {
@@ -71,23 +76,37 @@ interface TileProps {
  * построчно (приёмка п. 2.4 ТЗ).
  */
 function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileProps) {
+  // Ноль определяем ПО ТЕКСТУ суммы: сервер отдаёт её уже отформатированной,
+  // числа рядом нет. Годятся любые разделители — и «0,00 ₽», и «0.00».
+  const hasValue = /[1-9]/.test(String(value ?? ''));
+
   return (
     <Link
       to={to}
-      className="rounded-default border border-border bg-surface p-4 transition-colors hover:border-action hover:bg-surface-elevated"
+      /*
+        НЕ КАРТОЧКА. Рамка вокруг каждого показателя делала их равными по весу
+        герою страницы — ленте денег, — а четыре одинаковые карточки в ряд это
+        и есть типовой набор «панели показателей», который ничего не
+        подчёркивает.
+        Здесь показатели живут колонками на одной линии: они ПОДЧИНЕНЫ герою и
+        читаются как строка сравнения периода, а не как четыре объекта.
+      */
+      className="group -mx-2 rounded-control px-2 py-2 transition-colors hover:bg-surface-elevated"
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <span className="truncate text-sm text-text-secondary">{label}</span>
+      <div className="mb-1 flex items-center gap-2">
         <Icon className="h-4 w-4 shrink-0 text-text-muted" />
+        <span className="truncate text-sm text-text-secondary">{label}</span>
       </div>
       <div
         className={cn(
           'text-xl font-semibold tracking-[-0.01em] tabular-nums sm:text-2xl',
-          tone === 'income' && 'text-success',
+          // Зелёный — только у НАСТОЯЩЕГО прихода. «0,00 ₽» зелёным значит
+          // «денег не пришло, и это хорошо».
+          tone === 'income' && hasValue && 'text-success',
           // РАСХОД НЕ КРАСНЫЙ. Расходы за период — работа бизнеса, а не
           // авария; красный оставлен настоящим бедам.
           tone === 'expense' && 'text-text-primary',
-          !tone && 'text-text-primary',
+          (!tone || !hasValue) && 'text-text-primary',
         )}
       >
         {value}
@@ -201,13 +220,22 @@ export default function OverviewSection() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Tile
-          label={intl.get('dashboard.tile.cash')}
-          value={tiles.cashBalance.formattedAmount}
-          icon={Wallet}
-          to="/cashflow-accounts"
-        />
+      {/*
+        ПЛИТКИ «ДЕНЬГИ НА СЧЕТАХ» ЗДЕСЬ БОЛЬШЕ НЕТ, и на то две причины.
+
+        Первая: она дословно повторяла число героя страницы — остаток на
+        счетах уже написан крупно двумя блоками выше.
+
+        Вторая важнее. Плитка стояла ПОД переключателем «Месяц / Квартал /
+        Год», но остаток на счетах — величина на дату, а не за период: при
+        любом выборе в ней было одно и то же число. Человек жал «Квартал»,
+        ничего не менялось, и это читалось как поломка. Проверено на стенде:
+        месяц, квартал и год давали ровно 1 749 839,09 ₽.
+
+        Показатели ниже — настоящие величины за период, и переключатель на них
+        и правда влияет.
+      */}
+      <div className="grid grid-cols-2 gap-x-6 gap-y-5 border-t border-border pt-5 lg:grid-cols-3">
         <Tile
           label={intl.get('dashboard.tile.income')}
           value={tiles.income.formattedAmount}

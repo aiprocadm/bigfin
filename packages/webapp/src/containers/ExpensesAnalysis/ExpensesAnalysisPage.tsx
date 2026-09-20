@@ -23,6 +23,8 @@ import { ScreenError } from '@/components/ui/screen-error';
 import { pickScreenState } from '@/components/ui/screen-state';
 import { cn } from '@/lib/cn';
 
+import { formatMonthYear } from '@/utils/formatDayMonth';
+
 import {
   buildSplitRows,
   chartablePoints,
@@ -218,9 +220,10 @@ export default function ExpensesAnalysisPage() {
                 {/* recharts типизирует подписи как ReactNode — приводим сами. */}
                 <Tooltip
                   formatter={(value: any) => percent(value)}
-                  labelFormatter={(month: any) =>
-                    moment(String(month), 'YYYY-MM').format('MMMM YYYY')
-                  }
+                  /* БЫЛО `moment(...).format('MMMM YYYY')` и давало
+                     «October 2026» в русском интерфейсе: месяц брался из
+                     глобальной локали. */
+                  labelFormatter={(month: any) => formatMonthYear(month)}
                 />
                 <Line
                   type="monotone"

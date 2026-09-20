@@ -4,7 +4,7 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ManagementArticle } from '../models/ManagementArticle.model';
 import { ManagementArticleAccount } from '../models/ManagementArticleAccount.model';
-import { ERRORS } from '../constants';
+import { BALANCE_ARTICLE_KINDS, ERRORS } from '../constants';
 
 @Injectable()
 export class CommandManagementArticleValidatorService {
@@ -106,6 +106,31 @@ export class CommandManagementArticleValidatorService {
     if (!costBehavior) return;
     if (kind !== 'expense') {
       throw new ServiceError(ERRORS.COST_BEHAVIOR_ONLY_FOR_EXPENSE);
+    }
+  }
+
+  /**
+   * У балансовой статьи раздел движения денег ОБЯЗАТЕЛЕН.
+   *
+   * ЗАЧЕМ. Балансовых статей нет в отчёте о прибыли — их единственное место
+   * в отчётности это ДДС, а там строка встаёт по разделу: операционный,
+   * инвестиционный или финансовый. Статья без раздела не попадёт никуда: она
+   * будет видна в справочнике, ею можно будет разметить платёж, и сумма
+   * тихо исчезнет из всех отчётов сразу.
+   *
+   * У доходов и расходов раздел остаётся необязательным — у них есть ОПиУ,
+   * и требовать его задним числом значило бы сломать существующие статьи.
+   */
+  public validateCashflowSectionPresence(
+    kind: string,
+    cashflowSection?: string | null,
+  ) {
+    const isBalanceKind = (BALANCE_ARTICLE_KINDS as readonly string[]).includes(
+      kind,
+    );
+
+    if (isBalanceKind && !cashflowSection) {
+      throw new ServiceError(ERRORS.CASHFLOW_SECTION_REQUIRED);
     }
   }
 

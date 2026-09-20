@@ -6,6 +6,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ManagementArticle } from '../models/ManagementArticle.model';
 import { ManagementArticleAccount } from '../models/ManagementArticleAccount.model';
 import { ArticlesRollupQueryDto } from '../dtos/ArticlesRollupQuery.dto';
+import { PL_ARTICLE_KINDS } from '../constants';
 
 interface ArticleRollupRow {
   id: number;
@@ -222,7 +223,23 @@ export class ArticlesPlRollupService {
     folded: ArticleRollupRow[];
     unmapped: UnmappedTotals;
   }> {
-    const articles = await this.articleModel().query().orderBy('sortOrder');
+    // ТОЛЬКО ДОХОДЫ И РАСХОДЫ (правило 1 FIN-001 ТЗ-2).
+    //
+    // С этапа 17 статья бывает пяти видов, и три из них — балансовые:
+    // активы, обязательства, капитал. Взнос учредителя не выручка, покупка
+    // станка не расход, погашение кредита не убыток. Попади они сюда —
+    // поехали бы разом ПЯТЬ расчётов, которые зовут эту свёртку: точка
+    // безубыточности, рентабельность сделок, распределение накладных,
+    // капитализация и ответы ИИ-аналитика. Причём поехали бы ТИХО: строки
+    // выглядели бы как обычные статьи, а прибыль стала бы другой.
+    //
+    // Отбор стоит здесь, в одном месте сборки, а не у каждого потребителя:
+    // потребитель, который о нём не знает, — это ошибка, которая ждёт
+    // своего дня.
+    const articles = await this.articleModel()
+      .query()
+      .whereIn('kind', PL_ARTICLE_KINDS as unknown as string[])
+      .orderBy('sortOrder');
     const map = await this.articleAccountModel().query();
 
     const accountTotals = await this.accountTransactionModel()

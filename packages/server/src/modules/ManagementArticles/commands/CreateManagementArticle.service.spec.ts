@@ -14,6 +14,7 @@ describe('CreateManagementArticleService', () => {
       validateKindMatchesParent: jest.fn().mockResolvedValue(undefined),
       // Пометка «постоянный / переменный» — проверка синхронная (этап 9 ТЗ).
       validateCostBehaviorMatchesKind: jest.fn(),
+      validateCashflowSectionPresence: jest.fn(),
       validateAccountsExist: jest.fn().mockResolvedValue(undefined),
       validateAccountsMatchKind: jest.fn().mockResolvedValue(undefined),
       validateAccountsNotMapped: jest.fn().mockResolvedValue(undefined),

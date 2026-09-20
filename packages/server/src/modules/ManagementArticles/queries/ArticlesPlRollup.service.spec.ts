@@ -116,7 +116,9 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
     };
 
     const articleModel = () => ({
-      query: () => ({ orderBy: () => Promise.resolve([]) }),
+      query: () => ({
+        whereIn: () => ({ orderBy: () => Promise.resolve([]) }),
+      }),
     });
     const articleAccountModel = () => ({ query: () => Promise.resolve([]) });
     const accountTransactionModel = () => ({ query: () => txnBuilder });
@@ -193,7 +195,9 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
       },
     };
     const articleModel = () => ({
-      query: () => ({ orderBy: () => Promise.resolve([]) }),
+      query: () => ({
+        whereIn: () => ({ orderBy: () => Promise.resolve([]) }),
+      }),
     });
     const articleAccountModel = () => ({ query: () => Promise.resolve([]) });
     const accountTransactionModel = () => ({ query: () => txnBuilder });

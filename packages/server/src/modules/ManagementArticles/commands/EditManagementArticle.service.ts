@@ -44,6 +44,10 @@ export class EditManagementArticleService {
     await this.validator.validateNoParentCycle(articleId, dto.parentId);
     await this.validator.validateKindMatchesParent(dto.kind, dto.parentId);
     await this.validator.validateChildrenMatchKind(articleId, dto.kind);
+    this.validator.validateCashflowSectionPresence(
+      dto.kind,
+      dto.cashflowSection,
+    );
     this.validator.validateCostBehaviorMatchesKind(
       dto.kind,
       dto.costBehavior,

@@ -35,6 +35,10 @@ export class CreateManagementArticleService {
     await this.validator.validateNameUniqueness(dto.name);
     await this.validator.validateParentExists(dto.parentId);
     await this.validator.validateKindMatchesParent(dto.kind, dto.parentId);
+    this.validator.validateCashflowSectionPresence(
+      dto.kind,
+      dto.cashflowSection,
+    );
     this.validator.validateCostBehaviorMatchesKind(
       dto.kind,
       dto.costBehavior,

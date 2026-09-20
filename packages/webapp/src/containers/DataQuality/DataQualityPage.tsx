@@ -9,6 +9,7 @@ import { PlCashflowTab } from './PlCashflowTab';
 import { UnbalancedTab } from './UnbalancedTab';
 import { CrookedCurrencyTab } from './CrookedCurrencyTab';
 import { FailedMailsTab } from './FailedMailsTab';
+import { DriftedBalancesTab } from './DriftedBalancesTab';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type TabKey =
@@ -17,6 +18,7 @@ type TabKey =
   | 'pl_cashflow'
   | 'unbalanced'
   | 'crooked_currency'
+  | 'drifted_balances'
   | 'failed_mails';
 
 const TABS: { key: TabKey; label: string }[] = [
@@ -25,6 +27,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'pl_cashflow', label: 'data_quality.tab.pl_cashflow' },
   { key: 'unbalanced', label: 'data_quality.tab.unbalanced' },
   { key: 'crooked_currency', label: 'data_quality.tab.crooked_currency' },
+  { key: 'drifted_balances', label: 'data_quality.tab.drifted_balances' },
   { key: 'failed_mails', label: 'data_quality.tab.failed_mails' },
 ];
 
@@ -103,6 +106,10 @@ export default function DataQualityPage() {
       {tab === 'crooked_currency' && (
         <CrookedCurrencyTab fromDate={fromDate} toDate={toDate} />
       )}
+      {/* Остаток счёта сравнивается со ВСЕМИ проводками, а не за год:
+          колонка хранит текущее состояние, у него периода нет. */}
+      {tab === 'drifted_balances' && <DriftedBalancesTab />}
+
       {/* Сводка всегда за 7 дней — годовой фильтр к ней не относится. */}
       {tab === 'failed_mails' && <FailedMailsTab />}
     </div>

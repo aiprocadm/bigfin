@@ -17,6 +17,7 @@ import { GetPossibleDuplicatesService } from './queries/GetPossibleDuplicates.se
 import { GetPlCashflowComparisonService } from './queries/GetPlCashflowComparison.service';
 import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
 import { GetFailedMailsService } from './queries/GetFailedMails.service';
+import { GetDriftedBalancesService } from './queries/GetDriftedBalances.service';
 import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service';
 import { GetCrookedCurrencyJournalsService } from './queries/GetCrookedCurrencyJournals.service';
 import { RepostCrookedCurrencyJournalsService } from './commands/RepostCrookedCurrencyJournals.service';
@@ -43,6 +44,7 @@ import { ManualJournalGLEntries } from '@/modules/ManualJournals/commands/Manual
     GetPlCashflowComparisonService,
     GetUnbalancedJournalsService,
     GetFailedMailsService,
+    GetDriftedBalancesService,
     RepostVatDocumentsService,
     GetCrookedCurrencyJournalsService,
     RepostCrookedCurrencyJournalsService,

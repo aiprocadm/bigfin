@@ -83,6 +83,16 @@ export class DataQualityController {
     return this.application.getUnbalancedJournals(query);
   }
 
+  @Get('drifted-balances')
+  @ApiOperation({
+    summary:
+      'Cash accounts whose stored balance drifted from their ledger entries.',
+  })
+  async getDriftedBalances() {
+    await this.assertEnabled();
+    return this.application.getDriftedBalances();
+  }
+
   @Get('failed-mails')
   @ApiOperation({
     summary: 'Mails that finally failed to deliver during the last 7 days.',

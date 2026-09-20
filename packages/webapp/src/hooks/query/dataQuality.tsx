@@ -55,6 +55,26 @@ export function useDataQualityFailedMails(props?: any) {
   );
 }
 
+/**
+ * Счета, у которых хранимый остаток разошёлся с проводками.
+ *
+ * Продукт держит остаток дважды: в колонке счёта (её показывает шапка) и в
+ * проводках (по ним строятся отчёты). Пока они совпадают, о двойственности
+ * никто не думает; когда расходятся — экраны спорят друг с другом, и это
+ * надо видеть.
+ */
+export function useDataQualityDriftedBalances(props?: any) {
+  return useRequestQuery(
+    [t.DATA_QUALITY_DRIFTED_BALANCES],
+    { method: 'get', url: 'data-quality/drifted-balances' },
+    {
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
+      defaultData: { rows: [], totalDifference: 0 },
+      ...props,
+    },
+  );
+}
+
 /** Документы, у которых дебет не сошёлся с кредитом. */
 export function useDataQualityUnbalanced(
   query: DataQualityPeriodQuery,

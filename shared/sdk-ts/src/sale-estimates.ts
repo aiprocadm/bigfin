@@ -11,8 +11,10 @@ export const SALE_ESTIMATES_ROUTES = {
   DELIVER: '/api/sale-estimates/{id}/deliver',
   APPROVE: '/api/sale-estimates/{id}/approve',
   REJECT: '/api/sale-estimates/{id}/reject',
-  NOTIFY_SMS: '/api/sale-estimates/{id}/notify-sms',
-  SMS_DETAILS: '/api/sale-estimates/{id}/sms-details',
+  // Отправки коммерческого предложения по SMS на сервере НЕТ: ни ручки
+  // `notify-sms`, ни `sms-details` в коде не существует. Они остались здесь
+  // с тех пор, когда перегенерация SDK была выключена, и обёртка молча
+  // расходилась с сервером. Убраны вместе с их вызовами (этап 16 ТЗ-2).
   MAIL: '/api/sale-estimates/{id}/mail',
 } as const satisfies Record<string, keyof paths>;
 
@@ -97,24 +99,6 @@ export async function approveSaleEstimate(fetcher: ApiFetcher, id: number): Prom
 export async function rejectSaleEstimate(fetcher: ApiFetcher, id: number): Promise<void> {
   const put = fetcher.path(SALE_ESTIMATES_ROUTES.REJECT).method('put').create();
   await put({ id });
-}
-
-export async function notifySaleEstimateBySms(
-  fetcher: ApiFetcher,
-  id: number,
-  body?: Record<string, unknown>
-): Promise<void> {
-  const post = fetcher.path(SALE_ESTIMATES_ROUTES.NOTIFY_SMS).method('post').create();
-  await post({ id, ...(body ?? {}) } as never);
-}
-
-export async function fetchSaleEstimateSmsDetails(
-  fetcher: ApiFetcher,
-  id: number
-): Promise<unknown> {
-  const get = fetcher.path(SALE_ESTIMATES_ROUTES.SMS_DETAILS).method('get').create();
-  const { data } = await get({ id });
-  return data;
 }
 
 export async function fetchSaleEstimateMail(fetcher: ApiFetcher, id: number): Promise<unknown> {

@@ -9,6 +9,7 @@ import { DeleteManagementArticleService } from './commands/DeleteManagementArtic
 import { GetManagementArticleService } from './queries/GetManagementArticle.service';
 import { GetManagementArticlesService } from './queries/GetManagementArticles.service';
 import { ArticlesPlRollupService } from './queries/ArticlesPlRollup.service';
+import { ArticlesCashflowRollupService } from './queries/ArticlesCashflowRollup.service';
 
 @Module({
   imports: [TenancyDatabaseModule],
@@ -22,7 +23,10 @@ import { ArticlesPlRollupService } from './queries/ArticlesPlRollup.service';
     GetManagementArticleService,
     GetManagementArticlesService,
     ArticlesPlRollupService,
+    ArticlesCashflowRollupService,
   ],
-  exports: [ArticlesPlRollupService],
+  // Свёртка по статьям — и по начислению, и по деньгам — принадлежит статьям.
+  // Бюджеты берут расчёт отсюда, а не держат его у себя (этап 16 ТЗ-2).
+  exports: [ArticlesPlRollupService, ArticlesCashflowRollupService],
 })
 export class ManagementArticlesModule {}

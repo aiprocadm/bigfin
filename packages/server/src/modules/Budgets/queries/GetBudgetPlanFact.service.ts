@@ -4,7 +4,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { Budget } from '../models/Budget.model';
 import { BudgetLine } from '../models/BudgetLine.model';
-import { ArticlesCashflowRollupService } from './ArticlesCashflowRollup.service';
+import { ArticlesCashflowRollupService } from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
 import { GetBudgetPlanFactQueryDto } from '../dtos/GetBudgetPlanFactQuery.dto';
 import { PlanFactResponse, PlanFactRow } from '../Budgets.interfaces';
 import { computeVariance } from '../utils/computeVariance';

@@ -8,6 +8,7 @@ import { Plus } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArticleTree } from './ArticleTree';
+import { ArticleReportMap } from './ArticleReportMap';
 import { ArticleForm } from './ArticleForm';
 import { ArticleKind, ManagementArticle } from './schemas';
 import {
@@ -42,6 +43,17 @@ export default function ManagementArticlesPage() {
     undefined,
   );
   const [showForm, setShowForm] = React.useState(false);
+  /**
+   * Что показывать: дерево статей или схему «куда попадает».
+   *
+   * Отдельной вкладкой, а не рядом: на телефоне три карточки схемы рядом с
+   * деревом не помещаются, и страница поехала бы вбок.
+   */
+  const [view, setView] = React.useState<'tree' | 'map'>('tree');
+  /** Статья, для которой показывается схема. */
+  const [mapArticleId, setMapArticleId] = React.useState<number | undefined>(
+    undefined,
+  );
 
   const kind = kindFromSearch(location.search);
   const roots = (tree ?? []) as ManagementArticle[];
@@ -66,6 +78,12 @@ export default function ManagementArticlesPage() {
   const openEdit = (article: ManagementArticle) => {
     setEditing(article);
     setShowForm(true);
+  };
+  // Щелчок по статье в дереве переводит на схему: человек спрашивает
+  // «куда это попадёт» именно про ту статью, по которой щёлкнул.
+  const openMap = (article: ManagementArticle) => {
+    setMapArticleId(article.id);
+    setView('map');
   };
   const onDelete = (article: ManagementArticle) => {
     if (window.confirm(intl.get('management_articles.delete_confirm'))) {
@@ -96,6 +114,24 @@ export default function ManagementArticlesPage() {
         </Button>
       </div>
 
+      <Tabs
+        value={view}
+        onValueChange={(next) => setView(next as 'tree' | 'map')}
+      >
+        <TabsList>
+          <TabsTrigger value="tree">
+            {intl.get('management_articles.view.tree')}
+          </TabsTrigger>
+          <TabsTrigger value="map">
+            {intl.get('management_articles.view.map')}
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {view === 'map' ? (
+        <ArticleReportMap articleId={mapArticleId} />
+      ) : (
+        <>
       <Tabs value={kind} onValueChange={selectKind}>
         <TabsList>
           {ARTICLE_KIND_TABS.map((tabKind) => (
@@ -141,7 +177,14 @@ export default function ManagementArticlesPage() {
           </Button>
         </div>
       ) : (
-        <ArticleTree nodes={visible} onEdit={openEdit} onDelete={onDelete} />
+        <ArticleTree
+          nodes={visible}
+          onEdit={openEdit}
+          onDelete={onDelete}
+          onShowMap={openMap}
+        />
+      )}
+        </>
       )}
     </div>
   );

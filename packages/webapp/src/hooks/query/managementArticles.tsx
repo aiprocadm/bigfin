@@ -112,3 +112,23 @@ export function useDeleteManagementArticle(
     },
   );
 }
+
+/**
+ * Схема «Куда попадает статья» (FIN-002 ТЗ-2).
+ *
+ * Отдельный запрос, а не поле в списке статей: схема нужна только на своей
+ * вкладке, и тащить её в каждый запрос справочника незачем.
+ */
+export function useArticleReportMap(
+  query: { articleId?: number; fromDate?: string; toDate?: string },
+  props?: any,
+) {
+  return useRequestQuery(
+    [t.MANAGEMENT_ARTICLES, 'REPORT_MAP', query],
+    { method: 'get', url: 'management-articles/report-map', params: query },
+    {
+      select: (res: any) => res.data,
+      ...props,
+    },
+  );
+}

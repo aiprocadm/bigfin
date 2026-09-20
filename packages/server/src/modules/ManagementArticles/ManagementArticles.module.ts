@@ -10,6 +10,8 @@ import { GetManagementArticleService } from './queries/GetManagementArticle.serv
 import { GetManagementArticlesService } from './queries/GetManagementArticles.service';
 import { ArticlesPlRollupService } from './queries/ArticlesPlRollup.service';
 import { ArticlesCashflowRollupService } from './queries/ArticlesCashflowRollup.service';
+import { GetArticleReportMapService } from './queries/GetArticleReportMap.service';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Module({
   imports: [TenancyDatabaseModule],
@@ -24,6 +26,8 @@ import { ArticlesCashflowRollupService } from './queries/ArticlesCashflowRollup.
     GetManagementArticlesService,
     ArticlesPlRollupService,
     ArticlesCashflowRollupService,
+    GetArticleReportMapService,
+    TenancyContext,
   ],
   // Свёртка по статьям — и по начислению, и по деньгам — принадлежит статьям.
   // Бюджеты берут расчёт отсюда, а не держат его у себя (этап 16 ТЗ-2).

@@ -1,7 +1,7 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Button } from '@/components/ui/button';
-import { Lock, Pencil, Trash2 } from 'lucide-react';
+import { Lock, Map, Pencil, Trash2 } from 'lucide-react';
 import { ManagementArticle } from './schemas';
 import { buildArticleSummary } from './articleSummary';
 import { isSystemArticle } from './articleKindTabs';
@@ -11,6 +11,8 @@ interface ArticleTreeProps {
   level?: number;
   onEdit: (article: ManagementArticle) => void;
   onDelete: (article: ManagementArticle) => void;
+  /** «Куда попадает эта статья» — переход на схему (FIN-002 ТЗ-2). */
+  onShowMap?: (article: ManagementArticle) => void;
 }
 
 export function ArticleTree({
@@ -18,6 +20,7 @@ export function ArticleTree({
   level = 0,
   onEdit,
   onDelete,
+  onShowMap,
 }: ArticleTreeProps) {
   if (!nodes || nodes.length === 0) return null;
   return (
@@ -72,6 +75,16 @@ export function ArticleTree({
               })()}
             </span>
             <span className="flex items-center gap-1">
+              {onShowMap && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={intl.get('management_articles.show_map')}
+                  onClick={() => onShowMap(node)}
+                >
+                  <Map className="h-4 w-4" />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="icon"
@@ -98,6 +111,7 @@ export function ArticleTree({
               level={level + 1}
               onEdit={onEdit}
               onDelete={onDelete}
+              onShowMap={onShowMap}
             />
           )}
         </li>

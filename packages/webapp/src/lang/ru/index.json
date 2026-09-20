@@ -2778,6 +2778,7 @@
   "cash_timeline.gap_note": "Денег не хватит {date}",
   "cash_timeline.no_forecast": "Чтобы видеть, хватит ли денег на ближайший месяц, включите платёжный календарь.",
   "cash_timeline.no_forecast_action": "Включить календарь",
+  "sparkline.min_max": "минимум {minLabel}: {minValue}, максимум {maxLabel}: {maxValue}",
   "cash_timeline.empty_forecast": "Впереди нет ни одного запланированного платежа — прогнозировать нечего.",
   "bottom_nav.aria_label": "Быстрые разделы",
   "bottom_nav.operations": "Операции",

@@ -10,7 +10,6 @@ import { DeleteBudgetService } from './commands/DeleteBudget.service';
 import { UpsertBudgetLinesService } from './commands/UpsertBudgetLines.service';
 import { GetBudgetsService } from './queries/GetBudgets.service';
 import { GetBudgetService } from './queries/GetBudget.service';
-import { ArticlesCashflowRollupService } from './queries/ArticlesCashflowRollup.service';
 import { GetBudgetPlanFactService } from './queries/GetBudgetPlanFact.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 
@@ -26,7 +25,6 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     UpsertBudgetLinesService,
     GetBudgetsService,
     GetBudgetService,
-    ArticlesCashflowRollupService,
     GetBudgetPlanFactService,
   ],
 })

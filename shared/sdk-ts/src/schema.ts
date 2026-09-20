@@ -37,6 +37,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/signin/2fa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Second sign-in step: verify the 2FA code */
+        post: operations["AuthController_signinTwoFactor"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/signup": {
         parameters: {
             query?: never;
@@ -201,6 +218,91 @@ export interface paths {
         get: operations["AuthApiKeysController_getApiKeys"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/2fa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Состояние 2FA текущего пользователя */
+        get: operations["TwoFactorController_getState"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/2fa/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Начать настройку 2FA (секрет + otpauth-URI) */
+        post: operations["TwoFactorController_setup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/2fa/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подтвердить код и включить 2FA */
+        post: operations["TwoFactorController_enable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/2fa/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить 2FA (подтверждение паролем) */
+        post: operations["TwoFactorController_disable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/2fa/backup-codes/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Перегенерировать резервные коды */
+        post: operations["TwoFactorController_regenerate"];
         delete?: never;
         options?: never;
         head?: never;
@@ -520,6 +622,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves all features and their accessibility. */
+        get: operations["FeaturesController_all"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/features/{feature}/turn-on": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Turns on the given module feature. */
+        post: operations["FeaturesController_turnOn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/features/{feature}/turn-off": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Turns off the given module feature. */
+        post: operations["FeaturesController_turnOff"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/warehouses": {
         parameters: {
             query?: never;
@@ -809,6 +962,23 @@ export interface paths {
         put?: never;
         /** Create a new sale invoice. */
         post: operations["SaleInvoicesController_createSaleInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sale-invoices/{id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate a sale invoice into a draft copy. */
+        post: operations["SaleInvoicesController_duplicateSaleInvoice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1137,6 +1307,60 @@ export interface paths {
         };
         /** Get presigned URL for attachment */
         get: operations["AttachmentsController_getAttachmentPresignedUrl"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all roles */
+        get: operations["RolesController_getRoles"];
+        put?: never;
+        /** Create a new role */
+        post: operations["RolesController_createRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/roles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a specific role by ID */
+        get: operations["RolesController_getRole"];
+        /** Edit an existing role */
+        put: operations["RolesController_editRole"];
+        post?: never;
+        /** Delete a role */
+        delete: operations["RolesController_deleteRole"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/roles/permissions/schema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get role permissions schema */
+        get: operations["RolesController_getRolePermissionsSchema"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1686,6 +1910,1870 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/management-articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves management articles (flat or tree). */
+        get: operations["ManagementArticlesController_getManagementArticles"];
+        put?: never;
+        /** Create a new management article. */
+        post: operations["ManagementArticlesController_createManagementArticle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/management-articles/pl-rollup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Management P&L rolled up by articles. */
+        get: operations["ManagementArticlesController_getArticlesPlRollup"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/management-articles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves a management article details. */
+        get: operations["ManagementArticlesController_getManagementArticle"];
+        /** Edit the given management article. */
+        put: operations["ManagementArticlesController_editManagementArticle"];
+        post?: never;
+        /** Delete the given management article. */
+        delete: operations["ManagementArticlesController_deleteManagementArticle"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Payment calendar forecast for a horizon. */
+        get: operations["PaymentCalendarController_getForecast"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-calendar/planned-operations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List planned operations. */
+        get: operations["PaymentCalendarController_getPlannedOperations"];
+        put?: never;
+        /** Create a planned operation. */
+        post: operations["PaymentCalendarController_createPlannedOperation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-calendar/planned-operations/{id}/materialize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Materialize a planned operation into a real cashflow transaction. */
+        post: operations["PaymentCalendarController_materializePlannedOperation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-calendar/planned-operations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit a planned operation. */
+        put: operations["PaymentCalendarController_editPlannedOperation"];
+        post?: never;
+        /** Delete a planned operation. */
+        delete: operations["PaymentCalendarController_deletePlannedOperation"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/exchange-rates/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the latest exchange rate */
+        get: operations["ExchangeRatesController_getLatestExchangeRate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get bank account transactions */
+        get: operations["BankingTransactionsController_getBankAccountTransactions"];
+        put?: never;
+        /** Create a new bank transaction */
+        post: operations["BankingTransactionsController_createTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/transactions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a specific bank transaction by ID */
+        get: operations["BankingTransactionsController_getTransaction"];
+        put?: never;
+        post?: never;
+        /** Delete a bank transaction */
+        delete: operations["BankingTransactionsController_deleteTransaction"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/uncategorized/autofill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get autofill values for categorize transactions */
+        get: operations["BankingUncategorizedTransactionsController_getAutofillCategorizeTransaction"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/uncategorized": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get uncategorized transactions of all bank accounts */
+        get: operations["BankingUncategorizedTransactionsController_getAllUncategorizedTransactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/uncategorized/accounts/{accountId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get uncategorized transactions for a specific bank account */
+        get: operations["BankingUncategorizedTransactionsController_getBankAccountUncategorizedTransactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/uncategorized/{uncategorizedTransactionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a specific uncategorized transaction by ID */
+        get: operations["BankingUncategorizedTransactionsController_getUncategorizedTransaction"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get pending bank account transactions */
+        get: operations["BankingPendingTransactionsController_getPendingTransactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contacts/auto-complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the auto-complete contacts */
+        get: operations["ContactsController_getAutoComplete"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contacts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get contact by ID (customer or vendor) */
+        get: operations["ContactsController_getContact"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/contacts/{id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Activate a contact */
+        patch: operations["ContactsController_activateContact"];
+        trace?: never;
+    };
+    "/api/contacts/{id}/inactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Inactivate a contact */
+        patch: operations["ContactsController_inactivateContact"];
+        trace?: never;
+    };
+    "/api/budgets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List budgets. */
+        get: operations["BudgetsController_getBudgets"];
+        put?: never;
+        /** Create a budget. */
+        post: operations["BudgetsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/budgets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a budget with its grid lines. */
+        get: operations["BudgetsController_getBudget"];
+        /** Edit a budget. */
+        put: operations["BudgetsController_edit"];
+        post?: never;
+        /** Delete a budget. */
+        delete: operations["BudgetsController_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/budgets/{id}/plan-fact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Plan vs fact report for a budget. */
+        get: operations["BudgetsController_getPlanFact"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/budgets/{id}/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Upsert budget grid cells. */
+        put: operations["BudgetsController_upsertLines"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/legal-entities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список юрлиц со счётчиком закреплённых счетов. */
+        get: operations["LegalEntitiesController_getLegalEntities"];
+        put?: never;
+        /** Завести юрлицо. */
+        post: operations["LegalEntitiesController_createLegalEntity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/legal-entities/intercompany-turnover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Внутригрупповые обороты за период: кто кому и сколько. */
+        get: operations["LegalEntitiesController_getIntercompanyTurnover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/legal-entities/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Изменить юрлицо. */
+        put: operations["LegalEntitiesController_editLegalEntity"];
+        post?: never;
+        /** Удалить юрлицо. */
+        delete: operations["LegalEntitiesController_deleteLegalEntity"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список направлений со счётчиком отнесённых операций. */
+        get: operations["ProjectsController_getProjects"];
+        put?: never;
+        /** Завести направление. */
+        post: operations["ProjectsController_createProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/projects/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Одно направление. */
+        get: operations["ProjectsController_getProject"];
+        /** Изменить направление. */
+        put: operations["ProjectsController_editProject"];
+        post?: never;
+        /** Удалить направление. */
+        delete: operations["ProjectsController_deleteProject"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Какие права можно выдать токену. */
+        get: operations["PublicApiController_getScopes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** На какие события можно подписаться. */
+        get: operations["PublicApiController_getEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список токенов организации. */
+        get: operations["PublicApiController_getApiTokens"];
+        put?: never;
+        /** Выпустить токен. */
+        post: operations["PublicApiController_createApiToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/tokens/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Отозвать токен. */
+        delete: operations["PublicApiController_revokeApiToken"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список подписок на вебхуки. */
+        get: operations["PublicApiController_getWebhooks"];
+        put?: never;
+        /** Подписаться на событие. */
+        post: operations["PublicApiController_createWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/webhooks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Изменить подписку. */
+        put: operations["PublicApiController_editWebhook"];
+        post?: never;
+        /** Удалить подписку вместе с её журналом доставок. */
+        delete: operations["PublicApiController_deleteWebhook"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public-api/webhooks/{id}/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Журнал доставок: почему событие не пришло получателю. */
+        get: operations["PublicApiController_getDeliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai-analyst/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Доступен ли раздел и, если нет, почему именно. */
+        get: operations["AiAnalystController_getAvailability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai-analyst/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Настройки провайдера (без ключа доступа). */
+        get: operations["AiAnalystController_getSettings"];
+        /** Сохранить настройки ИИ-аналитика. */
+        put: operations["AiAnalystController_saveSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai-analyst/insights/{scope}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Выводы «Что говорят цифры» для экрана. */
+        get: operations["AiAnalystController_getInsights"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai-chat/tools": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** О чём вообще можно спросить. */
+        get: operations["AiChatController_getTools"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ai-chat/ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Задать вопрос о своих финансах. */
+        post: operations["AiChatController_ask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transaction-splits/{referenceType}/{referenceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Части, на которые разделена операция. */
+        get: operations["TransactionSplitsController_getSplits"];
+        put?: never;
+        /** Сохранить разбиение операции. */
+        post: operations["TransactionSplitsController_saveSplits"];
+        /** Убрать разбиение: операция идёт в отчёты целиком. */
+        delete: operations["TransactionSplitsController_clearSplits"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/debts/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Debts overview: AR/AP totals, aging buckets, top debtors. */
+        get: operations["DebtsController_getOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/debts/contact/{contactId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Unpaid documents of a contact (drill-down). */
+        get: operations["DebtsController_getContactDebts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/debts/invoices/{invoiceId}/remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a payment reminder to the debtor (reuses invoice email). */
+        post: operations["DebtsController_remind"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/debts/repayment-plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List repayment plans with progress. */
+        get: operations["DebtsController_getRepaymentPlans"];
+        put?: never;
+        /** Create a repayment plan. */
+        post: operations["DebtsController_createRepaymentPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/debts/repayment-plans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit a repayment plan. */
+        put: operations["DebtsController_editRepaymentPlan"];
+        post?: never;
+        /** Delete a repayment plan. */
+        delete: operations["DebtsController_deleteRepaymentPlan"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/debts/repayment-plans/{planId}/installments/{installmentId}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark an installment as paid. */
+        post: operations["DebtsController_markInstallmentPaid"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List payment requests (filter by status). */
+        get: operations["PaymentRequestsController_getList"];
+        put?: never;
+        /** Create a payment request (status pending). */
+        post: operations["PaymentRequestsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a payment request. */
+        get: operations["PaymentRequestsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-requests/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a request → planned outflow in the calendar (admin only). */
+        post: operations["PaymentRequestsController_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-requests/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reject a payment request (admin only). */
+        post: operations["PaymentRequestsController_reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payment-requests/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a payment request (author or admin; also cancels its planned outflow). */
+        post: operations["PaymentRequestsController_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List deals (filter by status). */
+        get: operations["DealsController_getList"];
+        put?: never;
+        /** Create a deal. */
+        post: operations["DealsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deals/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Deals dashboard summary (per-deal margins + totals). */
+        get: operations["DealsController_getSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deals/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a deal. */
+        get: operations["DealsController_get"];
+        /** Edit a deal. */
+        put: operations["DealsController_edit"];
+        post?: never;
+        /** Delete a deal. */
+        delete: operations["DealsController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deals/{id}/profitability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Deal profitability (revenue − direct costs). */
+        get: operations["DealsController_profitability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deals/{dealId}/stages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List a deal's stages with recognition summary. */
+        get: operations["DealStagesController_list"];
+        put?: never;
+        /** Add a stage to a deal. */
+        post: operations["DealStagesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deals/{dealId}/stages/{stageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit a deal stage. */
+        put: operations["DealStagesController_edit"];
+        post?: never;
+        /** Delete a deal stage. */
+        delete: operations["DealStagesController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cost-allocation-rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List cost allocation rules. */
+        get: operations["CostAllocationController_getList"];
+        put?: never;
+        /** Create a cost allocation rule (admin only). */
+        post: operations["CostAllocationController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cost-allocation-rules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit a cost allocation rule (admin only). */
+        put: operations["CostAllocationController_edit"];
+        post?: never;
+        /** Delete a cost allocation rule (admin only). */
+        delete: operations["CostAllocationController_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Payroll rates settings (with defaults applied). */
+        get: operations["PayrollController_getSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/employees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List employees. */
+        get: operations["PayrollController_getEmployees"];
+        put?: never;
+        /** Create an employee (admin only). */
+        post: operations["PayrollController_createEmployee"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/employees/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit an employee (admin only). */
+        put: operations["PayrollController_editEmployee"];
+        post?: never;
+        /** Delete an employee without payroll lines (admin only). */
+        delete: operations["PayrollController_deleteEmployee"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/kpi/targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List manager KPI targets (optionally by year). */
+        get: operations["PayrollController_getKpiTargets"];
+        put?: never;
+        /** Create a monthly KPI target for a manager (admin only). */
+        post: operations["PayrollController_createKpiTarget"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/kpi/targets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit a KPI target (admin only). */
+        put: operations["PayrollController_editKpiTarget"];
+        post?: never;
+        /** Delete a KPI target (admin only). */
+        delete: operations["PayrollController_deleteKpiTarget"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/kpi/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Monthly KPI plan/fact/bonus summary by manager. */
+        get: operations["PayrollController_getKpiSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/taxes-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Monthly payroll taxes summary (approved runs). */
+        get: operations["PayrollController_getTaxesSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List payroll runs (with totals). */
+        get: operations["PayrollController_getRuns"];
+        put?: never;
+        /** Create a draft run prefilled with active employees (admin only). */
+        post: operations["PayrollController_createRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/runs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a payroll run with lines and totals. */
+        get: operations["PayrollController_getRun"];
+        /** Edit a draft run; lines are recomputed server-side (admin only). */
+        put: operations["PayrollController_editRun"];
+        post?: never;
+        /** Delete a draft run (admin only). */
+        delete: operations["PayrollController_deleteRun"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/runs/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a run → planned outflows in the calendar (admin only). */
+        post: operations["PayrollController_approveRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/payroll/runs/{id}/unapprove": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Back to draft; removes linked planned operations (admin only). */
+        post: operations["PayrollController_unapproveRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/unmapped-operations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** P&L accounts without a management article, with their operations. */
+        get: operations["DataQualityController_getUnmappedOperations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/duplicates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Possible duplicated documents: same (date, account, amount, side) from different sources. */
+        get: operations["DataQualityController_getPossibleDuplicates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/pl-cashflow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Monthly P&L vs cashflow comparison (plNet/cashNet/diff). */
+        get: operations["DataQualityController_getPlCashflowComparison"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/unbalanced-journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Documents whose journal does not balance (debit ≠ credit). */
+        get: operations["DataQualityController_getUnbalancedJournals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/failed-mails": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Mails that finally failed to deliver during the last 7 days. */
+        get: operations["DataQualityController_getFailedMails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/crooked-currency-journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Manual journals in foreign currency posted 1:1 without the exchange rate. */
+        get: operations["DataQualityController_getCrookedCurrencyJournals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/repost-crooked-currency-journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Re-posts crooked currency manual journals: rewrites GL entries with the exchange rate applied. */
+        post: operations["DataQualityController_repostCrookedCurrencyJournals"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/data-quality/repost-vat-documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Re-posts VAT documents of the period: recalculates document tax from its entries and rewrites GL entries. */
+        post: operations["DataQualityController_repostVatDocuments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dividends/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Owner payouts summary: net profit, paid out, available and safe amounts. */
+        get: operations["DividendsController_getSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dividends/payouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List owner payouts (newest first). */
+        get: operations["DividendsController_getPayouts"];
+        put?: never;
+        /** Register an owner payout with GL entries (admin only). */
+        post: operations["DividendsController_createPayout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dividends/payouts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an owner payout and revert its GL entries (admin only). */
+        delete: operations["DividendsController_deletePayout"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/credits/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Credits summary: outstanding debt, next payment. */
+        get: operations["CreditsController_getSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/credits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List credits with outstanding balance. */
+        get: operations["CreditsController_getCredits"];
+        put?: never;
+        /** Create a credit with schedule and GL (admin only). */
+        post: operations["CreditsController_createCredit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/credits/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a credit with its installment schedule. */
+        get: operations["CreditsController_getCredit"];
+        /** Edit credit descriptive fields (admin only). */
+        put: operations["CreditsController_editCredit"];
+        post?: never;
+        /** Delete a credit and revert its GL (admin only). */
+        delete: operations["CreditsController_deleteCredit"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/credits/{id}/installments/{installmentId}/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark an installment paid with GL (admin only). */
+        post: operations["CreditsController_markPaid"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Обзор финмодели: маржа, выручка на сотрудника, маржа во времени. */
+        get: operations["FinancialModelController_getOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/segments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Рентабельность по сегментам: сделки, менеджеры, направления, продукты. */
+        get: operations["FinancialModelController_getSegments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/marketing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Маркетинговые метрики: CAC, ROMI, LTV (по каналам и итого). */
+        get: operations["FinancialModelController_getMarketing"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/break-even": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Точка безубыточности: постоянные затраты, маржа, выручка безубыточности. */
+        get: operations["FinancialModelController_getBreakEven"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/expenses-analysis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Анализ расходов: постоянные и переменные с долями, доля расходов в выручке по месяцам, топ статей с динамикой, точка безубыточности и запас прочности. */
+        get: operations["FinancialModelController_getExpensesAnalysis"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Расходные статьи с пометкой постоянная/переменная. */
+        get: operations["FinancialModelController_listExpenseArticles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/articles/{id}/cost-behavior": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Пометить статью: 'fixed' | 'variable' | null (снять). */
+        put: operations["FinancialModelController_setCostBehavior"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/marketing/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список каналов привлечения. */
+        get: operations["FinancialModelController_listChannels"];
+        put?: never;
+        /** Создать канал привлечения. */
+        post: operations["FinancialModelController_createChannel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/marketing/channels/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Изменить канал привлечения (название/активность). */
+        put: operations["FinancialModelController_updateChannel"];
+        post?: never;
+        /** Удалить канал привлечения. */
+        delete: operations["FinancialModelController_deleteChannel"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/marketing/monthly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Сохранить помесячные расход и новых клиентов по каналу. */
+        put: operations["FinancialModelController_upsertMonthly"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-model/marketing/lifetime": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Задать средний срок жизни клиента (мес.) для LTV. */
+        put: operations["FinancialModelController_setCustomerLifetime"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/capitalization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Стоимость бизнеса: чистые активы, оценка, доля владельца. */
+        get: operations["CapitalizationController_getCapitalization"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/capitalization/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Настройки оценки: множитель прибыли. */
+        get: operations["CapitalizationController_getSettings"];
+        /** Задать множитель прибыли. */
+        put: operations["CapitalizationController_setSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports/balance-sheet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get balance sheet statement */
+        get: operations["BalanceSheetStatementController_balanceSheet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cashflow-accounts/{accountId}/import/1c": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Импортировать банковскую выписку в формате 1С (КлиентБанк). */
+        post: operations["BankStatementImportController_import1CFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cashflow-accounts/{accountId}/import/table/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Предпросмотр выписки таблицей (CSV/Excel): что распозналось. */
+        post: operations["BankStatementImportController_previewTable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cashflow-accounts/{accountId}/import/table": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Импортировать выписку таблицей (CSV/Excel). */
+        post: operations["BankStatementImportController_importTableFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/categorize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Categorize bank transactions. */
+        post: operations["BankingCategorizeController_categorizeTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/categorize/expense": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Categorize a bank transaction as an expense. */
+        post: operations["BankingCategorizeController_categorizeTransactionAsExpense"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/categorize/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Uncategorize bank transactions in bulk. */
+        delete: operations["BankingCategorizeController_uncategorizeTransactionsBulk"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/banking/categorize/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Uncategorize a bank transaction. */
+        delete: operations["BankingCategorizeController_uncategorizeTransaction"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expenses/validate-bulk-delete": {
         parameters: {
             query?: never;
@@ -1774,53 +3862,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/warehouse-transfers": {
+    "/api/moysklad/status": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Retrieve warehouse transfer transactions with pagination. */
-        get: operations["WarehouseTransfersController_getWarehousesTransfers"];
+        /** Статус подключения МойСклад. */
+        get: operations["MoySkladController_status"];
         put?: never;
-        /** Create a new warehouse transfer transaction. */
-        post: operations["WarehouseTransfersController_createWarehouseTransfer"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouse-transfers/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieve warehouse transfer transaction details. */
-        get: operations["WarehouseTransfersController_getWarehouseTransfer"];
-        put?: never;
-        /** Edit the given warehouse transfer transaction. */
-        post: operations["WarehouseTransfersController_editWarehouseTransfer"];
-        /** Delete the given warehouse transfer transaction. */
-        delete: operations["WarehouseTransfersController_deleteWarehouseTransfer"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouse-transfers/{id}/initiate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Initiate the given warehouse transfer. */
-        put: operations["WarehouseTransfersController_initiateTransfer"];
         post?: never;
         delete?: never;
         options?: never;
@@ -1828,7 +3879,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/warehouse-transfers/{id}/transferred": {
+    "/api/moysklad/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Превью товаров и продаж из МойСклад (read-only). */
+        get: operations["MoySkladController_preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/moysklad/import/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Что даст импорт товаров из МойСклад. */
+        get: operations["MoySkladController_importPreview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/moysklad/import": {
         parameters: {
             query?: never;
             header?: never;
@@ -1836,9 +3921,281 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Mark the given warehouse transfer as transferred. */
-        put: operations["WarehouseTransfersController_deliverTransfer"];
+        put?: never;
+        /** Импортировать товары МойСклад с себестоимостью. */
+        post: operations["MoySkladController_import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/moysklad/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить МойСклад по токену (только админ). */
+        post: operations["MoySkladController_connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/moysklad/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить МойСклад (только админ). */
+        post: operations["MoySkladController_disconnect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Статус подключения маркетплейсов. */
+        get: operations["MarketplacesController_status"];
+        put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/wildberries/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Финансовая сводка Wildberries за период. */
+        get: operations["MarketplacesController_wbSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/wildberries/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить Wildberries по API-ключу (только админ). */
+        post: operations["MarketplacesController_connectWb"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/wildberries/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить Wildberries (только админ). */
+        post: operations["MarketplacesController_disconnectWb"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/ozon/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Финансовая сводка Ozon за период. */
+        get: operations["MarketplacesController_ozonSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/ozon/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить Ozon по Client-Id и Api-Key (только админ). */
+        post: operations["MarketplacesController_connectOzon"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/marketplaces/ozon/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить Ozon (только админ). */
+        post: operations["MarketplacesController_disconnectOzon"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-api-sync/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Статус подключения банковских API. */
+        get: operations["BankApiSyncController_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-api-sync/{provider}/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить банк по учётным данным (только админ). */
+        post: operations["BankApiSyncController_connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-api-sync/{provider}/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить банк (только админ). */
+        post: operations["BankApiSyncController_disconnect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bank-api-sync/{provider}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Импортировать выписку банка за период (только админ). */
+        post: operations["BankApiSyncController_import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/onec-export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Выгрузка операций в формате 1CClientBankExchange. */
+        get: operations["OnecExportController_export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/onec-import/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Предпросмотр импорта CommerceML: что создастся и обновится. */
+        post: operations["OnecImportController_preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/onec-import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Импортировать справочники CommerceML из 1С. */
+        post: operations["OnecImportController_import"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1927,6 +4284,726 @@ export interface paths {
         put?: never;
         /** Deletes multiple customers in bulk. */
         post: operations["CustomersController_bulkDeleteCustomers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/acquiring/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Статус подключения эквайринга. */
+        get: operations["AcquiringController_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/acquiring/yookassa/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Сводка эквайринга YooKassa за период. */
+        get: operations["AcquiringController_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/acquiring/yookassa/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить YooKassa (shopId + ключ, только админ). */
+        post: operations["AcquiringController_connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/acquiring/yookassa/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить YooKassa (только админ). */
+        post: operations["AcquiringController_disconnect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/zenmoney/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Статус подключения Дзенмани. */
+        get: operations["ZenmoneyImportController_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/zenmoney/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить Дзенмани по токену (только админ). */
+        post: operations["ZenmoneyImportController_connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/zenmoney/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить Дзенмани (только админ). */
+        post: operations["ZenmoneyImportController_disconnect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/zenmoney/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Импортировать операции Дзенмани (только админ). */
+        post: operations["ZenmoneyImportController_import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/vat-analysis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Сводка по НДС за период (начислен/к вычету/к уплате). */
+        get: operations["VatAnalysisController_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ru-print-forms/sale-invoices/{id}/payment-invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Печатная форма РФ «Счёт на оплату» по счёту-продаже. */
+        get: operations["RuPrintFormsController_paymentInvoice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ru-print-forms/sale-invoices/{id}/act": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Печатная форма РФ «Акт выполненных работ (оказанных услуг)» по счёту-продаже. */
+        get: operations["RuPrintFormsController_act"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ru-print-forms/sale-invoices/{id}/upd": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Печатная форма РФ «Универсальный передаточный документ» (УПД, статус 1) по счёту-продаже. */
+        get: operations["RuPrintFormsController_upd"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ru-print-forms/sale-invoices/{id}/torg12": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Печатная форма РФ «Товарная накладная» (ТОРГ-12) по счёту-продаже. */
+        get: operations["RuPrintFormsController_torg12"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ru-print-forms/sale-invoices/{id}/invoice-factura": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Печатная форма РФ «Счёт-фактура» по счёту-продаже. */
+        get: operations["RuPrintFormsController_invoiceFactura"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ru-print-forms/customers/{id}/reconciliation-act": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Печатная форма РФ «Акт сверки взаимных расчётов» по контрагенту за период. */
+        get: operations["RuPrintFormsController_reconciliationAct"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports/transactions-by-customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get transactions by customer */
+        get: operations["TransactionsByCustomerController_transactionsByCustomer"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/financial-ratios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Финансовые коэффициенты, вертикальный и горизонтальный анализ. */
+        get: operations["FinancialRatiosController_ratios"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports/profit-loss-sheet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get profit/loss statement report */
+        get: operations["ProfitLossSheetController_profitLossSheet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Статус подключения CRM-интеграции. */
+        get: operations["CrmIntegrationController_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/bitrix24/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить Битрикс24 по webhook-URL (только админ). */
+        post: operations["CrmIntegrationController_connectBitrix24"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/bitrix24/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить Битрикс24 (только админ). */
+        post: operations["CrmIntegrationController_disconnectBitrix24"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/amocrm/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подключить amoCRM (поддомен + токен, только админ). */
+        post: operations["CrmIntegrationController_connectAmocrm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/amocrm/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отключить amoCRM (только админ). */
+        post: operations["CrmIntegrationController_disconnectAmocrm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/owncrm/webhook-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Получить токен входящего webhook своей CRM (админ). */
+        post: operations["CrmIntegrationController_getOwnCrmWebhookToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Запустить синхронизацию CRM → Bigfin (только админ). */
+        post: operations["CrmIntegrationController_runSync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/crm/webhooks/inbound": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Входящий webhook собственной CRM (по токену). */
+        post: operations["CrmWebhooksController_inbound"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fixed-assets/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fixed assets summary: gross, accumulated, net. */
+        get: operations["FixedAssetsController_getSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fixed-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List fixed assets with net value. */
+        get: operations["FixedAssetsController_getFixedAssets"];
+        put?: never;
+        /** Register a fixed asset and build schedule (admin only). */
+        post: operations["FixedAssetsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fixed-assets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a fixed asset with its depreciation schedule. */
+        get: operations["FixedAssetsController_getDetail"];
+        put?: never;
+        post?: never;
+        /** Delete a fixed asset and revert its GL (admin only). */
+        delete: operations["FixedAssetsController_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fixed-assets/accrue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accrue depreciation for a month (idempotent, admin only). */
+        post: operations["FixedAssetsController_accrue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/fixed-assets/{id}/dispose": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dispose/write-off a fixed asset (admin only). */
+        post: operations["FixedAssetsController_dispose"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions-locking/lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Lock all transactions for a module or all modules */
+        put: operations["TransactionsLockingController_commandTransactionsLocking"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions-locking/cancel-lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Cancel all transactions locking for a module or all modules */
+        put: operations["TransactionsLockingController_cancelTransactionLocking"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions-locking/unlock-partial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Partial unlock all transactions locking for a module or all modules */
+        put: operations["TransactionsLockingController_unlockTransactionsLockingBetweenPeriod"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions-locking/cancel-unlock-partial": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Cancel partial unlocking all transactions locking for a module or all modules */
+        put: operations["TransactionsLockingController_cancelPartialUnlocking"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions-locking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all transactions locking meta */
+        get: operations["TransactionsLockingController_getTransactionLockingMetaList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/transactions-locking/{module}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get transactions locking meta for a module */
+        get: operations["TransactionsLockingController_getTransactionLockingMeta"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves the settings. */
+        get: operations["SettingsController_getSettings"];
+        /** Save the given settings. */
+        put: operations["SettingsController_saveSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/warehouse-transfers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieve warehouse transfer transactions with pagination. */
+        get: operations["WarehouseTransfersController_getWarehousesTransfers"];
+        put?: never;
+        /** Create a new warehouse transfer transaction. */
+        post: operations["WarehouseTransfersController_createWarehouseTransfer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/warehouse-transfers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieve warehouse transfer transaction details. */
+        get: operations["WarehouseTransfersController_getWarehouseTransfer"];
+        put?: never;
+        /** Edit the given warehouse transfer transaction. */
+        post: operations["WarehouseTransfersController_editWarehouseTransfer"];
+        /** Delete the given warehouse transfer transaction. */
+        delete: operations["WarehouseTransfersController_deleteWarehouseTransfer"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/warehouse-transfers/{id}/initiate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Initiate the given warehouse transfer. */
+        put: operations["WarehouseTransfersController_initiateTransfer"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/warehouse-transfers/{id}/transferred": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark the given warehouse transfer as transferred. */
+        put: operations["WarehouseTransfersController_deliverTransfer"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2160,40 +5237,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/sale-estimates/{id}/notify-sms": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Notify the given sale estimate by SMS. */
-        post: operations["SaleEstimatesController_notifySaleEstimateBySms"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/sale-estimates/{id}/sms-details": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieves the sale estimate SMS details. */
-        get: operations["SaleEstimatesController_getSaleEstimateSmsDetails"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/sale-estimates/{id}/mail": {
         parameters: {
             query?: never;
@@ -2387,6 +5430,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/bills/{id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate a bill into a draft copy. */
+        post: operations["BillsController_duplicateBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/bills/{id}": {
         parameters: {
             query?: never;
@@ -2423,23 +5483,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/bills/{id}/open": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Open the given bill. */
-        patch: operations["BillsController_openBill"];
-        trace?: never;
-    };
     "/api/bills/due": {
         parameters: {
             query?: never;
@@ -2455,6 +5498,23 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/bills/{id}/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Open the given bill. */
+        patch: operations["BillsController_openBill"];
         trace?: never;
     };
     "/api/landed-cost/transactions": {
@@ -2625,6 +5685,24 @@ export interface paths {
         put?: never;
         /** Create a new credit note */
         post: operations["CreditNotesController_createCreditNote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/credit-notes/{id}/mail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves the credit note mail state. */
+        get: operations["CreditNotesController_getCreditNoteMail"];
+        put?: never;
+        /** Send the credit note mail. */
+        post: operations["CreditNotesController_sendCreditNoteMail"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3239,161 +6317,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/banking/categorize": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Categorize bank transactions. */
-        post: operations["BankingCategorizeController_categorizeTransaction"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/categorize/bulk": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Uncategorize bank transactions in bulk. */
-        delete: operations["BankingCategorizeController_uncategorizeTransactionsBulk"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/categorize/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Uncategorize a bank transaction. */
-        delete: operations["BankingCategorizeController_uncategorizeTransaction"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get bank account transactions */
-        get: operations["BankingTransactionsController_getBankAccountTransactions"];
-        put?: never;
-        /** Create a new bank transaction */
-        post: operations["BankingTransactionsController_createTransaction"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/transactions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a specific bank transaction by ID */
-        get: operations["BankingTransactionsController_getTransaction"];
-        put?: never;
-        post?: never;
-        /** Delete a bank transaction */
-        delete: operations["BankingTransactionsController_deleteTransaction"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/uncategorized/autofill": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get autofill values for categorize transactions */
-        get: operations["BankingUncategorizedTransactionsController_getAutofillCategorizeTransaction"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/uncategorized/accounts/{accountId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get uncategorized transactions for a specific bank account */
-        get: operations["BankingUncategorizedTransactionsController_getBankAccountUncategorizedTransactions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/uncategorized/{uncategorizedTransactionId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a specific uncategorized transaction by ID */
-        get: operations["BankingUncategorizedTransactionsController_getUncategorizedTransaction"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/banking/pending": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get pending bank account transactions */
-        get: operations["BankingPendingTransactionsController_getPendingTransactions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/banking/rules": {
         parameters: {
             query?: never;
@@ -3569,83 +6492,15 @@ export interface paths {
         patch: operations["BankingMatchingController_unmatchMatchedTransaction"];
         trace?: never;
     };
-    "/api/transactions-locking/lock": {
+    "/api/financial-reports/chart": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        /** Lock all transactions for a module or all modules */
-        put: operations["TransactionsLockingController_commandTransactionsLocking"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/transactions-locking/cancel-lock": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Cancel all transactions locking for a module or all modules */
-        put: operations["TransactionsLockingController_cancelTransactionLocking"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/transactions-locking/unlock-partial": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Partial unlock all transactions locking for a module or all modules */
-        put: operations["TransactionsLockingController_unlockTransactionsLockingBetweenPeriod"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/transactions-locking/cancel-unlock-partial": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Cancel partial unlocking all transactions locking for a module or all modules */
-        put: operations["TransactionsLockingController_cancelPartialUnlocking"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/transactions-locking": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all transactions locking meta */
-        get: operations["TransactionsLockingController_getTransactionLockingMetaList"];
+        /** Ряды графика отчёта по месяцам. */
+        get: operations["ReportChartController_getChart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3654,15 +6509,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/transactions-locking/{module}": {
+    "/api/financial-reports/chart/structure": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get transactions locking meta for a module */
-        get: operations["TransactionsLockingController_getTransactionLockingMeta"];
+        /** Структура баланса: имущество и его источники. */
+        get: operations["ReportChartController_getStructure"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3671,17 +6526,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/settings": {
+    "/api/financial-reports/chart/drill-down": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Retrieves the settings. */
-        get: operations["SettingsController_getSettings"];
-        /** Save the given settings. */
-        put: operations["SettingsController_saveSettings"];
+        /** Операции, из которых сложилась сумма отчёта. */
+        get: operations["ReportChartController_getDrillDown"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -3689,15 +6543,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/reports/balance-sheet": {
+    "/api/financial-reports/plan-fact": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get balance sheet statement */
-        get: operations["BalanceSheetStatementController_balanceSheet"];
+        /** План по счетам отчёта за период. */
+        get: operations["ReportPlanFactController_getPlanFact"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3828,23 +6682,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/reports/transactions-by-customers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get transactions by customer */
-        get: operations["TransactionsByCustomerController_transactionsByCustomer"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/reports/transactions-by-reference": {
         parameters: {
             query?: never;
@@ -3964,23 +6801,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/reports/profit-loss-sheet": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get profit/loss statement report */
-        get: operations["ProfitLossSheetController_profitLossSheet"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/reports/cashflow-statement": {
         parameters: {
             query?: never;
@@ -4015,52 +6835,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/roles": {
+    "/api/dashboard/money-summary": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get all roles */
-        get: operations["RolesController_getRoles"];
+        /** Сводка «как дела с деньгами» для главной: остатки, долги нам и наши. */
+        get: operations["DashboardController_getMoneySummary"];
         put?: never;
-        /** Create a new role */
-        post: operations["RolesController_createRole"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/roles/{id}": {
+    "/api/dashboard/overview": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get a specific role by ID */
-        get: operations["RolesController_getRole"];
-        /** Edit an existing role */
-        put: operations["RolesController_editRole"];
-        post?: never;
-        /** Delete a role */
-        delete: operations["RolesController_deleteRole"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/roles/permissions/schema": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get role permissions schema */
-        get: operations["RolesController_getRolePermissionsSchema"];
+        /** Всё для главной одним ответом: показатели, ряды графика, остатки по счетам и топ статей расходов. */
+        get: operations["DashboardController_getOverview"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4254,6 +7054,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/demo/one_click": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Creates a one-click demo organization. */
+        post: operations["OneClickDemoController_createOneClickDemo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demo/one_click/{demoId}/build_job": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieves the demo organization build state. */
+        get: operations["OneClickDemoController_getBuildJob"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/demo/one_click_signin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Signs in to the created demo organization. */
+        post: operations["OneClickDemoController_signin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/workspaces": {
         parameters: {
             query?: never;
@@ -4289,6 +7140,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{organizationId}/inactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Inactivate a workspace (owner only) */
+        put: operations["WorkspacesController_inactivateWorkspace"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{organizationId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reactivate a workspace (owner only) */
+        put: operations["WorkspacesController_activateWorkspace"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/workspaces/build/{buildJobId}": {
         parameters: {
             query?: never;
@@ -4299,6 +7184,23 @@ export interface paths {
         /** Get workspace build job status */
         get: operations["WorkspacesController_buildJobStatus"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set default workspace */
+        put: operations["WorkspacesController_setDefaultWorkspace"];
         post?: never;
         delete?: never;
         options?: never;
@@ -4365,6 +7267,23 @@ export interface paths {
         put?: never;
         post: operations["PaymentServicesController_updatePaymentMethod"];
         delete: operations["PaymentServicesController_deletePaymentMethod"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/export/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exports all exportable resources as one xlsx workbook. */
+        get: operations["ExportController_exportAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -4593,6 +7512,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/invite/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send invitations to multiple users. */
+        post: operations["UsersInviteController_sendBulkInvites"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/invite/accept/{token}": {
         parameters: {
             query?: never;
@@ -4625,74 +7561,6 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
-        trace?: never;
-    };
-    "/api/contacts/auto-complete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get the auto-complete contacts */
-        get: operations["ContactsController_getAutoComplete"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/contacts/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get contact by ID (customer or vendor) */
-        get: operations["ContactsController_getContact"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/contacts/{id}/activate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Activate a contact */
-        patch: operations["ContactsController_activateContact"];
-        trace?: never;
-    };
-    "/api/contacts/{id}/inactivate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Inactivate a contact */
-        patch: operations["ContactsController_inactivateContact"];
         trace?: never;
     };
     "/api/audit-logs/filter-options": {
@@ -4729,16 +7597,154 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/exchange-rates/latest": {
+    "/api/notifications/preferences": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get the latest exchange rate */
-        get: operations["ExchangeRatesController_getLatestExchangeRate"];
+        /** Get notification preferences for this organization. */
+        get: operations["NotificationsController_getPreferences"];
+        /** Update notification preferences (admin only). */
+        put: operations["NotificationsController_updatePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/telegram/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
+        /** Connect the organization Telegram bot (admin only). */
+        post: operations["NotificationsController_connectTelegram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/telegram/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Disconnect the organization Telegram bot (admin only). */
+        post: operations["NotificationsController_disconnectTelegram"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/telegram/entries/pull": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pull new Telegram messages and record them as operations (admin only). */
+        post: operations["NotificationsController_pullTelegramEntries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/telegram/entry-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Account used for operations coming from Telegram. */
+        get: operations["NotificationsController_getTelegramEntryAccount"];
+        /** Set the account for Telegram operations (admin only). */
+        put: operations["NotificationsController_setTelegramEntryAccount"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List recent in-app notifications for the current user. */
+        get: operations["NotificationsController_listNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Count unread notifications for the current user. */
+        get: operations["NotificationsController_unreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark all notifications as read for the current user. */
+        put: operations["NotificationsController_markAllRead"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Mark a notification as read for the current user. */
+        put: operations["NotificationsController_markRead"];
         post?: never;
         delete?: never;
         options?: never;
@@ -4763,6 +7769,14 @@ export interface components {
         AuthMetaResponseDto: {
             /** @description Whether signup is disabled */
             signupDisabled: boolean;
+            /**
+             * @description One-click demo availability and its landing url.
+             * @example {
+             *       "enable": false,
+             *       "demoUrl": "/demo"
+             *     }
+             */
+            oneClickDemo: Record<string, never>;
         };
         AuthSigninDto: {
             /**
@@ -4775,6 +7789,15 @@ export interface components {
              * @example user@example.com
              */
             email: string;
+        };
+        AuthSigninTwoFactorDto: {
+            /** @description Полу-токен, выданный на шаге пароля */
+            twoFactorToken: string;
+            /**
+             * @description Код из приложения-аутентификатора или резервный код
+             * @example 123456
+             */
+            code: string;
         };
         AuthSignupDto: {
             /**
@@ -4891,6 +7914,42 @@ export interface components {
              * @example My API Key
              */
             name?: string;
+        };
+        TwoFactorStateResponseDto: {
+            /** @description Включена ли 2FA */
+            enabled: boolean;
+            /** @description Когда включена */
+            enabledAt: Record<string, never> | null;
+            /** @description Сколько резервных кодов не использовано */
+            backupCodesRemaining: number;
+        };
+        TwoFactorSetupResponseDto: {
+            /** @description TOTP-секрет (base32) для ручного ввода */
+            secret: string;
+            /** @description otpauth://-URI для QR-кода */
+            otpauthUri: string;
+        };
+        TwoFactorEnableDto: {
+            /**
+             * @description Код из приложения-аутентификатора
+             * @example 123456
+             */
+            code: string;
+        };
+        TwoFactorBackupCodesResponseDto: {
+            /** @description Резервные коды (показываются один раз) */
+            backupCodes: string[];
+        };
+        TwoFactorDisableDto: {
+            /** @description Пароль аккаунта */
+            password: string;
+        };
+        TwoFactorRegenerateDto: {
+            /**
+             * @description Код из приложения-аутентификатора
+             * @example 123456
+             */
+            code: string;
         };
         ItemErrorResponseDto: {
             /**
@@ -6242,6 +9301,11 @@ export interface components {
         };
         CreateAccountDTO: {
             /**
+             * @description Legal entity the account belongs to
+             * @example 1
+             */
+            legalEntityId?: number;
+            /**
              * @description Account name
              * @example Cash Account
              */
@@ -6611,6 +9675,100 @@ export interface components {
              * @example 2023-01-02T00:00:00Z
              */
             updatedAt?: string;
+            /** @description The customer the invoice is issued to */
+            customer?: Record<string, never>;
+            /**
+             * @description The invoice date, formatted for display
+             * @example 2023-01-01
+             */
+            invoiceDateFormatted?: string;
+            /**
+             * @description The due date, formatted for display
+             * @example 2023-02-01
+             */
+            dueDateFormatted?: string;
+            /**
+             * @description The due amount, formatted for display
+             * @example $500.00
+             */
+            dueAmountFormatted?: string;
+            /**
+             * @description The invoice total, formatted for display
+             * @example $1,000.00
+             */
+            totalFormatted?: string;
+            /**
+             * @description How many days the invoice is overdue
+             * @example 12
+             */
+            overdueDays?: number;
+            /**
+             * @description Дата создания строкой
+             * @example 12 Sep 2026
+             */
+            createdAtFormatted?: string;
+            /**
+             * @description Оплачено строкой
+             * @example $300.00
+             */
+            paymentAmountFormatted?: string;
+            /**
+             * @description Остаток строкой
+             * @example $700.00
+             */
+            balanceAmountFormatted?: string;
+            /**
+             * @description Курс строкой
+             * @example 1.0000
+             */
+            exchangeRateFormatted?: string;
+            /**
+             * @description Сумма без налога строкой
+             * @example $900.00
+             */
+            subtotalFormatted?: string;
+            /**
+             * @description Сумма без налога в валюте учёта строкой
+             * @example 900,00 ₽
+             */
+            subtotalLocalFormatted?: string;
+            /**
+             * @description Сумма без учёта налога строкой
+             * @example $900.00
+             */
+            subtotalExludingTaxFormatted?: string;
+            /**
+             * @description Удержанный налог строкой
+             * @example $50.00
+             */
+            taxAmountWithheldFormatted?: string;
+            /**
+             * @description Удержанный налог в валюте учёта строкой
+             * @example 50,00 ₽
+             */
+            taxAmountWithheldLocalFormatted?: string;
+            /**
+             * @description Итог в валюте учёта строкой
+             * @example 1 000,00 ₽
+             */
+            totalLocalFormatted?: string;
+            /**
+             * @description Скидка строкой
+             * @example $100.00
+             */
+            discountAmountFormatted?: string;
+            /**
+             * @description Скидка в процентах строкой
+             * @example 10%
+             */
+            discountPercentageFormatted?: string;
+            /**
+             * @description Корректировка строкой
+             * @example $0.00
+             */
+            adjustmentFormatted?: string;
+            /** @description Налоги счёта: ставка, основание, сумма */
+            taxes?: Record<string, never>[];
         };
         CreateSaleInvoiceDto: {
             /**
@@ -6834,6 +9992,149 @@ export interface components {
         };
         LinkAttachmentDto: Record<string, never>;
         UnlinkAttachmentDto: Record<string, never>;
+        RolePermissionResponseDto: {
+            /**
+             * @description The action/ability of the permission
+             * @example read
+             */
+            ability: string;
+            /**
+             * @description The subject of the permission
+             * @example item
+             */
+            subject: string;
+            /**
+             * @description The value of the permission
+             * @example true
+             */
+            value: boolean;
+        };
+        RoleResponseDto: {
+            /**
+             * @description Unique identifier of the role
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description The slug of the role
+             * @example admin
+             */
+            slug: string;
+            /**
+             * @description The name of the role
+             * @example Administrator
+             */
+            name: string;
+            /**
+             * @description The description of the role
+             * @example Administrator role with all permissions
+             */
+            description: string;
+            /**
+             * @description Indicates if the role is predefined
+             * @example false
+             */
+            predefined: boolean;
+            /**
+             * @description List of permissions associated with the role
+             * @example [
+             *       {
+             *         "ability": "read",
+             *         "subject": "item",
+             *         "value": true
+             *       },
+             *       {
+             *         "ability": "edit",
+             *         "subject": "item",
+             *         "value": false
+             *       }
+             *     ]
+             */
+            permissions: components["schemas"]["RolePermissionResponseDto"][];
+        };
+        CreateRolePermissionDto: {
+            /**
+             * @description The subject of the permission
+             * @example subject
+             */
+            subject: string;
+            /**
+             * @description The action of the permission
+             * @example read
+             */
+            ability: string;
+            /**
+             * @description The value of the permission
+             * @example true
+             */
+            value: boolean;
+        };
+        CreateRoleDto: {
+            /**
+             * @description The name of the role
+             * @example admin
+             */
+            roleName: string;
+            /**
+             * @description The description of the role
+             * @example Administrator
+             */
+            roleDescription: string;
+            /**
+             * @description Юрлица, к которым допущена роль. Пусто — ко всем.
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            allowedLegalEntityIds?: string[];
+            /** @description The permissions of the role */
+            permissions: components["schemas"]["CreateRolePermissionDto"][];
+        };
+        EditRolePermissionDto: {
+            /**
+             * @description The subject of the permission
+             * @example subject
+             */
+            subject: string;
+            /**
+             * @description The action of the permission
+             * @example read
+             */
+            ability: string;
+            /**
+             * @description The value of the permission
+             * @example true
+             */
+            value: boolean;
+            /**
+             * @description The permission ID
+             * @example 1
+             */
+            permissionId: number;
+        };
+        EditRoleDto: {
+            /**
+             * @description The name of the role
+             * @example admin
+             */
+            roleName: string;
+            /**
+             * @description The description of the role
+             * @example Administrator
+             */
+            roleDescription: string;
+            /**
+             * @description Юрлица, к которым допущена роль. Пусто — ко всем.
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            allowedLegalEntityIds?: string[];
+            /** @description The permissions of the role */
+            permissions: components["schemas"]["EditRolePermissionDto"][];
+        };
         TaxRateResponseDto: {
             /**
              * @description The unique identifier of the tax rate
@@ -7690,6 +10991,1666 @@ export interface components {
              */
             costMethod: string;
         };
+        ManagementArticleResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example Выручка */
+            name: string;
+            /** @example null */
+            parentId: number | null;
+            /** @example income */
+            kind: string;
+            /** @example operating */
+            cashflowSection: string | null;
+            /** @example 0 */
+            sortOrder: number;
+            /** @example true */
+            active: boolean;
+        };
+        CreateManagementArticleDto: {
+            /**
+             * @description The article name
+             * @example Выручка
+             */
+            name: string;
+            /**
+             * @description Parent article id (nesting)
+             * @example 1
+             */
+            parentId: number;
+            /**
+             * @description Income or expense article
+             * @example income
+             * @enum {string}
+             */
+            kind: "income" | "expense";
+            /**
+             * @description Cash flow statement section (optional)
+             * @example operating
+             * @enum {string}
+             */
+            cashflowSection: "operating" | "investing" | "financing";
+            /**
+             * @description Постоянный или переменный расход. Только для расходных статей: у выручки постоянных и переменных не бывает.
+             * @example fixed
+             * @enum {string}
+             */
+            costBehavior: "fixed" | "variable";
+            /**
+             * @description Sort order within the tree
+             * @example 0
+             */
+            sortOrder: number;
+            /**
+             * @description Soft on/off switch
+             * @example true
+             */
+            active: boolean;
+            /**
+             * @description Account ids rolled up into this article
+             * @example [
+             *       1001,
+             *       1002
+             *     ]
+             */
+            accountIds: number[];
+        };
+        EditManagementArticleDto: {
+            /**
+             * @description The article name
+             * @example Выручка
+             */
+            name: string;
+            /**
+             * @description Parent article id (nesting)
+             * @example 1
+             */
+            parentId: number;
+            /**
+             * @description Income or expense article
+             * @example income
+             * @enum {string}
+             */
+            kind: "income" | "expense";
+            /**
+             * @description Cash flow statement section (optional)
+             * @example operating
+             * @enum {string}
+             */
+            cashflowSection: "operating" | "investing" | "financing";
+            /**
+             * @description Постоянный или переменный расход. Только для расходных статей: у выручки постоянных и переменных не бывает.
+             * @example fixed
+             * @enum {string}
+             */
+            costBehavior: "fixed" | "variable";
+            /**
+             * @description Sort order within the tree
+             * @example 0
+             */
+            sortOrder: number;
+            /**
+             * @description Soft on/off switch
+             * @example true
+             */
+            active: boolean;
+            /**
+             * @description Account ids rolled up into this article
+             * @example [
+             *       1001,
+             *       1002
+             *     ]
+             */
+            accountIds: number[];
+        };
+        RecurrenceDto: {
+            /**
+             * @example monthly
+             * @enum {string}
+             */
+            frequency: "daily" | "weekly" | "monthly";
+            /**
+             * @description Every N units of the frequency
+             * @example 1
+             */
+            interval: number;
+            /**
+             * @description Day of month (monthly)
+             * @example 5
+             */
+            dayOfMonth?: number;
+            /**
+             * @description Weekday 0-6 (weekly)
+             * @example 1
+             */
+            weekday?: number;
+            /**
+             * @description End date
+             * @example 2026-12-31
+             */
+            endDate?: string;
+        };
+        CreatePlannedOperationDto: {
+            /**
+             * @example inflow
+             * @enum {string}
+             */
+            direction: "inflow" | "outflow";
+            /**
+             * @description Amount (positive)
+             * @example 200000
+             */
+            amount: number;
+            /**
+             * @description ISO currency code
+             * @example RUB
+             */
+            currencyCode?: string;
+            /**
+             * @description Planned date
+             * @example 2026-06-15
+             */
+            plannedDate: string;
+            /**
+             * @description Management article id
+             * @example 3
+             */
+            articleId?: number;
+            /**
+             * @description Cash/bank account id
+             * @example 12
+             */
+            accountId?: number;
+            /**
+             * @description Branch (direction) id
+             * @example 1
+             */
+            branchId?: number;
+            /**
+             * @description Project id
+             * @example 1
+             */
+            projectId?: number;
+            /**
+             * @description Contact id
+             * @example 1
+             */
+            contactId?: number;
+            /**
+             * @example planned
+             * @enum {string}
+             */
+            status?: "planned" | "confirmed" | "done" | "cancelled";
+            /** @example Аванс по договору */
+            description?: string;
+            recurrence?: components["schemas"]["RecurrenceDto"];
+        };
+        MaterializePlannedOperationDto: {
+            /**
+             * @description Occurrence date to materialize (defaults to the planned date)
+             * @example 2026-09-01
+             */
+            date?: string;
+        };
+        EditPlannedOperationDto: {
+            /**
+             * @example inflow
+             * @enum {string}
+             */
+            direction: "inflow" | "outflow";
+            /**
+             * @description Amount (positive)
+             * @example 200000
+             */
+            amount: number;
+            /**
+             * @description ISO currency code
+             * @example RUB
+             */
+            currencyCode?: string;
+            /**
+             * @description Planned date
+             * @example 2026-06-15
+             */
+            plannedDate: string;
+            /**
+             * @description Management article id
+             * @example 3
+             */
+            articleId?: number;
+            /**
+             * @description Cash/bank account id
+             * @example 12
+             */
+            accountId?: number;
+            /**
+             * @description Branch (direction) id
+             * @example 1
+             */
+            branchId?: number;
+            /**
+             * @description Project id
+             * @example 1
+             */
+            projectId?: number;
+            /**
+             * @description Contact id
+             * @example 1
+             */
+            contactId?: number;
+            /**
+             * @example planned
+             * @enum {string}
+             */
+            status?: "planned" | "confirmed" | "done" | "cancelled";
+            /** @example Аванс по договору */
+            description?: string;
+            recurrence?: components["schemas"]["RecurrenceDto"];
+        };
+        ExchangeRateLatestResponseDto: {
+            /**
+             * @description The base currency code
+             * @example USD
+             */
+            baseCurrency: string;
+            /**
+             * @description The target currency code
+             * @example EUR
+             */
+            toCurrency: string;
+            /**
+             * @description The exchange rate value
+             * @example 0.85
+             */
+            exchangeRate: number;
+            /**
+             * @description True when the rate comes from the last successful response because the exchange rate service is currently unavailable.
+             * @example false
+             */
+            isStale?: boolean;
+        };
+        BankTransactionResponseDto: {
+            /**
+             * @description The withdrawal amount
+             * @example 1000.5
+             */
+            withdrawal: number;
+            /**
+             * @description The deposit amount
+             * @example 2000.75
+             */
+            deposit: number;
+            /**
+             * @description The running balance after the transaction
+             * @example 3000.25
+             */
+            runningBalance: number;
+            /**
+             * @description Formatted withdrawal amount with currency symbol
+             * @example $1,000.50
+             */
+            formattedWithdrawal: string;
+            /**
+             * @description Formatted deposit amount with currency symbol
+             * @example $2,000.75
+             */
+            formattedDeposit: string;
+            /**
+             * @description Formatted running balance with currency symbol
+             * @example $3,000.25
+             */
+            formattedRunningBalance: string;
+            /**
+             * @description Unique transaction number
+             * @example TRX-2024-001
+             */
+            transactionNumber: string;
+            /**
+             * @description Reference number for the transaction
+             * @example REF-2024-001
+             */
+            referenceNumber: string;
+            /**
+             * @description ID of the reference entity
+             * @example 12345
+             */
+            referenceId: number;
+            /**
+             * @description Type of the reference entity
+             * @example INVOICE
+             */
+            referenceType: string;
+            /**
+             * @description Formatted transaction type
+             * @example Bank Transfer
+             */
+            formattedTransactionType: string;
+            /**
+             * @description Current balance
+             * @example 5000
+             */
+            balance: number;
+            /**
+             * @description Formatted balance with currency symbol
+             * @example $5,000.00
+             */
+            formattedBalance: string;
+            /**
+             * Format: date-time
+             * @description Transaction date
+             * @example 2024-03-20T10:30:00Z
+             */
+            date: string;
+            /**
+             * @description Formatted transaction date
+             * @example March 20, 2024
+             */
+            formattedDate: string;
+            /**
+             * @description Transaction status
+             * @example COMPLETED
+             */
+            status: string;
+            /**
+             * @description Formatted transaction status
+             * @example Completed
+             */
+            formattedStatus: string;
+            /**
+             * @description ID of the uncategorized transaction
+             * @example 67890
+             */
+            uncategorizedTransactionId: number;
+        };
+        CreateBankTransactionDto: {
+            /**
+             * Format: date-time
+             * @description The date of the bank transaction
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            date: string;
+            /**
+             * @description Optional transaction number or reference
+             * @example TRX-001
+             */
+            transactionNumber?: string;
+            /**
+             * @description Optional external reference number
+             * @example REF-001
+             */
+            referenceNo?: string;
+            /**
+             * @description Type of bank transaction (e.g., deposit, withdrawal)
+             * @example deposit
+             */
+            transactionType: string;
+            /**
+             * @description Description of the bank transaction
+             * @example Monthly rent payment
+             */
+            description: string;
+            /**
+             * @description Transaction amount
+             * @example 1000.5
+             */
+            amount: number;
+            /**
+             * @description Exchange rate for currency conversion
+             * @default 1
+             * @example 1.15
+             */
+            exchangeRate: number;
+            /**
+             * @description Currency code for the transaction
+             * @example USD
+             */
+            currencyCode?: string;
+            /**
+             * @description ID of the credit account associated with this transaction
+             * @example 1001
+             */
+            creditAccountId: number;
+            /**
+             * @description ID of the cashflow account associated with this transaction
+             * @example 2001
+             */
+            cashflowAccountId: number;
+            /**
+             * @description Whether the transaction should be published
+             * @default true
+             */
+            publish: boolean;
+            /**
+             * @description Отметить операцию как внутригрупповую
+             * @default false
+             */
+            isIntercompany: boolean;
+            /**
+             * @description ID of the branch where the transaction occurred
+             * @example 101
+             */
+            branchId?: number;
+            /**
+             * @description Plaid transaction ID if imported from Plaid
+             * @example plaid_trx_12345
+             */
+            plaidTransactionId?: string;
+            /**
+             * @description Plaid account ID if imported from Plaid
+             * @example plaid_acc_67890
+             */
+            plaidAccountId?: string;
+            /**
+             * @description ID of the uncategorized transaction if this is categorizing an existing transaction
+             * @example 5001
+             */
+            uncategorizedTransactionId?: number;
+            /**
+             * @description ID of the linked contact (counterparty)
+             * @example 55
+             */
+            contactId?: number;
+        };
+        GetAutofillCategorizeTransactionResponseDto: {
+            /**
+             * @description Assigned credit/debit account ID from recognition
+             * @example 10
+             */
+            creditAccountId?: number;
+            /**
+             * @description Bank account ID (debit)
+             * @example 5
+             */
+            debitAccountId?: number;
+            /**
+             * @description Total amount of uncategorized transactions
+             * @example -150.5
+             */
+            amount: number;
+            /**
+             * @description Formatted amount
+             * @example $150.50
+             */
+            formattedAmount: string;
+            /**
+             * @description Transaction date
+             * @example 2024-01-15
+             */
+            date: string;
+            /**
+             * @description Formatted date
+             * @example Jan 15, 2024
+             */
+            formattedDate: string;
+            /**
+             * @description Whether the transaction is recognized by a rule
+             * @example true
+             */
+            isRecognized: boolean;
+            /**
+             * @description Bank rule ID that recognized the transaction
+             * @example 1
+             */
+            recognizedByRuleId?: number;
+            /**
+             * @description Bank rule name that recognized the transaction
+             * @example Salary Rule
+             */
+            recognizedByRuleName?: string;
+            /**
+             * @description Reference number
+             * @example REF-001
+             */
+            referenceNo?: string;
+            /**
+             * @description Transaction type (category)
+             * @example other_expense
+             */
+            transactionType: string;
+            /**
+             * @description Whether this is a deposit transaction
+             * @example false
+             */
+            isDepositTransaction: boolean;
+            /**
+             * @description Whether this is a withdrawal transaction
+             * @example true
+             */
+            isWithdrawalTransaction: boolean;
+            /** @description Assigned payee from recognition */
+            payee?: string;
+            /** @description Assigned memo from recognition */
+            memo?: string;
+        };
+        GetPendingTransactionResponseDto: {
+            /** @description Transaction amount */
+            amount: number;
+            /** @description Transaction date */
+            date: Record<string, never>;
+            /** @description Bank account ID */
+            accountId: number;
+            /** @description Transaction reference number */
+            referenceNo?: string;
+            /** @description Payee */
+            payee?: string;
+            /** @description Transaction description */
+            description?: string;
+            /** @description Plaid transaction ID */
+            plaidTransactionId?: string;
+            /** @description Recognized transaction ID */
+            recognizedTransactionId?: number;
+            /** @description Is transaction pending? */
+            pending: boolean;
+            /** @description Transaction currency code */
+            currencyCode: string;
+            /** @description Withdrawal amount */
+            withdrawal: number;
+            /** @description Deposit amount */
+            deposit: number;
+            /** @description Is deposit transaction? */
+            isDepositTransaction: boolean;
+            /** @description Is withdrawal transaction? */
+            isWithdrawalTransaction: boolean;
+            /** @description Formatted amount */
+            formattedAmount: string;
+            /** @description Formatted date */
+            formattedDate: string;
+            /** @description Formatted deposit amount */
+            formattedDepositAmount: string;
+            /** @description Formatted withdrawal amount */
+            formattedWithdrawalAmount: string;
+        };
+        CreateBudgetDto: {
+            /**
+             * @description Budget name
+             * @example Бюджет 2026
+             */
+            name: string;
+            /**
+             * @example bdir
+             * @enum {string}
+             */
+            type: "bdir" | "bdds";
+            /**
+             * @description Fiscal year
+             * @example 2026
+             */
+            fiscalYear: number;
+            /**
+             * @example realistic
+             * @enum {string}
+             */
+            activeScenario?: "optimistic" | "realistic" | "pessimistic";
+            /**
+             * @description Branch id (optional)
+             * @example 1
+             */
+            branchId?: number;
+        };
+        EditBudgetDto: {
+            /**
+             * @description Budget name
+             * @example Бюджет 2026
+             */
+            name: string;
+            /**
+             * @example bdir
+             * @enum {string}
+             */
+            type: "bdir" | "bdds";
+            /**
+             * @description Fiscal year
+             * @example 2026
+             */
+            fiscalYear: number;
+            /**
+             * @example realistic
+             * @enum {string}
+             */
+            activeScenario?: "optimistic" | "realistic" | "pessimistic";
+            /**
+             * @description Branch id (optional)
+             * @example 1
+             */
+            branchId?: number;
+        };
+        BudgetLineInputDto: {
+            /**
+             * @description Article id
+             * @example 3
+             */
+            articleId: number;
+            /**
+             * @description Period (first day of month)
+             * @example 2026-03-01
+             */
+            period: string;
+            /**
+             * @example realistic
+             * @enum {string}
+             */
+            scenario: "optimistic" | "realistic" | "pessimistic";
+            /**
+             * @description Planned amount
+             * @example 150000
+             */
+            plannedAmount: number;
+        };
+        UpsertBudgetLinesDto: {
+            lines: components["schemas"]["BudgetLineInputDto"][];
+        };
+        CreateLegalEntityDto: {
+            /**
+             * @description Короткое название
+             * @example ООО Ромашка
+             */
+            name: string;
+            /** @description Полное наименование */
+            fullName?: string;
+            /**
+             * @description ООО | ИП | АО | НКО | Самозанятый
+             * @example ООО
+             */
+            form: string;
+            /**
+             * @description ИНН
+             * @example 7707083893
+             */
+            inn?: string;
+            /**
+             * @description КПП (у ИП нет)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description ОГРН или ОГРНИП
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /**
+             * @description Система налогообложения
+             * @example УСН_Д
+             */
+            taxSystem?: string;
+            /** @description Плательщик НДС */
+            vatPayer?: boolean;
+            /**
+             * @description Валюта учёта
+             * @example RUB
+             */
+            baseCurrency?: string;
+            /** @description ФИО директора */
+            directorName?: string;
+            /** @description Юридический адрес */
+            legalAddress?: string;
+            /** @description Фактический адрес */
+            actualAddress?: string;
+            /** @description Банковские реквизиты: р/с, банк, БИК, к/с */
+            bankDetails?: Record<string, never>;
+            /**
+             * @description Доля владельца, %
+             * @example 100
+             */
+            ownershipShare?: number;
+            /** @description Головное юрлицо группы */
+            isPrimary?: boolean;
+            /** @description Действующее */
+            active?: boolean;
+            /** @description Порядок в списке */
+            sortOrder?: number;
+        };
+        EditLegalEntityDto: {
+            /**
+             * @description Короткое название
+             * @example ООО Ромашка
+             */
+            name: string;
+            /** @description Полное наименование */
+            fullName?: string;
+            /**
+             * @description ООО | ИП | АО | НКО | Самозанятый
+             * @example ООО
+             */
+            form: string;
+            /**
+             * @description ИНН
+             * @example 7707083893
+             */
+            inn?: string;
+            /**
+             * @description КПП (у ИП нет)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description ОГРН или ОГРНИП
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /**
+             * @description Система налогообложения
+             * @example УСН_Д
+             */
+            taxSystem?: string;
+            /** @description Плательщик НДС */
+            vatPayer?: boolean;
+            /**
+             * @description Валюта учёта
+             * @example RUB
+             */
+            baseCurrency?: string;
+            /** @description ФИО директора */
+            directorName?: string;
+            /** @description Юридический адрес */
+            legalAddress?: string;
+            /** @description Фактический адрес */
+            actualAddress?: string;
+            /** @description Банковские реквизиты: р/с, банк, БИК, к/с */
+            bankDetails?: Record<string, never>;
+            /**
+             * @description Доля владельца, %
+             * @example 100
+             */
+            ownershipShare?: number;
+            /** @description Головное юрлицо группы */
+            isPrimary?: boolean;
+            /** @description Действующее */
+            active?: boolean;
+            /** @description Порядок в списке */
+            sortOrder?: number;
+        };
+        CreateProjectDto: {
+            /**
+             * @description Название направления
+             * @example Розница
+             */
+            name: string;
+            /**
+             * @description Убранное направление не предлагается в новых операциях
+             * @default active
+             * @enum {string}
+             */
+            status: "active" | "archived";
+            /** @description Контрагент направления */
+            contactId?: number;
+            /** @description Срок, YYYY-MM-DD */
+            deadline?: string;
+            /** @description Оценка стоимости */
+            costEstimate?: number;
+        };
+        EditProjectDto: {
+            /**
+             * @description Название направления
+             * @example Розница
+             */
+            name: string;
+            /**
+             * @description Убранное направление не предлагается в новых операциях
+             * @default active
+             * @enum {string}
+             */
+            status: "active" | "archived";
+            /** @description Контрагент направления */
+            contactId?: number;
+            /** @description Срок, YYYY-MM-DD */
+            deadline?: string;
+            /** @description Оценка стоимости */
+            costEstimate?: number;
+        };
+        CreateApiTokenDto: {
+            /**
+             * @description Название токена — чтобы через год было понятно, что отзываешь.
+             * @example Выгрузка в 1С
+             */
+            name: string;
+            /**
+             * @description Права токена. Пустой список — это НЕ «можно всё»: такой токен не пройдёт ни одной проверки права.
+             * @example [
+             *       "reports:read"
+             *     ]
+             */
+            scopes?: string[];
+            /** @description Срок жизни. Необязателен: навязанный срок ломал бы интеграции молча. */
+            expiresAt?: string;
+        };
+        CreateWebhookDto: {
+            /**
+             * @description Событие, на которое подписываемся.
+             * @enum {string}
+             */
+            event: "transaction.created" | "transaction.article_changed" | "payment_request.approved" | "cash_gap.forecasted";
+            /**
+             * @description Адрес получателя. Внутренние адреса запрещены: иначе через вебхук можно заставить наш сервер сходить внутрь нашей же сети.
+             * @example https://example.com/hooks/bigfin
+             */
+            url: string;
+        };
+        EditWebhookDto: {
+            /** @enum {string} */
+            event?: "transaction.created" | "transaction.article_changed" | "payment_request.approved" | "cash_gap.forecasted";
+            url?: string;
+            /** @description Выключить подписку, не теряя её настройки и историю. */
+            active?: boolean;
+        };
+        EditAiAnalystSettingsDto: {
+            /** @enum {string} */
+            provider?: "yandex_gpt" | "gigachat" | "openai_compatible" | "off";
+            /** @description Ключ доступа. Пустое поле НЕ стирает сохранённый ключ: иначе открытие формы и «Сохранить» ломали бы рабочую интеграцию. */
+            apiKey?: string;
+            /** @description Адрес OpenAI-совместимой модели, в том числе своей. */
+            endpoint?: string;
+            /** @description Идентификатор каталога для YandexGPT. */
+            folderId?: string;
+            model?: string;
+            /** @description Не передавать данные во внешние сервисы. При включении раздел недоступен, а не деградирует молча (§13.1 п. 5). */
+            forbidExternalData?: boolean;
+        };
+        AskDto: {
+            /** @example Сколько мы потратили на рекламу в прошлом квартале? */
+            question: string;
+        };
+        InstallmentDto: {
+            /** @example 2026-07-01 */
+            dueDate: string;
+            /** @example 50000 */
+            amount: number;
+            /**
+             * @example planned
+             * @enum {string}
+             */
+            status?: "planned" | "paid";
+            /** @example Первый транш */
+            note?: string;
+        };
+        CreateRepaymentPlanDto: {
+            /** @enum {string} */
+            side: "receivable" | "payable";
+            /**
+             * @description Contact id
+             * @example 1
+             */
+            contactId: number;
+            /** @example invoice */
+            sourceType?: string;
+            /** @example 12 */
+            sourceId?: number;
+            /** @example RUB */
+            currencyCode?: string;
+            /** @example Рассрочка на 3 месяца */
+            description?: string;
+            installments: components["schemas"]["InstallmentDto"][];
+        };
+        EditRepaymentPlanDto: {
+            /** @enum {string} */
+            side: "receivable" | "payable";
+            /**
+             * @description Contact id
+             * @example 1
+             */
+            contactId: number;
+            /** @example invoice */
+            sourceType?: string;
+            /** @example 12 */
+            sourceId?: number;
+            /** @example RUB */
+            currencyCode?: string;
+            /** @example Рассрочка на 3 месяца */
+            description?: string;
+            installments: components["schemas"]["InstallmentDto"][];
+        };
+        CreatePaymentRequestDto: {
+            /**
+             * @description Amount (positive)
+             * @example 120000
+             */
+            amount: number;
+            /**
+             * @description ISO currency code
+             * @example RUB
+             */
+            currencyCode?: string;
+            /**
+             * @description Management article id
+             * @example 3
+             */
+            articleId?: number;
+            /**
+             * @description Contact id (payee)
+             * @example 1
+             */
+            contactId?: number;
+            /**
+             * @description Cash/bank account id
+             * @example 12
+             */
+            accountId?: number;
+            /**
+             * @description Branch id
+             * @example 1
+             */
+            branchId?: number;
+            /**
+             * @description Due date
+             * @example 2026-06-15
+             */
+            dueDate: string;
+            /** @example Оплата аренды за июнь */
+            description?: string;
+        };
+        CreateDealDto: {
+            /**
+             * @description Deal name
+             * @example Сайт «Ромашка»
+             */
+            name: string;
+            /**
+             * @description Client contact id
+             * @example 3
+             */
+            contactId?: number;
+            /**
+             * @description Responsible manager (employee id)
+             * @example 5
+             */
+            managerId?: number | null;
+            /**
+             * @description Deadline
+             * @example 2026-06-30
+             */
+            deadline?: string;
+            /**
+             * @description Budget / cost estimate
+             * @example 350000
+             */
+            costEstimate?: number;
+            /** @enum {string} */
+            status?: "in_progress" | "completed" | "cancelled";
+        };
+        EditDealDto: {
+            /**
+             * @description Deal name
+             * @example Сайт «Ромашка»
+             */
+            name: string;
+            /**
+             * @description Client contact id
+             * @example 3
+             */
+            contactId?: number;
+            /**
+             * @description Responsible manager (employee id)
+             * @example 5
+             */
+            managerId?: number | null;
+            /**
+             * @description Deadline
+             * @example 2026-06-30
+             */
+            deadline?: string;
+            /**
+             * @description Budget / cost estimate
+             * @example 350000
+             */
+            costEstimate?: number;
+            /** @enum {string} */
+            status?: "in_progress" | "completed" | "cancelled";
+        };
+        CreateDealStageDto: {
+            /** @example Проект */
+            name?: string;
+            /** @example 100000 */
+            plannedRevenue?: number;
+            /** @example 40000 */
+            plannedCost?: number;
+            /** @example 1 */
+            sortOrder?: number;
+            /**
+             * @example open
+             * @enum {string}
+             */
+            status?: "open" | "closed";
+            /**
+             * @description Close date (required when status=closed)
+             * @example 2026-03-10
+             */
+            closedDate?: string;
+        };
+        EditDealStageDto: {
+            /** @example Проект */
+            name?: string;
+            /** @example 100000 */
+            plannedRevenue?: number;
+            /** @example 40000 */
+            plannedCost?: number;
+            /** @example 1 */
+            sortOrder?: number;
+            /**
+             * @example open
+             * @enum {string}
+             */
+            status?: "open" | "closed";
+            /**
+             * @description Close date (required when status=closed)
+             * @example 2026-03-10
+             */
+            closedDate?: string;
+        };
+        CreateCostAllocationRuleDto: {
+            /** @example Аренда по выручке */
+            name: string;
+            /**
+             * @description Source cost article id
+             * @example 42
+             */
+            sourceArticleId: number;
+            /**
+             * @example revenue
+             * @enum {string}
+             */
+            allocationKey: "revenue" | "manual_share";
+            /**
+             * @description dealId→weight (manual_share)
+             * @example {
+             *       "1": 3,
+             *       "2": 1
+             *     }
+             */
+            manualShares?: Record<string, never>;
+            /**
+             * @description Restrict targets (revenue key)
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            targetDealIds?: string[];
+            /** @example 2026-01-01 */
+            validFrom?: string;
+            /** @example 2026-12-31 */
+            validTo?: string;
+            /** @example true */
+            isActive?: boolean;
+        };
+        EditCostAllocationRuleDto: {
+            /** @example Аренда по выручке */
+            name: string;
+            /**
+             * @description Source cost article id
+             * @example 42
+             */
+            sourceArticleId: number;
+            /**
+             * @example revenue
+             * @enum {string}
+             */
+            allocationKey: "revenue" | "manual_share";
+            /**
+             * @description dealId→weight (manual_share)
+             * @example {
+             *       "1": 3,
+             *       "2": 1
+             *     }
+             */
+            manualShares?: Record<string, never>;
+            /**
+             * @description Restrict targets (revenue key)
+             * @example [
+             *       1,
+             *       2
+             *     ]
+             */
+            targetDealIds?: string[];
+            /** @example 2026-01-01 */
+            validFrom?: string;
+            /** @example 2026-12-31 */
+            validTo?: string;
+            /** @example true */
+            isActive?: boolean;
+        };
+        CreateEmployeeDto: {
+            /**
+             * @description ФИО
+             * @example Иванова Мария Петровна
+             */
+            fullName: string;
+            /** @example Менеджер по продажам */
+            position?: string;
+            /**
+             * @description staff|gph|npd|ip
+             * @example staff
+             */
+            employmentType: string;
+            /**
+             * @description Оклад по умолчанию
+             * @example 100000
+             */
+            defaultSalary?: number;
+            /** @example true */
+            active?: boolean;
+            /** @example Работает с 2024 года */
+            note?: string;
+        };
+        EditEmployeeDto: {
+            /**
+             * @description ФИО
+             * @example Иванова Мария Петровна
+             */
+            fullName: string;
+            /** @example Менеджер по продажам */
+            position?: string;
+            /**
+             * @description staff|gph|npd|ip
+             * @example staff
+             */
+            employmentType: string;
+            /**
+             * @description Оклад по умолчанию
+             * @example 100000
+             */
+            defaultSalary?: number;
+            /** @example true */
+            active?: boolean;
+            /** @example Работает с 2024 года */
+            note?: string;
+        };
+        CreateKpiTargetDto: {
+            /**
+             * @description Employee id (менеджер)
+             * @example 1
+             */
+            employeeId: number;
+            /**
+             * @description Месяц плана
+             * @example 2026-06-01
+             */
+            periodMonth: string;
+            /**
+             * @default revenue
+             * @enum {string}
+             */
+            metric: "revenue" | "profit";
+            /**
+             * @description План на месяц
+             * @example 1000000
+             */
+            targetAmount: number;
+            /**
+             * @description % бонуса от факта показателя
+             * @example 5
+             */
+            bonusRate: number;
+            /**
+             * @description Бонус только при выполнении плана
+             * @example false
+             */
+            onlyIfAchieved?: boolean;
+            /** @example План на июнь */
+            note?: string;
+        };
+        EditKpiTargetDto: {
+            /**
+             * @description Employee id (менеджер)
+             * @example 1
+             */
+            employeeId: number;
+            /**
+             * @description Месяц плана
+             * @example 2026-06-01
+             */
+            periodMonth: string;
+            /**
+             * @default revenue
+             * @enum {string}
+             */
+            metric: "revenue" | "profit";
+            /**
+             * @description План на месяц
+             * @example 1000000
+             */
+            targetAmount: number;
+            /**
+             * @description % бонуса от факта показателя
+             * @example 5
+             */
+            bonusRate: number;
+            /**
+             * @description Бонус только при выполнении плана
+             * @example false
+             */
+            onlyIfAchieved?: boolean;
+            /** @example План на июнь */
+            note?: string;
+        };
+        CreatePayrollRunDto: {
+            /**
+             * @description Месяц начисления
+             * @example 2026-06-01
+             */
+            periodMonth: string;
+            /**
+             * @description Дата выплаты
+             * @example 2026-07-05
+             */
+            payDate: string;
+            /** @example Июнь 2026 */
+            note?: string;
+        };
+        PayrollRunLineDto: {
+            /**
+             * @description Employee id
+             * @example 1
+             */
+            employeeId: number;
+            /**
+             * @description Оклад за месяц
+             * @example 100000
+             */
+            baseAmount: number;
+            /**
+             * @description Премия
+             * @example 20000
+             */
+            bonusAmount?: number;
+            /**
+             * @description Удержание
+             * @example 0
+             */
+            deductionAmount?: number;
+        };
+        EditPayrollRunDto: {
+            /**
+             * @description Дата выплаты
+             * @example 2026-07-05
+             */
+            payDate?: string;
+            /** @example Июнь 2026 */
+            note?: string;
+            lines?: components["schemas"]["PayrollRunLineDto"][];
+        };
+        CreateDividendPayoutDto: {
+            /**
+             * @description Дата выплаты
+             * @example 2026-06-11
+             */
+            date: string;
+            /**
+             * @description Сумма выплаты
+             * @example 150000
+             */
+            amount: number;
+            /**
+             * @description Счёт списания (банк/касса)
+             * @example 1
+             */
+            paymentAccountId: number;
+            /** @example Дивиденды за II квартал */
+            note?: string;
+        };
+        CreateCreditDto: {
+            /** @example Кредит Сбербанк */
+            name: string;
+            /** @example ПАО Сбербанк */
+            lender?: string;
+            /** @example 1000000 */
+            principalAmount: number;
+            /**
+             * @description Годовая ставка, %
+             * @example 18.5
+             */
+            annualInterestRate: number;
+            /**
+             * @description Срок, месяцев
+             * @example 24
+             */
+            termMonths: number;
+            /**
+             * @description Дата выдачи
+             * @example 2026-06-15
+             */
+            startDate: string;
+            /**
+             * @example annuity
+             * @enum {string}
+             */
+            scheduleType: "annuity" | "differentiated";
+            /**
+             * @description Счёт зачисления/списания (банк/касса)
+             * @example 1
+             */
+            paymentAccountId: number;
+            /** @example Договор №123 от 15.06.2026 */
+            note?: string;
+        };
+        EditCreditDto: Record<string, never>;
+        SetCostBehaviorDto: {
+            /**
+             * @description Тип затрат: 'fixed' | 'variable' | null (снять пометку)
+             * @enum {string}
+             */
+            behavior?: "fixed" | "variable";
+        };
+        CreateMarketingChannelDto: {
+            /** @description Название канала */
+            name: string;
+        };
+        UpdateMarketingChannelDto: {
+            /** @description Название канала */
+            name?: string;
+            /** @description Активен ли канал */
+            active?: boolean;
+        };
+        UpsertMarketingMonthlyDto: {
+            /** @description ID канала */
+            channelId: number;
+            /** @description Месяц 'YYYY-MM' */
+            month: string;
+            /** @description Расход на маркетинг за месяц */
+            spend: number;
+            /** @description Число новых клиентов за месяц */
+            newCustomers: number;
+        };
+        SetCustomerLifetimeDto: {
+            /** @description Средний срок жизни клиента в месяцах */
+            months: number;
+        };
+        SetProfitMultipleDto: {
+            /**
+             * @description Profit multiple used to value the business
+             * @example 4
+             */
+            profitMultiple?: number;
+        };
+        NumberFormatQueryDto: {
+            /**
+             * @description Number of decimal places to display
+             * @example 2
+             */
+            precision?: number;
+            /**
+             * @description Whether to divide the number by 1000
+             * @example false
+             */
+            divideOn1000?: boolean;
+            /**
+             * @description Whether to show zero values
+             * @example true
+             */
+            showZero?: boolean;
+            /**
+             * @description How to format money values
+             * @example total
+             * @enum {string}
+             */
+            formatMoney?: "total" | "always" | "none";
+            /**
+             * @description How to format negative numbers
+             * @example parentheses
+             * @enum {string}
+             */
+            negativeFormat?: "parentheses" | "mines";
+        };
+        BalanceSheetQueryResponseDto: {
+            /**
+             * @description Column display type
+             * @enum {string}
+             */
+            displayColumnsType: "total" | "date_periods";
+            /**
+             * @description Column grouping
+             * @enum {string}
+             */
+            displayColumnsBy: "day" | "month" | "year" | "quarter";
+            /** @description Start date */
+            fromDate: string;
+            /** @description End date */
+            toDate: string;
+            /** @description Number format settings */
+            numberFormat: components["schemas"]["NumberFormatQueryDto"];
+            /** @description Exclude zero balance accounts */
+            noneZero: boolean;
+            /** @description Exclude accounts with no transactions */
+            noneTransactions: boolean;
+            /**
+             * @description Accounting basis
+             * @enum {string}
+             */
+            basis: "cash" | "accrual";
+            /** @description Account IDs to include */
+            accountIds: number[];
+            /** @description Show percentage of column */
+            percentageOfColumn: boolean;
+            /** @description Show percentage of row */
+            percentageOfRow: boolean;
+            /** @description Include previous period */
+            previousPeriod: boolean;
+            /** @description Show previous period amount change */
+            previousPeriodAmountChange: boolean;
+            /** @description Show previous period percentage change */
+            previousPeriodPercentageChange: boolean;
+            /** @description Include previous year */
+            previousYear: boolean;
+            /** @description Show previous year amount change */
+            previousYearAmountChange: boolean;
+            /** @description Show previous year percentage change */
+            previousYearPercentageChange: boolean;
+        };
+        FinancialReportTotalDto: {
+            /** @description Numeric amount */
+            amount: number;
+            /** @description Formatted amount string */
+            formattedAmount: string;
+            /** @description Currency code */
+            currencyCode: string;
+            /** @description Date associated with the total */
+            date?: Record<string, never>;
+        };
+        FinancialReportPercentageDto: {
+            /** @description Percentage amount */
+            amount: number;
+            /** @description Formatted percentage string */
+            formattedAmount: string;
+        };
+        BalanceSheetDataNodeDto: {
+            /** @description Node identifier (string for aggregates, number for accounts) */
+            id: Record<string, never>;
+            /** @description Account or category name */
+            name: string;
+            /**
+             * @description Type of node
+             * @enum {string}
+             */
+            nodeType: "AGGREGATE" | "ACCOUNTS" | "ACCOUNT" | "NET_INCOME";
+            /** @description Node type alias */
+            type?: string;
+            /** @description Total amount information */
+            total: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Horizontal totals for date periods */
+            horizontalTotals?: components["schemas"]["FinancialReportTotalDto"][];
+            /** @description Percentage of row */
+            percentageRow?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Percentage of column */
+            percentageColumn?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Previous period total */
+            previousPeriod?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous period change */
+            previousPeriodChange?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous period percentage */
+            previousPeriodPercentage?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Previous year total */
+            previousYear?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous year change */
+            previousYearChange?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous year percentage */
+            previousYearPercentage?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Account code */
+            code?: string;
+            /** @description Display index */
+            index?: number;
+            /** @description Parent account ID */
+            parentAccountId?: number;
+            /** @description Child nodes */
+            children?: components["schemas"]["BalanceSheetDataNodeDto"][];
+        };
+        BalanceSheetMetaDto: {
+            /** @description Organization name */
+            organizationName: string;
+            /** @description Base currency code */
+            baseCurrency: string;
+            /** @description Date format string */
+            dateFormat: string;
+            /** @description Whether cost computation is running */
+            isCostComputeRunning: boolean;
+            /** @description Sheet name */
+            sheetName: string;
+            /** @description Formatted as-of date */
+            formattedAsDate: string;
+            /** @description Formatted date range */
+            formattedDateRange: string;
+        };
+        BalanceSheetResponseDto: {
+            /** @description Query parameters used to generate the report */
+            query: components["schemas"]["BalanceSheetQueryResponseDto"];
+            /** @description Hierarchical balance sheet data */
+            data: components["schemas"]["BalanceSheetDataNodeDto"][];
+            /** @description Report metadata */
+            meta: components["schemas"]["BalanceSheetMetaDto"];
+        };
+        FinancialTableColumnDto: {
+            /** @description Column key */
+            key: string;
+            /** @description Column header label */
+            label: string;
+            /** @description Cell position index */
+            cellIndex?: number;
+            /** @description Nested column definitions */
+            children?: components["schemas"]["FinancialTableColumnDto"][];
+        };
+        FinancialTableCellDto: {
+            /** @description Cell key */
+            key: string;
+            /** @description Cell value */
+            value: string;
+        };
+        FinancialTableRowDto: {
+            /** @description Cell data for this row */
+            cells: components["schemas"]["FinancialTableCellDto"][];
+            /** @description Row type classifications */
+            rowTypes: string[];
+            /** @description Row identifier */
+            id: Record<string, never>;
+            /** @description Child rows */
+            children?: components["schemas"]["FinancialTableRowDto"][];
+        };
+        FinancialTableDataDto: {
+            /** @description Table column definitions */
+            columns: components["schemas"]["FinancialTableColumnDto"][];
+            /** @description Table row data */
+            rows: components["schemas"]["FinancialTableRowDto"][];
+        };
+        BalanceSheetTableResponseDto: {
+            /** @description Table data structure */
+            table: components["schemas"]["FinancialTableDataDto"];
+            /** @description Query parameters used to generate the report */
+            query: components["schemas"]["BalanceSheetQueryResponseDto"];
+            /** @description Report metadata */
+            meta: components["schemas"]["BalanceSheetMetaDto"];
+        };
+        CategorizeBankTransactionRouteDto: {
+            /**
+             * Format: date-time
+             * @description The date of the bank transaction
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            date: string;
+            /**
+             * @description ID of the credit account associated with this transaction
+             * @example 1001
+             */
+            creditAccountId: number;
+            /**
+             * @description Optional external reference number
+             * @example REF-001
+             */
+            referenceNo?: string;
+            /**
+             * @description Optional transaction number or reference
+             * @example TRX-001
+             */
+            transactionNumber?: string;
+            /**
+             * @description Type of bank transaction (e.g., deposit, withdrawal)
+             * @example deposit
+             */
+            transactionType: string;
+            /**
+             * @description Exchange rate for currency conversion
+             * @default 1
+             * @example 1.15
+             */
+            exchangeRate: number;
+            /**
+             * @description Currency code for the transaction
+             * @example USD
+             */
+            currencyCode?: string;
+            /**
+             * @description Description of the bank transaction
+             * @example Monthly rent payment
+             */
+            description?: string;
+            /**
+             * @description ID of the branch where the transaction occurred
+             * @example 101
+             */
+            branchId?: number;
+            /**
+             * @description ID of the linked contact (counterparty)
+             * @example 55
+             */
+            contactId?: number;
+            /**
+             * @description Array of uncategorized transaction IDs to be categorized
+             * @example [
+             *       1001,
+             *       1002,
+             *       1003
+             *     ]
+             */
+            uncategorizedTransactionIds: number[];
+        };
+        CategorizeTransactionAsExpenseRouteDto: {
+            /**
+             * @description The expense account id this transaction is categorized to
+             * @example 1001
+             */
+            expenseAccountId: number;
+            /**
+             * @description Exchange rate for currency conversion
+             * @default 1
+             * @example 1
+             */
+            exchangeRate: number;
+            /**
+             * @description Optional external reference number
+             * @example REF-001
+             */
+            referenceNo?: string;
+            /**
+             * @description Optional description of the expense
+             * @example Monthly rent payment
+             */
+            description?: string;
+            /**
+             * @description ID of the branch where the expense occurred
+             * @example 101
+             */
+            branchId?: number;
+            /**
+             * @description The bank (cashflow) transaction id to categorize as expense
+             * @example 1001
+             */
+            cashflowTransactionId: number;
+        };
         ExpenseCategoryResponseDto: {
             /**
              * @description The unique identifier of the expense category
@@ -7991,215 +12952,11 @@ export interface components {
              */
             attachments: string[];
         };
-        WarehouseTransferEntryResponseDto: {
-            /**
-             * @description The ID of the warehouse transfer entry
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The ID of the item being transferred
-             * @example 1
-             */
-            itemId: number;
-            /**
-             * @description The quantity of items being transferred
-             * @example 100
-             */
-            quantity: number;
-            /**
-             * @description The cost per unit of the item
-             * @example 10.5
-             */
-            cost: number;
-            /**
-             * @description The total cost of the transfer entry
-             * @example 1050
-             */
-            total: number;
-            /**
-             * @description The formatted quantity of items being transferred
-             * @example 100.00
-             */
-            formattedQuantity: string;
-            /**
-             * @description The formatted cost per unit of the item
-             * @example $10.50
-             */
-            formattedCost: string;
-            /**
-             * @description The formatted total cost of the transfer entry
-             * @example $1,050.00
-             */
-            formattedTotal: string;
-            /** @description The item details */
-            item: Record<string, never>;
-        };
-        WarehouseTransferResponseDto: {
-            /**
-             * @description The ID of the warehouse transfer
-             * @example 1
-             */
-            id: number;
-            /**
-             * Format: date-time
-             * @description The date of the warehouse transfer
-             * @example 2024-03-20
-             */
-            date: string;
-            /**
-             * @description The formatted date of the warehouse transfer
-             * @example Mar 20, 2024
-             */
-            formattedDate: string;
-            /**
-             * @description The transaction number of the warehouse transfer
-             * @example WT-2024-001
-             */
-            transactionNumber: string;
-            /**
-             * @description The ID of the source warehouse
-             * @example 1
-             */
-            fromWarehouseId: number;
-            /**
-             * @description The ID of the destination warehouse
-             * @example 2
-             */
-            toWarehouseId: number;
-            /**
-             * Format: date-time
-             * @description The date when the transfer was initiated
-             * @example 2024-03-20T10:00:00Z
-             */
-            transferInitiatedAt: string;
-            /**
-             * Format: date-time
-             * @description The date when the transfer was delivered
-             * @example 2024-03-21T15:00:00Z
-             */
-            transferDeliveredAt: string;
-            /**
-             * @description Whether the transfer has been initiated
-             * @example true
-             */
-            isInitiated: boolean;
-            /**
-             * @description Whether the transfer has been completed
-             * @example true
-             */
-            isTransferred: boolean;
-            /** @description The source warehouse details */
-            fromWarehouse: Record<string, never>;
-            /** @description The destination warehouse details */
-            toWarehouse: Record<string, never>;
-            /** @description The entries of the warehouse transfer */
-            entries: components["schemas"]["WarehouseTransferEntryResponseDto"][];
-            /**
-             * Format: date-time
-             * @description The creation date of the warehouse transfer
-             * @example 2024-03-20T09:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description The last update date of the warehouse transfer
-             * @example 2024-03-21T15:00:00Z
-             */
-            updatedAt: string;
-        };
-        CreateWarehouseTransferDto: {
-            /**
-             * @description The id of the warehouse to transfer from
-             * @example 1
-             */
-            fromWarehouseId: number;
-            /**
-             * @description The id of the warehouse to transfer to
-             * @example 2
-             */
-            toWarehouseId: number;
-            /**
-             * Format: date-time
-             * @description The date of the warehouse transfer
-             * @example 2021-01-01
-             */
-            date: string;
-            /**
-             * @description The transaction number of the warehouse transfer
-             * @example 123456
-             */
-            transactionNumber: string;
-            /**
-             * @description Whether the warehouse transfer has been initiated
-             * @example false
-             */
-            transferInitiated: boolean;
-            /**
-             * @description Whether the warehouse transfer has been delivered
-             * @example false
-             */
-            transferDelivered: boolean;
-            /**
-             * @description The entries of the warehouse transfer
-             * @example [
-             *       {
-             *         "index": 1,
-             *         "itemId": 1,
-             *         "description": "This is a description",
-             *         "quantity": 100,
-             *         "cost": 100
-             *       }
-             *     ]
-             */
-            entries: string[];
-        };
-        EditWarehouseTransferDto: {
-            /**
-             * @description The id of the warehouse to transfer from
-             * @example 1
-             */
-            fromWarehouseId: number;
-            /**
-             * @description The id of the warehouse to transfer to
-             * @example 2
-             */
-            toWarehouseId: number;
-            /**
-             * Format: date-time
-             * @description The date of the warehouse transfer
-             * @example 2021-01-01
-             */
-            date: string;
-            /**
-             * @description The transaction number of the warehouse transfer
-             * @example 123456
-             */
-            transactionNumber: string;
-            /**
-             * @description Whether the warehouse transfer has been initiated
-             * @example false
-             */
-            transferInitiated: boolean;
-            /**
-             * @description Whether the warehouse transfer has been delivered
-             * @example false
-             */
-            transferDelivered: boolean;
-            /**
-             * @description The entries of the warehouse transfer
-             * @example [
-             *       {
-             *         "index": 1,
-             *         "itemId": 1,
-             *         "description": "This is a description",
-             *         "quantity": 100,
-             *         "cost": 100
-             *       }
-             *     ]
-             */
-            entries: string[];
-        };
+        ConnectMoyskladDto: Record<string, never>;
+        ConnectWbDto: Record<string, never>;
+        ConnectOzonDto: Record<string, never>;
+        ConnectBankDto: Record<string, never>;
+        ImportStatementDto: Record<string, never>;
         ValidateBulkDeleteCustomersResponseDto: {
             /**
              * @description Number of customers that can be deleted
@@ -8429,6 +13186,40 @@ export interface components {
              * @example CUST-001
              */
             code?: string;
+            /**
+             * @description Tax identification number (ИНН)
+             * @example 7707083893
+             */
+            inn?: string;
+            /** @description Legal form (ООО/ИП/…) */
+            legalForm?: string;
+            /**
+             * @description Tax registration reason code (КПП)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description Primary state registration number (ОГРН/ОГРНИП)
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /** @description Bank name */
+            bankName?: string;
+            /**
+             * @description Bank identification code (БИК)
+             * @example 044525225
+             */
+            bankBik?: string;
+            /**
+             * @description Bank account number (р/с)
+             * @example 40702810400000000001
+             */
+            bankAccount?: string;
+            /**
+             * @description Correspondent account number (к/с)
+             * @example 30101810400000000225
+             */
+            bankCorrespondentAccount?: string;
         };
         EditCustomerDto: {
             /** @description Billing address line 1 */
@@ -8489,6 +13280,40 @@ export interface components {
             active?: boolean;
             /** @description Customer code */
             code?: string;
+            /** @description Legal form (ООО/ИП/…) */
+            legalForm?: string;
+            /**
+             * @description Tax identification number (ИНН)
+             * @example 7707083893
+             */
+            inn?: string;
+            /**
+             * @description Tax registration reason code (КПП)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description Primary state registration number (ОГРН/ОГРНИП)
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /** @description Bank name */
+            bankName?: string;
+            /**
+             * @description Bank identification code (БИК)
+             * @example 044525225
+             */
+            bankBik?: string;
+            /**
+             * @description Bank account number (р/с)
+             * @example 40702810400000000001
+             */
+            bankAccount?: string;
+            /**
+             * @description Correspondent account number (к/с)
+             * @example 30101810400000000225
+             */
+            bankCorrespondentAccount?: string;
         };
         CustomerOpeningBalanceEditDto: {
             /**
@@ -8527,6 +13352,549 @@ export interface components {
              * @default false
              */
             skipUndeletable: boolean;
+        };
+        ConnectYookassaDto: Record<string, never>;
+        ConnectZenmoneyDto: Record<string, never>;
+        ImportZenmoneyDto: Record<string, never>;
+        TransactionsByCustomerQueryResponseDto: {
+            /** @description Start date */
+            fromDate: string;
+            /** @description End date */
+            toDate: string;
+            /** @description Number format settings */
+            numberFormat: components["schemas"]["NumberFormatQueryDto"];
+            /** @description Customer IDs to include */
+            customersIds: number[];
+            /** @description Exclude zero balance customers */
+            noneZero: boolean;
+        };
+        CustomerTransactionDto: {
+            /** @description Transaction date */
+            date: string;
+            /** @description Formatted date */
+            dateFormatted: string;
+            /** @description Transaction type */
+            transactionType: string;
+            /** @description Transaction number */
+            transactionNumber: string;
+            /** @description Reference type */
+            referenceType?: string;
+            /** @description Reference ID */
+            referenceId?: number;
+            /** @description Transaction description */
+            description?: string;
+            /** @description Transaction amount */
+            amount: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Running balance */
+            runningBalance: components["schemas"]["FinancialReportTotalDto"];
+        };
+        CustomerWithTransactionsDto: {
+            /** @description Customer ID */
+            customerId: number;
+            /** @description Customer name */
+            customerName: string;
+            /** @description Opening balance */
+            openingBalance?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Customer transactions */
+            transactions: components["schemas"]["CustomerTransactionDto"][];
+            /** @description Closing balance */
+            closingBalance: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Total debit */
+            totalDebit?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Total credit */
+            totalCredit?: components["schemas"]["FinancialReportTotalDto"];
+        };
+        TransactionsByCustomerMetaDto: {
+            /** @description Organization name */
+            organizationName: string;
+            /** @description Base currency code */
+            baseCurrency: string;
+            /** @description Date format string */
+            dateFormat: string;
+            /** @description Whether cost computation is running */
+            isCostComputeRunning: boolean;
+            /** @description Sheet name */
+            sheetName: string;
+            /** @description Formatted from date */
+            formattedFromDate: string;
+            /** @description Formatted to date */
+            formattedToDate: string;
+            /** @description Formatted date range */
+            formattedDateRange: string;
+        };
+        TransactionsByCustomerResponseDto: {
+            /** @description Query parameters used to generate the report */
+            query: components["schemas"]["TransactionsByCustomerQueryResponseDto"];
+            /** @description Customers with transactions */
+            data: components["schemas"]["CustomerWithTransactionsDto"][];
+            /** @description Report metadata */
+            meta: components["schemas"]["TransactionsByCustomerMetaDto"];
+        };
+        TransactionsByCustomerTableResponseDto: {
+            /** @description Table data structure */
+            table: components["schemas"]["FinancialTableDataDto"];
+            /** @description Query parameters used to generate the report */
+            query: components["schemas"]["TransactionsByCustomerQueryResponseDto"];
+            /** @description Report metadata */
+            meta: components["schemas"]["TransactionsByCustomerMetaDto"];
+        };
+        ProfitLossSheetQueryResponseDto: {
+            /**
+             * @description Column display type
+             * @enum {string}
+             */
+            display_columns_type: "total" | "date_periods";
+            /**
+             * @description Column grouping
+             * @enum {string}
+             */
+            display_columns_by: "day" | "month" | "year" | "quarter";
+            /** @description Start date */
+            from_date: string;
+            /** @description End date */
+            to_date: string;
+            /** @description Number format settings */
+            number_format: components["schemas"]["NumberFormatQueryDto"];
+            /** @description Exclude zero balance accounts */
+            none_zero: boolean;
+            /** @description Exclude accounts with no transactions */
+            none_transactions: boolean;
+            /**
+             * @description Accounting basis
+             * @enum {string}
+             */
+            basis: "cash" | "accrual";
+            /** @description Account IDs to include */
+            accounts_ids: number[];
+            /** @description Show percentage of column */
+            percentage_column: boolean;
+            /** @description Show percentage of row */
+            percentage_row: boolean;
+            /** @description Show percentage of income */
+            percentage_income: boolean;
+            /** @description Show percentage of expense */
+            percentage_expense: boolean;
+            /** @description Include previous period */
+            previous_period: boolean;
+            /** @description Show previous period amount change */
+            previous_period_amount_change: boolean;
+            /** @description Show previous period percentage change */
+            previous_period_percentage_change: boolean;
+            /** @description Include previous year */
+            previous_year: boolean;
+            /** @description Show previous year amount change */
+            previous_year_amount_change: boolean;
+            /** @description Show previous year percentage change */
+            previous_year_percentage_change: boolean;
+        };
+        ProfitLossSheetDataNodeDto: {
+            /** @description Node identifier (string for aggregates, number for accounts) */
+            id: Record<string, never>;
+            /** @description Account or category name */
+            name: string;
+            /**
+             * @description Type of node
+             * @enum {string}
+             */
+            node_type: "ACCOUNTS" | "ACCOUNT" | "EQUATION" | "TOTAL";
+            /** @description Node type alias */
+            type?: string;
+            /** @description Total amount information */
+            total: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Horizontal totals for date periods */
+            horizontal_totals?: components["schemas"]["FinancialReportTotalDto"][];
+            /** @description Percentage of income */
+            percentage_income?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Percentage of expense */
+            percentage_expense?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Percentage of row */
+            percentage_row?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Percentage of column */
+            percentage_column?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Previous period total */
+            previous_period?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous period change */
+            previous_period_change?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous period percentage */
+            previous_period_percentage?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Previous year total */
+            previous_year?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous year change */
+            previous_year_change?: components["schemas"]["FinancialReportTotalDto"];
+            /** @description Previous year percentage */
+            previous_year_percentage?: components["schemas"]["FinancialReportPercentageDto"];
+            /** @description Account code */
+            code?: string;
+            /** @description Display index */
+            index?: number;
+            /** @description Child nodes */
+            children?: components["schemas"]["ProfitLossSheetDataNodeDto"][];
+        };
+        ProfitLossSheetMetaDto: {
+            /** @description Organization name */
+            organizationName: string;
+            /** @description Base currency code */
+            baseCurrency: string;
+            /** @description Date format string */
+            dateFormat: string;
+            /** @description Whether cost computation is running */
+            isCostComputeRunning: boolean;
+            /** @description Sheet name */
+            sheetName: string;
+            /** @description Formatted from date */
+            formatted_from_date: string;
+            /** @description Formatted to date */
+            formatted_to_date: string;
+            /** @description Formatted date range */
+            formatted_date_range: string;
+        };
+        ProfitLossSheetResponseDto: {
+            /** @description Query parameters used to generate the report */
+            query: components["schemas"]["ProfitLossSheetQueryResponseDto"];
+            /** @description Hierarchical profit/loss data */
+            data: components["schemas"]["ProfitLossSheetDataNodeDto"][];
+            /** @description Report metadata */
+            meta: components["schemas"]["ProfitLossSheetMetaDto"];
+        };
+        ProfitLossSheetTableResponseDto: {
+            /** @description Table data structure */
+            table: components["schemas"]["FinancialTableDataDto"];
+            /** @description Query parameters used to generate the report */
+            query: components["schemas"]["ProfitLossSheetQueryResponseDto"];
+            /** @description Report metadata */
+            meta: components["schemas"]["ProfitLossSheetMetaDto"];
+        };
+        ConnectBitrix24Dto: {
+            /**
+             * @description Входящий webhook-URL Битрикс24 (содержит токен).
+             * @example https://example.bitrix24.ru/rest/1/abcdef0123456789/
+             */
+            webhookUrl: string;
+        };
+        ConnectAmocrmDto: {
+            /**
+             * @description Поддомен amoCRM (часть до .amocrm.ru).
+             * @example mycompany
+             */
+            subdomain: string;
+            /**
+             * @description Долгоживущий access-токен amoCRM.
+             * @example eyJ0eXAiOiJKV1Qi...
+             */
+            accessToken: string;
+        };
+        CreateFixedAssetDto: {
+            /** @example Станок ЧПУ */
+            name: string;
+            /** @example Оборудование */
+            category?: string;
+            /** @example 600000 */
+            cost: number;
+            /**
+             * @description Ликвидационная стоимость
+             * @example 0
+             */
+            salvageValue?: number;
+            /**
+             * @description Срок полезного использования, мес.
+             * @example 60
+             */
+            serviceLifeMonths: number;
+            /**
+             * @description Дата ввода в эксплуатацию
+             * @example 2026-03-15
+             */
+            commissionedAt: string;
+            /**
+             * @description Счёт-актив (тип fixed-asset)
+             * @example 12
+             */
+            assetAccountId: number;
+            /** @example Инв. №42 */
+            note?: string;
+        };
+        AccrueMonthDto: {
+            /**
+             * @description Месяц начисления YYYY-MM
+             * @example 2026-04
+             */
+            period: string;
+        };
+        DisposeFixedAssetDto: {
+            /**
+             * @description Дата выбытия
+             * @example 2026-12-31
+             */
+            disposedAt: string;
+            /**
+             * @example sale
+             * @enum {string}
+             */
+            disposalType: "sale" | "liquidation";
+            /**
+             * @description Сумма продажи (0 при ликвидации)
+             * @example 350000
+             */
+            proceeds?: number;
+            /**
+             * @description Счёт зачисления денег при продаже
+             * @example 1
+             */
+            paymentAccountId?: number;
+        };
+        TransactionLockingResponseDto: {
+            /**
+             * @description Indicates whether transaction locking is enabled
+             * @example true
+             */
+            isEnabled: boolean;
+            /**
+             * @description Indicates whether partial unlock is enabled
+             * @example false
+             */
+            isPartialUnlock: boolean;
+            /**
+             * Format: date-time
+             * @description The date until which transactions are locked
+             * @example 2024-12-31
+             */
+            lockToDate: string;
+            /**
+             * @description The start date of the unlock period
+             * @example 2025-01-01
+             */
+            unlockFromDate: string;
+            /**
+             * @description The end date of the unlock period
+             * @example 2025-01-31
+             */
+            unlockToDate: string;
+            /**
+             * @description The reason for locking transactions
+             * @example Year-end closing
+             */
+            lockReason: string;
+            /**
+             * @description The reason for unlocking transactions
+             * @example New fiscal year
+             */
+            unlockReason: string;
+            /**
+             * @description The reason for partial unlock of transactions
+             * @example Special adjustment period
+             */
+            partialUnlockReason: string;
+        };
+        TransactionsLockingDto: Record<string, never>;
+        CancelTransactionsLockingDto: Record<string, never>;
+        WarehouseTransferEntryResponseDto: {
+            /**
+             * @description The ID of the warehouse transfer entry
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description The ID of the item being transferred
+             * @example 1
+             */
+            itemId: number;
+            /**
+             * @description The quantity of items being transferred
+             * @example 100
+             */
+            quantity: number;
+            /**
+             * @description The cost per unit of the item
+             * @example 10.5
+             */
+            cost: number;
+            /**
+             * @description The total cost of the transfer entry
+             * @example 1050
+             */
+            total: number;
+            /**
+             * @description The formatted quantity of items being transferred
+             * @example 100.00
+             */
+            formattedQuantity: string;
+            /**
+             * @description The formatted cost per unit of the item
+             * @example $10.50
+             */
+            formattedCost: string;
+            /**
+             * @description The formatted total cost of the transfer entry
+             * @example $1,050.00
+             */
+            formattedTotal: string;
+            /** @description The item details */
+            item: Record<string, never>;
+        };
+        WarehouseTransferResponseDto: {
+            /**
+             * @description The ID of the warehouse transfer
+             * @example 1
+             */
+            id: number;
+            /**
+             * Format: date-time
+             * @description The date of the warehouse transfer
+             * @example 2024-03-20
+             */
+            date: string;
+            /**
+             * @description The formatted date of the warehouse transfer
+             * @example Mar 20, 2024
+             */
+            formattedDate: string;
+            /**
+             * @description The transaction number of the warehouse transfer
+             * @example WT-2024-001
+             */
+            transactionNumber: string;
+            /**
+             * @description The ID of the source warehouse
+             * @example 1
+             */
+            fromWarehouseId: number;
+            /**
+             * @description The ID of the destination warehouse
+             * @example 2
+             */
+            toWarehouseId: number;
+            /**
+             * Format: date-time
+             * @description The date when the transfer was initiated
+             * @example 2024-03-20T10:00:00Z
+             */
+            transferInitiatedAt: string;
+            /**
+             * Format: date-time
+             * @description The date when the transfer was delivered
+             * @example 2024-03-21T15:00:00Z
+             */
+            transferDeliveredAt: string;
+            /**
+             * @description Whether the transfer has been initiated
+             * @example true
+             */
+            isInitiated: boolean;
+            /**
+             * @description Whether the transfer has been completed
+             * @example true
+             */
+            isTransferred: boolean;
+            /** @description The source warehouse details */
+            fromWarehouse: Record<string, never>;
+            /** @description The destination warehouse details */
+            toWarehouse: Record<string, never>;
+            /** @description The entries of the warehouse transfer */
+            entries: components["schemas"]["WarehouseTransferEntryResponseDto"][];
+            /**
+             * Format: date-time
+             * @description The creation date of the warehouse transfer
+             * @example 2024-03-20T09:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description The last update date of the warehouse transfer
+             * @example 2024-03-21T15:00:00Z
+             */
+            updatedAt: string;
+        };
+        CreateWarehouseTransferDto: {
+            /**
+             * @description The id of the warehouse to transfer from
+             * @example 1
+             */
+            fromWarehouseId: number;
+            /**
+             * @description The id of the warehouse to transfer to
+             * @example 2
+             */
+            toWarehouseId: number;
+            /**
+             * Format: date-time
+             * @description The date of the warehouse transfer
+             * @example 2021-01-01
+             */
+            date: string;
+            /**
+             * @description The transaction number of the warehouse transfer
+             * @example 123456
+             */
+            transactionNumber: string;
+            /**
+             * @description Whether the warehouse transfer has been initiated
+             * @example false
+             */
+            transferInitiated: boolean;
+            /**
+             * @description Whether the warehouse transfer has been delivered
+             * @example false
+             */
+            transferDelivered: boolean;
+            /**
+             * @description The entries of the warehouse transfer
+             * @example [
+             *       {
+             *         "index": 1,
+             *         "itemId": 1,
+             *         "description": "This is a description",
+             *         "quantity": 100,
+             *         "cost": 100
+             *       }
+             *     ]
+             */
+            entries: string[];
+        };
+        EditWarehouseTransferDto: {
+            /**
+             * @description The id of the warehouse to transfer from
+             * @example 1
+             */
+            fromWarehouseId: number;
+            /**
+             * @description The id of the warehouse to transfer to
+             * @example 2
+             */
+            toWarehouseId: number;
+            /**
+             * Format: date-time
+             * @description The date of the warehouse transfer
+             * @example 2021-01-01
+             */
+            date: string;
+            /**
+             * @description The transaction number of the warehouse transfer
+             * @example 123456
+             */
+            transactionNumber: string;
+            /**
+             * @description Whether the warehouse transfer has been initiated
+             * @example false
+             */
+            transferInitiated: boolean;
+            /**
+             * @description Whether the warehouse transfer has been delivered
+             * @example false
+             */
+            transferDelivered: boolean;
+            /**
+             * @description The entries of the warehouse transfer
+             * @example [
+             *       {
+             *         "index": 1,
+             *         "itemId": 1,
+             *         "description": "This is a description",
+             *         "quantity": 100,
+             *         "cost": 100
+             *       }
+             *     ]
+             */
+            entries: string[];
         };
         ValidateBulkDeleteVendorsResponseDto: {
             /**
@@ -8634,6 +14002,40 @@ export interface components {
              * @example VEND-001
              */
             code?: string;
+            /**
+             * @description Tax identification number (ИНН)
+             * @example 7707083893
+             */
+            inn?: string;
+            /** @description Legal form (ООО/ИП/…) */
+            legalForm?: string;
+            /**
+             * @description Tax registration reason code (КПП)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description Primary state registration number (ОГРН/ОГРНИП)
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /** @description Bank name */
+            bankName?: string;
+            /**
+             * @description Bank identification code (БИК)
+             * @example 044525225
+             */
+            bankBik?: string;
+            /**
+             * @description Bank account number (р/с)
+             * @example 40702810400000000001
+             */
+            bankAccount?: string;
+            /**
+             * @description Correspondent account number (к/с)
+             * @example 30101810400000000225
+             */
+            bankCorrespondentAccount?: string;
         };
         EditVendorDto: {
             /** @description Billing address line 1 */
@@ -8692,6 +14094,40 @@ export interface components {
             active?: boolean;
             /** @description Vendor code */
             code?: string;
+            /** @description Legal form (ООО/ИП/…) */
+            legalForm?: string;
+            /**
+             * @description Tax identification number (ИНН)
+             * @example 7707083893
+             */
+            inn?: string;
+            /**
+             * @description Tax registration reason code (КПП)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description Primary state registration number (ОГРН/ОГРНИП)
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /** @description Bank name */
+            bankName?: string;
+            /**
+             * @description Bank identification code (БИК)
+             * @example 044525225
+             */
+            bankBik?: string;
+            /**
+             * @description Bank account number (р/с)
+             * @example 40702810400000000001
+             */
+            bankAccount?: string;
+            /**
+             * @description Correspondent account number (к/с)
+             * @example 30101810400000000225
+             */
+            bankCorrespondentAccount?: string;
         };
         VendorOpeningBalanceEditDto: {
             /**
@@ -9364,6 +14800,11 @@ export interface components {
              */
             branchId: number;
             /**
+             * @description Whether tax is inclusive
+             * @example false
+             */
+            isInclusiveTax?: boolean;
+            /**
              * @description The entries of the sale receipt
              * @example [
              *       {
@@ -9459,6 +14900,11 @@ export interface components {
              * @example 1
              */
             branchId: number;
+            /**
+             * @description Whether tax is inclusive
+             * @example false
+             */
+            isInclusiveTax?: boolean;
             /**
              * @description The entries of the sale receipt
              * @example [
@@ -10112,6 +15558,11 @@ export interface components {
             branchId?: number;
             /** @description Publish status */
             publish?: boolean;
+            /**
+             * @description Отметить операцию как внутригрупповую
+             * @default false
+             */
+            isIntercompany: boolean;
             /** @description Journal entries */
             entries: components["schemas"]["ManualJournalEntryDto"][];
             /** @description Attachments */
@@ -10139,6 +15590,11 @@ export interface components {
             branchId?: number;
             /** @description Publish status */
             publish?: boolean;
+            /**
+             * @description Отметить операцию как внутригрупповую
+             * @default false
+             */
+            isIntercompany: boolean;
             /** @description Journal entries */
             entries: components["schemas"]["ManualJournalEntryDto"][];
             /** @description Attachments */
@@ -10417,6 +15873,11 @@ export interface components {
              */
             branchId: number;
             /**
+             * @description Whether tax is inclusive
+             * @example false
+             */
+            isInclusiveTax?: boolean;
+            /**
              * @description The credit note entries
              * @example [
              *       {
@@ -10504,6 +15965,11 @@ export interface components {
              * @example 1
              */
             branchId: number;
+            /**
+             * @description Whether tax is inclusive
+             * @example false
+             */
+            isInclusiveTax?: boolean;
             /**
              * @description The credit note entries
              * @example [
@@ -10739,6 +16205,11 @@ export interface components {
              */
             entries: string[];
             /**
+             * @description Whether tax is inclusive
+             * @example false
+             */
+            isInclusiveTax?: boolean;
+            /**
              * @description The attachments of the vendor credit
              * @example [
              *       {
@@ -10824,6 +16295,11 @@ export interface components {
              *     ]
              */
             entries: string[];
+            /**
+             * @description Whether tax is inclusive
+             * @example false
+             */
+            isInclusiveTax?: boolean;
             /**
              * @description The attachments of the vendor credit
              * @example [
@@ -11303,345 +16779,6 @@ export interface components {
              * @example 123
              */
             webhookCode: string;
-        };
-        CategorizeBankTransactionRouteDto: {
-            /**
-             * Format: date-time
-             * @description The date of the bank transaction
-             * @example 2023-01-01T00:00:00.000Z
-             */
-            date: string;
-            /**
-             * @description ID of the credit account associated with this transaction
-             * @example 1001
-             */
-            creditAccountId: number;
-            /**
-             * @description Optional external reference number
-             * @example REF-001
-             */
-            referenceNo?: string;
-            /**
-             * @description Optional transaction number or reference
-             * @example TRX-001
-             */
-            transactionNumber?: string;
-            /**
-             * @description Type of bank transaction (e.g., deposit, withdrawal)
-             * @example deposit
-             */
-            transactionType: string;
-            /**
-             * @description Exchange rate for currency conversion
-             * @default 1
-             * @example 1.15
-             */
-            exchangeRate: number;
-            /**
-             * @description Currency code for the transaction
-             * @example USD
-             */
-            currencyCode?: string;
-            /**
-             * @description Description of the bank transaction
-             * @example Monthly rent payment
-             */
-            description?: string;
-            /**
-             * @description ID of the branch where the transaction occurred
-             * @example 101
-             */
-            branchId?: number;
-            /**
-             * @description Array of uncategorized transaction IDs to be categorized
-             * @example [
-             *       1001,
-             *       1002,
-             *       1003
-             *     ]
-             */
-            uncategorizedTransactionIds: number[];
-        };
-        BankTransactionResponseDto: {
-            /**
-             * @description The withdrawal amount
-             * @example 1000.5
-             */
-            withdrawal: number;
-            /**
-             * @description The deposit amount
-             * @example 2000.75
-             */
-            deposit: number;
-            /**
-             * @description The running balance after the transaction
-             * @example 3000.25
-             */
-            runningBalance: number;
-            /**
-             * @description Formatted withdrawal amount with currency symbol
-             * @example $1,000.50
-             */
-            formattedWithdrawal: string;
-            /**
-             * @description Formatted deposit amount with currency symbol
-             * @example $2,000.75
-             */
-            formattedDeposit: string;
-            /**
-             * @description Formatted running balance with currency symbol
-             * @example $3,000.25
-             */
-            formattedRunningBalance: string;
-            /**
-             * @description Unique transaction number
-             * @example TRX-2024-001
-             */
-            transactionNumber: string;
-            /**
-             * @description Reference number for the transaction
-             * @example REF-2024-001
-             */
-            referenceNumber: string;
-            /**
-             * @description ID of the reference entity
-             * @example 12345
-             */
-            referenceId: number;
-            /**
-             * @description Type of the reference entity
-             * @example INVOICE
-             */
-            referenceType: string;
-            /**
-             * @description Formatted transaction type
-             * @example Bank Transfer
-             */
-            formattedTransactionType: string;
-            /**
-             * @description Current balance
-             * @example 5000
-             */
-            balance: number;
-            /**
-             * @description Formatted balance with currency symbol
-             * @example $5,000.00
-             */
-            formattedBalance: string;
-            /**
-             * Format: date-time
-             * @description Transaction date
-             * @example 2024-03-20T10:30:00Z
-             */
-            date: string;
-            /**
-             * @description Formatted transaction date
-             * @example March 20, 2024
-             */
-            formattedDate: string;
-            /**
-             * @description Transaction status
-             * @example COMPLETED
-             */
-            status: string;
-            /**
-             * @description Formatted transaction status
-             * @example Completed
-             */
-            formattedStatus: string;
-            /**
-             * @description ID of the uncategorized transaction
-             * @example 67890
-             */
-            uncategorizedTransactionId: number;
-        };
-        CreateBankTransactionDto: {
-            /**
-             * Format: date-time
-             * @description The date of the bank transaction
-             * @example 2023-01-01T00:00:00.000Z
-             */
-            date: string;
-            /**
-             * @description Optional transaction number or reference
-             * @example TRX-001
-             */
-            transactionNumber?: string;
-            /**
-             * @description Optional external reference number
-             * @example REF-001
-             */
-            referenceNo?: string;
-            /**
-             * @description Type of bank transaction (e.g., deposit, withdrawal)
-             * @example deposit
-             */
-            transactionType: string;
-            /**
-             * @description Description of the bank transaction
-             * @example Monthly rent payment
-             */
-            description: string;
-            /**
-             * @description Transaction amount
-             * @example 1000.5
-             */
-            amount: number;
-            /**
-             * @description Exchange rate for currency conversion
-             * @default 1
-             * @example 1.15
-             */
-            exchangeRate: number;
-            /**
-             * @description Currency code for the transaction
-             * @example USD
-             */
-            currencyCode?: string;
-            /**
-             * @description ID of the credit account associated with this transaction
-             * @example 1001
-             */
-            creditAccountId: number;
-            /**
-             * @description ID of the cashflow account associated with this transaction
-             * @example 2001
-             */
-            cashflowAccountId: number;
-            /**
-             * @description Whether the transaction should be published
-             * @default true
-             */
-            publish: boolean;
-            /**
-             * @description ID of the branch where the transaction occurred
-             * @example 101
-             */
-            branchId?: number;
-            /**
-             * @description Plaid transaction ID if imported from Plaid
-             * @example plaid_trx_12345
-             */
-            plaidTransactionId?: string;
-            /**
-             * @description Plaid account ID if imported from Plaid
-             * @example plaid_acc_67890
-             */
-            plaidAccountId?: string;
-            /**
-             * @description ID of the uncategorized transaction if this is categorizing an existing transaction
-             * @example 5001
-             */
-            uncategorizedTransactionId?: number;
-        };
-        GetAutofillCategorizeTransactionResponseDto: {
-            /**
-             * @description Assigned credit/debit account ID from recognition
-             * @example 10
-             */
-            creditAccountId?: number;
-            /**
-             * @description Bank account ID (debit)
-             * @example 5
-             */
-            debitAccountId?: number;
-            /**
-             * @description Total amount of uncategorized transactions
-             * @example -150.5
-             */
-            amount: number;
-            /**
-             * @description Formatted amount
-             * @example $150.50
-             */
-            formattedAmount: string;
-            /**
-             * @description Transaction date
-             * @example 2024-01-15
-             */
-            date: string;
-            /**
-             * @description Formatted date
-             * @example Jan 15, 2024
-             */
-            formattedDate: string;
-            /**
-             * @description Whether the transaction is recognized by a rule
-             * @example true
-             */
-            isRecognized: boolean;
-            /**
-             * @description Bank rule ID that recognized the transaction
-             * @example 1
-             */
-            recognizedByRuleId?: number;
-            /**
-             * @description Bank rule name that recognized the transaction
-             * @example Salary Rule
-             */
-            recognizedByRuleName?: string;
-            /**
-             * @description Reference number
-             * @example REF-001
-             */
-            referenceNo?: string;
-            /**
-             * @description Transaction type (category)
-             * @example other_expense
-             */
-            transactionType: string;
-            /**
-             * @description Whether this is a deposit transaction
-             * @example false
-             */
-            isDepositTransaction: boolean;
-            /**
-             * @description Whether this is a withdrawal transaction
-             * @example true
-             */
-            isWithdrawalTransaction: boolean;
-            /** @description Assigned payee from recognition */
-            payee?: string;
-            /** @description Assigned memo from recognition */
-            memo?: string;
-        };
-        GetPendingTransactionResponseDto: {
-            /** @description Transaction amount */
-            amount: number;
-            /** @description Transaction date */
-            date: Record<string, never>;
-            /** @description Bank account ID */
-            accountId: number;
-            /** @description Transaction reference number */
-            referenceNo?: string;
-            /** @description Payee */
-            payee?: string;
-            /** @description Transaction description */
-            description?: string;
-            /** @description Plaid transaction ID */
-            plaidTransactionId?: string;
-            /** @description Recognized transaction ID */
-            recognizedTransactionId?: number;
-            /** @description Is transaction pending? */
-            pending: boolean;
-            /** @description Transaction currency code */
-            currencyCode: string;
-            /** @description Withdrawal amount */
-            withdrawal: number;
-            /** @description Deposit amount */
-            deposit: number;
-            /** @description Is deposit transaction? */
-            isDepositTransaction: boolean;
-            /** @description Is withdrawal transaction? */
-            isWithdrawalTransaction: boolean;
-            /** @description Formatted amount */
-            formattedAmount: string;
-            /** @description Formatted date */
-            formattedDate: string;
-            /** @description Formatted deposit amount */
-            formattedDepositAmount: string;
-            /** @description Formatted withdrawal amount */
-            formattedWithdrawalAmount: string;
         };
         BankRuleConditionResponseDto: {
             /**
@@ -12124,246 +17261,6 @@ export interface components {
              *     ]
              */
             matchedTransactions: string[];
-        };
-        TransactionLockingResponseDto: {
-            /**
-             * @description Indicates whether transaction locking is enabled
-             * @example true
-             */
-            isEnabled: boolean;
-            /**
-             * @description Indicates whether partial unlock is enabled
-             * @example false
-             */
-            isPartialUnlock: boolean;
-            /**
-             * Format: date-time
-             * @description The date until which transactions are locked
-             * @example 2024-12-31
-             */
-            lockToDate: string;
-            /**
-             * @description The start date of the unlock period
-             * @example 2025-01-01
-             */
-            unlockFromDate: string;
-            /**
-             * @description The end date of the unlock period
-             * @example 2025-01-31
-             */
-            unlockToDate: string;
-            /**
-             * @description The reason for locking transactions
-             * @example Year-end closing
-             */
-            lockReason: string;
-            /**
-             * @description The reason for unlocking transactions
-             * @example New fiscal year
-             */
-            unlockReason: string;
-            /**
-             * @description The reason for partial unlock of transactions
-             * @example Special adjustment period
-             */
-            partialUnlockReason: string;
-        };
-        TransactionsLockingDto: Record<string, never>;
-        CancelTransactionsLockingDto: Record<string, never>;
-        NumberFormatQueryDto: {
-            /**
-             * @description Number of decimal places to display
-             * @example 2
-             */
-            precision?: number;
-            /**
-             * @description Whether to divide the number by 1000
-             * @example false
-             */
-            divideOn1000?: boolean;
-            /**
-             * @description Whether to show zero values
-             * @example true
-             */
-            showZero?: boolean;
-            /**
-             * @description How to format money values
-             * @example total
-             * @enum {string}
-             */
-            formatMoney?: "total" | "always" | "none";
-            /**
-             * @description How to format negative numbers
-             * @example parentheses
-             * @enum {string}
-             */
-            negativeFormat?: "parentheses" | "mines";
-        };
-        BalanceSheetQueryResponseDto: {
-            /**
-             * @description Column display type
-             * @enum {string}
-             */
-            displayColumnsType: "total" | "date_periods";
-            /**
-             * @description Column grouping
-             * @enum {string}
-             */
-            displayColumnsBy: "day" | "month" | "year" | "quarter";
-            /** @description Start date */
-            fromDate: string;
-            /** @description End date */
-            toDate: string;
-            /** @description Number format settings */
-            numberFormat: components["schemas"]["NumberFormatQueryDto"];
-            /** @description Exclude zero balance accounts */
-            noneZero: boolean;
-            /** @description Exclude accounts with no transactions */
-            noneTransactions: boolean;
-            /**
-             * @description Accounting basis
-             * @enum {string}
-             */
-            basis: "cash" | "accrual";
-            /** @description Account IDs to include */
-            accountIds: number[];
-            /** @description Show percentage of column */
-            percentageOfColumn: boolean;
-            /** @description Show percentage of row */
-            percentageOfRow: boolean;
-            /** @description Include previous period */
-            previousPeriod: boolean;
-            /** @description Show previous period amount change */
-            previousPeriodAmountChange: boolean;
-            /** @description Show previous period percentage change */
-            previousPeriodPercentageChange: boolean;
-            /** @description Include previous year */
-            previousYear: boolean;
-            /** @description Show previous year amount change */
-            previousYearAmountChange: boolean;
-            /** @description Show previous year percentage change */
-            previousYearPercentageChange: boolean;
-        };
-        FinancialReportTotalDto: {
-            /** @description Numeric amount */
-            amount: number;
-            /** @description Formatted amount string */
-            formattedAmount: string;
-            /** @description Currency code */
-            currencyCode: string;
-            /** @description Date associated with the total */
-            date?: Record<string, never>;
-        };
-        FinancialReportPercentageDto: {
-            /** @description Percentage amount */
-            amount: number;
-            /** @description Formatted percentage string */
-            formattedAmount: string;
-        };
-        BalanceSheetDataNodeDto: {
-            /** @description Node identifier (string for aggregates, number for accounts) */
-            id: Record<string, never>;
-            /** @description Account or category name */
-            name: string;
-            /**
-             * @description Type of node
-             * @enum {string}
-             */
-            nodeType: "AGGREGATE" | "ACCOUNTS" | "ACCOUNT" | "NET_INCOME";
-            /** @description Node type alias */
-            type?: string;
-            /** @description Total amount information */
-            total: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Horizontal totals for date periods */
-            horizontalTotals?: components["schemas"]["FinancialReportTotalDto"][];
-            /** @description Percentage of row */
-            percentageRow?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Percentage of column */
-            percentageColumn?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Previous period total */
-            previousPeriod?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous period change */
-            previousPeriodChange?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous period percentage */
-            previousPeriodPercentage?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Previous year total */
-            previousYear?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous year change */
-            previousYearChange?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous year percentage */
-            previousYearPercentage?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Account code */
-            code?: string;
-            /** @description Display index */
-            index?: number;
-            /** @description Parent account ID */
-            parentAccountId?: number;
-            /** @description Child nodes */
-            children?: components["schemas"]["BalanceSheetDataNodeDto"][];
-        };
-        BalanceSheetMetaDto: {
-            /** @description Organization name */
-            organizationName: string;
-            /** @description Base currency code */
-            baseCurrency: string;
-            /** @description Date format string */
-            dateFormat: string;
-            /** @description Whether cost computation is running */
-            isCostComputeRunning: boolean;
-            /** @description Sheet name */
-            sheetName: string;
-            /** @description Formatted as-of date */
-            formattedAsDate: string;
-            /** @description Formatted date range */
-            formattedDateRange: string;
-        };
-        BalanceSheetResponseDto: {
-            /** @description Query parameters used to generate the report */
-            query: components["schemas"]["BalanceSheetQueryResponseDto"];
-            /** @description Hierarchical balance sheet data */
-            data: components["schemas"]["BalanceSheetDataNodeDto"][];
-            /** @description Report metadata */
-            meta: components["schemas"]["BalanceSheetMetaDto"];
-        };
-        FinancialTableColumnDto: {
-            /** @description Column key */
-            key: string;
-            /** @description Column header label */
-            label: string;
-            /** @description Cell position index */
-            cellIndex?: number;
-            /** @description Nested column definitions */
-            children?: components["schemas"]["FinancialTableColumnDto"][];
-        };
-        FinancialTableCellDto: {
-            /** @description Cell key */
-            key: string;
-            /** @description Cell value */
-            value: string;
-        };
-        FinancialTableRowDto: {
-            /** @description Cell data for this row */
-            cells: components["schemas"]["FinancialTableCellDto"][];
-            /** @description Row type classifications */
-            rowTypes: string[];
-            /** @description Row identifier */
-            id: Record<string, never>;
-            /** @description Child rows */
-            children?: components["schemas"]["FinancialTableRowDto"][];
-        };
-        FinancialTableDataDto: {
-            /** @description Table column definitions */
-            columns: components["schemas"]["FinancialTableColumnDto"][];
-            /** @description Table row data */
-            rows: components["schemas"]["FinancialTableRowDto"][];
-        };
-        BalanceSheetTableResponseDto: {
-            /** @description Table data structure */
-            table: components["schemas"]["FinancialTableDataDto"];
-            /** @description Query parameters used to generate the report */
-            query: components["schemas"]["BalanceSheetQueryResponseDto"];
-            /** @description Report metadata */
-            meta: components["schemas"]["BalanceSheetMetaDto"];
         };
         PurchasesByItemsQueryResponseDto: {
             /** @description Start date */
@@ -12908,88 +17805,6 @@ export interface components {
             /** @description Report metadata */
             meta: components["schemas"]["TransactionsByVendorMetaDto"];
         };
-        TransactionsByCustomerQueryResponseDto: {
-            /** @description Start date */
-            fromDate: string;
-            /** @description End date */
-            toDate: string;
-            /** @description Number format settings */
-            numberFormat: components["schemas"]["NumberFormatQueryDto"];
-            /** @description Customer IDs to include */
-            customersIds: number[];
-            /** @description Exclude zero balance customers */
-            noneZero: boolean;
-        };
-        CustomerTransactionDto: {
-            /** @description Transaction date */
-            date: string;
-            /** @description Formatted date */
-            dateFormatted: string;
-            /** @description Transaction type */
-            transactionType: string;
-            /** @description Transaction number */
-            transactionNumber: string;
-            /** @description Reference type */
-            referenceType?: string;
-            /** @description Reference ID */
-            referenceId?: number;
-            /** @description Transaction description */
-            description?: string;
-            /** @description Transaction amount */
-            amount: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Running balance */
-            runningBalance: components["schemas"]["FinancialReportTotalDto"];
-        };
-        CustomerWithTransactionsDto: {
-            /** @description Customer ID */
-            customerId: number;
-            /** @description Customer name */
-            customerName: string;
-            /** @description Opening balance */
-            openingBalance?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Customer transactions */
-            transactions: components["schemas"]["CustomerTransactionDto"][];
-            /** @description Closing balance */
-            closingBalance: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Total debit */
-            totalDebit?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Total credit */
-            totalCredit?: components["schemas"]["FinancialReportTotalDto"];
-        };
-        TransactionsByCustomerMetaDto: {
-            /** @description Organization name */
-            organizationName: string;
-            /** @description Base currency code */
-            baseCurrency: string;
-            /** @description Date format string */
-            dateFormat: string;
-            /** @description Whether cost computation is running */
-            isCostComputeRunning: boolean;
-            /** @description Sheet name */
-            sheetName: string;
-            /** @description Formatted from date */
-            formattedFromDate: string;
-            /** @description Formatted to date */
-            formattedToDate: string;
-            /** @description Formatted date range */
-            formattedDateRange: string;
-        };
-        TransactionsByCustomerResponseDto: {
-            /** @description Query parameters used to generate the report */
-            query: components["schemas"]["TransactionsByCustomerQueryResponseDto"];
-            /** @description Customers with transactions */
-            data: components["schemas"]["CustomerWithTransactionsDto"][];
-            /** @description Report metadata */
-            meta: components["schemas"]["TransactionsByCustomerMetaDto"];
-        };
-        TransactionsByCustomerTableResponseDto: {
-            /** @description Table data structure */
-            table: components["schemas"]["FinancialTableDataDto"];
-            /** @description Query parameters used to generate the report */
-            query: components["schemas"]["TransactionsByCustomerQueryResponseDto"];
-            /** @description Report metadata */
-            meta: components["schemas"]["TransactionsByCustomerMetaDto"];
-        };
         ARAgingSummaryQueryResponseDto: {
             /** @description As-of date */
             asDate: string;
@@ -13448,132 +18263,6 @@ export interface components {
             /** @description Report metadata */
             meta: components["schemas"]["JournalSheetMetaDto"];
         };
-        ProfitLossSheetQueryResponseDto: {
-            /**
-             * @description Column display type
-             * @enum {string}
-             */
-            display_columns_type: "total" | "date_periods";
-            /**
-             * @description Column grouping
-             * @enum {string}
-             */
-            display_columns_by: "day" | "month" | "year" | "quarter";
-            /** @description Start date */
-            from_date: string;
-            /** @description End date */
-            to_date: string;
-            /** @description Number format settings */
-            number_format: components["schemas"]["NumberFormatQueryDto"];
-            /** @description Exclude zero balance accounts */
-            none_zero: boolean;
-            /** @description Exclude accounts with no transactions */
-            none_transactions: boolean;
-            /**
-             * @description Accounting basis
-             * @enum {string}
-             */
-            basis: "cash" | "accrual";
-            /** @description Account IDs to include */
-            accounts_ids: number[];
-            /** @description Show percentage of column */
-            percentage_column: boolean;
-            /** @description Show percentage of row */
-            percentage_row: boolean;
-            /** @description Show percentage of income */
-            percentage_income: boolean;
-            /** @description Show percentage of expense */
-            percentage_expense: boolean;
-            /** @description Include previous period */
-            previous_period: boolean;
-            /** @description Show previous period amount change */
-            previous_period_amount_change: boolean;
-            /** @description Show previous period percentage change */
-            previous_period_percentage_change: boolean;
-            /** @description Include previous year */
-            previous_year: boolean;
-            /** @description Show previous year amount change */
-            previous_year_amount_change: boolean;
-            /** @description Show previous year percentage change */
-            previous_year_percentage_change: boolean;
-        };
-        ProfitLossSheetDataNodeDto: {
-            /** @description Node identifier (string for aggregates, number for accounts) */
-            id: Record<string, never>;
-            /** @description Account or category name */
-            name: string;
-            /**
-             * @description Type of node
-             * @enum {string}
-             */
-            node_type: "ACCOUNTS" | "ACCOUNT" | "EQUATION" | "TOTAL";
-            /** @description Node type alias */
-            type?: string;
-            /** @description Total amount information */
-            total: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Horizontal totals for date periods */
-            horizontal_totals?: components["schemas"]["FinancialReportTotalDto"][];
-            /** @description Percentage of income */
-            percentage_income?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Percentage of expense */
-            percentage_expense?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Percentage of row */
-            percentage_row?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Percentage of column */
-            percentage_column?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Previous period total */
-            previous_period?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous period change */
-            previous_period_change?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous period percentage */
-            previous_period_percentage?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Previous year total */
-            previous_year?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous year change */
-            previous_year_change?: components["schemas"]["FinancialReportTotalDto"];
-            /** @description Previous year percentage */
-            previous_year_percentage?: components["schemas"]["FinancialReportPercentageDto"];
-            /** @description Account code */
-            code?: string;
-            /** @description Display index */
-            index?: number;
-            /** @description Child nodes */
-            children?: components["schemas"]["ProfitLossSheetDataNodeDto"][];
-        };
-        ProfitLossSheetMetaDto: {
-            /** @description Organization name */
-            organizationName: string;
-            /** @description Base currency code */
-            baseCurrency: string;
-            /** @description Date format string */
-            dateFormat: string;
-            /** @description Whether cost computation is running */
-            isCostComputeRunning: boolean;
-            /** @description Sheet name */
-            sheetName: string;
-            /** @description Formatted from date */
-            formatted_from_date: string;
-            /** @description Formatted to date */
-            formatted_to_date: string;
-            /** @description Formatted date range */
-            formatted_date_range: string;
-        };
-        ProfitLossSheetResponseDto: {
-            /** @description Query parameters used to generate the report */
-            query: components["schemas"]["ProfitLossSheetQueryResponseDto"];
-            /** @description Hierarchical profit/loss data */
-            data: components["schemas"]["ProfitLossSheetDataNodeDto"][];
-            /** @description Report metadata */
-            meta: components["schemas"]["ProfitLossSheetMetaDto"];
-        };
-        ProfitLossSheetTableResponseDto: {
-            /** @description Table data structure */
-            table: components["schemas"]["FinancialTableDataDto"];
-            /** @description Query parameters used to generate the report */
-            query: components["schemas"]["ProfitLossSheetQueryResponseDto"];
-            /** @description Report metadata */
-            meta: components["schemas"]["ProfitLossSheetMetaDto"];
-        };
         CashflowStatementQueryResponseDto: {
             /**
              * @description Column display type
@@ -13726,133 +18415,6 @@ export interface components {
              */
             isBigfinCloud: boolean;
         };
-        RolePermissionResponseDto: {
-            /**
-             * @description The action/ability of the permission
-             * @example read
-             */
-            ability: string;
-            /**
-             * @description The subject of the permission
-             * @example item
-             */
-            subject: string;
-            /**
-             * @description The value of the permission
-             * @example true
-             */
-            value: boolean;
-        };
-        RoleResponseDto: {
-            /**
-             * @description Unique identifier of the role
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The slug of the role
-             * @example admin
-             */
-            slug: string;
-            /**
-             * @description The name of the role
-             * @example Administrator
-             */
-            name: string;
-            /**
-             * @description The description of the role
-             * @example Administrator role with all permissions
-             */
-            description: string;
-            /**
-             * @description Indicates if the role is predefined
-             * @example false
-             */
-            predefined: boolean;
-            /**
-             * @description List of permissions associated with the role
-             * @example [
-             *       {
-             *         "ability": "read",
-             *         "subject": "item",
-             *         "value": true
-             *       },
-             *       {
-             *         "ability": "edit",
-             *         "subject": "item",
-             *         "value": false
-             *       }
-             *     ]
-             */
-            permissions: components["schemas"]["RolePermissionResponseDto"][];
-        };
-        CreateRolePermissionDto: {
-            /**
-             * @description The subject of the permission
-             * @example subject
-             */
-            subject: string;
-            /**
-             * @description The action of the permission
-             * @example read
-             */
-            ability: string;
-            /**
-             * @description The value of the permission
-             * @example true
-             */
-            value: boolean;
-        };
-        CreateRoleDto: {
-            /**
-             * @description The name of the role
-             * @example admin
-             */
-            roleName: string;
-            /**
-             * @description The description of the role
-             * @example Administrator
-             */
-            roleDescription: string;
-            /** @description The permissions of the role */
-            permissions: components["schemas"]["CreateRolePermissionDto"][];
-        };
-        EditRolePermissionDto: {
-            /**
-             * @description The subject of the permission
-             * @example subject
-             */
-            subject: string;
-            /**
-             * @description The action of the permission
-             * @example read
-             */
-            ability: string;
-            /**
-             * @description The value of the permission
-             * @example true
-             */
-            value: boolean;
-            /**
-             * @description The permission ID
-             * @example 1
-             */
-            permissionId: number;
-        };
-        EditRoleDto: {
-            /**
-             * @description The name of the role
-             * @example admin
-             */
-            roleName: string;
-            /**
-             * @description The description of the role
-             * @example Administrator
-             */
-            roleDescription: string;
-            /** @description The permissions of the role */
-            permissions: components["schemas"]["EditRolePermissionDto"][];
-        };
         OrganizationBuildJobResponseDto: {
             /** @example 123 */
             id: string;
@@ -13945,6 +18507,51 @@ export interface components {
              * @example 123 Main St, New York, NY
              */
             address?: string | null;
+            /**
+             * @description Russian legal form (OOO/IP/NPD/AO)
+             * @example OOO
+             */
+            legalForm?: string | null;
+            /**
+             * @description Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)
+             * @example OSNO
+             */
+            taxRegime?: string | null;
+            /**
+             * @description Russian INN (10 or 12 digits)
+             * @example 7707083893
+             */
+            inn?: string | null;
+            /**
+             * @description Russian KPP (9 characters)
+             * @example 770701001
+             */
+            kpp?: string | null;
+            /**
+             * @description OGRN (13 digits) or OGRNIP (15 digits)
+             * @example 1027700132195
+             */
+            ogrn?: string | null;
+            /**
+             * @description Bank name
+             * @example ПАО Сбербанк
+             */
+            bankName?: string | null;
+            /**
+             * @description BIK (9 digits starting with 04)
+             * @example 044525225
+             */
+            bankBik?: string | null;
+            /**
+             * @description Bank account (20 digits)
+             * @example 40702810000000001234
+             */
+            bankAccount?: string | null;
+            /**
+             * @description Correspondent account (20 digits starting with 30101)
+             * @example 30101810400000000225
+             */
+            bankCorrespondentAccount?: string | null;
         };
         GetCurrentOrganizationResponseDto: {
             /**
@@ -14039,6 +18646,24 @@ export interface components {
              * @example MM/DD/YYYY
              */
             dateFormat?: string;
+            /**
+             * @description Interface mode: business (hides bookkeeping screens) or accountant
+             * @example business
+             * @enum {string}
+             */
+            interfaceMode?: "business" | "accountant";
+            /**
+             * @description Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)
+             * @example USN_INCOME
+             * @enum {string}
+             */
+            taxRegime?: "USN_INCOME" | "USN_INCOME_EXPENSE" | "OSNO" | "PATENT" | "AUSN";
+            /**
+             * @description Russian legal form (OOO / IP / NPD / AO). Empty string means "not set".
+             * @example OOO
+             * @enum {string}
+             */
+            legalForm?: "OOO" | "IP" | "NPD" | "AO" | "INDIVIDUAL";
         };
         UpdateOrganizationDto: {
             /**
@@ -14108,6 +18733,113 @@ export interface components {
              * @example 12-3456789
              */
             taxNumber?: string;
+            /**
+             * @description Russian legal form (OOO/IP/NPD/AO; INDIVIDUAL is for contacts only). Empty string means "not set".
+             * @example OOO
+             * @enum {string}
+             */
+            legalForm?: "OOO" | "IP" | "NPD" | "AO" | "INDIVIDUAL";
+            /**
+             * @description Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)
+             * @example OSNO
+             * @enum {string}
+             */
+            taxRegime?: "USN_INCOME" | "USN_INCOME_EXPENSE" | "OSNO" | "PATENT" | "AUSN";
+            /**
+             * @description Custom tax rate in percent (regional reduced rate). Empty means "use the regime rate".
+             * @example 1
+             */
+            taxRate?: number;
+            /**
+             * @description Russian INN: 10 digits (legal entity) or 12 digits (individual/IP/NPD), with checksum
+             * @example 7707083893
+             */
+            inn?: string;
+            /**
+             * @description Russian KPP: 9 chars (4 digits + 2 digits-or-letters + 3 digits)
+             * @example 770701001
+             */
+            kpp?: string;
+            /**
+             * @description OGRN (13 digits) or OGRNIP (15 digits)
+             * @example 1027700132195
+             */
+            ogrn?: string;
+            /**
+             * @description Bank name (free text)
+             * @example ПАО Сбербанк
+             */
+            bankName?: string;
+            /**
+             * @description BIK: 9 digits starting with 04
+             * @example 044525225
+             */
+            bankBik?: string;
+            /**
+             * @description Bank account: 20 digits
+             * @example 40702810000000001234
+             */
+            bankAccount?: string;
+            /**
+             * @description Correspondent account: 20 digits starting with 30101
+             * @example 30101810400000000225
+             */
+            bankCorrespondentAccount?: string;
+            /**
+             * @description Interface mode: business (hides bookkeeping screens) or accountant
+             * @example business
+             * @enum {string}
+             */
+            interfaceMode?: "business" | "accountant";
+            /**
+             * @description Print forms signer: director full name
+             * @example Петров Пётр Петрович
+             */
+            signerDirectorName?: string;
+            /**
+             * @description Print forms signer: director position
+             * @example Генеральный директор
+             */
+            signerDirectorPosition?: string;
+            /**
+             * @description Print forms signer: chief accountant full name
+             * @example Сидорова Светлана Сергеевна
+             */
+            signerAccountantName?: string;
+        };
+        OneClickDemoResponseDto: {
+            /** @description The created demo id (sign-in key). */
+            demoId: string;
+            /** @description The generated demo account email. */
+            email: string;
+            /**
+             * @description The organization build job of the demo tenant.
+             * @example {
+             *       "jobId": "42"
+             *     }
+             */
+            buildJob: Record<string, never>;
+        };
+        OneClickDemoBuildJobResponseDto: {
+            /** @description Build job id. */
+            id: string;
+            /** @description Build job state. */
+            state: string;
+            /** @description Whether the build job is completed. */
+            isCompleted: boolean;
+            /** @description Whether the build job is running. */
+            isRunning: boolean;
+            /** @description Whether the build job is waiting. */
+            isWaiting: boolean;
+            /** @description Whether the build job has failed. */
+            isFailed: boolean;
+        };
+        OneClickDemoSigninDto: {
+            /**
+             * @description The demo id returned by the one-click demo creation.
+             * @example a3f1c0…
+             */
+            demoId: string;
         };
         WorkspaceMetadataDto: {
             name: string;
@@ -14116,14 +18848,25 @@ export interface components {
             location?: string;
             timezone?: string;
             language?: string;
+            logoKey?: string;
+            logoUri?: string;
         };
         WorkspaceDto: {
             organizationId: string;
             isReady: boolean;
             isBuildRunning: boolean;
+            isDeleting: boolean;
+            isActive: boolean;
             buildJobId?: string;
             role: string;
+            isDefault?: boolean;
             metadata?: components["schemas"]["WorkspaceMetadataDto"];
+            totalIncome?: number;
+            totalExpenses?: number;
+            totalAssets?: number;
+            totalLiabilities?: number;
+            formattedTotalAssets?: string;
+            formattedTotalLiabilities?: string;
         };
         CreateWorkspaceResponseDto: {
             organizationId: string;
@@ -14186,6 +18929,28 @@ export interface components {
              * @example MM/DD/YYYY
              */
             dateFormat?: string;
+            /**
+             * @description Interface mode: business (hides bookkeeping screens) or accountant
+             * @example business
+             * @enum {string}
+             */
+            interfaceMode?: "business" | "accountant";
+            /**
+             * @description Russian tax regime (USN_INCOME / USN_INCOME_EXPENSE / OSNO / PATENT / AUSN)
+             * @example USN_INCOME
+             * @enum {string}
+             */
+            taxRegime?: "USN_INCOME" | "USN_INCOME_EXPENSE" | "OSNO" | "PATENT" | "AUSN";
+            /**
+             * @description Russian legal form (OOO / IP / NPD / AO). Empty string means "not set".
+             * @example OOO
+             * @enum {string}
+             */
+            legalForm?: "OOO" | "IP" | "NPD" | "AO" | "INDIVIDUAL";
+        };
+        SetDefaultWorkspaceDto: {
+            /** @description The organization ID to set as default */
+            organizationId: string;
         };
         EditPaymentMethodOptionsDto: Record<string, never>;
         EditPaymentMethodDTO: {
@@ -14333,6 +19098,22 @@ export interface components {
              */
             roleId: number;
         };
+        BulkInviteItemDto: {
+            /**
+             * @description Email address of the user to invite
+             * @example john.doe@example.com
+             */
+            email: string;
+            /**
+             * @description Role ID to assign to the invited user
+             * @example 2
+             */
+            roleId: number;
+        };
+        BulkSendInviteUserDto: {
+            /** @description List of users to invite */
+            invites: components["schemas"]["BulkInviteItemDto"][];
+        };
         InviteUserDto: {
             /**
              * @description First name of the user to invite
@@ -14402,22 +19183,33 @@ export interface components {
             data: components["schemas"]["AuditLogListItemDto"][];
             pagination: components["schemas"]["PaginationMetaDto"];
         };
-        ExchangeRateLatestResponseDto: {
+        PreferenceItemDto: {
+            /** @enum {string} */
+            eventType: "cash_gap" | "low_balance" | "overdue" | "tax_due";
+            enabled: boolean;
             /**
-             * @description The base currency code
-             * @example USD
+             * @example [
+             *       "email"
+             *     ]
              */
-            baseCurrency: string;
+            channels: string[];
             /**
-             * @description The target currency code
-             * @example EUR
+             * @example {
+             *       "horizonDays": 7
+             *     }
              */
-            toCurrency: string;
-            /**
-             * @description The exchange rate value
-             * @example 0.85
-             */
-            exchangeRate: number;
+            threshold?: Record<string, never>;
+        };
+        UpdateNotificationPreferencesDto: {
+            preferences: components["schemas"]["PreferenceItemDto"][];
+            /** @example owner@org.ru */
+            recipientEmail?: string;
+            /** @example 24 */
+            cooldownHours?: number;
+        };
+        ConnectTelegramDto: {
+            /** @example 123456:ABC-DEF... */
+            botToken: string;
         };
     };
     responses: never;
@@ -14459,6 +19251,30 @@ export interface operations {
         };
         responses: {
             /** @description Sign-in successful. Returns access token and tenant/organization IDs. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthSigninResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_signinTwoFactor: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AuthSigninTwoFactorDto"];
+            };
+        };
+        responses: {
+            /** @description Code accepted. Returns access token and tenant/organization IDs. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -14701,6 +19517,111 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiKeyListItemDto"][];
+                };
+            };
+        };
+    };
+    TwoFactorController_getState: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TwoFactorStateResponseDto"];
+                };
+            };
+        };
+    };
+    TwoFactorController_setup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TwoFactorSetupResponseDto"];
+                };
+            };
+        };
+    };
+    TwoFactorController_enable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TwoFactorEnableDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TwoFactorBackupCodesResponseDto"];
+                };
+            };
+        };
+    };
+    TwoFactorController_disable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TwoFactorDisableDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TwoFactorController_regenerate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TwoFactorRegenerateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TwoFactorBackupCodesResponseDto"];
                 };
             };
         };
@@ -15528,6 +20449,61 @@ export interface operations {
             };
         };
     };
+    FeaturesController_all: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeaturesController_turnOn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feature: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeaturesController_turnOff: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feature: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     WarehousesController_getWarehouses: {
         parameters: {
             query?: never;
@@ -16245,6 +21221,31 @@ export interface operations {
         };
         responses: {
             /** @description Sale invoice created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleInvoicesController_duplicateSaleInvoice: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Draft copy created successfully */
             201: {
                 headers: {
                     [name: string]: unknown;
@@ -17041,6 +22042,165 @@ export interface operations {
             };
         };
     };
+    RolesController_getRoles: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of all roles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleResponseDto"][];
+                };
+            };
+        };
+    };
+    RolesController_createRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRoleDto"];
+            };
+        };
+        responses: {
+            /** @description Role created successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_getRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Role ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Role details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleResponseDto"];
+                };
+            };
+        };
+    };
+    RolesController_editRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Role ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditRoleDto"];
+            };
+        };
+        responses: {
+            /** @description Role updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_deleteRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Role ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Role deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_getRolePermissionsSchema: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Role permissions schema */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     TaxRatesController_getTaxRates: {
         parameters: {
             query?: never;
@@ -17670,8 +22830,9 @@ export interface operations {
     ImportController_downloadImportSample: {
         parameters: {
             query: {
+                /** @description Какой справочник */
                 resource: string;
-                format: string;
+                format?: "csv" | "xlsx";
             };
             header: {
                 /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
@@ -18124,83 +23285,13 @@ export interface operations {
             };
         };
     };
-    ExpensesController_validateBulkDeleteExpenses: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable expenses. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    ExpensesController_bulkDeleteExpenses: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Expenses deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExpensesController_getExpenses: {
+    ManagementArticlesController_getManagementArticles: {
         parameters: {
             query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
+                /** @description Filter by kind */
+                kind?: string;
+                /** @description Return as nested tree instead of flat list */
+                tree?: string;
             };
             header: {
                 /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
@@ -18213,20 +23304,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The item list has been successfully retrieved. */
+            /** @description The management articles have been retrieved. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["ExpenseResponseDto"][];
-                    };
+                    "application/json": components["schemas"]["ManagementArticleResponseDto"][];
                 };
             };
         };
     };
-    ExpensesController_createExpense: {
+    ManagementArticlesController_createManagementArticle: {
         parameters: {
             query?: never;
             header: {
@@ -18240,7 +23329,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateExpenseDto"];
+                "application/json": components["schemas"]["CreateManagementArticleDto"];
             };
         };
         responses: {
@@ -18252,398 +23341,21 @@ export interface operations {
             };
         };
     };
-    ExpensesController_getExpense: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The expense transaction have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExpenseResponseDto"];
-                };
-            };
-        };
-    };
-    ExpensesController_editExpense: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditExpenseDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExpensesController_deleteExpense: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExpensesController_publishExpense: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_getWarehousesTransfers: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer transactions have been retrieved successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["WarehouseTransferResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    WarehouseTransfersController_createWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateWarehouseTransferDto"];
-            };
-        };
-        responses: {
-            /** @description The warehouse transfer transaction has been created successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_getWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer transaction details have been retrieved successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WarehouseTransferResponseDto"];
-                };
-            };
-        };
-    };
-    WarehouseTransfersController_editWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditWarehouseTransferDto"];
-            };
-        };
-        responses: {
-            /** @description The warehouse transfer transaction has been edited successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_deleteWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer transaction has been deleted successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_initiateTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer has been initiated successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_deliverTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer has been marked as transferred successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CustomersController_getCustomer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The customer details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CustomerResponseDto"];
-                };
-            };
-        };
-    };
-    CustomersController_editCustomer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditCustomerDto"];
-            };
-        };
-        responses: {
-            /** @description The customer has been successfully updated. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CustomerResponseDto"];
-                };
-            };
-        };
-    };
-    CustomersController_deleteCustomer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The customer has been successfully deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CustomersController_getCustomers: {
+    ManagementArticlesController_getArticlesPlRollup: {
         parameters: {
             query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
+                /** @description From date */
+                fromDate?: string;
+                /** @description To date */
+                toDate?: string;
+                /** @description Deal (project) id */
+                projectId?: number;
+                /** @description Include only transactions not tied to any deal (projectId IS NULL) */
+                unassignedProject?: boolean;
             };
             header: {
                 /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
@@ -18656,47 +23368,42 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The customers have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManagementArticlesController_getManagementArticle: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The management article details have been retrieved. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CustomerResponseDto"][];
+                    "application/json": components["schemas"]["ManagementArticleResponseDto"];
                 };
             };
         };
     };
-    CustomersController_createCustomer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCustomerDto"];
-            };
-        };
-        responses: {
-            /** @description The customer has been successfully created. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CustomerResponseDto"];
-                };
-            };
-        };
-    };
-    CustomersController_editOpeningBalance: {
+    ManagementArticlesController_editManagementArticle: {
         parameters: {
             query?: never;
             header: {
@@ -18712,109 +23419,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CustomerOpeningBalanceEditDto"];
+                "application/json": components["schemas"]["EditManagementArticleDto"];
             };
         };
-        responses: {
-            /** @description The customer opening balance has been successfully updated. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CustomerResponseDto"];
-                };
-            };
-        };
-    };
-    CustomersController_validateBulkDeleteCustomers: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteCustomersDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed. Returns counts and IDs of deletable and non-deletable customers. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteCustomersResponseDto"];
-                };
-            };
-        };
-    };
-    CustomersController_bulkDeleteCustomers: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteCustomersDto"];
-            };
-        };
-        responses: {
-            /** @description The customers have been successfully deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorsController_getVendors: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -18824,33 +23431,7 @@ export interface operations {
             };
         };
     };
-    VendorsController_createVendor: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateVendorDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorsController_getVendor: {
+    ManagementArticlesController_deleteManagementArticle: {
         parameters: {
             query?: never;
             header: {
@@ -18874,2590 +23455,21 @@ export interface operations {
             };
         };
     };
-    VendorsController_editVendor: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditVendorDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorsController_deleteVendor: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorsController_editOpeningBalance: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["VendorOpeningBalanceEditDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorsController_validateBulkDeleteVendors: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteVendorsDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed. Returns counts and IDs of deletable and non-deletable vendors. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteVendorsResponseDto"];
-                };
-            };
-        };
-    };
-    VendorsController_bulkDeleteVendors: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteVendorsDto"];
-            };
-        };
-        responses: {
-            /** @description The vendors have been successfully deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_validateBulkDeleteSaleEstimates: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable sale estimates. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    SaleEstimatesController_bulkDeleteSaleEstimates: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Sale estimates deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_getSaleEstimates: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Sale estimates retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SaleEstimateResponseDto"] & {
-                        data?: components["schemas"]["SaleEstimateResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    SaleEstimatesController_createSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateSaleEstimateDto"];
-            };
-        };
-        responses: {
-            /** @description Sale estimate created successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_getSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-                accept: string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The sale estimate details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SaleEstimateResponseDto"];
-                };
-            };
-        };
-    };
-    SaleEstimatesController_editSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditSaleEstimateDto"];
-            };
-        };
-        responses: {
-            /** @description Sale estimate edited successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Sale estimate not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_deleteSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Sale estimate deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Sale estimate not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_getSaleEstimateState: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Sale estimate state retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SaleEstiamteStateResponseDto"];
-                };
-            };
-        };
-    };
-    SaleEstimatesController_deliverSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Sale estimate delivered successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_approveSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_rejectSaleEstimate: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_notifySaleEstimateBySms: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_getSaleEstimateSmsDetails: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_getSaleEstimateMail: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_sendSaleEstimateMail: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_validateBulkDeleteSaleReceipts: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable sale receipts. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    SaleReceiptsController_bulkDeleteSaleReceipts: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Sale receipts deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_getSaleReceipts: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["SaleReceiptResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    SaleReceiptsController_createSaleReceipt: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateSaleReceiptDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_getSaleReceiptMail: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale receipt id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_sendSaleReceiptMail: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale receipt id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_getSaleReceiptState: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The sale receipt has been retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SaleReceiptStateResponseDto"];
-                };
-            };
-        };
-    };
-    SaleReceiptsController_getSaleReceipt: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-                accept: string;
-            };
-            path: {
-                /** @description The sale receipt id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The sale receipt details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SaleReceiptResponseDto"];
-                };
-            };
-            /** @description The sale receipt not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_editSaleReceipt: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale receipt id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditSaleReceiptDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_deleteSaleReceipt: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale receipt id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleReceiptsController_closeSaleReceipt: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The sale receipt id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_validateBulkDeleteBills: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable bills. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    BillsController_bulkDeleteBills: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Bills deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_getBills: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The bill details has been retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["BillResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    BillsController_createBill: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateBillDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_getBill: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The bill details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BillResponseDto"];
-                };
-            };
-        };
-    };
-    BillsController_editBill: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditBillDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_deleteBill: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_getBillPaymentTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of payment transactions for the bill. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_openBill: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillsController_getDueBills: {
-        parameters: {
-            query?: {
-                /** @description Filter due bills by vendor ID. */
-                vendor_id?: number;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of due bills (optionally filtered by vendor). */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_getLandedCostTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of landed cost transactions. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_calculateLandedCost: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                billId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AllocateBillLandedCostDto"];
-            };
-        };
-        responses: {
-            /** @description Landed cost allocated successfully. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_deleteAllocatedLandedCost: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                allocatedLandedCostId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Allocated landed cost deleted successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_getBillLandedCostTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                billId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of bill landed cost transactions. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ManualJournalsController_validateBulkDeleteManualJournals: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable manual journals. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    ManualJournalsController_bulkDeleteManualJournals: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Manual journals deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ManualJournalsController_getManualJournals: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The manual journal details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManualJournalResponseDto"][];
-                };
-            };
-            /** @description The manual journal not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ManualJournalsController_createManualJournal: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateManualJournalDto"];
-            };
-        };
-        responses: {
-            /** @description The manual journal has been successfully created. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManualJournalResponseDto"];
-                };
-            };
-        };
-    };
-    ManualJournalsController_getManualJournal: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The manual journal id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The manual journal details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManualJournalResponseDto"];
-                };
-            };
-            /** @description The manual journal not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ManualJournalsController_editManualJournal: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The manual journal id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditManualJournalDto"];
-            };
-        };
-        responses: {
-            /** @description The manual journal has been successfully edited. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManualJournalResponseDto"];
-                };
-            };
-            /** @description The manual journal not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ManualJournalsController_deleteManualJournal: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The manual journal id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The manual journal has been successfully deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description The manual journal not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ManualJournalsController_publishManualJournal: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The manual journal id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The manual journal has been successfully published. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManualJournalResponseDto"];
-                };
-            };
-            /** @description The manual journal not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesController_getCreditNotes: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns a list of credit notes */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["CreditNoteResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    CreditNotesController_createCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCreditNoteDto"];
-            };
-        };
-        responses: {
-            /** @description Credit note successfully created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Invalid input data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesController_getCreditNoteState: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns the credit note state */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreditNoteStateResponseDto"];
-                };
-            };
-        };
-    };
-    CreditNotesController_getCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-                accept: string;
-            };
-            path: {
-                /** @description Credit note ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns the credit note */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreditNoteResponseDto"];
-                };
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesController_editCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Credit note ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditCreditNoteDto"];
-            };
-        };
-        responses: {
-            /** @description Credit note successfully updated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Invalid input data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesController_deleteCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Credit note ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Credit note successfully deleted */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesController_openCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Credit note ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Credit note successfully opened */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesController_validateBulkDeleteCreditNotes: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable credit notes. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    CreditNotesController_bulkDeleteCreditNotes: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Credit notes deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNoteRefundsController_getCreditNoteRefunds: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                creditNoteId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Credit note refunds retrieved successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RefundCreditNoteResponseDto"][];
-                };
-            };
-        };
-    };
-    CreditNoteRefundsController_createRefundCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                creditNoteId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreditNoteRefundDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNoteRefundsController_getRefundCreditNoteTransaction: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                refundCreditId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Refund credit note transaction retrieved successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RefundCreditNoteResponseDto"];
-                };
-            };
-        };
-    };
-    CreditNoteRefundsController_deleteRefundCreditNote: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                refundCreditId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesApplyInvoiceController_appliedCreditNoteToInvoices: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                creditNoteId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Credit note successfully applied to invoices */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppliedCreditNoteInvoiceResponseDto"][];
-                };
-            };
-            /** @description Invalid input data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesApplyInvoiceController_getCreditNoteAssociatedInvoicesToApply: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                creditNoteId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Credit note associated invoices to apply */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreditNoteInvoiceToApplyResponseDto"][];
-                };
-            };
-            /** @description Invalid input data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesApplyInvoiceController_applyCreditNoteToInvoices: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                creditNoteId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApplyCreditNoteToInvoicesDto"];
-            };
-        };
-        responses: {
-            /** @description Credit note successfully applied to invoices */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Invalid input data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditNotesApplyInvoiceController_deleteApplyCreditNoteToInvoices: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                applyCreditToInvoicesId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Credit note application successfully deleted */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Credit note application not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_validateBulkDeleteVendorCredits: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Validation completed with counts and IDs of deletable and non-deletable vendor credits. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
-                };
-            };
-        };
-    };
-    VendorCreditsController_bulkDeleteVendorCredits: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BulkDeleteDto"];
-            };
-        };
-        responses: {
-            /** @description Vendor credits deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_getVendorCredits: {
-        parameters: {
-            query?: {
-                /** @description Page number (1-based) */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order (asc/desc) */
-                sortOrder?: string;
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_createVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateVendorCreditDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_openVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_getVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_editVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditVendorCreditDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsController_deleteVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditApplyBillsController_getVendorCreditToApplyBills: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                vendorCreditId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditApplyBillsController_applyVendorCreditToBills: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                vendorCreditId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApplyVendorCreditToBillsDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditApplyBillsController_deleteAppliedBillToVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                vendorCreditAppliedBillId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditApplyBillsController_getAppliedBillsToVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                vendorCreditId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillPaymentsController_getBillPayments: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The bill payments have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["BillPaymentResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    BillPaymentsController_createBillPayment: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateBillPaymentDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillPaymentsController_getBillPayment: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill payment id */
-                billPaymentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The bill payment details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BillPaymentResponseDto"];
-                };
-            };
-        };
-    };
-    BillPaymentsController_editBillPayment: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill payment id */
-                billPaymentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditBillPaymentDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillPaymentsController_deleteBillPayment: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The bill payment id */
-                billPaymentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillPaymentsController_getBillPaymentNewPageEntries: {
+    PaymentCalendarController_getForecast: {
         parameters: {
             query: {
-                /** @description The vendor id */
-                vendorId: number;
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
+                /** @description Horizon start */
+                fromDate: string;
+                /** @description Horizon end */
+                toDate: string;
+                /** @description Limit to one cash account */
+                accountId?: number;
+                /** @description Filter by direction */
+                direction?: string;
             };
             header: {
                 /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
@@ -21478,19 +23490,25 @@ export interface operations {
             };
         };
     };
-    BillPaymentsController_getPaymentBills: {
+    PaymentCalendarController_getPlannedOperations: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Filter by direction */
+                direction?: string;
+                /** @description Filter by account id */
+                accountId?: number;
+                fromDate?: string;
+                toDate?: string;
+                /** @description Search keyword. */
+                keyword?: string;
+            };
             header: {
                 /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
                 Authorization: string;
                 /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
                 "organization-id": string;
             };
-            path: {
-                /** @description The bill payment id */
-                billPaymentId: number;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -21503,7 +23521,7 @@ export interface operations {
             };
         };
     };
-    BillPaymentsController_getBillPaymentEditPage: {
+    PaymentCalendarController_createPlannedOperation: {
         parameters: {
             query?: never;
             header: {
@@ -21512,111 +23530,12 @@ export interface operations {
                 /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
                 "organization-id": string;
             };
-            path: {
-                /** @description The bill payment id */
-                billPaymentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsRefundController_getRefundVendorCreditTransaction: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                refundCreditId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsRefundController_deleteRefundVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                refundCreditId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsRefundController_getVendorCreditRefunds: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                vendorCreditId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    VendorCreditsRefundController_createRefundVendorCredit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                vendorCreditId: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RefundVendorCreditDto"];
+                "application/json": components["schemas"]["CreatePlannedOperationDto"];
             };
         };
         responses: {
@@ -21628,29 +23547,95 @@ export interface operations {
             };
         };
     };
-    BankAccountsController_getBankAccounts: {
+    PaymentCalendarController_materializePlannedOperation: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MaterializePlannedOperationDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentCalendarController_editPlannedOperation: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditPlannedOperationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentCalendarController_deletePlannedOperation: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExchangeRatesController_getLatestExchangeRate: {
         parameters: {
             query?: {
-                /** @description Custom view ID */
-                customViewId?: number;
-                /** @description Filter roles array */
-                filterRoles?: string[];
-                /** @description Column to sort by */
-                columnSortBy?: string;
-                /** @description Sort order */
-                sortOrder?: "DESC" | "ASC";
-                /** @description Stringified filter roles */
-                stringifiedFilterRoles?: string;
-                /** @description Search keyword */
-                searchKeyword?: string;
-                /** @description View slug */
-                viewSlug?: string;
-                /** @description Page number */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Include inactive accounts */
-                inactiveMode?: boolean;
+                /** @description Source currency code (ISO 4217) */
+                from_currency?: string;
+                /** @description Target currency code (ISO 4217) */
+                to_currency?: string;
+                /** @description Rate date (YYYY-MM-DD); omit for today */
+                date?: string;
             };
             header?: never;
             path?: never;
@@ -21658,275 +23643,17 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description List of bank accounts retrieved successfully. */
+            /** @description Successfully retrieved exchange rate */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BankAccountResponseDto"][];
+                    "application/json": components["schemas"]["ExchangeRateLatestResponseDto"];
                 };
             };
-        };
-    };
-    BankAccountsController_getBankAccountSummary: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                bankAccountId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankAccountsController_disconnectBankAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account disconnected successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Bank account not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankAccountsController_refreshBankAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account transactions refreshed successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Bank account not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankAccountsController_pauseBankAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account transactions paused successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Bank account not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankAccountsController_resumeBankAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Bank account transactions resumed successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Bank account not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingPlaidController_getLinkToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingPlaidController_exchangeToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PlaidItemDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingPlaidWebhooksController_webhooks: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PlaidWebhookDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingCategorizeController_categorizeTransaction: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CategorizeBankTransactionRouteDto"];
-            };
-        };
-        responses: {
-            /** @description The bank transactions have been categorized successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingCategorizeController_uncategorizeTransactionsBulk: {
-        parameters: {
-            query: {
-                /** @description Array of uncategorized transaction IDs to uncategorize */
-                uncategorizedTransactionIds: unknown[];
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The bank transactions have been uncategorized successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingCategorizeController_uncategorizeTransaction: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Uncategorized transaction ID to uncategorize */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The bank transaction has been uncategorized successfully. */
-            200: {
+            /** @description Invalid currency code or service error */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -21936,13 +23663,27 @@ export interface operations {
     };
     BankingTransactionsController_getBankAccountTransactions: {
         parameters: {
-            query: {
+            query?: {
                 /** @description Page number for pagination */
                 page?: number;
                 /** @description Number of items per page */
                 pageSize?: number;
-                /** @description Bank account ID */
-                accountId: number;
+                /** @description Bank account ID. Leave empty to get transactions of all accounts. */
+                accountId?: number;
+                /** @description Filter transactions from this date (YYYY-MM-DD). */
+                fromDate?: string;
+                /** @description Filter transactions to this date (YYYY-MM-DD). */
+                toDate?: string;
+                /** @description Money direction: `in` (deposit) or `out` (withdrawal). */
+                flow?: "in" | "out";
+                /** @description Filter by contact id. */
+                contactId?: number;
+                /** @description Search in transaction number, reference number and note. */
+                search?: string;
+                /** @description Minimum transaction amount. */
+                minAmount?: number;
+                /** @description Maximum transaction amount. */
+                maxAmount?: number;
                 /** @description Number of decimal places to display */
                 precision?: number;
                 /** @description Whether to divide the number by 1000 */
@@ -22108,6 +23849,42 @@ export interface operations {
             };
         };
     };
+    BankingUncategorizedTransactionsController_getAllUncategorizedTransactions: {
+        parameters: {
+            query?: {
+                /** @description Page number for pagination */
+                page?: number;
+                /** @description Number of items per page */
+                pageSize?: number;
+                /** @description Minimum date for filtering transactions */
+                minDate?: string;
+                /** @description Maximum date for filtering transactions */
+                maxDate?: string;
+                /** @description Minimum amount for filtering transactions */
+                minAmount?: number;
+                /** @description Maximum amount for filtering transactions */
+                maxAmount?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns a list of uncategorized transactions across all bank accounts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     BankingUncategorizedTransactionsController_getBankAccountUncategorizedTransactions: {
         parameters: {
             query?: {
@@ -22214,107 +23991,36 @@ export interface operations {
             };
         };
     };
-    BankRulesController_getBankRules: {
+    ContactsController_getAutoComplete: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description The bank rules have been successfully retrieved. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["BankRuleResponseDto"][];
-                };
+                content?: never;
             };
         };
     };
-    BankRulesController_createBankRule: {
+    ContactsController_getContact: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateBankRuleDto"];
-            };
-        };
-        responses: {
-            /** @description The bank rule has been successfully created. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BankRuleResponseDto"];
-                };
-            };
-        };
-    };
-    BankRulesController_getBankRule: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
+            header?: never;
             path: {
+                /** @description Contact ID */
                 id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description The bank rule details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BankRuleResponseDto"];
-                };
-            };
-        };
-    };
-    BankRulesController_editBankRule: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditBankRuleDto"];
-            };
-        };
-        responses: {
+            /** @description Contact details (under "customer" key for form/duplicate use) */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -22323,23 +24029,18 @@ export interface operations {
             };
         };
     };
-    BankRulesController_deleteBankRule: {
+    ContactsController_activateContact: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
+            header?: never;
             path: {
+                /** @description Contact ID */
                 id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description The bank rule has been successfully deleted. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -22348,178 +24049,13 @@ export interface operations {
             };
         };
     };
-    BankingRecognizedTransactionsController_getRecognizedTransaction: {
+    ContactsController_inactivateContact: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
+            header?: never;
             path: {
-                /** @description The ID of the recognized transaction */
-                recognizedTransactionId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns the recognized transaction details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetRecognizedTransactionResponseDto"];
-                };
-            };
-            /** @description Recognized transaction not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingRecognizedTransactionsController_getRecognizedTransactions: {
-        parameters: {
-            query?: {
-                /** @description Query parameters for filtering recognized transactions */
-                query?: unknown;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns a list of recognized transactions */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["GetRecognizedTransactionResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    BankingTransactionsExcludeController_excludeBankTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExcludeBankTransactionsBulkDto"];
-            };
-        };
-        responses: {
-            /** @description Bank transactions excluded successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingTransactionsExcludeController_unexcludeBankTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExcludeBankTransactionsBulkDto"];
-            };
-        };
-        responses: {
-            /** @description Bank transactions unexcluded successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingTransactionsExcludeController_getExcludedBankTransactions: {
-        parameters: {
-            query?: {
-                /** @description Page number */
-                page?: number;
-                /** @description Page size */
-                pageSize?: number;
-                /** @description Filter by bank account ID */
-                accountId?: number;
-                /** @description Minimum date (ISO) */
-                minDate?: string;
-                /** @description Maximum date (ISO) */
-                maxDate?: string;
-                /** @description Minimum amount */
-                minAmount?: number;
-                /** @description Maximum amount */
-                maxAmount?: number;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The excluded bank transactions has been retrieved successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["GetExcludedBankTransactionResponseDto"][];
-                    };
-                };
-            };
-        };
-    };
-    BankingTransactionsExcludeController_excludeBankTransaction: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
+                /** @description Contact ID */
+                id: number;
             };
             cookie?: never;
         };
@@ -22533,45 +24069,10 @@ export interface operations {
             };
         };
     };
-    BankingTransactionsExcludeController_unexcludeBankTransaction: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BankingMatchingController_getMatchedTransactions: {
+    BudgetsController_getBudgets: {
         parameters: {
             query: {
-                /** @description Uncategorized transaction IDs to match */
-                uncategorizedTransactionIds: unknown[];
-                /** @description Filter from date */
-                fromDate?: string;
-                /** @description Filter to date */
-                toDate?: string;
-                /** @description Minimum amount */
-                minAmount?: number;
-                /** @description Maximum amount */
-                maxAmount?: number;
-                /** @description Transaction type filter */
-                transactionType?: string;
+                keyword: string;
             };
             header: {
                 /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
@@ -22584,18 +24085,15 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Matched transactions (perfect and possible matches). */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["GetMatchedTransactionsResponseDto"];
-                };
+                content?: never;
             };
         };
     };
-    BankingMatchingController_matchTransaction: {
+    BudgetsController_create: {
         parameters: {
             query?: never;
             header: {
@@ -22609,7 +24107,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["MatchBankTransactionDto"];
+                "application/json": components["schemas"]["CreateBudgetDto"];
             };
         };
         responses: {
@@ -22621,7 +24119,7 @@ export interface operations {
             };
         };
     };
-    BankingMatchingController_unmatchMatchedTransaction: {
+    BudgetsController_getBudget: {
         parameters: {
             query?: never;
             header: {
@@ -22631,7 +24129,7 @@ export interface operations {
                 "organization-id": string;
             };
             path: {
-                uncategorizedTransactionId: number;
+                id: number;
             };
             cookie?: never;
         };
@@ -22645,140 +24143,7 @@ export interface operations {
             };
         };
     };
-    TransactionsLockingController_commandTransactionsLocking: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransactionsLockingDto"];
-            };
-        };
-        responses: {
-            /** @description The transactions have been successfully locked. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
-                };
-            };
-        };
-    };
-    TransactionsLockingController_cancelTransactionLocking: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelTransactionsLockingDto"];
-            };
-        };
-        responses: {
-            /** @description The transactions locking has been successfully canceled. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
-                };
-            };
-        };
-    };
-    TransactionsLockingController_unlockTransactionsLockingBetweenPeriod: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The transactions have been successfully partially unlocked. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
-                };
-            };
-        };
-    };
-    TransactionsLockingController_cancelPartialUnlocking: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The partial transaction unlocking has been successfully canceled. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
-                };
-            };
-        };
-    };
-    TransactionsLockingController_getTransactionLockingMetaList: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The transactions locking meta has been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
-                };
-            };
-        };
-    };
-    TransactionsLockingController_getTransactionLockingMeta: {
+    BudgetsController_edit: {
         parameters: {
             query?: never;
             header: {
@@ -22788,27 +24153,249 @@ export interface operations {
                 "organization-id": string;
             };
             path: {
-                module: string;
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditBudgetDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BudgetsController_delete: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description The module transactions locking meta has been successfully retrieved. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
-                };
+                content?: never;
             };
         };
     };
-    SettingsController_getSettings: {
+    BudgetsController_getPlanFact: {
+        parameters: {
+            query: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
+                /** @description Period start (month) */
+                fromDate: string;
+                /** @description Period end (month) */
+                toDate: string;
+                scenario?: "optimistic" | "realistic" | "pessimistic";
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BudgetsController_upsertLines: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertBudgetLinesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LegalEntitiesController_getLegalEntities: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Список никогда не пуст: при первом обращении создаётся юрлицо по умолчанию из реквизитов организации. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LegalEntitiesController_createLegalEntity: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateLegalEntityDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LegalEntitiesController_getIntercompanyTurnover: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Нужен для сверки: делает исключение внутренних оборотов из сводных отчётов проверяемым. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LegalEntitiesController_editLegalEntity: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditLegalEntityDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    LegalEntitiesController_deleteLegalEntity: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Юрлицо с операциями и последнее юрлицо удалить нельзя: разрез по юрлицу остался бы без опоры. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProjectsController_getProjects: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -22822,14 +24409,2659 @@ export interface operations {
             };
         };
     };
-    SettingsController_saveSettings: {
+    ProjectsController_createProject: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProjectDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProjectsController_getProject: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProjectsController_editProject: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditProjectDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProjectsController_deleteProject: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Направление с операциями удалить нельзя: прошлые операции остались бы со ссылкой в никуда. Такое направление убирают из выбора статусом. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_getScopes: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_getEvents: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_getApiTokens: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Самих токенов в ответе нет и быть не может: в базе лежит только отпечаток. Виден хвост — по нему человек узнаёт свой токен. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_createApiToken: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApiTokenDto"];
+            };
+        };
+        responses: {
+            /** @description Токен возвращается ЕДИНСТВЕННЫЙ раз. Потерял — выпусти новый и отзови старый. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_revokeApiToken: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Отзыв, а не удаление: удалённый токен исчез бы из журнала вместе с ответом на вопрос, кто и когда им пользовался. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_getWebhooks: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_createWebhook: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWebhookDto"];
+            };
+        };
+        responses: {
+            /** @description Секрет подписи возвращается один раз: по нему получатель отличает наш вызов от подделки. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_editWebhook: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditWebhookDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_deleteWebhook: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PublicApiController_getDeliveries: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiAnalystController_getAvailability: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Причина возвращается всегда: пустой блок «Что говорят цифры» выглядит так же, как блок, которому нечего сказать. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiAnalystController_getSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiAnalystController_saveSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditAiAnalystSettingsDto"];
+            };
+        };
+        responses: {
+            /** @description Пустое поле ключа НЕ стирает сохранённый ключ: иначе открытие формы настроек и нажатие «Сохранить» ломали бы рабочую интеграцию. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiAnalystController_getInsights: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                scope: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Читается только суточный кеш: открытие страницы не ждёт модель и не оплачивает её (§13.3). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiChatController_getTools: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiChatController_ask: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AskDto"];
+            };
+        };
+        responses: {
+            /** @description Ответ всегда сопровождается ссылками на отчёты. Числа сверяются с тем, что вернули отчёты; не сошлось — ответ не показывается. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TransactionSplitsController_getSplits: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                referenceType: string;
+                referenceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TransactionSplitsController_saveSplits: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                referenceType: string;
+                referenceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Суммы частей обязаны сходиться с родительской. Иначе отчёт разойдётся со сверкой по банку, и расхождение будет выглядеть ошибкой банка. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TransactionSplitsController_clearSplits: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                referenceType: string;
+                referenceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_getOverview: {
+        parameters: {
+            query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
+                /** @description Сторона; без неё — обе */
+                side?: "receivable" | "payable";
+                /** @description Дата отсчёта старения (по умолчанию сегодня) */
+                asDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_getContactDebts: {
+        parameters: {
+            query: {
+                side: "receivable" | "payable";
+                asDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                contactId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_remind: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                invoiceId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_getRepaymentPlans: {
+        parameters: {
+            query: {
+                side: string;
+                contactId: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_createRepaymentPlan: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRepaymentPlanDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_editRepaymentPlan: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditRepaymentPlanDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_deleteRepaymentPlan: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DebtsController_markInstallmentPaid: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                planId: number;
+                installmentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentRequestsController_getList: {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected" | "cancelled";
+                /** @description Search keyword. */
+                keyword?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentRequestsController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePaymentRequestDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentRequestsController_get: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentRequestsController_approve: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentRequestsController_reject: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PaymentRequestsController_cancel: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_getList: {
+        parameters: {
+            query?: {
+                status?: "in_progress" | "completed" | "cancelled";
+                /** @description Search keyword. */
+                keyword?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_getSummary: {
+        parameters: {
+            query: {
+                fromDate: string;
+                toDate: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_get: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_edit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditDealDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_remove: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealsController_profitability: {
+        parameters: {
+            query: {
+                fromDate: string;
+                toDate: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealStagesController_list: {
+        parameters: {
+            query?: {
+                fromDate?: string;
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                dealId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealStagesController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                dealId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealStageDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealStagesController_edit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                dealId: number;
+                stageId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditDealStageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DealStagesController_remove: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                dealId: number;
+                stageId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CostAllocationController_getList: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CostAllocationController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCostAllocationRuleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CostAllocationController_edit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditCostAllocationRuleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CostAllocationController_delete: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getEmployees: {
+        parameters: {
+            query: {
+                activeOnly: string;
+                keyword: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_createEmployee: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateEmployeeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_editEmployee: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditEmployeeDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_deleteEmployee: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getKpiTargets: {
+        parameters: {
+            query?: {
+                /** @description Фильтр по году */
+                year?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_createKpiTarget: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateKpiTargetDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_editKpiTarget: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditKpiTargetDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_deleteKpiTarget: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getKpiSummary: {
+        parameters: {
+            query: {
+                /** @description Месяц сводки (YYYY-MM) */
+                month: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getTaxesSummary: {
+        parameters: {
+            query: {
+                /** @description Год сводки */
+                year: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getRuns: {
+        parameters: {
+            query?: {
+                /** @description Фильтр по году */
+                year?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_createRun: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePayrollRunDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_getRun: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_editRun: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditPayrollRunDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_deleteRun: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_approveRun: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PayrollController_unapproveRun: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_getUnmappedOperations: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_getPossibleDuplicates: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_getPlCashflowComparison: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_getUnbalancedJournals: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_getFailedMails: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_getCrookedCurrencyJournals: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_repostCrookedCurrencyJournals: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DataQualityController_repostVatDocuments: {
+        parameters: {
+            query?: {
+                /** @description Начало периода (ISO дата) */
+                fromDate?: string;
+                /** @description Конец периода (ISO дата) */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DividendsController_getSummary: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DividendsController_getPayouts: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DividendsController_createPayout: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDividendPayoutDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DividendsController_deletePayout: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_getSummary: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_getCredits: {
+        parameters: {
+            query?: {
+                /** @description Search keyword. */
+                keyword?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_createCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCreditDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_getCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_editCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditCreditDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_deleteCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditsController_markPaid: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+                installmentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_getOverview: {
+        parameters: {
+            query?: {
+                /** @description Начало периода YYYY-MM-DD */
+                fromDate?: string;
+                /** @description Конец периода YYYY-MM-DD */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_getSegments: {
+        parameters: {
+            query?: {
+                /** @description Начало периода YYYY-MM-DD */
+                fromDate?: string;
+                /** @description Конец периода YYYY-MM-DD */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_getMarketing: {
+        parameters: {
+            query?: {
+                /** @description Начало периода YYYY-MM-DD */
+                fromDate?: string;
+                /** @description Конец периода YYYY-MM-DD */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_getBreakEven: {
+        parameters: {
+            query?: {
+                /** @description Начало периода YYYY-MM-DD */
+                fromDate?: string;
+                /** @description Конец периода YYYY-MM-DD */
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_getExpensesAnalysis: {
+        parameters: {
+            query?: {
+                /** @description Начало периода YYYY-MM-DD */
+                fromDate?: string;
+                /** @description Конец периода YYYY-MM-DD */
+                toDate?: string;
+                /** @description Направления (подразделения) */
+                branchesIds?: string[];
+                /** @description Проект */
+                projectId?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_listExpenseArticles: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_setCostBehavior: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetCostBehaviorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_listChannels: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_createChannel: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMarketingChannelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_updateChannel: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMarketingChannelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_deleteChannel: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_upsertMonthly: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertMarketingMonthlyDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FinancialModelController_setCustomerLifetime: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetCustomerLifetimeDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CapitalizationController_getCapitalization: {
+        parameters: {
+            query?: {
+                fromDate?: string;
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CapitalizationController_getSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CapitalizationController_setSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetProfitMultipleDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -22842,6 +27074,10 @@ export interface operations {
     BalanceSheetStatementController_balanceSheet: {
         parameters: {
             query: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
                 /** @description Type of columns to display in the balance sheet */
                 displayColumnsType: "total" | "date_periods";
                 /** @description Time period for column display */
@@ -24241,6 +28477,6179 @@ export interface operations {
             };
         };
     };
+    BankStatementImportController_import1CFile: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankStatementImportController_previewTable: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankStatementImportController_importTableFile: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingCategorizeController_categorizeTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategorizeBankTransactionRouteDto"];
+            };
+        };
+        responses: {
+            /** @description The bank transactions have been categorized successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingCategorizeController_categorizeTransactionAsExpense: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategorizeTransactionAsExpenseRouteDto"];
+            };
+        };
+        responses: {
+            /** @description The bank transaction has been categorized as an expense. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingCategorizeController_uncategorizeTransactionsBulk: {
+        parameters: {
+            query: {
+                /** @description Array of uncategorized transaction IDs to uncategorize */
+                uncategorizedTransactionIds: unknown[];
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bank transactions have been uncategorized successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingCategorizeController_uncategorizeTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Uncategorized transaction ID to uncategorize */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bank transaction has been uncategorized successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExpensesController_validateBulkDeleteExpenses: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable expenses. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    ExpensesController_bulkDeleteExpenses: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Expenses deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExpensesController_getExpenses: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The item list has been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["ExpenseResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_createExpense: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateExpenseDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExpensesController_getExpense: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The expense transaction have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseResponseDto"];
+                };
+            };
+        };
+    };
+    ExpensesController_editExpense: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditExpenseDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExpensesController_deleteExpense: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExpensesController_publishExpense: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MoySkladController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MoySkladController_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MoySkladController_importPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MoySkladController_import: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MoySkladController_connect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectMoyskladDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MoySkladController_disconnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_wbSummary: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                fromDate: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                toDate: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_connectWb: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectWbDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_disconnectWb: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_ozonSummary: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                fromDate: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                toDate: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_connectOzon: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectOzonDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MarketplacesController_disconnectOzon: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankApiSyncController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankApiSyncController_connect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectBankDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankApiSyncController_disconnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankApiSyncController_import: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportStatementDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OnecExportController_export: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+                /** @description Номер счёта */
+                accountId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OnecImportController_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OnecImportController_import: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomersController_getCustomer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The customer details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerResponseDto"];
+                };
+            };
+        };
+    };
+    CustomersController_editCustomer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditCustomerDto"];
+            };
+        };
+        responses: {
+            /** @description The customer has been successfully updated. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerResponseDto"];
+                };
+            };
+        };
+    };
+    CustomersController_deleteCustomer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The customer has been successfully deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomersController_getCustomers: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The customers have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerResponseDto"][];
+                };
+            };
+        };
+    };
+    CustomersController_createCustomer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomerDto"];
+            };
+        };
+        responses: {
+            /** @description The customer has been successfully created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerResponseDto"];
+                };
+            };
+        };
+    };
+    CustomersController_editOpeningBalance: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomerOpeningBalanceEditDto"];
+            };
+        };
+        responses: {
+            /** @description The customer opening balance has been successfully updated. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerResponseDto"];
+                };
+            };
+        };
+    };
+    CustomersController_validateBulkDeleteCustomers: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteCustomersDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed. Returns counts and IDs of deletable and non-deletable customers. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteCustomersResponseDto"];
+                };
+            };
+        };
+    };
+    CustomersController_bulkDeleteCustomers: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteCustomersDto"];
+            };
+        };
+        responses: {
+            /** @description The customers have been successfully deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AcquiringController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AcquiringController_summary: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AcquiringController_connect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectYookassaDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AcquiringController_disconnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ZenmoneyImportController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ZenmoneyImportController_connect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectZenmoneyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ZenmoneyImportController_disconnect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ZenmoneyImportController_import: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportZenmoneyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VatAnalysisController_summary: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                fromDate: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                toDate: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuPrintFormsController_paymentInvoice: {
+        parameters: {
+            query?: never;
+            header: {
+                accept: string;
+            };
+            path: {
+                /** @description The sale invoice id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF либо { htmlContent }. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Модуль «Печатные формы РФ» выключен. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The sale invoice not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuPrintFormsController_act: {
+        parameters: {
+            query?: never;
+            header: {
+                accept: string;
+            };
+            path: {
+                /** @description The sale invoice id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF либо { htmlContent }. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Модуль «Печатные формы РФ» выключен. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The sale invoice not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuPrintFormsController_upd: {
+        parameters: {
+            query?: never;
+            header: {
+                accept: string;
+            };
+            path: {
+                /** @description The sale invoice id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF либо { htmlContent }. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Модуль «Печатные формы РФ» выключен. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The sale invoice not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuPrintFormsController_torg12: {
+        parameters: {
+            query?: never;
+            header: {
+                accept: string;
+            };
+            path: {
+                /** @description The sale invoice id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF либо { htmlContent }. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Модуль «Печатные формы РФ» выключен. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The sale invoice not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuPrintFormsController_invoiceFactura: {
+        parameters: {
+            query?: never;
+            header: {
+                accept: string;
+            };
+            path: {
+                /** @description The sale invoice id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF либо { htmlContent }. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Модуль «Печатные формы РФ» выключен. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The sale invoice not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuPrintFormsController_reconciliationAct: {
+        parameters: {
+            query: {
+                /** @description Начало периода сверки */
+                fromDate: string;
+                /** @description Конец периода сверки */
+                toDate: string;
+            };
+            header: {
+                accept: string;
+            };
+            path: {
+                /** @description The customer id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF либо { htmlContent }. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Модуль «Печатные формы РФ» выключен. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The customer not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TransactionsByCustomerController_transactionsByCustomer: {
+        parameters: {
+            query?: {
+                /** @description Number of decimal places to display */
+                precision?: number;
+                /** @description Whether to divide the number by 1000 */
+                divideOn1000?: boolean;
+                /** @description Whether to show zero values */
+                showZero?: boolean;
+                /** @description How to format money values */
+                formatMoney?: "total" | "always" | "none";
+                /** @description How to format negative numbers */
+                negativeFormat?: "parentheses" | "mines";
+                /** @description Whether to exclude transactions */
+                noneTransactions?: boolean;
+                /** @description Whether to exclude zero values */
+                noneZero?: boolean;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Transactions by customer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionsByCustomerResponseDto"];
+                    "application/json+table": components["schemas"]["TransactionsByCustomerTableResponseDto"];
+                };
+            };
+        };
+    };
+    FinancialRatiosController_ratios: {
+        parameters: {
+            query?: {
+                fromDate?: string;
+                toDate?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProfitLossSheetController_profitLossSheet: {
+        parameters: {
+            query: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
+                /** @description The basis for the profit and loss sheet */
+                basis: "cash" | "accrual";
+                /** @description Number of decimal places to display */
+                precision?: number;
+                /** @description Whether to divide the number by 1000 */
+                divideOn1000?: boolean;
+                /** @description Whether to show zero values */
+                showZero?: boolean;
+                /** @description How to format money values */
+                formatMoney?: "total" | "always" | "none";
+                /** @description How to format negative numbers */
+                negativeFormat?: "parentheses" | "mines";
+                /** @description Whether to exclude zero values */
+                noneZero?: boolean;
+                /** @description Whether to exclude transactions */
+                noneTransactions?: boolean;
+                /** @description Array of account IDs to include */
+                accountsIds?: string[];
+                /** @description Type of columns to display */
+                displayColumnsType: "total" | "date_periods";
+                /** @description How to display columns */
+                displayColumnsBy: string;
+                /** @description Whether to show percentage column */
+                percentageColumn?: boolean;
+                /** @description Whether to show percentage row */
+                percentageRow?: boolean;
+                /** @description Whether to show income percentage */
+                percentageIncome?: boolean;
+                /** @description Whether to show expense percentage */
+                percentageExpense?: boolean;
+                /** @description Whether to include previous period */
+                previousPeriod?: boolean;
+                /** @description Whether to show previous period amount change */
+                previousPeriodAmountChange?: boolean;
+                /** @description Whether to show previous period percentage change */
+                previousPeriodPercentageChange?: boolean;
+                /** @description Whether to include previous year */
+                previousYear?: boolean;
+                /** @description Whether to show previous year amount change */
+                previousYearAmountChange?: boolean;
+                /** @description Whether to show previous year percentage change */
+                previousYearPercentageChange?: boolean;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profit & loss statement */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "query": {
+                     *         "from_date": "2025-01-01",
+                     *         "to_date": "2025-06-22",
+                     *         "number_format": {
+                     *           "divide_on1000": false,
+                     *           "negative_format": "mines",
+                     *           "show_zero": false,
+                     *           "format_money": "total",
+                     *           "precision": 2
+                     *         },
+                     *         "basis": "accrual",
+                     *         "none_zero": false,
+                     *         "none_transactions": false,
+                     *         "display_columns_type": "total",
+                     *         "display_columns_by": "year",
+                     *         "accounts_ids": [],
+                     *         "percentage_column": false,
+                     *         "percentage_row": false,
+                     *         "percentage_income": false,
+                     *         "percentage_expense": false,
+                     *         "previous_period": false,
+                     *         "previous_period_amount_change": false,
+                     *         "previous_period_percentage_change": false,
+                     *         "previous_year": false,
+                     *         "previous_year_amount_change": false,
+                     *         "previous_year_percentage_change": false
+                     *       },
+                     *       "data": [
+                     *         {
+                     *           "id": "INCOME",
+                     *           "name": "Income",
+                     *           "node_type": "ACCOUNTS",
+                     *           "total": {
+                     *             "amount": 3931,
+                     *             "formatted_amount": "$3,931.00"
+                     *           },
+                     *           "children": [
+                     *             {
+                     *               "id": 1025,
+                     *               "name": "Sales of Product Income",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 3931,
+                     *                 "formatted_amount": "3,931.00"
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1026,
+                     *               "name": "Sales of Service Income",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 0,
+                     *                 "formatted_amount": ""
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1027,
+                     *               "name": "Uncategorized Income",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 0,
+                     *                 "formatted_amount": ""
+                     *               }
+                     *             }
+                     *           ]
+                     *         },
+                     *         {
+                     *           "id": "COST_OF_SALES",
+                     *           "name": "Cost of sales",
+                     *           "node_type": "ACCOUNTS",
+                     *           "total": {
+                     *             "amount": 800,
+                     *             "formatted_amount": "$800.00"
+                     *           },
+                     *           "children": [
+                     *             {
+                     *               "id": 1019,
+                     *               "name": "Cost of Goods Sold",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 800,
+                     *                 "formatted_amount": "800.00"
+                     *               }
+                     *             }
+                     *           ]
+                     *         },
+                     *         {
+                     *           "id": "GROSS_PROFIT",
+                     *           "name": "GROSS PROFIT",
+                     *           "node_type": "EQUATION",
+                     *           "total": {
+                     *             "amount": 3131,
+                     *             "formatted_amount": "$3,131.00"
+                     *           }
+                     *         },
+                     *         {
+                     *           "id": "EXPENSES",
+                     *           "name": "Expenses",
+                     *           "node_type": "ACCOUNTS",
+                     *           "total": {
+                     *             "amount": -111563,
+                     *             "formatted_amount": "-$111,563.00"
+                     *           },
+                     *           "children": [
+                     *             {
+                     *               "id": 1020,
+                     *               "name": "Office expenses",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 0,
+                     *                 "formatted_amount": ""
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1021,
+                     *               "name": "Rent",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": -92831,
+                     *                 "formatted_amount": "-92,831.00"
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1023,
+                     *               "name": "Bank Fees and Charges",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": -8732,
+                     *                 "formatted_amount": "-8,732.00"
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1024,
+                     *               "name": "Depreciation Expense",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": -10000,
+                     *                 "formatted_amount": "-10,000.00"
+                     *               }
+                     *             }
+                     *           ]
+                     *         },
+                     *         {
+                     *           "id": "NET_OPERATING_INCOME",
+                     *           "name": "NET OPERATING INCOME",
+                     *           "node_type": "EQUATION",
+                     *           "total": {
+                     *             "amount": 114694,
+                     *             "formatted_amount": "$114,694.00"
+                     *           }
+                     *         },
+                     *         {
+                     *           "id": "OTHER_INCOME",
+                     *           "name": "Other income",
+                     *           "node_type": "ACCOUNTS",
+                     *           "total": {
+                     *             "amount": 0,
+                     *             "formatted_amount": "$0.00"
+                     *           },
+                     *           "children": [
+                     *             {
+                     *               "id": 1031,
+                     *               "name": "Discount",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 0,
+                     *                 "formatted_amount": ""
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1033,
+                     *               "name": "Other Charges",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 0,
+                     *                 "formatted_amount": ""
+                     *               }
+                     *             }
+                     *           ]
+                     *         },
+                     *         {
+                     *           "id": "OTHER_EXPENSES",
+                     *           "name": "Other expenses",
+                     *           "node_type": "ACCOUNTS",
+                     *           "total": {
+                     *             "amount": 119149,
+                     *             "formatted_amount": "$119,149.00"
+                     *           },
+                     *           "children": [
+                     *             {
+                     *               "id": 1018,
+                     *               "name": "Other Expenses",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": -1243,
+                     *                 "formatted_amount": "-1,243.00"
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1022,
+                     *               "name": "Exchange Gain or Loss",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": 123123,
+                     *                 "formatted_amount": "123,123.00"
+                     *               }
+                     *             },
+                     *             {
+                     *               "id": 1032,
+                     *               "name": "Purchase Discount",
+                     *               "node_type": "ACCOUNT",
+                     *               "total": {
+                     *                 "amount": -2731,
+                     *                 "formatted_amount": "-2,731.00"
+                     *               }
+                     *             }
+                     *           ]
+                     *         },
+                     *         {
+                     *           "id": "NET_INCOME",
+                     *           "name": "NET INCOME",
+                     *           "node_type": "EQUATION",
+                     *           "total": {
+                     *             "amount": -4455,
+                     *             "formatted_amount": "-$4,455.00"
+                     *           }
+                     *         }
+                     *       ],
+                     *       "meta": {
+                     *         "organization_name": "BIGFIN, INC",
+                     *         "base_currency": "USD",
+                     *         "date_format": "DD MMM yyyy",
+                     *         "is_cost_compute_running": false,
+                     *         "sheet_name": "Cashflow Statement",
+                     *         "formatted_from_date": "2025/01/01",
+                     *         "formatted_to_date": "2025/06/22",
+                     *         "formatted_date_range": "From 2025/01/01 | To 2025/06/22"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ProfitLossSheetResponseDto"];
+                    "application/json+table": components["schemas"]["ProfitLossSheetTableResponseDto"];
+                };
+            };
+        };
+    };
+    CrmIntegrationController_status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmIntegrationController_connectBitrix24: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectBitrix24Dto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmIntegrationController_disconnectBitrix24: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmIntegrationController_connectAmocrm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectAmocrmDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmIntegrationController_disconnectAmocrm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmIntegrationController_getOwnCrmWebhookToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmIntegrationController_runSync: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CrmWebhooksController_inbound: {
+        parameters: {
+            query: {
+                /** @description Токен подписки */
+                token: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_getSummary: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_getFixedAssets: {
+        parameters: {
+            query?: {
+                /** @description Search keyword. */
+                keyword?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFixedAssetDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_getDetail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_delete: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_accrue: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccrueMonthDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FixedAssetsController_dispose: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisposeFixedAssetDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TransactionsLockingController_commandTransactionsLocking: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransactionsLockingDto"];
+            };
+        };
+        responses: {
+            /** @description The transactions have been successfully locked. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsLockingController_cancelTransactionLocking: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelTransactionsLockingDto"];
+            };
+        };
+        responses: {
+            /** @description The transactions locking has been successfully canceled. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsLockingController_unlockTransactionsLockingBetweenPeriod: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The transactions have been successfully partially unlocked. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsLockingController_cancelPartialUnlocking: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The partial transaction unlocking has been successfully canceled. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsLockingController_getTransactionLockingMetaList: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The transactions locking meta has been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
+                };
+            };
+        };
+    };
+    TransactionsLockingController_getTransactionLockingMeta: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                module: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The module transactions locking meta has been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionLockingResponseDto"];
+                };
+            };
+        };
+    };
+    SettingsController_getSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SettingsController_saveSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WarehouseTransfersController_getWarehousesTransfers: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The warehouse transfer transactions have been retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["WarehouseTransferResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    WarehouseTransfersController_createWarehouseTransfer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWarehouseTransferDto"];
+            };
+        };
+        responses: {
+            /** @description The warehouse transfer transaction has been created successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WarehouseTransfersController_getWarehouseTransfer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The warehouse transfer transaction details have been retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WarehouseTransferResponseDto"];
+                };
+            };
+        };
+    };
+    WarehouseTransfersController_editWarehouseTransfer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditWarehouseTransferDto"];
+            };
+        };
+        responses: {
+            /** @description The warehouse transfer transaction has been edited successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WarehouseTransfersController_deleteWarehouseTransfer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The warehouse transfer transaction has been deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WarehouseTransfersController_initiateTransfer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The warehouse transfer has been initiated successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WarehouseTransfersController_deliverTransfer: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The warehouse transfer has been marked as transferred successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_getVendors: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_createVendor: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateVendorDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_getVendor: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_editVendor: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditVendorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_deleteVendor: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_editOpeningBalance: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VendorOpeningBalanceEditDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorsController_validateBulkDeleteVendors: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteVendorsDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed. Returns counts and IDs of deletable and non-deletable vendors. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteVendorsResponseDto"];
+                };
+            };
+        };
+    };
+    VendorsController_bulkDeleteVendors: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteVendorsDto"];
+            };
+        };
+        responses: {
+            /** @description The vendors have been successfully deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_validateBulkDeleteSaleEstimates: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable sale estimates. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    SaleEstimatesController_bulkDeleteSaleEstimates: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Sale estimates deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_getSaleEstimates: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sale estimates retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaleEstimateResponseDto"] & {
+                        data?: components["schemas"]["SaleEstimateResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    SaleEstimatesController_createSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSaleEstimateDto"];
+            };
+        };
+        responses: {
+            /** @description Sale estimate created successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_getSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The sale estimate details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaleEstimateResponseDto"];
+                };
+            };
+        };
+    };
+    SaleEstimatesController_editSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditSaleEstimateDto"];
+            };
+        };
+        responses: {
+            /** @description Sale estimate edited successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sale estimate not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_deleteSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sale estimate deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Sale estimate not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_getSaleEstimateState: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sale estimate state retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaleEstiamteStateResponseDto"];
+                };
+            };
+        };
+    };
+    SaleEstimatesController_deliverSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sale estimate delivered successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_approveSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_rejectSaleEstimate: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_getSaleEstimateMail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleEstimatesController_sendSaleEstimateMail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale estimate id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_validateBulkDeleteSaleReceipts: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable sale receipts. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    SaleReceiptsController_bulkDeleteSaleReceipts: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Sale receipts deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_getSaleReceipts: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["SaleReceiptResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    SaleReceiptsController_createSaleReceipt: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSaleReceiptDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_getSaleReceiptMail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale receipt id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_sendSaleReceiptMail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale receipt id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_getSaleReceiptState: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The sale receipt has been retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaleReceiptStateResponseDto"];
+                };
+            };
+        };
+    };
+    SaleReceiptsController_getSaleReceipt: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path: {
+                /** @description The sale receipt id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The sale receipt details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaleReceiptResponseDto"];
+                };
+            };
+            /** @description The sale receipt not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_editSaleReceipt: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale receipt id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditSaleReceiptDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_deleteSaleReceipt: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale receipt id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SaleReceiptsController_closeSaleReceipt: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The sale receipt id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_validateBulkDeleteBills: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable bills. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    BillsController_bulkDeleteBills: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Bills deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_getBills: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bill details has been retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["BillResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    BillsController_createBill: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBillDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_duplicateBill: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Draft copy created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_getBill: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bill details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillResponseDto"];
+                };
+            };
+        };
+    };
+    BillsController_editBill: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditBillDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_deleteBill: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_getBillPaymentTransactions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of payment transactions for the bill. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_getDueBills: {
+        parameters: {
+            query?: {
+                /** @description Filter due bills by vendor ID. */
+                vendor_id?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of due bills (optionally filtered by vendor). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillsController_openBill: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_getLandedCostTransactions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of landed cost transactions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_calculateLandedCost: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                billId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AllocateBillLandedCostDto"];
+            };
+        };
+        responses: {
+            /** @description Landed cost allocated successfully. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_deleteAllocatedLandedCost: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                allocatedLandedCostId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Allocated landed cost deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_getBillLandedCostTransactions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                billId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of bill landed cost transactions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManualJournalsController_validateBulkDeleteManualJournals: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable manual journals. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    ManualJournalsController_bulkDeleteManualJournals: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Manual journals deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManualJournalsController_getManualJournals: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The manual journal details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualJournalResponseDto"][];
+                };
+            };
+            /** @description The manual journal not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManualJournalsController_createManualJournal: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateManualJournalDto"];
+            };
+        };
+        responses: {
+            /** @description The manual journal has been successfully created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualJournalResponseDto"];
+                };
+            };
+        };
+    };
+    ManualJournalsController_getManualJournal: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The manual journal id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The manual journal details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualJournalResponseDto"];
+                };
+            };
+            /** @description The manual journal not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManualJournalsController_editManualJournal: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The manual journal id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditManualJournalDto"];
+            };
+        };
+        responses: {
+            /** @description The manual journal has been successfully edited. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualJournalResponseDto"];
+                };
+            };
+            /** @description The manual journal not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManualJournalsController_deleteManualJournal: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The manual journal id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The manual journal has been successfully deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The manual journal not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ManualJournalsController_publishManualJournal: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The manual journal id */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The manual journal has been successfully published. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManualJournalResponseDto"];
+                };
+            };
+            /** @description The manual journal not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_getCreditNotes: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns a list of credit notes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["CreditNoteResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    CreditNotesController_createCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCreditNoteDto"];
+            };
+        };
+        responses: {
+            /** @description Credit note successfully created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_getCreditNoteMail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Credit note ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_sendCreditNoteMail: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Credit note ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_getCreditNoteState: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the credit note state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreditNoteStateResponseDto"];
+                };
+            };
+        };
+    };
+    CreditNotesController_getCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path: {
+                /** @description Credit note ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the credit note */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreditNoteResponseDto"];
+                };
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_editCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Credit note ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditCreditNoteDto"];
+            };
+        };
+        responses: {
+            /** @description Credit note successfully updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_deleteCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Credit note ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Credit note successfully deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_openCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Credit note ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Credit note successfully opened */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesController_validateBulkDeleteCreditNotes: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable credit notes. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    CreditNotesController_bulkDeleteCreditNotes: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Credit notes deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNoteRefundsController_getCreditNoteRefunds: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                creditNoteId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Credit note refunds retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundCreditNoteResponseDto"][];
+                };
+            };
+        };
+    };
+    CreditNoteRefundsController_createRefundCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                creditNoteId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreditNoteRefundDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNoteRefundsController_getRefundCreditNoteTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                refundCreditId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Refund credit note transaction retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundCreditNoteResponseDto"];
+                };
+            };
+        };
+    };
+    CreditNoteRefundsController_deleteRefundCreditNote: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                refundCreditId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesApplyInvoiceController_appliedCreditNoteToInvoices: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                creditNoteId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Credit note successfully applied to invoices */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppliedCreditNoteInvoiceResponseDto"][];
+                };
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesApplyInvoiceController_getCreditNoteAssociatedInvoicesToApply: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                creditNoteId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Credit note associated invoices to apply */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreditNoteInvoiceToApplyResponseDto"][];
+                };
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesApplyInvoiceController_applyCreditNoteToInvoices: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                creditNoteId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyCreditNoteToInvoicesDto"];
+            };
+        };
+        responses: {
+            /** @description Credit note successfully applied to invoices */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Invalid input data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditNotesApplyInvoiceController_deleteApplyCreditNoteToInvoices: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                applyCreditToInvoicesId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Credit note application successfully deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Credit note application not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_validateBulkDeleteVendorCredits: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Validation completed with counts and IDs of deletable and non-deletable vendor credits. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateBulkDeleteResponseDto"];
+                };
+            };
+        };
+    };
+    VendorCreditsController_bulkDeleteVendorCredits: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkDeleteDto"];
+            };
+        };
+        responses: {
+            /** @description Vendor credits deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_getVendorCredits: {
+        parameters: {
+            query?: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_createVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateVendorCreditDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_openVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_getVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_editVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditVendorCreditDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsController_deleteVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditApplyBillsController_getVendorCreditToApplyBills: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                vendorCreditId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditApplyBillsController_applyVendorCreditToBills: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                vendorCreditId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyVendorCreditToBillsDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditApplyBillsController_deleteAppliedBillToVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                vendorCreditAppliedBillId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditApplyBillsController_getAppliedBillsToVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                vendorCreditId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillPaymentsController_getBillPayments: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bill payments have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["BillPaymentResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    BillPaymentsController_createBillPayment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBillPaymentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillPaymentsController_getBillPayment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill payment id */
+                billPaymentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bill payment details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillPaymentResponseDto"];
+                };
+            };
+        };
+    };
+    BillPaymentsController_editBillPayment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill payment id */
+                billPaymentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditBillPaymentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillPaymentsController_deleteBillPayment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill payment id */
+                billPaymentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillPaymentsController_getBillPaymentNewPageEntries: {
+        parameters: {
+            query: {
+                /** @description The vendor id */
+                vendorId: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillPaymentsController_getPaymentBills: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill payment id */
+                billPaymentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillPaymentsController_getBillPaymentEditPage: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The bill payment id */
+                billPaymentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsRefundController_getRefundVendorCreditTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                refundCreditId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsRefundController_deleteRefundVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                refundCreditId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsRefundController_getVendorCreditRefunds: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                vendorCreditId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VendorCreditsRefundController_createRefundVendorCredit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                vendorCreditId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefundVendorCreditDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankAccountsController_getBankAccounts: {
+        parameters: {
+            query?: {
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles array */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order */
+                sortOrder?: "DESC" | "ASC";
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+                /** @description Page number */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Include inactive accounts */
+                inactiveMode?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of bank accounts retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountResponseDto"][];
+                };
+            };
+        };
+    };
+    BankAccountsController_getBankAccountSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bankAccountId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankAccountsController_disconnectBankAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account disconnected successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bank account not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankAccountsController_refreshBankAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account transactions refreshed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bank account not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankAccountsController_pauseBankAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account transactions paused successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bank account not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankAccountsController_resumeBankAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bank account transactions resumed successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bank account not found. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingPlaidController_getLinkToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingPlaidController_exchangeToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaidItemDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingPlaidWebhooksController_webhooks: {
+        parameters: {
+            query?: never;
+            header: {
+                "plaid-verification": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaidWebhookDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankRulesController_getBankRules: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bank rules have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankRuleResponseDto"][];
+                };
+            };
+        };
+    };
+    BankRulesController_createBankRule: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBankRuleDto"];
+            };
+        };
+        responses: {
+            /** @description The bank rule has been successfully created. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankRuleResponseDto"];
+                };
+            };
+        };
+    };
+    BankRulesController_getBankRule: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bank rule details have been successfully retrieved. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankRuleResponseDto"];
+                };
+            };
+        };
+    };
+    BankRulesController_editBankRule: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditBankRuleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankRulesController_deleteBankRule: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The bank rule has been successfully deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingRecognizedTransactionsController_getRecognizedTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description The ID of the recognized transaction */
+                recognizedTransactionId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the recognized transaction details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetRecognizedTransactionResponseDto"];
+                };
+            };
+            /** @description Recognized transaction not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingRecognizedTransactionsController_getRecognizedTransactions: {
+        parameters: {
+            query?: {
+                /** @description Query parameters for filtering recognized transactions */
+                query?: unknown;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns a list of recognized transactions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["GetRecognizedTransactionResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    BankingTransactionsExcludeController_excludeBankTransactions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExcludeBankTransactionsBulkDto"];
+            };
+        };
+        responses: {
+            /** @description Bank transactions excluded successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingTransactionsExcludeController_unexcludeBankTransactions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExcludeBankTransactionsBulkDto"];
+            };
+        };
+        responses: {
+            /** @description Bank transactions unexcluded successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingTransactionsExcludeController_getExcludedBankTransactions: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Filter by bank account ID */
+                accountId?: number;
+                /** @description Minimum date (ISO) */
+                minDate?: string;
+                /** @description Maximum date (ISO) */
+                maxDate?: string;
+                /** @description Minimum amount */
+                minAmount?: number;
+                /** @description Maximum amount */
+                maxAmount?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The excluded bank transactions has been retrieved successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
+                        data?: components["schemas"]["GetExcludedBankTransactionResponseDto"][];
+                    };
+                };
+            };
+        };
+    };
+    BankingTransactionsExcludeController_excludeBankTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingTransactionsExcludeController_unexcludeBankTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingMatchingController_getMatchedTransactions: {
+        parameters: {
+            query: {
+                /** @description Uncategorized transaction IDs to match */
+                uncategorizedTransactionIds: unknown[];
+                /** @description Filter from date */
+                fromDate?: string;
+                /** @description Filter to date */
+                toDate?: string;
+                /** @description Minimum amount */
+                minAmount?: number;
+                /** @description Maximum amount */
+                maxAmount?: number;
+                /** @description Transaction type filter */
+                transactionType?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Matched transactions (perfect and possible matches). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMatchedTransactionsResponseDto"];
+                };
+            };
+        };
+    };
+    BankingMatchingController_matchTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MatchBankTransactionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BankingMatchingController_unmatchMatchedTransaction: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                uncategorizedTransactionId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ReportChartController_getChart: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+                /** @description Какой отчёт: profit_loss | cash_flow */
+                report: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ОПиУ: выручка и прибыль. ДДС: поступления и выплаты по денежным счетам. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ReportChartController_getStructure: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Две половины баланса, разложенные по группам второго уровня. Отрицательные группы возвращаются с нулевой долей: ширины у них нет, но прятать их нельзя — сумма перестала бы сходиться с таблицей. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ReportChartController_getDrillDown: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+                /** @description Номер счёта */
+                accountId: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Итог списка совпадает с суммой в отчёте: вклад строки считается тем же правилом стороны счёта, что и в самом отчёте. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ReportPlanFactController_getPlanFact: {
+        parameters: {
+            query: {
+                /** @description Начало периода, YYYY-MM-DD */
+                from: string;
+                /** @description Конец периода, YYYY-MM-DD */
+                to: string;
+                /** @description Какой отчёт: profit_loss | cash_flow */
+                report: string;
+                /** @description Метод учёта отчёта: `cash` (по оплате) или `accrual` (по начислению). Факт для колонки «Отклонение» считается тем же методом. */
+                basis?: "cash" | "accrual";
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Если бюджета на год нет — available: false, и отчёт рисуется как раньше. План статьи попадает на строку счёта, только когда счёт у статьи единственный; иначе он виден лишь в итоге по виду. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     PurchasesByItemReportController_purchasesByItems: {
         parameters: {
             query?: {
@@ -24436,6 +34845,10 @@ export interface operations {
     GeneralLedgerController_getGeneralLedger: {
         parameters: {
             query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
                 /** @description Accounting basis for the report (e.g., cash, accrual) */
                 basis?: string;
                 /** @description Number of decimal places to display */
@@ -25647,6 +36060,10 @@ export interface operations {
     TrialBalanceSheetController_getTrialBalanceSheet: {
         parameters: {
             query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
                 /** @description Start date for the trial balance sheet */
                 fromDate?: string;
                 /** @description End date for the trial balance sheet */
@@ -26329,48 +36746,6 @@ export interface operations {
             };
         };
     };
-    TransactionsByCustomerController_transactionsByCustomer: {
-        parameters: {
-            query?: {
-                /** @description Number of decimal places to display */
-                precision?: number;
-                /** @description Whether to divide the number by 1000 */
-                divideOn1000?: boolean;
-                /** @description Whether to show zero values */
-                showZero?: boolean;
-                /** @description How to format money values */
-                formatMoney?: "total" | "always" | "none";
-                /** @description How to format negative numbers */
-                negativeFormat?: "parentheses" | "mines";
-                /** @description Whether to exclude transactions */
-                noneTransactions?: boolean;
-                /** @description Whether to exclude zero values */
-                noneZero?: boolean;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-                accept: string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Transactions by customer */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransactionsByCustomerResponseDto"];
-                    "application/json+table": components["schemas"]["TransactionsByCustomerTableResponseDto"];
-                };
-            };
-        };
-    };
     TransactionsByReferenceController_getTransactionsByReference: {
         parameters: {
             query: {
@@ -26397,6 +36772,10 @@ export interface operations {
     ARAgingSummaryController_get: {
         parameters: {
             query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
                 /** @description Number of days before the aging period starts */
                 agingDaysBefore?: number;
                 /** @description Number of aging periods to calculate */
@@ -26709,6 +37088,10 @@ export interface operations {
     APAgingSummaryController_get: {
         parameters: {
             query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
                 /** @description Number of days before the aging period starts */
                 agingDaysBefore?: number;
                 /** @description Number of aging periods to calculate */
@@ -27067,6 +37450,10 @@ export interface operations {
     JournalSheetController_journalSheet: {
         parameters: {
             query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
                 /** @description Whether to hide cents in the number format */
                 noCents?: boolean;
                 /** @description Whether to divide numbers by 1000 */
@@ -27386,321 +37773,19 @@ export interface operations {
             };
         };
     };
-    ProfitLossSheetController_profitLossSheet: {
-        parameters: {
-            query: {
-                /** @description The basis for the profit and loss sheet */
-                basis: string;
-                /** @description Number of decimal places to display */
-                precision?: number;
-                /** @description Whether to divide the number by 1000 */
-                divideOn1000?: boolean;
-                /** @description Whether to show zero values */
-                showZero?: boolean;
-                /** @description How to format money values */
-                formatMoney?: "total" | "always" | "none";
-                /** @description How to format negative numbers */
-                negativeFormat?: "parentheses" | "mines";
-                /** @description Whether to exclude zero values */
-                noneZero?: boolean;
-                /** @description Whether to exclude transactions */
-                noneTransactions?: boolean;
-                /** @description Array of account IDs to include */
-                accountsIds?: string[];
-                /** @description Type of columns to display */
-                displayColumnsType: "total" | "date_periods";
-                /** @description How to display columns */
-                displayColumnsBy: string;
-                /** @description Whether to show percentage column */
-                percentageColumn?: boolean;
-                /** @description Whether to show percentage row */
-                percentageRow?: boolean;
-                /** @description Whether to show income percentage */
-                percentageIncome?: boolean;
-                /** @description Whether to show expense percentage */
-                percentageExpense?: boolean;
-                /** @description Whether to include previous period */
-                previousPeriod?: boolean;
-                /** @description Whether to show previous period amount change */
-                previousPeriodAmountChange?: boolean;
-                /** @description Whether to show previous period percentage change */
-                previousPeriodPercentageChange?: boolean;
-                /** @description Whether to include previous year */
-                previousYear?: boolean;
-                /** @description Whether to show previous year amount change */
-                previousYearAmountChange?: boolean;
-                /** @description Whether to show previous year percentage change */
-                previousYearPercentageChange?: boolean;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-                accept: string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Profit & loss statement */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "query": {
-                     *         "from_date": "2025-01-01",
-                     *         "to_date": "2025-06-22",
-                     *         "number_format": {
-                     *           "divide_on1000": false,
-                     *           "negative_format": "mines",
-                     *           "show_zero": false,
-                     *           "format_money": "total",
-                     *           "precision": 2
-                     *         },
-                     *         "basis": "accrual",
-                     *         "none_zero": false,
-                     *         "none_transactions": false,
-                     *         "display_columns_type": "total",
-                     *         "display_columns_by": "year",
-                     *         "accounts_ids": [],
-                     *         "percentage_column": false,
-                     *         "percentage_row": false,
-                     *         "percentage_income": false,
-                     *         "percentage_expense": false,
-                     *         "previous_period": false,
-                     *         "previous_period_amount_change": false,
-                     *         "previous_period_percentage_change": false,
-                     *         "previous_year": false,
-                     *         "previous_year_amount_change": false,
-                     *         "previous_year_percentage_change": false
-                     *       },
-                     *       "data": [
-                     *         {
-                     *           "id": "INCOME",
-                     *           "name": "Income",
-                     *           "node_type": "ACCOUNTS",
-                     *           "total": {
-                     *             "amount": 3931,
-                     *             "formatted_amount": "$3,931.00"
-                     *           },
-                     *           "children": [
-                     *             {
-                     *               "id": 1025,
-                     *               "name": "Sales of Product Income",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 3931,
-                     *                 "formatted_amount": "3,931.00"
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1026,
-                     *               "name": "Sales of Service Income",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 0,
-                     *                 "formatted_amount": ""
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1027,
-                     *               "name": "Uncategorized Income",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 0,
-                     *                 "formatted_amount": ""
-                     *               }
-                     *             }
-                     *           ]
-                     *         },
-                     *         {
-                     *           "id": "COST_OF_SALES",
-                     *           "name": "Cost of sales",
-                     *           "node_type": "ACCOUNTS",
-                     *           "total": {
-                     *             "amount": 800,
-                     *             "formatted_amount": "$800.00"
-                     *           },
-                     *           "children": [
-                     *             {
-                     *               "id": 1019,
-                     *               "name": "Cost of Goods Sold",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 800,
-                     *                 "formatted_amount": "800.00"
-                     *               }
-                     *             }
-                     *           ]
-                     *         },
-                     *         {
-                     *           "id": "GROSS_PROFIT",
-                     *           "name": "GROSS PROFIT",
-                     *           "node_type": "EQUATION",
-                     *           "total": {
-                     *             "amount": 3131,
-                     *             "formatted_amount": "$3,131.00"
-                     *           }
-                     *         },
-                     *         {
-                     *           "id": "EXPENSES",
-                     *           "name": "Expenses",
-                     *           "node_type": "ACCOUNTS",
-                     *           "total": {
-                     *             "amount": -111563,
-                     *             "formatted_amount": "-$111,563.00"
-                     *           },
-                     *           "children": [
-                     *             {
-                     *               "id": 1020,
-                     *               "name": "Office expenses",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 0,
-                     *                 "formatted_amount": ""
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1021,
-                     *               "name": "Rent",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": -92831,
-                     *                 "formatted_amount": "-92,831.00"
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1023,
-                     *               "name": "Bank Fees and Charges",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": -8732,
-                     *                 "formatted_amount": "-8,732.00"
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1024,
-                     *               "name": "Depreciation Expense",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": -10000,
-                     *                 "formatted_amount": "-10,000.00"
-                     *               }
-                     *             }
-                     *           ]
-                     *         },
-                     *         {
-                     *           "id": "NET_OPERATING_INCOME",
-                     *           "name": "NET OPERATING INCOME",
-                     *           "node_type": "EQUATION",
-                     *           "total": {
-                     *             "amount": 114694,
-                     *             "formatted_amount": "$114,694.00"
-                     *           }
-                     *         },
-                     *         {
-                     *           "id": "OTHER_INCOME",
-                     *           "name": "Other income",
-                     *           "node_type": "ACCOUNTS",
-                     *           "total": {
-                     *             "amount": 0,
-                     *             "formatted_amount": "$0.00"
-                     *           },
-                     *           "children": [
-                     *             {
-                     *               "id": 1031,
-                     *               "name": "Discount",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 0,
-                     *                 "formatted_amount": ""
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1033,
-                     *               "name": "Other Charges",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 0,
-                     *                 "formatted_amount": ""
-                     *               }
-                     *             }
-                     *           ]
-                     *         },
-                     *         {
-                     *           "id": "OTHER_EXPENSES",
-                     *           "name": "Other expenses",
-                     *           "node_type": "ACCOUNTS",
-                     *           "total": {
-                     *             "amount": 119149,
-                     *             "formatted_amount": "$119,149.00"
-                     *           },
-                     *           "children": [
-                     *             {
-                     *               "id": 1018,
-                     *               "name": "Other Expenses",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": -1243,
-                     *                 "formatted_amount": "-1,243.00"
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1022,
-                     *               "name": "Exchange Gain or Loss",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": 123123,
-                     *                 "formatted_amount": "123,123.00"
-                     *               }
-                     *             },
-                     *             {
-                     *               "id": 1032,
-                     *               "name": "Purchase Discount",
-                     *               "node_type": "ACCOUNT",
-                     *               "total": {
-                     *                 "amount": -2731,
-                     *                 "formatted_amount": "-2,731.00"
-                     *               }
-                     *             }
-                     *           ]
-                     *         },
-                     *         {
-                     *           "id": "NET_INCOME",
-                     *           "name": "NET INCOME",
-                     *           "node_type": "EQUATION",
-                     *           "total": {
-                     *             "amount": -4455,
-                     *             "formatted_amount": "-$4,455.00"
-                     *           }
-                     *         }
-                     *       ],
-                     *       "meta": {
-                     *         "organization_name": "BIGFIN, INC",
-                     *         "base_currency": "USD",
-                     *         "date_format": "DD MMM yyyy",
-                     *         "is_cost_compute_running": false,
-                     *         "sheet_name": "Cashflow Statement",
-                     *         "formatted_from_date": "2025/01/01",
-                     *         "formatted_to_date": "2025/06/22",
-                     *         "formatted_date_range": "From 2025/01/01 | To 2025/06/22"
-                     *       }
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ProfitLossSheetResponseDto"];
-                    "application/json+table": components["schemas"]["ProfitLossSheetTableResponseDto"];
-                };
-            };
-        };
-    };
     CashflowController_getCashflow: {
         parameters: {
             query?: {
+                /** @description Номера юрлиц. Пусто — сводно по всей группе. */
+                legalEntityIds?: number[];
+                /** @description Номера направлений. Пусто — все операции. */
+                projectsIds?: number[];
+                /** @description Показать колонку прошлого периода */
+                previousPeriod?: boolean;
+                /** @description Показать изменение к прошлому периоду в деньгах */
+                previousPeriodAmountChange?: boolean;
+                /** @description Показать изменение к прошлому периоду в процентах */
+                previousPeriodPercentageChange?: boolean;
                 /** @description Start date for the cash flow statement period */
                 fromDate?: string;
                 /** @description End date for the cash flow statement period */
@@ -28169,50 +38254,16 @@ export interface operations {
             };
         };
     };
-    RolesController_getRoles: {
+    DashboardController_getMoneySummary: {
         parameters: {
             query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description List of all roles */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RoleResponseDto"][];
-                };
-            };
-        };
-    };
-    RolesController_createRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateRoleDto"];
-            };
-        };
-        responses: {
-            /** @description Role created successfully */
+            /** @description Суммы приходят числом и читаемой записью в валюте организации. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -28221,105 +38272,19 @@ export interface operations {
             };
         };
     };
-    RolesController_getRole: {
+    DashboardController_getOverview: {
         parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
+            query: {
+                from: string;
+                to: string;
             };
-            path: {
-                /** @description Role ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Role details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RoleResponseDto"];
-                };
-            };
-        };
-    };
-    RolesController_editRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Role ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditRoleDto"];
-            };
-        };
-        responses: {
-            /** @description Role updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RolesController_deleteRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Role ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Role deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RolesController_getRolePermissionsSchema: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Role permissions schema */
+            /** @description Доходы, расходы и прибыль берутся из отчёта о прибылях и убытках — суммы совпадают с разделом «Отчёты». */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -28609,9 +38574,75 @@ export interface operations {
             };
         };
     };
-    WorkspacesController_listWorkspaces: {
+    OneClickDemoController_createOneClickDemo: {
         parameters: {
             query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The demo organization is being built. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OneClickDemoResponseDto"];
+                };
+            };
+        };
+    };
+    OneClickDemoController_getBuildJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                demoId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The demo organization build job state. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OneClickDemoBuildJobResponseDto"];
+                };
+            };
+        };
+    };
+    OneClickDemoController_signin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OneClickDemoSigninDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkspacesController_listWorkspaces: {
+        parameters: {
+            query?: {
+                includeInactive?: string;
+                currentOrganizationId?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -28664,7 +38695,52 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Workspace deleted successfully */
+            /** @description Workspace deletion initiated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        jobId?: string;
+                        organizationId?: string;
+                    };
+                };
+            };
+        };
+    };
+    WorkspacesController_inactivateWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workspace inactivated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkspacesController_activateWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workspace reactivated successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -28692,6 +38768,28 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["WorkspaceBuildJobResponseDto"];
                 };
+            };
+        };
+    };
+    WorkspacesController_setDefaultWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetDefaultWorkspaceDto"];
+            };
+        };
+        responses: {
+            /** @description Default workspace set successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -28778,6 +38876,23 @@ export interface operations {
             path: {
                 paymentMethodId: number;
             };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExportController_exportAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -29229,6 +39344,27 @@ export interface operations {
             };
         };
     };
+    UsersInviteController_sendBulkInvites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkSendInviteUserDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     UsersInvitePublicController_acceptInvite: {
         parameters: {
             query?: never;
@@ -29258,84 +39394,6 @@ export interface operations {
             header?: never;
             path: {
                 token: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ContactsController_getAutoComplete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ContactsController_getContact: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Contact ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Contact details (under "customer" key for form/duplicate use) */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ContactsController_activateContact: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Contact ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ContactsController_inactivateContact: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Contact ID */
-                id: number;
             };
             cookie?: never;
         };
@@ -29408,31 +39466,251 @@ export interface operations {
             };
         };
     };
-    ExchangeRatesController_getLatestExchangeRate: {
+    NotificationsController_getPreferences: {
         parameters: {
-            query?: {
-                /** @description Source currency code (ISO 4217) */
-                from_currency?: string;
-                /** @description Target currency code (ISO 4217) */
-                to_currency?: string;
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
             };
-            header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully retrieved exchange rate */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["ExchangeRateLatestResponseDto"];
-                };
+                content?: never;
             };
-            /** @description Invalid currency code or service error */
-            400: {
+        };
+    };
+    NotificationsController_updatePreferences: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateNotificationPreferencesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_connectTelegram: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectTelegramDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_disconnectTelegram: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_pullTelegramEntries: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_getTelegramEntryAccount: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_setTelegramEntryAccount: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_listNotifications: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_unreadCount: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_markAllRead: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    NotificationsController_markRead: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

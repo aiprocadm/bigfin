@@ -5,15 +5,20 @@ import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
-// Reuse the Stage-0 pure rollup functions (exported from the P&L rollup service).
+// Чистые функции свёртки берутся у соседа по модулю — расчёт ОПиУ и расчёт
+// ДДС складывают статьи одинаково, и складывать их дважды значит завести
+// второй источник правды.
 import {
   foldAccountsIntoArticles,
   rollupAmountsToAncestors,
   accountNet,
-} from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
-import { ArticlesRollupQueryDto } from '@/modules/ManagementArticles/dtos/ArticlesRollupQuery.dto';
-import { cashSettledReferenceKeys } from '../utils/cashSettledReferenceKeys';
-import { CASH_ACCOUNT_TYPES } from '../constants';
+} from './ArticlesPlRollup.service';
+import { ArticlesRollupQueryDto } from '../dtos/ArticlesRollupQuery.dto';
+// Признак «оплачено деньгами» и список денежных счетов остаются в бюджетах:
+// там они появились (§8.2 ТЗ-1) и оттуда же их читают отчёты. Дублировать
+// список денежных счетов в третий раз — верный способ развести определения.
+import { cashSettledReferenceKeys } from '@/modules/Budgets/utils/cashSettledReferenceKeys';
+import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
 
 @Injectable()
 export class ArticlesCashflowRollupService {
@@ -36,9 +41,9 @@ export class ArticlesCashflowRollupService {
   ) {}
 
   /**
-   * Cash-basis fact rolled up by management article: same fold as the P&L
-   * rollup, but only over transactions that were actually cash-settled
-   * (reference touched a cash account and is not an internal transfer).
+   * Кассовый факт, свёрнутый по статьям учёта: та же свёртка, что у ОПиУ, но
+   * только по тем проводкам, которые и правда прошли деньгами — документ
+   * задел денежный счёт и не является переводом между своими счетами.
    * @param {ArticlesRollupQueryDto} query
    */
   public async getRollup(query: ArticlesRollupQueryDto) {

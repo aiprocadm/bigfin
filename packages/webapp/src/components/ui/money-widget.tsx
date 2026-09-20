@@ -1,0 +1,223 @@
+import * as React from 'react';
+import intl from 'react-intl-universal';
+
+import { cn } from '@/lib/cn';
+import { Sparkline } from './sparkline';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+
+/**
+ * Виджет «Деньги» в шапке (FIN-006 ТЗ-2).
+ *
+ * ЗАЧЕМ. Остаток и предупреждение о разрыве жили только на главной. Уйдя в
+ * отчёты или в операции, человек терял из виду главный факт своего дня:
+ * сколько денег и когда они кончатся.
+ *
+ * ПОЧЕМУ СТРОКА РАЗРЫВА ЖЁЛТАЯ, А НЕ КРАСНАЯ. Разрыв в будущем — это
+ * предупреждение: время починить ещё есть. Красным он кричал бы об аварии,
+ * которой пока нет, и на третий день его перестали бы замечать. Красным
+ * строка становится, только когда разрыв УЖЕ начался.
+ */
+export interface MoneyWidgetGap {
+  from: string;
+  to: string | null;
+  deepestAmount: number;
+  deepestDate: string;
+  formatted: string;
+}
+
+export interface MoneyWidgetAccount {
+  accountId: number;
+  accountName: string;
+  balance: number;
+  gaps: MoneyWidgetGap[] | { from: string; to: string | null; deepestAmount: number; deepestDate: string }[];
+  forecastFailed?: boolean;
+}
+
+export interface MoneyWidgetProps {
+  totalFormatted: string;
+  gap?: MoneyWidgetGap | null;
+  sparkline?: number[];
+  accounts?: MoneyWidgetAccount[];
+  plannedWithoutAccount?: number;
+  calendarEnabled?: boolean;
+  /** Как показать сумму счёта в панели. */
+  formatMoney?: (value: number) => string;
+  /** Сегодняшняя дата — параметром, чтобы поведение можно было проверить. */
+  today?: string;
+  className?: string;
+}
+
+/** Разрыв, который уже начался, — это не предупреждение, а факт. */
+export const gapHasStarted = (gap: { from: string }, today: string): boolean =>
+  Boolean(gap?.from) && gap.from <= today;
+
+/**
+ * Цвет точки состояния счёта.
+ *
+ * Точка НИКОГДА не единственный носитель смысла: рядом всегда текст и
+ * подсказка — иначе человек, не различающий цвета, не узнает ничего.
+ */
+export const accountGapTone = (
+  gaps: Array<{ from: string }> | undefined,
+  today: string,
+): 'success' | 'warning' | 'danger' => {
+  const first = (gaps ?? [])[0];
+  if (!first) return 'success';
+  if (gapHasStarted(first, today)) return 'danger';
+
+  const days =
+    (new Date(first.from).getTime() - new Date(today).getTime()) / 86_400_000;
+
+  // Две недели — столько нужно, чтобы успеть что-то сделать: занять,
+  // передвинуть платёж, поторопить должника.
+  return days > 14 ? 'warning' : 'danger';
+};
+
+const TONE_CLASS: Record<string, string> = {
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger: 'bg-danger',
+};
+
+export function MoneyWidget({
+  totalFormatted,
+  gap,
+  sparkline = [],
+  accounts = [],
+  plannedWithoutAccount = 0,
+  calendarEnabled = true,
+  formatMoney = (value) => String(value),
+  today = new Date().toISOString().slice(0, 10),
+  className,
+}: MoneyWidgetProps) {
+  const started = gap ? gapHasStarted(gap, today) : false;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            'flex items-center gap-2 rounded-control px-2 py-1 text-left hover:bg-surface-elevated',
+            className,
+          )}
+        >
+          <span className="flex flex-col">
+            <span className="text-[15px] font-semibold tabular-nums leading-tight">
+              {totalFormatted}
+            </span>
+            {gap && (
+              <span
+                className={cn(
+                  'text-xs font-medium leading-tight',
+                  started ? 'text-danger' : 'text-warning',
+                )}
+              >
+                {intl.get('money_widget.gap_from', { date: gap.from })}
+              </span>
+            )}
+          </span>
+          {sparkline.length > 1 && (
+            <span className="hidden sm:inline-flex">
+              <Sparkline
+                points={sparkline.map((value, index) => ({
+                  label: String(index + 1),
+                  value,
+                }))}
+                formatValue={formatMoney}
+                width={96}
+                height={24}
+              />
+            </span>
+          )}
+        </button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-[420px] max-w-[92vw]">
+        {!calendarEnabled ? (
+          /**
+           * Выключенный календарь — это ОТВЕТ, а не ошибка. Промолчать
+           * значило бы оставить человека гадать, почему прогноза нет.
+           */
+          <p className="text-sm text-text-secondary">
+            {intl.get('money_widget.calendar_off')}
+          </p>
+        ) : accounts.length === 0 ? (
+          <p className="text-sm text-text-secondary">
+            {intl.get('money_widget.no_accounts')}
+          </p>
+        ) : (
+          <ul className="flex flex-col divide-y divide-border">
+            {accounts.map((account) => {
+              const tone = accountGapTone(account.gaps as any, today);
+              const first = (account.gaps as any[])[0];
+
+              return (
+                <li
+                  key={account.accountId}
+                  className="flex items-start justify-between gap-3 py-2 text-sm"
+                >
+                  <span className="flex min-w-0 items-start gap-2">
+                    <span
+                      className={cn(
+                        'mt-1.5 h-2 w-2 shrink-0 rounded-full',
+                        TONE_CLASS[tone],
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className="min-w-0">
+                      <span className="block truncate">
+                        {account.accountName}
+                      </span>
+                      {account.forecastFailed ? (
+                        <span className="block text-xs text-text-secondary">
+                          {intl.get('money_widget.forecast_failed')}
+                        </span>
+                      ) : first ? (
+                        <span
+                          className={cn(
+                            'block text-xs',
+                            tone === 'danger' ? 'text-danger' : 'text-warning',
+                          )}
+                        >
+                          {intl.get('money_widget.account_gap', {
+                            from: first.from,
+                            to: first.to ?? '—',
+                            amount: formatMoney(first.deepestAmount),
+                          })}
+                        </span>
+                      ) : null}
+                    </span>
+                  </span>
+                  <span className="shrink-0 tabular-nums">
+                    {formatMoney(account.balance)}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {calendarEnabled && accounts.length > 0 &&
+          accounts.every((a) => (a.gaps as any[]).length === 0) && (
+            <p className="mt-2 text-xs text-text-secondary">
+              {intl.get('money_widget.no_gaps')}
+            </p>
+          )}
+
+        {plannedWithoutAccount > 0 && (
+          /**
+           * Плановые операции без счёта в разрез не попадают. Промолчать —
+           * значит дать человеку сверить разрезы с общим итогом и не
+           * сойтись, не понимая почему.
+           */
+          <p className="mt-2 text-xs text-text-secondary">
+            {intl.get('money_widget.planned_without_account', {
+              count: plannedWithoutAccount,
+            })}
+          </p>
+        )}
+      </PopoverContent>
+    </Popover>
+  );
+}

@@ -13,6 +13,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { GetAccountsCashGapsService } from './queries/GetAccountsCashGaps.service';
 import { PaymentCalendarApplication } from './PaymentCalendar.application';
 import {
   CreatePlannedOperationDto,
@@ -43,6 +44,7 @@ export class PaymentCalendarController {
   constructor(
     private readonly application: PaymentCalendarApplication,
     private readonly tenancyContext: TenancyContext,
+    private readonly accountsCashGaps: GetAccountsCashGapsService,
   ) {}
 
   @Get()
@@ -50,6 +52,14 @@ export class PaymentCalendarController {
   async getForecast(@Query() query: GetPaymentCalendarQueryDto) {
     const metadata: any = await this.tenancyContext.getTenantMetadata();
     return this.application.getForecast(metadata?.tenantId, query);
+  }
+
+  @Get('cash-gaps')
+  @ApiOperation({
+    summary: 'Кассовые разрывы по каждому счёту, с глубиной и датой выхода.',
+  })
+  getCashGaps(@Query('horizonDays') horizonDays?: string) {
+    return this.accountsCashGaps.getAccountsCashGaps(Number(horizonDays));
   }
 
   @Get('planned-operations')

@@ -12,6 +12,7 @@ import { MaterializePlannedOperationService } from './commands/MaterializePlanne
 import { BankingTransactionsModule } from '@/modules/BankingTransactions/BankingTransactions.module';
 import { GetPlannedOperationsService } from './queries/GetPlannedOperations.service';
 import { GetPaymentCalendarForecastService } from './queries/GetPaymentCalendarForecast.service';
+import { GetAccountsCashGapsService } from './queries/GetAccountsCashGaps.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
@@ -32,10 +33,11 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     MaterializePlannedOperationService,
     GetPlannedOperationsService,
     GetPaymentCalendarForecastService,
+    GetAccountsCashGapsService,
   ],
   // Прогноз спрашивает и сводка на главной (Р3 карты v21). Провайдер чужого
   // модуля должен быть в exports, иначе сервер не поднимается — на этом уже
   // спотыкались дважды; держит сторож moneySummaryDeps.spec.ts.
-  exports: [GetPaymentCalendarForecastService],
+  exports: [GetPaymentCalendarForecastService, GetAccountsCashGapsService],
 })
 export class PaymentCalendarModule {}

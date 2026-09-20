@@ -9,6 +9,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardService } from './Dashboard.service';
 import { GetMoneySummaryService } from './queries/GetMoneySummary.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
+import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
 import { GetDashboardBootMetaResponseDto } from './dtos/GetDashboardBootMetaResponse.dto';
 
 @ApiTags('Dashboard')
@@ -19,7 +20,23 @@ export class DashboardController {
     private readonly dashboardService: DashboardService,
     private readonly moneySummaryService: GetMoneySummaryService,
     private readonly overviewService: GetDashboardOverviewService,
+    private readonly moneyWidgetService: GetMoneyWidgetService,
   ) {}
+
+  @ApiOperation({
+    summary:
+      'Виджет денег в шапке: остаток, ближайший разрыв, линия за месяц.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Одна ручка на весь виджет: шапка есть на каждом экране, и три ' +
+      'запроса на каждом переходе — это три запроса на каждый щелчок.',
+  })
+  @Get('money-widget')
+  getMoneyWidget() {
+    return this.moneyWidgetService.getMoneyWidget();
+  }
 
   @ApiOperation({ summary: 'Get dashboard boot metadata' })
   @ApiResponse({

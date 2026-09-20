@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Topbar } from '@/components/ui/Topbar';
+import ConnectedMoneyWidget from './ConnectedMoneyWidget';
 import { useAuthActions, useDialogActions } from '@/hooks/state';
 import { useAuthenticatedAccount } from '@/hooks/query';
 import { firstLettersArgs } from '@/utils';
@@ -80,6 +81,7 @@ export const ConnectedTopbar = () => {
         </div>
       }
       notificationsSlot={<NotificationBell />}
+      moneySlot={<ConnectedMoneyWidget />}
       quickActionsSlot={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

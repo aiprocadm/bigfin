@@ -1,109 +1,146 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildTimelineScale } from './cash-timeline-scale';
+import { buildTimelineGeometry } from './cash-timeline-scale';
 
 /**
- * Правила «ленты денег».
+ * Геометрия ленты денег.
  *
- * Главное, что стережётся: ноль всегда в шкале. Без этого лента льстит —
- * и перестаёт отвечать на единственный вопрос, ради которого нарисована.
+ * ПРАВИЛО ИЗМЕНИЛОСЬ ПОСЛЕ ЖИВОГО ПРОХОДА. Раньше здесь проверялось «ноль
+ * всегда в шкале» — правило, написанное для СТОЛБИКОВ: столбик меряется
+ * длиной от нуля, и обрезанная шкала врёт о пропорции.
+ *
+ * Но фигура была выбрана неверно. Вопрос владельца — «как меняется остаток»,
+ * а это изменение во времени, то есть ЛИНИЯ. На стенде остаток за месяц падал
+ * на 101 250 ₽, а лента рисовала ровную серую стену: при остатке в 1,7 млн
+ * разница в 6 % давала 6 точек высоты.
+ *
+ * Линия кодирует положение, а не длину, и честно строится по размаху данных —
+ * при двух условиях, которые и проверяются ниже: ноль входит в шкалу, как
+ * только прогноз уходит в минус, а концы пути подписаны числами.
  */
-describe('buildTimelineScale', () => {
-  it('НОЛЬ ВСЕГДА В ШКАЛЕ', () => {
-    // Подгонка «от минимума до максимума» нарисовала бы падение с 1 000 000
-    // до 900 000 обрывом до самого низа. Владелец спрашивает «близко ли к
-    // нулю», и шкала обязана отвечать на это.
-    const { bars } = buildTimelineScale([
-      { date: '2026-09-01', balance: 1_000_000 },
-      { date: '2026-09-02', balance: 900_000 },
-    ]);
+describe('геометрия ленты денег', () => {
+  describe('пустые и вырожденные случаи', () => {
+    it('без точек ленты нет', () => {
+      const geometry = buildTimelineGeometry([]);
 
-    // Нижний столбик не проседает до нуля высоты: он всё ещё 0,9 от верха.
-    expect(bars[1].up).toBeCloseTo(0.9, 5);
-    expect(bars[0].up).toBeCloseTo(1, 5);
+      expect(geometry.path).toEqual([]);
+      expect(geometry.hasGap).toBe(false);
+    });
+
+    it('мусорные точки отбрасываются, а не роняют расчёт', () => {
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 100 },
+        { date: '2026-01-02', balance: Number.NaN },
+        null as any,
+      ]);
+
+      expect(geometry.path).toHaveLength(1);
+    });
+
+    it('ровный прогноз — это ОТВЕТ, а не деление на ноль', () => {
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 500 },
+        { date: '2026-01-02', balance: 500 },
+      ]);
+
+      expect(geometry.isFlat).toBe(true);
+      // Прямая посередине, а не NaN и не схлопнутая в край линия.
+      geometry.path.forEach((p) => {
+        expect(Number.isFinite(p.y)).toBe(true);
+        expect(p.y).toBeGreaterThan(0);
+        expect(p.y).toBeLessThan(1);
+      });
+    });
   });
 
-  it('минус рисуется ВНИЗ от нулевой линии', () => {
-    const { bars, zeroLine } = buildTimelineScale([
-      { date: '2026-09-01', balance: 100 },
-      { date: '2026-09-02', balance: -100 },
-    ]);
+  describe('движение видно', () => {
+    it('падение на 6 % от большого остатка РИСУЕТСЯ', () => {
+      // Ровно случай со стенда: 1 749 839 → 1 648 589. Прежняя шкала от нуля
+      // давала разницу в 6 точек из 96 — стену одинаковых столбиков.
+      const geometry = buildTimelineGeometry([
+        { date: '2026-09-20', balance: 1_749_839 },
+        { date: '2026-10-20', balance: 1_648_589 },
+      ]);
 
-    expect(bars[0].up).toBeCloseTo(0.5, 5);
-    expect(bars[0].down).toBe(0);
-    expect(bars[1].down).toBeCloseTo(0.5, 5);
-    expect(bars[1].up).toBe(0);
-    // Нулевая линия ровно посередине.
-    expect(zeroLine).toBeCloseTo(0.5, 5);
+      const [first, last] = geometry.path;
+
+      // Разница по высоте — заметная доля поля, а не пара точек.
+      expect(Math.abs(last.y - first.y)).toBeGreaterThan(0.5);
+    });
+
+    it('верх и низ пути лежат внутри поля, а не на самом краю', () => {
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 300 },
+        { date: '2026-01-02', balance: 100 },
+      ]);
+
+      geometry.path.forEach((p) => {
+        expect(p.y).toBeGreaterThan(0);
+        expect(p.y).toBeLessThan(1);
+      });
+    });
+
+    it('точки идут слева направо по порядку дней', () => {
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 1 },
+        { date: '2026-01-02', balance: 2 },
+        { date: '2026-01-03', balance: 3 },
+      ]);
+
+      expect(geometry.path.map((p) => p.x)).toEqual([0, 0.5, 1]);
+    });
   });
 
-  it('все дни в минусе отмечены, а не только первый', () => {
-    // Один день без денег и три недели без денег — разные беды.
-    const { bars, hasGap } = buildTimelineScale([
-      { date: '2026-09-01', balance: 50 },
-      { date: '2026-09-02', balance: -10 },
-      { date: '2026-09-03', balance: -20 },
-    ]);
+  describe('ноль и разрыв', () => {
+    it('благополучный прогноз НЕ рисует линию нуля', () => {
+      // Горизонталь посреди благополучного прогноза ничего не говорит.
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 900_000 },
+        { date: '2026-01-02', balance: 800_000 },
+      ]);
 
-    expect(hasGap).toBe(true);
-    expect(bars.map((b) => b.isGap)).toEqual([false, true, true]);
+      expect(geometry.zeroLine).toBeNull();
+      expect(geometry.hasGap).toBe(false);
+    });
+
+    it('уход в минус ОБЯЗАТЕЛЬНО вводит ноль в шкалу', () => {
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 50_000 },
+        { date: '2026-01-02', balance: -20_000 },
+      ]);
+
+      expect(geometry.hasGap).toBe(true);
+      expect(geometry.zeroLine).not.toBeNull();
+      expect(geometry.zeroLine as number).toBeGreaterThan(0);
+      expect(geometry.zeroLine as number).toBeLessThan(1);
+    });
+
+    it('день в минусе лежит НИЖЕ нулевой линии', () => {
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 50_000 },
+        { date: '2026-01-02', balance: -20_000 },
+      ]);
+
+      const zero = geometry.zeroLine as number;
+      const [plus, minus] = geometry.path;
+
+      expect(plus.y).toBeLessThan(zero);
+      expect(minus.y).toBeGreaterThan(zero);
+    });
   });
 
-  it('без минуса ничего не красное', () => {
-    const { hasGap, bars } = buildTimelineScale([
-      { date: '2026-09-01', balance: 50 },
-      { date: '2026-09-02', balance: 70 },
-    ]);
+  describe('концы пути подписываются числами', () => {
+    it('начало и конец отдаются отдельно', () => {
+      // Без подписей падение на 6 % и падение на 99 % выглядят одинаково —
+      // оба «линия вниз».
+      const geometry = buildTimelineGeometry([
+        { date: '2026-01-01', balance: 1_000_000 },
+        { date: '2026-01-02', balance: 900_000 },
+        { date: '2026-01-03', balance: 850_000 },
+      ]);
 
-    expect(hasGap).toBe(false);
-    expect(bars.every((b) => !b.isGap)).toBe(true);
-  });
-
-  it('только плюс — нулевая линия по низу', () => {
-    const { zeroLine } = buildTimelineScale([
-      { date: '2026-09-01', balance: 100 },
-      { date: '2026-09-02', balance: 200 },
-    ]);
-
-    expect(zeroLine).toBeCloseTo(1, 5);
-  });
-
-  it('пустой ряд не роняет расчёт', () => {
-    // Лента без данных — это не «лента в ноль», а отсутствие ленты.
-    expect(buildTimelineScale([]).bars).toEqual([]);
-    expect(buildTimelineScale(null as any).bars).toEqual([]);
-  });
-
-  it('все нули — плоская лента, а не деление на ноль', () => {
-    const { bars, hasGap } = buildTimelineScale([
-      { date: '2026-09-01', balance: 0 },
-      { date: '2026-09-02', balance: 0 },
-    ]);
-
-    expect(bars.every((b) => b.up === 0 && b.down === 0)).toBe(true);
-    expect(hasGap).toBe(false);
-  });
-
-  it('мусор в ряду выбрасывается, а не ломает шкалу', () => {
-    const { bars } = buildTimelineScale([
-      { date: '2026-09-01', balance: 100 },
-      { date: '2026-09-02', balance: NaN },
-      null as any,
-    ]);
-
-    expect(bars).toHaveLength(1);
-  });
-
-  it('день разрыва из прогноза отмечается, даже если остаток нулевой', () => {
-    // Сервер считает разрывом и ситуацию «ровно ноль на день платежа».
-    const { bars } = buildTimelineScale(
-      [
-        { date: '2026-09-01', balance: 100 },
-        { date: '2026-09-02', balance: 0 },
-      ],
-      '2026-09-02',
-    );
-
-    expect(bars[1].isGap).toBe(true);
+      expect(geometry.first).toBe(1_000_000);
+      expect(geometry.last).toBe(850_000);
+    });
   });
 });

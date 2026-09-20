@@ -3,6 +3,7 @@ import intl from 'react-intl-universal';
 import { Link } from 'react-router-dom';
 import { AlertTriangle } from 'lucide-react';
 import moment from 'moment';
+import { formatDayMonth } from '@/utils/formatDayMonth';
 
 /** Строка блока «Требует внимания», как её отдаёт сервер. */
 export interface AttentionItem {
@@ -37,7 +38,10 @@ const textOf = (item: AttentionItem): string => {
       });
     case 'cash_gap':
       return intl.get('dashboard.attention.cash_gap', {
-        date: item.date ? moment(item.date).format('D MMMM') : '',
+        // БЫЛО `moment(...).format('D MMMM')` и давало «5 October»:
+        // глобальная локаль moment не успевала выставиться. Общий
+        // помощник спрашивает язык у интерфейса в момент вызова.
+        date: formatDayMonth(item.date),
         amount: item.formattedAmount ?? '',
       });
     case 'overdue_receivable':

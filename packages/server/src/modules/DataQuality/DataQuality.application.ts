@@ -6,6 +6,7 @@ import { GetPossibleDuplicatesService } from './queries/GetPossibleDuplicates.se
 import { GetPlCashflowComparisonService } from './queries/GetPlCashflowComparison.service';
 import { GetUnbalancedJournalsService } from './queries/GetUnbalancedJournals.service';
 import { GetFailedMailsService } from './queries/GetFailedMails.service';
+import { GetDriftedBalancesService } from './queries/GetDriftedBalances.service';
 import { RepostVatDocumentsService } from './commands/RepostVatDocuments.service';
 import { GetCrookedCurrencyJournalsService } from './queries/GetCrookedCurrencyJournals.service';
 import { RepostCrookedCurrencyJournalsService } from './commands/RepostCrookedCurrencyJournals.service';
@@ -18,6 +19,7 @@ export class DataQualityApplication {
     private readonly getPlCashflowComparisonService: GetPlCashflowComparisonService,
     private readonly getUnbalancedJournalsService: GetUnbalancedJournalsService,
     private readonly getFailedMailsService: GetFailedMailsService,
+    private readonly getDriftedBalancesService: GetDriftedBalancesService,
     private readonly repostVatDocumentsService: RepostVatDocumentsService,
     private readonly getCrookedCurrencyJournalsService: GetCrookedCurrencyJournalsService,
     private readonly repostCrookedCurrencyJournalsService: RepostCrookedCurrencyJournalsService,
@@ -37,6 +39,14 @@ export class DataQualityApplication {
 
   public getUnbalancedJournals(query: DataQualityQueryDto) {
     return this.getUnbalancedJournalsService.getUnbalancedJournals(query);
+  }
+
+  /**
+   * Остаток счёта разошёлся с проводками: шапка показывает одну сумму,
+   * отчёт — другую, и ни один экран не объясняет, какая настоящая.
+   */
+  public getDriftedBalances() {
+    return this.getDriftedBalancesService.getDriftedBalances();
   }
 
   public getFailedMails() {

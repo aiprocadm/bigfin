@@ -4991,5 +4991,15 @@
   "one_click_demo.industry.trade.name": "Торговля",
   "one_click_demo.industry.trade.summary": "Закупка и отгрузка с наценкой. Крупная закупка, за которую платить раньше, чем рассчитаются покупатели.",
   "one_click_demo.industry.projects.name": "Строительство и проекты",
-  "one_click_demo.industry.projects.summary": "Объекты и этапы. Крупные суммы, расчёт с подрядчиком и заказчик, который платит позже."
+  "one_click_demo.industry.projects.summary": "Объекты и этапы. Крупные суммы, расчёт с подрядчиком и заказчик, который платит позже.",
+  "data_quality.tab.drifted_balances": "Остатки разошлись",
+  "data_quality.drifted_balances.title": "Остаток счёта разошёлся с проводками",
+  "data_quality.drifted_balances.description": "Остаток каждого денежного счёта продукт держит в двух местах: в самом счёте — его показывают шапка и главная, и в проводках — по ним строятся отчёты. Пока суммы совпадают, разницы не видно. Когда расходятся, один экран спорит с другим, и понять, где правда, становится нечем.",
+  "data_quality.drifted_balances.empty": "Расхождений нет: шапка и отчёты показывают одни и те же деньги.",
+  "data_quality.drifted_balances.total": "Всего расхождение: {amount}. Ровно на столько общий остаток в шапке отличается от суммы по проводкам.",
+  "data_quality.drifted_balances.account": "Счёт",
+  "data_quality.drifted_balances.stored": "В счёте",
+  "data_quality.drifted_balances.ledger": "По проводкам",
+  "data_quality.drifted_balances.difference": "Разница",
+  "data_quality.drifted_balances.hint": "Продукт не исправляет это сам: какая сумма верна, решаете вы. Остаток в счёте мог отстать от проводок, а мог и правильно хранить начальные деньги, которых в проводках нет. Откройте счёт и сверьте его с выпиской банка."
 }

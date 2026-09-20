@@ -4991,5 +4991,15 @@
   "one_click_demo.industry.trade.name": "Trade",
   "one_click_demo.industry.trade.summary": "Buying and shipping at a margin. A large purchase due before the customers settle up.",
   "one_click_demo.industry.projects.name": "Construction and projects",
-  "one_click_demo.industry.projects.summary": "Sites and stages. Large amounts, a contractor to pay and a client who pays later."
+  "one_click_demo.industry.projects.summary": "Sites and stages. Large amounts, a contractor to pay and a client who pays later.",
+  "data_quality.tab.drifted_balances": "Balances drifted",
+  "data_quality.drifted_balances.title": "Account balance drifted from its ledger entries",
+  "data_quality.drifted_balances.description": "The product keeps each cash account's balance in two places: on the account itself — shown in the header and on the home screen — and in the ledger entries the reports are built from. While they agree, nobody notices. When they drift apart, one screen contradicts another and there is nothing left to tell you which is right.",
+  "data_quality.drifted_balances.empty": "No drift: the header and the reports show the same money.",
+  "data_quality.drifted_balances.total": "Total drift: {amount}. That is exactly how far the header's total balance is from the ledger.",
+  "data_quality.drifted_balances.account": "Account",
+  "data_quality.drifted_balances.stored": "On the account",
+  "data_quality.drifted_balances.ledger": "In the ledger",
+  "data_quality.drifted_balances.difference": "Difference",
+  "data_quality.drifted_balances.hint": "The product does not fix this on its own: which figure is right is your call. The stored balance may have fallen behind the ledger, or it may correctly hold opening money the ledger never received. Open the account and check it against the bank statement."
 }

@@ -19,6 +19,7 @@ import {
   ApiExtraModels,
 } from '@nestjs/swagger';
 import { BankingTransactionsApplication } from '../BankingTransactionsApplication.service';
+import { GetTransactionsSummaryService } from '../queries/GetTransactionsSummary.service';
 import { CreateBankTransactionDto } from '../dtos/CreateBankTransaction.dto';
 import { GetBankTransactionsQueryDto } from '../dtos/GetBankTranasctionsQuery.dto';
 import { BankTransactionResponseDto } from '../dtos/BankTransactionResponse.dto';
@@ -38,7 +39,22 @@ import { CashflowAction } from '../types/BankingTransactions.types';
 export class BankingTransactionsController {
   constructor(
     private readonly bankingTransactionsApplication: BankingTransactionsApplication,
+    private readonly summaryService: GetTransactionsSummaryService,
   ) {}
+
+  @Get('summary')
+  @ApiOperation({
+    summary: 'Итоги реестра операций под тем же отбором, что и список.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Сколько операций и на какую сумму. Переводы между своими счетами ' +
+      'в итог не входят и показываются отдельно.',
+  })
+  getSummary(@Query() filter: GetBankTransactionsQueryDto) {
+    return this.summaryService.getSummary(filter);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Get bank account transactions' })

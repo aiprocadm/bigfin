@@ -38,6 +38,7 @@ import {
   serverFilters,
   type ScreenFilters,
 } from './allTransactionsFilters';
+import { TransactionsSummaryBar } from './TransactionsSummaryBar';
 
 /** Ключ строки: у операций нет своего номера, сервер различает их парой ссылок. */
 const getRowId = (row: any) => `${row.reference_type}-${row.reference_id}`;
@@ -422,6 +423,14 @@ export default function AllTransactionsPage() {
             </div>
           )}
         </div>
+
+        {/*
+          ИТОГИ ВНИЗУ (FIN-008 ТЗ-2). «Сколько и на сколько» под тем же
+          фильтром, что и список, — без единого щелчка и без выгрузки в
+          Excel. Строка закреплена: прокрутив список, человек не теряет
+          ответ из виду.
+        */}
+        <TransactionsSummaryBar filters={query} />
       </div>
     </DashboardInsider>
   );

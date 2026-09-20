@@ -10,7 +10,22 @@ export interface ScreenFilters extends AllTransactionsFilters {
   status?: 'uncategorized';
   /** Статья учёта: пришла из отчёта, показывается строкой контекста. */
   articleId?: number;
+  /**
+   * Отбор по вычисленному состоянию (FIN-009 ТЗ-2): «нам должны»,
+   * «мы должны», «просрочено», «план». Несколько — по «ИЛИ».
+   */
+  states?: string[];
+  /** Показывать ли плановые операции (FIN-010 ТЗ-2). */
+  includePlanned?: string;
 }
+
+/** Состояния, которые умеет отбирать реестр. Мусор из адреса отбрасывается. */
+export const KNOWN_TRANSACTION_STATES = [
+  'receivable',
+  'payable',
+  'overdue',
+  'planned',
+];
 
 /**
  * Отборы списка операций живут в адресной строке (приёмка этапа 3 ТЗ:
@@ -63,6 +78,22 @@ export const filtersFromSearch = (search: string): ScreenFilters => {
     filters.status = 'uncategorized';
   }
 
+  /**
+   * Состояния приходят повторяющимся параметром. Неизвестное МОЛЧА
+   * отбрасывается, а не роняет экран и не сужает список до пустоты:
+   * опечатался тот, кто прислал ссылку, а смотрит её другой человек.
+   */
+  const states = params
+    .getAll('states')
+    .filter((value) => KNOWN_TRANSACTION_STATES.includes(value));
+  if (states.length > 0) {
+    filters.states = states;
+  }
+
+  if (params.get('includePlanned') === 'false') {
+    filters.includePlanned = 'false';
+  }
+
   NUMERIC_KEYS.forEach((key) => {
     const raw = params.get(key);
     if (raw === null || raw === '') return;
@@ -83,6 +114,13 @@ export const searchFromFilters = (filters: ScreenFilters): string => {
 
   Object.entries(filters).forEach(([key, value]) => {
     if (value === undefined || value === null || value === '') return;
+
+    // Список уходит повторяющимся параметром, а не через запятую: так его
+    // читает сервер, и так же собирает переход из отчёта.
+    if (Array.isArray(value)) {
+      value.forEach((item) => params.append(key, String(item)));
+      return;
+    }
     params.set(key, String(value));
   });
   const query = params.toString();

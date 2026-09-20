@@ -21,6 +21,8 @@ import { BranchTransactionDTOTransformer } from '../Branches/integrations/Branch
 import { BranchesModule } from '../Branches/Branches.module';
 import { RemovePendingUncategorizedTransaction } from './commands/RemovePendingUncategorizedTransaction.service';
 import { BankingTransactionsController } from './controllers/BankingTransactions.controller';
+import { GetTransactionsSummaryService } from './queries/GetTransactionsSummary.service';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { GetBankAccountsService } from './queries/GetBankAccounts.service';
 import { DynamicListModule } from '../DynamicListing/DynamicList.module';
 import { BankAccount } from './models/BankAccount';
@@ -60,6 +62,8 @@ const models = [
     BankingPendingTransactionsController,
   ],
   providers: [
+    GetTransactionsSummaryService,
+    TenancyContext,
     BankTransactionsExportable,
     BankTransactionAutoIncrement,
     BankTransactionGLEntriesService,

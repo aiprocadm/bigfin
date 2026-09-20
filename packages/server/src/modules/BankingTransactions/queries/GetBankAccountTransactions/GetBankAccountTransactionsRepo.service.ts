@@ -10,6 +10,7 @@ import { UncategorizedBankTransaction } from '../../models/UncategorizedBankTran
 import { MatchedBankTransaction } from '@/modules/BankingMatching/models/MatchedBankTransaction';
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
+import { applyTransactionFilters } from '../../utils/applyTransactionFilters';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetBankAccountTransactionsRepository {
@@ -131,80 +132,19 @@ export class GetBankAccountTransactionsRepository {
     ];
   }
 
+  /**
+   * Накладывает отборы списка на запрос.
+   *
+   * Сам набор условий живёт в общем помощнике: сводная строка внизу реестра
+   * считает итоги под ТЕМ ЖЕ фильтром, и два набора условий однажды
+   * разошлись бы тихо — «87 операций» над списком из 84.
+   */
   private applyFilters(query: any) {
-    const {
-      accountId,
-      fromDate,
-      toDate,
-      flow,
-      contactId,
-      search,
-      minAmount,
-      maxAmount,
-    } = this.query;
-
-    if (accountId) {
-      query.where('account_id', accountId);
-    }
-    if (fromDate) {
-      query.where('date', '>=', fromDate);
-    }
-    if (toDate) {
-      query.where('date', '<=', toDate);
-    }
-    // Приход лежит в дебете, расход — в кредите.
-    if (flow === 'in') {
-      query.where('debit', '>', 0);
-    } else if (flow === 'out') {
-      query.where('credit', '>', 0);
-    }
-    if (contactId) {
-      query.where('contact_id', contactId);
-    }
-    if (typeof minAmount === 'number') {
-      query.where((builder: any) => {
-        builder.where('debit', '>=', minAmount).orWhere('credit', '>=', minAmount);
-      });
-    }
-    if (typeof maxAmount === 'number') {
-      query.where((builder: any) => {
-        builder.where('debit', '<=', maxAmount).andWhere('credit', '<=', maxAmount);
-      });
-    }
-    /**
-     * ОТБОР ПО СТАТЬЕ (FIN-005 ТЗ-2).
-     *
-     * У денежной проводки статьи нет: статья висит на ВСТРЕЧНОМ счёте
-     * документа. Поэтому отбираются документы, задевшие счета статьи, и
-     * остаются их денежные ноги. Тот же набор, что дало бы раскрытие без
-     * ограничения в двести строк, — это и есть требование ТЗ.
-     */
-    if (this.articleAccountIds !== null) {
-      if (this.articleAccountIds.length === 0) {
-        // Статья без счетов: операций по ней не бывает. Невыполнимое
-        // условие честнее, чем незаметно снятый отбор.
-        query.whereRaw('1 = 0');
-      } else {
-        const accountIds = this.articleAccountIds;
-
-        query.whereIn(['reference_type', 'reference_id'], (builder: any) => {
-          builder
-            .select('reference_type', 'reference_id')
-            .from('accounts_transactions')
-            .whereIn('account_id', accountIds);
-        });
-      }
-    }
-    if (search) {
-      const like = `%${search}%`;
-      query.where((builder: any) => {
-        builder
-          .where('transaction_number', 'like', like)
-          .orWhere('reference_number', 'like', like)
-          .orWhere('note', 'like', like);
-      });
-    }
-    return query;
+    return applyTransactionFilters(
+      query,
+      this.query as any,
+      this.articleAccountIds,
+    );
   }
 
   /**

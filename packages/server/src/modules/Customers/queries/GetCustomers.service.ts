@@ -9,6 +9,10 @@ import {
   ICustomersFilter,
 } from '../types/Customers.types';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import {
+  applyDebtNatureFilter,
+  parseDebtNature,
+} from '@/modules/Contacts/queries/applyDebtNatureFilter';
 import { GetCustomersQueryDto } from '../dtos/GetCustomersQuery.dto';
 
 @Injectable()
@@ -57,6 +61,10 @@ export class GetCustomers {
       .onBuild((builder) => {
         dynamicList.buildQuery()(builder);
         builder.modify('inactiveMode', filter.inactiveMode);
+
+        // Отбор по природе долга (FIN-023 ТЗ-2). Подзапросом, а не списком
+        // номеров: список на несколько тысяч значений не помещается в адрес.
+        applyDebtNatureFilter(builder, parseDebtNature(filterDto.debtNature));
       })
       .pagination(filter.page - 1, filter.pageSize);
 

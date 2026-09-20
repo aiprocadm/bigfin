@@ -6,6 +6,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ARAgingSummaryService } from '@/modules/FinancialStatements/modules/ARAgingSummary/ARAgingSummaryService';
 import { APAgingSummaryService } from '@/modules/FinancialStatements/modules/APAgingSummary/APAgingSummaryService';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { GetContactDebtBreakdownService } from '@/modules/Contacts/queries/GetContactDebtBreakdown.service';
 import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/queries/GetPaymentCalendarForecast.service';
 import * as moment from 'moment';
 import { GetTaxEstimateService } from './GetTaxEstimate.service';
@@ -39,6 +40,16 @@ export interface MoneySummary {
   taxEstimate: MoneySummaryAmount | null;
   taxEstimateRatePercent: number | null;
   taxEstimateDueDate: string | null;
+  /**
+   * Авансы: полученные от покупателей и выданные поставщикам (FIN-023).
+   *
+   * Стоят рядом с долгами НАМЕРЕННО и не складываются с ними. Полученный
+   * аванс закрывается работой, выданный — поставкой: в ожидаемые
+   * поступления они не входят, и сложить их с долгом деньгами значит
+   * обещать себе денег больше, чем будет.
+   */
+  advancesReceived: MoneySummaryAmount;
+  advancesPaid: MoneySummaryAmount;
   currencyCode: string;
 }
 
@@ -52,6 +63,7 @@ export class GetMoneySummaryService {
     private readonly apAging: APAgingSummaryService,
     private readonly paymentCalendar: GetPaymentCalendarForecastService,
     private readonly taxEstimate: GetTaxEstimateService,
+    private readonly debtBreakdown: GetContactDebtBreakdownService,
     private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
@@ -70,15 +82,17 @@ export class GetMoneySummaryService {
     const metadata = await this.tenancyContext.getTenantMetadata();
     const currencyCode = metadata?.baseCurrency ?? 'RUB';
 
-    const [cashBalance, receivable, payable, upcoming, tax] = await Promise.all(
-      [
+    const [cashBalance, receivable, payable, upcoming, tax, advances] =
+      await Promise.all([
         this.getCashBalance(),
         this.getAgingTotals('receivable'),
         this.getAgingTotals('payable'),
         this.getUpcomingPayments((metadata as any)?.tenantId),
         this.taxEstimate.getTaxEstimate(moment().format('YYYY-MM-DD')),
-      ],
-    );
+        // АВАНСЫ ЕДУТ ЭТИМ ЖЕ ОТВЕТОМ (FIN-023). Отдельный запрос с главной
+        // был бы вторым запросом на самом частом экране ради одной строки.
+        this.getAdvances(),
+      ]);
 
     return {
       cashBalance: this.amount(cashBalance, currencyCode),
@@ -91,8 +105,28 @@ export class GetMoneySummaryService {
       taxEstimate: tax ? this.amount(tax.amount, currencyCode) : null,
       taxEstimateRatePercent: tax?.ratePercent ?? null,
       taxEstimateDueDate: tax?.dueDate ?? null,
+      advancesReceived: this.amount(advances.received, currencyCode),
+      advancesPaid: this.amount(advances.paid, currencyCode),
       currencyCode,
     };
+  }
+
+  /**
+   * Авансы полученные и выданные.
+   *
+   * Сбой не роняет сводку: остаток и долги важнее одной строки.
+   */
+  private async getAdvances(): Promise<{ received: number; paid: number }> {
+    try {
+      const breakdown = await this.debtBreakdown.getDebtBreakdown();
+
+      return {
+        received: breakdown.totals.advancesReceived,
+        paid: breakdown.totals.advancesPaid,
+      };
+    } catch {
+      return { received: 0, paid: 0 };
+    }
   }
 
   /**

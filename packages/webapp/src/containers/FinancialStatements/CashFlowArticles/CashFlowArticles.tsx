@@ -1,5 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { ScreenHelp } from '@/components/ui/screen-help';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Download } from 'lucide-react';
@@ -73,9 +74,14 @@ export default function CashFlowArticles() {
     <div className="flex flex-col gap-4 p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">
-            {intl.get('cash_flow_articles.page_title')}
-          </h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-xl font-semibold">
+              {intl.get('cash_flow_articles.page_title')}
+            </h1>
+            {/* Контекстная справка (FIN-025). Экран вложен в «Отчёты», и
+                ключ из адреса не выводится — поэтому назван явно. */}
+            <ScreenHelp topic="cash_flow_articles" />
+          </div>
           <p className="mt-1 max-w-[70ch] text-sm text-text-secondary">
             {intl.get('cash_flow_articles.page_hint')}
           </p>

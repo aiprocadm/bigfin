@@ -15,6 +15,7 @@ import { allowedContactServices } from './utils/allowedContactServices';
 import { GetContactService } from './queries/GetContact.service';
 import { ActivateContactService } from './commands/ActivateContact.service';
 import { InactivateContactService } from './commands/InactivateContact.service';
+import { GetContactDebtBreakdownService } from './queries/GetContactDebtBreakdown.service';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
@@ -37,6 +38,21 @@ const CONTACT_VIEW = [
   { ability: VendorAction.View, subject: AbilitySubject.Vendor },
 ];
 
+/**
+ * Список номеров из строки адреса.
+ *
+ * Пустая строка и мусор дают пустой список, а не `NaN` в запросе: отбор по
+ * `NaN` молча вернул бы пустой ответ, и человек решил бы, что долгов нет.
+ */
+function parseIds(value?: string): number[] {
+  if (!value) return [];
+
+  return value
+    .split(',')
+    .map((part) => Number(part.trim()))
+    .filter((id) => Number.isInteger(id) && id > 0);
+}
+
 const CONTACT_EDIT = [
   { ability: CustomerAction.Edit, subject: AbilitySubject.Customer },
   { ability: VendorAction.Edit, subject: AbilitySubject.Vendor },
@@ -51,6 +67,7 @@ export class ContactsController {
     private readonly getContactService: GetContactService,
     private readonly activateContactService: ActivateContactService,
     private readonly inactivateContactService: InactivateContactService,
+    private readonly debtBreakdownService: GetContactDebtBreakdownService,
   ) {}
 
   @Get('auto-complete')
@@ -68,6 +85,36 @@ export class ContactsController {
       query,
       allowedServices,
     );
+  }
+
+  /**
+   * Разбор долга по природе (FIN-023 ТЗ-2).
+   *
+   * СТОИТ ВЫШЕ `:id` НАМЕРЕННО. Nest сопоставляет маршруты в порядке
+   * объявления, и ниже `debt-breakdown` угодил бы в `:id`, где его встречает
+   * `ParseIntPipe` — ответом было бы «400, ожидалось число», а причину
+   * пришлось бы искать глазами.
+   */
+  @Get('debt-breakdown')
+  @RequireAnyPermission(...CONTACT_VIEW)
+  @ApiOperation({
+    summary:
+      'Задолженность, разделённая на денежную и неденежную, по контрагентам.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Аванс закрывается поставкой, а не деньгами: сложенные вместе, они ' +
+      'обещают денег больше, чем будет.',
+  })
+  getDebtBreakdown(
+    @Query('contactIds') contactIds?: string,
+    @Query('asDate') asDate?: string,
+  ) {
+    return this.debtBreakdownService.getDebtBreakdown({
+      contactIds: parseIds(contactIds),
+      asDate,
+    });
   }
 
   @Get(':id')

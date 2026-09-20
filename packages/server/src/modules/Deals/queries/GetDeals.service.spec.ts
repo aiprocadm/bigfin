@@ -40,7 +40,11 @@ const sqlForFilter = (filter: any): string => {
   };
   const dealModel = () => ({ query: () => builder });
 
-  new GetDealsService(dealModel as any).getDeals(filter);
+  // Колонки прогресса (FIN-024) считаются отдельным сервисом; здесь
+  // проверяется SQL самого списка, поэтому подставлена заглушка.
+  const progress = { getProgress: async () => new Map() };
+
+  new GetDealsService(dealModel as any, progress as any).getDeals(filter);
 
   return kb.toString();
 };

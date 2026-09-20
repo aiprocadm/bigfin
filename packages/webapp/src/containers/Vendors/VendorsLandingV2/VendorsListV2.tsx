@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ListView } from '@/components/ui/list-view/list-view';
 import { useListController } from '@/components/ui/list-view/use-list-controller';
+import {
+  DebtNature,
+  DebtNatureFilter,
+} from '@/components/ui/debt-nature-filter';
 
 import { useVendors } from '@/hooks/query/vendors';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
@@ -53,10 +57,18 @@ function VendorsListV2({
     searchFields: SEARCH_FIELDS,
   });
 
+  // ОТБОР ПО ПРИРОДЕ ДОЛГА ЕДЕТ НА СЕРВЕР (FIN-023). Список разбит на
+  // страницы: отфильтровать загруженную страницу значило бы показать
+  // «ничего не найдено» при полной базе должников на следующей.
+  const [debtNature, setDebtNature] = React.useState<DebtNature | undefined>();
+
   const {
     data: { vendors, pagination },
     isFetching,
-  } = useVendors(ctl.query, { keepPreviousData: true });
+  } = useVendors(
+    { ...ctl.query, debtNature },
+    { keepPreviousData: true },
+  );
 
   const rows = ctl.applySearch(vendors);
   const goNew = React.useCallback(() => history.push('/vendors/new'), [history]);
@@ -72,6 +84,9 @@ function VendorsListV2({
       search={ctl.search}
       onSearchChange={ctl.setSearch}
       searchPlaceholder={intl.get('vendors.search_placeholder')}
+      filters={
+        <DebtNatureFilter value={debtNature} onChange={setDebtNature} />
+      }
       selectedIds={ctl.selected}
       onSelectionChange={ctl.setSelected}
       bulkDelete={{

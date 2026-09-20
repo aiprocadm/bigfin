@@ -14,6 +14,12 @@ import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.
 import { GetPaymentCalendarForecastService } from '@/modules/PaymentCalendar/queries/GetPaymentCalendarForecast.service';
 import { ProfitLossAggregateNodeId } from '@/modules/FinancialStatements/modules/ProfitLossSheet/ProfitLossSheet.types';
 import { GetMoneySummaryService } from './GetMoneySummary.service';
+import { GetHomepageInsightsService } from './GetHomepageInsights.service';
+import { ParetoResult } from './computeParetoContractors';
+import {
+  DirectionsProfitResult,
+  DirectionsSortBy,
+} from './computeDirectionsProfit';
 
 export interface OverviewAmount {
   amount: number;
@@ -89,6 +95,16 @@ export interface DashboardOverview {
   accounts: OverviewAccount[];
   topExpenses: OverviewExpenseShare[];
   attention: AttentionItem[];
+  /**
+   * «Кто приносит прибыль» — концентрация выручки (FIN-018).
+   *
+   * `null` — блок не посчитался. Витрина показывает состояние ошибки с
+   * кнопкой повтора, а не пустой график: пустой график выглядит ответом
+   * «клиентов нет», и это враньё.
+   */
+  topContractors: ParetoResult | null;
+  /** «Прибыльность направлений» (FIN-018). `null` — блок не посчитался. */
+  directionsProfit: DirectionsProfitResult | null;
   currencyCode: string;
 }
 
@@ -117,6 +133,7 @@ export class GetDashboardOverviewService {
     private readonly profitLoss: ProfitLossSheetService,
     private readonly moneySummary: GetMoneySummaryService,
     private readonly paymentCalendar: GetPaymentCalendarForecastService,
+    private readonly homepageInsights: GetHomepageInsightsService,
     private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
@@ -136,6 +153,7 @@ export class GetDashboardOverviewService {
   public async getOverview(
     fromDate?: string,
     toDate?: string,
+    directionsSortBy: DirectionsSortBy = 'profit',
   ): Promise<DashboardOverview> {
     const period = this.resolvePeriod(fromDate, toDate);
     const previous = this.previousPeriod(period);
@@ -143,11 +161,15 @@ export class GetDashboardOverviewService {
     const metadata = await this.tenancyContext.getTenantMetadata();
     const currencyCode = (metadata as any)?.baseCurrency ?? 'RUB';
 
-    const [current, prior, summary, accounts] = await Promise.all([
+    const [current, prior, summary, accounts, insights] = await Promise.all([
       this.profitLossTotals(period.fromDate, period.toDate),
       this.profitLossTotals(previous.fromDate, previous.toDate),
       this.moneySummary.getMoneySummary(),
       this.getCashAccounts(currencyCode),
+      // ДВА НОВЫХ БЛОКА ЕДУТ ЗДЕСЬ ЖЕ (FIN-018). Отдельные ручки под них
+      // означали бы пять запросов на главной — то, что прежнее ТЗ запретило
+      // прямо. Сбой блока не роняет страницу: остальное покажется.
+      this.getInsights(period, directionsSortBy),
     ]);
 
     const months = await this.getMonths(period.toDate);
@@ -174,8 +196,28 @@ export class GetDashboardOverviewService {
       accounts,
       topExpenses: this.topExpenses(current, currencyCode),
       attention,
+      topContractors: insights?.topContractors ?? null,
+      directionsProfit: insights?.directionsProfit ?? null,
       currencyCode,
     };
+  }
+
+  /**
+   * Два блока «на ком держится бизнес» (FIN-018).
+   *
+   * Сбой не роняет главную: человеку важнее увидеть остаток и то, что горит,
+   * чем получить пустой экран из-за блока-аналитики. Витрина отличает `null`
+   * («не посчиталось, попробуйте ещё») от пустого блока («данных нет»).
+   */
+  private async getInsights(
+    period: { fromDate: string; toDate: string },
+    sortBy: DirectionsSortBy,
+  ) {
+    try {
+      return await this.homepageInsights.getInsights(period, sortBy);
+    } catch {
+      return null;
+    }
   }
 
   /**

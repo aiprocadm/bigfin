@@ -74,8 +74,18 @@ export class DashboardController {
       'суммы совпадают с разделом «Отчёты».',
   })
   @Get('overview')
-  getOverview(@Query('from') from?: string, @Query('to') to?: string) {
+  getOverview(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    // Порядок направлений: по прибыли или по рентабельности. Это два разных
+    // вопроса, и переключатель на главной меняет именно его.
+    @Query('directionsSortBy') directionsSortBy?: string,
+  ) {
     // Пять отдельных запросов на главной недопустимы (п. 2.3 ТЗ).
-    return this.overviewService.getOverview(from, to);
+    return this.overviewService.getOverview(
+      from,
+      to,
+      directionsSortBy === 'margin' ? 'margin' : 'profit',
+    );
   }
 }

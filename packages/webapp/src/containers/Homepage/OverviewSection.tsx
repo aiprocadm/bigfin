@@ -22,6 +22,9 @@ import { EmptyState } from '@/components/ui/empty-state';
 
 import { useDashboardOverview } from './useDashboardOverview';
 import AttentionList from './AttentionList';
+import TopContractorsSection from './TopContractorsSection';
+import DirectionsProfitSection from './DirectionsProfitSection';
+import type { DirectionsSortBy } from './useDashboardOverview';
 import {
   DashboardPeriod,
   DashboardPeriodKind,
@@ -157,7 +160,16 @@ export default function OverviewSection() {
     storePeriod(storage, next);
   };
 
-  const { data, isLoading, isError } = useDashboardOverview(period);
+  // ПОРЯДОК НАПРАВЛЕНИЙ ЖИВЁТ ЗДЕСЬ, а не внутри блока. Если бы блок
+  // спрашивал главную сам, ключ его запроса разошёлся бы с этим — и
+  // запросов на главной стало бы два вместо одного (правило п. 2.3 ТЗ).
+  const [directionsSortBy, setDirectionsSortBy] =
+    React.useState<DirectionsSortBy>('profit');
+
+  const { data, isLoading, isError, refetch } = useDashboardOverview(
+    period,
+    directionsSortBy,
+  );
 
   if (isLoading) {
     return (
@@ -178,7 +190,15 @@ export default function OverviewSection() {
     return null;
   }
 
-  const { tiles, months, accounts, topExpenses, attention } = data;
+  const {
+    tiles,
+    months,
+    accounts,
+    topExpenses,
+    attention,
+    topContractors,
+    directionsProfit,
+  } = data;
   const hasNumbers =
     tiles.income.amount !== 0 ||
     tiles.expenses.amount !== 0 ||
@@ -365,6 +385,23 @@ export default function OverviewSection() {
           )}
         </div>
       </div>
+
+      {/* «Кто приносит прибыль» и «Прибыльность направлений» (FIN-018).
+          Место по ТЗ: после «Требует внимания» и до сводки по деньгам. */}
+      <TopContractorsSection
+        data={topContractors}
+        onRetry={() => {
+          refetch();
+        }}
+      />
+      <DirectionsProfitSection
+        data={directionsProfit}
+        sortBy={directionsSortBy}
+        onSortByChange={setDirectionsSortBy}
+        onRetry={() => {
+          refetch();
+        }}
+      />
     </section>
   );
 }

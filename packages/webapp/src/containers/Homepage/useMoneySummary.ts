@@ -22,6 +22,14 @@ export interface MoneySummary {
   taxEstimate: MoneySummaryAmount | null;
   taxEstimateRatePercent: number | null;
   taxEstimateDueDate: string | null;
+  /**
+   * Авансы полученные и выданные (FIN-023).
+   *
+   * Стоят рядом с долгами и НЕ складываются с ними: полученный аванс
+   * закрывается работой, выданный — поставкой.
+   */
+  advancesReceived: MoneySummaryAmount;
+  advancesPaid: MoneySummaryAmount;
   currencyCode: string;
 }
 

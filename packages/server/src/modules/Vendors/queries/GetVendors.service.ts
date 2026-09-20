@@ -6,6 +6,10 @@ import { TransformerInjectable } from '@/modules/Transformer/TransformerInjectab
 import { VendorTransfromer } from './VendorTransformer';
 import { GetVendorsResponse, IVendorsFilter } from '../types/Vendors.types';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import {
+  applyDebtNatureFilter,
+  parseDebtNature,
+} from '@/modules/Contacts/queries/applyDebtNatureFilter';
 import { GetVendorsQueryDto } from '../dtos/GetVendorsQuery.dto';
 
 @Injectable()
@@ -55,6 +59,10 @@ export class GetVendorsService {
 
         // Switches between active/inactive modes.
         builder.modify('inactiveMode', filter.inactiveMode);
+
+        // Отбор по природе долга (FIN-023 ТЗ-2). Подзапросом, а не списком
+        // номеров: список на несколько тысяч значений не помещается в адрес.
+        applyDebtNatureFilter(builder, parseDebtNature(filterDto.debtNature));
       })
       .pagination(filter.page - 1, filter.pageSize);
 

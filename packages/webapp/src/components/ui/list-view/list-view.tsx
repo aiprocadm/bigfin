@@ -28,6 +28,13 @@ export interface ListViewProps {
   onSortChange?: (sortBy: { id: string; desc: boolean }[]) => void;
   onRowClick?: (row: any) => void;
   emptyState?: React.ReactNode;
+  /**
+   * Отборы экрана: встают рядом с поиском.
+   *
+   * Нужны там, где список отвечает на несколько вопросов сразу — например,
+   * «кто должен деньгами» и «кто должен поставкой» (FIN-023).
+   */
+  filters?: React.ReactNode;
 }
 
 export function ListView({
@@ -52,6 +59,7 @@ export function ListView({
   onSortChange,
   onRowClick,
   emptyState,
+  filters,
 }: ListViewProps) {
   return (
     <div className="bigfin-ui light min-h-full bg-background p-6">
@@ -85,6 +93,10 @@ export function ListView({
           )
         }
       />
+
+      {filters && (
+        <div className="mb-3 flex flex-wrap items-center gap-2">{filters}</div>
+      )}
 
       <DataTable
         columns={columns}

@@ -228,7 +228,13 @@ export function formattedAmount(cents, currencyCode = '', props = {}) {
 
   const formatOptions = {
     symbol: sign,
-    precision: parsedCurrency.decimal_digits,
+    // ТОЧНОСТЬ МОЖНО ПЕРЕОПРЕДЕЛИТЬ. По умолчанию её задаёт валюта, но
+    // человек может отключить копейки в личных настройках вида (FIN-026),
+    // и тогда весь продукт обязан печатать суммы без них.
+    precision:
+      parsedProps.precision != null
+        ? parsedProps.precision
+        : parsedCurrency.decimal_digits,
     thousand: ruStyle ? NBSP : ',',
     decimal: ruStyle ? ',' : '.',
     format: {

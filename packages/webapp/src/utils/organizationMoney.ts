@@ -1,6 +1,7 @@
 import { store } from '@/store/create-store';
 import { getCurrentOrganizationFactory } from '@/store/authentication/authentication.selectors';
 import { formattedAmount } from '@/utils';
+import { getDisplayPreferences } from './displayPreferences';
 
 /** Валюта, если организация ещё не загружена. */
 const FALLBACK_CURRENCY = 'RUB';
@@ -33,5 +34,13 @@ export function formatOrganizationMoney(value: number): string {
     // Состояние ещё не готово — печатаем в рублях, продукт российский.
   }
 
-  return formattedAmount(value ?? 0, currency, {});
+  // КОПЕЙКИ — ЛИЧНАЯ НАСТРОЙКА ЧЕЛОВЕКА (FIN-026). Раньше галочка на
+  // экране настроек сохранялась и не меняла НИЧЕГО: её никто не читал.
+  const { showCents } = getDisplayPreferences();
+
+  return formattedAmount(
+    value ?? 0,
+    currency,
+    showCents ? {} : { precision: 0 },
+  );
 }

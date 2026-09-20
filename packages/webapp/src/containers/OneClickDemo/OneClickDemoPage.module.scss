@@ -30,3 +30,46 @@
   line-height: 1.54;
   color: #5F6B7C;
 }
+/* Выбор отрасли демо (FIN-027 ТЗ-2). Три карточки: название и одна строка
+   «что в наборе» — больше человеку для выбора не нужно. */
+.industries {
+  width: 400px;
+  margin-top: 2rem;
+}
+
+.industriesTitle {
+  font-size: 15px;
+  color: #5F6B7C;
+}
+
+.industryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  /* Не меньше сорока четырёх точек по высоте: палец крупнее курсора. */
+  min-height: 44px;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid #D3D8DE;
+  border-radius: 6px;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+
+.industryCardActive {
+  border-color: #2D72D2;
+  background: #F2F7FD;
+}
+
+.industryName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1C2127;
+}
+
+.industrySummary {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #5F6B7C;
+}

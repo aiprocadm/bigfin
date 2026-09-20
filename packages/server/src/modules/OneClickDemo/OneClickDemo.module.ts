@@ -15,6 +15,8 @@ import { ItemsModule } from '../Items/Items.module';
 import { SaleInvoicesModule } from '../SaleInvoices/SaleInvoices.module';
 import { PaymentsReceivedModule } from '../PaymentReceived/PaymentsReceived.module';
 import { ExpensesModule } from '../Expenses/Expenses.module';
+import { VendorsModule } from '../Vendors/Vendors.module';
+import { BillsModule } from '../Bills/Bills.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
 import { S3Module } from '../S3/S3.module';
@@ -36,6 +38,10 @@ import { S3Module } from '../S3/S3.module';
     // Деньги в демо: оплаты по счетам и расходы (С3 карты v29).
     PaymentsReceivedModule,
     ExpensesModule,
+    // Поставщики и их неоплаченные счета: без них в демо нет будущей
+    // выплаты, а значит и кассового разрыва впереди (FIN-027).
+    VendorsModule,
+    BillsModule,
     TenancyModule,
     // Модель счёта учёта: демо-товарам нужен счёт доходов из плана счетов.
     AccountsModule,

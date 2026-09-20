@@ -71,6 +71,8 @@ import { ValidateBulkDeleteBillsService } from './ValidateBulkDeleteBills.servic
     ValidateBulkDeleteBillsService,
   ],
   controllers: [BillsController],
-  exports: [BillsExportable, BillsImportable],
+  // `CreateBill` отдаётся наружу ради наполнения демо (FIN-027): именно
+  // неоплаченный счёт поставщика даёт в демо будущий кассовый разрыв.
+  exports: [BillsExportable, BillsImportable, CreateBill],
 })
 export class BillsModule { }

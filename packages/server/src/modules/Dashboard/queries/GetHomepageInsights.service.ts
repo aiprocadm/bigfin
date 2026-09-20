@@ -120,23 +120,90 @@ export class GetHomepageInsightsService {
     return { incomeIds, expenseIds };
   }
 
-  /** Выручка по контрагентам за период. */
+  /**
+   * Выручка по контрагентам за период.
+   *
+   * НАЙДЕНО ЖИВЫМ ПРОХОДОМ. Здесь стояла группировка проводок доходных
+   * счетов по `contactId` — и блок был ПУСТ при выручке в полтора
+   * миллиона. Причина: контрагент записан не на той стороне проводки.
+   * Счёт покупателю кладёт его на сторону расчётов с покупателем, а на
+   * стороне дохода этого поля НЕТ НИ У ОДНОЙ проводки. Ни типы, ни
+   * модульные тесты этого не видели: запрос правильный, ответ пустой.
+   *
+   * ПОЭТОМУ КОНТРАГЕНТ БЕРЁТСЯ ИЗ ДОКУМЕНТА. Обе стороны проводки ссылаются
+   * на один документ, и тот, кто назван в документе, и есть контрагент его
+   * выручки.
+   *
+   * Документы, у которых контрагента нет вовсе (ручная проводка, например),
+   * в блок не попадают — и это честно: на вопрос «на ком держится бизнес»
+   * они ответа не дают.
+   */
   private async sumByContact(accountIds: number[], period: Period) {
     if (!accountIds.length) return [];
 
+    const [revenueByDocument, contactByDocument] = await Promise.all([
+      this.sumByDocument(accountIds, period),
+      this.contactsByDocument(period),
+    ]);
+
+    const byContact = new Map<number, { credit: number; debit: number }>();
+
+    revenueByDocument.forEach((row: any) => {
+      const contactId = contactByDocument.get(documentKey(row));
+      if (!contactId) return;
+
+      const bucket = byContact.get(contactId) ?? { credit: 0, debit: 0 };
+
+      bucket.credit += Number(row.credit ?? 0);
+      bucket.debit += Number(row.debit ?? 0);
+      byContact.set(contactId, bucket);
+    });
+
+    return [...byContact.entries()].map(([contactId, sums]) => ({
+      contactId,
+      ...sums,
+    }));
+  }
+
+  /** Обороты доходных счетов, сгруппированные по документу. */
+  private async sumByDocument(accountIds: number[], period: Period) {
     return this.transactionModel()
       .query()
       .onBuild((qb) => {
         qb.sum('credit as credit');
         qb.sum('debit as debit');
-        qb.groupBy('contactId');
-        qb.select(['contactId']);
+        qb.groupBy('referenceId', 'referenceType');
+        qb.select(['referenceId', 'referenceType']);
         qb.whereIn('accountId', accountIds);
-        // Операция без контрагента к вопросу «на ком держится бизнес»
-        // отношения не имеет.
+        qb.modify('filterDateRange', period.fromDate, period.toDate);
+      });
+  }
+
+  /**
+   * Кто назван в документе.
+   *
+   * Берётся с ЛЮБОЙ стороны проводки: контрагент стоит на стороне расчётов,
+   * а не дохода, и искать его только среди доходных счетов бессмысленно.
+   */
+  private async contactsByDocument(period: Period) {
+    const rows = await this.transactionModel()
+      .query()
+      .onBuild((qb) => {
+        qb.max('contactId as contactId');
+        qb.groupBy('referenceId', 'referenceType');
+        qb.select(['referenceId', 'referenceType']);
         qb.whereNotNull('contactId');
         qb.modify('filterDateRange', period.fromDate, period.toDate);
       });
+
+    const byDocument = new Map<string, number>();
+
+    rows.forEach((row: any) => {
+      const contactId = Number(row.contactId);
+      if (contactId) byDocument.set(documentKey(row), contactId);
+    });
+
+    return byDocument;
   }
 
   /** Обороты по направлениям за период; `projectId` бывает пустым. */
@@ -240,4 +307,9 @@ export class GetHomepageInsightsService {
       costs: bucket.costs,
     }));
   }
+}
+
+/** Ключ документа: номер и вид вместе, потому что номера у видов свои. */
+function documentKey(row: { referenceId: unknown; referenceType: unknown }): string {
+  return `${row.referenceType}:${row.referenceId}`;
 }

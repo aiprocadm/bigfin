@@ -4984,5 +4984,12 @@
   "deals.progress.overdelivered": "over-delivered",
   "money_summary.advances_received": "Advances received: {amount}",
   "money_summary.advances_paid": "Advances paid: {amount}",
-  "money_summary.advances_hint": "An advance received is settled by work, not money; an advance paid is settled by delivery. Neither counts as an expected inflow."
+  "money_summary.advances_hint": "An advance received is settled by work, not money; an advance paid is settled by delivery. Neither counts as an expected inflow.",
+  "one_click_demo.industry.question": "What do you do? We will show an example from your trade.",
+  "one_click_demo.industry.services.name": "Services",
+  "one_click_demo.industry.services.summary": "Consulting, support, people's work. Clients, invoices on terms, rent and an overdue payment.",
+  "one_click_demo.industry.trade.name": "Trade",
+  "one_click_demo.industry.trade.summary": "Buying and shipping at a margin. A large purchase due before the customers settle up.",
+  "one_click_demo.industry.projects.name": "Construction and projects",
+  "one_click_demo.industry.projects.summary": "Sites and stages. Large amounts, a contractor to pay and a client who pays later."
 }

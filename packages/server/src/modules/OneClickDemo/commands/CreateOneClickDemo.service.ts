@@ -19,6 +19,7 @@ import {
 import { hashPassword } from '@/modules/Auth/Auth.utils';
 import { CreateOneClickDemoResult } from '../OneClickDemo.types';
 import { OneClickDemoDisabledException } from '../exceptions/OneClickDemo.exceptions';
+import { parseDemoIndustry } from '../data';
 
 @Injectable()
 export class CreateOneClickDemoService {
@@ -47,12 +48,18 @@ export class CreateOneClickDemoService {
    * паролем, тенанта на русских настройках и джоб постройки базы.
    * @returns {Promise<CreateOneClickDemoResult>}
    */
-  public async createOneClickDemo(): Promise<CreateOneClickDemoResult> {
+  public async createOneClickDemo(
+    industry?: string,
+  ): Promise<CreateOneClickDemoResult> {
     // Ручка публичная и создаёт тенанта — работает только при явно
     // включённом флаге (Д1 карты v18).
     if (!this.configService.get('oneClickDemo.enable')) {
       throw new OneClickDemoDisabledException();
     }
+    // Отрасль сводится к известной ЗДЕСЬ, а не при наполнении: в базе
+    // должно лежать то, что человек увидит, а не то, что он написал.
+    const demoIndustry = parseDemoIndustry(industry);
+
     const demoKey = crypto.randomBytes(24).toString('hex');
     const email = `demo-${crypto.randomBytes(6).toString('hex')}@demo.bigfin.app`;
     // Пароль никому не показывается: вход в демо идёт по ключу. Он всё равно
@@ -112,6 +119,7 @@ export class CreateOneClickDemoService {
       tenantId: tenant.id,
       userId: user.id,
       buildJobId: jobMeta.id!,
+      industry: demoIndustry,
     } as any);
 
     return {

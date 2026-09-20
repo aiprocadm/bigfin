@@ -32,7 +32,12 @@ export class SeedDemoDataOnBuiltSubscriber {
     try {
       const metadata = await this.tenancyContext.getTenantMetadata();
 
-      await this.seedDemoData.seedDemoData(metadata?.baseCurrency ?? 'RUB');
+      // Отрасль лежит в записи о демо: подписчик получает только номер
+      // тенанта, и взять её больше неоткуда (FIN-027).
+      await this.seedDemoData.seedDemoData(
+        metadata?.baseCurrency ?? 'RUB',
+        (demo as any)?.industry,
+      );
     } catch (error) {
       // Демо без данных всё же лучше, чем демо, которое не построилось:
       // организация уже готова, человек вот-вот войдёт.

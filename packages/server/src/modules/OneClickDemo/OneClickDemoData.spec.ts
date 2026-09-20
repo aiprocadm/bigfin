@@ -29,12 +29,19 @@ const buildSeedService = ({
   const createPayment = jest.fn().mockResolvedValue({ id: 1 });
   const createExpense = jest.fn().mockResolvedValue({ id: 1 });
 
+  // Поставщики и их счета проверяются своей спекой (demoBills.spec) —
+  // здесь достаточно, чтобы они никому не мешали.
+  const createVendor = jest.fn().mockResolvedValue({ id: 900 });
+  const createBill = jest.fn().mockResolvedValue({ id: 901 });
+
   const service = new SeedOneClickDemoDataService(
     { createCustomer } as any,
+    { createVendor } as any,
     { createItem } as any,
     { createSaleInvoice: createInvoice } as any,
     { createPaymentReceived: createPayment } as any,
     { newExpense: createExpense } as any,
+    { createBill } as any,
     accountModel as any,
   );
   return { service, createCustomer, createItem, createInvoice };

@@ -7,6 +7,8 @@ import { PauseBankAccountFeeds } from './commands/PauseBankAccountFeeds.service'
 import { DeleteUncategorizedTransactionsOnAccountDeleting } from './subscribers/DeleteUncategorizedTransactionsOnAccountDeleting';
 import { DisconnectPlaidItemOnAccountDeleted } from './subscribers/DisconnectPlaidItemOnAccountDeleted';
 import { BankAccountsController } from './BankAccounts.controller';
+import { AccountGroupsController } from './AccountGroups.controller';
+import { AccountGroupsService } from './queries/AccountGroups.service';
 import { BankingPlaidModule } from '../BankingPlaid/BankingPlaid.module';
 import { PlaidModule } from '../Plaid/Plaid.module';
 import { BankRulesModule } from '../BankRules/BankRules.module';
@@ -39,8 +41,9 @@ import { MutateBaseCurrencyAccounts } from '../Accounts/MutateBaseCurrencyAccoun
     GetBankAccountSummary,
     MutateBaseCurrencyAccounts,
     MutateBaseCurrencyAccountsSubscriber,
+    AccountGroupsService,
   ],
-  exports: [BankAccountsApplication],
-  controllers: [BankAccountsController],
+  exports: [BankAccountsApplication, AccountGroupsService],
+  controllers: [BankAccountsController, AccountGroupsController],
 })
 export class BankAccountsModule {}

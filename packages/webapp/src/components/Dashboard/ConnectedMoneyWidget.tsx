@@ -24,6 +24,7 @@ export default function ConnectedMoneyWidget() {
       gap={widget.gap ?? null}
       sparkline={widget.sparkline ?? []}
       accounts={widget.accounts ?? []}
+      groups={widget.groups ?? []}
       plannedWithoutAccount={widget.plannedWithoutAccount ?? 0}
       calendarEnabled={widget.calendarEnabled ?? true}
       formatMoney={formatOrganizationMoney}

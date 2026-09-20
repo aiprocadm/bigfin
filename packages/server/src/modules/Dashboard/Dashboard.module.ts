@@ -11,6 +11,7 @@ import { ProfitLossSheetModule } from '../FinancialStatements/modules/ProfitLoss
 import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
 import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
+import { BankAccountsModule } from '@/modules/BankingAccounts/BankAccounts.module';
 
 @Module({
   // Сводка о деньгах берёт цифры из тех же отчётов, что показывают разделы
@@ -21,6 +22,10 @@ import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
     APAgingSummaryModule,
     PaymentCalendarModule,
     ProfitLossSheetModule,
+    // Группы счетов нужны виджету денег: вкладка «По группам» (FIN-017).
+    // Провайдер чужого модуля обязан быть в его exports — иначе сервер не
+    // поднимается, и на этом в проекте спотыкались трижды.
+    BankAccountsModule,
   ],
   providers: [
     DashboardService,

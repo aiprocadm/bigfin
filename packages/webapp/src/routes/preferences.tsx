@@ -164,6 +164,16 @@ export const getPreferenceRoutes = () => [
     exact: true,
   },
   {
+    // Группы денежных счетов (FIN-017 ТЗ-2). Здесь, а не в списке счетов:
+    // тот экран помечен `@ts-nocheck`, а ЧАСТЬ A2 ТЗ запрещает трогать
+    // такие файлы в рамках работ по ТЗ.
+    path: `${BASE_URL}/account-groups`,
+    component: lazy(
+      () => import('@/containers/Preferences/AccountGroups/AccountGroupsPage'),
+    ),
+    exact: true,
+  },
+  {
     path: `${BASE_URL}/export-data`,
     component: lazy(
       () => import('@/containers/Preferences/ExportData/ExportDataPage'),

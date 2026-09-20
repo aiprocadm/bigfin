@@ -18,8 +18,10 @@ import { useAccounts } from '@/hooks/query/accounts';
 import {
   getArticleFormSchema,
   ArticleFormValues,
+  ArticleKind,
   ManagementArticle,
 } from './schemas';
+import { ARTICLE_KIND_TABS } from './articleKindTabs';
 import {
   useManagementArticles,
   useManagementArticle,
@@ -29,6 +31,12 @@ import {
 
 interface ArticleFormProps {
   article?: ManagementArticle; // when set -> edit mode
+  /**
+   * Вид, на вкладке которого человек нажал «Добавить». Подставляется при
+   * создании: он уже выбрал вид щелчком по вкладке, спрашивать второй раз
+   * незачем.
+   */
+  defaultKind?: ArticleKind;
   onDone: () => void;
   onCancel: () => void;
 }
@@ -70,7 +78,12 @@ function collectDescendantIds(
   return descendants;
 }
 
-export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
+export function ArticleForm({
+  article,
+  defaultKind,
+  onDone,
+  onCancel,
+}: ArticleFormProps) {
   const isEdit = !!article?.id;
 
   const createMutation = useCreateManagementArticle({});
@@ -90,7 +103,7 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
     resolver: zodResolver(getArticleFormSchema()),
     defaultValues: {
       name: article?.name ?? '',
-      kind: article?.kind ?? 'expense',
+      kind: article?.kind ?? defaultKind ?? 'expense',
       cashflowSection: article?.cashflowSection ?? '',
       costBehavior: article?.costBehavior ?? '',
       parentId: article?.parentId ?? null,
@@ -223,15 +236,32 @@ export function ArticleForm({ article, onDone, onCancel }: ArticleFormProps) {
                       onBlur={field.onBlur}
                       name={field.name}
                       ref={field.ref}
+                      /**
+                       * ПРИ ПРАВКЕ ВИД ЗАБЛОКИРОВАН.
+                       *
+                       * Вид решает, в какой отчёт попадут операции статьи.
+                       * Смени его у статьи, которой уже размечены платежи, —
+                       * и суммы разом переедут из одного отчёта в другой:
+                       * прибыль прошлого квартала станет другой, а причину
+                       * никто не вспомнит. Поэтому не «предупредить», а не
+                       * дать: рядом объяснение, что делать вместо этого.
+                       */
+                      disabled={isEdit}
                     >
-                      <option value="income">
-                        {intl.get('management_articles.kind.income')}
-                      </option>
-                      <option value="expense">
-                        {intl.get('management_articles.kind.expense')}
-                      </option>
+                      {ARTICLE_KIND_TABS.map((kindOption) => (
+                        <option key={kindOption} value={kindOption}>
+                          {intl.get(
+                            `management_articles.kind.${kindOption}`,
+                          )}
+                        </option>
+                      ))}
                     </select>
                   </FormControl>
+                  {isEdit && (
+                    <p className="max-w-[60ch] text-xs text-text-secondary">
+                      {intl.get('management_articles.kind_locked_hint')}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

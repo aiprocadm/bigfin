@@ -21,4 +21,14 @@ export class ManagementArticleResponseDto {
 
   @ApiProperty({ example: true })
   active: boolean;
+
+  /**
+   * Устойчивый ключ системной статьи; у заведённых человеком — `null`.
+   *
+   * Отдаётся наружу, потому что по нему экран отличает системную статью:
+   * её можно переименовать, но нельзя удалить и нельзя сменить ей вид.
+   * Считать «системность» на витрине по имени нельзя — имя меняется.
+   */
+  @ApiProperty({ example: 'loan_received', nullable: true })
+  seedKey: string | null;
 }

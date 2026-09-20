@@ -1,5 +1,23 @@
-import { IsString, Length } from 'class-validator';
+import { IsIn, IsOptional, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateOneClickDemoDto {
+  /**
+   * Отрасль демо: `services`, `trade` или `projects` (FIN-027).
+   *
+   * Необязательна: кнопка «посмотреть продукт» должна работать и без
+   * выбора. Чужое значение не роняет запрос — берётся самый частый случай.
+   */
+  @IsString()
+  @IsOptional()
+  @IsIn(['services', 'trade', 'projects'])
+  @ApiProperty({
+    required: false,
+    description: 'Industry of the demo dataset.',
+    example: 'trade',
+  })
+  industry?: string;
+}
 
 export class OneClickDemoSigninDto {
   @IsString()

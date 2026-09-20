@@ -20,6 +20,7 @@ import { CreateOneClickDemoService } from './commands/CreateOneClickDemo.service
 import { OneClickDemoSigninService } from './commands/OneClickDemoSignin.service';
 import { GetOneClickDemoBuildJobService } from './queries/GetOneClickDemoBuildJob.service';
 import {
+  CreateOneClickDemoDto,
   OneClickDemoBuildJobResponseDto,
   OneClickDemoResponseDto,
   OneClickDemoSigninDto,
@@ -47,8 +48,12 @@ export class OneClickDemoController {
     description: 'The demo organization is being built.',
     schema: { $ref: getSchemaPath(OneClickDemoResponseDto) },
   })
-  async createOneClickDemo() {
-    const result = await this.createOneClickDemoService.createOneClickDemo();
+  async createOneClickDemo(@Body() body: CreateOneClickDemoDto = {}) {
+    // Отрасль необязательна: кнопка «посмотреть продукт» работает и без
+    // выбора, а служба сама сведёт пустое к самому частому случаю.
+    const result = await this.createOneClickDemoService.createOneClickDemo(
+      body?.industry,
+    );
 
     return {
       type: 'success',

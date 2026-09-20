@@ -48,5 +48,9 @@ import { VendorsWriteGLOpeningSubscriber } from './subscribers/VendorGLEntriesSu
     VendorGLEntriesStorage,
     VendorsWriteGLOpeningSubscriber,
   ],
+  // Наполнение демо заводит поставщиков обычной службой продукта
+  // (FIN-027): провайдер чужого модуля обязан быть в exports, иначе
+  // сервер не поднимается.
+  exports: [CreateVendorService],
 })
 export class VendorsModule { }

@@ -4984,5 +4984,12 @@
   "deals.progress.overdelivered": "перепоставка",
   "money_summary.advances_received": "Авансы получены: {amount}",
   "money_summary.advances_paid": "Авансы выданы: {amount}",
-  "money_summary.advances_hint": "Полученный аванс закрывается работой, а не деньгами; выданный — поставкой. В ожидаемые поступления они не входят."
+  "money_summary.advances_hint": "Полученный аванс закрывается работой, а не деньгами; выданный — поставкой. В ожидаемые поступления они не входят.",
+  "one_click_demo.industry.question": "Чем вы занимаетесь? Покажем пример по вашей отрасли.",
+  "one_click_demo.industry.services.name": "Услуги",
+  "one_click_demo.industry.services.summary": "Консультации, сопровождение, работа людей. Клиенты, счета с отсрочкой, аренда и просроченная оплата.",
+  "one_click_demo.industry.trade.name": "Торговля",
+  "one_click_demo.industry.trade.summary": "Закупка и отгрузка с наценкой. Крупная закупка, за которую платить раньше, чем рассчитаются покупатели.",
+  "one_click_demo.industry.projects.name": "Строительство и проекты",
+  "one_click_demo.industry.projects.summary": "Объекты и этапы. Крупные суммы, расчёт с подрядчиком и заказчик, который платит позже."
 }

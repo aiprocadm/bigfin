@@ -11,6 +11,13 @@ export class OneClickDemo extends BaseModel {
   public tenantId: number;
   public userId: number;
   public buildJobId: string | null;
+  /**
+   * Отрасль демо (FIN-027): по ней подписчик выбирает набор данных.
+   *
+   * Хранится здесь, а не передаётся через джоб: подписчик на событие
+   * «организация построена» получает только номер тенанта.
+   */
+  public industry: string;
 
   static get tableName() {
     return 'oneclick_demos';

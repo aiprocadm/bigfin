@@ -16,7 +16,15 @@ import { setAuthLoginCookies } from './authentication';
 import { batch } from 'react-redux';
 import { transformToCamelCase } from '@/utils';
 
-interface CreateOneClickDemoValues {}
+interface CreateOneClickDemoValues {
+  /**
+   * Отрасль демо: `services`, `trade` или `projects` (FIN-027 ТЗ-2).
+   *
+   * Необязательна: кнопка «посмотреть продукт» работает и без выбора, а
+   * сервер сведёт пустое к самому частому случаю.
+   */
+  industry?: string;
+}
 /**
  * Что отдаёт заведение демо — данные из ответа сервера
  * `{ type, code, message, data }`, разобранные в верблюжье написание, как у
@@ -47,9 +55,9 @@ export function useCreateOneClickDemo(
   const apiRequest = useApiRequest();
 
   return useMutation<CreateOneClickDemoRes, Error, CreateOneClickDemoValues>(
-    () =>
+    (values) =>
       apiRequest
-        .post(`/demo/one_click`)
+        .post(`/demo/one_click`, values ?? {})
         .then((res) => transformToCamelCase(res.data.data)),
     { ...props },
   );

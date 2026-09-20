@@ -7,6 +7,7 @@ import {
   useOneClickDemoSignin,
 } from '@/hooks/query/oneclick-demo';
 import { Box, Icon, Stack } from '@/components';
+import { DEMO_INDUSTRIES, DemoIndustry } from './demoIndustries';
 import style from './OneClickDemoPage.module.scss';
 
 export function OneClickDemoPageContent() {
@@ -19,6 +20,10 @@ export function OneClickDemoPageContent() {
     isLoading: isOneclickDemoSigningIn,
   } = useOneClickDemoSignin();
 
+  // ОТРАСЛЬ ВЫБИРАЕТСЯ ДО НАЖАТИЯ (FIN-027 ТЗ-2). У оптовика и у
+  // бухгалтера-одиночки разные контрагенты, суммы и беды: чужой пример
+  // не узнаётся как свой, и демо перестаёт объяснять.
+  const [industry, setIndustry] = useState<DemoIndustry>('services');
   const [demoId, setDemoId] = useState<string>('');
   const [isJobDone, setIsJobDone] = useState<boolean>(false);
   const [hasFailed, setHasFailed] = useState<boolean>(false);
@@ -50,7 +55,7 @@ export function OneClickDemoPageContent() {
 
   const handleCreateAccountBtnClick = () => {
     setHasFailed(false);
-    createOneClickDemo({})
+    createOneClickDemo({ industry })
       .then((demo) => {
         setDemoId(demo.demoId);
       })
@@ -87,6 +92,34 @@ export function OneClickDemoPageContent() {
             </Text>
           )}
         </Stack>
+
+        {!isLoading && (
+          <Stack spacing={10} className={style.industries}>
+            <Text className={style.industriesTitle}>
+              {intl.get('one_click_demo.industry.question')}
+            </Text>
+            {DEMO_INDUSTRIES.map((key) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={industry === key}
+                className={
+                  industry === key
+                    ? `${style.industryCard} ${style.industryCardActive}`
+                    : style.industryCard
+                }
+                onClick={() => setIndustry(key)}
+              >
+                <span className={style.industryName}>
+                  {intl.get(`one_click_demo.industry.${key}.name`)}
+                </span>
+                <span className={style.industrySummary}>
+                  {intl.get(`one_click_demo.industry.${key}.summary`)}
+                </span>
+              </button>
+            ))}
+          </Stack>
+        )}
 
         {!isLoading && (
           <Button

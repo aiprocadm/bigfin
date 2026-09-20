@@ -1,9 +1,10 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Lock, Pencil, Trash2 } from 'lucide-react';
 import { ManagementArticle } from './schemas';
 import { buildArticleSummary } from './articleSummary';
+import { isSystemArticle } from './articleKindTabs';
 
 interface ArticleTreeProps {
   nodes: ManagementArticle[];
@@ -29,6 +30,27 @@ export function ArticleTree({
           >
             <span className="flex items-center gap-2">
               <span className="font-medium">{node.name}</span>
+              {isSystemArticle(node) && (
+                /**
+                 * Замок у системной статьи.
+                 *
+                 * Переименовать её можно, удалить — нет: ею уже размечены
+                 * операции у всех организаций, и её исчезновение осиротило
+                 * бы разметку. Замок объясняет это ДО щелчка по корзине, а
+                 * не отказом после.
+                 *
+                 * Иконка не единственный носитель смысла: та же мысль есть
+                 * словами в подсказке и доступна читалке экрана.
+                 */
+                <Lock
+                  className="h-3 w-3 text-text-secondary"
+                  aria-label={intl.get('management_articles.system_article')}
+                >
+                  <title>
+                    {intl.get('management_articles.system_article')}
+                  </title>
+                </Lock>
+              )}
               {(() => {
                 const summary = buildArticleSummary(node as any);
                 return (
@@ -58,14 +80,16 @@ export function ArticleTree({
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label={intl.get('management_articles.delete')}
-                onClick={() => onDelete(node)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              {!isSystemArticle(node) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={intl.get('management_articles.delete')}
+                  onClick={() => onDelete(node)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
             </span>
           </div>
           {node.children && node.children.length > 0 && (

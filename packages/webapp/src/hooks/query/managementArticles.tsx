@@ -11,7 +11,8 @@ import { unwrapData } from '@/utils/unwrapData';
 
 export interface ManagementArticleValues {
   name: string;
-  kind: 'income' | 'expense';
+  /** Пять видов статьи учёта (FIN-001 ТЗ-2), а не два. */
+  kind: 'income' | 'expense' | 'asset' | 'liability' | 'equity';
   parentId?: number | null;
   cashflowSection?: 'operating' | 'investing' | 'financing';
   accountIds?: number[];

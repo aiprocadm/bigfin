@@ -403,6 +403,21 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     sidebarExpand: false,
   },
   {
+    // Главный денежный отчёт продукта: прямой метод, по статьям (FIN-013).
+    path: `/financial-reports/cash-flow-articles`,
+    component: lazy(
+      () =>
+        import(
+          '@/containers/FinancialStatements/CashFlowArticles/CashFlowArticles'
+        ),
+    ),
+    breadcrumb: intl.get('cash_flow_articles.page_title'),
+    hint: intl.get('cash_flow_articles.page_hint'),
+    pageTitle: intl.get('cash_flow_articles.page_title'),
+    backLink: true,
+    sidebarExpand: false,
+  },
+  {
     path: `/financial-reports/cash-flow`,
     component: lazy(
       () =>

@@ -256,6 +256,10 @@ export const AbilitySchema: ISubjectAbilitiesSchema[] = [
       },
       { key: ReportsAction.READ_CASHFLOW, label: 'ability.cashflow_report' },
       {
+        key: ReportsAction.READ_CASHFLOW_ARTICLES,
+        label: 'ability.cashflow_articles_report',
+      },
+      {
         key: ReportsAction.READ_AR_AGING_SUMMARY,
         label: 'ability.AR_aging_summary_report',
       },

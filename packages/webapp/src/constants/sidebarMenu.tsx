@@ -100,9 +100,23 @@ export const SidebarMenu = [
     type: ISidebarMenuItemType.Group,
     children: [
       {
+        // «Деньги» ведут на ПРЯМОЙ отчёт по статьям: он отвечает на вопрос
+        // «откуда пришли и куда ушли», а не сводит прибыль к остатку.
         text: <T id={'sidebar.reports.money'} />,
+        href: '/financial-reports/cash-flow-articles',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Report,
+          ability: ReportsAction.READ_CASHFLOW_ARTICLES,
+        },
+      },
+      {
+        // Косвенный ДДС остаётся на месте и никуда не девается: он нужен
+        // бухгалтеру. В режиме «Бизнес» его не видно (п. 1.3 ТЗ-1).
+        text: <T id={'sidebar.reports.money_indirect'} />,
         href: '/financial-reports/cash-flow',
         type: ISidebarMenuItemType.Link,
+        accountantOnly: true,
         permission: {
           subject: AbilitySubject.Report,
           ability: ReportsAction.READ_CASHFLOW_ACCOUNT_TRANSACTION,

@@ -10,6 +10,7 @@ import { DealsApplication } from './Deals.application';
 import { DealStagesController } from './DealStages.controller';
 import { DealStagesApplication } from './DealStages.application';
 import { GetDealsService } from './queries/GetDeals.service';
+import { GetDealsProgressService } from './queries/GetDealsProgress.service';
 import { GetDealService } from './queries/GetDeal.service';
 import { GetDealsSummaryService } from './queries/GetDealsSummary.service';
 import { GetDealProfitabilityService } from './queries/GetDealProfitability.service';
@@ -37,6 +38,7 @@ import { DeleteDealStageService } from './commands/DeleteDealStage.service';
   providers: [
     DealsApplication,
     GetDealsService,
+    GetDealsProgressService,
     GetDealService,
     GetDealsSummaryService,
     GetDealProfitabilityService,

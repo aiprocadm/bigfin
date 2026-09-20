@@ -10,6 +10,11 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/cn';
+import { DebtNatureCell } from '@/components/ui/debt-nature-cell';
+import {
+  debtByContactId,
+  useContactDebtBreakdown,
+} from '@/hooks/query/contacts';
 import {
   activeStatus,
   formatBalance,
@@ -27,6 +32,11 @@ export function useVendorsColumns({
   onEdit,
   onDelete,
 }: VendorsColumnHandlers) {
+  // Один запрос на страницу, а не на строку: ответ приходит сразу по
+  // всем контрагентам с долгом.
+  const { data: breakdown } = useContactDebtBreakdown();
+  const debt = React.useMemo(() => debtByContactId(breakdown), [breakdown]);
+
   return React.useMemo(
     () => [
       {
@@ -58,6 +68,29 @@ export function useVendorsColumns({
           >
             {formatBalance(original.closing_balance, original.currency_code)}
           </span>
+        ),
+      },
+      {
+        // РАЗБОР ДОЛГА ПО ПРИРОДЕ (FIN-023 ТЗ-2). Рядом с общим сальдо, а не
+        // вместо него: сальдо привычно, а разбор отвечает на другой вопрос —
+        // «сколько из этого придёт деньгами».
+        id: 'receivable_nature',
+        Header: intl.get('debt_nature.receivable'),
+        accessor: 'id',
+        align: 'right',
+        disableSortBy: true,
+        Cell: ({ row: { original } }: any) => (
+          <DebtNatureCell side={debt.get(Number(original.id))?.receivable} />
+        ),
+      },
+      {
+        id: 'payable_nature',
+        Header: intl.get('debt_nature.payable'),
+        accessor: 'id',
+        align: 'right',
+        disableSortBy: true,
+        Cell: ({ row: { original } }: any) => (
+          <DebtNatureCell side={debt.get(Number(original.id))?.payable} />
         ),
       },
       {
@@ -111,6 +144,6 @@ export function useVendorsColumns({
         ),
       },
     ],
-    [onView, onEdit, onDelete],
+    [onView, onEdit, onDelete, debt],
   );
 }

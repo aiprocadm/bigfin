@@ -99,6 +99,12 @@ export default function MoneySummarySection() {
     });
   }
 
+  // Авансы приходят ТЕМ ЖЕ ответом, что и вся сводка: отдельный запрос
+  // ради одной строки был бы вторым запросом на самом частом экране.
+  const advancesReceived = Number(data.advancesReceived?.amount ?? 0);
+  const advancesPaid = Number(data.advancesPaid?.amount ?? 0);
+  const hasAdvances = advancesReceived > 0 || advancesPaid > 0;
+
   return (
     <section>
       <h2 className="mb-3 text-lg font-semibold text-text-primary">
@@ -122,6 +128,27 @@ export default function MoneySummarySection() {
           </Link>
         ))}
       </div>
+
+      {/* АВАНСЫ НАЗВАНЫ ОТДЕЛЬНО (FIN-023). Полученный аванс закрывается
+          работой, а выданный — поставкой: в ожидаемые поступления они не
+          входят, и сложить их с долгом деньгами значит обещать себе денег
+          больше, чем будет. */}
+      {hasAdvances && (
+        <p className="mt-2 text-sm text-text-secondary">
+          {advancesReceived > 0 &&
+            intl.get('money_summary.advances_received', {
+              amount: data.advancesReceived.formattedAmount,
+            })}
+          {advancesReceived > 0 && advancesPaid > 0 ? ' · ' : ''}
+          {advancesPaid > 0 &&
+            intl.get('money_summary.advances_paid', {
+              amount: data.advancesPaid.formattedAmount,
+            })}
+          <span className="ml-1 block text-xs">
+            {intl.get('money_summary.advances_hint')}
+          </span>
+        </p>
+      )}
 
       {data.taxEstimate && (
         <p className="mt-2 text-xs text-text-secondary">

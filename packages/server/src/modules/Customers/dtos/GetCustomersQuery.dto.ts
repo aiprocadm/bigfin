@@ -23,4 +23,11 @@ export class GetCustomersQueryDto extends DynamicFilterQueryDto {
   @IsBoolean()
   @Transform(({ value }) => parseBoolean(value, false))
   inactiveMode?: boolean;
+  /**
+   * Природа долга: `money` — должны деньги, `goods` — должны поставку,
+   * `none` — долга нет вовсе (FIN-023 ТЗ-2).
+   */
+  @IsString()
+  @IsOptional()
+  debtNature?: string;
 }

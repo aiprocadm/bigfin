@@ -27,6 +27,82 @@ export function useContact(id: any, props: any) {
   );
 }
 
+/** Часть долга: закроется деньгами или поставкой. */
+export interface DebtSide {
+  money: number;
+  goods: number;
+  total: number;
+}
+
+export interface ContactDebtBreakdown {
+  contactId: number;
+  /** Нам должны. */
+  receivable: DebtSide;
+  /** Мы должны. */
+  payable: DebtSide;
+}
+
+export interface DebtBreakdownResult {
+  contacts: ContactDebtBreakdown[];
+  totals: {
+    receivable: DebtSide;
+    payable: DebtSide;
+    /** Авансы, полученные от покупателей: мы должны исполнение. */
+    advancesReceived: number;
+    /** Авансы, выданные поставщикам: нам должны поставку. */
+    advancesPaid: number;
+  };
+}
+
+/**
+ * Денежная и неденежная задолженность (FIN-023 ТЗ-2).
+ *
+ * ЗАЧЕМ ОТДЕЛЬНЫМ ЗАПРОСОМ, А НЕ В СПИСКЕ. Разбор нужен и списку клиентов, и
+ * списку поставщиков, и главной. Встроить его в каждый список значило бы
+ * посчитать одно и то же трижды; здесь ответ один и переиспользуется.
+ *
+ * ОДИН ЗАПРОС НА СТРАНИЦУ, А НЕ НА СТРОКУ: ответ приходит сразу по всем
+ * контрагентам с долгом.
+ */
+export function useContactDebtBreakdown(props?: any) {
+  const apiRequest = useApiRequest();
+
+  return useQueryTenant(
+    ['CONTACTS', 'DEBT-BREAKDOWN'],
+    () => apiRequest.get('contacts/debt-breakdown'),
+    {
+      select: (res: any): DebtBreakdownResult =>
+        res.data ?? {
+          contacts: [],
+          totals: {
+            receivable: { money: 0, goods: 0, total: 0 },
+            payable: { money: 0, goods: 0, total: 0 },
+            advancesReceived: 0,
+            advancesPaid: 0,
+          },
+        },
+      // Разбор — дополнение к списку, а не сам список: молчать при сбое лучше,
+      // чем не показать контрагентов вовсе.
+      retry: false,
+      ...props,
+    },
+  );
+}
+
+/**
+ * Разбор долга по номеру контрагента: готовая справочная таблица для строк
+ * списка.
+ */
+export function debtByContactId(
+  data?: DebtBreakdownResult,
+): Map<number, ContactDebtBreakdown> {
+  const byId = new Map<number, ContactDebtBreakdown>();
+
+  (data?.contacts ?? []).forEach((row) => byId.set(Number(row.contactId), row));
+
+  return byId;
+}
+
 /**
  * Retrieve the auto-complete contacts.
  */

@@ -170,6 +170,9 @@ export default function AllTransactionsPage() {
                 ? 'all_transactions.awaiting.title'
                 : 'all_transactions.title',
             )}
+            /* Реестр вложен в «Кассы и банковские счета», и ключ справки из
+               адреса не выводится — поэтому назван явно (FIN-025). */
+            helpTopic="all_transactions"
             action={
               <div className="flex flex-wrap items-center gap-2">
                 {/*

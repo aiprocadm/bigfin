@@ -5,6 +5,7 @@ import { GetContactByInnService } from './queries/GetContactByInn.service';
 import { ContactsController } from './Contacts.controller';
 import { ActivateContactService } from './commands/ActivateContact.service';
 import { InactivateContactService } from './commands/InactivateContact.service';
+import { GetContactDebtBreakdownService } from './queries/GetContactDebtBreakdown.service';
 
 @Module({
   providers: [
@@ -13,8 +14,11 @@ import { InactivateContactService } from './commands/InactivateContact.service';
     GetContactByInnService,
     ActivateContactService,
     InactivateContactService,
+    GetContactDebtBreakdownService,
   ],
   controllers: [ContactsController],
-  exports: [GetContactByInnService],
+  // Разбор долга нужен и спискам покупателей и поставщиков: провайдер
+  // чужого модуля обязан быть в exports, иначе сервер не поднимается.
+  exports: [GetContactByInnService, GetContactDebtBreakdownService],
 })
 export class ContactsModule {}

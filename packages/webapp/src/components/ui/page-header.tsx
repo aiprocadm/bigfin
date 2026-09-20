@@ -1,6 +1,29 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/cn';
+import { ScreenHelp } from './screen-help';
+
+/**
+ * Ключ справки, выведенный из адреса экрана (FIN-025 ТЗ-2).
+ *
+ * ПОЧЕМУ ИЗ АДРЕСА, А НЕ РУКАМИ НА КАЖДОМ ЭКРАНЕ. Экранов больше пятидесяти.
+ * Проставить пометку на каждом — значит однажды забыть её на новом, и справка
+ * тихо исчезнет там, где она нужнее всего: на только что появившемся экране,
+ * про который никто ничего не знает.
+ *
+ * АДРЕС ЧИТАЕТСЯ ИЗ ОКНА, А НЕ ХУКОМ МАРШРУТИЗАТОРА. Заголовок рисуется и
+ * вне маршрутов — в историях компонентов и в тестах, — а хук маршрутизатора
+ * там падает. Страница при переходе собирается заново, поэтому адрес всегда
+ * свежий.
+ */
+export function topicFromPath(pathname: string): string {
+  const segment = String(pathname ?? '')
+    .split('?')[0]
+    .split('/')
+    .filter(Boolean)[0];
+
+  return segment ? segment.replace(/-/g, '_') : '';
+}
 
 export interface PageHeaderProps {
   title: React.ReactNode;
@@ -17,6 +40,13 @@ export interface PageHeaderProps {
   description?: React.ReactNode;
   action?: React.ReactNode;
   className?: string;
+  /**
+   * Ключ справки, если он не выводится из адреса.
+   *
+   * Нужен вложенным экранам со своим вопросом: реестру операций и отчёту о
+   * движении денег по статьям. Пустая строка выключает кнопку намеренно.
+   */
+  helpTopic?: string;
 }
 
 export function PageHeader({
@@ -24,7 +54,14 @@ export function PageHeader({
   description,
   action,
   className,
+  helpTopic,
 }: PageHeaderProps) {
+  const topic =
+    helpTopic ??
+    topicFromPath(
+      typeof window === 'undefined' ? '' : window.location.pathname,
+    );
+
   return (
     <div
       className={cn(
@@ -33,9 +70,14 @@ export function PageHeader({
       )}
     >
       <div className="min-w-0">
-        <h1 className="text-xl font-semibold tracking-[-0.01em] text-text-primary">
-          {title}
-        </h1>
+        <div className="flex items-center gap-1.5">
+          <h1 className="text-xl font-semibold tracking-[-0.01em] text-text-primary">
+            {title}
+          </h1>
+          {/* Кнопка появляется только там, где есть что объяснить: пустая
+              подсказка хуже её отсутствия. */}
+          {topic && <ScreenHelp topic={topic} />}
+        </div>
         {description && (
           // Длина строки ограничена: текст шире 70 знаков читается тяжелее,
           // потому что глазу труднее найти начало следующей строки.

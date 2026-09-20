@@ -11,7 +11,9 @@ import { ProfitLossSheetModule } from '../FinancialStatements/modules/ProfitLoss
 import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
 import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
+import { GetHomepageInsightsService } from './queries/GetHomepageInsights.service';
 import { BankAccountsModule } from '@/modules/BankingAccounts/BankAccounts.module';
+import { ContactsModule } from '@/modules/Contacts/Contacts.module';
 
 @Module({
   // Сводка о деньгах берёт цифры из тех же отчётов, что показывают разделы
@@ -26,6 +28,8 @@ import { BankAccountsModule } from '@/modules/BankingAccounts/BankAccounts.modul
     // Провайдер чужого модуля обязан быть в его exports — иначе сервер не
     // поднимается, и на этом в проекте спотыкались трижды.
     BankAccountsModule,
+    // Разбор долга по природе нужен строке авансов в сводке (FIN-023).
+    ContactsModule,
   ],
   providers: [
     DashboardService,
@@ -34,6 +38,7 @@ import { BankAccountsModule } from '@/modules/BankingAccounts/BankAccounts.modul
     GetTaxEstimateService,
     GetDashboardOverviewService,
     GetMoneyWidgetService,
+    GetHomepageInsightsService,
   ],
   controllers: [DashboardController],
   // Оценку налога спрашивает и правило уведомления «скоро платить налог»

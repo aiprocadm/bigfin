@@ -25,6 +25,10 @@ const buildService = ({
   // null, а не отсутствие поля: так отвечает сервис организации не на
   // упрощёнке — плитки налога быть не должно.
   taxEstimate = null,
+  // Авансы: полученный закрывается работой, выданный — поставкой.
+  advancesReceived = 0,
+  advancesPaid = 0,
+  advancesThrow = false,
 }: any = {}) => {
   const accountModel = () => ({
     query: () => ({
@@ -49,6 +53,12 @@ const buildService = ({
     // Оценка налога проверяется своими тестами (GetTaxEstimate.spec); здесь
     // важно лишь, что сводка её спрашивает и не падает без неё.
     { getTaxEstimate: async () => taxEstimate } as any,
+    {
+      getDebtBreakdown: async () => {
+        if (advancesThrow) throw new Error('разбор недоступен');
+        return { totals: { advancesReceived, advancesPaid } };
+      },
+    } as any,
     {
       getTenantMetadata: async () => ({ baseCurrency: 'RUB', tenantId: 7 }),
     } as any,
@@ -140,5 +150,34 @@ describe('плитка «ближайшие платежи»', () => {
     expect(summary.upcomingPaymentsDate).toBeNull();
     // Главное: остальные плитки на месте.
     expect(summary.cashBalance.amount).toBe(175000);
+  });
+});
+
+describe('авансы в сводке (FIN-023)', () => {
+  it('полученные и выданные названы отдельно', async () => {
+    const summary = await buildService({
+      advancesReceived: 120000,
+      advancesPaid: 45000,
+    }).getMoneySummary();
+
+    expect(summary.advancesReceived.amount).toBe(120000);
+    expect(summary.advancesPaid.amount).toBe(45000);
+  });
+
+  it('НЕ складываются с долгом деньгами', async () => {
+    // Полученный аванс закрывается работой, а не деньгами. Прибавить его к
+    // долгу покупателей значит обещать себе денег больше, чем будет.
+    const summary = await buildService({
+      advancesReceived: 120000,
+    }).getMoneySummary();
+
+    expect(summary.receivable.amount).toBe(53000);
+  });
+
+  it('сбой разбора не роняет сводку', async () => {
+    const summary = await buildService({ advancesThrow: true }).getMoneySummary();
+
+    expect(summary.cashBalance.amount).toBe(175000);
+    expect(summary.advancesReceived.amount).toBe(0);
   });
 });

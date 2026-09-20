@@ -63,6 +63,8 @@ const buildService = (options: {
   pendingRequests?: number;
   gap?: any;
   overdue?: number;
+  insights?: any;
+  insightsFail?: boolean;
 }) => {
   const calls: any[] = [];
 
@@ -110,16 +112,34 @@ const buildService = (options: {
     }),
   });
 
+  // Два блока «на ком держится бизнес» едут тем же ответом (FIN-018).
+  const insightsCalls: any[] = [];
+  const homepageInsights = {
+    getInsights: async (period: any, sortBy: any) => {
+      insightsCalls.push({ period, sortBy });
+
+      if (options.insightsFail) throw new Error('база недоступна');
+
+      return (
+        options.insights ?? {
+          topContractors: { rows: [], totalRevenue: 0 },
+          directionsProfit: { rows: [], unassigned: null, sortBy },
+        }
+      );
+    },
+  };
+
   const service = new GetDashboardOverviewService(
     profitLoss as any,
     moneySummary as any,
     paymentCalendar as any,
+    homepageInsights as any,
     tenancyContext as any,
     accountModel as any,
     countingModel(options.uncategorized ?? 0) as any,
     countingModel(options.pendingRequests ?? 0) as any,
   );
-  return { service, calls };
+  return { service, calls, insightsCalls };
 };
 
 describe('главная: всё одним ответом', () => {
@@ -325,5 +345,78 @@ describe('главная: всё одним ответом', () => {
 
     expect(overview.tiles.income.amount).toBe(100);
     expect(overview.attention.some((i) => i.kind === 'cash_gap')).toBe(false);
+  });
+
+  describe('кто приносит прибыль и прибыльность направлений (FIN-018)', () => {
+    it('оба блока приходят ТЕМ ЖЕ ответом', async () => {
+      // Приёмка 4 FIN-018: главная по-прежнему делает один запрос. Отдельные
+      // ручки под блоки означали бы пять запросов на самом частом экране.
+      const { service } = buildService({
+        current: report(100, 50),
+        previous: report(0, 0),
+        insights: {
+          topContractors: {
+            rows: [{ contactId: 7, name: 'ООО «Ромашка»', revenue: 100 }],
+            totalRevenue: 100,
+            concentrationCount: 1,
+            verdict: 'SINGLE_CLIENT',
+          },
+          directionsProfit: {
+            rows: [{ projectId: 3, name: 'Розница', profit: 50 }],
+            unassigned: null,
+            sortBy: 'profit',
+          },
+        },
+      });
+
+      const overview = await service.getOverview('2026-03-01', '2026-03-31');
+
+      expect(overview.topContractors?.verdict).toBe('SINGLE_CLIENT');
+      expect(overview.directionsProfit?.rows[0].name).toBe('Розница');
+    });
+
+    it('блоки считаются ЗА ТОТ ЖЕ период, что и плитки', async () => {
+      // Иначе «выручка за март» в плитке и «выручка по клиентам» в блоке
+      // разойдутся, и человек решит, что продукт врёт.
+      const { service, insightsCalls } = buildService({
+        current: report(100, 50),
+        previous: report(0, 0),
+      });
+
+      await service.getOverview('2026-03-01', '2026-03-31');
+
+      expect(insightsCalls[0].period).toEqual({
+        fromDate: '2026-03-01',
+        toDate: '2026-03-31',
+      });
+    });
+
+    it('порядок направлений передаётся дальше', async () => {
+      const { service, insightsCalls } = buildService({
+        current: report(100, 50),
+        previous: report(0, 0),
+      });
+
+      await service.getOverview('2026-03-01', '2026-03-31', 'margin');
+
+      expect(insightsCalls[0].sortBy).toBe('margin');
+    });
+
+    it('сбой блоков НЕ РОНЯЕТ главную', async () => {
+      // Остаток и то, что горит, важнее блока-аналитики.
+      const { service } = buildService({
+        current: report(100, 50),
+        previous: report(0, 0),
+        insightsFail: true,
+      });
+
+      const overview = await service.getOverview('2026-03-01', '2026-03-31');
+
+      expect(overview.tiles.income.amount).toBe(100);
+      // `null`, а не пустой блок: пустой блок читается как «клиентов нет»,
+      // и это враньё.
+      expect(overview.topContractors).toBeNull();
+      expect(overview.directionsProfit).toBeNull();
+    });
   });
 });

@@ -1,6 +1,7 @@
 // © 2026 Bigfin
 import React from 'react';
 import intl from 'react-intl-universal';
+import { DealProgressBars } from './DealProgressBars';
 import { toast } from 'sonner';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
@@ -171,6 +172,15 @@ export default function DealsPage() {
                 </span>
               </button>
               <div className="flex items-center gap-4">
+                {/* «Оплачено» и «Отгружено» (FIN-024). Доли приходят тем же
+                    ответом, что и сам список: отдельный запрос на строку
+                    означал бы запрос на каждую сделку страницы. */}
+                <DealProgressBars
+                  paidRatio={d.paidRatio}
+                  shippedRatio={d.shippedRatio}
+                  flags={d.flags}
+                  className="hidden sm:flex"
+                />
                 {m && (
                   <span className="text-muted-foreground">
                     {fmt(m.profit)} · {pct(m.margin)}

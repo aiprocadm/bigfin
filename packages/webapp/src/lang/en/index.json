@@ -5001,5 +5001,7 @@
   "data_quality.drifted_balances.stored": "On the account",
   "data_quality.drifted_balances.ledger": "In the ledger",
   "data_quality.drifted_balances.difference": "Difference",
-  "data_quality.drifted_balances.hint": "The product does not fix this on its own: which figure is right is your call. The stored balance may have fallen behind the ledger, or it may correctly hold opening money the ledger never received. Open the account and check it against the bank statement."
+  "data_quality.drifted_balances.hint": "The product does not fix this on its own: which figure is right is your call. The stored balance may have fallen behind the ledger, or it may correctly hold opening money the ledger never received. Open the account and check it against the bank statement.",
+  "payment_calendar.fact_plan": "actual {fact} · planned {plan}",
+  "payment_calendar.period_empty": "Nothing moves in this period — no inflows, no outflows."
 }

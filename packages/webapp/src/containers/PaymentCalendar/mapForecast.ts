@@ -22,6 +22,26 @@ export interface ForecastDay {
   lines: ForecastLine[];
 }
 
+/**
+ * Клетка календаря при масштабе крупнее дня (FIN-019).
+ *
+ * Внутри одной клетки соседствуют ФАКТ и ПЛАН: прошедшая часть периода уже
+ * случилась, оставшаяся — прогноз. Смешать их молча значило бы показать
+ * план как свершившееся.
+ */
+export interface ForecastPeriod {
+  from: string;
+  to: string;
+  inflow: number;
+  outflow: number;
+  balance: number;
+  factInflow: number;
+  factOutflow: number;
+  planInflow: number;
+  planOutflow: number;
+  isWeekend: boolean;
+}
+
 export interface ForecastGap {
   date: string;
   amount: number;
@@ -30,6 +50,9 @@ export interface ForecastGap {
 
 export interface Forecast {
   days: ForecastDay[];
+  /** Клетки при масштабе крупнее дня; при дневном — по дню на клетку. */
+  periods: ForecastPeriod[];
+  granularity: string;
   gap: ForecastGap | null;
   openingBalance: number;
   baseCurrency: string;
@@ -57,6 +80,19 @@ const mapDay = (raw: any): ForecastDay => ({
   lines: (raw?.lines ?? []).map(mapLine),
 });
 
+const mapPeriod = (raw: any): ForecastPeriod => ({
+  from: raw?.from ?? '',
+  to: raw?.to ?? '',
+  inflow: num(raw?.inflow),
+  outflow: num(raw?.outflow),
+  balance: num(raw?.balance),
+  factInflow: num(raw?.fact_inflow ?? raw?.factInflow),
+  factOutflow: num(raw?.fact_outflow ?? raw?.factOutflow),
+  planInflow: num(raw?.plan_inflow ?? raw?.planInflow),
+  planOutflow: num(raw?.plan_outflow ?? raw?.planOutflow),
+  isWeekend: Boolean(raw?.is_weekend ?? raw?.isWeekend),
+});
+
 const mapGap = (raw: any): ForecastGap | null => {
   if (!raw) return null;
 
@@ -69,6 +105,8 @@ const mapGap = (raw: any): ForecastGap | null => {
 
 export const mapForecast = (raw: any): Forecast => ({
   days: (raw?.days ?? []).map(mapDay),
+  periods: (raw?.periods ?? []).map(mapPeriod),
+  granularity: raw?.granularity ?? 'day',
   gap: mapGap(raw?.gap),
   openingBalance: num(raw?.opening_balance ?? raw?.openingBalance),
   baseCurrency: raw?.base_currency ?? raw?.baseCurrency ?? 'RUB',

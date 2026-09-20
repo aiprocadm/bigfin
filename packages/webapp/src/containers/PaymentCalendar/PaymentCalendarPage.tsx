@@ -12,6 +12,7 @@ import {
 } from '@/hooks/query/paymentCalendar';
 import { useAccounts } from '@/hooks/query/accounts';
 import { DayRow } from './DayRow';
+import { PeriodRow, daysOfPeriod } from './PeriodRow';
 import type { ForecastLine } from './mapForecast';
 import { PlannedOperationDialog } from './PlannedOperationDialog';
 import { PlannedOperation } from './schemas';
@@ -123,6 +124,11 @@ export default function PaymentCalendarPage() {
 
   const days = data?.days ?? [];
   const gap = data?.gap ?? null;
+  // КЛЕТКИ КРУПНЕЕ ДНЯ. Раньше витрина читала только дни, и переключатель
+  // масштаба не менял НИЧЕГО: сервер честно считал периоды, а показать их
+  // было некому.
+  const periods = data?.periods ?? [];
+  const byPeriods = granularity !== 'day' && periods.length > 0;
 
   /**
    * «На сегодня» — прокрутка к текущему дню.
@@ -261,19 +267,33 @@ export default function PaymentCalendarPage() {
       {truncated && <ListTruncated shown={days.length} />}
 
       <div className="flex flex-col">
-        {days.map((day: any) => (
-          /* Якорь сегодняшнего дня: к нему возвращает кнопка «На сегодня». */
-          <div
-            key={day.date}
-            ref={day.date === fromDate ? todayRef : undefined}
-          >
-            <DayRow
-              day={day}
-              onMaterialize={handleMaterialize}
-              foundOperationId={foundOperationId}
-            />
-          </div>
-        ))}
+        {byPeriods
+          ? periods.map((period: any) => (
+              /* Якорь текущего периода: к нему возвращает «На сегодня». */
+              <div
+                key={period.from}
+                ref={period.from <= fromDate && period.to >= fromDate ? todayRef : undefined}
+              >
+                <PeriodRow
+                  period={period}
+                  days={daysOfPeriod(days, period)}
+                  onMaterialize={handleMaterialize}
+                />
+              </div>
+            ))
+          : days.map((day: any) => (
+              /* Якорь сегодняшнего дня: к нему возвращает «На сегодня». */
+              <div
+                key={day.date}
+                ref={day.date === fromDate ? todayRef : undefined}
+              >
+                <DayRow
+                  day={day}
+                  onMaterialize={handleMaterialize}
+                  foundOperationId={foundOperationId}
+                />
+              </div>
+            ))}
       </div>
     </div>
   );

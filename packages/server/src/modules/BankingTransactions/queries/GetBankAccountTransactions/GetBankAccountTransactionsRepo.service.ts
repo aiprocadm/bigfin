@@ -95,6 +95,26 @@ export class GetBankAccountTransactionsRepository {
   }
 
   /**
+   * Срок оплаты в виде `ГГГГ-ММ-ДД`.
+   *
+   * НАЙДЕНО ЖИВЫМ ПРОХОДОМ. Расчёт состояний сравнивает срок с сегодняшним
+   * днём КАК СТРОКИ, а модель отдаёт дату объектом. Сравнение объекта со
+   * строкой в JavaScript не падает — оно молча даёт «не просрочено», и
+   * пометка «просрочено» не появлялась НИ РАЗУ, хотя отбор по просрочке
+   * находил восемнадцать строк.
+   */
+  private static dueDateOf(value: any): string | null {
+    if (!value) return null;
+    if (typeof value === 'string') return value.slice(0, 10);
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime())
+      ? null
+      : date.toISOString().slice(0, 10);
+  }
+
+  /**
    * Догружает документы строк текущей страницы (FIN-003 ТЗ-2).
    *
    * ТОЛЬКО ТЕКУЩАЯ СТРАНИЦА: строк на ней не больше размера страницы, и
@@ -128,14 +148,16 @@ export class GetBankAccountTransactionsRepository {
         this.documentsByReference.set(`SaleInvoice:${invoice.id}`, {
           status: invoice.isDelivered === false ? 'draft' : 'delivered',
           balance: Number(invoice.dueAmount ?? 0),
-          dueDate: invoice.dueDate ?? null,
+          dueDate: GetBankAccountTransactionsRepository.dueDateOf(
+            invoice.dueDate,
+          ),
         });
       });
       bills.forEach((bill: any) => {
         this.documentsByReference.set(`Bill:${bill.id}`, {
           status: bill.isOpen === false ? 'draft' : 'opened',
           balance: Number(bill.dueAmount ?? 0),
-          dueDate: bill.dueDate ?? null,
+          dueDate: GetBankAccountTransactionsRepository.dueDateOf(bill.dueDate),
         });
       });
     } catch (error) {

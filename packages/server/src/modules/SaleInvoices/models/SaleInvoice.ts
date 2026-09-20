@@ -35,7 +35,7 @@ import { LegalEntity } from '@/modules/LegalEntities/models/LegalEntity.model';
  * считают по ним ровно то же, что карточка документа: итог с налогом, скидкой
  * и корректировкой минус оплата, списание и зачёт кредит-нот.
  */
-const INVOICE_PAYMENT_COLUMNS: PaymentAmountColumns = {
+export const INVOICE_PAYMENT_COLUMNS: PaymentAmountColumns = {
   subtotalColumn: 'BALANCE',
   settledColumns: ['PAYMENT_AMOUNT', 'WRITTENOFF_AMOUNT', 'CREDITED_AMOUNT'],
 };

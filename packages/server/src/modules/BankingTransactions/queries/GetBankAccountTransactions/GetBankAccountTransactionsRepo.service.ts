@@ -11,6 +11,8 @@ import { MatchedBankTransaction } from '@/modules/BankingMatching/models/Matched
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
 import { applyTransactionFilters } from '../../utils/applyTransactionFilters';
+import { SaleInvoice } from '@/modules/SaleInvoices/models/SaleInvoice';
+import { Bill } from '@/modules/Bills/models/Bill';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetBankAccountTransactionsRepository {
@@ -22,6 +24,14 @@ export class GetBankAccountTransactionsRepository {
   public matchedBankTransactionsMapByRef: Map<string, any>;
   public pagination: any;
   public openingBalance: any;
+  /**
+   * Документы строк текущей страницы: `вид:номер` → остаток и срок.
+   *
+   * НУЖНЫ ДЛЯ СОСТОЯНИЙ (FIN-003). «Нам должны», «мы должны» и
+   * «просрочено» живут НЕ в проводке, а в документе, который её
+   * породил: только он знает остаток к оплате и срок.
+   */
+  public documentsByReference: Map<string, any> = new Map();
 
   /**
    * @param {TenantModelProxy<typeof AccountTransaction>} accountTransactionModel - Account transaction model.
@@ -51,6 +61,12 @@ export class GetBankAccountTransactionsRepository {
     private readonly articleAccountModel: TenantModelProxy<
       typeof ManagementArticleAccount
     >,
+
+    @Inject(SaleInvoice.name)
+    private readonly saleInvoiceModel: TenantModelProxy<typeof SaleInvoice>,
+
+    @Inject(Bill.name)
+    private readonly billModel: TenantModelProxy<typeof Bill>,
   ) {}
 
   /**
@@ -75,6 +91,56 @@ export class GetBankAccountTransactionsRepository {
     await this.initCashflowAccountOpeningBalance();
     await this.initCategorizedTransactions();
     await this.initMatchedTransactions();
+    await this.initReferencedDocuments();
+  }
+
+  /**
+   * Догружает документы строк текущей страницы (FIN-003 ТЗ-2).
+   *
+   * ТОЛЬКО ТЕКУЩАЯ СТРАНИЦА: строк на ней не больше размера страницы, и
+   * это два запроса на страницу, а не по запросу на строку.
+   *
+   * Сбой догрузки не роняет список: реестр без бейджей остаётся
+   * реестром, а реестр, который не открылся, — нет.
+   */
+  async initReferencedDocuments(): Promise<void> {
+    this.documentsByReference = new Map();
+
+    const rows: any[] = this.transactions ?? [];
+    const idsOf = (type: string): number[] =>
+      rows
+        .filter((row) => String(row.referenceType) === type)
+        .map((row) => Number(row.referenceId))
+        .filter(Boolean);
+
+    const invoiceIds = idsOf('SaleInvoice');
+    const billIds = idsOf('Bill');
+
+    try {
+      const [invoices, bills] = await Promise.all([
+        invoiceIds.length
+          ? this.saleInvoiceModel().query().whereIn('id', invoiceIds)
+          : [],
+        billIds.length ? this.billModel().query().whereIn('id', billIds) : [],
+      ]);
+
+      invoices.forEach((invoice: any) => {
+        this.documentsByReference.set(`SaleInvoice:${invoice.id}`, {
+          status: invoice.isDelivered === false ? 'draft' : 'delivered',
+          balance: Number(invoice.dueAmount ?? 0),
+          dueDate: invoice.dueDate ?? null,
+        });
+      });
+      bills.forEach((bill: any) => {
+        this.documentsByReference.set(`Bill:${bill.id}`, {
+          status: bill.isOpen === false ? 'draft' : 'opened',
+          balance: Number(bill.dueAmount ?? 0),
+          dueDate: bill.dueDate ?? null,
+        });
+      });
+    } catch (error) {
+      console.error('Failed to load transaction documents:', error);
+    }
   }
 
   /**

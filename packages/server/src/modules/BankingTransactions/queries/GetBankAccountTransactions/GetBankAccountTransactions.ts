@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import { resolveTransactionState } from '../../utils/resolveTransactionState';
 import * as moment from 'moment';
 import { first, isEmpty } from 'lodash';
 import {
@@ -92,6 +93,32 @@ export class GetBankAccountTransactions extends FinancialSheet {
   }
 
   /**
+   * Состояния строки реестра.
+   *
+   * Документ, породивший проводку, догружен хранилищем: только он знает
+   * остаток к оплате и срок. Документа нет — состояний нет, и это честный
+   * ответ, а не пустота от ошибки.
+   *
+   * «Сегодня» передаётся явно: иначе поведение зависело бы от часового
+   * пояса машины и его нельзя было бы проверить.
+   */
+  private resolveStates = (transaction: any) => {
+    const key = `${transaction.referenceType}:${transaction.referenceId}`;
+    const document = this.repo.documentsByReference?.get(key);
+
+    return resolveTransactionState(
+      {
+        documentType: transaction.referenceType,
+        documentId: transaction.referenceId,
+        documentStatus: document?.status ?? null,
+        balance: document?.balance ?? null,
+        dueDate: document?.dueDate ?? null,
+      },
+      moment().format('YYYY-MM-DD'),
+    );
+  };
+
+  /**
    *Transformes the account transaction to to cashflow transaction node.
    * @param {IAccountTransaction} transaction
    * @returns {ICashflowAccountTransaction}
@@ -104,6 +131,11 @@ export class GetBankAccountTransactions extends FinancialSheet {
     return {
       date: transaction.date,
       formattedDate: this.getDateFormatted(transaction.date),
+
+      // СОСТОЯНИЯ СТРОКИ (FIN-003 ТЗ-2): «нам должны», «мы должны»,
+      // «просрочено», «план». Считаются здесь, а не на витрине: правило
+      // одно на продукт, и второй его копии быть не должно.
+      states: this.resolveStates(transaction),
 
       withdrawal: transaction.credit,
       deposit: transaction.debit,

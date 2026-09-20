@@ -1,4 +1,7 @@
 // © 2026 Bigfin
+import { hasDueSql } from '@/common/utils/paymentStatusSql';
+import { INVOICE_PAYMENT_COLUMNS } from '@/modules/SaleInvoices/models/SaleInvoice';
+import { BILL_PAYMENT_COLUMNS } from '@/modules/Bills/models/Bill';
 
 /**
  * Отборы списка операций — ОДИН набор на список и на итоги (FIN-008 ТЗ-2).
@@ -18,6 +21,91 @@ export interface TransactionListFilters {
   search?: string;
   minAmount?: number;
   maxAmount?: number;
+  /**
+   * Состояния строки: `receivable` — нам должны, `payable` — мы должны,
+   * `overdue` — срок прошёл (FIN-003 ТЗ-2).
+   *
+   * СПИСОК, А НЕ ОДНО ЗНАЧЕНИЕ, и объединяются они по «ИЛИ»: человек
+   * спрашивает «покажи, что горит и что мне должны», а не «покажи
+   * пересечение».
+   */
+  states?: string[];
+}
+
+/** Состояния, по которым можно отбирать. */
+export const TRANSACTION_STATE_FILTERS = [
+  'receivable',
+  'payable',
+  'overdue',
+] as const;
+
+/**
+ * Накладывает отбор по состоянию.
+ *
+ * ОТБИРАЕТ СЕРВЕР, А НЕ ЭКРАН. Список разбит на страницы: отфильтровать
+ * загруженную страницу значило бы показать «ничего не найдено» при полной
+ * базе просрочки на следующей.
+ *
+ * ФОРМУЛА ДОЛГА БЕРЁТСЯ ОБЩАЯ (`hasDueSql`) — та самая, по которой долг
+ * считают карточка документа и списки. Своя копия формулы однажды
+ * разойдётся с ними на налог или скидку, и человек увидит в реестре
+ * «просрочено» там, где документ давно закрыт.
+ */
+function applyStateFilter(query: any, states?: string[]): void {
+  const selected = (states ?? []).filter((state) =>
+    (TRANSACTION_STATE_FILTERS as readonly string[]).includes(state),
+  );
+
+  if (!selected.length) return;
+
+  const dueInvoices = (qb: any) =>
+    qb
+      .select('id')
+      .from('sales_invoices')
+      .whereRaw(hasDueSql(INVOICE_PAYMENT_COLUMNS));
+
+  const dueBills = (qb: any) =>
+    qb.select('id').from('bills').whereRaw(hasDueSql(BILL_PAYMENT_COLUMNS));
+
+  // ПРОСРОЧЕНО — ЭТО ОБЕ СТОРОНЫ. И неоплаченный счёт покупателю, и
+  // неоплаченный счёт поставщика: человек спрашивает «что горит», а не
+  // «что горит у покупателей».
+  const today = new Date().toISOString().slice(0, 10);
+
+  /** Одно состояние — одна ветка «ИЛИ». */
+  const branch = (outer: any, state: string): void => {
+    if (state === 'receivable') {
+      outer.orWhere((side: any) => {
+        side.where('referenceType', 'SaleInvoice');
+        side.whereIn('referenceId', dueInvoices);
+      });
+      return;
+    }
+    if (state === 'payable') {
+      outer.orWhere((side: any) => {
+        side.where('referenceType', 'Bill');
+        side.whereIn('referenceId', dueBills);
+      });
+      return;
+    }
+
+    outer.orWhere((side: any) => {
+      side.where('referenceType', 'SaleInvoice');
+      side.whereIn('referenceId', (qb: any) =>
+        dueInvoices(qb).andWhere('due_date', '<', today),
+      );
+    });
+    outer.orWhere((side: any) => {
+      side.where('referenceType', 'Bill');
+      side.whereIn('referenceId', (qb: any) =>
+        dueBills(qb).andWhere('due_date', '<', today),
+      );
+    });
+  };
+
+  query.where((outer: any) => {
+    selected.forEach((state) => branch(outer, state));
+  });
 }
 
 /**
@@ -33,6 +121,8 @@ export function applyTransactionFilters(
   filters: TransactionListFilters,
   articleAccountIds: number[] | null = null,
 ): any {
+  applyStateFilter(query, filters?.states);
+
   const {
     accountId,
     fromDate,

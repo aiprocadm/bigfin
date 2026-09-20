@@ -161,6 +161,17 @@ export interface ICashflowAccountTransactionsQuery {
 }
 
 export interface ICashflowAccountTransaction {
+  /**
+   * Состояния строки: «нам должны», «мы должны», «просрочено», «план»
+   * (FIN-003 ТЗ-2). Список, а не одно значение: «нам должны» и
+   * «просрочено» — разные факты, и человеку нужны оба.
+   */
+  states?: Array<{
+    kind: string;
+    dueDate?: string | null;
+    documentId?: number | null;
+    documentType?: string | null;
+  }>;
   withdrawal: number;
   deposit: number;
   runningBalance: number;

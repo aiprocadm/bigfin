@@ -6,7 +6,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { NumberFormatQueryDto } from './NumberFormatQuery.dto';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetBankTransactionsQueryDto {
@@ -155,4 +155,21 @@ export class GetBankTransactionsQueryDto {
     type: NumberFormatQueryDto,
   })
   numberFormat: NumberFormatQueryDto;
+
+  /**
+   * Отбор по состояниям строки: `receivable`, `payable`, `overdue`
+   * (FIN-003 ТЗ-2). Несколько — по «ИЛИ».
+   *
+   * Из адреса приходит либо список, либо одно значение: приводим к списку
+   * здесь, чтобы отбор не зависел от того, как браузер собрал адрес.
+   */
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === undefined || value === null
+      ? undefined
+      : Array.isArray(value)
+        ? value
+        : String(value).split(',').filter(Boolean),
+  )
+  states?: string[];
 }

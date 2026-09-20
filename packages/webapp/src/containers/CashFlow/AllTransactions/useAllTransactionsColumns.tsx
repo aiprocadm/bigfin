@@ -1,6 +1,7 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Money } from '@/components/ui/money';
+import { TransactionStateBadges } from './TransactionStateBadges';
 
 /**
  * Колонки списка операций по всем счетам (этап 3 ТЗ).
@@ -42,6 +43,19 @@ export function useAllTransactionsColumns() {
         Header: intl.get('type'),
         accessor: 'formatted_transaction_type',
         disableSortBy: true,
+      },
+      {
+        // СОСТОЯНИЕ СТРОКИ (FIN-003 ТЗ-2). Расчёт и бейджи существовали
+        // порознь: сервер состояний не отдавал, таблица их не показывала.
+        // Теперь строка говорит, чего от неё ждать, — и это половина того,
+        // ради чего реестр вообще открывают.
+        id: 'state',
+        Header: intl.get('all_transactions.column.state'),
+        accessor: 'states',
+        disableSortBy: true,
+        Cell: ({ row: { original } }: any) => (
+          <TransactionStateBadges states={original?.states ?? []} />
+        ),
       },
       {
         id: 'account',

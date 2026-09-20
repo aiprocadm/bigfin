@@ -21,6 +21,11 @@ import {
   isTotalRow,
   ReportTableRow,
 } from './cashFlowArticlesRows';
+import {
+  cashFlowChartSeries,
+  hasChartMovement,
+} from './cashFlowArticlesChart';
+import { CashFlowChart } from './CashFlowChart';
 
 /**
  * Отчёт «Деньги (ДДС по статьям)» — главный денежный отчёт продукта
@@ -134,8 +139,17 @@ export default function CashFlowArticles() {
           </Link>
         </div>
       ) : (
-        /* Таблица в прокручиваемом контейнере: на телефоне правый край
-           иначе просто обрезается, и последние столбцы недоступны (И1 v33). */
+        <>
+        {/* ГРАФИК НАД ТАБЛИЦЕЙ (T-14). Числа берутся ИЗ ТЕХ ЖЕ СТРОК, что
+            рисует таблица: второго источника нет, и разойтись им не на чем.
+            Движения нет — графика нет: пустой график с подписью «0»
+            выглядит поломкой, а не ответом. */}
+        {hasChartMovement(cashFlowChartSeries(visible)) && (
+          <CashFlowChart series={cashFlowChartSeries(visible)} />
+        )}
+
+        {/* Таблица в прокручиваемом контейнере: на телефоне правый край
+           иначе просто обрезается, и последние столбцы недоступны (И1 v33). */}
         <div className="overflow-x-auto rounded-default border border-border">
           <table className="w-full border-collapse text-sm">
           <thead>
@@ -192,6 +206,7 @@ export default function CashFlowArticles() {
             </tbody>
           </table>
         </div>
+        </>
       )}
     </div>
   );

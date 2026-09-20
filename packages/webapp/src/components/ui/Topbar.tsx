@@ -5,6 +5,12 @@ import { cn } from '@/lib/cn';
 interface TopbarProps {
   titleSlot?: React.ReactNode;
   searchSlot?: React.ReactNode;
+  /**
+   * Виджет денег (FIN-006 ТЗ-2). Отдельное место, а не «быстрые действия»:
+   * это не действие, а главный факт дня, и стоять он должен рядом с ними,
+   * но отличаться.
+   */
+  moneySlot?: React.ReactNode;
   quickActionsSlot?: React.ReactNode;
   notificationsSlot?: React.ReactNode;
   helpSlot?: React.ReactNode;
@@ -16,6 +22,7 @@ interface TopbarProps {
 export const Topbar = ({
   titleSlot,
   searchSlot,
+  moneySlot,
   quickActionsSlot,
   notificationsSlot,
   helpSlot,
@@ -37,6 +44,7 @@ export const Topbar = ({
         {searchSlot && <div className="min-w-0 max-w-md flex-1">{searchSlot}</div>}
       </div>
       <div className="flex items-center gap-1">
+        {moneySlot}
         {quickActionsSlot}
         {/* «Помощь» прячем на узких экранах — наименее важная иконка */}
         {helpSlot && <span className="hidden sm:inline-flex">{helpSlot}</span>}

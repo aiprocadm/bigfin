@@ -10,6 +10,7 @@ import { PaymentCalendarModule } from '../PaymentCalendar/PaymentCalendar.module
 import { ProfitLossSheetModule } from '../FinancialStatements/modules/ProfitLossSheet/ProfitLossSheet.module';
 import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
+import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
 
 @Module({
   // Сводка о деньгах берёт цифры из тех же отчётов, что показывают разделы
@@ -27,6 +28,7 @@ import { GetDashboardOverviewService } from './queries/GetDashboardOverview.serv
     GetMoneySummaryService,
     GetTaxEstimateService,
     GetDashboardOverviewService,
+    GetMoneyWidgetService,
   ],
   controllers: [DashboardController],
   // Оценку налога спрашивает и правило уведомления «скоро платить налог»

@@ -155,6 +155,9 @@ export const ReportsAction = {
   READ_JOURNAL: 'read-journal',
   READ_GENERAL_LEDGET: 'read-general-ledger',
   READ_CASHFLOW: 'read-cashflow',
+  // Прямой ДДС по статьям — отдельное право от косвенного (D5 ТЗ-2):
+  // бухгалтеру нужен косвенный, собственнику прямой, и это разные люди.
+  READ_CASHFLOW_ARTICLES: 'read-cashflow-articles',
   READ_AR_AGING_SUMMARY: 'read-ar-aging-summary',
   READ_AP_AGING_SUMMARY: 'read-ap-aging-summary',
   READ_PURCHASES_BY_ITEMS: 'read-purchases-by-items',

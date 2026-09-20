@@ -15,6 +15,7 @@ import {
   PaymentCalendarResponse,
 } from '../PaymentCalendar.interfaces';
 import { computeRunningBalance } from '../utils/computeRunningBalance';
+import { aggregateForecast } from '../utils/aggregateForecast';
 import { expandRecurrence } from '../utils/expandRecurrence';
 import { resolveDocumentExchangeRate } from '../utils/resolveDocumentExchangeRate';
 import { CASH_ACCOUNT_TYPES } from '../constants';
@@ -86,6 +87,18 @@ export class GetPaymentCalendarForecastService {
       day.lines = linesByDay[day.date] || [];
     });
 
+    /**
+     * Столбцы выбранного масштаба (FIN-019 ТЗ-2).
+     *
+     * Дни остаются в ответе всегда: на них держатся лента денег на главной,
+     * оповещение о разрыве и виджет в шапке. Укрупнение идёт ДОПОЛНИТЕЛЬНЫМ
+     * полем — так ни один нынешний читатель ответа не замечает изменения.
+     */
+    const periods = aggregateForecast(
+      days,
+      (query as any)?.granularity ?? 'day',
+    );
+
     return {
       baseCurrency,
       unconvertedCount: unconverted.count,
@@ -93,6 +106,9 @@ export class GetPaymentCalendarForecastService {
       fromDate,
       toDate,
       days,
+      periods,
+      granularity: (query as any)?.granularity ?? 'day',
+      source: (query as any)?.source ?? 'cashflow',
       gap,
       gaps,
     };

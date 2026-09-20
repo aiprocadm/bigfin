@@ -5017,5 +5017,9 @@
   "all_transactions.filter.state_all": "any",
   "all_transactions.filter.state_receivable": "owed to us",
   "all_transactions.filter.state_payable": "we owe",
-  "all_transactions.filter.state_overdue": "overdue"
+  "all_transactions.filter.state_overdue": "overdue",
+  "reports.trend": "Trend",
+  "all_transactions.columns.label": "Columns:",
+  "all_transactions.column.contact": "Contact",
+  "all_transactions.column.type": "Type"
 }

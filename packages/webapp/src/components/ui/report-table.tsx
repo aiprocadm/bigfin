@@ -55,6 +55,14 @@ export interface ReportTableColumn {
    * (план-факт — этап 4 ТЗ, п. 4.4). Пустая строка = прочерк в ячейке.
    */
   getValue?: (row: ReportTableRow) => string;
+  /**
+   * Колонка, которая рисует не текст, а разметку — например тонкую линию
+   * тренда (T-38 ТЗ-2). `null` — ячейка пустая.
+   *
+   * Отдельно от `getValue` НАМЕРЕННО: значение-строку выравнивают,
+   * красят по знаку и ищут поиском, а разметку — нет.
+   */
+  render?: (row: ReportTableRow) => React.ReactNode;
 }
 
 export interface ReportTableProps {
@@ -291,7 +299,9 @@ function ReportRowView({
                   )}
                   <span>{value}</span>
                 </span>
-              ) : hideValues ? null : (
+              ) : hideValues ? null : column.render ? (
+                column.render(row)
+              ) : (
                 value
               )}
             </td>

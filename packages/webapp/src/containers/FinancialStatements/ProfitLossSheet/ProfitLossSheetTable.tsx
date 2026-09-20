@@ -1,5 +1,11 @@
 import * as React from 'react';
 import intl from 'react-intl-universal';
+import { Sparkline } from '@/components/ui/sparkline';
+import {
+  hasTrend,
+  periodCellIndexes,
+  trendValuesOfRow,
+} from '../reportTrendColumn';
 
 import {
   ReportSheet,
@@ -122,11 +128,45 @@ export default function ProfitLossSheetTable({
       cellIndex: column.cell_index,
     }));
 
-    if (!planFact?.available) return serverColumns;
+    // КОЛОНКА «ТРЕНД» (T-38 ТЗ-2). Появляется только когда колонок
+    // периодов больше одной: по одному столбцу тренда не бывает.
+    const periodIndexes = periodCellIndexes(serverColumns);
+    const withTrend: ReportTableColumn[] =
+      periodIndexes.length > 1
+        ? serverColumns.concat([
+            {
+              key: 'trend',
+              label: intl.get('reports.trend'),
+              align: 'right',
+              // Значения берутся из УЖЕ ПРИШЕДШИХ ячеек: своего запроса у
+              // тренда нет, и разойтись с цифрами над ним он не может.
+              render: (row) => {
+                const values = trendValuesOfRow(row, periodIndexes);
+                if (!hasTrend(values)) return null;
+
+                // Подпись точки берётся из заголовка своей колонки: в
+                // подсказке человек должен видеть «май», а не «точка 5».
+                const points = values.map((value, index) => ({
+                  label: serverColumns[periodIndexes[index]]?.label ?? '',
+                  value,
+                }));
+
+                return (
+                  <Sparkline
+                    points={points}
+                    formatValue={(value) => formattedAmount(value, '')}
+                  />
+                );
+              },
+            },
+          ])
+        : serverColumns;
+
+    if (!planFact?.available) return withTrend;
 
     const money = (value: number) => formattedAmount(value, '');
 
-    return serverColumns.concat([
+    return withTrend.concat([
       {
         key: 'plan-fact-plan',
         label: intl.get('reports.plan_fact.plan'),

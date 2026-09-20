@@ -3,6 +3,10 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
+import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
+import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
+import { cashSettledReferenceKeys } from '@/modules/Budgets/utils/cashSettledReferenceKeys';
+import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { formatNumber } from '@/utils/format-number';
@@ -28,6 +32,15 @@ export interface DrillDownRow {
 export interface DrillDownResult {
   accountId: number;
   accountName: string;
+  /**
+   * Заполняются ТОЛЬКО при раскрытии по статье (FIN-004 ТЗ-2).
+   *
+   * У прежнего вызова по счёту их нет вовсе — не `null`, а отсутствуют:
+   * тогда ответ побайтно совпадает с прежним, и ни один читатель ответа не
+   * замечает, что ручка научилась новому.
+   */
+  articleId?: number;
+  articleName?: string;
   fromDate: string;
   toDate: string;
   /** Итог: обязан совпасть с суммой в отчёте до копейки. */
@@ -82,7 +95,235 @@ export class GetReportDrillDownService {
     private readonly transactionModel: TenantModelProxy<
       typeof AccountTransaction
     >,
+
+    @Inject(ManagementArticle.name)
+    private readonly articleModel: TenantModelProxy<typeof ManagementArticle>,
+
+    @Inject(ManagementArticleAccount.name)
+    private readonly articleAccountModel: TenantModelProxy<
+      typeof ManagementArticleAccount
+    >,
   ) {}
+
+  /**
+   * Раскрытие суммы ПО СТАТЬЕ (FIN-004 ТЗ-2).
+   *
+   * ЗАЧЕМ ОТДЕЛЬНЫЙ ВХОД. Человек, щёлкнувший по строке «Аренда» в отчёте о
+   * деньгах, ждёт список платежей за аренду, а не выписку по бухгалтерскому
+   * счёту. Счёт — это внутреннее устройство, статья — его язык.
+   *
+   * ИТОГ ОБЯЗАН СОВПАСТЬ С ОТЧЁТОМ. Поэтому здесь повторяются ровно те же
+   * два правила, что в расчёте отчёта: берутся ВСЕ счета статьи вместе с её
+   * подстатьями (в отчёте родительская строка показывает поддерево целиком)
+   * и только проводки документов, РАССЧИТАННЫХ ДЕНЬГАМИ — без переводов
+   * между своими счетами. Разойдись хоть одно — и человек получит список,
+   * который не сходится с числом, по которому он щёлкнул: ровно то
+   * недоверие, ради устранения которого раскрытие и делалось.
+   */
+  public async getDrillDownByArticle(
+    articleId: number,
+    fromDate: string,
+    toDate: string,
+  ): Promise<DrillDownResult> {
+    const article: any = await this.articleModel().query().findById(articleId);
+
+    if (!article) {
+      throw new NotFoundException('ARTICLE_NOT_FOUND');
+    }
+
+    const metadata: any = await this.tenancyContext.getTenantMetadata();
+    const currencyCode = metadata?.baseCurrency ?? 'RUB';
+
+    const articleIds = await this.articleWithDescendants(articleId);
+    const accountIds = await this.accountsOfArticles(articleIds);
+
+    if (accountIds.length === 0) {
+      return this.emptyArticleResult(article, fromDate, toDate, currencyCode);
+    }
+
+    const accounts: any[] = await this.accountModel()
+      .query()
+      .whereIn('id', accountIds);
+    const creditNormalById = new Map<number, boolean>(
+      accounts.map((account: any) => [
+        account.id,
+        isCreditNormalAccount(account),
+      ]),
+    );
+
+    const settledKeys = await this.cashSettledKeysOfPeriod(fromDate, toDate);
+    const isSettled = (row: any) =>
+      settledKeys.has(`${row.referenceType}:${row.referenceId}`);
+
+    const periodRows: any[] = await this.transactionModel()
+      .query()
+      .whereIn('accountId', accountIds)
+      .where('date', '>=', fromDate)
+      .where('date', '<=', toDate)
+      .withGraphFetched('contact')
+      .orderBy('date', 'desc');
+
+    const settledRows = periodRows.filter(isSettled);
+
+    // ИТОГ СЧИТАЕТСЯ ПО ВСЕМ подходящим строкам периода, а показываются
+    // только первые двести: сложив показанное, мы назвали бы человеку итог
+    // меньше, чем в отчёте.
+    const total = settledRows.reduce(
+      (sum, row) =>
+        sum +
+        reportAccountNet(
+          Number(row.debit ?? 0),
+          Number(row.credit ?? 0),
+          creditNormalById.get(row.accountId) ?? false,
+        ),
+      0,
+    );
+
+    const transactions = settledRows
+      .slice(0, DRILL_DOWN_LIMIT)
+      .map((row: any) => {
+        const debit = Number(row.debit ?? 0);
+        const credit = Number(row.credit ?? 0);
+        const amount = reportAccountNet(
+          debit,
+          credit,
+          creditNormalById.get(row.accountId) ?? false,
+        );
+
+        return {
+          date: row.date,
+          transactionNumber: row.transactionNumber ?? null,
+          referenceNumber: row.referenceNumber ?? null,
+          referenceType: row.referenceType ?? null,
+          contactName: row.contact?.displayName ?? null,
+          note: row.note ?? null,
+          debit,
+          credit,
+          amount,
+          formattedAmount: this.format(amount, currencyCode),
+        };
+      });
+
+    return {
+      accountId: 0,
+      accountName: article.name,
+      articleId,
+      articleName: article.name,
+      fromDate,
+      toDate,
+      total,
+      formattedTotal: this.format(total, currencyCode),
+      // У статьи остатка нет: она отвечает на вопрос «сколько прошло за
+      // период», а не «сколько лежит». Ноль здесь — не «мы не посчитали», а
+      // «такого понятия у статьи не существует».
+      openingBalance: 0,
+      formattedOpeningBalance: this.format(0, currencyCode),
+      closingBalance: total,
+      formattedClosingBalance: this.format(total, currencyCode),
+      transactionsCount: settledRows.length,
+      isTruncated: settledRows.length > transactions.length,
+      transactions,
+      currencyCode,
+    };
+  }
+
+  /** Статья вместе со всеми подстатьями: в отчёте родитель показывает поддерево. */
+  private async articleWithDescendants(rootId: number): Promise<number[]> {
+    const all: any[] = await this.articleModel().query();
+    const childrenByParent = new Map<number, number[]>();
+
+    all.forEach((article: any) => {
+      const parentId = article.parentId ?? null;
+      if (parentId == null) return;
+      childrenByParent.set(parentId, [
+        ...(childrenByParent.get(parentId) ?? []),
+        article.id,
+      ]);
+    });
+
+    const result: number[] = [];
+    const stack: number[] = [rootId];
+    const seen = new Set<number>();
+
+    while (stack.length > 0) {
+      const current = stack.pop() as number;
+      if (seen.has(current)) continue; // защита от кривого дерева
+      seen.add(current);
+      result.push(current);
+      (childrenByParent.get(current) ?? []).forEach((id) => stack.push(id));
+    }
+
+    return result;
+  }
+
+  /** Счета, привязанные к перечисленным статьям. */
+  private async accountsOfArticles(articleIds: number[]): Promise<number[]> {
+    if (articleIds.length === 0) return [];
+
+    const rows: any[] = await this.articleAccountModel()
+      .query()
+      .whereIn('articleId', articleIds);
+
+    return [...new Set(rows.map((row: any) => row.accountId))];
+  }
+
+  /**
+   * Документы периода, РАССЧИТАННЫЕ ДЕНЬГАМИ.
+   *
+   * То же правило, что в расчёте отчёта: документ задел денежный счёт и не
+   * является переводом между своими счетами. Считается общим помощником, а
+   * не переписывается здесь: две реализации одного правила однажды
+   * разойдутся, и разойдутся тихо.
+   */
+  private async cashSettledKeysOfPeriod(
+    fromDate: string,
+    toDate: string,
+  ): Promise<Set<string>> {
+    const cashAccounts: any[] = await this.accountModel()
+      .query()
+      .whereIn('accountType', CASH_ACCOUNT_TYPES as unknown as string[]);
+    const cashAccountIds = new Set<number>(
+      cashAccounts.map((account: any) => account.id),
+    );
+
+    const legs: any[] = await this.transactionModel()
+      .query()
+      .where('date', '>=', fromDate)
+      .where('date', '<=', toDate);
+
+    return cashSettledReferenceKeys(legs as any, (accountId: number) =>
+      cashAccountIds.has(accountId),
+    );
+  }
+
+  /** Статья без привязанных счетов: пусто — это ответ, а не ошибка. */
+  private emptyArticleResult(
+    article: any,
+    fromDate: string,
+    toDate: string,
+    currencyCode: string,
+  ): DrillDownResult {
+    const zero = this.format(0, currencyCode);
+
+    return {
+      accountId: 0,
+      accountName: article.name,
+      articleId: article.id,
+      articleName: article.name,
+      fromDate,
+      toDate,
+      total: 0,
+      formattedTotal: zero,
+      openingBalance: 0,
+      formattedOpeningBalance: zero,
+      closingBalance: 0,
+      formattedClosingBalance: zero,
+      transactionsCount: 0,
+      isTruncated: false,
+      transactions: [],
+      currencyCode,
+    };
+  }
 
   public async getDrillDown(
     accountId: number,

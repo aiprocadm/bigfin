@@ -229,6 +229,32 @@ export default function AllTransactionsPage() {
             </div>
           )}
 
+          {/*
+            СТРОКА КОНТЕКСТА (FIN-005 ТЗ-2).
+
+            Человек пришёл сюда из отчёта, щёлкнув «Открыть в Операциях».
+            Без этой строки список выглядит как весь реестр, просто почему-то
+            короткий: отбор по статье не виден ни в одном поле — он живёт в
+            адресе. Крестик снимает ТОЛЬКО то, что пришло из отчёта.
+          */}
+          {filters.articleId && (
+            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-control border border-border bg-surface-elevated px-3 py-2">
+              <span className="text-sm text-text-primary">
+                {intl.get('all_transactions.from_report', {
+                  article: `#${filters.articleId}`,
+                  from: filters.fromDate ?? '',
+                  to: filters.toDate ?? '',
+                })}
+              </span>
+              <Button
+                variant="secondary"
+                onClick={() => patch({ articleId: undefined })}
+              >
+                {intl.get('all_transactions.reset_report_filter')}
+              </Button>
+            </div>
+          )}
+
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <DatePicker
               value={toDate(filters.fromDate)}

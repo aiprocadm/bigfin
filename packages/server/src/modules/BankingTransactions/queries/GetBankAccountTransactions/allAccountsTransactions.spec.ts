@@ -48,6 +48,8 @@ const makeRepo = (query: any) => {
     null as any,
     null as any,
     null as any,
+    null as any,
+    null as any,
   );
   repo.setQuery(query);
   return repo;

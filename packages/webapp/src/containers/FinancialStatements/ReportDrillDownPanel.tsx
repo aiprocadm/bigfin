@@ -4,13 +4,24 @@ import { useQuery } from 'react-query';
 import moment from 'moment';
 import { X } from 'lucide-react';
 
+import { Link } from 'react-router-dom';
+
 import useApiRequest from '@/hooks/useRequest';
 import { transformToCamelCase } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { buttonVariants } from '@/components/ui/button';
+import { transactionsLinkFromDrillDown } from './drillDownRegisterLink';
 
 export interface DrillDownTarget {
-  accountId: number;
+  /** Раскрытие по счёту — прежнее поведение Баланса, ОПиУ и старого ДДС. */
+  accountId?: number;
   accountName?: string;
+  /**
+   * Раскрытие по СТАТЬЕ (FIN-004 ТЗ-2). Человек, щёлкнувший по «Аренде»,
+   * ждёт платежи за аренду, а не выписку по бухгалтерскому счёту.
+   */
+  articleId?: number;
+  articleName?: string;
   fromDate: string;
   toDate: string;
 }
@@ -57,7 +68,13 @@ export default function ReportDrillDownPanel({
   const apiRequest = useApiRequest();
 
   const { data, isLoading, isError } = useQuery(
-    ['REPORT_DRILL_DOWN', target?.accountId, target?.fromDate, target?.toDate],
+    [
+      'REPORT_DRILL_DOWN',
+      target?.accountId,
+      target?.articleId,
+      target?.fromDate,
+      target?.toDate,
+    ],
     () =>
       apiRequest
         // Путь именно такой: контроллер объявлен как
@@ -66,13 +83,16 @@ export default function ReportDrillDownPanel({
         // и панель раскрытия суммы не работала вовсе.
         .get('financial-reports/chart/drill-down', {
           params: {
-            accountId: target?.accountId,
+            // Статья и счёт — два измерения одной ручки. Пустое поле не
+            // уходит вовсе: сервер требует хотя бы одно из двух.
+            ...(target?.articleId ? { articleId: target.articleId } : {}),
+            ...(target?.accountId ? { accountId: target.accountId } : {}),
             from: target?.fromDate,
             to: target?.toDate,
           },
         })
         .then((res: any) => transformToCamelCase(res.data)),
-    { enabled: Boolean(target?.accountId) },
+    { enabled: Boolean(target?.accountId || target?.articleId) },
   );
 
   if (!target) return null;
@@ -84,7 +104,11 @@ export default function ReportDrillDownPanel({
       <header className="flex items-start justify-between gap-3 border-b border-border p-4">
         <div>
           <h2 className="text-base font-medium text-text-primary">
-            {(data as any)?.accountName ?? target.accountName ?? ''}
+            {(data as any)?.articleName ??
+              (data as any)?.accountName ??
+              target.articleName ??
+              target.accountName ??
+              ''}
           </h2>
           <p className="mt-1 text-sm text-text-secondary">
             {moment(target.fromDate).format('D MMM YYYY')} —{' '}
@@ -196,6 +220,30 @@ export default function ReportDrillDownPanel({
               })}
             </p>
           )}
+
+          {/*
+            ВЫХОД В РЕЕСТР (FIN-005 ТЗ-2).
+            Панель показывает первые двести строк и обрывается. Дальше идти
+            было некуда: человек вручную воспроизводил отборы в другом
+            разделе. Отборы уходят В АДРЕС, поэтому ссылку можно переслать —
+            в отличие от конкурента, который передаёт такой переход
+            состоянием и ссылку переслать не даёт.
+          */}
+          {target.articleId ? (
+            <Link
+              to={transactionsLinkFromDrillDown({
+                articleId: target.articleId,
+                fromDate: target.fromDate,
+                toDate: target.toDate,
+              })}
+              className={buttonVariants({
+                variant: 'secondary',
+                className: 'mt-1 w-full',
+              })}
+            >
+              {intl.get('reports.drill_down.open_in_transactions')}
+            </Link>
+          ) : null}
         </footer>
       )}
     </aside>

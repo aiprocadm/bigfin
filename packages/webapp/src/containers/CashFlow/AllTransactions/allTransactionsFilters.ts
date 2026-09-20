@@ -8,6 +8,8 @@ import type { AllTransactionsFilters } from '@/hooks/query/cashflowAccounts';
  */
 export interface ScreenFilters extends AllTransactionsFilters {
   status?: 'uncategorized';
+  /** Статья учёта: пришла из отчёта, показывается строкой контекста. */
+  articleId?: number;
 }
 
 /**
@@ -26,7 +28,15 @@ export const defaultPeriod = (today: moment.MomentInput = undefined) => {
 };
 
 /** Числовые отборы: в адресе они строки, в запросе — числа. */
-const NUMERIC_KEYS = ['accountId', 'contactId', 'minAmount', 'maxAmount'] as const;
+const NUMERIC_KEYS = [
+  'accountId',
+  // Отбор по статье приходит из раскрытия суммы отчёта (FIN-005 ТЗ-2):
+  // «Открыть в Операциях» складывает его прямо в адрес.
+  'articleId',
+  'contactId',
+  'minAmount',
+  'maxAmount',
+] as const;
 
 /** Читает отборы из строки запроса адреса. */
 export const filtersFromSearch = (search: string): ScreenFilters => {

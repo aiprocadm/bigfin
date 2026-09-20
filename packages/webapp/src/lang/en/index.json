@@ -5010,5 +5010,12 @@
   "budgets.planfact.column.variancePct": "Variance, %",
   "budgets.planfact.col_completion": "Plan done, %",
   "budgets.planfact.needs_fact": "Turn «Actual» on first: without it there is nothing to measure the variance from.",
-  "budgets.planfact.not_applicable": "n/a"
+  "budgets.planfact.not_applicable": "n/a",
+  "cash_flow_articles.chart_title": "Where the period's cash movement came from",
+  "all_transactions.column.state": "State",
+  "all_transactions.filter.state": "State:",
+  "all_transactions.filter.state_all": "any",
+  "all_transactions.filter.state_receivable": "owed to us",
+  "all_transactions.filter.state_payable": "we owe",
+  "all_transactions.filter.state_overdue": "overdue"
 }

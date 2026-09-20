@@ -293,6 +293,38 @@ export default function AllTransactionsPage() {
             </Select>
 
             {/*
+              ОТБОР ПО СОСТОЯНИЮ (FIN-003, T-32). Расчёт состояний и бейджи
+              существовали порознь и не были соединены ничем: отбирать было
+              нечего. Отбирает СЕРВЕР — список разбит на страницы, и
+              фильтровать загруженную страницу значило бы показать «ничего
+              не найдено» при полной базе просрочки на следующей.
+            */}
+            <Select
+              value={filters.states?.[0] ?? 'all'}
+              onValueChange={(value) =>
+                patch({ states: value === 'all' ? undefined : [value] })
+              }
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  {intl.get('all_transactions.filter.state_all')}
+                </SelectItem>
+                <SelectItem value="receivable">
+                  {intl.get('all_transactions.filter.state_receivable')}
+                </SelectItem>
+                <SelectItem value="payable">
+                  {intl.get('all_transactions.filter.state_payable')}
+                </SelectItem>
+                <SelectItem value="overdue">
+                  {intl.get('all_transactions.filter.state_overdue')}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/*
               Суммы вводит поле продукта, а не системное числовое поле
               браузера: то выбрасывает запятую, и «1000,50» молча становится
               «100050» (сторож `systemNumberInputGuard`, карта v37).

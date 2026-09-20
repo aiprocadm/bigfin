@@ -39,11 +39,19 @@ import { GetAutofillCategorizeTransactionService } from './queries/GetAutofillCa
 import { GetContactCategoryMemoryService } from './queries/GetContactCategoryMemory/GetContactCategoryMemory.service';
 import { ContactsModule } from '../Contacts/Contacts.module';
 
+import { SaleInvoice } from '@/modules/SaleInvoices/models/SaleInvoice';
+import { Bill } from '@/modules/Bills/models/Bill';
+
 const models = [
   RegisterTenancyModel(UncategorizedBankTransaction),
   RegisterTenancyModel(BankTransaction),
   RegisterTenancyModel(BankTransactionLine),
   RegisterTenancyModel(BankAccount),
+  // Документы строк реестра: по ним считаются состояния «нам должны»,
+  // «мы должны» и «просрочено» (FIN-003). Остаток к оплате и срок живут
+  // не в проводке, а в породившем её документе.
+  RegisterTenancyModel(SaleInvoice),
+  RegisterTenancyModel(Bill),
 ];
 
 @Module({

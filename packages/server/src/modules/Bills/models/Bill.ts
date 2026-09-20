@@ -29,7 +29,7 @@ import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCur
  * считают итог с налогом, скидкой и корректировкой; гасят долг оплата и зачёт
  * возвратов поставщику (списания у счетов поставщиков нет).
  */
-const BILL_PAYMENT_COLUMNS: PaymentAmountColumns = {
+export const BILL_PAYMENT_COLUMNS: PaymentAmountColumns = {
   subtotalColumn: 'AMOUNT',
   settledColumns: ['PAYMENT_AMOUNT', 'CREDITED_AMOUNT'],
 };

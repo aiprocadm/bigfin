@@ -44,7 +44,11 @@ const makeQuery = () => {
 
 /** Репозиторий без моделей: для наложения отборов они не нужны. */
 const makeRepo = (query: any) => {
+  // Две последние модели — счета покупателям и поставщикам: по ним
+  // хранилище догружает документы строк ради состояний (FIN-003).
   const repo = new GetBankAccountTransactionsRepository(
+    null as any,
+    null as any,
     null as any,
     null as any,
     null as any,

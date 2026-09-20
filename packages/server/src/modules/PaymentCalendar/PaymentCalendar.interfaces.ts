@@ -82,6 +82,13 @@ export interface PaymentCalendarResponse {
   fromDate: string;
   toDate: string;
   days: DayBalance[];
+  /**
+   * Столбцы выбранного масштаба (FIN-019 ТЗ-2). Дни остаются рядом: на них
+   * держатся лента денег на главной, оповещение о разрыве и виджет шапки.
+   */
+  periods?: unknown[];
+  granularity?: string;
+  source?: string;
   gap: CashGap | null;
   gaps: CashGapInterval[];
 }

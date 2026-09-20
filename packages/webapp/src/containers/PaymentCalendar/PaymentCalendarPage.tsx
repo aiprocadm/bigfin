@@ -59,6 +59,20 @@ export default function PaymentCalendarPage() {
     'all' | 'inflow' | 'outflow'
   >('all');
   const [accountId, setAccountId] = React.useState<number | null>(null);
+  /**
+   * Масштаб столбцов и система координат (FIN-019 ТЗ-2).
+   *
+   * На узком экране дневной масштаб не помещается — там по умолчанию
+   * недели. Молча показать дни значило бы отдать человеку таблицу, которую
+   * он не может прочитать.
+   */
+  const isNarrow =
+    typeof window !== 'undefined' && window.innerWidth < 640;
+  const [granularity, setGranularity] = React.useState<
+    'day' | 'week' | 'month' | 'quarter' | 'year'
+  >(isNarrow ? 'week' : 'day');
+  const [source, setSource] = React.useState<'cashflow' | 'pnl'>('cashflow');
+  const todayRef = React.useRef<HTMLDivElement | null>(null);
   const [showForm, setShowForm] = React.useState(false);
   const [editing, setEditing] = React.useState<PlannedOperation | undefined>();
 
@@ -99,6 +113,8 @@ export default function PaymentCalendarPage() {
       toDate,
       ...(direction !== 'all' ? { direction } : {}),
       ...(accountId != null ? { accountId } : {}),
+      granularity,
+      source,
     },
     {},
   );
@@ -108,8 +124,59 @@ export default function PaymentCalendarPage() {
   const days = data?.days ?? [];
   const gap = data?.gap ?? null;
 
+  /**
+   * «На сегодня» — прокрутка к текущему дню.
+   *
+   * Календарь открывается на горизонте вперёд, и человек, пролистав его,
+   * теряет точку отсчёта. Кнопка возвращает её одним нажатием.
+   */
+  const scrollToToday = () => {
+    todayRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  };
+
   return (
     <div className="flex flex-col gap-4 p-6">
+      <div className="flex flex-wrap items-end gap-2">
+        <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          {intl.get('payment_calendar.granularity')}
+          <select
+            className={filterSelectClassName}
+            value={granularity}
+            onChange={(event) =>
+              setGranularity(event.target.value as typeof granularity)
+            }
+          >
+            {['day', 'week', 'month', 'quarter', 'year'].map((value) => (
+              <option key={value} value={value}>
+                {intl.get(`payment_calendar.granularity.${value}`)}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1 text-xs text-text-secondary">
+          {intl.get('payment_calendar.source')}
+          <select
+            className={filterSelectClassName}
+            value={source}
+            onChange={(event) =>
+              setSource(event.target.value as typeof source)
+            }
+          >
+            <option value="cashflow">
+              {intl.get('payment_calendar.source.cashflow')}
+            </option>
+            <option value="pnl">
+              {intl.get('payment_calendar.source.pnl')}
+            </option>
+          </select>
+        </label>
+
+        <Button variant="secondary" onClick={scrollToToday}>
+          {intl.get('payment_calendar.today')}
+        </Button>
+      </div>
+
       {gap && (
         <div className="sticky top-0 z-10 rounded-control bg-red-50 px-4 py-2 text-red-700">
           ⚠{' '}
@@ -195,12 +262,17 @@ export default function PaymentCalendarPage() {
 
       <div className="flex flex-col">
         {days.map((day: any) => (
-          <DayRow
+          /* Якорь сегодняшнего дня: к нему возвращает кнопка «На сегодня». */
+          <div
             key={day.date}
-            day={day}
-            onMaterialize={handleMaterialize}
-            foundOperationId={foundOperationId}
-          />
+            ref={day.date === fromDate ? todayRef : undefined}
+          >
+            <DayRow
+              day={day}
+              onMaterialize={handleMaterialize}
+              foundOperationId={foundOperationId}
+            />
+          </div>
         ))}
       </div>
     </div>

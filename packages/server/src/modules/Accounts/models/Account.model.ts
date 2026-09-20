@@ -25,6 +25,13 @@ import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCur
 @PreventMutateBaseCurrency()
 export class Account extends TenantBaseModel {
   /**
+   * Пользовательская группа счёта (FIN-017 ТЗ-2); `null` —
+   * «Нераспределённые». Это НЕ план счетов: у него своя иерархия
+   * `parentAccountId`, и смешивать два измерения нельзя.
+   */
+  accountGroupId?: number | null;
+
+  /**
    * Юрлицо, которому принадлежит счёт (этап 8 ТЗ, §8.1).
    * Операции по счёту наследуют его автоматически.
    */

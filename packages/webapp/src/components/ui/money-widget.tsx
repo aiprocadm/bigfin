@@ -6,7 +6,8 @@ import { Sparkline } from './sparkline';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 /**
- * Виджет «Деньги» в шапке (FIN-006 ТЗ-2).
+ * Виджет «Деньги» в шапке (FIN-006 ТЗ-2) с разрезом по счетам (FIN-007) и
+ * группами счетов (FIN-017).
  *
  * ЗАЧЕМ. Остаток и предупреждение о разрыве жили только на главной. Уйдя в
  * отчёты или в операции, человек терял из виду главный факт своего дня:
@@ -22,14 +23,27 @@ export interface MoneyWidgetGap {
   to: string | null;
   deepestAmount: number;
   deepestDate: string;
-  formatted: string;
+  formatted?: string;
+}
+
+export interface MoneyWidgetAccountGroup {
+  id: number;
+  name: string;
+  accountsCount?: number;
 }
 
 export interface MoneyWidgetAccount {
   accountId: number;
   accountName: string;
+  /** Группа счёта; `null` — «Нераспределённые» (FIN-017 ТЗ-2). */
+  accountGroupId?: number | null;
   balance: number;
-  gaps: MoneyWidgetGap[] | { from: string; to: string | null; deepestAmount: number; deepestDate: string }[];
+  gaps: Array<{
+    from: string;
+    to: string | null;
+    deepestAmount: number;
+    deepestDate: string;
+  }>;
   forecastFailed?: boolean;
 }
 
@@ -38,6 +52,7 @@ export interface MoneyWidgetProps {
   gap?: MoneyWidgetGap | null;
   sparkline?: number[];
   accounts?: MoneyWidgetAccount[];
+  groups?: MoneyWidgetAccountGroup[];
   plannedWithoutAccount?: number;
   calendarEnabled?: boolean;
   /** Как показать сумму счёта в панели. */
@@ -73,17 +88,101 @@ export const accountGapTone = (
   return days > 14 ? 'warning' : 'danger';
 };
 
+/**
+ * Раскладывает счета по группам.
+ *
+ * Пустая НАСТРОЕННАЯ группа показывается: человек её завёл и должен видеть,
+ * что она есть и пока пуста. А «Нераспределённые» появляются только когда в
+ * них кто-то есть — пустая кучка в конце списка ничего не сообщает.
+ */
+export function groupAccounts(
+  accounts: MoneyWidgetAccount[],
+  groups: MoneyWidgetAccountGroup[],
+  ungroupedTitle: string,
+): Array<{ id: number | null; name: string; accounts: MoneyWidgetAccount[] }> {
+  const byGroup = new Map<number | null, MoneyWidgetAccount[]>();
+
+  accounts.forEach((account) => {
+    const key = account.accountGroupId ?? null;
+    byGroup.set(key, [...(byGroup.get(key) ?? []), account]);
+  });
+
+  const named = groups.map((group) => ({
+    id: group.id as number | null,
+    name: group.name,
+    accounts: byGroup.get(group.id) ?? [],
+  }));
+  const ungrouped = byGroup.get(null) ?? [];
+
+  return ungrouped.length > 0
+    ? [...named, { id: null, name: ungroupedTitle, accounts: ungrouped }]
+    : named;
+}
+
 const TONE_CLASS: Record<string, string> = {
   success: 'bg-success',
   warning: 'bg-warning',
   danger: 'bg-danger',
 };
 
+/** Строка счёта в панели: точка состояния, имя, разрыв и остаток. */
+function AccountRow({
+  account,
+  today,
+  formatMoney,
+}: {
+  account: MoneyWidgetAccount;
+  today: string;
+  formatMoney: (value: number) => string;
+}) {
+  const tone = accountGapTone(account.gaps, today);
+  const first = account.gaps?.[0];
+
+  return (
+    <li className="flex items-start justify-between gap-3 py-2 text-sm">
+      <span className="flex min-w-0 items-start gap-2">
+        <span
+          className={cn(
+            'mt-1.5 h-2 w-2 shrink-0 rounded-full',
+            TONE_CLASS[tone],
+          )}
+          aria-hidden="true"
+        />
+        <span className="min-w-0">
+          <span className="block truncate">{account.accountName}</span>
+          {account.forecastFailed ? (
+            <span className="block text-xs text-text-secondary">
+              {intl.get('money_widget.forecast_failed')}
+            </span>
+          ) : first ? (
+            <span
+              className={cn(
+                'block text-xs',
+                tone === 'danger' ? 'text-danger' : 'text-warning',
+              )}
+            >
+              {intl.get('money_widget.account_gap', {
+                from: first.from,
+                to: first.to ?? '—',
+                amount: formatMoney(first.deepestAmount),
+              })}
+            </span>
+          ) : null}
+        </span>
+      </span>
+      <span className="shrink-0 tabular-nums">
+        {formatMoney(account.balance)}
+      </span>
+    </li>
+  );
+}
+
 export function MoneyWidget({
   totalFormatted,
   gap,
   sparkline = [],
   accounts = [],
+  groups = [],
   plannedWithoutAccount = 0,
   calendarEnabled = true,
   formatMoney = (value) => String(value),
@@ -91,6 +190,12 @@ export function MoneyWidget({
   className,
 }: MoneyWidgetProps) {
   const started = gap ? gapHasStarted(gap, today) : false;
+  const grouped = React.useMemo(
+    () => groupAccounts(accounts, groups, intl.get('money_widget.ungrouped')),
+    [accounts, groups],
+  );
+  const noGaps =
+    accounts.length > 0 && accounts.every((a) => (a.gaps ?? []).length === 0);
 
   return (
     <Popover>
@@ -135,10 +240,8 @@ export function MoneyWidget({
 
       <PopoverContent className="w-[420px] max-w-[92vw]">
         {!calendarEnabled ? (
-          /**
-           * Выключенный календарь — это ОТВЕТ, а не ошибка. Промолчать
-           * значило бы оставить человека гадать, почему прогноза нет.
-           */
+          // Выключенный календарь — это ОТВЕТ, а не ошибка. Промолчать
+          // значило бы оставить человека гадать, почему прогноза нет.
           <p className="text-sm text-text-secondary">
             {intl.get('money_widget.calendar_off')}
           </p>
@@ -146,71 +249,55 @@ export function MoneyWidget({
           <p className="text-sm text-text-secondary">
             {intl.get('money_widget.no_accounts')}
           </p>
+        ) : groups.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {grouped.map((group) => (
+              <section key={String(group.id)}>
+                <h4 className="mb-1 text-xs font-semibold text-text-secondary">
+                  {group.name}
+                </h4>
+                {group.accounts.length === 0 ? (
+                  <p className="text-xs text-text-secondary">
+                    {intl.get('money_widget.empty_group')}
+                  </p>
+                ) : (
+                  <ul className="flex flex-col divide-y divide-border">
+                    {group.accounts.map((account) => (
+                      <AccountRow
+                        key={account.accountId}
+                        account={account}
+                        today={today}
+                        formatMoney={formatMoney}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </section>
+            ))}
+          </div>
         ) : (
           <ul className="flex flex-col divide-y divide-border">
-            {accounts.map((account) => {
-              const tone = accountGapTone(account.gaps as any, today);
-              const first = (account.gaps as any[])[0];
-
-              return (
-                <li
-                  key={account.accountId}
-                  className="flex items-start justify-between gap-3 py-2 text-sm"
-                >
-                  <span className="flex min-w-0 items-start gap-2">
-                    <span
-                      className={cn(
-                        'mt-1.5 h-2 w-2 shrink-0 rounded-full',
-                        TONE_CLASS[tone],
-                      )}
-                      aria-hidden="true"
-                    />
-                    <span className="min-w-0">
-                      <span className="block truncate">
-                        {account.accountName}
-                      </span>
-                      {account.forecastFailed ? (
-                        <span className="block text-xs text-text-secondary">
-                          {intl.get('money_widget.forecast_failed')}
-                        </span>
-                      ) : first ? (
-                        <span
-                          className={cn(
-                            'block text-xs',
-                            tone === 'danger' ? 'text-danger' : 'text-warning',
-                          )}
-                        >
-                          {intl.get('money_widget.account_gap', {
-                            from: first.from,
-                            to: first.to ?? '—',
-                            amount: formatMoney(first.deepestAmount),
-                          })}
-                        </span>
-                      ) : null}
-                    </span>
-                  </span>
-                  <span className="shrink-0 tabular-nums">
-                    {formatMoney(account.balance)}
-                  </span>
-                </li>
-              );
-            })}
+            {accounts.map((account) => (
+              <AccountRow
+                key={account.accountId}
+                account={account}
+                today={today}
+                formatMoney={formatMoney}
+              />
+            ))}
           </ul>
         )}
 
-        {calendarEnabled && accounts.length > 0 &&
-          accounts.every((a) => (a.gaps as any[]).length === 0) && (
-            <p className="mt-2 text-xs text-text-secondary">
-              {intl.get('money_widget.no_gaps')}
-            </p>
-          )}
+        {calendarEnabled && noGaps && (
+          <p className="mt-2 text-xs text-text-secondary">
+            {intl.get('money_widget.no_gaps')}
+          </p>
+        )}
 
         {plannedWithoutAccount > 0 && (
-          /**
-           * Плановые операции без счёта в разрез не попадают. Промолчать —
-           * значит дать человеку сверить разрезы с общим итогом и не
-           * сойтись, не понимая почему.
-           */
+          // Плановые операции без счёта в разрез не попадают. Промолчать —
+          // значит дать человеку сверить разрезы с общим итогом и не
+          // сойтись, не понимая почему.
           <p className="mt-2 text-xs text-text-secondary">
             {intl.get('money_widget.planned_without_account', {
               count: plannedWithoutAccount,

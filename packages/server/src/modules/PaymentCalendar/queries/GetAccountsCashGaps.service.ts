@@ -14,6 +14,8 @@ import { PlannedOperation } from '../models/PlannedOperation.model';
 export interface AccountCashGaps {
   accountId: number;
   accountName: string;
+  /** Пользовательская группа счёта; `null` — «Нераспределённые». */
+  accountGroupId: number | null;
   /** Остаток на конец горизонта — то, чем счёт закончит период. */
   balance: number;
   gaps: CashGapInterval[];
@@ -92,6 +94,7 @@ export class GetAccountsCashGapsService {
         accounts.push({
           accountId: account.id,
           accountName: account.name,
+          accountGroupId: account.accountGroupId ?? null,
           balance: Number(
             days.length > 0
               ? days[days.length - 1].balance
@@ -107,6 +110,7 @@ export class GetAccountsCashGapsService {
         accounts.push({
           accountId: account.id,
           accountName: account.name,
+          accountGroupId: account.accountGroupId ?? null,
           balance: 0,
           gaps: [],
           forecastFailed: true,

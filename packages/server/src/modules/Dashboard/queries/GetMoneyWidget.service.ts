@@ -12,6 +12,7 @@ import { CashGapInterval } from '@/modules/PaymentCalendar/PaymentCalendar.inter
 import { formatNumber } from '@/utils/format-number';
 
 import { GetMoneySummaryService } from './GetMoneySummary.service';
+import { AccountGroupsService } from '@/modules/BankingAccounts/queries/AccountGroups.service';
 
 export interface MoneyWidgetResponse {
   total: { amount: number; formatted: string; currencyCode: string };
@@ -20,6 +21,8 @@ export interface MoneyWidgetResponse {
   /** Остаток по дням за горизонт — для линии тренда в шапке. */
   sparkline: number[];
   accounts: AccountCashGaps[];
+  /** Пользовательские группы счетов (FIN-017): вкладка «По группам». */
+  groups: Array<{ id: number; name: string; accountsCount: number }>;
   /** Плановые операции без счёта: в разрез по счетам они не попадают. */
   plannedWithoutAccount: number;
   /** Выключенный календарь — это ответ, а не ошибка. */
@@ -61,6 +64,7 @@ export class GetMoneyWidgetService {
     private readonly moneySummary: GetMoneySummaryService,
     private readonly forecast: GetPaymentCalendarForecastService,
     private readonly accountsGaps: GetAccountsCashGapsService,
+    private readonly accountGroups: AccountGroupsService,
     private readonly tenancyContext: TenancyContext,
   ) {}
 
@@ -77,6 +81,24 @@ export class GetMoneyWidgetService {
     this.cache.set(key, { at: Date.now(), value });
 
     return value;
+  }
+
+  /**
+   * Группы счетов. Их может не быть вовсе — таблица появилась позже, и на
+   * базе без накатанной миграции виджет всё равно обязан открыться.
+   */
+  private async safeGroups() {
+    try {
+      const groups: any[] = await this.accountGroups.getGroups();
+
+      return groups.map((group: any) => ({
+        id: group.id,
+        name: group.name,
+        accountsCount: group.accountsCount ?? 0,
+      }));
+    } catch {
+      return [];
+    }
   }
 
   private async build(tenant: any): Promise<MoneyWidgetResponse> {
@@ -106,6 +128,7 @@ export class GetMoneyWidgetService {
       const gaps: CashGapInterval[] = forecast?.gaps ?? [];
       const nearest = gaps[0] ?? null;
       const perAccount = await this.accountsGaps.getAccountsCashGaps();
+      const groups = await this.safeGroups();
 
       return {
         total,
@@ -122,6 +145,7 @@ export class GetMoneyWidgetService {
           Number(day.balance ?? 0),
         ),
         accounts: perAccount.accounts,
+        groups,
         plannedWithoutAccount: perAccount.plannedWithoutAccount,
         calendarEnabled: true,
       };
@@ -138,6 +162,7 @@ export class GetMoneyWidgetService {
         gap: null,
         sparkline: [],
         accounts: [],
+        groups: [],
         plannedWithoutAccount: 0,
         calendarEnabled: false,
       };

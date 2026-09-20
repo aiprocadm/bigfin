@@ -8,6 +8,8 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { UncategorizedBankTransaction } from '../../models/UncategorizedBankTransaction';
 import { MatchedBankTransaction } from '@/modules/BankingMatching/models/MatchedBankTransaction';
+import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
+import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
 
 @Injectable({ scope: Scope.REQUEST })
 export class GetBankAccountTransactionsRepository {
@@ -40,7 +42,24 @@ export class GetBankAccountTransactionsRepository {
     private readonly matchedBankTransactionModel: TenantModelProxy<
       typeof MatchedBankTransaction
     >,
+
+    @Inject(ManagementArticle.name)
+    private readonly articleModel: TenantModelProxy<typeof ManagementArticle>,
+
+    @Inject(ManagementArticleAccount.name)
+    private readonly articleAccountModel: TenantModelProxy<
+      typeof ManagementArticleAccount
+    >,
   ) {}
+
+  /**
+   * Счета статьи, по которой отбирают список (FIN-005 ТЗ-2).
+   *
+   * `null` — отбора по статье нет. Пустой список — статья есть, но счетов у
+   * неё нет: тогда операций по ней быть не может, и это ОТВЕТ, а не повод
+   * показать всё подряд.
+   */
+  private articleAccountIds: number[] | null = null;
 
   setQuery(query: ICashflowAccountTransactionsQuery) {
     this.query = query;
@@ -50,6 +69,7 @@ export class GetBankAccountTransactionsRepository {
    * Async initalize the resources.
    */
   async asyncInit() {
+    await this.initArticleAccounts();
     await this.initCashflowAccountTransactions();
     await this.initCashflowAccountOpeningBalance();
     await this.initCategorizedTransactions();
@@ -63,6 +83,54 @@ export class GetBankAccountTransactionsRepository {
    * (экран «Операции», этап 3 ТЗ). Остальные отборы — период, направление
    * движения денег, контрагент, сумма и поиск по тексту.
    */
+  /**
+   * Разворачивает статью в её счета — вместе с подстатьями.
+   *
+   * Неизвестная статья в адресе НЕ считается «показать всё»: список молча
+   * стал бы шире, чем человек просил. Считаем её статьёй без счетов —
+   * список выйдет пустым и честным.
+   */
+  private async initArticleAccounts() {
+    const articleId = (this.query as any)?.articleId;
+
+    if (!articleId) {
+      this.articleAccountIds = null;
+      return;
+    }
+
+    const all: any[] = await this.articleModel().query();
+    const childrenByParent = new Map<number, number[]>();
+
+    all.forEach((article: any) => {
+      const parentId = article.parentId ?? null;
+      if (parentId == null) return;
+      childrenByParent.set(parentId, [
+        ...(childrenByParent.get(parentId) ?? []),
+        article.id,
+      ]);
+    });
+
+    const ids: number[] = [];
+    const stack: number[] = [Number(articleId)];
+    const seen = new Set<number>();
+
+    while (stack.length > 0) {
+      const current = stack.pop() as number;
+      if (seen.has(current)) continue;
+      seen.add(current);
+      ids.push(current);
+      (childrenByParent.get(current) ?? []).forEach((id) => stack.push(id));
+    }
+
+    const links: any[] = await this.articleAccountModel()
+      .query()
+      .whereIn('articleId', ids);
+
+    this.articleAccountIds = [
+      ...new Set(links.map((link: any) => link.accountId)),
+    ];
+  }
+
   private applyFilters(query: any) {
     const {
       accountId,
@@ -102,6 +170,30 @@ export class GetBankAccountTransactionsRepository {
       query.where((builder: any) => {
         builder.where('debit', '<=', maxAmount).andWhere('credit', '<=', maxAmount);
       });
+    }
+    /**
+     * ОТБОР ПО СТАТЬЕ (FIN-005 ТЗ-2).
+     *
+     * У денежной проводки статьи нет: статья висит на ВСТРЕЧНОМ счёте
+     * документа. Поэтому отбираются документы, задевшие счета статьи, и
+     * остаются их денежные ноги. Тот же набор, что дало бы раскрытие без
+     * ограничения в двести строк, — это и есть требование ТЗ.
+     */
+    if (this.articleAccountIds !== null) {
+      if (this.articleAccountIds.length === 0) {
+        // Статья без счетов: операций по ней не бывает. Невыполнимое
+        // условие честнее, чем незаметно снятый отбор.
+        query.whereRaw('1 = 0');
+      } else {
+        const accountIds = this.articleAccountIds;
+
+        query.whereIn(['reference_type', 'reference_id'], (builder: any) => {
+          builder
+            .select('reference_type', 'reference_id')
+            .from('accounts_transactions')
+            .whereIn('account_id', accountIds);
+        });
+      }
     }
     if (search) {
       const like = `%${search}%`;

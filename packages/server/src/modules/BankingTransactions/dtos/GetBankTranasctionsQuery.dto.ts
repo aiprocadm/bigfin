@@ -50,6 +50,25 @@ export class GetBankTransactionsQueryDto {
   })
   accountId?: number;
 
+  /**
+   * Отбор по статье учёта (FIN-005 ТЗ-2).
+   *
+   * Приходит из раскрытия суммы отчёта: человек щёлкнул «Открыть в
+   * Операциях» и попал сюда с уже наложенным отбором. Отбор живёт в адресе,
+   * поэтому ссылку можно переслать — в отличие от конкурента, который
+   * передаёт такой переход состоянием и ссылку переслать не даёт.
+   */
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @ApiProperty({
+    description: 'Management article id. Narrows to this article subtree.',
+    required: false,
+    type: Number,
+    example: 12,
+  })
+  articleId?: number;
+
   /** Начало периода, `YYYY-MM-DD`. */
   @IsOptional()
   @IsString()

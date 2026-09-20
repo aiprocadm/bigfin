@@ -77,10 +77,16 @@ const buildService = (options: { account?: any; rows?: any[] }) => {
     getTenantMetadata: async () => ({ baseCurrency: 'RUB' }),
   };
 
+  // Справочник статей нужен только раскрытию ПО СТАТЬЕ; здесь проверяется
+  // раскрытие по счёту, и подделки-заглушки достаточно.
+  const emptyModel = () => ({ query: () => Promise.resolve([]) });
+
   return new GetReportDrillDownService(
     tenancyContext as any,
     accountModel as any,
     transactionModel as any,
+    emptyModel as any,
+    emptyModel as any,
   );
 };
 

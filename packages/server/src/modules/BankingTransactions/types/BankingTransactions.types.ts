@@ -141,6 +141,8 @@ export interface ICashflowAccountTransactionsQuery {
   pageSize: number;
   /** Пусто — операции по всем счетам организации (этап 3 ТЗ). */
   accountId?: number;
+  /** Отбор по статье учёта вместе с подстатьями (FIN-005 ТЗ-2). */
+  articleId?: number;
   /** Начало периода, `YYYY-MM-DD`. */
   fromDate?: string;
   /** Конец периода, `YYYY-MM-DD`. */

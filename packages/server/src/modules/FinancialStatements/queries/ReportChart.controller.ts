@@ -15,6 +15,7 @@ import {
   DateRangeQueryDto,
   ReportDateRangeQueryDto,
 } from '@/common/dtos/DateRangeQuery.dto';
+import { DrillDownQueryDto } from './DrillDownQuery.dto';
 
 /**
  * Ряды графика над таблицей отчёта (этап 4 ТЗ, п. 4.2).
@@ -70,9 +71,19 @@ export class ReportChartController {
       'Итог списка совпадает с суммой в отчёте: вклад строки считается тем ' +
       'же правилом стороны счёта, что и в самом отчёте.',
   })
-  getDrillDown(@Query() query: AccountDateRangeQueryDto) {
+  getDrillDown(@Query() query: DrillDownQueryDto) {
+    // Статья важнее счёта, когда пришли оба: человек щёлкнул по строке
+    // отчёта, а строка отчёта — это статья.
+    if (query.articleId !== undefined) {
+      return this.drillDown.getDrillDownByArticle(
+        query.articleId,
+        query.from,
+        query.to,
+      );
+    }
+
     return this.drillDown.getDrillDown(
-      query.accountId,
+      query.accountId as number,
       query.from,
       query.to,
     );

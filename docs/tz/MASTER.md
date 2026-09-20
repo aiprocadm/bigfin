@@ -7,6 +7,7 @@
 **Стек:** NestJS 10 + MySQL/MariaDB (Knex/Objection) + Redis + BullMQ / React 18 + Vite + Blueprint.js (легаси) + Radix/shadcn (новый) + recharts
 **Постановка:** владелец продукта
 **Дата:** 17.09.2026
+**Продолжение:** [`MASTER-2.md`](MASTER-2.md) — блок Б4 «Вход в продукт», этапы 16–28. Настоящий документ им не отменяется и не переписывается.
 
 ---
 

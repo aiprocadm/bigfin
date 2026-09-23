@@ -7,6 +7,10 @@ import { parseBoolean } from '@/utils/parse-boolean';
 
 import { FinancialSheetBranchesQueryDto } from '../../dtos/FinancialSheetBranchesQuery.dto';
 import { CASHFLOW_DATE_GROUPS, CashFlowDateGroup } from './periodizeRows';
+import {
+  CASHFLOW_GROUPINGS,
+  CashFlowGrouping,
+} from './groupings/cashGroupNodes';
 
 /**
  * Отбор отчёта «Деньги (ДДС по статьям)».
@@ -38,6 +42,19 @@ export class CashFlowArticlesQueryDto extends FinancialSheetBranchesQueryDto {
    * Масштаб колонок (FT-001 ТЗ-3). По умолчанию — месяцы: так отвечают на
    * самый частый вопрос «в каком месяце ушли деньги».
    */
+  /**
+   * Группировка строк (FT-002 ТЗ-3). «Чистый поток» и остатки от неё не
+   * зависят — меняются только строки.
+   */
+  @ApiPropertyOptional({
+    description: 'Группировка строк',
+    enum: CASHFLOW_GROUPINGS,
+    default: 'articles',
+  })
+  @IsIn(CASHFLOW_GROUPINGS as unknown as string[])
+  @IsOptional()
+  group?: CashFlowGrouping;
+
   @ApiPropertyOptional({
     description: 'Масштаб колонок-периодов',
     enum: CASHFLOW_DATE_GROUPS,
@@ -56,6 +73,26 @@ export class CashFlowArticlesQueryDto extends FinancialSheetBranchesQueryDto {
   @IsBoolean()
   @IsOptional()
   showTotalColumn?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Показывать строки с нулём во всех колонках',
+    default: false,
+    type: Boolean,
+  })
+  @Transform(({ value }) => parseBoolean(value, false))
+  @IsBoolean()
+  @IsOptional()
+  showEmpty?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Показывать переводы между своими счетами',
+    default: false,
+    type: Boolean,
+  })
+  @Transform(({ value }) => parseBoolean(value, false))
+  @IsBoolean()
+  @IsOptional()
+  showTransfers?: boolean;
 }
 
 export class CashFlowArticlesResponseDto {

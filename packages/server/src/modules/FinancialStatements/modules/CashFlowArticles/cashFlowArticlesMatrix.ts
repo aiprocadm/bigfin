@@ -1,80 +1,103 @@
 // © 2026 Bigfin
-import {
-  ArticleAmount,
-  buildCashFlowArticlesReport,
-  CashFlowArticleRow,
-  CashFlowArticlesReport,
-  ReportArticle,
-} from './buildCashFlowArticlesReport';
 import { CashFlowDateGroup, ReportPeriod } from './periodizeRows';
+import {
+  CashFlowGrouping,
+  CashGroupNode,
+  explainedFlow,
+  mergeNodes,
+  nodeValues,
+  round2,
+} from './groupings/cashGroupNodes';
+import { sortDimensionRows } from './groupings/byLegDimension';
 
 /**
- * Матрица отчёта «Деньги по статьям»: статьи × периоды + «Итого» (FT-001 ТЗ-3).
+ * Матрица отчёта «Деньги по статьям»: строки × периоды + «Итого» (FT-001,
+ * FT-002 ТЗ-3).
  *
- * РАСЧЁТ ПЕРИОДА НЕ ДУБЛИРУЕТСЯ. Каждая колонка — это обычный отчёт
- * `buildCashFlowArticlesReport` за свой период: равенство «начало + поток =
- * конец», строка «не разнесено» и итоги по корням уже проверены там.
+ * ПОТОК И ОСТАТКИ — С ДЕНЕЖНОЙ СТОРОНЫ. Чистый поток колонки — это конец
+ * минус начало по денежным счетам, а не сумма строк. Поэтому он одинаков в
+ * любой группировке, а то, что строки не объяснили, видно строкой
+ * «Не разнесено».
  *
- * «ИТОГО» СКЛАДЫВАЕТСЯ ИЗ КОЛОНОК, а не считается заново за весь отрезок.
- * Итог, посчитанный отдельно, однажды разошёлся бы с суммой колонок на
- * копейку — а человек сложит колонки на калькуляторе. Остаток на начало в
- * «Итого» — остаток на начало первого периода, на конец — конец последнего
- * (у конкурента эти ячейки пусты — здесь в них честные числа).
+ * «ИТОГО» СКЛАДЫВАЕТСЯ ИЗ КОЛОНОК, а не считается заново за весь отрезок:
+ * сумма колонок на калькуляторе совпадёт с ним копейка в копейку. Остаток
+ * на начало в «Итого» — начало первой колонки, на конец — конец последней.
  */
 
+export interface GroupedCashReport {
+  openingBalance: number;
+  closingBalance: number;
+  /** Сколько денег прибавилось: конец минус начало. */
+  netCashFlow: number;
+  /** Деньги, которые строки группировки не объяснили. */
+  unclassified: number;
+  /**
+   * Сошлось ли «начало + поток = конец». Держится построением; ложь значит
+   * поломку данных, и её видно, а не прячем.
+   */
+  isBalanced: boolean;
+  /** Переводы между своими счетами: в потоки не входят, итог — ноль. */
+  transfers: { incoming: number; outgoing: number; total: number };
+  rows: CashGroupNode[];
+}
+
 export interface MatrixPeriodInput extends ReportPeriod {
-  amounts: ArticleAmount[];
+  rows: CashGroupNode[];
   openingBalance: number;
   closingBalance: number;
   transfers: { incoming: number; outgoing: number };
 }
 
 export interface MatrixPeriod extends ReportPeriod {
-  report: CashFlowArticlesReport;
+  report: GroupedCashReport;
 }
 
 export interface CashFlowArticlesMatrix {
+  group: CashFlowGrouping;
   dateGroup: CashFlowDateGroup;
   periods: MatrixPeriod[];
-  /** Колонка «Итого» — тот же отчёт, сложенный из колонок. */
-  total: CashFlowArticlesReport;
-  /**
-   * Цепочка периодов не разорвана: остаток на конец каждого равен остатку на
-   * начало следующего. Держится конструкцией — поле есть, чтобы разрыв был
-   * виден, а не молчал.
-   */
+  /** Колонка «Итого» — сложенная из колонок. */
+  total: GroupedCashReport;
+  /** Остаток на конец каждой колонки равен остатку на начало следующей. */
   isChained: boolean;
 }
 
-const round2 = (value: number): number => Math.round(value * 100) / 100;
+export function groupedCashReport(input: {
+  rows: CashGroupNode[];
+  openingBalance: number;
+  closingBalance: number;
+  transfers?: { incoming: number; outgoing: number };
+}): GroupedCashReport {
+  const openingBalance = round2(input.openingBalance);
+  const closingBalance = round2(input.closingBalance);
+  const netCashFlow = round2(closingBalance - openingBalance);
+  const incoming = round2(input.transfers?.incoming ?? 0);
+  const outgoing = round2(input.transfers?.outgoing ?? 0);
 
-/** Суммы статей по всем периодам: сложение уже округлённых колонок. */
-function sumAmounts(periods: MatrixPeriodInput[]): ArticleAmount[] {
-  const totals = new Map<number, number>();
-
-  periods.forEach((period) => {
-    period.amounts.forEach(({ id, amount }) => {
-      totals.set(id, round2((totals.get(id) ?? 0) + round2(Number(amount) || 0)));
-    });
-  });
-
-  return Array.from(totals.entries()).map(([id, amount]) => ({ id, amount }));
+  return {
+    openingBalance,
+    closingBalance,
+    netCashFlow,
+    unclassified: round2(netCashFlow - explainedFlow(input.rows)),
+    isBalanced:
+      Math.abs(openingBalance + netCashFlow - closingBalance) < 0.005,
+    transfers: { incoming, outgoing, total: round2(incoming - outgoing) },
+    rows: input.rows,
+  };
 }
 
 export function buildCashFlowArticlesMatrix(input: {
-  articles: ReportArticle[];
+  group: CashFlowGrouping;
   dateGroup: CashFlowDateGroup;
   periods: MatrixPeriodInput[];
 }): CashFlowArticlesMatrix {
-  const { articles, dateGroup } = input;
   const inputs = input.periods ?? [];
 
   const periods: MatrixPeriod[] = inputs.map(
-    ({ amounts, openingBalance, closingBalance, transfers, ...period }) => ({
+    ({ rows, openingBalance, closingBalance, transfers, ...period }) => ({
       ...period,
-      report: buildCashFlowArticlesReport({
-        articles,
-        amounts,
+      report: groupedCashReport({
+        rows,
         openingBalance,
         closingBalance,
         transfers,
@@ -85,18 +108,13 @@ export function buildCashFlowArticlesMatrix(input: {
   const first = inputs[0];
   const last = inputs[inputs.length - 1];
 
-  const total = buildCashFlowArticlesReport({
-    articles,
-    amounts: sumAmounts(inputs),
+  const total = groupedCashReport({
+    rows: sortDimensionRows(mergeNodes(inputs.map((period) => period.rows))),
     openingBalance: first?.openingBalance ?? 0,
     closingBalance: last?.closingBalance ?? 0,
     transfers: {
-      incoming: round2(
-        inputs.reduce((sum, p) => sum + (p.transfers?.incoming ?? 0), 0),
-      ),
-      outgoing: round2(
-        inputs.reduce((sum, p) => sum + (p.transfers?.outgoing ?? 0), 0),
-      ),
+      incoming: inputs.reduce((sum, p) => sum + (p.transfers?.incoming ?? 0), 0),
+      outgoing: inputs.reduce((sum, p) => sum + (p.transfers?.outgoing ?? 0), 0),
     },
   });
 
@@ -106,36 +124,27 @@ export function buildCashFlowArticlesMatrix(input: {
       period.report.openingBalance === periods[index - 1].report.closingBalance,
   );
 
-  return { dateGroup, periods, total, isChained };
+  return {
+    group: input.group,
+    dateGroup: input.dateGroup,
+    periods,
+    total,
+    isChained,
+  };
 }
 
 /**
  * Значения строк отчёта по устойчивым ключам — тем же, что у строк таблицы.
  *
- * Все колонки матрицы устроены одинаково (одни и те же статьи), поэтому
- * строка таблицы строится по «Итого», а значение в каждой колонке
- * находится по ключу строки.
+ * Строка таблицы строится по «Итого» (в нём все строки всех колонок), а
+ * значение в каждой колонке находится по ключу; нет ключа — ноль.
  */
 export function reportValuesByRowKey(
-  report: CashFlowArticlesReport,
+  report: GroupedCashReport,
 ): Map<string, number> {
-  const values = new Map<string, number>();
-
-  const walk = (rows: CashFlowArticleRow[]) => {
-    rows.forEach((row) => {
-      values.set(`article-${row.id}`, row.amount);
-      walk(row.children);
-    });
-  };
+  const values = nodeValues(report.rows);
 
   values.set('opening', report.openingBalance);
-  report.sections.forEach((section) => {
-    values.set(`section-${section.section}`, section.total);
-    values.set(`inflow-${section.section}`, section.inflow.total);
-    values.set(`outflow-${section.section}`, section.outflow.total);
-    walk(section.inflow.rows);
-    walk(section.outflow.rows);
-  });
   values.set('unclassified', report.unclassified);
   values.set('net', report.netCashFlow);
   values.set('closing', report.closingBalance);

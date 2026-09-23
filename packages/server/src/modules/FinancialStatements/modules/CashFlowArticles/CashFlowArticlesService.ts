@@ -6,9 +6,12 @@ import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import {
   ArticlesCashflowRollupService,
+  CashRollupLeg,
   legDate,
   periodIndexOf,
 } from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
+import { Contact } from '@/modules/Contacts/models/Contact';
+import { Project } from '@/modules/Projects/models/Project.model';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/managementReportScope';
 import {
@@ -17,6 +20,13 @@ import {
 } from '@/modules/Budgets/constants';
 
 import { buildCashFlowArticlesMatrix } from './cashFlowArticlesMatrix';
+import { buildCashFlowArticlesReport } from './buildCashFlowArticlesReport';
+import {
+  CashFlowGrouping,
+  CashGroupNode,
+  GroupingContext,
+  groupingRows,
+} from './groupings';
 import {
   ICashFlowArticlesData,
   ICashFlowArticlesQuery,
@@ -66,6 +76,12 @@ export class CashFlowArticlesService {
     private readonly accountTransactionModel: TenantModelProxy<
       typeof AccountTransaction
     >,
+
+    @Inject(Contact.name)
+    private readonly contactModel: TenantModelProxy<typeof Contact>,
+
+    @Inject(Project.name)
+    private readonly projectModel: TenantModelProxy<typeof Project>,
   ) {}
 
   /**
@@ -85,32 +101,28 @@ export class CashFlowArticlesService {
   public async sheet(
     query: ICashFlowArticlesQuery,
   ): Promise<ICashFlowArticlesSheet> {
+    const group = query.group ?? 'articles';
     const dateGroup = query.dateGroup ?? 'month';
     const periods = this.periodsOf(query, dateGroup);
     const cashAccountIds = await this.getCashAccountIds();
 
-    const [rollupPeriods, openingBalance, closingBalance, cashMoves] =
+    const [periodLegs, openingBalance, closingBalance, cashMoves] =
       await Promise.all([
-        this.rollup.getRollupByPeriods(query as any, periods),
+        periods.length
+          ? this.rollup.loadByPeriods(query as any, periods)
+          : Promise.resolve(null),
         this.cashBalanceBefore(cashAccountIds, query),
         this.cashBalanceThrough(cashAccountIds, query),
         this.cashMovesByPeriods(cashAccountIds, query, periods),
       ]);
 
-    // Статьи одинаковы во всех колонках — берём их у любой.
-    const articleRows = (rollupPeriods[0]?.rows ?? []) as any[];
-    const articles = articleRows.map((row) => ({
-      id: row.id,
-      name: row.name,
-      kind: row.kind,
-      parentId: row.parentId ?? null,
-      cashflowSection: row.cashflowSection ?? null,
-      sortOrder: row.sortOrder,
-    }));
+    const rowsByPeriod = periodLegs
+      ? await this.groupRowsByPeriod(group, periodLegs)
+      : [];
 
     let opening = openingBalance;
     const matrix = buildCashFlowArticlesMatrix({
-      articles,
+      group,
       dateGroup,
       periods: periods.map((period, index) => {
         const moves = cashMoves[index];
@@ -120,9 +132,7 @@ export class CashFlowArticlesService {
 
         return {
           ...period,
-          amounts: ((rollupPeriods[index]?.rows ?? []) as any[]).map(
-            (row) => ({ id: row.id, amount: Number(row.amount ?? 0) }),
-          ),
+          rows: rowsByPeriod[index] ?? [],
           openingBalance: periodOpening,
           closingBalance: periodClosing,
           transfers: moves.transfers,
@@ -140,6 +150,7 @@ export class CashFlowArticlesService {
     const data: ICashFlowArticlesData = {
       ...matrix.total,
       isBalanced,
+      group,
       dateGroup,
       isChained: matrix.isChained,
       periods: matrix.periods,
@@ -171,6 +182,96 @@ export class CashFlowArticlesService {
       }
       throw error;
     }
+  }
+
+  /**
+   * Строки каждой колонки в выбранной группировке (FT-002 ТЗ-3).
+   *
+   * Все группировки работают с ОДНИМИ И ТЕМИ ЖЕ ногами и одним признаком
+   * «оплачено деньгами» — иначе «Чистый поток» разошёлся бы между вкладками.
+   */
+  private async groupRowsByPeriod(
+    group: CashFlowGrouping,
+    periodLegs: Awaited<ReturnType<ArticlesCashflowRollupService['loadByPeriods']>>,
+  ): Promise<CashGroupNode[][]> {
+    const { loaded, settledKeys, buckets } = periodLegs;
+
+    // Список статей — из свёртки пустого набора ног: там все статьи с нулями.
+    const articles = (
+      this.rollup.foldLegs(loaded, [], settledKeys) as any[]
+    ).map((row) => ({
+      id: row.id,
+      name: row.name,
+      kind: row.kind,
+      parentId: row.parentId ?? null,
+      cashflowSection: row.cashflowSection ?? null,
+      sortOrder: row.sortOrder,
+    }));
+
+    const foldToReport = (legs: CashRollupLeg[]) =>
+      buildCashFlowArticlesReport({
+        articles,
+        amounts: (this.rollup.foldLegs(loaded, legs, settledKeys) as any[]).map(
+          (row) => ({ id: row.id, amount: Number(row.amount ?? 0) }),
+        ),
+        openingBalance: 0,
+        closingBalance: 0,
+      });
+
+    const names = await this.namesFor(group, loaded.legs);
+
+    return buckets.map((legs) =>
+      groupingRows(group, {
+        report: foldToReport(legs),
+        legs,
+        settledKeys,
+        isCashAccount: loaded.isCashAccount,
+        foldToReport,
+        names,
+      }),
+    );
+  }
+
+  /** Названия контрагентов, счетов и направлений — только нужной вкладке. */
+  private async namesFor(
+    group: CashFlowGrouping,
+    legs: CashRollupLeg[],
+  ): Promise<GroupingContext['names']> {
+    const names: GroupingContext['names'] = {
+      contacts: new Map(),
+      accounts: new Map(),
+      projects: new Map(),
+    };
+    const idsOf = (pick: (leg: CashRollupLeg) => number | null | undefined) => [
+      ...new Set(
+        legs
+          .map(pick)
+          .filter((id): id is number => id !== null && id !== undefined),
+      ),
+    ];
+
+    if (group === 'contacts') {
+      const ids = idsOf((leg) => leg.contactId);
+      const rows = ids.length
+        ? await this.contactModel().query().whereIn('id', ids).select(['id', 'displayName'])
+        : [];
+      (rows as any[]).forEach((row) => names.contacts.set(row.id, row.displayName));
+    }
+    if (group === 'accounts') {
+      const ids = idsOf((leg) => leg.accountId);
+      const rows = ids.length
+        ? await this.accountModel().query().whereIn('id', ids).select(['id', 'name'])
+        : [];
+      (rows as any[]).forEach((row) => names.accounts.set(row.id, row.name));
+    }
+    if (group === 'directions' || group === 'directions_articles') {
+      const ids = idsOf((leg) => leg.projectId);
+      const rows = ids.length
+        ? await this.projectModel().query().whereIn('id', ids).select(['id', 'name'])
+        : [];
+      (rows as any[]).forEach((row) => names.projects.set(row.id, row.name));
+    }
+    return names;
   }
 
   /** Денежные счета организации: касса, банк, личные средства. */

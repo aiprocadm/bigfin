@@ -5,7 +5,9 @@ import {
 } from '../../common/ManagerialReportColumns';
 import { buildCashFlowArticlesMatrix } from './cashFlowArticlesMatrix';
 import { CashFlowArticlesTable } from './CashFlowArticlesTable';
+import { buildCashFlowArticlesReport } from './buildCashFlowArticlesReport';
 import { buildReportPeriods } from './periodizeRows';
+import { byActivity, byArticles } from './groupings/byArticles';
 
 /**
  * «Золотой» ответ матрицы «Деньги по статьям» (FT-001 ТЗ-3).
@@ -34,17 +36,30 @@ const INPUT = [
   { amounts: [{ id: 2, amount: 30000 }, { id: 3, amount: 30000 }], net: -30000, transfers: { incoming: 0, outgoing: 0 } },
 ];
 
-function matrix() {
+/** Строки колонки в группировке — тем же кодом, что у службы. */
+const rowsOf = (amounts: any[], group: 'articles' | 'activity') => {
+  const report = buildCashFlowArticlesReport({
+    articles: ARTICLES,
+    amounts,
+    openingBalance: 0,
+    closingBalance: 0,
+  });
+  return group === 'activity' ? byActivity(report) : byArticles(report);
+};
+
+const NO_TRANSFERS = { incoming: 0, outgoing: 0 };
+
+function matrix(group: 'articles' | 'activity' = 'activity') {
   let opening = 10000;
   return buildCashFlowArticlesMatrix({
-    articles: ARTICLES,
+    group,
     dateGroup: 'month',
     periods: PERIODS.map((period, index) => {
       const periodOpening = opening;
       opening += INPUT[index].net;
       return {
         ...period,
-        amounts: INPUT[index].amounts,
+        rows: rowsOf(INPUT[index].amounts, group),
         openingBalance: periodOpening,
         closingBalance: opening,
         transfers: INPUT[index].transfers,
@@ -53,12 +68,23 @@ function matrix() {
   });
 }
 
-function table(showTotalColumn = true) {
-  const built = matrix();
+const dataOf = (built: ReturnType<typeof matrix>) => ({
+  ...built.total,
+  group: built.group,
+  dateGroup: built.dateGroup,
+  periods: built.periods,
+  isChained: built.isChained,
+});
+
+function table(
+  showTotalColumn = true,
+  group: 'articles' | 'activity' = 'activity',
+) {
+  const built = matrix(group);
   const t = new CashFlowArticlesTable(
-    { ...built.total, dateGroup: built.dateGroup, periods: built.periods, isChained: built.isChained },
+    dataOf(built),
     { t: (key: string) => key } as any,
-    showTotalColumn,
+    { showTotalColumn, showTransfers: true },
   );
   const flat: Array<[string, string, ...number[]]> = [];
   const walk = (rows: any[]) =>
@@ -71,6 +97,65 @@ function table(showTotalColumn = true) {
 }
 
 describe('золотой ответ матрицы «Деньги по статьям»', () => {
+  it('по статьям (по умолчанию): Поступления / Выплаты → статьи, без разделов', () => {
+    //                  id              январь    февраль   март      итого
+    expect(table(true, 'articles').rows.map(([id, , ...cells]) => [id, ...cells])).toEqual([
+      ['opening',       10000,    79500,    99500,    10000],
+      ['inflow',       100000,    50000,        0,   150000],
+      ['article-1',    100000,    50000,        0,   150000],
+      ['outflow',       30000,    30000,    30000,    90000],
+      ['article-2',     30000,    30000,    30000,    90000],
+      ['article-3',     30000,    30000,    30000,    90000],
+      ['unclassified',   -500,        0,        0,     -500],
+      ['net',           69500,    20000,   -30000,    59500],
+      ['closing',       79500,    99500,    69500,    69500],
+      ['transfers',         0,        0,        0,        0],
+      ['transfers-in',   7000,        0,        0,     7000],
+      ['transfers-out',  7000,        0,        0,     7000],
+    ]);
+  });
+
+  it('переводы и пустые строки по умолчанию спрятаны, остатки от этого не меняются', () => {
+    const built = matrix('articles');
+    const hidden = new CashFlowArticlesTable(dataOf(built), { t: (k: string) => k } as any);
+    const shown = new CashFlowArticlesTable(dataOf(built), { t: (k: string) => k } as any, {
+      showTransfers: true,
+    });
+    const ids = (t: CashFlowArticlesTable) => t.tableData().map((row) => row.id);
+    const closing = (t: CashFlowArticlesTable) =>
+      t.tableData().find((row) => row.id === 'closing')!.cells.map((c) => c.value);
+
+    expect(ids(hidden)).not.toContain('transfers');
+    expect(ids(shown)).toContain('transfers');
+    expect(closing(hidden)).toEqual(closing(shown));
+  });
+
+  it('пустая статья прячется, а с «показывать пустые» — видна', () => {
+    const withEmpty = [...ARTICLES, { id: 9, name: 'Реклама', kind: 'expense', parentId: null, cashflowSection: 'operating' }];
+    const report = buildCashFlowArticlesReport({
+      articles: withEmpty,
+      amounts: [{ id: 1, amount: 100 }],
+      openingBalance: 0,
+      closingBalance: 100,
+    });
+    const built = buildCashFlowArticlesMatrix({
+      group: 'articles',
+      dateGroup: 'month',
+      periods: [{ ...PERIODS[0], rows: byArticles(report), openingBalance: 0, closingBalance: 100, transfers: NO_TRANSFERS }],
+    });
+    const idsOf = (showEmpty: boolean) => {
+      const out: string[] = [];
+      const walk = (rows: any[]) => rows.forEach((row) => { out.push(row.id); walk(row.children); });
+      walk(new CashFlowArticlesTable(dataOf(built), { t: (k: string) => k } as any, { showEmpty }).tableData());
+      return out;
+    };
+
+    expect(idsOf(false)).not.toContain('article-9');
+    expect(idsOf(true)).toContain('article-9');
+    // Группа «Выплаты» пустая, но каркас отчёта не прячется.
+    expect(idsOf(false)).toContain('outflow');
+  });
+
   it('колонки: статья, январь, февраль, обрезанный март, итого', () => {
     expect(table().columns.map((c) => [c.key, c.label, c.cellIndex])).toEqual([
       ['name', 'Статья', 0],
@@ -81,7 +166,7 @@ describe('золотой ответ матрицы «Деньги по стат�
     ]);
   });
 
-  it('каждая ячейка — как посчитано руками', () => {
+  it('каждая ячейка — как посчитано руками (по видам деятельности)', () => {
     //                  id                     январь    февраль   март      итого
     expect(table().rows.map(([id, , ...cells]) => [id, ...cells])).toEqual([
       ['opening',             10000,    79500,    99500,    10000],
@@ -117,12 +202,12 @@ describe('золотой ответ матрицы «Деньги по стат�
 
   it('разорванную цепочку видно, а не прячем', () => {
     const built = buildCashFlowArticlesMatrix({
-      articles: ARTICLES,
+      group: 'activity',
       dateGroup: 'month',
       periods: [
-        { ...PERIODS[0], amounts: [], openingBalance: 0, closingBalance: 100, transfers: { incoming: 0, outgoing: 0 } },
+        { ...PERIODS[0], rows: rowsOf([], 'activity'), openingBalance: 0, closingBalance: 100, transfers: { incoming: 0, outgoing: 0 } },
         // Начало февраля не равно концу января.
-        { ...PERIODS[1], amounts: [], openingBalance: 90, closingBalance: 90, transfers: { incoming: 0, outgoing: 0 } },
+        { ...PERIODS[1], rows: rowsOf([], 'activity'), openingBalance: 90, closingBalance: 90, transfers: { incoming: 0, outgoing: 0 } },
       ],
     });
 
@@ -133,15 +218,15 @@ describe('золотой ответ матрицы «Деньги по стат�
     // Январь −500, февраль +500: в «Итого» ноль, но в месяцах деньги
     // мимо статей были — строка обязана остаться.
     const built = buildCashFlowArticlesMatrix({
-      articles: ARTICLES,
+      group: 'activity',
       dateGroup: 'month',
       periods: [
-        { ...PERIODS[0], amounts: [], openingBalance: 0, closingBalance: -500, transfers: { incoming: 0, outgoing: 0 } },
-        { ...PERIODS[1], amounts: [], openingBalance: -500, closingBalance: 0, transfers: { incoming: 0, outgoing: 0 } },
+        { ...PERIODS[0], rows: rowsOf([], 'activity'), openingBalance: 0, closingBalance: -500, transfers: { incoming: 0, outgoing: 0 } },
+        { ...PERIODS[1], rows: rowsOf([], 'activity'), openingBalance: -500, closingBalance: 0, transfers: { incoming: 0, outgoing: 0 } },
       ],
     });
     const t = new CashFlowArticlesTable(
-      { ...built.total, dateGroup: 'month', periods: built.periods, isChained: true },
+      dataOf(built as any),
       { t: (key: string) => key } as any,
     );
 

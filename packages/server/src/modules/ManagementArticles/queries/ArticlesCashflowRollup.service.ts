@@ -30,6 +30,9 @@ export interface CashRollupLeg {
   credit: number | string | null;
   date?: Date | string | null;
   transactionType?: string | null;
+  /** Контрагент и направление — для группировок отчёта «Деньги» (FT-002). */
+  contactId?: number | null;
+  projectId?: number | null;
 }
 
 /** Период, на который раскладывается свёртка. */
@@ -117,7 +120,7 @@ export function periodIndexOf(
   return -1;
 }
 
-interface LoadedRollup {
+export interface LoadedRollup {
   articles: any[];
   map: any[];
   legs: CashRollupLeg[];
@@ -159,7 +162,7 @@ export class ArticlesCashflowRollupService {
       loaded.isCashAccount,
     );
 
-    return this.fold(loaded, loaded.legs, settledKeys);
+    return this.foldLegs(loaded, loaded.legs, settledKeys);
   }
 
   /**
@@ -182,10 +185,37 @@ export class ArticlesCashflowRollupService {
   ): Promise<Array<CashRollupPeriod & { rows: any[] }>> {
     if (periods.length === 0) return [];
 
+    const { loaded, settledKeys, buckets } = await this.loadByPeriods(
+      query,
+      periods,
+    );
+
+    return periods.map((period, index) => ({
+      ...period,
+      rows: this.foldLegs(loaded, buckets[index], settledKeys),
+    }));
+  }
+
+  /**
+   * Ноги отрезка, разложенные по периодам, и признак «оплачено деньгами» —
+   * сырьё для свёртки по статьям и для других группировок отчёта «Деньги»
+   * (FT-002 ТЗ-3: контрагенты, счета, направления).
+   *
+   * Отдаётся наружу, чтобы группировки не читали ноги второй раз: другой
+   * запрос — другой отбор, и «Чистый поток» разошёлся бы между вкладками.
+   */
+  public async loadByPeriods(
+    query: ArticlesRollupQueryDto,
+    periods: CashRollupPeriod[],
+  ): Promise<{
+    loaded: LoadedRollup;
+    settledKeys: Set<string>;
+    buckets: CashRollupLeg[][];
+  }> {
     const loaded = await this.load({
       ...query,
-      fromDate: periods[0].fromDate,
-      toDate: periods[periods.length - 1].toDate,
+      fromDate: periods[0]?.fromDate,
+      toDate: periods[periods.length - 1]?.toDate,
     } as ArticlesRollupQueryDto);
 
     const settledKeys = cashSettledReferenceKeys(
@@ -199,10 +229,7 @@ export class ArticlesCashflowRollupService {
       if (index >= 0) buckets[index].push(leg);
     });
 
-    return periods.map((period, index) => ({
-      ...period,
-      rows: this.fold(loaded, buckets[index], settledKeys),
-    }));
+    return { loaded, settledKeys, buckets };
   }
 
   /** Статьи, карта счетов, денежные счета и ноги отрезка — один раз. */
@@ -255,7 +282,7 @@ export class ArticlesCashflowRollupService {
   }
 
   /** Ноги → суммы статей с подъёмом в предков. */
-  private fold(
+  public foldLegs(
     loaded: LoadedRollup,
     legs: CashRollupLeg[],
     settledKeys: Set<string>,

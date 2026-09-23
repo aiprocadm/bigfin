@@ -13,6 +13,7 @@ import {
 
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import type { WaterfallStep } from './pnlWaterfall';
+import { formatMargin } from './managerialPnlRows';
 
 /**
  * Водопад управленческой прибыли (FT-015 ТЗ-3) над таблицей: куда уходит
@@ -50,10 +51,12 @@ export function PnlWaterfallChart({ steps }: { steps: WaterfallStep[] }) {
               formatter={(_value: any, name: any, item: any) => {
                 if (name !== 'height') return [null, null];
                 const step: WaterfallStep = item?.payload;
-                const share =
-                  step.shareOfRevenue === null
-                    ? intl.get('reports.percent.not_applicable')
-                    : `${step.shareOfRevenue.toLocaleString('ru-RU')} %`;
+                // Доля — в формате языка интерфейса, как рентабельность в
+                // таблице; «н/о», когда выручки нет.
+                const share = formatMargin(
+                  step.shareOfRevenue === null ? '' : String(step.shareOfRevenue),
+                  intl.getInitOptions?.()?.currentLocale || 'ru',
+                );
                 return [
                   `${formatOrganizationMoney(step.value)} · ${share} ${intl.get('managerial_pnl.waterfall_of_revenue')}`,
                   item?.payload?.label,

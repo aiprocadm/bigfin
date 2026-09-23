@@ -40,34 +40,36 @@ export function AccrualShiftsTab({ fromDate, toDate }: Props) {
       {items.length === 0 ? (
         <p className="text-sm">{intl.get('data_quality.accrual_shifts.empty')}</p>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b text-left text-text-secondary">
-              <th className="py-1">{intl.get('date')}</th>
-              <th className="py-1">{intl.get('accrual_period.label')}</th>
-              <th className="py-1">{intl.get('description')}</th>
-              <th className="py-1 text-right">{intl.get('amount')}</th>
-              <th className="py-1">{intl.get('data_quality.accrual_shifts.effect')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((row) => (
-              <tr
-                key={row.id}
-                className="cursor-pointer border-b hover:bg-surface-elevated"
-                onClick={() => open(row)}
-              >
-                <td className="py-1">{fmtDate(row.date)}</td>
-                <td className="py-1">{row.accrualPeriod}</td>
-                <td className="py-1">{row.description || row.transactionNumber || '—'}</td>
-                <td className="py-1 text-right tabular-nums">{fmt(row.amount)}</td>
-                <td className="py-1 text-text-secondary">
-                  {intl.get(`data_quality.accrual_shifts.kind.${row.kind}`)}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-left text-text-secondary">
+                <th className="py-1">{intl.get('date')}</th>
+                <th className="py-1">{intl.get('accrual_period.label')}</th>
+                <th className="py-1">{intl.get('description')}</th>
+                <th className="py-1 text-right">{intl.get('amount')}</th>
+                <th className="py-1">{intl.get('data_quality.accrual_shifts.effect')}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {items.map((row) => (
+                <tr
+                  key={row.id}
+                  className="cursor-pointer border-b hover:bg-surface-elevated"
+                  onClick={() => open(row)}
+                >
+                  <td className="py-1">{fmtDate(row.date)}</td>
+                  <td className="py-1">{row.accrualPeriod}</td>
+                  <td className="py-1">{row.description || row.transactionNumber || '—'}</td>
+                  <td className="py-1 text-right tabular-nums">{fmt(row.amount)}</td>
+                  <td className="py-1 text-text-secondary">
+                    {intl.get(`data_quality.accrual_shifts.kind.${row.kind}`)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

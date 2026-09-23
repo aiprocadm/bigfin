@@ -34,6 +34,11 @@ export type ReportRowTypeValue =
 export interface ReportTableCell {
   key: string;
   value: string;
+  /**
+   * Вторая строка под суммой — например, доля от итога колонки (FT-003
+   * ТЗ-3). Мелко и спокойным цветом: главное в ячейке — сумма.
+   */
+  note?: string;
 }
 
 export interface ReportTableRow {
@@ -63,6 +68,11 @@ export interface ReportTableColumn {
    * красят по знаку и ищут поиском, а разметку — нет.
    */
   render?: (row: ReportTableRow) => React.ReactNode;
+  /**
+   * Подсветить колонку — например, выходной при масштабе «по дням»
+   * (FT-006b ТЗ-3). Спокойный фон, а не цвет: выходной не проблема.
+   */
+  highlight?: boolean;
 }
 
 export interface ReportTableProps {
@@ -91,6 +101,17 @@ export interface ReportTableProps {
   /** Какие строки можно раскрыть: обычно это строки-счета, а не итоги. */
   canDrillDown?: (row: ReportTableRow) => boolean;
   /**
+   * Щелчок по ОДНОЙ ячейке (FT-004 ТЗ-3). В матрице по месяцам раскрывать
+   * надо сумму кликнутой колонки, а не всей строки: человек щёлкнул по
+   * «Аренда · март» и ждёт мартовские платежи.
+   */
+  onCellClick?: (row: ReportTableRow, column: ReportTableColumn) => void;
+  /** Какие ячейки раскрываются. Без него — ни одна. */
+  canDrillDownCell?: (
+    row: ReportTableRow,
+    column: ReportTableColumn,
+  ) => boolean;
+  /**
    * Виртуализация для длинных отчётов (Журнал, Главная книга):
    * рендерятся только видимые строки, высота строки фиксированная.
    */
@@ -110,6 +131,11 @@ export interface ReportTableProps {
    * но уже не видит, к какой статье они относятся.
    */
   stickyFirstColumn?: boolean;
+  /**
+   * Строка, которую надо выделить: человек пришёл по ссылке «эта статья в
+   * отчёте» и должен сразу увидеть, куда смотреть.
+   */
+  highlightRowId?: string;
   className?: string;
 }
 
@@ -152,6 +178,18 @@ export function getRowCellValue(
   const byKey = row.cells.find((cell) => cell.key === column.key);
   if (byKey) return byKey.value ?? '';
   return row.cells[columnIndex]?.value ?? '';
+}
+
+/** Вторая строка ячейки — только у ячеек из ответа, не у вычисляемых колонок. */
+export function getRowCellNote(
+  row: ReportTableRow,
+  column: ReportTableColumn,
+  columnIndex: number,
+): string | undefined {
+  if (column.getValue || column.render) return undefined;
+  if (column.cellIndex != null) return row.cells[column.cellIndex]?.note;
+  const byKey = row.cells.find((cell) => cell.key === column.key);
+  return (byKey ?? row.cells[columnIndex])?.note;
 }
 
 /** Отрицательное значение? («-100», «−100», «(100)»). */
@@ -243,7 +281,10 @@ interface ReportRowViewProps {
   rowHeight?: number;
   onRowClick?: (row: ReportTableRow) => void;
   canDrillDown?: (row: ReportTableRow) => boolean;
+  onCellClick?: ReportTableProps['onCellClick'];
+  canDrillDownCell?: ReportTableProps['canDrillDownCell'];
   stickyFirstColumn?: boolean;
+  isHighlighted?: boolean;
 }
 
 function ReportRowView({
@@ -254,7 +295,10 @@ function ReportRowView({
   rowHeight,
   onRowClick,
   canDrillDown,
+  onCellClick,
+  canDrillDownCell,
   stickyFirstColumn,
+  isHighlighted,
 }: ReportRowViewProps) {
   const { row, path, depth, hasChildren, isExpanded, isFinal } = flat;
   const isTotal = isTotalRow(row);
@@ -266,6 +310,7 @@ function ReportRowView({
 
   return (
     <tr
+      data-row-id={row.id != null ? String(row.id) : undefined}
       style={rowHeight ? { height: rowHeight } : undefined}
       onClick={drillable ? () => onRowClick?.(row) : undefined}
       className={cn(
@@ -273,11 +318,15 @@ function ReportRowView({
         isTotal && 'border-t border-t-border font-semibold',
         isFinal && 'border-b-0 bg-surface-elevated font-semibold',
         drillable && 'group cursor-pointer hover:bg-surface-elevated',
+        isHighlighted && 'bg-action/10',
       )}
     >
         {columns.map((column, columnIndex) => {
           const isNameColumn = columnIndex === 0;
           const value = getRowCellValue(row, column, columnIndex);
+          const note = isNameColumn
+            ? undefined
+            : getRowCellNote(row, column, columnIndex);
           const negative = isNegativeValue(value);
 
           return (
@@ -289,11 +338,16 @@ function ReportRowView({
                   'text-right tabular-nums whitespace-nowrap',
                 column.align === 'center' && 'text-center',
                 !isNameColumn && negative && !isTotal && 'text-text-secondary',
+                column.highlight && 'bg-surface-elevated/60',
                 isNameColumn &&
                   stickyFirstColumn && [
                     STICKY_FIRST_COLUMN_CLASS,
                     'z-[1]',
-                    isFinal ? 'bg-surface-elevated' : 'bg-surface',
+                    isHighlighted
+                      ? 'bg-[color-mix(in_srgb,var(--color-action)_10%,var(--color-surface))]'
+                      : isFinal
+                        ? 'bg-surface-elevated'
+                        : 'bg-surface',
                     drillable && 'group-hover:bg-surface-elevated',
                   ],
               )}
@@ -332,9 +386,27 @@ function ReportRowView({
                 </span>
               ) : hideValues ? null : column.render ? (
                 column.render(row)
+              ) : onCellClick && canDrillDownCell?.(row, column) ? (
+                // Кнопка, а не щелчок по ячейке: так её видно клавиатуре и
+                // экранному чтецу, и понятно, что число раскрывается.
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onCellClick(row, column);
+                  }}
+                  className="rounded tabular-nums underline-offset-2 hover:underline focus-visible:underline"
+                >
+                  {value}
+                </button>
               ) : (
                 value
               )}
+              {note && !hideValues ? (
+                <div className="text-[0.6875rem] leading-tight text-text-muted">
+                  {note}
+                </div>
+              ) : null}
             </td>
           );
         })}
@@ -358,8 +430,11 @@ export function ReportTable({
   rowHeight = 32,
   overscan = 8,
   maxBodyHeight = 560,
+  onCellClick,
+  canDrillDownCell,
   stickyHeader = false,
   stickyFirstColumn = false,
+  highlightRowId,
   className,
 }: ReportTableProps) {
   const [expanded, setExpanded] = React.useState<Set<string>>(() =>
@@ -441,11 +516,15 @@ export function ReportTable({
                   'px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary',
                   column.align === 'right' && 'text-right',
                   column.align === 'center' && 'text-center',
+                  column.highlight && 'bg-surface-elevated',
                   // Угол: закреплён и сверху, и слева — поверх всех ячеек.
                   columnIndex === 0 &&
                     stickyFirstColumn && [
                       STICKY_FIRST_COLUMN_CLASS,
-                      'z-20 bg-surface',
+                      // Ширина задаётся шапкой: без неё колонка названий
+                      // сжималась, и «Операционная деятельность» ломалась
+                      // на две строки (живая проверка этапа 30).
+                      'z-20 min-w-[15rem] bg-surface',
                     ],
                 )}
               >
@@ -480,7 +559,12 @@ export function ReportTable({
               rowHeight={virtualized ? rowHeight : undefined}
               onRowClick={onRowClick}
               canDrillDown={canDrillDown}
+              onCellClick={onCellClick}
+              canDrillDownCell={canDrillDownCell}
               stickyFirstColumn={stickyFirstColumn}
+              isHighlighted={
+                highlightRowId != null && String(flat.row.id) === highlightRowId
+              }
             />
           ))}
           {vwin && vwin.padBottom > 0 && (

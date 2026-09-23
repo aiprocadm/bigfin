@@ -4,7 +4,10 @@ import intl from 'react-intl-universal';
 
 import ru from '@/lang/ru/index.json';
 import {
+  columnBounds,
+  drillOfRow,
   formatPeriodLabel,
+  formatShare,
   isPeriodTooWide,
   matrixColumns,
   matrixRows,
@@ -228,5 +231,110 @@ describe('заглушка при загрузке', () => {
     expect(skeletonColumnsCount({ fromDate: '2026-01-01', toDate: '2026-03-31', dateGroup: 'month' })).toBe(3);
     expect(skeletonColumnsCount({ fromDate: '2026-01-01', toDate: '2026-12-31', dateGroup: 'day' })).toBe(12);
     expect(skeletonColumnsCount({ fromDate: '2026-01-01', toDate: '2026-12-31', dateGroup: 'total' })).toBe(1);
+  });
+});
+
+describe('этап 31: группировки, доли, раскрытие, календарь', () => {
+  it('группировка живёт в адресе; «статьи» по умолчанию туда не пишутся', () => {
+    expect(queryFromSearch('?group=contacts', '2026-09-23').group).toBe('contacts');
+    expect(queryFromSearch('?group=мусор', '2026-09-23').group).toBeUndefined();
+
+    const base = { fromDate: '2026-01-01', toDate: '2026-12-31', dateGroup: 'month' as const };
+    expect(new URLSearchParams(searchFromQuery('', { ...base, group: 'accounts' })).get('group')).toBe('accounts');
+    expect(new URLSearchParams(searchFromQuery('?group=accounts', { ...base, group: 'articles' })).get('group')).toBeNull();
+  });
+
+  it('критерий FT-003: 187 502 из 358 241,51 — «52,34 %»', () => {
+    expect(formatShare(187502, 358241.51)).toBe('52,34 %');
+  });
+
+  it('итог ноль: у нулевой ячейки — ничего, у ненулевой — «н/о», но не «0 %»', () => {
+    expect(formatShare(0, 0)).toBeUndefined();
+    expect(formatShare(100, 0)).toBe('н/о');
+    expect(formatShare(100, -50)).toBe('н/о');
+  });
+
+  const row = (id: string, type: string, values: number[], children: any[] = []) => ({
+    id,
+    cells: [{ key: 'name', value: id }, ...values.map((v, i) => ({ key: `p${i}`, value: String(v) }))],
+    row_types: [type],
+    children,
+  });
+
+  it('доли — под поступлениями и выплатами, от итога СВОЕЙ колонки; у итогов — нет', () => {
+    const rows = matrixRows(
+      [
+        row('opening', 'OPENING', [1000, 2000]),
+        row('inflow', 'INFLOW', [400, 0], [row('article-1', 'ARTICLE', [100, 0]), row('article-2', 'ARTICLE', [300, 0])]),
+        row('outflow', 'OUTFLOW', [200, 50], [row('article-3', 'ARTICLE', [200, 50])]),
+        row('net', 'NET', [200, -50]),
+      ],
+      (value) => String(value),
+      { showPercent: true },
+    );
+
+    const inflow = rows[1];
+    expect(inflow.cells[1].note).toBe('100,00 %');
+    expect(inflow.children![0].cells[1].note).toBe('25,00 %');
+    // Февраль без поступлений: ни одной пометки.
+    expect(inflow.children![0].cells[2].note).toBeUndefined();
+    expect(rows[2].children![0].cells[2].note).toBe('100,00 %');
+    expect(rows[0].cells[1].note).toBeUndefined();
+    expect(rows[3].cells[1].note).toBeUndefined();
+  });
+
+  it('без тумблера долей нет', () => {
+    const rows = matrixRows([row('inflow', 'INFLOW', [400])], String);
+    expect(rows[0].cells[1].note).toBeUndefined();
+  });
+
+  it('контрагент внутри поступлений подписан своим именем, а не «Поступления»', () => {
+    const rows = matrixRows(
+      [row('inflow', 'INFLOW', [1], [row('inflow-contact-7', 'CONTACT', [1]), row('inflow-contact-none', 'CONTACT', [0])])],
+      String,
+    );
+
+    expect(rows[0].cells[0].value).toBe('Поступления');
+    expect(rows[0].children![0].cells[0].value).toBe('inflow-contact-7');
+    expect(rows[0].children![1].cells[0].value).toBe('Без контрагента');
+  });
+
+  it('раскрываются строки-статьи; статья внутри направления несёт направление', () => {
+    expect(drillOfRow('article-12')).toEqual({ articleId: 12 });
+    expect(drillOfRow('direction-3-article-12')).toEqual({ articleId: 12, projectsIds: [3] });
+    // «Без направления» на сервере не отобрать — не раскрываем, чтобы итог не соврал.
+    expect(drillOfRow('direction-none-article-12')).toBeNull();
+    expect(drillOfRow('inflow')).toBeNull();
+    expect(drillOfRow('inflow-contact-7')).toBeNull();
+  });
+
+  it('границы ячейки — границы её колонки; у «Итого» — весь отчёт', () => {
+    const bounds = columnBounds(
+      [
+        { key: 'name', label: '' },
+        { key: 'p0', label: '', from_date: '2026-01-01', to_date: '2026-01-31' },
+        { key: 'total', label: '', is_total: true },
+      ],
+      { fromDate: '2026-01-01', toDate: '2026-03-31' },
+    );
+
+    expect(bounds.p0).toEqual({ fromDate: '2026-01-01', toDate: '2026-01-31' });
+    expect(bounds.total).toEqual({ fromDate: '2026-01-01', toDate: '2026-03-31' });
+    expect(bounds.name).toBeUndefined();
+  });
+
+  it('выходные подсвечены по дням; настройка выключает; дни недели — по настройке', () => {
+    const days = [
+      { key: 'name', label: '' },
+      { key: 'p0', label: '', from_date: '2026-09-25', to_date: '2026-09-25' },
+      { key: 'p1', label: '', from_date: '2026-09-26', to_date: '2026-09-26' },
+    ];
+
+    expect(matrixColumns(days, 'day').map((c) => Boolean(c.highlight))).toEqual([false, false, true]);
+    expect(
+      matrixColumns(days, 'day', 'ru', { highlightWeekends: false }).map((c) => Boolean(c.highlight)),
+    ).toEqual([false, false, false]);
+    expect(matrixColumns(days, 'day', 'ru', { showWeekdays: true })[2].label).toMatch(/сб/);
+    expect(matrixColumns(days, 'day')[2].label).not.toMatch(/сб/);
   });
 });

@@ -5,12 +5,15 @@ import moment from 'moment';
 import { X } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import useApiRequest from '@/hooks/useRequest';
 import { transformToCamelCase } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { buttonVariants } from '@/components/ui/button';
 import { transactionsLinkFromDrillDown } from './drillDownRegisterLink';
+import { OPEN_DRAWER } from '@/store/types';
+import { handleCashFlowTransactionType } from '@/containers/CashFlow/AccountTransactions/utils';
 
 export interface DrillDownTarget {
   /** Раскрытие по счёту — прежнее поведение Баланса, ОПиУ и старого ДДС. */
@@ -24,11 +27,22 @@ export interface DrillDownTarget {
   articleName?: string;
   fromDate: string;
   toDate: string;
+  /**
+   * Отбор отчёта, из ячейки которого раскрывают (FT-004 ТЗ-3): без него
+   * панель показала бы операции всей группы, и итог не сошёлся бы с ячейкой.
+   */
+  legalEntityIds?: number[];
+  projectsIds?: number[];
+  /** Границы всего отчёта — по ним считается «оплачено деньгами». */
+  reportFrom?: string;
+  reportTo?: string;
 }
 
 interface DrillDownRow {
   date: string;
   transactionNumber: string | null;
+  referenceType?: string | null;
+  referenceId?: number | null;
   contactName: string | null;
   note: string | null;
   formattedAmount: string;
@@ -66,6 +80,15 @@ export default function ReportDrillDownPanel({
   kind?: DrillDownKind;
 }) {
   const apiRequest = useApiRequest();
+  const dispatch = useDispatch();
+  // Карточка операции открывается поверх панели — тем же путём, что из
+  // реестра: у конкурента из такого списка операцию не открыть вовсе.
+  const openTransaction = (row: DrillDownRow) =>
+    handleCashFlowTransactionType(
+      { reference_type: row.referenceType, reference_id: row.referenceId },
+      (name: string, payload: unknown) =>
+        dispatch({ type: OPEN_DRAWER, name, payload }),
+    );
 
   const { data, isLoading, isError } = useQuery(
     [
@@ -74,6 +97,10 @@ export default function ReportDrillDownPanel({
       target?.articleId,
       target?.fromDate,
       target?.toDate,
+      target?.legalEntityIds,
+      target?.projectsIds,
+      target?.reportFrom,
+      target?.reportTo,
     ],
     () =>
       apiRequest
@@ -89,6 +116,10 @@ export default function ReportDrillDownPanel({
             ...(target?.accountId ? { accountId: target.accountId } : {}),
             from: target?.fromDate,
             to: target?.toDate,
+            legalEntityIds: target?.legalEntityIds,
+            projectsIds: target?.projectsIds,
+            reportFrom: target?.reportFrom,
+            reportTo: target?.reportTo,
           },
         })
         .then((res: any) => transformToCamelCase(res.data)),
@@ -145,8 +176,15 @@ export default function ReportDrillDownPanel({
             {rows.map((row, index) => (
               <li
                 key={`${row.transactionNumber ?? 'row'}-${index}`}
-                className="flex items-start justify-between gap-3 py-2 text-sm"
+                className="py-2 text-sm"
               >
+                <button
+                  type="button"
+                  disabled={!row.referenceType || !row.referenceId}
+                  onClick={() => openTransaction(row)}
+                  aria-label={intl.get('reports.drill_down.open_transaction')}
+                  className="flex w-full items-start justify-between gap-3 rounded text-left enabled:hover:bg-surface-elevated"
+                >
                 <div className="min-w-0">
                   <div className="text-text-primary">
                     {moment(row.date).format('D MMM YYYY')}
@@ -159,6 +197,7 @@ export default function ReportDrillDownPanel({
                 <span className="shrink-0 tabular-nums text-text-primary">
                   {row.formattedAmount}
                 </span>
+                </button>
               </li>
             ))}
           </ul>
@@ -235,6 +274,7 @@ export default function ReportDrillDownPanel({
                 articleId: target.articleId,
                 fromDate: target.fromDate,
                 toDate: target.toDate,
+                legalEntityIds: target.legalEntityIds,
               })}
               className={buttonVariants({
                 variant: 'secondary',

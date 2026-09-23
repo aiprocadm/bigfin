@@ -15,9 +15,21 @@ const COLUMNS = [
   { key: 'total', label: 'Итого', cellIndex: 3 },
 ];
 
+/** Вид строки — как у сервера: группы узнаются по нему, а не по ключу. */
+const TYPES: Record<string, string> = {
+  'inflow-operating': 'INFLOW',
+  'outflow-operating': 'OUTFLOW',
+  'inflow-financing': 'INFLOW',
+  'outflow-financing': 'OUTFLOW',
+  'section-operating': 'SECTION',
+  'section-financing': 'SECTION',
+  'transfers-in': 'TRANSFER_IN',
+};
+
 const r = (id: string, values: number[], children: any[] = []) => ({
   id,
   cells: [{ key: 'name', value: id }, ...values.map((v) => ({ key: 'x', value: String(v) }))],
+  row_types: [TYPES[id] ?? (id.startsWith('article') ? 'ARTICLE' : id.toUpperCase())],
   children,
 });
 
@@ -58,6 +70,29 @@ describe('ряды графика отчёта «Деньги» по перио�
 
   it('переводы между своими счетами на график не попадают', () => {
     expect(periodChartSeries(COLUMNS, ROWS)[0].inflow).not.toBe(870);
+  });
+
+  it('группы внутри направлений тоже складываются (вкладка «направления и статьи»)', () => {
+    const rows = [
+      {
+        id: 'direction-3',
+        cells: [{ key: 'name', value: 'Кофейня' }, { key: 'x', value: '0' }, { key: 'x', value: '0' }, { key: 'x', value: '0' }],
+        row_types: ['DIRECTION'],
+        children: [
+          { id: 'direction-3-inflow', cells: [{ key: 'n', value: '' }, { key: 'x', value: '10' }, { key: 'x', value: '0' }, { key: 'x', value: '10' }], row_types: ['INFLOW'], children: [] },
+        ],
+      },
+      {
+        id: 'direction-none',
+        cells: [{ key: 'name', value: 'Без' }, { key: 'x', value: '0' }, { key: 'x', value: '0' }, { key: 'x', value: '0' }],
+        row_types: ['DIRECTION'],
+        children: [
+          { id: 'direction-none-inflow', cells: [{ key: 'n', value: '' }, { key: 'x', value: '5' }, { key: 'x', value: '1' }, { key: 'x', value: '6' }], row_types: ['INFLOW'], children: [] },
+        ],
+      },
+    ];
+
+    expect(periodChartSeries(COLUMNS, rows).map((p) => p.inflow)).toEqual([15, 1]);
   });
 
   it('движения нет — графика нет', () => {

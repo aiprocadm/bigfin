@@ -24,6 +24,8 @@ export interface DrillDownRow {
   transactionNumber: string | null;
   referenceNumber: string | null;
   referenceType: string | null;
+  /** Номер документа — по нему экран открывает карточку операции (FT-004). */
+  referenceId: number | null;
   contactName: string | null;
   note: string | null;
   debit: number;
@@ -216,6 +218,7 @@ export class GetReportDrillDownService {
           transactionNumber: row.transactionNumber ?? null,
           referenceNumber: row.referenceNumber ?? null,
           referenceType: row.referenceType ?? null,
+          referenceId: row.referenceId ?? null,
           contactName: row.contact?.displayName ?? null,
           note: row.note ?? null,
           debit,
@@ -385,6 +388,7 @@ export class GetReportDrillDownService {
         transactionNumber: row.transactionNumber ?? null,
         referenceNumber: row.referenceNumber ?? null,
         referenceType: row.referenceType ?? null,
+        referenceId: row.referenceId ?? null,
         contactName: row.contact?.displayName ?? null,
         note: row.note ?? null,
         debit,

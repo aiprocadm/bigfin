@@ -20,6 +20,12 @@ export const DISPLAY_PREFERENCE_DEFAULTS: Record<string, unknown> = {
   profitTiers: [],
   /** Какие колонки план-факта показывать в бюджете (FIN-021). */
   budgetColumns: ['plan', 'fact', 'variance'],
+  /** Доля под суммой в отчётах (FT-003 ТЗ-3): структура видна без калькулятора. */
+  showPercent: true,
+  /** Строки с нулём во всех колонках (FT-005 ТЗ-3): по умолчанию спрятаны. */
+  showEmptyRows: false,
+  /** Переводы между своими счетами в «Деньгах» (FT-006 ТЗ-3). */
+  showTransfers: false,
 };
 
 /** Ключи, которые продукт умеет хранить. Всё прочее — отказ. */

@@ -21,11 +21,25 @@ import { isTotalRow } from './cashFlowArticlesRows';
  * строки считать итоговыми.
  */
 
+/** Шесть группировок строк (FT-002 ТЗ-3) — в том же порядке, что вкладки. */
+export const CASHFLOW_GROUPINGS = [
+  'articles',
+  'activity',
+  'contacts',
+  'accounts',
+  'directions',
+  'directions_articles',
+] as const;
+
+export type CashFlowGrouping = (typeof CASHFLOW_GROUPINGS)[number];
+
 /** Отбор отчёта так, как он живёт в адресе страницы. */
 export interface CashFlowArticlesQuery {
   fromDate: string;
   toDate: string;
   dateGroup: ReportScale;
+  /** Группировка строк; по умолчанию статьи. */
+  group?: CashFlowGrouping;
   legalEntityIds?: number[];
 }
 
@@ -69,10 +83,16 @@ export function queryFromSearch(
     .map(Number)
     .filter((id) => Number.isInteger(id) && id > 0);
 
+  const rawGroup = params.get('group');
+  const group = (CASHFLOW_GROUPINGS as readonly string[]).includes(rawGroup ?? '')
+    ? (rawGroup as CashFlowGrouping)
+    : undefined;
+
   return {
     fromDate,
     toDate,
     dateGroup,
+    ...(group && group !== 'articles' ? { group } : {}),
     ...(legalEntityIds.length ? { legalEntityIds } : {}),
   };
 }
@@ -95,6 +115,12 @@ export function searchFromQuery(
     params.set('scale', query.dateGroup);
   } else {
     params.delete('scale');
+  }
+  // Группировка по умолчанию («статьи») в адрес не пишется, как и месяц.
+  if (query.group && query.group !== 'articles') {
+    params.set('group', query.group);
+  } else {
+    params.delete('group');
   }
   params.delete('legalEntityIds');
   (query.legalEntityIds ?? []).forEach((id) =>
@@ -132,6 +158,7 @@ export function formatPeriodLabel(
   column: { fromDate: string; toDate: string; isPartial?: boolean },
   dateGroup: ReportScale,
   locale = 'ru',
+  showWeekdays = false,
 ): string {
   const from = moment(column.fromDate, 'YYYY-MM-DD');
   const to = moment(column.toDate, 'YYYY-MM-DD');
@@ -141,7 +168,14 @@ export function formatPeriodLabel(
     new Intl.DateTimeFormat(locale, options).format(value.toDate());
   const dayMonth = { day: 'numeric', month: 'short' } as const;
 
-  if (dateGroup === 'day') return fmt(from, { ...dayMonth, year: 'numeric' });
+  if (dateGroup === 'day') {
+    // День недели — по настройке организации (FT-006b): «пн, 5 янв.».
+    return fmt(from, {
+      ...dayMonth,
+      year: 'numeric',
+      ...(showWeekdays ? { weekday: 'short' as const } : {}),
+    });
+  }
 
   if (column.isPartial || dateGroup === 'week' || dateGroup === 'total') {
     if (from.isSame(to, 'day')) return fmt(from, { ...dayMonth, year: 'numeric' });
@@ -159,11 +193,24 @@ export function formatPeriodLabel(
   return String(from.year());
 }
 
+/** Календарь организации в том виде, в каком его знает витрина. */
+export interface OrganizationCalendarView {
+  highlightWeekends?: boolean;
+  showWeekdays?: boolean;
+}
+
+/** Суббота или воскресенье. */
+const isWeekendDate = (date: string): boolean => {
+  const day = moment(date, 'YYYY-MM-DD').isoWeekday();
+  return day === 6 || day === 7;
+};
+
 /** Колонки матрицы для ReportTable: название слева, числа справа. */
 export function matrixColumns(
   serverColumns: MatrixServerColumn[] = [],
   dateGroup: ReportScale,
   locale = 'ru',
+  calendar: OrganizationCalendarView = {},
 ): ReportTableColumn[] {
   return (serverColumns ?? []).map((column, index) => {
     const cellIndex = column.cellIndex ?? column.cell_index ?? index;
@@ -198,10 +245,17 @@ export function matrixColumns(
               },
               dateGroup,
               locale,
+              Boolean(calendar.showWeekdays),
             )
           : column.label,
       cellIndex,
       align: 'right' as const,
+      // Выходной подсвечивается только у колонки-дня: «выходная неделя» —
+      // бессмыслица. По умолчанию подсветка есть, как в платёжном календаре.
+      highlight:
+        dateGroup === 'day' &&
+        calendar.highlightWeekends !== false &&
+        Boolean(fromDate && isWeekendDate(fromDate)),
     };
   });
 }
@@ -225,55 +279,175 @@ const ROW_LABEL_KEYS: Record<string, string> = {
   'transfers-out': 'cash_flow_articles.transfers_out',
 };
 
-const rowLabelKey = (id: string): string | undefined => {
+/**
+ * Ключ подписи строки. Группы «Поступления / Выплаты» узнаются по ВИДУ
+ * строки, а не по ключу: ключ `inflow-contact-12` — это контрагент внутри
+ * поступлений, и подписать его «Поступления» значило бы стереть его имя.
+ */
+const rowLabelKey = (id: string, rowType: string): string | undefined => {
   if (ROW_LABEL_KEYS[id]) return ROW_LABEL_KEYS[id];
-  if (id.startsWith('inflow-')) return 'cash_flow_articles.inflow';
-  if (id.startsWith('outflow-')) return 'cash_flow_articles.outflow';
+  if (rowType === 'INFLOW') return 'cash_flow_articles.inflow';
+  if (rowType === 'OUTFLOW') return 'cash_flow_articles.outflow';
+  if (id.endsWith('contact-none')) return 'cash_flow_articles.no_contact';
+  if (id.endsWith('direction-none')) return 'cash_flow_articles.no_direction';
   return undefined;
 };
 
 /** Строка таблицы, как её присылает сервер (оба написания полей). */
 export interface MatrixServerRow {
   id?: string;
-  cells: Array<{ key: string; value: string }>;
+  cells: Array<{ key: string; value: string; note?: string }>;
   row_types?: string[];
   rowTypes?: string[];
   children?: MatrixServerRow[];
 }
 
+const typeOf = (row: MatrixServerRow): string =>
+  (row.rowTypes ?? row.row_types ?? [])[0] ?? '';
+
+/**
+ * Итоги поступлений и выплат каждой колонки — по ВЕРХНИМ группам.
+ *
+ * Внутри группы «Поступления» лежат статьи, уже вошедшие в её сумму; группы
+ * по разделам деятельности или по направлениям складываются между собой.
+ */
+export function flowTotalsByCell(rows: MatrixServerRow[] = []): {
+  inflow: number[];
+  outflow: number[];
+} {
+  const inflow: number[] = [];
+  const outflow: number[] = [];
+  const add = (target: number[], row: MatrixServerRow) =>
+    row.cells.forEach((cell, index) => {
+      if (index === 0) return;
+      target[index] = (target[index] ?? 0) + (Number(cell.value) || 0);
+    });
+  const walk = (list: MatrixServerRow[]) =>
+    list.forEach((row) => {
+      const type = typeOf(row);
+      if (type === 'INFLOW') add(inflow, row);
+      else if (type === 'OUTFLOW') add(outflow, row);
+      else walk(row.children ?? []);
+    });
+  walk(rows ?? []);
+  return { inflow, outflow };
+}
+
+/**
+ * Доля строки от итога поступлений или выплат колонки (FT-003 ТЗ-3).
+ *
+ * Итог ноль или меньше — доли нет: «0 %» соврало бы, что статья ничего не
+ * весит. Если и сама сумма ноль — не пишем ничего: колонка без поступлений
+ * не должна пестреть пометками. Если сумма есть, а итога нет (возвраты
+ * перевесили) — «н/о», «не определено».
+ */
+export function formatShare(
+  value: number,
+  total: number,
+  locale = 'ru',
+): string | undefined {
+  if (!(total > 0)) {
+    return value === 0 ? undefined : intl.get('reports.percent.not_applicable');
+  }
+  const percent = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format((value / total) * 100);
+  return `${percent} %`;
+}
+
 /**
  * Строки сервера → строки ReportTable: суммы в деньгах организации, итоги
- * помечены как TOTAL (жирным, с чертой сверху).
+ * помечены как TOTAL (жирным, с чертой сверху), под суммами поступлений и
+ * выплат — доля от итога колонки, если её просили.
  */
 export function matrixRows(
   rows: MatrixServerRow[] = [],
   formatMoney: (value: number) => string,
+  options: { showPercent?: boolean; locale?: string } = {},
 ): ReportTableRow[] {
-  return (rows ?? []).map((row) => {
-    const types = row.rowTypes ?? row.row_types ?? [];
-    const labelKey = row.id ? rowLabelKey(row.id) : undefined;
+  const totals = options.showPercent ? flowTotalsByCell(rows) : null;
 
-    return {
-      id: row.id,
-      cells: row.cells.map((cell, index) => {
-        if (index === 0) {
+  const map = (
+    list: MatrixServerRow[],
+    side: 'inflow' | 'outflow' | null,
+  ): ReportTableRow[] =>
+    (list ?? []).map((row) => {
+      const types = row.rowTypes ?? row.row_types ?? [];
+      const type = types[0] ?? '';
+      const rowSide =
+        type === 'INFLOW' ? 'inflow' : type === 'OUTFLOW' ? 'outflow' : side;
+      const labelKey = row.id ? rowLabelKey(row.id, type) : undefined;
+
+      return {
+        id: row.id,
+        cells: row.cells.map((cell, index) => {
+          if (index === 0) {
+            return {
+              key: cell.key,
+              value: labelKey ? intl.get(labelKey) || cell.value : cell.value,
+            };
+          }
+          const number = Number(cell.value);
+          const valid = cell.value !== '' && Number.isFinite(number);
+          const note =
+            totals && rowSide && valid
+              ? formatShare(number, totals[rowSide][index] ?? 0, options.locale)
+              : undefined;
           return {
             key: cell.key,
-            value: labelKey ? intl.get(labelKey) || cell.value : cell.value,
+            value: valid ? formatMoney(number) : '',
+            ...(note ? { note } : {}),
           };
-        }
-        const number = Number(cell.value);
-        return {
-          key: cell.key,
-          value: cell.value === '' || !Number.isFinite(number) ? '' : formatMoney(number),
-        };
-      }),
-      row_types: types.some((type) => isTotalRow(type))
-        ? [...types, 'TOTAL']
-        : types,
-      children: matrixRows(row.children ?? [], formatMoney),
-    };
+        }),
+        row_types: types.some((t) => isTotalRow(t)) ? [...types, 'TOTAL'] : types,
+        children: map(row.children ?? [], rowSide),
+      };
+    });
+
+  return map(rows, null);
+}
+
+/** Границы каждой колонки — чтобы раскрыть ячейку ровно за её период. */
+export function columnBounds(
+  serverColumns: MatrixServerColumn[] = [],
+  query: Pick<CashFlowArticlesQuery, 'fromDate' | 'toDate'>,
+): Record<string, { fromDate: string; toDate: string }> {
+  const bounds: Record<string, { fromDate: string; toDate: string }> = {};
+  (serverColumns ?? []).forEach((column, index) => {
+    if (index === 0) return;
+    const fromDate = column.fromDate ?? column.from_date;
+    const toDate = column.toDate ?? column.to_date;
+    bounds[column.key] =
+      fromDate && toDate
+        ? { fromDate, toDate }
+        // «Итого» — весь отчёт.
+        : { fromDate: query.fromDate, toDate: query.toDate };
   });
+  return bounds;
+}
+
+/**
+ * Что раскрывать по ячейке (FT-004 ТЗ-3): статья и, если строка внутри
+ * направления, само направление. `null` — ячейка не раскрывается.
+ *
+ * Раскрываются только строки-статьи: у итогов и групп своих операций нет, а
+ * у «Без направления» нечем отобрать «без» на сервере — панель показала бы
+ * операции всех направлений и не сошлась бы с ячейкой.
+ */
+export function drillOfRow(
+  rowId: string | number | undefined,
+): { articleId: number; projectsIds?: number[] } | null {
+  const id = String(rowId ?? '');
+  const inDirection = /^direction-(\d+)-article-(\d+)$/.exec(id);
+  if (inDirection) {
+    return {
+      articleId: Number(inDirection[2]),
+      projectsIds: [Number(inDirection[1])],
+    };
+  }
+  const plain = /^article-(\d+)$/.exec(id);
+  return plain ? { articleId: Number(plain[1]) } : null;
 }
 
 /**

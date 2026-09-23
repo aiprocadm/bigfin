@@ -41,16 +41,26 @@ export function periodChartSeries(
     (column, index) => index > 0 && column.key !== 'total',
   );
   const topLevel = rows ?? [];
-  // «Поступления» и «Выплаты» лежат внутри разделов деятельности.
-  const groups = topLevel.flatMap((row) => row.children ?? []);
 
   const cellOf = (row: MatrixServerRow, column: ReportTableColumn) =>
     Number(row.cells[column.cellIndex ?? -1]?.value ?? 0) || 0;
   const sum = (list: MatrixServerRow[], column: ReportTableColumn) =>
     list.reduce((total, row) => total + cellOf(row, column), 0);
 
-  const inflows = groups.filter((row) => row.id?.startsWith('inflow-'));
-  const outflows = groups.filter((row) => row.id?.startsWith('outflow-'));
+  // Группы «Поступления» и «Выплаты» узнаются по ВИДУ строки: во вкладке
+  // «по статьям» они верхние, «по видам деятельности» — внутри разделов,
+  // «направления и статьи» — внутри направлений. Статьи под группой уже
+  // вошли в её сумму, поэтому внутрь группы не спускаемся.
+  const inflows: MatrixServerRow[] = [];
+  const outflows: MatrixServerRow[] = [];
+  const walk = (list: MatrixServerRow[]) =>
+    list.forEach((row) => {
+      const type = (row.rowTypes ?? row.row_types ?? [])[0];
+      if (type === 'INFLOW') inflows.push(row);
+      else if (type === 'OUTFLOW') outflows.push(row);
+      else walk(row.children ?? []);
+    });
+  walk(topLevel);
   const net = topLevel.find((row) => row.id === 'net');
 
   return periodColumns.map((column) => ({

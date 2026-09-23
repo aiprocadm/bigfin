@@ -402,3 +402,24 @@ export function useUncategorizeTransaction(props?: any) {
     },
   );
 }
+
+/**
+ * Месяц начисления нескольким операциям сразу (FT-013 ТЗ-3) — из реестра.
+ * `accrual_period: null` — снять: операция вернётся в месяц платежа.
+ */
+export function useSetAccrualPeriod(props?: any) {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation(
+    (values: { ids: number[]; accrual_period: string | null }) =>
+      apiRequest.patch('banking/transactions/accrual-period', {
+        ids: values.ids,
+        accrualPeriod: values.accrual_period,
+      }),
+    {
+      onSuccess: () => commonInvalidateQueries(queryClient),
+      ...props,
+    },
+  );
+}

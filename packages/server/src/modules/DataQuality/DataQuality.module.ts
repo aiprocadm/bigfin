@@ -1,3 +1,4 @@
+import { GetAccrualShiftsService } from './queries/GetAccrualShifts.service';
 // © 2026 Bigfin
 import { Module } from '@nestjs/common';
 import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.module';
@@ -38,6 +39,7 @@ import { ManualJournalGLEntries } from '@/modules/ManualJournals/commands/Manual
   ],
   controllers: [DataQualityController],
   providers: [
+    GetAccrualShiftsService,
     DataQualityApplication,
     GetUnmappedOperationsService,
     GetPossibleDuplicatesService,

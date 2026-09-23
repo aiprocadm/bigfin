@@ -186,3 +186,19 @@ export function useDataQualityPlCashflow(
     },
   );
 }
+
+/** Месяц начисления вне периода (FT-013 ТЗ-3). */
+export function useDataQualityAccrualShifts(
+  query: DataQualityPeriodQuery,
+  props?: any,
+) {
+  return useRequestQuery(
+    ['DATA_QUALITY_ACCRUAL_SHIFTS', query],
+    { method: 'get', url: 'data-quality/accrual-shifts', params: query },
+    {
+      select: (res: any) => fromApi(res.data?.data ?? res.data),
+      defaultData: { items: [], count: 0 },
+      ...props,
+    },
+  );
+}

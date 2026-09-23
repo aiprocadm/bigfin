@@ -65,6 +65,15 @@ export const getMoneyOutSchema = () =>
     // Выключена по умолчанию: подавляющее большинство операций
     // обычные, а включённая отметка вычитает выручку из отчёта.
     is_intercompany: z.boolean().optional().default(false),
+    // Месяц начисления (FT-013 ТЗ-3): пусто — месяц платежа.
+    accrual_period: z
+      .string()
+      .optional()
+      .default('')
+      .refine(
+        (value) => !value || /^\d{4}-(0[1-9]|1[0-2])$/.test(value),
+        intl.get('accrual_period.invalid'),
+      ),
     exchange_rate: z
       .string()
       .refine(

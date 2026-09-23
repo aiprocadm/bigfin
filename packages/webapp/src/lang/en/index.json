@@ -5134,5 +5134,20 @@
   "reports.trend": "Trend",
   "all_transactions.columns.label": "Columns:",
   "all_transactions.column.contact": "Contact",
-  "all_transactions.column.type": "Type"
+  "all_transactions.column.type": "Type",
+  "accrual_period.label": "Accrual month",
+  "accrual_period.hint": "If the payment belongs to another month (December rent paid in January), set it: profit will show it in that month, cash — on the payment date.",
+  "accrual_period.invalid": "Accrual month must look like YYYY-MM, e.g. 2025-12",
+  "accrual_period.bulk.apply": "Apply",
+  "accrual_period.bulk.clear": "Clear",
+  "accrual_period.bulk.applied": "Accrual month set: {count}",
+  "accrual_period.bulk.cleared": "Accrual month cleared: {count}",
+  "accrual_period.bulk.skipped": "{count} skipped: only cash transactions have an accrual month",
+  "data_quality.tab.accrual_shifts": "Accrual month outside period",
+  "data_quality.accrual_shifts.title": "Accrual month outside period",
+  "data_quality.accrual_shifts.hint": "These transactions were paid in the selected period but accrued outside it, or the other way round. They are why the cash report and the profit report for the period differ.",
+  "data_quality.accrual_shifts.empty": "No such transactions: cash and profit for the period count the same transactions.",
+  "data_quality.accrual_shifts.effect": "What it means",
+  "data_quality.accrual_shifts.kind.out": "Paid in the period, in profit of another month",
+  "data_quality.accrual_shifts.kind.in": "In profit of the period, paid in another month"
 }

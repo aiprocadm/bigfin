@@ -1,3 +1,4 @@
+import { GetAccrualShiftsService } from './queries/GetAccrualShifts.service';
 // © 2026 Bigfin
 import { Injectable } from '@nestjs/common';
 import { DataQualityQueryDto } from './dtos/DataQualityQuery.dto';
@@ -14,6 +15,7 @@ import { RepostCrookedCurrencyJournalsService } from './commands/RepostCrookedCu
 @Injectable()
 export class DataQualityApplication {
   constructor(
+    private readonly getAccrualShiftsService: GetAccrualShiftsService,
     private readonly getUnmappedOperationsService: GetUnmappedOperationsService,
     private readonly getPossibleDuplicatesService: GetPossibleDuplicatesService,
     private readonly getPlCashflowComparisonService: GetPlCashflowComparisonService,
@@ -35,6 +37,11 @@ export class DataQualityApplication {
 
   public getPlCashflowComparison(query: DataQualityQueryDto) {
     return this.getPlCashflowComparisonService.getComparison(query);
+  }
+
+  /** Месяц начисления вне периода (FT-013 ТЗ-3). */
+  public getAccrualShifts(query: DataQualityQueryDto) {
+    return this.getAccrualShiftsService.getAccrualShifts(query);
   }
 
   public getUnbalancedJournals(query: DataQualityQueryDto) {

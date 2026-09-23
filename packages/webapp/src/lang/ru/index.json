@@ -5134,5 +5134,20 @@
   "reports.trend": "Тренд",
   "all_transactions.columns.label": "Колонки:",
   "all_transactions.column.contact": "Контрагент",
-  "all_transactions.column.type": "Вид"
+  "all_transactions.column.type": "Вид",
+  "accrual_period.label": "Месяц начисления",
+  "accrual_period.hint": "Если платёж относится к другому месяцу (аренда за декабрь, оплаченная в январе) — укажите его: в прибыли операция будет в этом месяце, в деньгах — на дате платежа.",
+  "accrual_period.invalid": "Месяц начисления — в виде ГГГГ-ММ, например 2025-12",
+  "accrual_period.bulk.apply": "Проставить",
+  "accrual_period.bulk.clear": "Снять",
+  "accrual_period.bulk.applied": "Месяц начисления проставлен: {count}",
+  "accrual_period.bulk.cleared": "Месяц начисления снят: {count}",
+  "accrual_period.bulk.skipped": "Пропущено {count}: месяц начисления бывает только у денежных операций",
+  "data_quality.tab.accrual_shifts": "Месяц начисления вне периода",
+  "data_quality.accrual_shifts.title": "Месяц начисления вне периода",
+  "data_quality.accrual_shifts.hint": "Эти операции оплачены в выбранном периоде, а начислены вне его, или наоборот. Из-за них отчёт о деньгах и отчёт о прибыли за период расходятся.",
+  "data_quality.accrual_shifts.empty": "Таких операций нет: деньги и прибыль за период считают одни и те же операции.",
+  "data_quality.accrual_shifts.effect": "Что это значит",
+  "data_quality.accrual_shifts.kind.out": "Оплачена в периоде, в прибыли — в другом месяце",
+  "data_quality.accrual_shifts.kind.in": "В прибыли периода, оплачена в другом месяце"
 }

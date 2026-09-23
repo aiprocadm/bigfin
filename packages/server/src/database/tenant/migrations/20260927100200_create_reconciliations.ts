@@ -58,6 +58,9 @@ exports.up = async (knex) => {
       table.text('description').nullable();
       // Наша строка выписки (для «нет в банке») или удалённая, найденная в банке.
       table.bigInteger('transaction_id').unsigned().nullable();
+      // Чья это строка: bank_line — строка выписки, cashflow — денежная
+      // операция без неё. Нужно, чтобы «Удалить» знало, что класть в корзину.
+      table.string('transaction_kind', 16).nullable();
       // Строка «в банке» совпала с удалённой вручную: когда и кем удалена.
       table.dateTime('deleted_at').nullable();
       table.integer('deleted_by').unsigned().nullable();

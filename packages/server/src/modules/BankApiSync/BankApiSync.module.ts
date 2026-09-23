@@ -30,5 +30,7 @@ import { RolesModule } from '../Roles/Roles.module';
     BankConnectorsRegistry,
     ImportBankStatementService,
   ],
+  // Сверке нужен тот же доступ к банку, что импорту (FT-040 ТЗ-3).
+  exports: [BankApiSyncSettingsService, BankConnectorsRegistry],
 })
 export class BankApiSyncModule {}

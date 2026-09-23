@@ -10,6 +10,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TransactionSplitsService } from '@/modules/TransactionSplits/TransactionSplits.service';
 import { TransactionRuleApplication } from '@/modules/BankRules/models/TransactionRuleApplication';
 import { DealStage } from '@/modules/Deals/models/DealStage.model';
+import { TransactionTag } from '@/modules/BankingTransactions/models/TransactionTag';
 import * as moment from 'moment';
 
 export interface RuleApplyOutcome {
@@ -49,6 +50,9 @@ export class ApplyBankRuleService {
 
     @Inject(DealStage.name)
     private readonly dealStageModel: TenantModelProxy<typeof DealStage>,
+
+    @Inject(TransactionTag.name)
+    private readonly tagModel: TenantModelProxy<typeof TransactionTag>,
   ) {}
 
   /**
@@ -118,8 +122,25 @@ export class ApplyBankRuleService {
       await this.glEntries.revertJournalEntries(cashflowId);
       await this.glEntries.writeJournalEntries(cashflowId);
     }
+    if (rule.assignTag && cashflowId) await this.tagOperation(cashflowId, rule.assignTag);
     await this.recordApplication(rule, row, cashflowId, plan);
     return outcome('applied');
+  }
+
+  /**
+   * Метка из правила (FT-025 ТЗ-3). Живёт у документа, а не у проводки:
+   * проводки операции переписываются, метка остаётся. Сбой метки разноску
+   * не отменяет — она уже прошла.
+   */
+  private async tagOperation(cashflowId: number, tag: string) {
+    try {
+      const reference = { referenceType: 'CashflowTransaction', referenceId: cashflowId };
+      const old: any = await this.tagModel().query().findOne(reference);
+      if (old) await this.tagModel().query().findById(old.id).patch({ tag } as any);
+      else await this.tagModel().query().insert({ ...reference, tag } as any);
+    } catch (error) {
+      console.error('[bank-rules] не удалось поставить метку', error);
+    }
   }
 
   /**
@@ -145,6 +166,7 @@ export class ApplyBankRuleService {
             contactId: plan.contactId,
             projectId: plan.projectId,
             splits: plan.splits,
+            tag: rule.assignTag ?? null,
             ...(rule.ruleType === 'deal'
               ? { dealId: rule.assignDealId ?? null, dealStageId: rule.assignDealStageId ?? null }
               : {}),

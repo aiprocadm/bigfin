@@ -44,6 +44,9 @@ export class GetBankAccountTransactionsRepository {
     { ruleId: number; ruleName: string | null }
   > = new Map();
 
+  /** Метки документов страницы (FT-025 ТЗ-3): «вид:номер» → метка. */
+  public tagsByReference: Map<string, string> = new Map();
+
   /**
    * @param {TenantModelProxy<typeof AccountTransaction>} accountTransactionModel - Account transaction model.
    * @param {TenantModelProxy<typeof UncategorizedBankTransaction>} uncategorizedBankTransactionModel - Uncategorized transaction model
@@ -107,6 +110,30 @@ export class GetBankAccountTransactionsRepository {
     await this.initMatchedTransactions();
     await this.initReferencedDocuments();
     await this.initRuleApplications();
+    await this.initTags();
+  }
+
+  /**
+   * Метки документов текущей страницы (FT-025 ТЗ-3) — одним запросом.
+   * Метка живёт у документа, а не у проводки: проводки пишутся заново.
+   */
+  async initTags(): Promise<void> {
+    this.tagsByReference = new Map();
+    const pairs = [
+      ...new Map(
+        (this.transactions ?? []).map((t: any) => [
+          `${t.referenceType}:${t.referenceId}`,
+          [t.referenceType, Number(t.referenceId)],
+        ]),
+      ).values(),
+    ];
+    if (pairs.length === 0) return;
+    const rows: any[] = await this.tenantKnex()('transaction_tags')
+      .whereIn(['reference_type', 'reference_id'], pairs as any)
+      .select('reference_type', 'reference_id', 'tag');
+    rows.forEach((row) =>
+      this.tagsByReference.set(`${row.referenceType}:${row.referenceId}`, row.tag),
+    );
   }
 
   /**

@@ -2,6 +2,10 @@ import { TransactionsLockingModule } from '@/modules/TransactionsLocking/Transac
 import { ImportBatchesController } from './controllers/ImportBatches.controller';
 import { ImportBatchesService } from './commands/ImportBatches.service';
 import { ImportBatch } from './models/ImportBatch';
+import { BankingTransactionActionsController } from './controllers/BankingTransactionActions.controller';
+import { TransactionActionsService } from './commands/TransactionActions.service';
+import { GetTransactionHistoryService } from './queries/GetTransactionHistory.service';
+import { TransactionTag } from './models/TransactionTag';
 import { BankingTrashController } from './controllers/BankingTrash.controller';
 import { TransactionsTrashService } from './commands/TransactionsTrash.service';
 import { RolesModule } from '../Roles/Roles.module';
@@ -54,6 +58,8 @@ import { Bill } from '@/modules/Bills/models/Bill';
 
 const models = [
   RegisterTenancyModel(ImportBatch),
+  // Метка операции (FT-025 ТЗ-3).
+  RegisterTenancyModel(TransactionTag),
   RegisterTenancyModel(UncategorizedBankTransaction),
   RegisterTenancyModel(BankTransaction),
   RegisterTenancyModel(BankTransactionLine),
@@ -90,8 +96,12 @@ const models = [
     BankingTrashController,
     // История импорта и откат (FT-043 ТЗ-3).
     ImportBatchesController,
+    // Действия с операцией из реестра (FT-022…FT-025 ТЗ-3).
+    BankingTransactionActionsController,
   ],
   providers: [
+    TransactionActionsService,
+    GetTransactionHistoryService,
     TransactionsTrashService,
     ImportBatchesService,
     ClearSplitsOnCashflowDeletedSubscriber,

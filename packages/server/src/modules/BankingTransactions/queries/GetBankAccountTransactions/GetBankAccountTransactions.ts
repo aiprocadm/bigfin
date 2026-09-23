@@ -175,6 +175,12 @@ export class GetBankAccountTransactions extends FinancialSheet {
         transaction.referenceType === 'CashflowTransaction'
           ? this.repo.ruleApplicationsByTransaction?.get(Number(transaction.referenceId)) ?? null
           : null,
+
+      // Метка документа (FT-025 ТЗ-3).
+      tag:
+        this.repo.tagsByReference?.get(
+          `${transaction.referenceType}:${transaction.referenceId}`,
+        ) ?? null,
     };
   };
 

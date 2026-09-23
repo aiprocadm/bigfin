@@ -57,6 +57,9 @@ import {
 import { showApiError } from '@/utils/showApiError';
 import { IntercompanyField } from '@/components/legal-entities/IntercompanyField';
 import { AccrualPeriodField } from '../../AccrualPeriodField';
+import { FormSplitsSection } from '../../SplitLinesEditor/FormSplitsSection';
+import { splitsReady } from '../../SplitLinesEditor/SplitLinesEditor';
+import { type SplitLine } from '@/containers/Drawers/CashflowTransactionDetailDrawer/v2/splitPanelView';
 
 // ---------------------------------------------------------------------------
 // Типы данных и локальные касты легаси-хуков (сами хуки без типов).
@@ -157,6 +160,8 @@ const MONEY_OUT_SUBTYPES: Record<
 interface MoneyOutFormV2Props {
   accountId?: number | null;
   accountType?: string | null;
+  /** Поля копируемой операции — «Клонировать» из реестра (FT-022 ТЗ-3). */
+  prefill?: Record<string, unknown> | null;
   onClose: () => void;
 }
 
@@ -168,6 +173,7 @@ interface MoneyOutFormV2Props {
 function MoneyOutFormV2Root({
   accountId,
   accountType,
+  prefill,
   onClose,
   openDialog,
 }: MoneyOutFormV2Props & WithDialogActionsProps) {
@@ -216,6 +222,7 @@ function MoneyOutFormV2Root({
       cashflowSetting={cashflowSetting}
       defaultAccountId={accountId ?? null}
       defaultAccountType={accountType ?? null}
+      prefill={prefill ?? null}
       onSubmitTransaction={createTransaction}
       onClose={onClose}
       openDialog={openDialog}
@@ -233,6 +240,7 @@ interface MoneyOutFormInnerProps {
   cashflowSetting?: CashflowSetting;
   defaultAccountId: number | null;
   defaultAccountType: string | null;
+  prefill: Record<string, unknown> | null;
   onSubmitTransaction: (values: Record<string, unknown>) => Promise<unknown>;
   onClose: () => void;
   openDialog: WithDialogActionsProps['openDialog'];
@@ -255,6 +263,7 @@ function MoneyOutFormInner({
   cashflowSetting,
   defaultAccountId,
   defaultAccountType,
+  prefill,
   onSubmitTransaction,
   onClose,
   openDialog,
@@ -293,8 +302,16 @@ function MoneyOutFormInner({
       description: '',
       is_intercompany: false,
       accrual_period: '',
+      // Копия операции (FT-022 ТЗ-3): её поля поверх пустой формы; дата и
+      // номер — новые, это другая операция.
+      ...(prefill ?? {}),
     },
   });
+
+  // Части суммы по статьям (FT-023 ТЗ-3). Пусто — операция целиком.
+  const [splits, setSplits] = useState<SplitLine[]>([]);
+  const amountNow = parseFormNumber(form.watch('amount')) || 0;
+  const splitsOk = splitsReady(amountNow, splits);
 
   // Ручной номер операции (паритет transaction_number_manually из легаси).
   const [transactionNoManually, setTransactionNoManually] = useState('');
@@ -411,7 +428,16 @@ function MoneyOutFormInner({
       ...(transactionNoManually
         ? { transaction_number_manually: transactionNoManually }
         : {}),
+      // Части (FT-023): сервер создаёт операцию и части одной транзакцией.
+      ...(splits.length > 0
+        ? { splits: splits.map((line) => ({ amount: Number(line.amount), articleId: line.articleId })) }
+        : {}),
     };
+    // Сохранение заблокировано, пока остаток ≠ 0 (AC FT-023).
+    if (!splitsOk) {
+      AppToaster.show({ message: intl.get('transaction_split.not_ready'), intent: Intent.DANGER });
+      return;
+    }
     try {
       await onSubmitTransaction(payload);
       AppToaster.show({
@@ -709,6 +735,14 @@ function MoneyOutFormInner({
               {/* Месяц начисления (FT-013 ТЗ-3). */}
               <AccrualPeriodField />
 
+              {/* Разбить сумму по статьям (FT-023 ТЗ-3). */}
+              <FormSplitsSection
+                parentAmount={amountNow}
+                lines={splits}
+                onChange={setSplits}
+                kind={'expense'}
+              />
+
               {/* Описание */}
               <FormField
                 control={form.control}
@@ -746,7 +780,7 @@ function MoneyOutFormInner({
                 опубликовать» — для владельца малого бизнеса это набор
                 слов: «опубликовать» звучит как «выложить в интернет».
                 Уведомление после говорит теми же словами. */}
-            <Button type="submit" disabled={form.formState.isSubmitting}>
+            <Button type="submit" disabled={form.formState.isSubmitting || !splitsOk}>
               {form.formState.isSubmitting && <Spinner size="sm" />}
               {form.formState.isSubmitting
                 ? intl.get('money_out.submitting')

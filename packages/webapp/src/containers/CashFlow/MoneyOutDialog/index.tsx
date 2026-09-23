@@ -29,6 +29,8 @@ interface MoneyOutDialogProps {
     account_id?: number | null;
     account_type?: string | null;
     account_name?: string;
+    /** Поля копируемой операции (FT-022 ТЗ-3). */
+    prefill?: Record<string, unknown> | null;
   };
 }
 
@@ -75,6 +77,7 @@ function MoneyOutDialogRoot({
           <MoneyOutFormV2
             accountId={payload?.account_id ?? null}
             accountType={payload?.account_type ?? null}
+            prefill={payload?.prefill ?? null}
             onClose={() => closeDialog(dialogName)}
           />
         </Suspense>

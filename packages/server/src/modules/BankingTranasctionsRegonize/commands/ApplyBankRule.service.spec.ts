@@ -11,7 +11,7 @@ const row = (id: number, amount: number, extra: Record<string, any> = {}) =>
   ({ id, amount, accountId: 1000, date: '2026-01-10', description: 'Оплата ОЗОН', payee: 'ООО Озон', currencyCode: 'RUB', ...extra }) as any;
 
 function makeApplier(options: { failCategorize?: string } = {}) {
-  const calls: any = { categorize: [], saveSplits: [], revert: [], write: [], applications: [] };
+  const calls: any = { categorize: [], saveSplits: [], revert: [], write: [], applications: [], tags: [] };
   const categorize = {
     categorize: async (id: number, dto: any) => {
       if (options.failCategorize) {
@@ -50,11 +50,31 @@ function makeApplier(options: { failCategorize?: string } = {}) {
     (() => ({ query: () => ({ insert: async (data: any) => calls.applications.push(data) }) })) as any,
     // Этап 44 сделки 12 (FT-033).
     (() => ({ query: () => ({ findById: async (id: number) => (id === 44 ? { id: 44, dealId: 12 } : null) }) })) as any,
+    // Метки операций (FT-025).
+    (() => ({
+      query: () => ({
+        findOne: async () => null,
+        insert: async (data: any) => calls.tags.push(data),
+      }),
+    })) as any,
   );
   return { service, calls };
 }
 
 describe('применение автоправила к строке', () => {
+  it('метка из правила ставится операции (FT-025), без метки — не ставится', async () => {
+    const tagged = makeApplier();
+    await tagged.service.apply({ ruleType: 'assign', assignAccountId: 1021, assignTag: 'маркетинг' }, row(1, -1500));
+    expect(tagged.calls.tags).toEqual([
+      { referenceType: 'CashflowTransaction', referenceId: 555, tag: 'маркетинг' },
+    ]);
+    expect(JSON.parse(tagged.calls.applications[0].changes).tag).toBe('маркетинг');
+
+    const plain = makeApplier();
+    await plain.service.apply({ ruleType: 'assign', assignAccountId: 1021 }, row(1, -1500));
+    expect(plain.calls.tags).toEqual([]);
+  });
+
   it('«Заполнить поля»: разноска со статьёй, контрагентом и направлением', async () => {
     const { service, calls } = makeApplier();
     const outcome = await service.apply(

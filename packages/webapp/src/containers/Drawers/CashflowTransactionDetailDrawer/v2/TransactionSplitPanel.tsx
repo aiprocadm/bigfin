@@ -3,52 +3,49 @@ import * as React from 'react';
 import intl from 'react-intl-universal';
 
 import { useManagementArticles } from '@/hooks/query/managementArticles';
-import {
-  useClearTransactionSplits,
-  useSaveTransactionSplits,
-  useTransactionSplits,
-} from '@/hooks/query/transactionSplits';
+import { useTransactionSplits } from '@/hooks/query/transactionSplits';
+import { serverMessage, useSetTransactionSplits } from '@/hooks/query/transactionActions';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { formatOrganizationMoney } from '@/utils/organizationMoney';
-import { cn } from '@/lib/cn';
+import { AppToaster } from '@/components';
+import { Intent } from '@blueprintjs/core';
+import { SplitLinesEditor, splitsReady } from '@/containers/CashFlow/SplitLinesEditor/SplitLinesEditor';
 
-import {
-  evaluateSplit,
-  suggestedAmount,
-  type SplitLine,
-} from './splitPanelView';
+import { type SplitLine } from './splitPanelView';
+
+/** Под этим видом части проводятся: только такие видит сборка проводок. */
+const CASHFLOW_REFERENCE = 'CashflowTransaction';
 
 interface TransactionSplitPanelProps {
-  referenceType: string;
-  referenceId: number;
+  /** Денежная операция. */
+  cashflowId: number;
+  /**
+   * Вид операции (`OtherExpense` и т. п.). До этапа 37 панель писала части
+   * ПОД НИМ — сборка проводок их не видела, и отчёты не менялись. Такие
+   * части подставляются черновиком, чтобы их можно было сохранить заново.
+   */
+  legacyReferenceType?: string;
   /** Сумма операции целиком — с ней обязаны сойтись части. */
   parentAmount: number;
 }
 
-const money = (value: number) => formatOrganizationMoney(value ?? 0);
-
 /**
- * Разделение операции на части (этап 10 ТЗ, остаток Р1).
+ * Разделение операции на части (этап 10 ТЗ, FT-022/FT-023 ТЗ-3).
  *
- * Сервер умел делить операции с самого этапа 10, но воспользоваться этим было
- * нельзя: панели не существовало.
- *
- * Родительская операция НЕ трогается: в отчёты идут части, в сверку с банком —
- * родитель. Поэтому панель ничего не меняет в самой операции.
+ * Сохранение ПЕРЕПИСЫВАЕТ ПРОВОДКИ операции по частям: деление делают ради
+ * отчётов, и части, которые отчёт не видит, — обман. Пустой список снимает
+ * разбиение, и операция снова идёт в отчёты целиком.
  */
 export function TransactionSplitPanel({
-  referenceType,
-  referenceId,
+  cashflowId,
+  legacyReferenceType,
   parentAmount,
 }: TransactionSplitPanelProps) {
-  const { data: saved } = useTransactionSplits(referenceType, referenceId);
+  const { data: saved } = useTransactionSplits(CASHFLOW_REFERENCE, cashflowId);
+  const { data: legacy } = useTransactionSplits(legacyReferenceType ?? '', cashflowId, {
+    enabled: !!legacyReferenceType && !(saved?.length > 0),
+  });
   const { data: articles } = useManagementArticles();
-
-  const { mutateAsync: saveSplits, isLoading: isSaving } =
-    useSaveTransactionSplits();
-  const { mutateAsync: clearSplits, isLoading: isClearing } =
-    useClearTransactionSplits();
+  const { mutateAsync: setSplits, isLoading: isSaving } = useSetTransactionSplits();
 
   const [lines, setLines] = React.useState<SplitLine[]>([]);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -57,38 +54,35 @@ export function TransactionSplitPanel({
   // части уже есть, панель сразу раскрыта: прятать то, что уже влияет на
   // отчёты, — значит скрывать от человека последствия его действий.
   React.useEffect(() => {
-    if (saved && saved.length > 0) {
-      setLines(saved as SplitLine[]);
+    const source = saved?.length ? saved : legacy?.length ? legacy : null;
+    if (source) {
+      setLines(
+        (source as any[]).map((line) => ({
+          amount: Number(line.amount),
+          articleId: line.article_id ?? line.articleId ?? null,
+        })),
+      );
       setIsOpen(true);
     }
-  }, [saved]);
+  }, [saved, legacy]);
 
-  const state = evaluateSplit(parentAmount, lines);
+  const hasSaved = (saved?.length ?? 0) > 0;
+  const hasLegacyDraft = !hasSaved && (legacy?.length ?? 0) > 0;
 
-  const addLine = () =>
-    setLines((prev) => [
-      ...prev,
-      { amount: suggestedAmount(state.remaining), articleId: null },
-    ]);
-
-  const updateLine = (index: number, patch: Partial<SplitLine>) =>
-    setLines((prev) =>
-      prev.map((line, i) => (i === index ? { ...line, ...patch } : line)),
-    );
-
-  const removeLine = (index: number) =>
-    setLines((prev) => prev.filter((_, i) => i !== index));
-
-  const onSave = async () => {
-    if (!state.isValid) return;
-
-    await saveSplits({ referenceType, referenceId, parentAmount, lines });
-  };
-
-  const onClear = async () => {
-    await clearSplits({ referenceType, referenceId });
-    setLines([]);
-    setIsOpen(false);
+  const save = async (next: SplitLine[]) => {
+    try {
+      await setSplits({
+        id: cashflowId,
+        lines: next.map((line) => ({ amount: Number(line.amount), articleId: Number(line.articleId) })),
+      });
+      AppToaster.show({ message: intl.get('transaction_split.saved'), intent: Intent.SUCCESS });
+    } catch (error: any) {
+      // Сервер объясняет отказ словами: статья без счёта, закрытый период.
+      AppToaster.show({
+        message: serverMessage(error, intl.get('transaction_split.save_error')),
+        intent: Intent.DANGER,
+      });
+    }
   };
 
   if (!isOpen) {
@@ -96,12 +90,8 @@ export function TransactionSplitPanel({
       <section className="rounded-default border border-border bg-surface p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 className="text-sm font-medium">
-              {intl.get('transaction_split.title')}
-            </h3>
-            <p className="mt-1 text-sm text-text-muted">
-              {intl.get('transaction_split.hint')}
-            </p>
+            <h3 className="text-sm font-medium">{intl.get('transaction_split.title')}</h3>
+            <p className="mt-1 text-sm text-text-muted">{intl.get('transaction_split.hint')}</p>
           </div>
           <Button type="button" variant="secondary" onClick={() => setIsOpen(true)}>
             {intl.get('transaction_split.open')}
@@ -112,111 +102,32 @@ export function TransactionSplitPanel({
   }
 
   return (
-    <section className="rounded-default border border-border bg-surface p-4">
-      <h3 className="text-sm font-medium">
-        {intl.get('transaction_split.title')}
-      </h3>
-      <p className="mt-1 text-sm text-text-muted">
-        {intl.get('transaction_split.hint')}
-      </p>
-
-      <div className="mt-3 flex flex-col gap-2">
-        {lines.map((line, index) => (
-          <div key={index} className="flex flex-wrap items-end gap-2">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-text-muted">
-                {intl.get('transaction_split.amount')}
-              </label>
-              <Input
-                inputMode="decimal"
-                className="w-36"
-                value={String(line.amount ?? '')}
-                onChange={(event) =>
-                  updateLine(index, {
-                    amount: Number(event.target.value.replace(',', '.')),
-                  })
-                }
-              />
-            </div>
-            <div className="flex flex-1 flex-col gap-1">
-              <label className="text-xs text-text-muted">
-                {intl.get('transaction_split.article')}
-              </label>
-              <select
-                className="rounded-control border border-border bg-surface px-2 py-1 text-sm"
-                value={line.articleId == null ? '' : String(line.articleId)}
-                onChange={(event) =>
-                  updateLine(index, {
-                    articleId: event.target.value
-                      ? Number(event.target.value)
-                      : null,
-                  })
-                }
-              >
-                <option value="">
-                  {intl.get('transaction_split.article_placeholder')}
-                </option>
-                {articles?.map((article: any) => (
-                  <option key={article.id} value={article.id}>
-                    {article.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => removeLine(index)}
-            >
-              {intl.get('transaction_split.remove_line')}
-            </Button>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
-        <Button type="button" variant="secondary" onClick={addLine}>
-          {intl.get('transaction_split.add_line')}
-        </Button>
-
-        {/*
-          Остаток виден всё время, пока человек печатает. Узнать «не сходится»
-          только после нажатия «Сохранить» — значит заставить искать, где
-          именно.
-        */}
-        <span
-          className={cn(
-            'money',
-            state.remaining !== 0 && 'text-danger',
-          )}
-        >
-          {intl.get('transaction_split.remaining', {
-            amount: money(state.remaining),
-          })}
-        </span>
-      </div>
-
-      {state.problem && (
-        <p className="mt-2 text-sm text-text-muted">
-          {intl.get(`transaction_split.problem.${state.problem}`)}
-        </p>
+    <section className="rounded-default border border-border bg-surface p-4" id="transaction-split-panel">
+      <h3 className="text-sm font-medium">{intl.get('transaction_split.title')}</h3>
+      <p className="mt-1 text-sm text-text-muted">{intl.get('transaction_split.hint')}</p>
+      {hasLegacyDraft && (
+        <p className="mt-2 text-sm text-warning">{intl.get('transaction_split.legacy_draft')}</p>
       )}
+
+      <div className="mt-3">
+        <SplitLinesEditor
+          parentAmount={parentAmount}
+          lines={lines}
+          onChange={setLines}
+          articles={((articles as any[]) ?? []).map((article) => ({ id: article.id, name: article.name }))}
+        />
+      </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Button
           type="button"
-          onClick={onSave}
-          disabled={!state.isValid || isSaving}
+          onClick={() => save(lines)}
+          disabled={lines.length === 0 || !splitsReady(parentAmount, lines) || isSaving}
         >
           {intl.get('save')}
         </Button>
-        {(saved?.length ?? 0) > 0 && (
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onClear}
-            disabled={isClearing}
-          >
+        {hasSaved && (
+          <Button type="button" variant="secondary" onClick={() => save([]).then(() => setLines([]))} disabled={isSaving}>
             {intl.get('transaction_split.clear')}
           </Button>
         )}
@@ -224,3 +135,4 @@ export function TransactionSplitPanel({
     </section>
   );
 }
+

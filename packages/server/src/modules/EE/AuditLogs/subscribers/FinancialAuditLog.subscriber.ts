@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { auditSubjectOf } from '@/modules/BankingTransactions/utils/transactionHistory';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Knex } from 'knex';
 import { events } from '@/common/events/events';
@@ -661,6 +662,49 @@ export class FinancialAuditLogSubscriber {
       cashflowTransaction.id,
       { amount: cashflowTransaction.amount },
     );
+  }
+
+  // Действия из реестра (FT-022…FT-025 ТЗ-3): панель «История изменений»
+  // операции читает именно эти записи.
+  @OnEvent(events.cashflow.onTransactionTagged)
+  async onCashflowTagged({ referenceType, referenceId, tag, oldTag, trx }: any) {
+    await this.write(
+      trx,
+      'tagged',
+      // То же имя, под которым журнал пишет сам документ, — иначе панель
+      // истории не нашла бы метку рядом с остальными записями.
+      auditSubjectOf(referenceType),
+      Number(referenceId),
+      { tag, oldTag },
+    );
+  }
+
+  @OnEvent(events.cashflow.onTransactionDealLinked)
+  async onCashflowDealLinked({ cashflowTransactionId, dealId, oldDealId, trx }: any) {
+    await this.write(trx, 'deal_linked', AbilitySubject.Cashflow, Number(cashflowTransactionId), {
+      dealId,
+      oldDealId,
+    });
+  }
+
+  @OnEvent(events.cashflow.onTransactionConvertedToTransfer)
+  async onCashflowConvertedToTransfer({
+    cashflowTransactionId,
+    oldTransactionType,
+    transactionType,
+    toAccountId,
+    trx,
+  }: any) {
+    await this.write(trx, 'converted_to_transfer', AbilitySubject.Cashflow, Number(cashflowTransactionId), {
+      oldTransactionType,
+      transactionType,
+      toAccountId,
+    });
+  }
+
+  @OnEvent(events.cashflow.onTransactionSplitsChanged)
+  async onCashflowSplitsChanged({ cashflowTransactionId, parts, trx }: any) {
+    await this.write(trx, 'split', AbilitySubject.Cashflow, Number(cashflowTransactionId), { parts });
   }
 
   // --- GL accounts ---

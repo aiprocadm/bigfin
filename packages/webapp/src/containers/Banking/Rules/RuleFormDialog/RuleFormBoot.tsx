@@ -18,6 +18,8 @@ interface RuleFormBootValues {
   isAccountsLoading: boolean;
   isEditMode: boolean;
   isNewMode: boolean;
+  /** Предзаполнение нового правила из операции реестра (FT-022 ТЗ-3). */
+  prefill?: Record<string, unknown>;
 }
 
 const RuleFormBootContext = createContext<RuleFormBootValues>(
@@ -26,10 +28,11 @@ const RuleFormBootContext = createContext<RuleFormBootValues>(
 
 interface RuleFormBootProps {
   bankRuleId?: number;
+  prefill?: Record<string, unknown>;
   children: React.ReactNode;
 }
 
-function RuleFormBoot({ bankRuleId, ...props }: RuleFormBootProps) {
+function RuleFormBoot({ bankRuleId, prefill, ...props }: RuleFormBootProps) {
   const { data: bankRule, isLoading: isBankRuleLoading } = useBankRule(
     bankRuleId as number,
     {
@@ -49,6 +52,7 @@ function RuleFormBoot({ bankRuleId, ...props }: RuleFormBootProps) {
     isAccountsLoading,
     isEditMode,
     isNewMode,
+    prefill,
   };
 
   const isLoading = isBankRuleLoading || isAccountsLoading;

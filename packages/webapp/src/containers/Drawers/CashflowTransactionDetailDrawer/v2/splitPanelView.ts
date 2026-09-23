@@ -91,3 +91,28 @@ export function evaluateSplit(
 export function suggestedAmount(remaining: number): number {
   return remaining > 0 ? round2(remaining) : 0;
 }
+
+/**
+ * «Поровну» (FT-023 ТЗ-3): сумма делится на части В КОПЕЙКАХ, а остаток от
+ * деления достаётся первой части. 100 ₽ на три — 33,34 + 33,33 + 33,33:
+ * три раза по 33,33 недосчитались бы копейки, и сохранить было бы нельзя.
+ */
+export function equalSplit(parentAmount: number, count: number): number[] {
+  if (!(count > 0)) return [];
+  const total = Math.round(Math.abs(Number(parentAmount ?? 0)) * 100);
+  const share = Math.floor(total / count);
+  const rest = total - share * count;
+  return Array.from({ length: count }, (_, index) => (share + (index === 0 ? rest : 0)) / 100);
+}
+
+/** Доля части в процентах (два знака) — вторая сторона связки ₽ ↔ %. */
+export function percentOf(amount: number, parentAmount: number): number {
+  const parent = Math.abs(Number(parentAmount ?? 0));
+  if (!parent) return 0;
+  return Math.round((Number(amount ?? 0) / parent) * 10000) / 100;
+}
+
+/** Сумма части по проценту — в копейках, как всё в разбиении. */
+export function amountFromPercent(percent: number, parentAmount: number): number {
+  return round2((Math.abs(Number(parentAmount ?? 0)) * Number(percent ?? 0)) / 100);
+}

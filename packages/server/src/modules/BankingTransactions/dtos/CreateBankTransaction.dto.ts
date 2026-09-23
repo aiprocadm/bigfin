@@ -1,5 +1,9 @@
 import { ToNumber } from '@/common/decorators/Validators';
+import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  IsArray,
+  ValidateNested,
   IsBoolean,
   IsDateString,
   IsInt,
@@ -10,6 +14,25 @@ import {
   Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+/** Часть суммы операции (FT-023 ТЗ-3): сумма и статья, направление по желанию. */
+export class CreateBankTransactionSplitDto {
+  @ApiProperty({ description: 'Сумма части', type: Number, example: 600 })
+  @ToNumber()
+  @IsNumber()
+  amount: number;
+
+  @ApiProperty({ description: 'Статья части', type: Number, example: 10 })
+  @ToNumber()
+  @IsInt()
+  articleId: number;
+
+  @ApiPropertyOptional({ description: 'Направление части', type: Number })
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  projectId?: number | null;
+}
 
 export class CreateBankTransactionDto {
   @ApiProperty({
@@ -205,4 +228,26 @@ export class CreateBankTransactionDto {
   @ToNumber()
   @IsInt()
   projectId?: number | null;
+
+  // Разбиение суммы по статьям прямо при создании (FT-023 ТЗ-3). Части
+  // обязаны сойтись с суммой — иначе операция не создаётся вовсе.
+  @ApiPropertyOptional({ description: 'Части суммы по статьям', type: [CreateBankTransactionSplitDto] })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(100)
+  @ValidateNested({ each: true })
+  @Type(() => CreateBankTransactionSplitDto)
+  splits?: CreateBankTransactionSplitDto[];
+}
+
+/**
+ * Пакетный ввод (FT-024 ТЗ-3). Строки НАМЕРЕННО не проверяются здесь:
+ * проверка всего пакета разом отвергла бы его из-за одной строки. Каждую
+ * строку проверяет служба по отдельности.
+ */
+export class BulkCreateBankTransactionsDto {
+  @ApiProperty({ description: 'Строки пакета (до 100)', type: [Object] })
+  @IsArray()
+  @ArrayMaxSize(100)
+  items: Record<string, unknown>[];
 }

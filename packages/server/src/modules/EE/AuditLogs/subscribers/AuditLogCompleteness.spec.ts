@@ -61,6 +61,12 @@ const SENSITIVE_EVENTS: Array<[string, string]> = [
   ['базовая валюта изменена', events.organization.baseCurrencyUpdated],
   // вход
   ['вход в систему', events.auth.signIn],
+  // действия с операцией из реестра (FT-022…FT-026 ТЗ-3): их показывает
+  // панель «История изменений» — без записи в журнале панель пуста
+  ['метка операции', events.cashflow.onTransactionTagged],
+  ['привязка операции к сделке', events.cashflow.onTransactionDealLinked],
+  ['операция превращена в перевод', events.cashflow.onTransactionConvertedToTransfer],
+  ['разбиение операции изменено', events.cashflow.onTransactionSplitsChanged],
 ];
 
 describe('сторож полноты журнала действий (Ж4)', () => {

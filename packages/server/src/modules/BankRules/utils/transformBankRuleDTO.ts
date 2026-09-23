@@ -24,6 +24,8 @@ export function transformBankRuleDTO(dto: CommandBankRuleDto) {
     assignDealId: ruleType === 'deal' ? (rest as any).assignDealId ?? null : null,
     assignDealStageId: ruleType === 'deal' ? (rest as any).assignDealStageId ?? null : null,
     transferToAccountId: ruleType === 'transfer' ? rest.transferToAccountId ?? null : null,
+    // Метка (FT-025) — у правила любого вида; пустая строка = без метки.
+    assignTag: String((rest as any).assignTag ?? '').trim().slice(0, 64) || null,
     // Перевод затирает направление и контрагента (FT-032) — ставить их
     // правилу перевода бессмысленно.
     assignProjectId: ruleType === 'assign' ? rest.assignProjectId ?? null : null,

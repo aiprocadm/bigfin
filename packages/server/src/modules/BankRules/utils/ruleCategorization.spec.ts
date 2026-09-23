@@ -81,14 +81,18 @@ describe('план разноски по автоправилу', () => {
     );
   });
 
-  it('нулевая сумма, правило без счёта и тип «сделка» (этап 35) — пропуск', () => {
+  it('нулевая сумма, правило без счёта и неизвестный тип — пропуск', () => {
     expect(planRuleCategorization({ ruleType: 'assign', assignAccountId: 1 }, { amount: 0 }, accounts)).toEqual({
       skip: 'zero_amount',
     });
     expect(planRuleCategorization({ ruleType: 'assign' }, { amount: 1 }, accounts)).toEqual({
       skip: 'no_account',
     });
+    // «Сделка» без статьи разнести нечем; неизвестный тип — не поддерживается.
     expect(planRuleCategorization({ ruleType: 'deal' }, { amount: 1 }, accounts)).toEqual({
+      skip: 'no_account',
+    });
+    expect(planRuleCategorization({ ruleType: 'magic' }, { amount: 1 }, accounts)).toEqual({
       skip: 'unsupported_rule_type',
     });
     expect(snakeType('TransferToAccount')).toBe('transfer_to_account');

@@ -62,16 +62,13 @@ export class BankRuleSplitDto {
   contactId?: number | null;
 }
 
-export const BANK_RULE_TYPES = ['assign', 'split', 'transfer'] as const;
+export const BANK_RULE_TYPES = ['assign', 'split', 'transfer', 'deal'] as const;
 
 export class CommandBankRuleDto {
-  /**
-   * Тип правила (FT-030…FT-032 ТЗ-3). «Привязать к сделке» (FT-033)
-   * приходит с этапом 35 — до тех пор такой тип не принимается.
-   */
+  /** Тип правила (FT-030…FT-033 ТЗ-3). */
   @IsOptional()
   @IsIn(BANK_RULE_TYPES as unknown as string[])
-  ruleType: 'assign' | 'split' | 'transfer' = 'assign';
+  ruleType: 'assign' | 'split' | 'transfer' | 'deal' = 'assign';
 
   @IsString()
   @IsNotEmpty()
@@ -144,7 +141,9 @@ export class CommandBankRuleDto {
 
   // Счёт статьи — обязателен у «Заполнить поля»: без статьи правилу нечего
   // заполнять. У разбиения статьи в строках, у перевода — счёт-получатель.
-  @ValidateIf((dto) => (dto.ruleType ?? 'assign') === 'assign')
+  // У «сделки» статья тоже нужна: правило разносит строку, а без статьи
+  // разнести нечем.
+  @ValidateIf((dto) => ['assign', 'deal'].includes(dto.ruleType ?? 'assign'))
   @IsInt()
   @Min(0)
   @ToNumber()
@@ -164,6 +163,18 @@ export class CommandBankRuleDto {
   @ToNumber()
   @IsInt()
   assignContactId?: number | null;
+
+  // Сделка и её этап (FT-033). Этап без сделки допустим: сделка берётся
+  // у этапа.
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  assignDealId?: number | null;
+
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  assignDealStageId?: number | null;
 
   // Счёт-получатель перевода (FT-032).
   @ValidateIf((dto) => dto.ruleType === 'transfer')

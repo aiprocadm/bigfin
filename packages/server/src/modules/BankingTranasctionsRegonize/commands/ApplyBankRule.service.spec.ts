@@ -11,7 +11,7 @@ const row = (id: number, amount: number, extra: Record<string, any> = {}) =>
   ({ id, amount, accountId: 1000, date: '2026-01-10', description: 'Оплата ОЗОН', payee: 'ООО Озон', currencyCode: 'RUB', ...extra }) as any;
 
 function makeApplier(options: { failCategorize?: string } = {}) {
-  const calls: any = { categorize: [], saveSplits: [], revert: [], write: [] };
+  const calls: any = { categorize: [], saveSplits: [], revert: [], write: [], applications: [] };
   const categorize = {
     categorize: async (id: number, dto: any) => {
       if (options.failCategorize) {
@@ -46,6 +46,10 @@ function makeApplier(options: { failCategorize?: string } = {}) {
     splits as any,
     uncategorized as any,
     articleAccounts as any,
+    // Журнал применений (FT-036).
+    (() => ({ query: () => ({ insert: async (data: any) => calls.applications.push(data) }) })) as any,
+    // Этап 44 сделки 12 (FT-033).
+    (() => ({ query: () => ({ findById: async (id: number) => (id === 44 ? { id: 44, dealId: 12 } : null) }) })) as any,
   );
   return { service, calls };
 }
@@ -187,3 +191,46 @@ describe('распознавание по автоправилам', () => {
     expect(applyRulesJobId('org', 1000, t)).not.toBe(applyRulesJobId('org', 1000, t + 20_000));
   });
 });
+
+describe('след применения и правило «сделка» (FT-033, FT-036)', () => {
+  it('каждое применение пишет след: правило, операция и что поставлено', async () => {
+    const { service, calls } = makeApplier();
+    await service.apply(
+      { id: 7, name: 'Озон', ruleType: 'assign', assignAccountId: 1021, assignProjectId: 3 },
+      row(1, -1500),
+    );
+    expect(calls.applications).toHaveLength(1);
+    const record = calls.applications[0];
+    expect(record).toMatchObject({ transactionId: 555, ruleId: 7 });
+    expect(JSON.parse(record.changes)).toMatchObject({
+      ruleName: 'Озон',
+      creditAccountId: 1021,
+      projectId: 3,
+      uncategorizedTransactionId: 1,
+    });
+  });
+
+  it('пропущенная строка следа не оставляет', async () => {
+    const { service, calls } = makeApplier({ failCategorize: 'X' });
+    await service.apply({ id: 7, ruleType: 'assign', assignAccountId: 1 }, row(1, -1));
+    expect(calls.applications).toEqual([]);
+  });
+
+  it('«сделка» по этапу: сделка берётся у этапа, этап — в следе', async () => {
+    const { service, calls } = makeApplier();
+    const outcome = await service.apply(
+      { id: 9, name: 'Аванс', ruleType: 'deal', assignAccountId: 1026, assignDealStageId: 44 },
+      row(2, 50000),
+    );
+    expect(outcome.status).toBe('applied');
+    expect(calls.categorize[0].dto).toMatchObject({ projectId: 12, transactionType: 'other_income' });
+    expect(JSON.parse(calls.applications[0].changes)).toMatchObject({ dealId: 12, dealStageId: 44 });
+  });
+
+  it('«сделка» без сделки и этапа — пропуск с причиной', async () => {
+    const { service } = makeApplier();
+    const outcome = await service.apply({ id: 9, ruleType: 'deal', assignAccountId: 1026 }, row(3, 10));
+    expect(outcome).toMatchObject({ status: 'skipped', reason: 'no_deal' });
+  });
+});
+

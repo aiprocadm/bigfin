@@ -25,6 +25,7 @@ export interface PlanRule {
   assignContactId?: number | null;
   assignProjectId?: number | null;
   transferToAccountId?: number | null;
+  assignDealId?: number | null;
   splits?: Array<{
     sharePercent: number | string;
     articleId: number | null;
@@ -51,6 +52,7 @@ export type RuleSkipReason =
   | 'zero_amount'
   | 'no_account'
   | 'split_article_without_account'
+  | 'no_deal'
   | 'unsupported_rule_type';
 
 export function planRuleCategorization(
@@ -96,6 +98,21 @@ export function planRuleCategorization(
         articleId: Number(line.articleId),
         projectId: line.projectId ?? null,
       })),
+    };
+  }
+
+  if (ruleType === 'deal') {
+    if (!rule.assignAccountId) return { skip: 'no_account' };
+    // Сделка хранится как направление операции (`project_id`): сделки и
+    // направления — одна таблица. Этап сделки служба переводит в сделку
+    // до плана и записывает в журнал применений.
+    if (!rule.assignDealId) return { skip: 'no_deal' };
+    return {
+      transactionType: plain,
+      creditAccountId: Number(rule.assignAccountId),
+      contactId: rule.assignContactId ?? null,
+      projectId: Number(rule.assignDealId),
+      splits: [],
     };
   }
 

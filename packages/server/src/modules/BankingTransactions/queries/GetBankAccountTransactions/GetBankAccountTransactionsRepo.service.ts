@@ -1,4 +1,6 @@
 import { Inject, Injectable, Scope } from '@nestjs/common';
+import { Knex } from 'knex';
+import { TENANCY_DB_CONNECTION } from '@/modules/Tenancy/TenancyDB/TenancyDB.constants';
 import { ICashflowAccountTransactionsQuery } from '../../types/BankingTransactions.types';
 import {
   groupMatchedBankTransactions,
@@ -34,6 +36,15 @@ export class GetBankAccountTransactionsRepository {
   public documentsByReference: Map<string, any> = new Map();
 
   /**
+   * Какое автоправило разнесло денежную операцию (FT-036 ТЗ-3): номер
+   * операции → правило. По нему строка реестра получает бейдж «А».
+   */
+  public ruleApplicationsByTransaction: Map<
+    number,
+    { ruleId: number; ruleName: string | null }
+  > = new Map();
+
+  /**
    * @param {TenantModelProxy<typeof AccountTransaction>} accountTransactionModel - Account transaction model.
    * @param {TenantModelProxy<typeof UncategorizedBankTransaction>} uncategorizedBankTransactionModel - Uncategorized transaction model
    * @param {TenantModelProxy<typeof MatchedBankTransaction>} matchedBankTransactionModel - Matched bank transaction model.
@@ -67,6 +78,9 @@ export class GetBankAccountTransactionsRepository {
 
     @Inject(Bill.name)
     private readonly billModel: TenantModelProxy<typeof Bill>,
+
+    @Inject(TENANCY_DB_CONNECTION)
+    private readonly tenantKnex: () => Knex,
   ) {}
 
   /**
@@ -92,6 +106,42 @@ export class GetBankAccountTransactionsRepository {
     await this.initCategorizedTransactions();
     await this.initMatchedTransactions();
     await this.initReferencedDocuments();
+    await this.initRuleApplications();
+  }
+
+  /**
+   * След автоправил для строк текущей страницы (FT-036 ТЗ-3) — одним
+   * запросом. Таблицу читаем напрямую: модели следа живут в модуле правил,
+   * а подключить его сюда значило бы замкнуть модули в кольцо.
+   *
+   * Сбой не роняет реестр: без бейджа «А» строка остаётся строкой.
+   */
+  async initRuleApplications(): Promise<void> {
+    this.ruleApplicationsByTransaction = new Map();
+    const ids = [
+      ...new Set(
+        (this.transactions ?? [])
+          .filter((t: any) => t.referenceType === 'CashflowTransaction')
+          .map((t: any) => Number(t.referenceId)),
+      ),
+    ];
+    if (ids.length === 0) return;
+    try {
+      const rows: any[] = await this.tenantKnex()('transaction_rule_applications as a')
+        .leftJoin('bank_rules as r', 'r.id', 'a.rule_id')
+        .whereIn('a.transaction_id', ids)
+        .select('a.transaction_id', 'a.rule_id', 'r.name')
+        .orderBy('a.id', 'asc');
+      // Последнее применение побеждает: оно и определило, что сейчас стоит.
+      rows.forEach((row) =>
+        this.ruleApplicationsByTransaction.set(Number(row.transactionId), {
+          ruleId: Number(row.ruleId),
+          ruleName: row.name ?? null,
+        }),
+      );
+    } catch (error) {
+      console.error('[registry] не удалось прочитать след автоправил', error);
+    }
   }
 
   /**

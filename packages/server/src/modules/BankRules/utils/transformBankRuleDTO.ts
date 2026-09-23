@@ -19,7 +19,10 @@ export function transformBankRuleDTO(dto: CommandBankRuleDto) {
     // Пусто — «оба»: и поступления, и списания.
     applyIfTransactionType: rest.applyIfTransactionType || null,
     applyIfAccountId: rest.applyIfAccountId || null,
-    assignAccountId: ruleType === 'assign' ? rest.assignAccountId ?? null : null,
+    assignAccountId: ['assign', 'deal'].includes(ruleType) ? rest.assignAccountId ?? null : null,
+    // Сделка и этап — только у правила «сделка» (FT-033).
+    assignDealId: ruleType === 'deal' ? (rest as any).assignDealId ?? null : null,
+    assignDealStageId: ruleType === 'deal' ? (rest as any).assignDealStageId ?? null : null,
     transferToAccountId: ruleType === 'transfer' ? rest.transferToAccountId ?? null : null,
     // Перевод затирает направление и контрагента (FT-032) — ставить их
     // правилу перевода бессмысленно.

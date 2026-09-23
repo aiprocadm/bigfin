@@ -387,7 +387,8 @@ function RuleAssignCategoryField() {
     <FFormGroup
       name={'assignCategory'}
       label={intl.get('transaction_type')}
-      labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
+      // Не обязателен: без него вид выводится из направления денег
+      // (поступление — прочий доход, списание — прочий расход).
       style={{ maxWidth: 300 }}
     >
       <FSelect

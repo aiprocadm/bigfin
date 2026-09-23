@@ -8,6 +8,9 @@ import { planRuleCategorization } from '@/modules/BankRules/utils/ruleCategoriza
 import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/ManagementArticleAccount.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TransactionSplitsService } from '@/modules/TransactionSplits/TransactionSplits.service';
+import { TransactionRuleApplication } from '@/modules/BankRules/models/TransactionRuleApplication';
+import { DealStage } from '@/modules/Deals/models/DealStage.model';
+import * as moment from 'moment';
 
 export interface RuleApplyOutcome {
   uncategorizedTransactionId: number;
@@ -40,7 +43,23 @@ export class ApplyBankRuleService {
 
     @Inject(ManagementArticleAccount.name)
     private readonly articleAccountModel: TenantModelProxy<typeof ManagementArticleAccount>,
+
+    @Inject(TransactionRuleApplication.name)
+    private readonly applicationModel: TenantModelProxy<typeof TransactionRuleApplication>,
+
+    @Inject(DealStage.name)
+    private readonly dealStageModel: TenantModelProxy<typeof DealStage>,
   ) {}
+
+  /**
+   * Правило «сделка» с одним этапом: сделка берётся у этапа (FT-033). У
+   * денежной операции поля «этап» нет — этап остаётся в журнале применений.
+   */
+  private async withDealFromStage(rule: any): Promise<any> {
+    if (rule.ruleType !== 'deal' || rule.assignDealId || !rule.assignDealStageId) return rule;
+    const stage: any = await this.dealStageModel().query().findById(rule.assignDealStageId);
+    return { ...rule, assignDealId: stage?.dealId ?? null };
+  }
 
   /** Статья → её счёт (первый по номеру, как в проводках частей). */
   private async articleAccounts(rule: any): Promise<Map<number, number>> {
@@ -65,6 +84,7 @@ export class ApplyBankRuleService {
     });
     if ((row as any).categorized) return outcome('skipped', 'already_categorized');
 
+    rule = await this.withDealFromStage(rule);
     const plan = planRuleCategorization(rule, row, await this.articleAccounts(rule));
     if ('skip' in plan) return outcome('skipped', plan.skip);
 
@@ -85,9 +105,9 @@ export class ApplyBankRuleService {
       return outcome('skipped', (error as any)?.errorType ?? (error as any)?.message ?? 'categorize_failed');
     }
 
+    const fresh: any = await this.uncategorizedModel().query().findById(row.id);
+    const cashflowId = Number(fresh?.categorizeRefId);
     if (plan.splits.length > 0) {
-      const fresh: any = await this.uncategorizedModel().query().findById(row.id);
-      const cashflowId = Number(fresh?.categorizeRefId);
       await this.transactionSplits.saveSplits({
         referenceType: CASHFLOW_SPLIT_REFERENCE,
         referenceId: cashflowId,
@@ -98,6 +118,40 @@ export class ApplyBankRuleService {
       await this.glEntries.revertJournalEntries(cashflowId);
       await this.glEntries.writeJournalEntries(cashflowId);
     }
+    await this.recordApplication(rule, row, cashflowId, plan);
     return outcome('applied');
+  }
+
+  /**
+   * След применения (FT-036 ТЗ-3): что именно правило поставило. Сбой записи
+   * следа разноску не отменяет — она уже прошла, а без следа операция лишь
+   * останется без бейджа «А».
+   */
+  private async recordApplication(rule: any, row: any, cashflowId: number, plan: any) {
+    if (!cashflowId) return;
+    try {
+      await this.applicationModel()
+        .query()
+        .insert({
+          transactionId: cashflowId,
+          ruleId: rule.id,
+          appliedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+          changes: JSON.stringify({
+            ruleName: rule.name,
+            ruleType: rule.ruleType ?? 'assign',
+            uncategorizedTransactionId: row.id,
+            transactionType: plan.transactionType,
+            creditAccountId: plan.creditAccountId,
+            contactId: plan.contactId,
+            projectId: plan.projectId,
+            splits: plan.splits,
+            ...(rule.ruleType === 'deal'
+              ? { dealId: rule.assignDealId ?? null, dealStageId: rule.assignDealStageId ?? null }
+              : {}),
+          }),
+        } as any);
+    } catch (error) {
+      console.error('[bank-rules] не удалось записать след применения', error);
+    }
   }
 }

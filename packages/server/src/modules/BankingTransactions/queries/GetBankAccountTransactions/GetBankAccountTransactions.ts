@@ -168,6 +168,13 @@ export class GetBankAccountTransactions extends FinancialSheet {
         `banking.transaction_status.${status}`,
       ),
       uncategorizedTransactionId,
+
+      // Бейдж «А» (FT-036 ТЗ-3): операцию разнесло автоправило. Пусто —
+      // разносил человек. `ruleName` пуст, если правило с тех пор удалили.
+      autoRule:
+        transaction.referenceType === 'CashflowTransaction'
+          ? this.repo.ruleApplicationsByTransaction?.get(Number(transaction.referenceId)) ?? null
+          : null,
     };
   };
 

@@ -13,7 +13,8 @@ export class ReconciliationItem extends BaseModel {
   public payee!: string | null;
   public description!: string | null;
   public transactionId!: number | null;
-  public transactionKind!: 'bank_line' | 'cashflow' | null;
+  /** document — документ другого раздела: оплата счёта, расход, проводка. */
+  public transactionKind!: 'bank_line' | 'cashflow' | 'document' | null;
   public deletedAt!: string | null;
   public deletedBy!: number | null;
   public resolvedAs!: 'added' | 'deleted' | 'ignored' | null;

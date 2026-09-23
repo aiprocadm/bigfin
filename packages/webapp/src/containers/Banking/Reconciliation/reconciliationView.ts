@@ -22,6 +22,19 @@ export function reconciliationHeadline(rec: any, money: (value: number) => strin
   return intl.get('reconciliation.headline', { ours: money(ours), bank: money(bank), diff: money(diff) });
 }
 
+/**
+ * Подпись строки: документ другого раздела (оплата счёта, расход) — словами
+ * по виду документа; иначе контрагент или назначение платежа.
+ */
+export function itemLabel(item: any): string {
+  if ((item.transaction_kind ?? item.transactionKind) === 'document') {
+    const key = `reconciliation.document_type.${item.description}`;
+    const text = intl.get(key);
+    return text && text !== key ? text : intl.get('reconciliation.document_type.other');
+  }
+  return item.payee || item.description || '—';
+}
+
 /** Два списка и сколько строк ещё ждут решения. */
 export function splitItems(items: any[]) {
   const missingHere = items.filter((item) => item.side === 'missing_here');

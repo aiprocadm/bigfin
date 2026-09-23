@@ -18,7 +18,7 @@ import {
 import { formattedAmount } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
 import { formatDay } from '../Trash/trashView';
-import { reconciliationHeadline, splitItems } from './reconciliationView';
+import { itemLabel, reconciliationHeadline, splitItems } from './reconciliationView';
 
 type Mode = 'file' | 'bank';
 
@@ -207,7 +207,7 @@ function ReconciliationResult({ rec, currency }: { rec: any; currency: string })
                 </td>
                 <td className="p-2 whitespace-nowrap">{formatDay(item.date)}</td>
                 <td className="p-2">
-                  {item.payee || item.description || '—'}
+                  {itemLabel(item)}
                   {side === 'here' && deletedAt && (
                     <span className="ml-2 text-xs text-warning">
                       {intl.get('reconciliation.was_deleted', {

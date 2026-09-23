@@ -90,3 +90,62 @@ describe('решения по сверке (FT-040)', () => {
     });
   });
 });
+
+describe('сверка видит все деньги по счёту, а не только выписку', () => {
+  function makeRunService(legs: any[], lines: any[]) {
+    const inserted: any[] = [];
+    const rec = { id: 1, accountId: 1000, fromDate: '2026-06-01', toDate: '2026-06-30', bankBalance: null };
+    const itemModel = () => ({
+      query: () =>
+        chain(inserted, (method, args) => {
+          if (method === 'insert') inserted.push(args[0]);
+        }),
+    });
+    const service = new BankReconciliationService(
+      { get: () => 7 } as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      (() => ({ query: () => chain(rec) })) as any,
+      itemModel as any,
+      (() => ({ query: () => chain(lines) })) as any,
+      (() => ({ query: () => chain([]) })) as any,
+      (() => ({ query: () => chain(legs) })) as any,
+      (() => ({ query: () => chain([]) })) as any,
+      (() => ({ query: () => chain({ currencyCode: 'RUB' }) })) as any,
+    );
+    return { service, inserted };
+  }
+
+  it('оплата счёта покупателя — не «нет у нас»; разнесённая строка сверяется номером банка', async () => {
+    const { service, inserted } = makeRunService(
+      [
+        // Оплата счёта покупателя на банковский счёт: две проводки одного документа.
+        { referenceType: 'PaymentReceive', referenceId: 50, date: '2026-06-10', debit: 60000, credit: 0 },
+        // Разнесённая строка выписки → денежная операция 70.
+        { referenceType: 'CashflowTransaction', referenceId: 70, date: '2026-06-12', debit: 0, credit: 1500 },
+      ],
+      [
+        { id: 5, accountId: 1000, date: '2026-06-12', amount: -1500, externalId: 'tinkoff:9', categorized: true, categorizeRefType: 'CashflowTransaction', categorizeRefId: 70 },
+      ],
+    );
+    await service.run(1, [
+      { date: '2026-06-10', amount: 60000, externalId: 'tinkoff:8' },
+      { date: '2026-06-12', amount: -1500, externalId: 'tinkoff:9' },
+    ]);
+    // Ни «нет у нас», ни «нет в банке»: всё сошлось.
+    expect(inserted.filter((row) => row && row.side)).toEqual([]);
+  });
+
+  it('документ другого раздела «нет в банке» — удалить его корзиной нельзя, ошибка названа', async () => {
+    const { service } = makeService([
+      { id: 15, side: 'missing_bank', amount: 60000, transactionId: 50, transactionKind: 'document', description: 'PaymentReceive' },
+    ]);
+    await expect(service.resolve(1, [15], 'delete')).rejects.toMatchObject({
+      errorType: 'RECONCILIATION_DOCUMENT_NOT_TRASHABLE',
+    });
+  });
+});
+

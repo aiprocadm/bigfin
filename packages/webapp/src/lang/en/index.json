@@ -5339,5 +5339,13 @@
   "reconciliation.history_open": "missing here: {here}, missing at the bank: {bank}",
   "reconciliation.status.running": "running",
   "reconciliation.status.done": "done",
-  "reconciliation.status.failed": "failed"
+  "reconciliation.status.failed": "failed",
+  "reconciliation.document_type.PaymentReceive": "Payment received",
+  "reconciliation.document_type.BillPayment": "Bill payment",
+  "reconciliation.document_type.Expense": "Expense",
+  "reconciliation.document_type.ManualJournal": "Manual journal",
+  "reconciliation.document_type.SaleReceipt": "Sale receipt",
+  "reconciliation.document_type.RefundCreditNote": "Customer refund",
+  "reconciliation.document_type.RefundVendorCredit": "Vendor refund",
+  "reconciliation.document_type.other": "Document from another section"
 }

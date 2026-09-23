@@ -43,6 +43,7 @@ export const RECONCILIATION_ERRORS = {
   NOT_CONNECTED: 'RECONCILIATION_BANK_NOT_CONNECTED',
   EMPTY_FILE: 'RECONCILIATION_FILE_EMPTY',
   WRONG_SIDE: 'RECONCILIATION_WRONG_SIDE',
+  DOCUMENT_NOT_TRASHABLE: 'RECONCILIATION_DOCUMENT_NOT_TRASHABLE',
 };
 
 /** Денежные операции, где деньги ПРИХОДЯТ на свой счёт. */
@@ -213,24 +214,47 @@ export class BankReconciliationService {
     }));
   }
 
-  /** Что по счёту есть у нас за период: строки выписки и операции без них. */
+  /**
+   * Что по счёту есть у нас за период.
+   *
+   * ВСЕ ДЕНЬГИ ПО СЧЁТУ, А НЕ ТОЛЬКО ВЫПИСКА: на банковский счёт деньги
+   * приходят и оплатой счёта покупателя, и оплатой поставщику, и расходом.
+   * Такой платёж есть и в банке, и у нас — просто не строкой выписки. Если
+   * смотреть только на выписку, сверка кричала бы «нет у нас» про каждую
+   * оплату счёта. Поэтому «у нас» = проводки по счёту (по документу — одна
+   * строка) плюс строки выписки, которые ещё ждут разноски.
+   */
   private async ourLines(accountId: number, from: string, to: string) {
+    const legs: any[] = await this.ledgerModel()
+      .query()
+      .where('accountId', accountId)
+      .where('date', '>=', from)
+      .where('date', '<=', to)
+      .select('referenceType', 'referenceId', 'date', 'debit', 'credit');
     const lines: any[] = await this.uncategorizedModel()
       .query()
       .where('accountId', accountId)
       .where('date', '>=', from)
       .where('date', '<=', to);
-    const linkedCashflow = new Set(
+    const lineOfCashflow = new Map<number, any>(
       lines
         .filter((l) => l.categorized && l.categorizeRefType === 'CashflowTransaction')
-        .map((l) => Number(l.categorizeRefId)),
+        .map((l) => [Number(l.categorizeRefId), l]),
     );
-    const operations: any[] = await this.bankTransactionModel()
-      .query()
-      .where((q) => q.where('cashflowAccountId', accountId).orWhere('creditAccountId', accountId))
-      .where('date', '>=', from)
-      .where('date', '<=', to)
-      .whereNotNull('publishedAt');
+
+    // Проводки по документу — одна строка: сумма «приход − расход» по счёту.
+    const byRef = new Map<string, { referenceType: string; referenceId: number; date: string; cents: number }>();
+    for (const leg of legs) {
+      const key = `${leg.referenceType}:${leg.referenceId}`;
+      const entry = byRef.get(key) ?? {
+        referenceType: leg.referenceType,
+        referenceId: Number(leg.referenceId),
+        date: day(leg.date),
+        cents: 0,
+      };
+      entry.cents += Math.round((Number(leg.debit) - Number(leg.credit)) * 100);
+      byRef.set(key, entry);
+    }
 
     const toLine = (l: any): OurLine => ({
       kind: 'bank_line',
@@ -241,33 +265,50 @@ export class BankReconciliationService {
       payee: l.payee ?? null,
       description: l.description ?? null,
     });
+    const live: OurLine[] = [];
+    for (const ref of byRef.values()) {
+      if (ref.cents === 0) continue;
+      const amount = ref.cents / 100;
+      const line = ref.referenceType === 'CashflowTransaction' ? lineOfCashflow.get(ref.referenceId) : null;
+      if (line) {
+        // Разнесённая строка выписки: сверяем её номером у банка, а
+        // «Удалить» уносит строку вместе с операцией.
+        live.push({ ...toLine(line), amount, date: ref.date });
+      } else if (ref.referenceType === 'CashflowTransaction') {
+        live.push({ kind: 'cashflow', id: ref.referenceId, date: ref.date, amount, description: null });
+      } else {
+        // Документ другого раздела: оплата счёта, расход, ручная проводка.
+        // Вид документа — в описании, экран подписывает его словами.
+        live.push({
+          kind: 'document',
+          id: ref.referenceId,
+          date: ref.date,
+          amount,
+          description: ref.referenceType,
+        });
+      }
+    }
+    live.push(...lines.filter((l) => !l.categorized && !l.deletedAt).map(toLine));
+
+    // Удалённое у нас — чтобы строка банка получила пометку «была удалена».
+    const deletedOps: any[] = await this.bankTransactionModel()
+      .query()
+      .modify('deleted')
+      .where((q) => q.where('cashflowAccountId', accountId).orWhere('creditAccountId', accountId))
+      .where('date', '>=', from)
+      .where('date', '<=', to);
     const opLine = (o: any): OurLine => {
       const incoming = IN_TYPES.includes(o.transactionType);
-      // Перевод «на этот счёт» проведён по другому счёту — знак обратный.
       const sign = Number(o.cashflowAccountId) === accountId ? (incoming ? 1 : -1) : incoming ? -1 : 1;
-      return {
-        kind: 'cashflow',
-        id: o.id,
-        date: day(o.date),
-        amount: sign * Math.abs(Number(o.amount)),
-        payee: null,
-        description: o.description ?? null,
-      };
+      return { kind: 'cashflow', id: o.id, date: day(o.date), amount: sign * Math.abs(Number(o.amount)) };
     };
-    const live = [
-      ...lines.filter((l) => !l.deletedAt).map(toLine),
-      ...operations.filter((o) => !o.deletedAt && !linkedCashflow.has(Number(o.id))).map(opLine),
-    ];
-    const names = await this.userNames(
-      [...lines, ...operations].filter((r) => r.deletedAt).map((r) => r.deletedBy),
-    );
     const deleted: DeletedLine[] = [
       ...lines.filter((l) => l.deletedAt).map((l) => ({ ...toLine(l), deletedAt: l.deletedAt, deletedBy: l.deletedBy })),
-      ...operations
-        .filter((o) => o.deletedAt && !linkedCashflow.has(Number(o.id)))
+      ...deletedOps
+        .filter((o) => !lineOfCashflow.has(Number(o.id)))
         .map((o) => ({ ...opLine(o), deletedAt: o.deletedAt, deletedBy: o.deletedBy })),
     ];
-    return { live, deleted, names };
+    return { live, deleted };
   }
 
   private async userNames(ids: any[]) {
@@ -400,6 +441,16 @@ export class BankReconciliationService {
     const wrong = items.filter(
       (i) => (action === 'add' && i.side !== 'missing_here') || (action === 'delete' && i.side !== 'missing_bank'),
     );
+    // Документы других разделов (оплата счёта, расход) корзина не удаляет:
+    // у них своя жизнь — оплата, например, сидит на счёте покупателя.
+    if (action === 'delete' && items.some((i) => i.transactionKind === 'document')) {
+      throw new ServiceError(
+        RECONCILIATION_ERRORS.DOCUMENT_NOT_TRASHABLE,
+        'Этот документ удаляется в своём разделе — например, оплата — в карточке счёта',
+        null,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
     if (wrong.length > 0) {
       throw new ServiceError(
         RECONCILIATION_ERRORS.WRONG_SIDE,

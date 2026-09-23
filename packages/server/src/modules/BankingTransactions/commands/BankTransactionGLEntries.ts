@@ -35,10 +35,16 @@ export class BankTransactionGLEntriesService {
    * среди привязанных: у статьи их бывает несколько, а выбор обязан быть
    * одинаковым при каждой перепроводке.
    */
-  private async splitsOf(transactionId: number): Promise<BankTransactionGLSplit[]> {
+  private async splitsOf(
+    transactionId: number,
+    trx?: Knex.Transaction,
+  ): Promise<BankTransactionGLSplit[]> {
+    // Части читаются в той же транзакции, что и проводки: иначе части,
+    // записанные в ней же (создание с разбиением), были бы не видны.
     const rows: any[] = await this.transactionSplits.getSplits(
       CASHFLOW_SPLIT_REFERENCE,
       transactionId,
+      trx,
     );
     if (rows.length === 0) return [];
     const articleIds = [...new Set(rows.map((row) => Number(row.articleId)))];
@@ -84,7 +90,7 @@ export class BankTransactionGLEntriesService {
       .withGraphFetched('creditAccount');
 
     // Retrieves the cashflow transaction ledger.
-    const splits = await this.splitsOf(cashflowTransactionId);
+    const splits = await this.splitsOf(cashflowTransactionId, trx);
     const ledger = new BankTransactionGL(transaction, splits).getCashflowLedger();
 
     await this.ledgerStorage.commit(ledger, trx);

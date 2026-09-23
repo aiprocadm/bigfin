@@ -33,8 +33,8 @@ export class TransactionSplitsService {
   ) {}
 
   /** Части операции. */
-  public async getSplits(referenceType: string, referenceId: number) {
-    const knex = this.tenantKnex();
+  public async getSplits(referenceType: string, referenceId: number, trx?: Knex.Transaction) {
+    const knex = trx ?? this.tenantKnex();
 
     return knex('transaction_splits')
       .where('reference_type', referenceType)
@@ -49,7 +49,7 @@ export class TransactionSplitsService {
    * оставить разбиение не сходящимся с родительской суммой, и отчёт разойдётся
    * с банком, пока кто-нибудь это не заметит.
    */
-  public async saveSplits(input: SaveSplitsInput) {
+  public async saveSplits(input: SaveSplitsInput, outerTrx?: Knex.Transaction) {
     const validation = validateSplits(input.parentAmount, input.lines);
 
     if (!validation.isValid) {
@@ -61,7 +61,12 @@ export class TransactionSplitsService {
 
     const knex = this.tenantKnex();
 
-    return knex.transaction(async (trx) => {
+    // В чужой транзакции (создание операции с частями, FT-023 ТЗ-3) пишем
+    // внутри неё: проводки, собранные в ней же, должны видеть новые части.
+    const run = <T>(work: (trx: Knex.Transaction) => Promise<T>) =>
+      outerTrx ? work(outerTrx) : knex.transaction(work);
+
+    return run(async (trx) => {
       await trx('transaction_splits')
         .where('reference_type', input.referenceType)
         .where('reference_id', input.referenceId)
@@ -85,8 +90,8 @@ export class TransactionSplitsService {
   }
 
   /** Убирает разбиение: операция снова идёт в отчёты целиком. */
-  public async clearSplits(referenceType: string, referenceId: number) {
-    const knex = this.tenantKnex();
+  public async clearSplits(referenceType: string, referenceId: number, trx?: Knex.Transaction) {
+    const knex = trx ?? this.tenantKnex();
 
     const removed = await knex('transaction_splits')
       .where('reference_type', referenceType)

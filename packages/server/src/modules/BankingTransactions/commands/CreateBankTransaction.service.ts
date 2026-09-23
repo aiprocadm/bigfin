@@ -143,6 +143,8 @@ export class CreateBankTransactionService {
   public newCashflowTransaction = async (
     newTransactionDTO: CreateBankTransactionDto,
     userId?: number,
+    // Чужая транзакция: создание с частями и пакетный ввод (FT-023, FT-024).
+    outerTrx?: Knex.Transaction,
   ): Promise<BankTransaction> => {
     // Retrieves the cashflow account or throw not found error.
     const cashflowAccount = await this.accountModel()
@@ -190,6 +192,6 @@ export class CreateBankTransactionService {
         } as ICommandCashflowCreatedPayload,
       );
       return cashflowTransaction;
-    });
+    }, outerTrx);
   };
 }

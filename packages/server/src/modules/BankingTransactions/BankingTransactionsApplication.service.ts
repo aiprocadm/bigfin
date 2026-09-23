@@ -1,4 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
+import { TransactionActionsService } from './commands/TransactionActions.service';
 import { DeleteCashflowTransaction } from './commands/DeleteCashflowTransaction.service';
 import { CreateBankTransactionService } from './commands/CreateBankTransaction.service';
 import { GetBankTransactionService } from './queries/GetBankTransaction.service';
@@ -29,6 +33,8 @@ export class BankingTransactionsApplication {
     private readonly getBankAccountUncategorizedTransactionService: GetUncategorizedBankTransactionService,
     private readonly getPendingBankAccountTransactionsService: GetPendingBankAccountTransactions,
     private readonly getAutofillCategorizeTransactionService: GetAutofillCategorizeTransactionService,
+    private readonly uow: UnitOfWork,
+    private readonly transactionActions: TransactionActionsService,
   ) {}
 
   /**
@@ -37,7 +43,69 @@ export class BankingTransactionsApplication {
    * @returns
    */
   public createTransaction(transactionDTO: CreateBankTransactionDto) {
-    return this.createTransactionService.newCashflowTransaction(transactionDTO);
+    const splits = transactionDTO.splits ?? [];
+    if (splits.length === 0) {
+      return this.createTransactionService.newCashflowTransaction(transactionDTO);
+    }
+    // С частями (FT-023 ТЗ-3) — одной транзакцией: части не сошлись с
+    // суммой или у статьи нет счёта — не создаётся и сама операция.
+    return this.uow.withTransaction(async (trx) => {
+      const transaction = await this.createTransactionService.newCashflowTransaction(
+        transactionDTO,
+        undefined,
+        trx,
+      );
+      await this.transactionActions.setSplits(
+        transaction.id,
+        splits.map((line) => ({
+          amount: Number(line.amount),
+          articleId: Number(line.articleId),
+          projectId: line.projectId ?? null,
+        })),
+        trx,
+      );
+      return transaction;
+    });
+  }
+
+  /**
+   * Пакетный ввод «Несколько» (FT-024 ТЗ-3): N операций одним запросом.
+   *
+   * КАЖДАЯ СТРОКА — СВОЯ ТРАНЗАКЦИЯ И СВОЯ ПРОВЕРКА. Проверь мы весь пакет
+   * разом, ошибка в седьмой строке не дала бы сохранить и первые шесть; а
+   * ТЗ требует ровно обратного: сохранить то, что можно, и сказать, что не
+   * так с остальными. Экран оставляет в окне только строки с ошибками.
+   */
+  public async createTransactionsBulk(items: unknown[]) {
+    const results: Array<
+      | { index: number; id: number }
+      | { index: number; error: string; message: string; fields?: string[] }
+    > = [];
+    for (const [index, raw] of (items ?? []).entries()) {
+      const dto = plainToInstance(CreateBankTransactionDto, raw ?? {});
+      const invalid = await validate(dto as object, { whitelist: true });
+      if (invalid.length > 0) {
+        results.push({
+          index,
+          error: 'VALIDATION_FAILED',
+          message: 'Строка заполнена не полностью или неверно',
+          fields: invalid.map((error) => error.property),
+        });
+        continue;
+      }
+      try {
+        const created: any = await this.createTransaction(dto);
+        results.push({ index, id: Number(created.id) });
+      } catch (error: any) {
+        results.push({
+          index,
+          error: error?.errorType ?? error?.name ?? 'CREATE_FAILED',
+          message: error?.message ?? 'Не удалось сохранить операцию',
+        });
+      }
+    }
+    const created = results.filter((result) => 'id' in result).length;
+    return { created, failed: results.length - created, results };
   }
 
   /**

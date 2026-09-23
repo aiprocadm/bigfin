@@ -213,4 +213,6 @@ export interface ICashflowAccountTransaction {
    * пуст, если правило с тех пор удалили.
    */
   autoRule?: { ruleId: number; ruleName: string | null } | null;
+  /** Метка документа (FT-025 ТЗ-3). */
+  tag?: string | null;
 }

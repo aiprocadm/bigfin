@@ -459,6 +459,13 @@ export const events = {
     onTransactionDeleting: 'onCashflowTransactionDeleting',
     onTransactionDeleted: 'onCashflowTransactionDeleted',
 
+    // Действия из реестра (FT-022…FT-025 ТЗ-3): их пишет журнал действий,
+    // а панель «История изменений» показывает.
+    onTransactionTagged: 'onCashflowTransactionTagged',
+    onTransactionDealLinked: 'onCashflowTransactionDealLinked',
+    onTransactionConvertedToTransfer: 'onCashflowTransactionConvertedToTransfer',
+    onTransactionSplitsChanged: 'onCashflowTransactionSplitsChanged',
+
     onTransactionCategorizing: 'onTransactionCategorizing',
     onTransactionCategorized: 'onCashflowTransactionCategorized',
 

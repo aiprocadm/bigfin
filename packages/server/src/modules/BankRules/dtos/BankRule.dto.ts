@@ -13,6 +13,7 @@ import {
   IsNumber,
   Max,
   ValidateIf,
+  MaxLength,
 } from 'class-validator';
 import {
   MAX_RULE_CONDITIONS,
@@ -175,6 +176,12 @@ export class CommandBankRuleDto {
   @ToNumber()
   @IsInt()
   assignDealStageId?: number | null;
+
+  // Метка операции (FT-025): ставится правилом любого вида.
+  @IsOptional()
+  @IsString()
+  @MaxLength(64)
+  assignTag?: string | null;
 
   // Счёт-получатель перевода (FT-032).
   @ValidateIf((dto) => dto.ruleType === 'transfer')

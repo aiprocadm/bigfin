@@ -22,7 +22,10 @@ import {
 } from '@nestjs/swagger';
 import { BankingTransactionsApplication } from '../BankingTransactionsApplication.service';
 import { GetTransactionsSummaryService } from '../queries/GetTransactionsSummary.service';
-import { CreateBankTransactionDto } from '../dtos/CreateBankTransaction.dto';
+import {
+  BulkCreateBankTransactionsDto,
+  CreateBankTransactionDto,
+} from '../dtos/CreateBankTransaction.dto';
 import { GetBankTransactionsQueryDto } from '../dtos/GetBankTranasctionsQuery.dto';
 import { BankTransactionResponseDto } from '../dtos/BankTransactionResponse.dto';
 import { PaginatedResponseDto } from '@/common/dtos/PaginatedResults.dto';
@@ -116,6 +119,18 @@ export class BankingTransactionsController {
     return this.bankingTransactionsApplication.createTransaction(
       transactionDTO,
     );
+  }
+
+  /**
+   * Пакетный ввод «Несколько» (FT-024 ТЗ-3): до 100 операций одним
+   * запросом. Строки проверяются по одной — ответ говорит, какие легли и
+   * что не так с остальными.
+   */
+  @Post('bulk')
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
+  @ApiOperation({ summary: 'Создать несколько операций одним запросом; ошибка строки не отменяет остальные.' })
+  async createTransactionsBulk(@Body() body: BulkCreateBankTransactionsDto) {
+    return this.bankingTransactionsApplication.createTransactionsBulk(body.items);
   }
 
   /**

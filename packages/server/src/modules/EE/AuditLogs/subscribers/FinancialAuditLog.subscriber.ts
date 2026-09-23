@@ -663,6 +663,47 @@ export class FinancialAuditLogSubscriber {
     );
   }
 
+  // Действия из реестра (FT-022…FT-025 ТЗ-3): панель «История изменений»
+  // операции читает именно эти записи.
+  @OnEvent(events.cashflow.onTransactionTagged)
+  async onCashflowTagged({ referenceType, referenceId, tag, oldTag, trx }: any) {
+    await this.write(
+      trx,
+      'tagged',
+      referenceType === 'CashflowTransaction' ? AbilitySubject.Cashflow : referenceType,
+      Number(referenceId),
+      { tag, oldTag },
+    );
+  }
+
+  @OnEvent(events.cashflow.onTransactionDealLinked)
+  async onCashflowDealLinked({ cashflowTransactionId, dealId, oldDealId, trx }: any) {
+    await this.write(trx, 'deal_linked', AbilitySubject.Cashflow, Number(cashflowTransactionId), {
+      dealId,
+      oldDealId,
+    });
+  }
+
+  @OnEvent(events.cashflow.onTransactionConvertedToTransfer)
+  async onCashflowConvertedToTransfer({
+    cashflowTransactionId,
+    oldTransactionType,
+    transactionType,
+    toAccountId,
+    trx,
+  }: any) {
+    await this.write(trx, 'converted_to_transfer', AbilitySubject.Cashflow, Number(cashflowTransactionId), {
+      oldTransactionType,
+      transactionType,
+      toAccountId,
+    });
+  }
+
+  @OnEvent(events.cashflow.onTransactionSplitsChanged)
+  async onCashflowSplitsChanged({ cashflowTransactionId, parts, trx }: any) {
+    await this.write(trx, 'split', AbilitySubject.Cashflow, Number(cashflowTransactionId), { parts });
+  }
+
   // --- GL accounts ---
   @OnEvent(events.accounts.onCreated)
   async onAccountCreated({ account, accountId, trx }: IAccountEventCreatedPayload) {

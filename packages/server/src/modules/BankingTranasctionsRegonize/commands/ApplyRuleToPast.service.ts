@@ -148,8 +148,19 @@ export class ApplyRuleToPastService {
         outcomes.push({ uncategorizedTransactionId: id, status: 'skipped', reason: 'no_longer_matches' });
         continue;
       }
-      await this.markRecognizedBy(rule, row);
-      outcomes.push(await this.applyBankRule.apply(rule, row));
+      // Сбой одной строки не роняет пакет: остальные разносятся, итог
+      // приходит уведомлением. Раньше первая же ошибка обрывала задачу —
+      // строки после неё молча оставались неразнесёнными.
+      try {
+        await this.markRecognizedBy(rule, row);
+        outcomes.push(await this.applyBankRule.apply(rule, row));
+      } catch (error) {
+        outcomes.push({
+          uncategorizedTransactionId: id,
+          status: 'skipped',
+          reason: (error as any)?.errorType ?? (error as any)?.message ?? 'apply_failed',
+        });
+      }
     }
     await this.notify(rule, outcomes);
     return outcomes;
@@ -161,8 +172,17 @@ export class ApplyRuleToPastService {
    * статью.
    */
   private async markRecognizedBy(rule: any, row: any) {
-    if (row.recognizedTransactionId) {
-      await this.recognizedModel().query().deleteById(row.recognizedTransactionId);
+    const previousRecognitionId = row.recognizedTransactionId;
+    if (previousRecognitionId) {
+      // СНАЧАЛА отвязать строку, ПОТОМ удалить старую отметку: на отметку
+      // смотрит внешний ключ строки, и обратный порядок база отвергает.
+      // Так и падала задача на живом стенде, когда строку заранее узнало
+      // другое правило.
+      await this.uncategorizedModel()
+        .query()
+        .findById(row.id)
+        .patch({ recognizedTransactionId: null } as any);
+      await this.recognizedModel().query().deleteById(previousRecognitionId);
     }
     const recognized: any = await this.recognizedModel()
       .query()

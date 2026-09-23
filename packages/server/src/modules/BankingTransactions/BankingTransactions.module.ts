@@ -1,4 +1,5 @@
 import { TransactionsLockingModule } from '@/modules/TransactionsLocking/TransactionsLocking.module';
+import { ClearSplitsOnCashflowDeletedSubscriber } from './subscribers/ClearSplitsOnCashflowDeleted';
 import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
 import { SetAccrualPeriodService } from './commands/SetAccrualPeriod.service';
 import { Module } from '@nestjs/common';
@@ -78,6 +79,7 @@ const models = [
     BankingPendingTransactionsController,
   ],
   providers: [
+    ClearSplitsOnCashflowDeletedSubscriber,
     SetAccrualPeriodService,
     GetTransactionsSummaryService,
     TenancyContext,

@@ -19,7 +19,7 @@ const RULE = {
   splits: [],
 };
 
-function makeService(rows: any[]) {
+function makeService(rows: any[], options: { failApplyFor?: number } = {}) {
   const store = new Map(rows.map((r) => [r.id, { ...r }]));
   const applied: number[] = [];
   const notifications: any[] = [];
@@ -56,10 +56,16 @@ function makeService(rows: any[]) {
     },
   });
   let nextId = 1;
+  // Как внешний ключ базы: отметку, на которую ещё смотрит строка выписки,
+  // удалить нельзя (так падала задача на живом стенде).
   const recognized = () => ({
     query: () => ({
-      insert: async () => ({ id: nextId++ }),
-      deleteById: async () => undefined,
+      insert: async () => ({ id: 100 + nextId++ }),
+      deleteById: async (id: number) => {
+        if ([...store.values()].some((r) => r.recognizedTransactionId === id)) {
+          throw new Error('ER_ROW_IS_REFERENCED_2: foreign key constraint fails');
+        }
+      },
     }),
   });
   const notificationModel = () => ({
@@ -67,6 +73,7 @@ function makeService(rows: any[]) {
   });
   const applier = {
     apply: async (_rule: any, row: any) => {
+      if (row.id === options.failApplyFor) throw new Error('сбой разноски');
       applied.push(row.id);
       store.get(row.id)!.categorized = true;
       return { uncategorizedTransactionId: row.id, status: 'applied' };
@@ -138,5 +145,24 @@ describe('применить правило к прошлым операциям
     const result = await service.queueApply(7, [1, 1, 4]);
     expect(result).toEqual({ queued: 2, jobId: 'j1' });
     expect(queued[0].data).toMatchObject({ ruleId: 7, ids: [1, 4], organizationId: 'org' });
+  });
+
+  it('строку, которую раньше узнало другое правило, правило разносит (порядок отвязки)', async () => {
+    const { service, applied, store } = makeService([
+      row(1, -1500, 'Оплата ОЗОН', { recognizedTransactionId: 50 }),
+    ]);
+    const outcomes = await service.run(7, [1]);
+    expect(outcomes[0].status).toBe('applied');
+    expect(applied).toEqual([1]);
+    // Строка теперь помечена ЭТИМ правилом, а не прежним.
+    expect(store.get(1)!.recognizedTransactionId).not.toBe(50);
+  });
+
+  it('сбой одной строки не роняет пакет: остальные разнесены, уведомление пришло', async () => {
+    const { service, applied, notifications } = makeService(rows, { failApplyFor: 1 });
+    const outcomes = await service.run(7, [1, 4]);
+    expect(applied).toEqual([4]);
+    expect(outcomes[0]).toMatchObject({ status: 'skipped', reason: 'сбой разноски' });
+    expect(JSON.parse(notifications[0].payload)).toMatchObject({ applied: 1, skipped: 1 });
   });
 });

@@ -133,8 +133,13 @@ export default function ManagerialPnl() {
   // Раскрытие ячейки до операций: за период кликнутой колонки, с отбором и
   // методом учёта отчёта — итог панели обязан совпасть с ячейкой.
   const [drillTarget, setDrillTarget] = React.useState<DrillDownTarget | null>(null);
+  // По деньгам выручка счёта, оплаченного позже, «достраивается» по факту
+  // оплаты — в журнале таких строк нет, и панель операций не сошлась бы с
+  // ячейкой. Лучше не раскрывать, чем показать неверную сумму.
   const canDrillDownCell = (row: ReportTableRow, column: ReportTableColumn) =>
-    Boolean(bounds[column.key]) && drills.has(String(row.id));
+    query.basis !== 'cash' &&
+    Boolean(bounds[column.key]) &&
+    drills.has(String(row.id));
   const onCellClick = (row: ReportTableRow, column: ReportTableColumn) => {
     const drill = drills.get(String(row.id));
     const period = bounds[column.key];

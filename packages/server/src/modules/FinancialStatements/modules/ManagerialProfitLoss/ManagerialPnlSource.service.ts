@@ -16,6 +16,12 @@ import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/m
 import { PL_ARTICLE_KINDS } from '@/modules/ManagementArticles/constants';
 import { ACCOUNT_TYPE } from '@/constants/accounts';
 import { ReportPeriod } from '../CashFlowArticles/periodizeRows';
+import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentReceivedEntry';
+import { BillPaymentEntry } from '@/modules/BillPayments/models/BillPaymentEntry';
+import {
+  recognizeSettlementLegs,
+  settlementDepsFromModels,
+} from '../ProfitLossSheet/settlementRecognition';
 
 /**
  * Суммы для управленческого ОПиУ (FT-010 ТЗ-3) — по периодам, статьям и
@@ -84,6 +90,16 @@ export class ManagerialPnlSourceService {
     @Inject(AccountTransaction.name)
     private readonly accountTransactionModel: TenantModelProxy<
       typeof AccountTransaction
+    >,
+
+    @Inject(PaymentReceivedEntry.name)
+    private readonly paymentReceivedEntryModel: TenantModelProxy<
+      typeof PaymentReceivedEntry
+    >,
+
+    @Inject(BillPaymentEntry.name)
+    private readonly billPaymentEntryModel: TenantModelProxy<
+      typeof BillPaymentEntry
     >,
   ) {}
 
@@ -166,6 +182,35 @@ export class ManagerialPnlSourceService {
           );
         }),
       );
+
+      // Счёт, оплаченный позже отдельной оплатой, сам денег не касается, а
+      // оплата ходит только по балансовым счетам. Доход и расход таких
+      // счетов признаются по факту платежа — тем же правилом, что в
+      // бухгалтерском ОПиУ по деньгам (иначе два отчёта «по деньгам»
+      // разошлись бы в выручке; найдено живой проверкой этапа 32).
+      const settledLegs = loaded.allLegs.filter((leg) =>
+        settledKeys.has(`${leg.referenceType}:${leg.referenceId}`),
+      );
+      const recognized = await recognizeSettlementLegs(
+        settledLegs as any,
+        settlementDepsFromModels({
+          accounts: accountRows,
+          accountTransactionModel: this.accountTransactionModel,
+          paymentReceivedEntryModel: this.paymentReceivedEntryModel,
+          billPaymentEntryModel: this.billPaymentEntryModel,
+        }),
+      );
+      recognized.forEach((leg) => {
+        const index = periodIndexOf(periods, legDate(leg as any));
+        if (index < 0) return;
+        push(
+          index,
+          leg.accountId,
+          null,
+          Number(leg.credit || 0),
+          Number(leg.debit || 0),
+        );
+      });
       return { articles: articles as any[], accountsById, entriesByPeriod };
     }
 

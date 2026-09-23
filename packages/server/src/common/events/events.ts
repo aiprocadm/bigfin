@@ -482,6 +482,11 @@ export const events = {
   /**
    * Roles service events.
    */
+  // Заявки на оплату (FT-092 ТЗ-3): одобрение рассылается вебхуком.
+  paymentRequest: {
+    onApproved: 'onPaymentRequestApproved',
+  },
+
   roles: {
     onCreate: 'onRoleCreate',
     onCreated: 'onRoleCreated',

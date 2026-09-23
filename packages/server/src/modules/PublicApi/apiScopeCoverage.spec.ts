@@ -1,7 +1,7 @@
 // © 2026 Bigfin
 import * as fs from 'fs';
 import * as path from 'path';
-import { API_SCOPES } from './utils/apiScopes';
+import { isKnownScope } from './utils/apiScopes';
 
 /**
  * Сторож прав токена API (FT-091 ТЗ-3).
@@ -29,7 +29,7 @@ describe('права токена API на ручках', () => {
   it('метки есть, и каждая — известное право', () => {
     const used = files.flatMap(({ source }) => [...source.matchAll(/@RequireApiScope\('([^']+)'\)/g)].map((m) => m[1]));
     expect(used.length).toBeGreaterThan(40);
-    const unknown = used.filter((scope) => !(API_SCOPES as readonly string[]).includes(scope));
+    const unknown = used.filter((scope) => !isKnownScope(scope));
     expect(unknown).toEqual([]);
   });
 

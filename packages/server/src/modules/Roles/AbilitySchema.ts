@@ -13,7 +13,7 @@ import { SaleInvoiceAction } from "../SaleInvoices/SaleInvoice.types";
 import { CreditNoteAction } from "../CreditNotes/types/CreditNotes.types";
 import { SaleReceiptAction } from "../SaleReceipts/types/SaleReceipts.types";
 import { BillAction } from "../Bills/Bills.types";
-import { AbilitySubject, ISubjectAbilitiesSchema, ISubjectAbilitySchema } from "./Roles.types";
+import { AbilitySubject, ExportAction, PaymentRequestAction, ISubjectAbilitiesSchema, ISubjectAbilitySchema } from "./Roles.types";
 import { PaymentReceiveAction } from "../PaymentReceived/types/PaymentReceived.types";
 import { PreferencesAction } from "../Settings/Settings.types";
 import { AuditLogAction } from "../EE/AuditLogs/types/AuditLogs.types";
@@ -323,6 +323,20 @@ export const AbilitySchema: ISubjectAbilitiesSchema[] = [
         key: PreferencesAction.Mutate,
         label: 'ability.mutate_system_preferences',
       },
+    ],
+  },
+  {
+    subject: AbilitySubject.Export,
+    subjectLabel: 'ability.export',
+    extraAbilities: [
+      { key: ExportAction.Run, label: 'ability.export_run' },
+    ],
+  },
+  {
+    subject: AbilitySubject.PaymentRequest,
+    subjectLabel: 'ability.payment_requests',
+    extraAbilities: [
+      { key: PaymentRequestAction.ViewAll, label: 'ability.payment_requests_view_all' },
     ],
   },
   {

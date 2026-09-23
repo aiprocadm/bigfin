@@ -77,6 +77,10 @@ export enum AbilitySubject {
   Invitation = 'Invitation',
   Organization = 'Organization',
   Session = 'Session',
+  // Выгрузка данных — отдельное право (FT-082 ТЗ-3).
+  Export = 'Export',
+  // Заявки на оплату: видеть чужие — отдельное право (FT-083 ТЗ-3).
+  PaymentRequest = 'PaymentRequest',
 }
 
 export interface IRoleCreatedPayload {
@@ -96,4 +100,22 @@ export interface IRoleDeletedPayload {
   oldRole: Role;
   roleId: number;
   trx: Knex.Transaction;
+}
+
+/**
+ * Действие над выгрузкой (FT-082 ТЗ-3). Одно: скачать данные таблицей.
+ * Видеть раздел и уносить его целиком — разные доверия: бухгалтер на
+ * аутсорсе смотрит всё, но базу клиентов с собой не забирает.
+ */
+export enum ExportAction {
+  Run = 'Run',
+}
+
+/**
+ * Заявки на оплату (FT-083 ТЗ-3). Без права «видеть все» сотрудник видит
+ * только заявки, которые завёл сам: заявка — это чужая зарплата, чужой
+ * подрядчик, и знать о них всем не нужно.
+ */
+export enum PaymentRequestAction {
+  ViewAll = 'ViewAll',
 }

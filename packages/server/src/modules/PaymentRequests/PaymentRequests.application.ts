@@ -22,12 +22,12 @@ export class PaymentRequestsApplication {
     private readonly editService: EditPaymentRequestService,
   ) {}
 
-  public getPaymentRequests(query: GetPaymentRequestsQueryDto) {
-    return this.listService.getPaymentRequests(query);
+  public getPaymentRequests(query: GetPaymentRequestsQueryDto, onlyOwn = false) {
+    return this.listService.getPaymentRequests(query, onlyOwn);
   }
 
-  public getPaymentRequest(id: number) {
-    return this.getService.getPaymentRequest(id);
+  public getPaymentRequest(id: number, onlyOwn = false) {
+    return this.getService.getPaymentRequest(id, onlyOwn);
   }
 
   public createPaymentRequest(dto: CreatePaymentRequestDto) {

@@ -14,6 +14,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject, PaymentRequestAction } from '@/modules/Roles/Roles.types';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PaymentRequestsApplication } from './PaymentRequests.application';
@@ -22,6 +23,16 @@ import { GetPaymentRequestsQueryDto } from './dtos/GetPaymentRequestsQuery.dto';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
+
+/**
+ * Видит ли человек только свои заявки (FT-083 ТЗ-3): да, если роль не дала
+ * права «видеть заявки всех сотрудников». Владельцу («можно всё») видно всё.
+ */
+export function onlyOwnRequests(request: any): boolean {
+  const ability = request?.ability;
+  if (!ability) return true;
+  return !ability.can(PaymentRequestAction.ViewAll, AbilitySubject.PaymentRequest);
+}
 
 @Controller('payment-requests')
 @ApiTags('Payment Requests')
@@ -33,14 +44,14 @@ export class PaymentRequestsController {
 
   @Get()
   @ApiOperation({ summary: 'List payment requests (filter by status).' })
-  getList(@Query() query: GetPaymentRequestsQueryDto) {
-    return this.application.getPaymentRequests(query);
+  getList(@Query() query: GetPaymentRequestsQueryDto, @Req() request: any) {
+    return this.application.getPaymentRequests(query, onlyOwnRequests(request));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a payment request.' })
-  get(@Param('id', ParseIntPipe) id: number) {
-    return this.application.getPaymentRequest(id);
+  get(@Param('id', ParseIntPipe) id: number, @Req() request: any) {
+    return this.application.getPaymentRequest(id, onlyOwnRequests(request));
   }
 
   @Post()

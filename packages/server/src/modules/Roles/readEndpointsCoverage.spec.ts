@@ -51,8 +51,6 @@ const OPEN_READS: string[] = [
   'Currencies/Currencies.controller.ts#findAll',
   'Currencies/Currencies.controller.ts#findOne',
   'ExchangeRates/ExchangeRates.controller.ts#getLatestExchangeRate',
-  'Export/Export.controller.ts#export',
-  'Export/Export.controller.ts#exportAll',
   'Features/Features.controller.ts#all',
   'Import/Import.controller.ts#downloadImportSample',
   'Import/Import.controller.ts#getImportFileMeta',
@@ -77,7 +75,6 @@ const OPEN_READS: string[] = [
   'Notifications/Notifications.controller.ts#listNotifications',
   'Notifications/Notifications.controller.ts#unreadCount',
   'OneClickDemo/OneClickDemo.controller.ts#getBuildJob',
-  'OnecExport/OnecExport.controller.ts#export',
   'Organization/Organization.controller.ts#baseCurrencyMutate',
   'Organization/Organization.controller.ts#buildJob',
   'Organization/Organization.controller.ts#currentOrganization',
@@ -85,6 +82,8 @@ const OPEN_READS: string[] = [
   'PaymentLinks/PaymentLinks.controller.ts#getPaymentLinkPublicMeta',
   'PaymentReceived/PaymentsReceived.controller.ts#getPaymentReceiveEditPage',
   'PaymentReceived/PaymentsReceived.controller.ts#getPaymentReceiveMailOptions',
+  // Заявки открыты всем участникам, но чужие видны только с правом
+  // «видеть заявки всех сотрудников» — это решает сам запрос (FT-083).
   'PaymentRequests/PaymentRequests.controller.ts#get',
   'PaymentRequests/PaymentRequests.controller.ts#getList',
   'PaymentServices/PaymentServices.controller.ts#getPaymentMethodsState',

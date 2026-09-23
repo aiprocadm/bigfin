@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { PaymentRequest } from '../models/PaymentRequest.model';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ERRORS } from '../constants';
 
 @Injectable()
@@ -10,15 +11,24 @@ export class GetPaymentRequestService {
   constructor(
     @Inject(PaymentRequest.name)
     private readonly requestModel: TenantModelProxy<typeof PaymentRequest>,
+    private readonly tenancyContext?: TenancyContext,
   ) {}
 
   /**
    * Одна заявка по id (или ServiceError, если не найдена).
    */
-  public async getPaymentRequest(id: number) {
+  public async getPaymentRequest(id: number, onlyOwn = false) {
     // С плановыми оплатами (FT-053 ТЗ-3).
     const request = await this.requestModel().query().findById(id).withGraphFetched('installments');
     if (!request) throw new ServiceError(ERRORS.PAYMENT_REQUEST_NOT_FOUND);
+    // Чужая заявка без права «видеть все» — «не найдена», а не «запрещено»:
+    // ответ не должен подтверждать, что заявка с таким номером есть (FT-083).
+    if (onlyOwn) {
+      const user: any = await this.tenancyContext?.getSystemUser();
+      if ((request as any).createdBy !== user?.id) {
+        throw new ServiceError(ERRORS.PAYMENT_REQUEST_NOT_FOUND);
+      }
+    }
     return request;
   }
 }

@@ -13,6 +13,8 @@ import { TransactionsLockingGuard } from '@/modules/TransactionsLocking/guards/T
 import { TransactionsLockingGroup } from '@/modules/TransactionsLocking/types/TransactionsLocking.types';
 import { BankTransaction } from '../models/BankTransaction';
 import { UncategorizedBankTransaction } from '../models/UncategorizedBankTransaction';
+import { RecognizedBankTransaction } from '@/modules/BankingTranasctionsRegonize/models/RecognizedBankTransaction';
+import { MatchedBankTransaction } from '@/modules/BankingMatching/models/MatchedBankTransaction';
 import { BankTransactionGLEntriesService } from './BankTransactionGLEntries';
 import { DeleteCashflowTransaction } from './DeleteCashflowTransaction.service';
 
@@ -78,7 +80,37 @@ export class TransactionsTrashService {
 
     @Inject(TenantUser.name)
     private readonly tenantUserModel: TenantModelProxy<typeof TenantUser>,
+
+    @Inject(RecognizedBankTransaction.name)
+    private readonly recognizedModel: TenantModelProxy<typeof RecognizedBankTransaction>,
+
+    @Inject(MatchedBankTransaction.name)
+    private readonly matchedModel: TenantModelProxy<typeof MatchedBankTransaction>,
   ) {}
+
+  /**
+   * Освободить строки выписки перед окончательным удалением.
+   *
+   * На строку смотрят три внешних ключа без каскада: отметка «распознано
+   * правилом», отметка «сопоставлено» и сама операция. База не даёт стереть
+   * строку, пока хоть одна ссылка жива, — так падало окончательное удаление
+   * и повторный импорт после отката на живом стенде. Порядок важен: строка
+   * сама ссылается на свою отметку «распознано», поэтому сначала отвязать
+   * строку, потом стереть отметку.
+   */
+  private async releaseLines(lineIds: number[], trx: Knex.Transaction) {
+    if (lineIds.length === 0) return;
+    await this.uncategorizedModel()
+      .query(trx)
+      .whereIn('id', lineIds)
+      .patch({ recognizedTransactionId: null } as any);
+    await this.recognizedModel().query(trx).whereIn('uncategorizedTransactionId', lineIds).delete();
+    await this.matchedModel().query(trx).whereIn('uncategorizedTransactionId', lineIds).delete();
+    await this.bankTransactionModel()
+      .query(trx)
+      .whereIn('uncategorizedTransactionId', lineIds)
+      .patch({ uncategorizedTransactionId: null } as any);
+  }
 
   private userId(): number | null {
     const id = Number(this.cls.get('userId'));
@@ -212,11 +244,19 @@ export class TransactionsTrashService {
         }
         await this.lockingGuard.validateTransactionsLocking(transaction.date, TransactionsLockingGroup.Financial);
         await this.uow.withTransaction(async (tx) => {
-          await this.uncategorizedModel()
+          const lines: any[] = await this.uncategorizedModel()
             .query(tx)
             .where('categorizeRefType', 'CashflowTransaction')
             .where('categorizeRefId', item.id)
-            .delete();
+            .select('id');
+          const lineIds = [
+            ...new Set([
+              ...lines.map((l) => Number(l.id)),
+              ...(transaction.uncategorizedTransactionId ? [Number(transaction.uncategorizedTransactionId)] : []),
+            ]),
+          ];
+          await this.releaseLines(lineIds, tx);
+          if (lineIds.length) await this.uncategorizedModel().query(tx).whereIn('id', lineIds).delete();
           await this.deleteCashflow.deleteCashflowTransaction(item.id, tx);
         }, trx);
       } else {
@@ -228,7 +268,10 @@ export class TransactionsTrashService {
         if (row.categorized && row.categorizeRefType === 'CashflowTransaction') {
           await this.purge([{ kind: 'cashflow', id: row.categorizeRefId }], trx);
         } else {
-          await this.uncategorizedModel().query(trx).findById(item.id).delete();
+          await this.uow.withTransaction(async (tx) => {
+            await this.releaseLines([Number(item.id)], tx);
+            await this.uncategorizedModel().query(tx).findById(item.id).delete();
+          }, trx);
         }
       }
       purged += 1;

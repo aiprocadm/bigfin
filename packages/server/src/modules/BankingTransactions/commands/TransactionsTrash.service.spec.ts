@@ -17,11 +17,32 @@ function makeTrash(options: { locked?: boolean } = {}) {
     [4, { id: 4, accountId: 1000, categorized: true, categorizeRefType: 'CashflowTransaction', categorizeRefId: 11, deletedAt: '2026-09-01 10:00:00' }],
   ]);
   const calls: any = { revert: [], write: [], counter: [], hardDeleted: [] };
+  // Отметки «распознано правилом» и «сопоставлено» — ссылаются на строку.
+  const recognized = new Map<number, any>([[50, { id: 50, uncategorizedTransactionId: 4 }]]);
+  const matched = new Map<number, any>([[60, { id: 60, uncategorizedTransactionId: 4 }]]);
+  lines.get(4).recognizedTransactionId = 50;
+  cashflow.get(11).uncategorizedTransactionId = 4;
+
+  /**
+   * Внешние ключи, как в базе: строку выписки нельзя стереть, пока на неё
+   * смотрят отметки или операция. Без этого подделка пропускала то, что
+   * живая база отвергает (урок #554, повторённый в корзине).
+   */
+  const assertLinesFree = (ids: number[]) => {
+    const referenced = [
+      ...[...recognized.values()].map((r) => r.uncategorizedTransactionId),
+      ...[...matched.values()].map((r) => r.uncategorizedTransactionId),
+      ...[...cashflow.values()].map((r) => r.uncategorizedTransactionId),
+    ];
+    const busy = ids.find((id) => referenced.includes(id));
+    if (busy !== undefined) throw new Error(`ER_ROW_IS_REFERENCED_2: строка ${busy}`);
+  };
 
   const byIdQuery = (store: Map<number, any>) => (id: number) => {
     const p: any = Promise.resolve(store.get(id));
     p.patch = async (data: any) => Object.assign(store.get(id), data);
     p.delete = async () => {
+      if (store === lines) assertLinesFree([id]);
       calls.hardDeleted.push(id);
       store.delete(id);
     };
@@ -38,10 +59,18 @@ function makeTrash(options: { locked?: boolean } = {}) {
         filters.push((r) => r[field] == null);
         return q;
       },
+      whereIn: (field: string, values: any[]) => {
+        filters.push((r) => values.includes(r[field]));
+        return q;
+      },
+      select: async () => [...store.values()].filter((r) => filters.every((f) => f(r))),
       patch: async (data: any) =>
         [...store.values()].filter((r) => filters.every((f) => f(r))).forEach((r) => Object.assign(r, data)),
-      delete: async () =>
-        [...store.values()].filter((r) => filters.every((f) => f(r))).forEach((r) => store.delete(r.id)),
+      delete: async () => {
+        const found = [...store.values()].filter((r) => filters.every((f) => f(r)));
+        if (store === lines) assertLinesFree(found.map((r) => r.id));
+        found.forEach((r) => store.delete(r.id));
+      },
     };
     return q;
   };
@@ -88,8 +117,10 @@ function makeTrash(options: { locked?: boolean } = {}) {
     model(lines) as any,
     accountModel as any,
     (() => ({ query: () => ({ whereIn: async () => [] }) })) as any,
+    model(recognized) as any,
+    model(matched) as any,
   );
-  return { service, cashflow, lines, calls };
+  return { service, cashflow, lines, calls, recognized, matched };
 }
 
 describe('корзина операций (FT-042)', () => {
@@ -151,5 +182,16 @@ describe('корзина операций (FT-042)', () => {
     expect(calls.hardDeleted).toContain('cashflow:11');
     expect(calls.deleteTx).toBe('import-trx');
     expect(lines.has(4)).toBe(false);
+  });
+
+  it('строку, распознанную правилом и сопоставленную, база даёт стереть: ссылки сняты заранее', async () => {
+    // Живой стенд: отметка «распознано» держала строку внешним ключом, и
+    // окончательное удаление отвечало 500.
+    const { service, lines, recognized, matched, cashflow } = makeTrash();
+    await service.purge([{ kind: 'cashflow', id: 11 }]);
+    expect(lines.has(4)).toBe(false);
+    expect(recognized.size).toBe(0);
+    expect(matched.size).toBe(0);
+    expect(cashflow.has(11)).toBe(false);
   });
 });

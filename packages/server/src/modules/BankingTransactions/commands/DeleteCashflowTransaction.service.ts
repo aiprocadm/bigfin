@@ -37,9 +37,10 @@ export class DeleteCashflowTransaction {
     cashflowTransactionId: number,
     trx?: Knex.Transaction,
   ): Promise<BankTransaction> => {
-    // Retrieve the cashflow transaction.
+    // Retrieve the cashflow transaction. В чужой транзакции (корзина,
+    // импорт) читаем внутри неё: снаружи видно состояние до её правок.
     const oldCashflowTransaction = await this.bankTransaction()
-      .query()
+      .query(trx)
       .findById(cashflowTransactionId);
     // Throw not found error if the given transaction id not found.
     this.throwErrorIfTransactionNotFound(oldCashflowTransaction);

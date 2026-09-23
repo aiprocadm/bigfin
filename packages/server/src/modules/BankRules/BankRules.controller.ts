@@ -130,7 +130,7 @@ export class BankRulesController {
     @Param('id') ruleId: number,
     @Body() editRuleDTO: EditBankRuleDto,
   ): Promise<void> {
-    return this.bankRulesApplication.editBankRule(ruleId, editRuleDTO);
+    return this.bankRulesApplication.editBankRule(Number(ruleId), editRuleDTO);
   }
 
   @Delete(':id')
@@ -141,7 +141,9 @@ export class BankRulesController {
     description: 'The bank rule has been successfully deleted.',
   })
   async deleteBankRule(@Param('id') ruleId: number): Promise<void> {
-    return this.bankRulesApplication.deleteBankRule(ruleId);
+    // Номер из адреса приходит строкой: журнал действий такую запись
+    // отвергал, и удаление правила в журнал не попадало.
+    return this.bankRulesApplication.deleteBankRule(Number(ruleId));
   }
 
   @Get(':id')

@@ -46,6 +46,11 @@ function RulesTable({
     openDialog(DialogsName.BankRuleForm, { bankRuleId: id });
   };
 
+  // Применить правило к уже лежащим строкам выписки (FT-034 ТЗ-3).
+  const handleApplyToPast = ({ id }: { id: number }) => {
+    openDialog(DialogsName.BankRuleApplyToPast, { ruleId: id });
+  };
+
   // Display invoice empty status instead of the table.
   if (isEmptyState) {
     return <BankRulesLandingEmptyState />;
@@ -75,6 +80,7 @@ function RulesTable({
         payload={{
           onDelete: handleDeleteBankRule,
           onEdit: handleEditBankRule,
+          onApplyToPast: handleApplyToPast,
         }}
       />
     </DashboardContentTable>

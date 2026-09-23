@@ -41,6 +41,7 @@ import { DialogsName } from '@/constants/dialogs';
 import InvoiceExchangeRateChangeDialog from '@/containers/Sales/Invoices/InvoiceForm/Dialogs/InvoiceExchangeRateChangeDialog';
 import { ExportDialog } from '@/containers/Dialogs/ExportDialog';
 import { RuleFormDialog } from '@/containers/Banking/Rules/RuleFormDialog/RuleFormDialog';
+import { ApplyToPastDialog } from '@/containers/Banking/Rules/ApplyToPastDialog/ApplyToPastDialog';
 import { DisconnectBankAccountDialog } from '@/containers/CashFlow/AccountTransactions/dialogs/DisconnectBankAccountDialog/DisconnectBankAccountDialog';
 import { SharePaymentLinkDialog } from '@/containers/PaymentLink/dialogs/SharePaymentLinkDialog/SharePaymentLinkDialog';
 import { SelectPaymentMethodsDialog } from '@/containers/PaymentLink/dialogs/SelectPaymentMethodsDialog/SelectPaymentMethodsDialog';
@@ -162,6 +163,7 @@ export default function DialogsContainer() {
       <VendorBulkDeleteDialog dialogName={DialogsName.VendorBulkDelete} />
       <ExportDialog dialogName={DialogsName.Export} />
       <RuleFormDialog dialogName={DialogsName.BankRuleForm} />
+      <ApplyToPastDialog dialogName={DialogsName.BankRuleApplyToPast} />
       <DisconnectBankAccountDialog
         dialogName={DialogsName.DisconnectBankAccountConfirmation}
       />

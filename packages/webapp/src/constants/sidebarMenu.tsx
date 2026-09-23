@@ -89,6 +89,34 @@ export const SidebarMenu = [
         href: '/bank-rules',
         type: ISidebarMenuItemType.Link,
       },
+      // Сверка, история импорта и корзина (FT-040…FT-043 ТЗ-3).
+      {
+        text: <T id={'sidebar.operations.reconciliation'} />,
+        href: '/cashflow-accounts/reconciliation',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Cashflow,
+          ability: CashflowAction.View,
+        },
+      },
+      {
+        text: <T id={'sidebar.operations.imports'} />,
+        href: '/cashflow-accounts/imports',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Cashflow,
+          ability: CashflowAction.View,
+        },
+      },
+      {
+        text: <T id={'sidebar.operations.trash'} />,
+        href: '/cashflow-accounts/trash',
+        type: ISidebarMenuItemType.Link,
+        permission: {
+          subject: AbilitySubject.Cashflow,
+          ability: CashflowAction.View,
+        },
+      },
     ],
   },
 

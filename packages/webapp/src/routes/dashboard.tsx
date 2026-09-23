@@ -1032,6 +1032,23 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     pageTitle: intl.get('all_transactions.title'),
     defaultSearchResource: RESOURCES_TYPES.ACCOUNT,
   },
+  // Корзина, история импорта и сверка (FT-040…FT-043 ТЗ-3). Два сегмента
+  // пути — не пересекаются с «/cashflow-accounts/:id/…».
+  {
+    path: `/cashflow-accounts/trash`,
+    component: lazy(() => import('@/containers/Banking/Trash/TrashPage')),
+    pageTitle: intl.get('trash.title'),
+  },
+  {
+    path: `/cashflow-accounts/imports`,
+    component: lazy(() => import('@/containers/Banking/ImportHistory/ImportHistoryPage')),
+    pageTitle: intl.get('import_history.title'),
+  },
+  {
+    path: `/cashflow-accounts/reconciliation`,
+    component: lazy(() => import('@/containers/Banking/Reconciliation/ReconciliationPage')),
+    pageTitle: intl.get('reconciliation.title'),
+  },
   {
     path: `/cashflow-accounts/:id/transactions`,
     component: lazy(

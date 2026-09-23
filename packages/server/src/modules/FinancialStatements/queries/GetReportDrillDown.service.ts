@@ -10,6 +10,8 @@ import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { formatNumber } from '@/utils/format-number';
+import { resolvePlType } from '@/modules/ManagementArticles/utils/plTypes';
+import { PL_ARTICLE_KINDS } from '@/modules/ManagementArticles/constants';
 import {
   applyManagementReportScope,
   ManagementReportScope,
@@ -79,6 +81,18 @@ export interface DrillDownResult {
 export interface DrillDownScope extends ManagementReportScope {
   reportFrom?: string;
   reportTo?: string;
+  /**
+   * Метод учёта отчёта (FT-010 ТЗ-3). «Деньги» — только документы, прошедшие
+   * деньгами (по умолчанию, как было); управленческий ОПиУ по начислению —
+   * все проводки статьи.
+   */
+  basis?: 'cash' | 'accrual';
+  /**
+   * Ярус прибыли строки ОПиУ. Подстатья с другим ярусом стоит в отчёте в
+   * своём ярусе — в раскрытие родителя она попасть не должна, иначе итог
+   * панели разойдётся со строкой.
+   */
+  plType?: string;
 }
 
 /** Сколько строк показываем за раз: длинный список никто не читает целиком. */
@@ -150,7 +164,13 @@ export class GetReportDrillDownService {
     const metadata: any = await this.tenancyContext.getTenantMetadata();
     const currencyCode = metadata?.baseCurrency ?? 'RUB';
 
-    const articleIds = await this.articleWithDescendants(articleId);
+    let articleIds = await this.articleWithDescendants(articleId);
+    if (scope.plType) {
+      const all: any[] = await this.articleModel().query();
+      articleIds = articleIds.filter(
+        (id) => resolvePlType(id, all).plType === scope.plType,
+      );
+    }
     const accountIds = await this.accountsOfArticles(articleIds);
 
     if (accountIds.length === 0) {
@@ -186,7 +206,10 @@ export class GetReportDrillDownService {
       .withGraphFetched('contact')
       .orderBy('date', 'desc');
 
-    const settledRows = periodRows.filter(isSettled);
+    // По начислению (управленческий ОПиУ) в сумме участвуют все проводки
+    // статьи, а не только прошедшие деньгами.
+    const settledRows =
+      scope.basis === 'accrual' ? periodRows : periodRows.filter(isSettled);
 
     // ИТОГ СЧИТАЕТСЯ ПО ВСЕМ подходящим строкам периода, а показываются
     // только первые двести: сложив показанное, мы назвали бы человеку итог
@@ -246,6 +269,110 @@ export class GetReportDrillDownService {
       formattedClosingBalance: this.format(total, currencyCode),
       transactionsCount: settledRows.length,
       isTruncated: settledRows.length > transactions.length,
+      transactions,
+      currencyCode,
+    };
+  }
+
+  /**
+   * Раскрытие ЦЕЛОГО ЯРУСА прибыли (FT-010 ТЗ-3): «Административные» за март
+   * — все операции статей этого яруса за март. Критерий приёмки 4: сумма
+   * панели равна значению строки.
+   *
+   * Устроено через статью-корень: берутся все статьи яруса, и дальше путь
+   * тот же, что у раскрытия одной статьи, — второго способа считать ту же
+   * сумму нет.
+   */
+  public async getDrillDownByPlType(
+    plType: string,
+    fromDate: string,
+    toDate: string,
+    scope: DrillDownScope = {},
+    title = '',
+  ): Promise<DrillDownResult> {
+    const all: any[] = await this.articleModel()
+      .query()
+      .whereIn('kind', PL_ARTICLE_KINDS as unknown as string[]);
+    const ids = all
+      .filter((article) => resolvePlType(article.id, all).plType === plType)
+      .map((article) => article.id);
+    const accountIds = await this.accountsOfArticles(ids);
+    const metadata: any = await this.tenancyContext.getTenantMetadata();
+    const currencyCode = metadata?.baseCurrency ?? 'RUB';
+    const pseudo = { id: 0, name: title || plType };
+
+    if (accountIds.length === 0) {
+      return this.emptyArticleResult(pseudo, fromDate, toDate, currencyCode);
+    }
+
+    const accounts: any[] = await this.accountModel()
+      .query()
+      .whereIn('id', accountIds);
+    const creditNormalById = new Map<number, boolean>(
+      accounts.map((account: any) => [account.id, isCreditNormalAccount(account)]),
+    );
+
+    const settledKeys =
+      scope.basis === 'accrual'
+        ? null
+        : await this.cashSettledKeysOfPeriod(
+            scope.reportFrom ?? fromDate,
+            scope.reportTo ?? toDate,
+            { ...scope, projectsIds: undefined },
+          );
+
+    const periodRows: any[] = await this.transactionModel()
+      .query()
+      .whereIn('accountId', accountIds)
+      .where('date', '>=', fromDate)
+      .where('date', '<=', toDate)
+      .modify((qb: any) => applyManagementReportScope(qb, scope))
+      .withGraphFetched('contact')
+      .orderBy('date', 'desc');
+
+    const rows = settledKeys
+      ? periodRows.filter((row) =>
+          settledKeys.has(`${row.referenceType}:${row.referenceId}`),
+        )
+      : periodRows;
+
+    const amountOf = (row: any) =>
+      reportAccountNet(
+        Number(row.debit ?? 0),
+        Number(row.credit ?? 0),
+        creditNormalById.get(row.accountId) ?? false,
+      );
+    const total = rows.reduce((sum, row) => sum + amountOf(row), 0);
+    const transactions = rows.slice(0, DRILL_DOWN_LIMIT).map((row: any) => {
+      const amount = amountOf(row);
+      return {
+        date: row.date,
+        transactionNumber: row.transactionNumber ?? null,
+        referenceNumber: row.referenceNumber ?? null,
+        referenceType: row.referenceType ?? null,
+        referenceId: row.referenceId ?? null,
+        contactName: row.contact?.displayName ?? null,
+        note: row.note ?? null,
+        debit: Number(row.debit ?? 0),
+        credit: Number(row.credit ?? 0),
+        amount,
+        formattedAmount: this.format(amount, currencyCode),
+      };
+    });
+
+    return {
+      accountId: 0,
+      accountName: pseudo.name,
+      fromDate,
+      toDate,
+      total,
+      formattedTotal: this.format(total, currencyCode),
+      openingBalance: 0,
+      formattedOpeningBalance: this.format(0, currencyCode),
+      closingBalance: total,
+      formattedClosingBalance: this.format(total, currencyCode),
+      transactionsCount: rows.length,
+      isTruncated: rows.length > transactions.length,
       transactions,
       currencyCode,
     };

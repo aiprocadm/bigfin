@@ -28,6 +28,10 @@ export enum ReportsAction {
   // Прямой ДДС по статьям — отдельное право от косвенного (D5 ТЗ-2):
   // бухгалтеру нужен косвенный, собственнику прямой, и это разные люди.
   READ_CASHFLOW_ARTICLES = 'read-cashflow-articles',
+  // Управленческий ОПиУ по ярусам статей (FT-010 ТЗ-3) — отдельное право от
+  // бухгалтерского: собственнику нужна лестница прибыли, бухгалтеру — ОПиУ
+  // по плану счетов.
+  READ_MANAGERIAL_PROFIT_LOSS = 'read-managerial-profit-loss',
   READ_AR_AGING_SUMMARY = 'read-ar-aging-summary',
   READ_AP_AGING_SUMMARY = 'read-ap-aging-summary',
   READ_PURCHASES_BY_ITEMS = 'read-purchases-by-items',

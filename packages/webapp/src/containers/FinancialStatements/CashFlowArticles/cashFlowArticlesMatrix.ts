@@ -346,9 +346,10 @@ export function formatShare(
   total: number,
   locale = 'ru',
 ): string | undefined {
-  if (!(total > 0)) {
-    return value === 0 ? undefined : intl.get('reports.percent.not_applicable');
-  }
+  // Нулевая ячейка — без доли вовсе: «0,00 %» под «0,00 ₽» ничего не
+  // добавляет, а колонка начинает пестреть (живая проверка этапа 31).
+  if (value === 0) return undefined;
+  if (!(total > 0)) return intl.get('reports.percent.not_applicable');
   const percent = new Intl.NumberFormat(locale, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

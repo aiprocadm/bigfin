@@ -3,6 +3,7 @@ import { PurchasesByItemsModule } from './modules/PurchasesByItems/PurchasesByIt
 import { CustomerBalanceSummaryModule } from './modules/CustomerBalanceSummary/CustomerBalanceSummary.module';
 import { SalesByItemsModule } from './modules/SalesByItems/SalesByItems.module';
 import { CashFlowArticlesModule } from './modules/CashFlowArticles/CashFlowArticles.module';
+import { ManagerialPnlModule } from './modules/ManagerialProfitLoss/ManagerialPnl.module';
 import { GeneralLedgerModule } from './modules/GeneralLedger/GeneralLedger.module';
 import { TrialBalanceSheetModule } from './modules/TrialBalanceSheet/TrialBalanceSheet.module';
 import { TransactionsByVendorModule } from './modules/TransactionsByVendor/TransactionsByVendor.module';
@@ -34,6 +35,7 @@ import { ReportPlanFactController } from './queries/ReportPlanFact.controller';
     VendorBalanceSummaryModule,
     SalesByItemsModule,
     CashFlowArticlesModule,
+    ManagerialPnlModule,
     GeneralLedgerModule,
     TrialBalanceSheetModule,
     TransactionsByVendorModule,

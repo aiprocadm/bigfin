@@ -103,6 +103,10 @@ const MANAGEMENT = [
     name: 'Отчёт «Деньги по статьям»',
     file: 'modules/CashFlowArticles/CashFlowArticlesService.ts',
   },
+  {
+    name: 'Управленческий ОПиУ (FT-010)',
+    file: 'modules/ManagerialProfitLoss/ManagerialPnlSource.service.ts',
+  },
 ];
 
 const SCOPE_HELPER = '../ManagementArticles/utils/managementReportScope.ts';

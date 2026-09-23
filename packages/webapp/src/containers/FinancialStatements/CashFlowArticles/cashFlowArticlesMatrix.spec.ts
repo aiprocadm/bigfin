@@ -254,6 +254,10 @@ describe('этап 31: группировки, доли, раскрытие, к�
     expect(formatShare(100, -50)).toBe('н/о');
   });
 
+  it('у нулевой ячейки доли нет, даже когда итог колонки есть', () => {
+    expect(formatShare(0, 30000)).toBeUndefined();
+  });
+
   const row = (id: string, type: string, values: number[], children: any[] = []) => ({
     id,
     cells: [{ key: 'name', value: id }, ...values.map((v, i) => ({ key: `p${i}`, value: String(v) }))],

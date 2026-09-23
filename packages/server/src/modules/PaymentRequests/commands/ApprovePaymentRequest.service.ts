@@ -83,7 +83,9 @@ export class ApprovePaymentRequestService {
         .patch({
           status: 'approved',
           approvedBy: user.id,
-          approvedAt: moment().toISOString(),
+          // Время — в формате базы. ISO-строку с «T…Z» MySQL отвергает, и
+          // одобрить заявку было нельзя вообще (живая проверка этапа 38).
+          approvedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
           plannedOperationId: operation.id,
         } as any);
 

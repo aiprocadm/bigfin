@@ -56,6 +56,8 @@ describe('ApprovePaymentRequestService', () => {
         status: 'approved',
         approvedBy: 7,
         plannedOperationId: 99,
+        // Время в формате базы: ISO-строку MySQL отвергал (живая проверка этапа 38).
+        approvedAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/),
       }),
     );
   });

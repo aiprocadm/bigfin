@@ -37,7 +37,8 @@ export class MarkInstallmentPaidService {
       await this.installmentModel()
         .query(trx)
         .findById(installmentId)
-        .patch({ status: 'paid', paidAt: moment().toISOString() } as any);
+        // Время — в формате базы: ISO-строку с «T…Z» MySQL отвергает.
+        .patch({ status: 'paid', paidAt: moment().format('YYYY-MM-DD HH:mm:ss') } as any);
 
       const remaining = await this.installmentModel()
         .query(trx)

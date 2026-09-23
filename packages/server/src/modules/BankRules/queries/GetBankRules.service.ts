@@ -21,7 +21,10 @@ export class GetBankRulesService {
     const bankRule = await this.bankRuleModel()
       .query()
       .withGraphFetched('conditions')
-      .withGraphFetched('assignAccount');
+      .withGraphFetched('splits')
+      .withGraphFetched('assignAccount')
+      .orderBy('order', 'asc')
+      .orderBy('id', 'asc');
 
     return this.transformer.transform(bankRule, new GetBankRulesTransformer());
   }

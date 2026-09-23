@@ -9,6 +9,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
 import { events } from '@/common/events/events';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { transformBankRuleDTO } from '../utils/transformBankRuleDTO';
+import { CommandBankRuleValidatorService } from './CommandBankRuleValidator.service';
 import { EditBankRuleDto } from '../dtos/BankRule.dto';
 import { ModelObject } from 'objection';
 
@@ -17,6 +19,7 @@ export class EditBankRuleService {
   constructor(
     private readonly uow: UnitOfWork,
     private readonly eventPublisher: EventEmitter2,
+    private readonly validator: CommandBankRuleValidatorService,
 
     @Inject(BankRule.name)
     private bankRuleModel: TenantModelProxy<typeof BankRule>,
@@ -28,9 +31,8 @@ export class EditBankRuleService {
    * @returns
    */
   private transformDTO(editDTO: EditBankRuleDto): ModelObject<BankRule> {
-    return {
-      ...editDTO,
-    } as ModelObject<BankRule>;
+    // Поля чужого типа обнуляются, строки разбиения — только у разбиения.
+    return transformBankRuleDTO(editDTO) as unknown as ModelObject<BankRule>;
   }
 
   /**
@@ -45,6 +47,7 @@ export class EditBankRuleService {
       .withGraphFetched('conditions')
       .throwIfNotFound();
 
+    await this.validator.validate(editRuleDTO);
     const tranformDTO = this.transformDTO(editRuleDTO);
 
     return this.uow.withTransaction(async (trx) => {

@@ -11,12 +11,15 @@ import { events } from '@/common/events/events';
 import { BankRule } from '../models/BankRule';
 import { CreateBankRuleDto } from '../dtos/BankRule.dto';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { transformBankRuleDTO } from '../utils/transformBankRuleDTO';
+import { CommandBankRuleValidatorService } from './CommandBankRuleValidator.service';
 
 @Injectable()
 export class CreateBankRuleService {
   constructor(
     private readonly uow: UnitOfWork,
     private readonly eventPublisher: EventEmitter2,
+    private readonly validator: CommandBankRuleValidatorService,
 
     @Inject(BankRule.name)
     private readonly bankRuleModel: TenantModelProxy<typeof BankRule>,
@@ -27,9 +30,8 @@ export class CreateBankRuleService {
    * @param {ICreateBankRuleDTO} createDTO
    */
   private transformDTO(createDTO: CreateBankRuleDto): ModelObject<BankRule> {
-    return {
-      ...createDTO,
-    } as ModelObject<BankRule>;
+    // Поля чужого типа обнуляются, строки разбиения — только у разбиения.
+    return transformBankRuleDTO(createDTO) as unknown as ModelObject<BankRule>;
   }
 
   /**
@@ -40,6 +42,7 @@ export class CreateBankRuleService {
   public async createBankRule(
     createRuleDTO: CreateBankRuleDto,
   ): Promise<BankRule> {
+    await this.validator.validate(createRuleDTO);
     const transformDTO = this.transformDTO(createRuleDTO);
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {

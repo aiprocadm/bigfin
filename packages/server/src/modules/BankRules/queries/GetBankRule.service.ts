@@ -23,6 +23,7 @@ export class GetBankRuleService {
       .query()
       .findById(ruleId)
       .withGraphFetched('conditions')
+      .withGraphFetched('splits')
       .withGraphFetched('assignAccount');
 
     return this.transformer.transform(bankRule, new GetBankRulesTransformer());

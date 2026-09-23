@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { isEmpty } from 'lodash';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
@@ -14,6 +13,7 @@ import {
   accountNet,
 } from './ArticlesPlRollup.service';
 import { ArticlesRollupQueryDto } from '../dtos/ArticlesRollupQuery.dto';
+import { applyManagementReportScope } from '../utils/managementReportScope';
 // Признак «оплачено деньгами» и список денежных счетов остаются в бюджетах:
 // там они появились (§8.2 ТЗ-1) и оттуда же их читают отчёты. Дублировать
 // список денежных счетов в третий раз — верный способ развести определения.
@@ -68,9 +68,10 @@ export class ArticlesCashflowRollupService {
         if (query.fromDate || query.toDate) {
           qb.modify('filterDateRange', query.fromDate, query.toDate);
         }
-        if (!isEmpty(query.branchesIds)) {
-          qb.modify('filterByBranches', query.branchesIds);
-        }
+        // Подразделения, юрлица, направления — одним общим местом (FT-008).
+        // Отбор стоит ДО определения «оплачено деньгами»: признак считается
+        // по ногам выбранного юрлица, как в бухгалтерском ДДС.
+        applyManagementReportScope(qb, query);
       });
 
     const settledKeys = cashSettledReferenceKeys(

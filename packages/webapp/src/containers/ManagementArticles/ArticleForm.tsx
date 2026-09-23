@@ -22,6 +22,7 @@ import {
   ManagementArticle,
 } from './schemas';
 import { ARTICLE_KIND_TABS } from './articleKindTabs';
+import { isPlType, plTypeLabel, plTypeOptions } from './plTypes';
 import {
   useManagementArticles,
   useManagementArticle,
@@ -106,6 +107,7 @@ export function ArticleForm({
       kind: article?.kind ?? defaultKind ?? 'expense',
       cashflowSection: article?.cashflowSection ?? '',
       costBehavior: article?.costBehavior ?? '',
+      plType: isPlType(article?.plType) ? article?.plType : '',
       parentId: article?.parentId ?? null,
       accountIds: article?.accounts?.map((a) => a.id) ?? [],
     },
@@ -131,6 +133,21 @@ export function ArticleForm({
     ]);
     return sameKind.filter((a) => !excluded.has(a.id));
   }, [allArticles, isEdit, article, kind]);
+
+  // Ярусы, допустимые при текущем виде; у балансовых статей их нет.
+  const tierOptions = React.useMemo(() => plTypeOptions(kind), [kind]);
+  const parentId = form.watch('parentId');
+  const selectedPlType = form.watch('plType');
+
+  // Сменили вид при создании — ярус прежнего вида больше не подходит.
+  // Сбрасываем, а не отправляем: сервер ответил бы отказом 422.
+  React.useEffect(() => {
+    const current = form.getValues('plType');
+    if (current && !tierOptions.includes(current as any)) {
+      form.setValue('plType', '', { shouldDirty: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tierOptions]);
 
   // When the kind changes, drop a selected parent that no longer qualifies,
   // so we never submit a parent of the wrong kind (the server would reject it).
@@ -173,6 +190,10 @@ export function ArticleForm({
           ? values.costBehavior || undefined
           : undefined,
       parentId: values.parentId ?? undefined,
+      // Ярус есть только у доходов и расходов. Пусто уходит как null —
+      // «снять ярус», у дочерней статьи это «как у родителя».
+      plType:
+        tierOptions.length > 0 ? values.plType || null : undefined,
       accountIds: (values.accountIds ?? []).filter((id) =>
         allowedAccountIds.has(id),
       ),
@@ -377,6 +398,59 @@ export function ArticleForm({
                     </FormControl>
                     <p className="text-muted-foreground text-sm">
                       {intl.get('management_articles.cost_behavior.hint')}
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {/*
+              Ярус в управленческом отчёте о прибыли (FT-009 ТЗ-3). Одна
+              настройка решает, в какой ярус — маржинальный доход, валовая
+              прибыль, операционная — встанут деньги статьи. Под списком —
+              что значит выбранный ярус и пример, чтобы выбор не был
+              экзаменом по бухгалтерии.
+            */}
+            {tierOptions.length > 0 && (
+              <FormField
+                control={form.control}
+                name="plType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {intl.get('management_articles.field.pl_type')}
+                    </FormLabel>
+                    <FormControl>
+                      <select
+                        className={selectClassName}
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                      >
+                        <option value="">
+                          {intl.get(
+                            parentId != null
+                              ? 'management_articles.pl_type_option.inherit'
+                              : 'management_articles.pl_type_option.unassigned',
+                          )}
+                        </option>
+                        {tierOptions.map((tier) => (
+                          <option key={tier} value={tier}>
+                            {plTypeLabel(tier)}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <p className="max-w-[60ch] text-sm text-text-secondary">
+                      {intl.get(
+                        isPlType(selectedPlType)
+                          ? `management_articles.pl_type_hint.${selectedPlType}`
+                          : parentId != null
+                            ? 'management_articles.pl_type_hint.inherit'
+                            : 'management_articles.pl_type_hint.unassigned',
+                      )}
                     </p>
                     <FormMessage />
                   </FormItem>

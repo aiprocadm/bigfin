@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import intl from 'react-intl-universal';
 
+import { PL_TYPES } from './plTypes';
+
 export const getArticleFormSchema = () =>
   z.object({
     name: z
@@ -20,6 +22,9 @@ export const getArticleFormSchema = () =>
     accountIds: z.array(z.number()).optional(),
     // Пустая строка — «не выбрано»: <select> отдаёт именно её.
     costBehavior: z.enum(['fixed', 'variable']).or(z.literal('')).optional(),
+    // Ярус управленческого ОПиУ (FT-009 ТЗ-3). Пустая строка — «не
+    // выбрано»: у дочерней статьи это «как у родителя».
+    plType: z.enum(PL_TYPES).or(z.literal('')).optional(),
   })
   /**
    * Пометка «постоянный / переменный» обязательна у расходных статей
@@ -91,6 +96,15 @@ export interface ManagementArticle {
   cashflowSection: 'operating' | 'investing' | 'financing' | null;
   /** 'fixed' | 'variable' | null — только у расходных статей. */
   costBehavior?: 'fixed' | 'variable' | null;
+  /** Свой ярус управленческого ОПиУ (FT-009 ТЗ-3); `null` — не задан. */
+  plType?: string | null;
+  /**
+   * Действующий ярус — свой или унаследованный. Считает СЕРВЕР: правило
+   * наследования живёт в одном месте, экран только показывает.
+   */
+  effectivePlType?: string | null;
+  /** Ярус взят у родителя. */
+  plTypeInherited?: boolean;
   sortOrder?: number;
   active?: boolean;
   /**

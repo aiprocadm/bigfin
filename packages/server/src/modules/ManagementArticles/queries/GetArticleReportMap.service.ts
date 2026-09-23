@@ -12,10 +12,20 @@ import {
   ArticleReportMap,
   buildArticleReportMap,
 } from './buildArticleReportMap';
+import { PL_ARTICLE_KINDS } from '../constants';
+import { ResolvedPlType, resolvePlType } from '../utils/plTypes';
 
 export interface ArticleReportMapResponse extends ArticleReportMap {
   /** Оборот выбранной статьи за период; `null` — статья не выбрана. */
   turnover: { amount: number; formatted: string } | null;
+  /**
+   * В какой ярус управленческого ОПиУ попадёт статья (FT-009 ТЗ-3).
+   *
+   * `null` — ярусов у статьи не бывает (балансовая или не выбрана). Ярус
+   * `{ plType: null }` — статья доходная или расходная, но не отнесена ни
+   * к какому ярусу: в отчёте она встанет строкой «Не отнесено к ярусу».
+   */
+  plTier: ResolvedPlType | null;
 }
 
 /**
@@ -41,13 +51,28 @@ export class GetArticleReportMapService {
     >,
   ) {}
 
+  /**
+   * Ярус статьи с учётом наследования. Ярус — свойство статьи, а не её
+   * оборота: он показывается и у статьи без счетов, чтобы человек мог
+   * настроить её до первой операции.
+   */
+  private async resolveTier(article: any): Promise<ResolvedPlType | null> {
+    if (!(PL_ARTICLE_KINDS as readonly string[]).includes(article.kind)) {
+      return null;
+    }
+    const all: any[] = await this.articleModel()
+      .query()
+      .select('id', 'parentId', 'plType');
+    return resolvePlType(article.id, all);
+  }
+
   public async getReportMap(query: {
     articleId?: number;
     fromDate?: string;
     toDate?: string;
   }): Promise<ArticleReportMapResponse> {
     if (!query.articleId) {
-      return { ...buildArticleReportMap(null), turnover: null };
+      return { ...buildArticleReportMap(null), turnover: null, plTier: null };
     }
 
     const article: any = await this.articleModel()
@@ -55,8 +80,10 @@ export class GetArticleReportMapService {
       .findById(query.articleId);
 
     if (!article) {
-      return { ...buildArticleReportMap(null), turnover: null };
+      return { ...buildArticleReportMap(null), turnover: null, plTier: null };
     }
+
+    const plTier = await this.resolveTier(article);
 
     const links: any[] = await this.articleAccountModel()
       .query()
@@ -73,7 +100,7 @@ export class GetArticleReportMapService {
     // Статья, которая ни на что не влияет, оборота не имеет по определению:
     // считать его значило бы показать число там, где его быть не может.
     if (map.warning === 'NO_ACCOUNTS') {
-      return { ...map, turnover: null };
+      return { ...map, turnover: null, plTier };
     }
 
     const rows: any[] = (await this.rollup.getRollup({
@@ -87,6 +114,7 @@ export class GetArticleReportMapService {
 
     return {
       ...map,
+      plTier,
       turnover: {
         amount,
         formatted: formatNumber(amount, {

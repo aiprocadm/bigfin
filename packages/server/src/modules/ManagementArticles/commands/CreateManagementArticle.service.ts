@@ -43,6 +43,7 @@ export class CreateManagementArticleService {
       dto.kind,
       dto.costBehavior,
     );
+    this.validator.validatePlTypeMatchesKind(dto.kind, dto.plType);
     await this.validator.validateAccountsExist(dto.accountIds);
     await this.validator.validateAccountsMatchKind(dto.kind, dto.accountIds);
     await this.validator.validateAccountsNotMapped(dto.accountIds);

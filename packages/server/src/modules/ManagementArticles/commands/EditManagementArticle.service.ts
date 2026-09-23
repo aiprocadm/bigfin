@@ -52,6 +52,13 @@ export class EditManagementArticleService {
       dto.kind,
       dto.costBehavior,
     );
+    // Ярус не прислан — проверяем тот, что уже записан. Иначе смена вида
+    // «расход → доход» оставила бы у статьи «административные»: форма
+    // интеграции могла не знать о новом поле, а база — запомнить бессмыслицу.
+    this.validator.validatePlTypeMatchesKind(
+      dto.kind,
+      dto.plType !== undefined ? dto.plType : (existing as any).plType,
+    );
     await this.validator.validateAccountsExist(dto.accountIds);
     await this.validator.validateAccountsMatchKind(dto.kind, dto.accountIds);
     await this.validator.validateAccountsNotMapped(dto.accountIds, articleId);

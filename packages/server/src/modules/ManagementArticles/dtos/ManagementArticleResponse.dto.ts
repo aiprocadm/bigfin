@@ -31,4 +31,22 @@ export class ManagementArticleResponseDto {
    */
   @ApiProperty({ example: 'loan_received', nullable: true })
   seedKey: string | null;
+
+  /** Свой ярус управленческого ОПиУ (FT-009 ТЗ-3); `null` — не задан. */
+  @ApiProperty({ example: 'direct_variable', nullable: true })
+  plType: string | null;
+
+  /**
+   * Действующий ярус — свой или унаследованный от предка.
+   *
+   * Считает сервер, а не экран: правило наследования живёт в ОДНОМ месте
+   * (`utils/plTypes.ts`), и отчёт о прибыли будет считать по нему же.
+   * `null` — статья не отнесена ни к какому ярусу.
+   */
+  @ApiProperty({ example: 'administrative', nullable: true })
+  effectivePlType: string | null;
+
+  /** Ярус взят у предка, а не задан у самой статьи. */
+  @ApiProperty({ example: true })
+  plTypeInherited: boolean;
 }

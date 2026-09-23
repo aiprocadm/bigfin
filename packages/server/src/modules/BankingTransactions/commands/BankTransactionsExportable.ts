@@ -28,6 +28,8 @@ export class BankTransactionsExportable extends Exportable {
     return this.bankTransactionModel()
       .query()
       .withGraphFetched('[cashflowAccount, creditAccount]')
+      // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+      .modify('notDeleted')
       .orderBy('date', 'desc')
       .limit(exportRowsLimit() + 1);
   }

@@ -59,6 +59,9 @@ export class GetBankAccountSummary {
 
       // Only the not categorized.
       q.modify('notCategorized');
+
+      // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+      q.modify('notDeleted');
     };
     // Retrieves the uncategorized transactions count of the given bank account.
     const uncategorizedTranasctionsCount =
@@ -103,6 +106,7 @@ export class GetBankAccountSummary {
         .onBuild((q) => {
           q.where('accountId', bankAccountId);
           q.modify('excluded');
+          q.modify('notDeleted');
 
           // Exclude the pending transactions.
           q.modify('notPending');
@@ -119,6 +123,7 @@ export class GetBankAccountSummary {
         .onBuild((q) => {
           q.where('accountId', bankAccountId);
           q.modify('pending');
+          q.modify('notDeleted');
 
           // Count the results.
           q.count('uncategorized_cashflow_transactions.id as total');

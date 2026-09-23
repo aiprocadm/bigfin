@@ -25,11 +25,14 @@ describe('BankTransactionsExportable', () => {
     const rows = [{ id: 1 }, { id: 2 }];
     const limit = jest.fn().mockResolvedValue(rows);
     const orderBy = jest.fn(() => ({ limit }));
-    const withGraphFetched = jest.fn(() => ({ orderBy }));
+    // Корзина (FT-042): удалённые операции в выгрузку не попадают.
+    const modify = jest.fn(() => ({ orderBy }));
+    const withGraphFetched = jest.fn(() => ({ modify }));
     const model = () => ({ query: () => ({ withGraphFetched }) });
 
     const service = new BankTransactionsExportable(model as any);
     await expect(service.exportable({})).resolves.toEqual(rows);
     expect(limit).toHaveBeenCalledWith(exportRowsLimit() + 1);
+    expect(modify).toHaveBeenCalledWith('notDeleted');
   });
 });

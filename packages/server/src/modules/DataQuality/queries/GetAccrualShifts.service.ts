@@ -26,6 +26,8 @@ export class GetAccrualShiftsService {
     const rows: any[] = await this.bankTransactionModel()
       .query()
       .whereNotNull('accrualPeriod')
+      // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+      .modify('notDeleted')
       .select(['id', 'date', 'accrualPeriod', 'transactionNumber', 'amount', 'description']);
 
     return { fromDate, toDate, ...findAccrualShifts(rows, fromDate, toDate) };

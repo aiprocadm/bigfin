@@ -46,6 +46,8 @@ export class GetContactCategoryMemoryService {
       .query()
       .where('contactId', contactId)
       .whereNotNull('creditAccountId')
+      // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+      .modify('notDeleted')
       .orderBy('date', 'desc')
       .orderBy('id', 'desc')
       .limit(20)

@@ -31,6 +31,8 @@ export class GetPendingBankAccountTransactions {
         .query()
         .onBuild((q) => {
           q.modify('pending');
+          // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+          q.modify('notDeleted');
 
           if (_filter?.accountId) {
             q.where('accountId', _filter.accountId);

@@ -114,6 +114,7 @@ export class BankRuleManagementService {
       .orderBy('order', 'asc');
     const rows: any[] = await this.uncategorizedModel()
       .query()
+      .modify('notDeleted')
       .orderBy('date', 'desc')
       .orderBy('id', 'desc')
       .limit(CONFLICT_SAMPLE_ROWS)

@@ -73,6 +73,8 @@ export class ApplyRuleToPastService {
       .modify('notCategorized')
       // Исключённые человеком строки правило не трогает.
       .modify('notExcluded')
+      // Удалённое в корзину правило не трогает (FT-042 ТЗ-3).
+      .modify('notDeleted')
       .onBuild((q) => {
         if (rule.applyIfAccountId) q.where('accountId', rule.applyIfAccountId);
       })
@@ -144,7 +146,7 @@ export class ApplyRuleToPastService {
         outcomes.push({ uncategorizedTransactionId: id, status: 'skipped', reason: 'already_categorized' });
         continue;
       }
-      if (row.isExcluded || !ruleMatches(rule, row)) {
+      if (row.isExcluded || row.deletedAt || !ruleMatches(rule, row)) {
         outcomes.push({ uncategorizedTransactionId: id, status: 'skipped', reason: 'no_longer_matches' });
         continue;
       }

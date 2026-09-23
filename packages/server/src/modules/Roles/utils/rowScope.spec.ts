@@ -107,6 +107,19 @@ describe('проводки: фильтр стоит в самой модели',
     expect(sql).toContain('`T`.`PROJECT_ID` in (5)');
   });
 
+  it('подзапрос к другой таблице внутри запроса проводок не фильтруется как проводки', () => {
+    // Живой случай стенда (реестр операций, 500): «какие счета денежные»
+    // Objection строит тем же построителем, что и проводки, и фильтр вставал
+    // в запрос к ACCOUNTS: `ACCOUNTS.PROJECT_ID` — такой колонки нет.
+    const sql = sqlAs(scope({ projectIds: [1] }), () =>
+      AccountTransaction.bindKnex(db)
+        .query()
+        .whereIn('account_id', (b: any) => b.select('id').from('accounts').whereIn('account_type', ['bank'])),
+    );
+    expect(sql).not.toContain('`ACCOUNTS`.`PROJECT_ID`');
+    expect(sql).toContain('`ACCOUNTS_TRANSACTIONS`.`PROJECT_ID` in (1)');
+  });
+
   it('запись не фильтруется: удаление проводок операции идёт как было', () => {
     const sql = sqlAs(scope({ accountIds: [10] }), () =>
       AccountTransaction.bindKnex(db).query().delete().where('reference_id', 3),

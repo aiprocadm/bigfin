@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import * as moment from 'moment';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { ManagementArticle } from '@/modules/ManagementArticles/models/ManagementArticle.model';
@@ -19,6 +20,99 @@ import { applyManagementReportScope } from '../utils/managementReportScope';
 // список денежных счетов в третий раз — верный способ развести определения.
 import { cashSettledReferenceKeys } from '@/modules/Budgets/utils/cashSettledReferenceKeys';
 import { CASH_ACCOUNT_TYPES } from '@/modules/Budgets/constants';
+
+/** Нога проводки в том виде, в каком её читает свёртка. */
+export interface CashRollupLeg {
+  referenceType: string;
+  referenceId: number;
+  accountId: number;
+  debit: number | string | null;
+  credit: number | string | null;
+  date?: Date | string | null;
+  transactionType?: string | null;
+}
+
+/** Период, на который раскладывается свёртка. */
+export interface CashRollupPeriod {
+  fromDate: string;
+  toDate: string;
+}
+
+/**
+ * Обороты счетов, привязанных к статьям, — только по кассово-расчётным
+ * документам (FIN-013 ТЗ-2).
+ *
+ * Чистая функция: вход — уже загруженные ноги, выход — «счёт → сумма».
+ * Отдельно от службы, чтобы одинаково считать и весь отрезок, и каждый
+ * период матрицы.
+ */
+export function cashNetsByAccount(
+  legs: CashRollupLeg[],
+  settledKeys: Set<string>,
+  mappedAccountIds: Set<number>,
+  normalByAccountId: Map<number, string>,
+): { accountId: number; net: number }[] {
+  const totals = new Map<number, { credit: number; debit: number }>();
+
+  legs.forEach((leg) => {
+    if (!settledKeys.has(`${leg.referenceType}:${leg.referenceId}`)) return;
+    if (!mappedAccountIds.has(leg.accountId)) return;
+
+    const current = totals.get(leg.accountId) || { credit: 0, debit: 0 };
+    current.credit += Number(leg.credit || 0);
+    current.debit += Number(leg.debit || 0);
+    totals.set(leg.accountId, current);
+  });
+
+  return Array.from(totals.entries()).map(([accountId, total]) => ({
+    accountId,
+    net: accountNet(total.credit, total.debit, normalByAccountId.get(accountId)),
+  }));
+}
+
+/** Дата ноги строкой `ГГГГ-ММ-ДД` — база отдаёт её объектом даты. */
+export function legDate(leg: { date?: Date | string | null }): string | null {
+  if (!leg.date) return null;
+  if (typeof leg.date === 'string') return leg.date.slice(0, 10);
+
+  const parsed = moment(leg.date);
+  return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+}
+
+/**
+ * Номер периода, в который попадает дата; `-1` — ни в один.
+ *
+ * Периоды идут подряд и не пересекаются (так их строит нарезка отчёта),
+ * поэтому хватает двоичного поиска по началу периода.
+ */
+export function periodIndexOf(
+  periods: CashRollupPeriod[],
+  date: string | null,
+): number {
+  if (!date) return -1;
+
+  let low = 0;
+  let high = periods.length - 1;
+
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    const period = periods[middle];
+
+    if (date < period.fromDate) high = middle - 1;
+    else if (date > period.toDate) low = middle + 1;
+    else return middle;
+  }
+  return -1;
+}
+
+interface LoadedRollup {
+  articles: any[];
+  map: any[];
+  legs: CashRollupLeg[];
+  isCashAccount: (id: number) => boolean;
+  mappedAccountIds: Set<number>;
+  normalByAccountId: Map<number, string>;
+}
 
 @Injectable()
 export class ArticlesCashflowRollupService {
@@ -47,6 +141,60 @@ export class ArticlesCashflowRollupService {
    * @param {ArticlesRollupQueryDto} query
    */
   public async getRollup(query: ArticlesRollupQueryDto) {
+    const loaded = await this.load(query);
+    const settledKeys = cashSettledReferenceKeys(
+      loaded.legs as any,
+      loaded.isCashAccount,
+    );
+
+    return this.fold(loaded, loaded.legs, settledKeys);
+  }
+
+  /**
+   * Та же свёртка, разложенная по периодам (FT-001 ТЗ-3) — ЗА ОДИН ПРОХОД.
+   *
+   * Звать `getRollup` на каждый период значило бы пять запросов на колонку:
+   * год по месяцам — шестьдесят запросов на одну страницу. Здесь ноги
+   * читаются один раз за весь отрезок и раскладываются по периодам в памяти.
+   *
+   * ПРИЗНАК «ОПЛАЧЕНО ДЕНЬГАМИ» СЧИТАЕТСЯ ОДИН РАЗ, по всему отрезку. Тогда
+   * сумма колонок равна итогу за весь отрезок при ЛЮБОМ масштабе: признак
+   * документа не зависит от того, на какие колонки нарезали период.
+   *
+   * @param query - отбор отчёта (даты берутся из периодов)
+   * @param periods - идущие подряд периоды
+   */
+  public async getRollupByPeriods(
+    query: ArticlesRollupQueryDto,
+    periods: CashRollupPeriod[],
+  ): Promise<Array<CashRollupPeriod & { rows: any[] }>> {
+    if (periods.length === 0) return [];
+
+    const loaded = await this.load({
+      ...query,
+      fromDate: periods[0].fromDate,
+      toDate: periods[periods.length - 1].toDate,
+    } as ArticlesRollupQueryDto);
+
+    const settledKeys = cashSettledReferenceKeys(
+      loaded.legs as any,
+      loaded.isCashAccount,
+    );
+
+    const buckets: CashRollupLeg[][] = periods.map(() => []);
+    loaded.legs.forEach((leg) => {
+      const index = periodIndexOf(periods, legDate(leg));
+      if (index >= 0) buckets[index].push(leg);
+    });
+
+    return periods.map((period, index) => ({
+      ...period,
+      rows: this.fold(loaded, buckets[index], settledKeys),
+    }));
+  }
+
+  /** Статьи, карта счетов, денежные счета и ноги отрезка — один раз. */
+  private async load(query: ArticlesRollupQueryDto): Promise<LoadedRollup> {
     const articles = await this.articleModel().query().orderBy('sortOrder');
     const map = await this.articleAccountModel().query();
 
@@ -59,10 +207,9 @@ export class ArticlesCashflowRollupService {
     const cashAccountIds = new Set<number>(
       (cashAccounts as any[]).map((a: any) => a.id),
     );
-    const isCashAccount = (id: number) => cashAccountIds.has(id);
 
-    // Все проводки периода (для отбора кассово-расчётных reference).
-    const periodLegs = await this.accountTransactionModel()
+    // Все проводки отрезка (для отбора кассово-расчётных reference).
+    const legs = await this.accountTransactionModel()
       .query()
       .onBuild((qb) => {
         if (query.fromDate || query.toDate) {
@@ -74,43 +221,44 @@ export class ArticlesCashflowRollupService {
         applyManagementReportScope(qb, query);
       });
 
-    const settledKeys = cashSettledReferenceKeys(
-      periodLegs as any,
-      isCashAccount,
+    const mappedAccountIds = new Set<number>(
+      (map as any[]).map((m: any) => m.accountId),
     );
-
-    // Обороты по сопоставленным (доходно-расходным) счетам только в этих reference.
-    const mappedAccountIds = (map as any[]).map((m: any) => m.accountId);
-    const accountTotalsMap = new Map<
-      number,
-      { credit: number; debit: number }
-    >();
-    (periodLegs as any[]).forEach((leg) => {
-      const key = `${leg.referenceType}:${leg.referenceId}`;
-      if (!settledKeys.has(key)) return;
-      if (!mappedAccountIds.includes(leg.accountId)) return;
-      const cur = accountTotalsMap.get(leg.accountId) || { credit: 0, debit: 0 };
-      cur.credit += Number(leg.credit || 0);
-      cur.debit += Number(leg.debit || 0);
-      accountTotalsMap.set(leg.accountId, cur);
-    });
-
-    const accounts = mappedAccountIds.length
-      ? await this.accountModel().query().whereIn('id', mappedAccountIds)
+    const accounts = mappedAccountIds.size
+      ? await this.accountModel().query().whereIn('id', [...mappedAccountIds])
       : [];
     const normalByAccountId = new Map<number, string>();
     (accounts as any[]).forEach((a: any) =>
       normalByAccountId.set(a.id, a.accountNormal),
     );
 
-    const accountNets = Array.from(accountTotalsMap.entries()).map(
-      ([accountId, t]) => ({
-        accountId,
-        net: accountNet(t.credit, t.debit, normalByAccountId.get(accountId)),
-      }),
-    );
+    return {
+      articles: articles as any[],
+      map: map as any[],
+      legs: legs as any[],
+      isCashAccount: (id: number) => cashAccountIds.has(id),
+      mappedAccountIds,
+      normalByAccountId,
+    };
+  }
 
-    const folded = foldAccountsIntoArticles(articles, map, accountNets);
+  /** Ноги → суммы статей с подъёмом в предков. */
+  private fold(
+    loaded: LoadedRollup,
+    legs: CashRollupLeg[],
+    settledKeys: Set<string>,
+  ) {
+    const accountNets = cashNetsByAccount(
+      legs,
+      settledKeys,
+      loaded.mappedAccountIds,
+      loaded.normalByAccountId,
+    );
+    const folded = foldAccountsIntoArticles(
+      loaded.articles,
+      loaded.map,
+      accountNets,
+    );
     return rollupAmountsToAncestors(folded);
   }
 }

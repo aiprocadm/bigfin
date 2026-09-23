@@ -35,6 +35,19 @@ import { useManagementArticles } from '@/hooks/query/managementArticles';
 import { useAutoCompleteContacts } from '@/hooks/query/contacts';
 import { useProjects } from '@/containers/Projects/hooks/projects';
 import { ProjectsSelect } from '@/containers/Projects/components';
+import { Features } from '@/constants/features';
+import { useFeatureCan } from '@/hooks/state/feature';
+
+/**
+ * Направления берутся из модуля «Сделки»: выключен модуль — список не
+ * запрашивается (иначе 403) и поле направления не показывается.
+ */
+function useRuleProjects() {
+  const { featureCan } = useFeatureCan();
+  const enabled = !!featureCan(Features.Projects);
+  const { data } = useProjects({}, { enabled });
+  return { enabled, projects: (data as any)?.projects ?? data ?? [] };
+}
 import { useRuleFormDialogBoot } from './RuleFormBoot';
 import {
   transformToCamelCase,
@@ -448,7 +461,7 @@ function RuleActionsByType() {
 
 /** Контрагент и направление у «Заполнить поля» (FT-030). */
 function RuleAssignExtraFields() {
-  const { data: projects } = useProjects({}, {});
+  const { enabled: projectsOn, projects } = useRuleProjects();
   const { data: contacts } = useAutoCompleteContacts();
 
   return (
@@ -468,17 +481,19 @@ function RuleAssignExtraFields() {
           popoverProps={{ minimal: true }}
         />
       </FFormGroup>
-      <FFormGroup
-        name={'assignProjectId'}
-        label={intl.get('banking.rules.field.assign_project')}
-        style={{ flex: '1 0' }}
-      >
-        <ProjectsSelect
+      {projectsOn && (
+        <FFormGroup
           name={'assignProjectId'}
-          projects={(projects as any)?.projects ?? projects ?? []}
-          placeholder={intl.get('banking.rules.field.not_set')}
-        />
-      </FFormGroup>
+          label={intl.get('banking.rules.field.assign_project')}
+          style={{ flex: '1 0' }}
+        >
+          <ProjectsSelect
+            name={'assignProjectId'}
+            projects={projects}
+            placeholder={intl.get('banking.rules.field.not_set')}
+          />
+        </FFormGroup>
+      )}
     </Group>
   );
 }
@@ -487,7 +502,7 @@ function RuleAssignExtraFields() {
 function RuleSplitLines() {
   const { values, setFieldValue } = useFormikContext<RuleFormValues>();
   const { data: articles } = useManagementArticles();
-  const { data: projects } = useProjects({}, {});
+  const { enabled: projectsOn, projects } = useRuleProjects();
   const total = splitSharesTotal(values.splits);
   const left = Math.round((100 - total) * 10000) / 10000;
 
@@ -512,17 +527,19 @@ function RuleSplitLines() {
                 popoverProps={{ minimal: true }}
               />
             </FFormGroup>
-            <FFormGroup
-              name={`splits[${index}].projectId`}
-              label={intl.get('banking.rules.field.assign_project')}
-              style={{ marginBottom: 0, flex: '2 0' }}
-            >
-              <ProjectsSelect
+            {projectsOn && (
+              <FFormGroup
                 name={`splits[${index}].projectId`}
-                projects={(projects as any)?.projects ?? projects ?? []}
-                placeholder={intl.get('banking.rules.field.not_set')}
-              />
-            </FFormGroup>
+                label={intl.get('banking.rules.field.assign_project')}
+                style={{ marginBottom: 0, flex: '2 0' }}
+              >
+                <ProjectsSelect
+                  name={`splits[${index}].projectId`}
+                  projects={projects}
+                  placeholder={intl.get('banking.rules.field.not_set')}
+                />
+              </FFormGroup>
+            )}
             <FFormGroup
               name={`splits[${index}].sharePercent`}
               label={intl.get('banking.rules.split.share')}

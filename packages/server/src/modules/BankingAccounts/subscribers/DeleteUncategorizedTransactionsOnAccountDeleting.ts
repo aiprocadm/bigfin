@@ -33,9 +33,12 @@ export class DeleteUncategorizedTransactionsOnAccountDeleting {
     oldAccount,
     trx,
   }: IAccountEventDeletePayload) {
+    // И правила перевода НА этот счёт (FT-032 ТЗ-3): без получателя перевод
+    // не имеет смысла, а пустое правило молча пропускало бы строки.
     const foundAssociatedRules = await this.bankRuleModel()
       .query(trx)
-      .where('applyIfAccountId', oldAccount.id);
+      .where('applyIfAccountId', oldAccount.id)
+      .orWhere('transferToAccountId', oldAccount.id);
     const foundAssociatedRulesIds = foundAssociatedRules.map((rule) => rule.id);
 
     // Revert the recognized transactions of the given bank rules.

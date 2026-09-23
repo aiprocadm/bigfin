@@ -65,6 +65,22 @@ test.describe('суточный сценарий', () => {
     await expect(page.getByText('Операционная')).toBeVisible();
   });
 
+  test('отчёт «Деньги» — колонка на каждый месяц и «Итого» (FT-001)', async ({
+    page,
+  }) => {
+    // Год по месяцам: «Статья» + двенадцать месяцев + «Итого». Ради ответа
+    // «в каком месяце ушли деньги» матрицу и делали — одна колонка на весь
+    // период на этот вопрос не отвечала.
+    await goTo(
+      page,
+      '/financial-reports/cash-flow-articles?fromDate=2026-01-01&toDate=2026-12-31',
+    );
+
+    const header = page.locator('table thead tr').first();
+    await expect(header.locator('th')).toHaveCount(14, { timeout: 30_000 });
+    await expect(header.locator('th').last()).toHaveText('Итого');
+  });
+
   test('у отчёта есть объяснение простыми словами', async ({ page }) => {
     await goTo(page, '/financial-reports/cash-flow-articles');
 

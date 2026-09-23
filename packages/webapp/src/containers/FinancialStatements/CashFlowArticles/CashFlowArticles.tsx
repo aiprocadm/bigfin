@@ -1,79 +1,104 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { ScreenHelp } from '@/components/ui/screen-help';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight, Download } from 'lucide-react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Download } from 'lucide-react';
 
+import { ScreenHelp } from '@/components/ui/screen-help';
 import { Button } from '@/components/ui/button';
-import { DateField } from '@/components/ui/date-field';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ScreenError } from '@/components/ui/screen-error';
+import { pickScreenState } from '@/components/ui/screen-state';
+import { ReportSheet, ReportTable } from '@/components/ui/report-table';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { useLegalEntities } from '@/hooks/query/legalEntities';
 import {
   useCashFlowArticlesTable,
   useCashFlowArticlesCsvExport,
   useCashFlowArticlesXlsxExport,
 } from '@/hooks/query/FinancialReports';
 
+import { ReportPeriodBar } from '../v2';
+import { ReportScopeNote } from '../ReportScopeNote';
 import {
-  defaultExpandedIds,
-  flattenReportRows,
-  isTotalRow,
-  ReportTableRow,
-} from './cashFlowArticlesRows';
-import {
-  cashFlowChartSeries,
-  hasChartMovement,
-} from './cashFlowArticlesChart';
+  CashFlowArticlesQuery,
+  isPeriodTooWide,
+  matrixColumns,
+  matrixRows,
+  MatrixServerColumn,
+  MatrixServerRow,
+  queryFromSearch,
+  searchFromQuery,
+  skeletonColumnsCount,
+} from './cashFlowArticlesMatrix';
+import { hasPeriodMovement, periodChartSeries } from './cashFlowArticlesChart';
 import { CashFlowChart } from './CashFlowChart';
+
+interface LegalEntityOption {
+  id: number;
+  name: string;
+}
 
 /**
  * Отчёт «Деньги (ДДС по статьям)» — главный денежный отчёт продукта
- * (FIN-013 ТЗ-2).
+ * (FIN-013 ТЗ-2), с этапа 30 — матрицей «статьи × периоды» (FT-001 ТЗ-3).
  *
- * ПОЧЕМУ НОВЫЙ ЭКРАН, А НЕ ПРАВКА СТАРОГО. Прежний ДДС считается КОСВЕННЫМ
- * методом: «чистая прибыль плюс изменение дебиторской задолженности минус
- * изменение запасов». Бухгалтеру это привычно, предпринимателю без
- * бухгалтерского образования — нет. Прежний отчёт остаётся на своём месте и
- * никуда не девается: он нужен, просто не всем.
+ * ПОЧЕМУ МАТРИЦА. Отчёт показывал одну сумму за весь период. Ответить «в
+ * каком месяце уехала аренда» было нельзя — только двенадцать раз сменить
+ * период и выписать цифры на бумажку.
+ *
+ * ПЕРИОД, МАСШТАБ И ЮРЛИЦО — В АДРЕСЕ. Отчёт пересылают: «посмотри деньги по
+ * кварталам» должно быть ссылкой, а не инструкцией.
  *
  * ПЕРЕКЛЮЧАТЕЛЯ «УЧЁТ» ЗДЕСЬ НЕТ. Движение денег кассово по определению, и
- * переключатель, который ничего не меняет, хуже его отсутствия: человек
- * решит, что видит две разные картины.
+ * переключатель, который ничего не меняет, хуже его отсутствия.
  */
 export default function CashFlowArticles() {
-  const [fromDate, setFromDate] = React.useState(
-    moment().startOf('month').format('YYYY-MM-DD'),
+  const location = useLocation();
+  const history = useHistory();
+  const query = React.useMemo(
+    () => queryFromSearch(location.search),
+    [location.search],
   );
-  const [toDate, setToDate] = React.useState(
-    moment().endOf('month').format('YYYY-MM-DD'),
-  );
+  const setQuery = (next: Partial<CashFlowArticlesQuery>) =>
+    history.replace({
+      pathname: location.pathname,
+      search: searchFromQuery(location.search, { ...query, ...next }),
+    });
 
-  const query = React.useMemo(() => ({ fromDate, toDate }), [fromDate, toDate]);
-  const { data, isLoading } = useCashFlowArticlesTable(query);
-
-  const rows: ReportTableRow[] = (data as any)?.table?.rows ?? [];
-  const [expanded, setExpanded] = React.useState<Set<string>>(new Set());
-  // Раскрытие пересчитывается, когда пришли новые строки: набор
-  // идентификаторов у другого периода другой.
-  React.useEffect(() => {
-    setExpanded(defaultExpandedIds(rows));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  const { data, isLoading, isFetching, isError, error, refetch } =
+    useCashFlowArticlesTable(query, { keepPreviousData: true }) as any;
+  const { data: legalEntities } = useLegalEntities() as {
+    data?: LegalEntityOption[];
+  };
 
   const { open: exportCsv } = useCashFlowArticlesCsvExport(query) as any;
   const { open: exportXlsx } = useCashFlowArticlesXlsxExport(query) as any;
 
-  const visible = flattenReportRows(rows, expanded);
+  const locale = intl.getInitOptions?.()?.currentLocale || 'ru';
+  const serverColumns: MatrixServerColumn[] = data?.table?.columns ?? [];
+  const serverRows: MatrixServerRow[] = data?.table?.rows ?? [];
 
-  const toggle = (id: string) => {
-    setExpanded((current) => {
-      const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+  const columns = React.useMemo(
+    () => matrixColumns(serverColumns, query.dateGroup, locale),
+    [serverColumns, query.dateGroup, locale],
+  );
+  const rows = React.useMemo(
+    () => matrixRows(serverRows, formatOrganizationMoney),
+    [serverRows],
+  );
+  const series = React.useMemo(
+    () => periodChartSeries(columns, serverRows),
+    [columns, serverRows],
+  );
+
+  // Пусто — это когда за период не было ни одного движения, а не когда нет
+  // строк: строки «Остаток на начало/конец» есть всегда.
+  const isEmpty = !hasPeriodMovement(series) && !hasTransfers(serverRows);
+  const screenState = pickScreenState({ isLoading, isError, isEmpty });
+
+  // Выбор юрлица показываем, только когда их больше одного: выбор из одного
+  // — не выбор, а лишний вопрос без ответа.
+  const showEntityPicker = (legalEntities?.length ?? 0) > 1;
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -92,21 +117,6 @@ export default function CashFlowArticles() {
           </p>
         </div>
         <div className="flex items-end gap-2">
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {intl.get('cash_flow_articles.from_date')}
-            {/* Поле даты ПРОДУКТА, а не браузера: системное рисует дату по
-                правилам браузера, и у человека с английским браузером период
-                выглядел бы иначе, чем во всех остальных формах (Р3 v26). */}
-            <DateField
-              value={fromDate}
-              onChange={setFromDate}
-              className="w-40"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {intl.get('cash_flow_articles.to_date')}
-            <DateField value={toDate} onChange={setToDate} className="w-40" />
-          </label>
           <Button variant="secondary" onClick={() => exportCsv?.()}>
             <Download className="mr-2 h-4 w-4" />
             CSV
@@ -118,13 +128,53 @@ export default function CashFlowArticles() {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-6 w-full" />
-          <Skeleton className="h-6 w-full" />
-          <Skeleton className="h-6 w-2/3" />
-        </div>
-      ) : visible.length === 0 ? (
+      {/* Период и масштаб — на странице, одним нажатием (FIN-012). */}
+      <ReportPeriodBar
+        range={query}
+        onRangeChange={(range) => setQuery(range)}
+        scale={query.dateGroup}
+        onScaleChange={(dateGroup) => setQuery({ dateGroup })}
+        extraSlot={
+          showEntityPicker ? (
+            <label className="flex items-center gap-1 text-xs text-text-secondary">
+              {intl.get('cash_flow_articles.legal_entity')}
+              <select
+                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
+                value={query.legalEntityIds?.[0] ?? ''}
+                onChange={(event) =>
+                  setQuery({
+                    legalEntityIds: event.target.value
+                      ? [Number(event.target.value)]
+                      : undefined,
+                  })
+                }
+              >
+                <option value="">
+                  {intl.get('cash_flow_articles.legal_entity.all')}
+                </option>
+                {legalEntities!.map((entity) => (
+                  <option key={entity.id} value={entity.id}>
+                    {entity.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null
+        }
+      />
+
+      {screenState === 'loading' ? (
+        <MatrixSkeleton columns={skeletonColumnsCount(query)} />
+      ) : screenState === 'error' ? (
+        <ScreenError
+          message={
+            isPeriodTooWide(error)
+              ? intl.get('cash_flow_articles.error.too_wide')
+              : intl.get('cash_flow_articles.error')
+          }
+          onRetry={isPeriodTooWide(error) ? undefined : () => refetch()}
+        />
+      ) : screenState === 'empty' ? (
         /**
          * Пустой период объясняет себя и ведёт дальше: «ничего нет» без
          * подсказки читается как поломка, а не как ответ.
@@ -140,74 +190,58 @@ export default function CashFlowArticles() {
         </div>
       ) : (
         <>
-        {/* ГРАФИК НАД ТАБЛИЦЕЙ (T-14). Числа берутся ИЗ ТЕХ ЖЕ СТРОК, что
-            рисует таблица: второго источника нет, и разойтись им не на чем.
-            Движения нет — графика нет: пустой график с подписью «0»
-            выглядит поломкой, а не ответом. */}
-        {hasChartMovement(cashFlowChartSeries(visible)) && (
-          <CashFlowChart series={cashFlowChartSeries(visible)} />
-        )}
+          {/* ГРАФИК НАД ТАБЛИЦЕЙ. Числа — из тех же строк, что рисует
+              таблица: второго источника нет, и разойтись им не на чем. */}
+          {series.length > 1 && <CashFlowChart series={series} />}
 
-        {/* Таблица в прокручиваемом контейнере: на телефоне правый край
-           иначе просто обрезается, и последние столбцы недоступны (И1 v33). */}
-        <div className="overflow-x-auto rounded-default border border-border">
-          <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-border text-left text-xs text-text-secondary">
-              <th className="py-2">
-                {intl.get('cash_flow_articles.column.name')}
-              </th>
-              <th className="py-2 text-right">
-                {intl.get('cash_flow_articles.column.amount')}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map((row) => (
-              <tr
-                key={row.id}
-                className={
-                  isTotalRow(row.rowType)
-                    ? 'border-b border-border font-semibold'
-                    : 'border-b border-border/50'
-                }
-              >
-                <td className="py-1.5">
-                  <span
-                    className="flex items-center gap-1"
-                    style={{ paddingLeft: `${row.level * 16}px` }}
-                  >
-                    {row.hasChildren ? (
-                      <button
-                        type="button"
-                        aria-label={row.name}
-                        onClick={() => toggle(row.id)}
-                        className="text-text-secondary"
-                      >
-                        {expanded.has(row.id) ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4" />
-                        )}
-                      </button>
-                    ) : (
-                      <span className="inline-block w-4" />
-                    )}
-                    {row.name}
-                  </span>
-                </td>
-                <td className="py-1.5 text-right tabular-nums">
-                  {row.amount === null
-                    ? ''
-                    : formatOrganizationMoney(row.amount)}
-                </td>
-              </tr>
-            ))}
-            </tbody>
-          </table>
-        </div>
+          <ReportSheet
+            sheetType={intl.get('cash_flow_articles.page_title')}
+            dateText={data?.meta?.formatted_date_range}
+            className={isFetching ? 'opacity-60 transition-opacity' : undefined}
+          >
+            {/* Что показано: сводно или по одному юрлицу (FT-008). */}
+            <ReportScopeNote scope={data?.meta?.legal_entity_scope} />
+            <ReportTable
+              columns={columns}
+              rows={rows}
+              defaultExpandedDepth={2}
+              // Итога «ниже группы» в этом отчёте нет: суммы раскрытой
+              // группы прятать нельзя — иначе их не видно нигде.
+              hideValuesWhenExpanded={false}
+              isFinalRow={(row) => row.id === 'closing'}
+              stickyHeader
+              stickyFirstColumn
+              maxBodyHeight={640}
+            />
+          </ReportSheet>
         </>
       )}
+    </div>
+  );
+}
+
+/** Были ли переводы между своими счетами (движение без потока). */
+function hasTransfers(rows: MatrixServerRow[]): boolean {
+  const transfers = rows.find((row) => row.id === 'transfers');
+  return Boolean(
+    transfers?.children?.some((row) =>
+      row.cells.slice(1).some((cell) => Number(cell.value) !== 0),
+    ),
+  );
+}
+
+/** Заглушка в форме будущей таблицы: столько колонок, сколько будет. */
+function MatrixSkeleton({ columns }: { columns: number }) {
+  return (
+    <div className="flex flex-col gap-2 rounded-default border border-border p-6">
+      {Array.from({ length: 6 }, (_, row) => (
+        <div key={row} className="flex gap-3">
+          <Skeleton className="h-6 w-48 shrink-0" />
+          {Array.from({ length: columns }, (__, column) => (
+            <Skeleton key={column} className="h-6 flex-1" />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

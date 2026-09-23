@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { I18nService } from 'nestjs-i18n';
 import { Injectable } from '@nestjs/common';
 
+import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
 import {
   ICashFlowArticlesMeta,
@@ -35,6 +36,12 @@ export class CashFlowArticlesMeta {
       formattedFromDate,
       formattedToDate,
       formattedDateRange,
+      // По какому юрлицу собран отчёт (FT-008): без этой строки в шапке
+      // выгрузка по одному юрлицу неотличима от сводной по группе.
+      legalEntityScope: describeLegalEntityScope({
+        legalEntityIds: query.legalEntityIds,
+      }),
+      dateGroup: query.dateGroup ?? 'month',
     } as ICashFlowArticlesMeta;
   }
 }

@@ -1,56 +1,70 @@
-import { FlatReportRow } from './cashFlowArticlesRows';
+import type { ReportTableColumn } from '@/components/ui/report-table';
+
+import type { MatrixServerRow } from './cashFlowArticlesMatrix';
 
 /**
- * Ряд графика над отчётом «Деньги (ДДС по статьям)» (T-14 ТЗ-2).
+ * Ряды графика над отчётом «Деньги (ДДС по статьям)».
  *
- * ГЛАВНОЕ ТРЕБОВАНИЕ — «РЯД ГРАФИКА = ИТОГАМ ТАБЛИЦЫ ЗА ПЕРИОД». Оно
- * выполняется здесь НЕ проверкой, а устройством: график берёт числа из тех
- * же строк, которые рисует таблица. Второго источника нет, поэтому
- * разойтись им не на чем.
+ * ГЛАВНОЕ ТРЕБОВАНИЕ — «РЯД ГРАФИКА = ЧИСЛАМ ТАБЛИЦЫ». Оно выполняется
+ * устройством, а не проверкой: график берёт числа из тех же строк, которые
+ * рисует таблица. Второго источника нет, поэтому разойтись им не на чем.
  *
- * ЧЕГО ЗДЕСЬ НЕТ. Отдельного запроса за данными графика. Он был бы вторым
- * источником тех же сумм — ровно то, что прежнее ТЗ запретило прямо: «второго
- * способа считать те же суммы быть не должно».
+ * С матрицей (FT-001 ТЗ-3) график отвечает на вопрос «как деньги шли по
+ * месяцам»: столбики поступлений и выплат по каждому периоду. Раньше он
+ * показывал три раздела деятельности за весь период — ровно то, что и так
+ * видно в первых строках таблицы.
  */
-export interface CashFlowChartPoint {
-  /** Название раздела — как в таблице. */
-  name: string;
-  /** Итог раздела: приток минус отток. */
-  amount: number;
-}
 
-/** Виды строк, которые попадают на график. */
-const SECTION_ROW_TYPE = 'SECTION';
-
-/**
- * Собирает ряд графика из строк таблицы.
- *
- * Берутся ТОЛЬКО разделы (операционная, инвестиционная, финансовая
- * деятельность): график отвечает на вопрос «откуда взялось движение
- * денег», а не перечисляет статьи. Строки без суммы — заголовки, им на
- * графике места нет.
- *
- * @param {FlatReportRow[]} rows плоские строки таблицы
- * @returns {CashFlowChartPoint[]}
- */
-export function cashFlowChartSeries(
-  rows: FlatReportRow[] = [],
-): CashFlowChartPoint[] {
-  return (rows ?? [])
-    .filter((row) => row.rowType === SECTION_ROW_TYPE)
-    .filter((row) => row.amount !== null)
-    .map((row) => ({ name: row.name, amount: Number(row.amount) }));
+/** Точка графика: один период. */
+export interface CashFlowPeriodPoint {
+  key: string;
+  label: string;
+  inflow: number;
+  outflow: number;
+  net: number;
 }
 
 /**
- * Есть ли что рисовать.
+ * Ряды графика — по периодам, из тех же строк, что рисует таблица
+ * (FT-001: «график строит ряды из периодов, а не из строк»).
  *
- * Пустой график с подписью «0» выглядит поломкой, а не ответом «движения за
- * период не было».
- *
- * @param {CashFlowChartPoint[]} series ряд графика
- * @returns {boolean}
+ * Второго запроса нет: второй источник тех же сумм однажды разошёлся бы с
+ * таблицей, а расхождение картинки с цифрами дороже отсутствия картинки.
+ * Выплаты идут положительным столбиком рядом с поступлениями — так их
+ * сравнивают глазами.
  */
-export function hasChartMovement(series: CashFlowChartPoint[] = []): boolean {
-  return (series ?? []).some((point) => point.amount !== 0);
+export function periodChartSeries(
+  columns: ReportTableColumn[],
+  rows: MatrixServerRow[] = [],
+): CashFlowPeriodPoint[] {
+  const periodColumns = columns.filter(
+    (column, index) => index > 0 && column.key !== 'total',
+  );
+  const topLevel = rows ?? [];
+  // «Поступления» и «Выплаты» лежат внутри разделов деятельности.
+  const groups = topLevel.flatMap((row) => row.children ?? []);
+
+  const cellOf = (row: MatrixServerRow, column: ReportTableColumn) =>
+    Number(row.cells[column.cellIndex ?? -1]?.value ?? 0) || 0;
+  const sum = (list: MatrixServerRow[], column: ReportTableColumn) =>
+    list.reduce((total, row) => total + cellOf(row, column), 0);
+
+  const inflows = groups.filter((row) => row.id?.startsWith('inflow-'));
+  const outflows = groups.filter((row) => row.id?.startsWith('outflow-'));
+  const net = topLevel.find((row) => row.id === 'net');
+
+  return periodColumns.map((column) => ({
+    key: column.key,
+    label: column.label,
+    inflow: round2(sum(inflows, column)),
+    outflow: round2(sum(outflows, column)),
+    net: net ? round2(cellOf(net, column)) : 0,
+  }));
+}
+
+const round2 = (value: number) => Math.round(value * 100) / 100;
+
+/** Есть ли что рисовать: пустой график с подписью «0» выглядит поломкой. */
+export function hasPeriodMovement(series: CashFlowPeriodPoint[] = []): boolean {
+  return (series ?? []).some((point) => point.inflow !== 0 || point.outflow !== 0);
 }

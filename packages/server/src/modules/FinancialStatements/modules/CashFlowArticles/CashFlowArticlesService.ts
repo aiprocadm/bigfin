@@ -1,22 +1,43 @@
 // © 2026 Bigfin
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
-import { ArticlesCashflowRollupService } from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
+import {
+  ArticlesCashflowRollupService,
+  legDate,
+  periodIndexOf,
+} from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
+import { ServiceError } from '@/modules/Items/ServiceError';
 import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/managementReportScope';
 import {
   CASH_ACCOUNT_TYPES,
   TRANSFER_TYPES,
 } from '@/modules/Budgets/constants';
 
-import { buildCashFlowArticlesReport } from './buildCashFlowArticlesReport';
+import { buildCashFlowArticlesMatrix } from './cashFlowArticlesMatrix';
 import {
+  ICashFlowArticlesData,
   ICashFlowArticlesQuery,
   ICashFlowArticlesSheet,
 } from './CashFlowArticles.types';
+import {
+  buildReportPeriods,
+  CashFlowDateGroup,
+  PERIOD_TOO_WIDE_FOR_GRANULARITY,
+  PeriodTooWideError,
+  ReportPeriod,
+} from './periodizeRows';
 import { CashFlowArticlesMeta } from './CashFlowArticlesMeta';
+
+/** Движение по денежным счетам за один период. */
+interface CashMoves {
+  net: number;
+  transfers: { incoming: number; outgoing: number };
+}
+
+const round2 = (value: number): number => Math.round(value * 100) / 100;
 
 /**
  * Отчёт «Деньги (ДДС по статьям)» — сбор данных (FIN-013 ТЗ-2).
@@ -48,44 +69,108 @@ export class CashFlowArticlesService {
   ) {}
 
   /**
-   * Собирает отчёт о движении денег по статьям.
+   * Собирает отчёт о движении денег по статьям — матрицей «статьи × периоды»
+   * (FT-001 ТЗ-3).
+   *
+   * ОСТАТКИ ЦЕПЛЯЮТСЯ, А НЕ СЧИТАЮТСЯ ЗАНОВО НА КАЖДУЮ КОЛОНКУ. Остаток на
+   * начало берётся один раз из базы, дальше конец колонки = начало + поток
+   * по денежным счетам, а начало следующей = конец предыдущей. Так цепочка
+   * не рвётся по построению. Остаток на конец всего отрезка при этом
+   * считается ОТДЕЛЬНЫМ запросом и сверяется с концом цепочки: сошлось —
+   * `isBalanced`, нет — это видно, а не спрятано.
+   *
    * @param {ICashFlowArticlesQuery} query
    * @returns {Promise<ICashFlowArticlesSheet>}
    */
   public async sheet(
     query: ICashFlowArticlesQuery,
   ): Promise<ICashFlowArticlesSheet> {
+    const dateGroup = query.dateGroup ?? 'month';
+    const periods = this.periodsOf(query, dateGroup);
     const cashAccountIds = await this.getCashAccountIds();
 
-    const [rollupRows, openingBalance, closingBalance, transfers] =
+    const [rollupPeriods, openingBalance, closingBalance, cashMoves] =
       await Promise.all([
-        this.rollup.getRollup(query as any),
+        this.rollup.getRollupByPeriods(query as any, periods),
         this.cashBalanceBefore(cashAccountIds, query),
         this.cashBalanceThrough(cashAccountIds, query),
-        this.transfersTotals(cashAccountIds, query),
+        this.cashMovesByPeriods(cashAccountIds, query, periods),
       ]);
 
-    const data = buildCashFlowArticlesReport({
-      articles: (rollupRows as any[]).map((row) => ({
-        id: row.id,
-        name: row.name,
-        kind: row.kind,
-        parentId: row.parentId ?? null,
-        cashflowSection: row.cashflowSection ?? null,
-        sortOrder: row.sortOrder,
-      })),
-      amounts: (rollupRows as any[]).map((row) => ({
-        id: row.id,
-        amount: Number(row.amount ?? 0),
-      })),
-      openingBalance,
-      closingBalance,
-      transfers,
+    // Статьи одинаковы во всех колонках — берём их у любой.
+    const articleRows = (rollupPeriods[0]?.rows ?? []) as any[];
+    const articles = articleRows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      kind: row.kind,
+      parentId: row.parentId ?? null,
+      cashflowSection: row.cashflowSection ?? null,
+      sortOrder: row.sortOrder,
+    }));
+
+    let opening = openingBalance;
+    const matrix = buildCashFlowArticlesMatrix({
+      articles,
+      dateGroup,
+      periods: periods.map((period, index) => {
+        const moves = cashMoves[index];
+        const periodOpening = opening;
+        const periodClosing = round2(periodOpening + moves.net);
+        opening = periodClosing;
+
+        return {
+          ...period,
+          amounts: ((rollupPeriods[index]?.rows ?? []) as any[]).map(
+            (row) => ({ id: row.id, amount: Number(row.amount ?? 0) }),
+          ),
+          openingBalance: periodOpening,
+          closingBalance: periodClosing,
+          transfers: moves.transfers,
+        };
+      }),
     });
+
+    // Независимая сверка: конец цепочки против остатка из базы на дату конца.
+    const chainClosing = matrix.total.closingBalance;
+    const isBalanced =
+      matrix.total.isBalanced &&
+      matrix.isChained &&
+      Math.abs(chainClosing - round2(closingBalance)) < 0.005;
+
+    const data: ICashFlowArticlesData = {
+      ...matrix.total,
+      isBalanced,
+      dateGroup,
+      isChained: matrix.isChained,
+      periods: matrix.periods,
+    };
 
     const meta = await this.cashFlowArticlesMeta.meta(query);
 
     return { data, query, meta };
+  }
+
+  /**
+   * Периоды отчёта. Слишком мелкий масштаб на длинном отрезке — понятная
+   * ошибка 400 с кодом, а не простыня на тысячу колонок.
+   */
+  private periodsOf(
+    query: ICashFlowArticlesQuery,
+    dateGroup: CashFlowDateGroup,
+  ): ReportPeriod[] {
+    try {
+      return buildReportPeriods(query.fromDate, query.toDate, dateGroup);
+    } catch (error) {
+      if (error instanceof PeriodTooWideError) {
+        throw new ServiceError(
+          PERIOD_TOO_WIDE_FOR_GRANULARITY,
+          error.message,
+          { periodsCount: error.periodsCount },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw error;
+    }
   }
 
   /** Денежные счета организации: касса, банк, личные средства. */
@@ -152,38 +237,58 @@ export class CashFlowArticlesService {
   }
 
   /**
-   * Переводы между своими счетами за период.
+   * Движение по денежным счетам по периодам: чистый поток и переводы между
+   * своими счетами — ОДНИМ запросом на весь отрезок.
    *
-   * Показываются отдельным блоком и в потоки не входят: перевод со своего
-   * счёта на свой денег бизнесу не прибавляет. Итог блока по определению
-   * ноль — ненулевой означает поломку данных и потому виден.
+   * Чистый поток нужен для цепочки остатков. Переводы показываются отдельным
+   * блоком и в потоки статей не входят: перевод со своего счёта на свой денег
+   * бизнесу не прибавляет. Итог блока по определению ноль — ненулевой
+   * означает поломку данных и потому виден.
    */
-  private async transfersTotals(
+  private async cashMovesByPeriods(
     cashAccountIds: Set<number>,
     query: ICashFlowArticlesQuery,
-  ): Promise<{ incoming: number; outgoing: number }> {
-    if (cashAccountIds.size === 0) return { incoming: 0, outgoing: 0 };
+    periods: ReportPeriod[],
+  ): Promise<CashMoves[]> {
+    const moves: CashMoves[] = periods.map(() => ({
+      net: 0,
+      transfers: { incoming: 0, outgoing: 0 },
+    }));
+    if (cashAccountIds.size === 0 || periods.length === 0) return moves;
 
     const legs = await this.accountTransactionModel()
       .query()
       .onBuild((qb: any) => {
         qb.whereIn('accountId', [...cashAccountIds]);
-        qb.whereIn(
-          'transactionType',
-          TRANSFER_TYPES as unknown as string[],
+        qb.modify(
+          'filterDateRange',
+          periods[0].fromDate,
+          periods[periods.length - 1].toDate,
         );
-        qb.modify('filterDateRange', query.fromDate, query.toDate);
         applyManagementReportScope(qb, query as any);
       });
 
-    let incoming = 0;
-    let outgoing = 0;
-
     (legs as any[]).forEach((leg: any) => {
-      incoming += Number(leg.debit ?? 0);
-      outgoing += Number(leg.credit ?? 0);
+      const index = periodIndexOf(periods, legDate(leg));
+      if (index < 0) return;
+
+      const debit = Number(leg.debit ?? 0);
+      const credit = Number(leg.credit ?? 0);
+      const move = moves[index];
+
+      move.net += debit - credit;
+      if ((TRANSFER_TYPES as readonly string[]).includes(leg.transactionType)) {
+        move.transfers.incoming += debit;
+        move.transfers.outgoing += credit;
+      }
     });
 
-    return { incoming, outgoing };
+    return moves.map((move) => ({
+      net: round2(move.net),
+      transfers: {
+        incoming: round2(move.transfers.incoming),
+        outgoing: round2(move.transfers.outgoing),
+      },
+    }));
   }
 }

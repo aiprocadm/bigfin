@@ -73,6 +73,16 @@ export const SettingsOptions = {
     accounting_basis: {
       type: 'string',
     },
+    // Календарь организации (FT-006b ТЗ-3): 1 — понедельник … 7 — воскресенье.
+    week_start_day: {
+      type: 'number',
+    },
+    highlight_weekends: {
+      type: 'boolean',
+    },
+    show_weekdays: {
+      type: 'boolean',
+    },
   },
   manual_journals: {
     next_number: {

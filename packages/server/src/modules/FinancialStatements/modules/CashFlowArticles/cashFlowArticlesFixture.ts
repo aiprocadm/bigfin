@@ -156,7 +156,8 @@ function runQuery(rows: any[], build: (qb: any) => void) {
   ];
 }
 
-export function makeService() {
+/** Календарь организации: по умолчанию не настроен — неделя с понедельника. */
+export function makeService(calendar: Record<string, unknown> = {}) {
   const accountModel = () => ({
     query: () => ({
       whereIn: (column: string, values: any[]) => {
@@ -201,6 +202,9 @@ export function makeService() {
     accountTransactionModel as any,
     namedModel(CONTACTS) as any,
     namedModel(PROJECTS) as any,
+    (async () => ({
+      get: ({ key }: { key: string }) => calendar[key],
+    })) as any,
   );
 }
 

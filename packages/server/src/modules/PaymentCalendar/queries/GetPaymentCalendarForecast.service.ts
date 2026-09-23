@@ -19,6 +19,9 @@ import { aggregateForecast } from '../utils/aggregateForecast';
 import { expandRecurrence } from '../utils/expandRecurrence';
 import { resolveDocumentExchangeRate } from '../utils/resolveDocumentExchangeRate';
 import { CASH_ACCOUNT_TYPES } from '../constants';
+import { SettingsStore } from '@/modules/Settings/SettingsStore';
+import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
+import { readOrganizationCalendar } from '@/modules/Settings/organizationCalendar';
 
 @Injectable()
 export class GetPaymentCalendarForecastService {
@@ -37,6 +40,9 @@ export class GetPaymentCalendarForecastService {
 
     private readonly tenancyContext: TenancyContext,
     private readonly exchangeRates: ExchangeRatesService,
+
+    @Inject(SETTINGS_PROVIDER)
+    private readonly settingsStore: () => Promise<SettingsStore>,
   ) {}
 
   /**
@@ -94,9 +100,13 @@ export class GetPaymentCalendarForecastService {
      * оповещение о разрыве и виджет в шапке. Укрупнение идёт ДОПОЛНИТЕЛЬНЫМ
      * полем — так ни один нынешний читатель ответа не замечает изменения.
      */
+    // Начало недели и подсветка выходных — из календаря организации (FT-006b).
+    const calendar = readOrganizationCalendar(await this.settingsStore());
     const periods = aggregateForecast(
       days,
       (query as any)?.granularity ?? 'day',
+      undefined,
+      calendar,
     );
 
     return {

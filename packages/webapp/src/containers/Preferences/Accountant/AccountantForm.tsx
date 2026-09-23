@@ -86,6 +86,31 @@ export default function AccountantForm() {
     },
   ];
 
+  const CALENDAR_CHECKBOXES = [
+    {
+      name: 'organization.highlightWeekends' as const,
+      labelKey: 'preferences.calendar.highlight_weekends',
+    },
+    {
+      name: 'organization.showWeekdays' as const,
+      labelKey: 'preferences.calendar.show_weekdays',
+    },
+  ];
+
+  // Названия дней — на языке интерфейса, без своего словаря: 5 января 2026
+  // года — понедельник, дальше подряд до воскресенья.
+  const weekdayOptions = useMemo(() => {
+    const locale = intl.getInitOptions?.()?.currentLocale || 'ru';
+    const format = new Intl.DateTimeFormat(locale, { weekday: 'long' });
+    return [1, 2, 3, 4, 5, 6, 7].map((day) => {
+      const label = format.format(new Date(2026, 0, 4 + day));
+      return {
+        value: String(day),
+        label: label.charAt(0).toUpperCase() + label.slice(1),
+      };
+    });
+  }, []);
+
   const ACCOUNT_FIELDS = [
     {
       name: 'paymentReceives.preferredDepositAccount' as const,
@@ -161,6 +186,59 @@ export default function AccountantForm() {
           </FormItem>
         )}
       />
+
+      {/* ----------- Календарь организации (FT-006b ТЗ-3) ----------- */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-sm font-semibold text-text-primary">
+          {intl.get('preferences.calendar.title')}
+        </h3>
+        <FormField
+          control={form.control}
+          name="organization.weekStartDay"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{intl.get('preferences.calendar.week_start')}</FormLabel>
+              <Select value={field.value ?? '1'} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {weekdayOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                {intl.get('preferences.calendar.week_start_hint')}
+              </FormDescription>
+            </FormItem>
+          )}
+        />
+        {CALENDAR_CHECKBOXES.map(({ name, labelKey }) => (
+          <FormField
+            key={name}
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start gap-2 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="text-sm font-normal leading-tight">
+                  {intl.get(labelKey)}
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+        ))}
+      </div>
 
       {/* ----------- Предпочтительные счета ----------- */}
       {ACCOUNT_FIELDS.map(({ name, labelKey, helpKey, options }) => (

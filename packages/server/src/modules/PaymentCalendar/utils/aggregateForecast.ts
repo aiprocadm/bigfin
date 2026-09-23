@@ -1,5 +1,6 @@
 // © 2026 Bigfin
 import { DayBalance } from '../PaymentCalendar.interfaces';
+import { daysSinceWeekStart } from '@/modules/Settings/organizationCalendar';
 
 /**
  * Укрупнение платёжного календаря (FIN-019 ТЗ-2).
@@ -50,11 +51,14 @@ export interface ForecastPeriod {
 const round2 = (value: number): number => Math.round(value * 100) / 100;
 
 /** Понедельник недели, в которую попадает дата. */
-function startOfWeek(date: Date): Date {
+function startOfWeek(date: Date, weekStartDay = 1): Date {
   const result = new Date(date.getTime());
-  // В JS воскресенье — ноль; в России неделя начинается с понедельника.
-  const shift = (result.getUTCDay() + 6) % 7;
-  result.setUTCDate(result.getUTCDate() - shift);
+  // В JS воскресенье — ноль, по ISO — семь. День начала недели берётся из
+  // настроек организации (FT-006b); по умолчанию понедельник.
+  const isoWeekday = result.getUTCDay() || 7;
+  result.setUTCDate(
+    result.getUTCDate() - daysSinceWeekStart(isoWeekday, weekStartDay),
+  );
 
   return result;
 }
@@ -65,11 +69,12 @@ const iso = (date: Date): string => date.toISOString().slice(0, 10);
 export function periodKeyOf(
   date: string,
   granularity: ForecastGranularity,
+  weekStartDay = 1,
 ): string {
   const parsed = new Date(`${date}T00:00:00Z`);
 
   if (granularity === 'day') return date;
-  if (granularity === 'week') return iso(startOfWeek(parsed));
+  if (granularity === 'week') return iso(startOfWeek(parsed, weekStartDay));
   if (granularity === 'month') return date.slice(0, 7);
   if (granularity === 'year') return date.slice(0, 4);
 
@@ -92,19 +97,23 @@ export function isWeekend(date: string): boolean {
  * @param {ForecastGranularity} granularity масштаб
  * @param {string} today сегодня, `YYYY-MM-DD` — параметром, чтобы поведение
  *   можно было проверить, а не зависеть от часового пояса машины
+ * @param calendar календарь организации: начало недели и подсветка выходных
  * @returns {ForecastPeriod[]}
  */
 export function aggregateForecast(
   days: DayBalance[] = [],
   granularity: ForecastGranularity = 'day',
   today: string = new Date().toISOString().slice(0, 10),
+  calendar: { weekStartDay?: number; highlightWeekends?: boolean } = {},
 ): ForecastPeriod[] {
+  const weekStartDay = calendar.weekStartDay ?? 1;
+  const highlightWeekends = calendar.highlightWeekends ?? true;
   const byKey = new Map<string, ForecastPeriod>();
 
   (days ?? []).forEach((day) => {
     if (!day?.date) return;
 
-    const key = periodKeyOf(day.date, granularity);
+    const key = periodKeyOf(day.date, granularity, weekStartDay);
     const inflow = Number(day.inflow ?? 0);
     const outflow = Number(day.outflow ?? 0);
     // Прошедшая часть периода — уже факт. Сегодняшний день считается
@@ -125,7 +134,11 @@ export function aggregateForecast(
         planInflow: 0,
         planOutflow: 0,
         // Выходной имеет смысл только у дня: «выходная неделя» — бессмыслица.
-        isWeekend: granularity === 'day' ? isWeekend(day.date) : false,
+        // Подсветку выходных организация может выключить (FT-006b).
+        isWeekend:
+          granularity === 'day' && highlightWeekends
+            ? isWeekend(day.date)
+            : false,
       } as ForecastPeriod);
 
     current.to = day.date;

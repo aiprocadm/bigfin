@@ -1,6 +1,8 @@
 // © 2026 Bigfin
 import * as moment from 'moment';
 
+import { daysSinceWeekStart } from '@/modules/Settings/organizationCalendar';
+
 /**
  * Колонки-периоды отчёта «Деньги по статьям» (FT-001 ТЗ-3).
  *
@@ -68,9 +70,26 @@ const MONTHS_RU = [
 
 const DATE = 'YYYY-MM-DD';
 
-/** Единица moment для шага масштаба. Неделя — с понедельника (ISO). */
-const startUnit = (group: CashFlowDateGroup): moment.unitOfTime.StartOf =>
-  group === 'week' ? 'isoWeek' : (group as moment.unitOfTime.StartOf);
+/**
+ * Начало календарной единицы, в которую попадает день.
+ *
+ * Неделя начинается с дня из настроек организации (FT-006b); по умолчанию —
+ * с понедельника.
+ */
+const unitStart = (
+  day: moment.Moment,
+  group: CashFlowDateGroup,
+  weekStartDay: number,
+): moment.Moment =>
+  group === 'week'
+    ? day.clone().subtract(daysSinceWeekStart(day.isoWeekday(), weekStartDay), 'days')
+    : day.clone().startOf(group as moment.unitOfTime.StartOf);
+
+/** Последний день единицы, начатой в `start`. */
+const unitEnd = (start: moment.Moment, group: CashFlowDateGroup): moment.Moment =>
+  group === 'week'
+    ? start.clone().add(6, 'days')
+    : start.clone().endOf(group as moment.unitOfTime.StartOf).startOf('day');
 
 const stepUnit = (group: CashFlowDateGroup): moment.unitOfTime.DurationConstructor =>
   group === 'week' ? 'week' : (group as moment.unitOfTime.DurationConstructor);
@@ -111,12 +130,14 @@ export class PeriodTooWideError extends Error {
  * это февраль, как в банковской выписке и в голове у человека. Первый и
  * последний период обрезаются границами самого отчёта.
  *
+ * @param weekStartDay - день начала недели по ISO (1 — понедельник)
  * @throws PeriodTooWideError — колонок вышло больше MAX_REPORT_PERIODS
  */
 export function buildReportPeriods(
   fromDate: moment.MomentInput,
   toDate: moment.MomentInput,
   dateGroup: CashFlowDateGroup = 'month',
+  weekStartDay = 1,
 ): ReportPeriod[] {
   const start = moment(fromDate).startOf('day');
   const end = moment(toDate).startOf('day');
@@ -136,11 +157,11 @@ export function buildReportPeriods(
   }
 
   const periods: ReportPeriod[] = [];
-  const cursor = start.clone().startOf(startUnit(dateGroup));
+  const cursor = unitStart(start, dateGroup, weekStartDay);
 
   while (!cursor.isAfter(end)) {
     const unitFrom = cursor.clone();
-    const unitTo = cursor.clone().endOf(startUnit(dateGroup)).startOf('day');
+    const unitTo = unitEnd(cursor, dateGroup);
 
     const from = moment.max(unitFrom, start);
     const to = moment.min(unitTo, end);
@@ -158,7 +179,8 @@ export function buildReportPeriods(
       throw new PeriodTooWideError(periods.length);
     }
 
-    cursor.add(1, stepUnit(dateGroup)).startOf(startUnit(dateGroup));
+    cursor.add(1, stepUnit(dateGroup));
+    if (dateGroup !== 'week') cursor.startOf(dateGroup as moment.unitOfTime.StartOf);
   }
 
   return periods;

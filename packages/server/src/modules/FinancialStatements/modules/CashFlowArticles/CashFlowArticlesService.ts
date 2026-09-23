@@ -11,6 +11,9 @@ import {
   periodIndexOf,
 } from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
 import { Contact } from '@/modules/Contacts/models/Contact';
+import { SettingsStore } from '@/modules/Settings/SettingsStore';
+import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
+import { readOrganizationCalendar } from '@/modules/Settings/organizationCalendar';
 import { Project } from '@/modules/Projects/models/Project.model';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/managementReportScope';
@@ -82,6 +85,9 @@ export class CashFlowArticlesService {
 
     @Inject(Project.name)
     private readonly projectModel: TenantModelProxy<typeof Project>,
+
+    @Inject(SETTINGS_PROVIDER)
+    private readonly settingsStore: () => Promise<SettingsStore>,
   ) {}
 
   /**
@@ -103,7 +109,11 @@ export class CashFlowArticlesService {
   ): Promise<ICashFlowArticlesSheet> {
     const group = query.group ?? 'articles';
     const dateGroup = query.dateGroup ?? 'month';
-    const periods = this.periodsOf(query, dateGroup);
+    // Неделя начинается с дня из календаря организации (FT-006b).
+    const { weekStartDay } = readOrganizationCalendar(
+      await this.settingsStore(),
+    );
+    const periods = this.periodsOf(query, dateGroup, weekStartDay);
     const cashAccountIds = await this.getCashAccountIds();
 
     const [periodLegs, openingBalance, closingBalance, cashMoves] =
@@ -168,9 +178,15 @@ export class CashFlowArticlesService {
   private periodsOf(
     query: ICashFlowArticlesQuery,
     dateGroup: CashFlowDateGroup,
+    weekStartDay: number,
   ): ReportPeriod[] {
     try {
-      return buildReportPeriods(query.fromDate, query.toDate, dateGroup);
+      return buildReportPeriods(
+        query.fromDate,
+        query.toDate,
+        dateGroup,
+        weekStartDay,
+      );
     } catch (error) {
       if (error instanceof PeriodTooWideError) {
         throw new ServiceError(

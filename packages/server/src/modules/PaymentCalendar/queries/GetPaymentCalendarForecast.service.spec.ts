@@ -55,6 +55,8 @@ const tenancyContext = {
 const exchangeRates = {
   latest: () => Promise.resolve({ exchangeRate: 1 }),
 };
+// Календарь организации не настроен — действуют умолчания.
+const settingsStore = async () => ({ get: () => undefined });
 
 describe('GetPaymentCalendarForecastService', () => {
   it('combines obligations into a daily forecast and finds the gap', async () => {
@@ -65,6 +67,7 @@ describe('GetPaymentCalendarForecastService', () => {
       operationModel as any,
       tenancyContext as any,
       exchangeRates as any,
+      settingsStore as any,
     );
 
     const res = await service.getForecast(1, {
@@ -108,6 +111,7 @@ describe('GetPaymentCalendarForecastService', () => {
       operationModel as any,
       tenancyContext as any,
       exchangeRates as any,
+      settingsStore as any,
     );
     const res = await service.getForecast(1, {
       fromDate: '2026-06-01',
@@ -136,6 +140,7 @@ describe('валютный документ без курса в прогноз�
       operationModel as any,
       tenancyContext as any,
       exchangeRates as any,
+      settingsStore as any,
     );
   };
 

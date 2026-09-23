@@ -1,11 +1,11 @@
 // © 2026 Bigfin
 import { Inject, Injectable } from '@nestjs/common';
-import { isEmpty } from 'lodash';
 
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ArticlesCashflowRollupService } from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
+import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/managementReportScope';
 import {
   CASH_ACCOUNT_TYPES,
   TRANSFER_TYPES,
@@ -60,8 +60,8 @@ export class CashFlowArticlesService {
     const [rollupRows, openingBalance, closingBalance, transfers] =
       await Promise.all([
         this.rollup.getRollup(query as any),
-        this.cashBalanceBefore(cashAccountIds, query.fromDate),
-        this.cashBalanceThrough(cashAccountIds, query.toDate),
+        this.cashBalanceBefore(cashAccountIds, query),
+        this.cashBalanceThrough(cashAccountIds, query),
         this.transfersTotals(cashAccountIds, query),
       ]);
 
@@ -105,28 +105,33 @@ export class CashFlowArticlesService {
    */
   private cashBalanceBefore(
     cashAccountIds: Set<number>,
-    fromDate: Date | string,
+    query: ICashFlowArticlesQuery,
   ): Promise<number> {
-    return this.cashBalance(cashAccountIds, (qb) => {
-      qb.where('date', '<', fromDate);
+    return this.cashBalance(cashAccountIds, query, (qb) => {
+      qb.where('date', '<', query.fromDate);
     });
   }
 
   /** Остаток денег на конец периода: всё по последний день включительно. */
   private cashBalanceThrough(
     cashAccountIds: Set<number>,
-    toDate: Date | string,
+    query: ICashFlowArticlesQuery,
   ): Promise<number> {
-    return this.cashBalance(cashAccountIds, (qb) => {
-      qb.where('date', '<=', toDate);
+    return this.cashBalance(cashAccountIds, query, (qb) => {
+      qb.where('date', '<=', query.toDate);
     });
   }
 
   /**
    * Денежные счета дебетовые: остаток равен дебету минус кредит.
+   *
+   * Остаток идёт через тот же отбор, что и разбивка по статьям (FT-008). Иначе
+   * при выбранном юрлице статьи считались бы по нему, а остатки — по всей
+   * группе, и строка «не разнесено» проглотила бы чужие деньги как свои.
    */
   private async cashBalance(
     cashAccountIds: Set<number>,
+    query: ICashFlowArticlesQuery,
     applyDate: (qb: any) => void,
   ): Promise<number> {
     if (cashAccountIds.size === 0) return 0;
@@ -138,6 +143,7 @@ export class CashFlowArticlesService {
         qb.sum('debit as debit');
         qb.whereIn('accountId', [...cashAccountIds]);
         applyDate(qb);
+        applyManagementReportScope(qb, query as any);
       });
 
     const row: any = (rows as any[])[0] ?? {};
@@ -167,10 +173,7 @@ export class CashFlowArticlesService {
           TRANSFER_TYPES as unknown as string[],
         );
         qb.modify('filterDateRange', query.fromDate, query.toDate);
-
-        if (!isEmpty(query.branchesIds)) {
-          qb.modify('filterByBranches', query.branchesIds);
-        }
+        applyManagementReportScope(qb, query as any);
       });
 
     let incoming = 0;

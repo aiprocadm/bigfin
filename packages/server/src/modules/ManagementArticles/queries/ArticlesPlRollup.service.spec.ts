@@ -102,10 +102,15 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
   // can assert which query modifiers the rollup applied for a given date range.
   const makeService = () => {
     const modify = jest.fn().mockReturnThis();
+    const where = jest.fn().mockReturnThis();
     const txnQb: any = {
       sum: jest.fn().mockReturnThis(),
       groupBy: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
+      whereIn: jest.fn().mockReturnThis(),
+      whereNull: jest.fn().mockReturnThis(),
+      orWhereNull: jest.fn().mockReturnThis(),
+      where,
       modify,
     };
     const txnBuilder = {
@@ -132,7 +137,7 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
       accountTransactionModel as any,
       accountModel as any,
     );
-    return { service, modify };
+    return { service, modify, where, txnQb };
   };
 
   it('applies the date filter when only fromDate is provided', async () => {
@@ -186,6 +191,7 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
       groupBy: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
       modify: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
       whereNull,
     };
     const txnBuilder = {
@@ -214,5 +220,40 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
     await service.getRollup({ unassignedProject: true } as any);
 
     expect(whereNull).toHaveBeenCalledWith('projectId');
+  });
+
+  /**
+   * FT-008 ТЗ-3: номер юрлица доходит до запроса к проводкам.
+   *
+   * Раньше свёртка принимала `legalEntityIds` и выбрасывала: «Деньги по
+   * статьям», бюджет и безубыточность считались по всей группе.
+   */
+  it('накладывает отбор по выбранному юрлицу', async () => {
+    const { service, where, txnQb } = makeService();
+
+    await service.getRollup({ legalEntityIds: [7] } as any);
+
+    const group = where.mock.calls.find(([arg]) => typeof arg === 'function');
+    expect(group).toBeDefined();
+
+    // Раскрываем группу «юрлицо ИЛИ пусто» на том же поддельном запросе.
+    group![0](txnQb);
+    expect(txnQb.whereIn).toHaveBeenCalledWith('legal_entity_id', [7]);
+  });
+
+  it('в сводном режиме убирает внутригрупповые обороты', async () => {
+    const { service, where } = makeService();
+
+    await service.getRollup({} as any);
+
+    expect(where).toHaveBeenCalledWith('is_intercompany', false);
+  });
+
+  it('отбирает по направлениям разреза отчёта', async () => {
+    const { service, txnQb } = makeService();
+
+    await service.getRollup({ projectsIds: [4] } as any);
+
+    expect(txnQb.whereIn).toHaveBeenCalledWith('project_id', [4]);
   });
 });

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { isEmpty } from 'lodash';
 import { AccountTransaction } from '@/modules/Accounts/models/AccountTransaction.model';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
@@ -7,6 +6,7 @@ import { ManagementArticle } from '../models/ManagementArticle.model';
 import { ManagementArticleAccount } from '../models/ManagementArticleAccount.model';
 import { ArticlesRollupQueryDto } from '../dtos/ArticlesRollupQuery.dto';
 import { PL_ARTICLE_KINDS } from '../constants';
+import { applyManagementReportScope } from '../utils/managementReportScope';
 
 interface ArticleRollupRow {
   id: number;
@@ -256,9 +256,8 @@ export class ArticlesPlRollupService {
         if (query.fromDate || query.toDate) {
           qb.modify('filterDateRange', query.fromDate, query.toDate);
         }
-        if (!isEmpty(query.branchesIds)) {
-          qb.modify('filterByBranches', query.branchesIds);
-        }
+        // Подразделения, юрлица, направления — одним общим местом (FT-008).
+        applyManagementReportScope(qb, query);
         if (query.projectId) {
           qb.modify('filterByProjects', [query.projectId]);
         }

@@ -74,3 +74,71 @@ describe('разрез по юрлицу наложен во всех отчёт
     });
   });
 });
+
+/**
+ * Управленческие отчёты (FT-008 ТЗ-3).
+ *
+ * ЧТО БЫЛО. Три службы ниже принимали номера юрлиц — и выбрасывали их. Этот
+ * сторож охранял только бухгалтерские отчёты, поэтому дыра прожила с этапа 7
+ * ТЗ-1 до аудита ТЗ-3: «Деньги по статьям», план-факт бюджета, рентабельность
+ * сделок и точка безубыточности считались по всей группе.
+ *
+ * ПОЧЕМУ СЧЁТ, А НЕ «ВЫЗОВ ЕСТЬ В ФАЙЛЕ». У «Денег по статьям» два запроса к
+ * проводкам: остатки и переводы. Отбор, поставленный в один из них, файл
+ * проверку «вызов есть» пройдёт, а отчёт при выбранном юрлице разойдётся сам
+ * с собой — статьи по одному юрлицу, остатки по всей группе. Поэтому каждый
+ * запрос к проводкам обязан иметь свой отбор: запросов столько же, сколько
+ * отборов.
+ */
+const MANAGEMENT = [
+  {
+    name: 'Свёртка ОПиУ по статьям',
+    file: '../ManagementArticles/queries/ArticlesPlRollup.service.ts',
+  },
+  {
+    name: 'Кассовая свёртка по статьям',
+    file: '../ManagementArticles/queries/ArticlesCashflowRollup.service.ts',
+  },
+  {
+    name: 'Отчёт «Деньги по статьям»',
+    file: 'modules/CashFlowArticles/CashFlowArticlesService.ts',
+  },
+];
+
+const SCOPE_HELPER = '../ManagementArticles/utils/managementReportScope.ts';
+
+const occurrences = (text: string, needle: string) =>
+  text.split(needle).length - 1;
+
+/** Сколько запросов к проводкам в коде идут мимо общего отбора. */
+function unscopedTransactionQueries(code: string): number {
+  return (
+    occurrences(code, 'accountTransactionModel()') -
+    occurrences(code, 'applyManagementReportScope(')
+  );
+}
+
+describe('разрез по юрлицу наложен в управленческих отчётах', () => {
+  it('общий отбор управленческих отчётов зовёт отбор по юрлицу', () => {
+    expect(source(SCOPE_HELPER)).toContain('applyLegalEntityScope(');
+  });
+
+  MANAGEMENT.forEach((report) => {
+    it(`${report.name}: каждый запрос к проводкам идёт через общий отбор`, () => {
+      const code = source(report.file);
+
+      expect(occurrences(code, 'accountTransactionModel()')).toBeGreaterThan(0);
+      expect(unscopedTransactionQueries(code)).toBe(0);
+    });
+  });
+
+  it('сторож и правда замечает запрос без отбора', () => {
+    // Мутация: убираем один отбор из настоящего файла. Сторож, который этого
+    // не замечает, — декорация.
+    const code = source('modules/CashFlowArticles/CashFlowArticlesService.ts');
+    const mutated = code.replace('applyManagementReportScope(', 'noop(');
+
+    expect(mutated).not.toBe(code);
+    expect(unscopedTransactionQueries(mutated)).toBe(1);
+  });
+});

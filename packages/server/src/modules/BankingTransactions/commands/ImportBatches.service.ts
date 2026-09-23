@@ -75,6 +75,10 @@ export class ImportBatchesService {
    * загрузить заново), а удалённую ЧЕЛОВЕКОМ — нет: он удалил её
    * осознанно, и сверка покажет её с пометкой «была удалена».
    *
+   * Если до отката строку успели разнести, её операция стирается вместе с
+   * ней, в транзакции импорта. Исключение — закрытый период: операцию там
+   * трогать нельзя, и строка остаётся дублем.
+   *
    * `purge: false` — для предпросмотра: он ничего не меняет в базе.
    */
   public async isDuplicate(
@@ -88,9 +92,10 @@ export class ImportBatchesService {
       .query(trx)
       .findOne({ accountId, externalId });
     if (!found) return false;
-    if (found.deletedAt && found.deleteReason === 'import_rollback' && !found.categorized) {
+    if (found.deletedAt && found.deleteReason === 'import_rollback') {
+      if (found.categorized && (await this.trash.isPeriodClosed(found.date))) return true;
       if (options.purge !== false) {
-        await this.uncategorizedModel().query(trx).deleteById(found.id);
+        await this.trash.purge([{ kind: 'bank_line', id: found.id }], trx);
       }
       return false;
     }

@@ -14,6 +14,7 @@ function makeTrash(options: { locked?: boolean } = {}) {
     [1, { id: 1, accountId: 1000, categorized: true, categorizeRefType: 'CashflowTransaction', categorizeRefId: 10, deletedAt: null }],
     [2, { id: 2, accountId: 1000, categorized: false, excludedAt: null, deletedAt: null }],
     [3, { id: 3, accountId: 1000, categorized: false, excludedAt: '2026-01-01', deletedAt: null }],
+    [4, { id: 4, accountId: 1000, categorized: true, categorizeRefType: 'CashflowTransaction', categorizeRefId: 11, deletedAt: '2026-09-01 10:00:00' }],
   ]);
   const calls: any = { revert: [], write: [], counter: [], hardDeleted: [] };
 
@@ -71,8 +72,9 @@ function makeTrash(options: { locked?: boolean } = {}) {
     },
   };
   const deleteCashflow = {
-    deleteCashflowTransaction: async (id: number) => {
+    deleteCashflowTransaction: async (id: number, tx: any) => {
       calls.hardDeleted.push(`cashflow:${id}`);
+      calls.deleteTx = tx;
       cashflow.delete(id);
     },
   };
@@ -141,5 +143,13 @@ describe('корзина операций (FT-042)', () => {
     });
     await service.purge([{ kind: 'cashflow', id: 11 }]);
     expect(calls.hardDeleted).toContain('cashflow:11');
+  });
+
+  it('чужая транзакция (импорт): разнесённая строка стирается вместе с операцией внутри неё', async () => {
+    const { service, calls, lines } = makeTrash();
+    await service.purge([{ kind: 'bank_line', id: 4 }], 'import-trx' as any);
+    expect(calls.hardDeleted).toContain('cashflow:11');
+    expect(calls.deleteTx).toBe('import-trx');
+    expect(lines.has(4)).toBe(false);
   });
 });

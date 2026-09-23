@@ -10,12 +10,14 @@ import { UnbalancedTab } from './UnbalancedTab';
 import { CrookedCurrencyTab } from './CrookedCurrencyTab';
 import { FailedMailsTab } from './FailedMailsTab';
 import { DriftedBalancesTab } from './DriftedBalancesTab';
+import { AccrualShiftsTab } from './AccrualShiftsTab';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 
 type TabKey =
   | 'unmapped'
   | 'duplicates'
   | 'pl_cashflow'
+  | 'accrual_shifts'
   | 'unbalanced'
   | 'crooked_currency'
   | 'drifted_balances'
@@ -25,6 +27,7 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'unmapped', label: 'data_quality.tab.unmapped' },
   { key: 'duplicates', label: 'data_quality.tab.duplicates' },
   { key: 'pl_cashflow', label: 'data_quality.tab.pl_cashflow' },
+  { key: 'accrual_shifts', label: 'data_quality.tab.accrual_shifts' },
   { key: 'unbalanced', label: 'data_quality.tab.unbalanced' },
   { key: 'crooked_currency', label: 'data_quality.tab.crooked_currency' },
   { key: 'drifted_balances', label: 'data_quality.tab.drifted_balances' },
@@ -99,6 +102,9 @@ export default function DataQualityPage() {
       )}
       {tab === 'pl_cashflow' && (
         <PlCashflowTab fromDate={fromDate} toDate={toDate} />
+      )}
+      {tab === 'accrual_shifts' && (
+        <AccrualShiftsTab fromDate={fromDate} toDate={toDate} />
       )}
       {tab === 'unbalanced' && (
         <UnbalancedTab fromDate={fromDate} toDate={toDate} />

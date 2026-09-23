@@ -27,6 +27,8 @@ export class AccountTransaction extends BaseModel {
    * для группы это перекладывание из кармана в карман.
    */
   public readonly isIntercompany: boolean;
+  /** Месяц начисления 'YYYY-MM' (FT-013 ТЗ-3); пусто — месяц даты. */
+  public readonly accrualPeriod: string | null;
   /** Юрлицо операции — наследуется от счёта (этап 8 ТЗ, §8.1). */
   public readonly legalEntityId: number | null;
   public readonly currencyCode: string;

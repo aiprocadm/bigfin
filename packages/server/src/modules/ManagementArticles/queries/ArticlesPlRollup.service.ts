@@ -7,6 +7,7 @@ import { ManagementArticleAccount } from '../models/ManagementArticleAccount.mod
 import { ArticlesRollupQueryDto } from '../dtos/ArticlesRollupQuery.dto';
 import { PL_ARTICLE_KINDS } from '../constants';
 import { applyManagementReportScope } from '../utils/managementReportScope';
+import { applyAccrualDateRange } from '../utils/accrualPeriod';
 
 interface ArticleRollupRow {
   id: number;
@@ -253,9 +254,9 @@ export class ArticlesPlRollupService {
         // Apply the date filter when EITHER bound is present — the
         // `filterDateRange` modifier guards each bound independently, so an
         // open-ended range (only-from or only-to) is valid.
-        if (query.fromDate || query.toDate) {
-          qb.modify('filterDateRange', query.fromDate, query.toDate);
-        }
+        // Месяц начисления (FT-013 ТЗ-3): операция с ним попадает в отчёт о
+        // прибыли своим месяцем, а не месяцем платежа.
+        applyAccrualDateRange(qb, query.fromDate, query.toDate);
         // Подразделения, юрлица, направления — одним общим местом (FT-008).
         applyManagementReportScope(qb, query);
         if (query.projectId) {

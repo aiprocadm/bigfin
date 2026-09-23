@@ -39,5 +39,8 @@ export const transformLedgerEntryToTransaction = (
 
     taxRateId: entry.taxRateId,
     taxRate: entry.taxRate,
+
+    // Месяц начисления (FT-013 ТЗ-3): только у тех, кто его задал.
+    ...(entry.accrualPeriod ? { accrualPeriod: entry.accrualPeriod } : {}),
   };
 };

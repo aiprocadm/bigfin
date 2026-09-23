@@ -4,12 +4,10 @@ import { ArticlesPlRollupService } from '@/modules/ManagementArticles/queries/Ar
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { Deal } from '@/modules/Deals/models/Deal.model';
 import { computeDealMargin } from '@/modules/Deals/utils/computeDealMargin';
+import { SettingsStore } from '@/modules/Settings/SettingsStore';
+import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
+import { AllocationTarget } from '../utils/allocationBases';
 
-/**
- * Computes revenue for each active deal over a period, without importing
- * the Deals module (avoiding a DI cycle). The Deal model token is globally
- * registered by Tenancy, and ArticlesPlRollupService is injected directly.
- */
 @Injectable()
 export class DealsRevenueService {
   constructor(
@@ -17,6 +15,9 @@ export class DealsRevenueService {
 
     @Inject(Deal.name)
     private readonly dealModel: TenantModelProxy<typeof Deal>,
+
+    @Inject(SETTINGS_PROVIDER)
+    private readonly settingsStore: () => Promise<SettingsStore>,
   ) {}
 
   /**
@@ -27,17 +28,45 @@ export class DealsRevenueService {
     fromDate?: string;
     toDate?: string;
   }): Promise<Record<number, number>> {
+    const metrics = await this.metricsByDeal(period);
+    return Object.fromEntries(
+      Object.entries(metrics).map(([id, m]) => [Number(id), m.revenue ?? 0]),
+    );
+  }
+
+  /**
+   * Базы распределения по сделкам (FT-011 ТЗ-3): выручка, валовая прибыль
+   * сделки и ФОТ — сумма статьи зарплаты из настроек «Зарплаты» (с
+   * подстатьями, как их и показывает свёртка).
+   */
+  public async metricsByDeal(period: {
+    fromDate?: string;
+    toDate?: string;
+  }): Promise<Record<number, AllocationTarget>> {
     const deals: any[] = await this.dealModel().query();
+    const store = await this.settingsStore();
+    const payrollArticleId =
+      Number(store?.get({ group: 'payroll', key: 'payroll_article_id' })) || null;
 
     const entries = await Promise.all(
       deals.map(async (d) => {
-        const rows = await this.rollup.getRollup({
+        const rows: any[] = await this.rollup.getRollup({
           projectId: d.id,
           fromDate: period.fromDate,
           toDate: period.toDate,
         } as any);
-        const { revenue } = computeDealMargin(rows as any);
-        return [d.id, revenue] as const;
+        const { revenue, profit } = computeDealMargin(rows as any);
+        const payroll = payrollArticleId
+          ? Number(rows.find((row) => row.id === payrollArticleId)?.amount ?? 0)
+          : 0;
+        const target: AllocationTarget = {
+          id: d.id,
+          name: d.name ?? `№ ${d.id}`,
+          revenue,
+          grossProfit1: profit,
+          productionPayroll: payroll,
+        };
+        return [d.id, target] as const;
       }),
     );
 

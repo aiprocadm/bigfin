@@ -21,6 +21,7 @@ import {
   getCostAllocationRuleSchema,
   CostAllocationRuleFormValues,
   ALLOCATION_KEYS,
+  ALLOCATION_TARGET_TYPES,
 } from './schemas';
 import { DateField } from '@/components/ui/date-field';
 import { ManualSharesField } from './ManualSharesField';
@@ -55,6 +56,7 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
       allocationKey: initialValues?.allocationKey ?? 'revenue',
       manualShares: initialValues?.manualShares ?? {},
       targetDealIds: initialValues?.targetDealIds ?? [],
+      targetType: initialValues?.targetType ?? 'deal',
       validFrom: initialValues?.validFrom ?? '',
       validTo: initialValues?.validTo ?? '',
       isActive: initialValues?.isActive ?? true,
@@ -148,6 +150,30 @@ export function CostAllocationRuleDialog({ initialValues, onDone, onCancel }: Pr
                     </select>
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Между кем делить (FT-011 ТЗ-3). */}
+            <FormField
+              control={form.control}
+              name="targetType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{intl.get('cost_allocation.field.target_type')}</FormLabel>
+                  <FormControl>
+                    <select
+                      className={selectClassName}
+                      value={field.value ?? 'deal'}
+                      onChange={(event) => field.onChange(event.target.value)}
+                    >
+                      {ALLOCATION_TARGET_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                          {intl.get(`cost_allocation.target_type.${type}`)}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
                 </FormItem>
               )}
             />

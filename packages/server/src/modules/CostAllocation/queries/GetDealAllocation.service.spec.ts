@@ -21,7 +21,14 @@ describe('GetDealAllocationService', () => {
   ) => {
     const poolService = { poolFor: jest.fn().mockResolvedValue(pool) };
     const revenueService = {
-      revenueByDeal: jest.fn().mockResolvedValue(revenueByDeal),
+      metricsByDeal: jest.fn().mockResolvedValue(
+        Object.fromEntries(
+          Object.entries(revenueByDeal).map(([id, revenue]) => [
+            id,
+            { id: Number(id), name: `Сделка ${id}`, revenue, grossProfit1: revenue / 2 },
+          ]),
+        ),
+      ),
     };
     // ruleModel().query() resolves to `rules` array directly
     const model = () => ({ query: () => Promise.resolve(rules) });
@@ -59,5 +66,23 @@ describe('GetDealAllocationService', () => {
     );
     const lines = await svc.getForDeal(1, {});
     expect(lines[0].amount).toBe(50);
+  });
+
+  it('пустой список сделок у правила — все сделки, а не «никому» (FT-011)', async () => {
+    const svc = build([{ ...rule, targetDealIds: [] }], 100, { 1: 300, 2: 100 });
+    expect((await svc.getForDeal(1, {}))[0].amount).toBe(75);
+  });
+
+  it('новые базы: поровну и по ВП1', async () => {
+    const equal = build([{ ...rule, allocationKey: 'equal' }], 100, { 1: 300, 2: 100 });
+    expect((await equal.getForDeal(2, {}))[0].amount).toBe(50);
+
+    const gp1 = build([{ ...rule, allocationKey: 'gross_profit_1' }], 100, { 1: 300, 2: 100 });
+    expect((await gp1.getForDeal(1, {}))[0].amount).toBe(75);
+  });
+
+  it('правило «по направлениям» в прибыльность сделки не идёт', async () => {
+    const svc = build([{ ...rule, targetType: 'direction' }], 100, { 1: 300, 2: 100 });
+    expect(await svc.getForDeal(1, {})).toEqual([]);
   });
 });

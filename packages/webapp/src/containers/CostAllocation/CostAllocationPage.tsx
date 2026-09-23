@@ -15,7 +15,14 @@ import { ModuleDisabled } from '@/components/ui/module-disabled';
 interface RuleRow {
   id: number;
   name: string;
-  allocationKey: 'revenue' | 'manual_share';
+  allocationKey:
+    | 'revenue'
+    | 'production_payroll'
+    | 'gross_profit_1'
+    | 'equal'
+    | 'manual_share';
+  /** Между кем делится пул (FT-011 ТЗ-3). */
+  targetType?: 'deal' | 'direction';
   sourceArticleId: number;
   manualShares?: Record<string, number> | null;
   targetDealIds?: number[] | null;
@@ -67,6 +74,7 @@ export default function CostAllocationPage() {
             sourceArticleId: editingRule.sourceArticleId,
             manualShares: editingRule.manualShares ?? {},
             targetDealIds: editingRule.targetDealIds ?? [],
+            targetType: editingRule.targetType ?? 'deal',
             isActive: editingRule.isActive,
             validFrom: editingRule.validFrom ?? undefined,
             validTo: editingRule.validTo ?? undefined,

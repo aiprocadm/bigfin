@@ -31,6 +31,7 @@ import { DialogsName } from '@/constants/dialogs';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
 import { BulkActionsBar } from './BulkActionsBar';
+import { AccrualBulkBar } from './AccrualBulkBar';
 import {
   DEFAULT_REGISTRY_COLUMNS,
   OPTIONAL_COLUMNS,
@@ -162,8 +163,9 @@ export default function AllTransactionsPage() {
   const rows = isAwaiting ? awaiting : transactions;
   const shownTotal = isAwaiting ? awaitingTotal : total;
 
-  // Выделение строк — только в режиме разноски: массовые действия применимы
-  // к строкам выписки, а не к уже проведённым операциям.
+  // Выделение строк: в режиме разноски — строки выписки (разнести,
+  // исключить); в обычном списке — проведённые операции (месяц начисления,
+  // FT-013 ТЗ-3).
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   React.useEffect(() => {
@@ -172,8 +174,13 @@ export default function AllTransactionsPage() {
   }, [isAwaiting, location.search]);
 
   const selectedRows = React.useMemo(
-    () => awaiting.filter((row: any) => selectedIds.includes(String(row.id))),
-    [awaiting, selectedIds],
+    () =>
+      isAwaiting
+        ? awaiting.filter((row: any) => selectedIds.includes(String(row.id)))
+        : (transactions as any[]).filter((row: any) =>
+            selectedIds.includes(getRowId(row)),
+          ),
+    [isAwaiting, awaiting, transactions, selectedIds],
   );
 
   return (
@@ -412,11 +419,18 @@ export default function AllTransactionsPage() {
             searchPlaceholder={intl.get('all_transactions.search_placeholder')}
             selectedCount={selectedRows.length}
             bulkActions={
-              <BulkActionsBar
-                rows={selectedRows}
-                accounts={chartAccounts as any[]}
-                onDone={() => setSelectedIds([])}
-              />
+              isAwaiting ? (
+                <BulkActionsBar
+                  rows={selectedRows}
+                  accounts={chartAccounts as any[]}
+                  onDone={() => setSelectedIds([])}
+                />
+              ) : (
+                <AccrualBulkBar
+                  rows={selectedRows}
+                  onDone={() => setSelectedIds([])}
+                />
+              )
             }
           />
 
@@ -425,7 +439,7 @@ export default function AllTransactionsPage() {
             data={rows}
             getRowId={isAwaiting ? getUncategorizedRowId : getRowId}
             loading={isAwaiting ? isAwaitingLoading : isLoading}
-            enableSelection={isAwaiting}
+            enableSelection
             selectedIds={selectedIds}
             onSelectionChange={setSelectedIds}
             // На телефоне строка выкладывается блоком, а не столбцами:

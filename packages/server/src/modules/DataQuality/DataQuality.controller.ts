@@ -74,6 +74,16 @@ export class DataQualityController {
     return this.application.getPlCashflowComparison(query);
   }
 
+  @Get('accrual-shifts')
+  @ApiOperation({
+    summary:
+      'Операции, у которых месяц начисления или дата платежа вне периода (FT-013).',
+  })
+  async getAccrualShifts(@Query() query: DataQualityQueryDto) {
+    await this.assertEnabled();
+    return this.application.getAccrualShifts(query);
+  }
+
   @Get('unbalanced-journals')
   @ApiOperation({
     summary: 'Documents whose journal does not balance (debit ≠ credit).',

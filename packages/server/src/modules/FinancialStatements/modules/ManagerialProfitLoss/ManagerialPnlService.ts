@@ -9,6 +9,11 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { SettingsStore } from '@/modules/Settings/SettingsStore';
 import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
 import { readOrganizationCalendar } from '@/modules/Settings/organizationCalendar';
+import { excludedReferenceTypes, readPnlSources } from './pnlSources';
+import { spreadIndirectCosts } from './spreadIndirect';
+import { expandPayrollByEmployees } from './payrollByEmployees';
+import { PayrollByEmployeesService } from './PayrollByEmployees.service';
+import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocationRule.model';
 import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
 import {
@@ -66,17 +71,50 @@ export class ManagerialPnlService {
 
     @Inject(SETTINGS_PROVIDER)
     private readonly settingsStore: () => Promise<SettingsStore>,
+
+    @Inject(CostAllocationRule.name)
+    private readonly ruleModel: TenantModelProxy<typeof CostAllocationRule>,
+
+    private readonly payrollByEmployees: PayrollByEmployeesService,
   ) {}
 
   public async sheet(query: ManagerialPnlQueryDto): Promise<ManagerialPnlSheet> {
     const group = query.group ?? 'articles';
     const basis = query.basis ?? 'accrual';
     const dateGroup = query.dateGroup ?? 'month';
-    const { weekStartDay } = readOrganizationCalendar(await this.settingsStore());
+    const settings = await this.settingsStore();
+    const { weekStartDay } = readOrganizationCalendar(settings);
     const periods = this.periodsOf(query, dateGroup, weekStartDay);
+    // Откуда берутся данные (FT-012 ТЗ-3): выключенный модуль не читается.
+    const sources = readPnlSources(settings);
 
-    const loaded = await this.source.load(query, periods, basis);
+    const loaded = await this.source.load(
+      query,
+      periods,
+      basis,
+      excludedReferenceTypes(sources),
+    );
     const projectNames = await this.projectNames(loaded.entriesByPeriod.flat());
+
+    // Распределение косвенных по направлениям (FT-011 ТЗ-3) — только когда
+    // ярусы раскрыты до направлений: на вкладке «статьи» итоги от него не
+    // меняются, и делать его незачем.
+    const spreadBase = query.spreadBase ?? 'revenue';
+    let spread: { base: string; applied: boolean; zeroBasePeriods: number } | null = null;
+    if (query.spreadIndirect && group !== 'articles') {
+      const result = spreadIndirectCosts({
+        entriesByPeriod: loaded.entriesByPeriod,
+        articles: loaded.articles,
+        base: spreadBase,
+        projectName: (id) => projectNames.get(id),
+        payrollArticleId:
+          Number(settings.get({ group: 'payroll', key: 'payroll_article_id' })) || null,
+        manualShares:
+          spreadBase === 'manual_share' ? await this.directionManualShares() : undefined,
+      });
+      loaded.entriesByPeriod = result.entriesByPeriod;
+      spread = { base: spreadBase, applied: true, zeroBasePeriods: result.zeroBasePeriods };
+    }
     const context = {
       articles: loaded.articles,
       group,
@@ -95,7 +133,49 @@ export class ManagerialPnlService {
       total: buildManagerialPnlColumn(loaded.entriesByPeriod.flat(), context),
     };
 
-    return { data, query, meta: await this.meta(query, basis) };
+    // «ФОТ по сотрудникам» (FT-014 ТЗ-3): строка зарплаты раскрывается до
+    // сотрудников из утверждённых расчётов; суммы отчёта не меняются.
+    const payroll = await this.payrollByEmployees.load({
+      settings,
+      periods,
+      basis,
+      group,
+      legalEntityIds: query.legalEntityIds,
+    });
+    let payrollStatus: string = payroll.status;
+    if (payroll.status === 'applied' && payroll.payrollArticleId) {
+      const articleId = payroll.payrollArticleId;
+      const total = expandPayrollByEmployees(
+        data.total,
+        articleId,
+        payroll.byPeriod.flat(),
+        payroll.roster,
+      );
+      data.total = total.column;
+      data.periods = data.periods.map((period, index) => ({
+        ...period,
+        column: expandPayrollByEmployees(
+          period.column,
+          articleId,
+          payroll.byPeriod[index],
+          payroll.roster,
+        ).column,
+      }));
+      // Статье зарплаты не задан ярус — раскрывать нечего, и экран скажет.
+      if (!total.found) payrollStatus = 'no_tier';
+    }
+
+    return {
+      data,
+      query,
+      meta: {
+        ...(await this.meta(query, basis)),
+        pnlSources: sources,
+        // Какая база применена (критерий 4 FT-011) и где она оказалась нулевой.
+        spread,
+        payrollGrouping: { mode: payroll.mode, status: payrollStatus },
+      },
+    };
   }
 
   private periodsOf(
@@ -116,6 +196,19 @@ export class ManagerialPnlService {
       }
       throw error;
     }
+  }
+
+  /**
+   * Ручные доли направлений — из действующего правила распределения с целью
+   * «направления» и ключом «вручную» (FT-011 ТЗ-3).
+   */
+  private async directionManualShares(): Promise<Record<string, number>> {
+    const rules: any[] = await this.ruleModel().query();
+    const rule = rules.find(
+      (r) =>
+        r.isActive && r.targetType === 'direction' && r.allocationKey === 'manual_share',
+    );
+    return (rule?.manualShares ?? {}) as Record<string, number>;
   }
 
   private async projectNames(entries: { projectId: number | null }[]) {

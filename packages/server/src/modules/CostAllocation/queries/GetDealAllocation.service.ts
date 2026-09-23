@@ -2,7 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CostAllocationRule } from '../models/CostAllocationRule.model';
-import { allocatePool, AllocationWeight } from '../utils/allocatePool';
+import { allocateByBase, AllocationBase, AllocationTarget } from '../utils/allocationBases';
 import { AllocationPoolService } from './AllocationPool.service';
 import { DealsRevenueService } from './DealsRevenue.service';
 
@@ -27,23 +27,31 @@ export class GetDealAllocationService {
     period: { fromDate?: string; toDate?: string },
   ): Promise<DealAllocationLine[]> {
     const rules: any[] = await this.ruleModel().query();
+    // Правила «по направлениям» (FT-011 ТЗ-3) — для управленческого ОПиУ, а
+    // не для прибыльности сделки.
     const active = rules.filter(
-      (r) => r.isActive && this.inWindow(r, period),
+      (r) =>
+        r.isActive &&
+        (r.targetType ?? 'deal') === 'deal' &&
+        this.inWindow(r, period),
     );
 
-    // Compute the period's revenue-by-deal map once and reuse it for every
-    // revenue-keyed rule, instead of recomputing the same map per rule.
-    const needsRevenue = active.some((r) => r.allocationKey === 'revenue');
-    const revenueByDeal = needsRevenue
-      ? await this.revenue.revenueByDeal(period)
+    // Базы сделок считаются один раз на все правила, а не на каждое.
+    const needsMetrics = active.some((r) => r.allocationKey !== 'manual_share');
+    const metricsByDeal: Record<number, AllocationTarget> = needsMetrics
+      ? await this.revenue.metricsByDeal(period)
       : {};
 
     const lines: DealAllocationLine[] = [];
     for (const r of active) {
       const pool = await this.pool.poolFor(r.sourceArticleId, period);
       if (pool <= 0) continue; // skip empty/negative overhead pools (v1)
-      const weights = this.weightsFor(r, revenueByDeal);
-      const split = allocatePool(pool, weights);
+      const split = allocateByBase(
+        pool,
+        r.allocationKey as AllocationBase,
+        this.targetsFor(r, metricsByDeal),
+        r.manualShares ?? {},
+      ).amounts;
       const mine = split.find((s) => s.dealId === dealId);
       if (mine && mine.amount !== 0) {
         lines.push({
@@ -66,18 +74,28 @@ export class GetDealAllocationService {
     return true;
   }
 
-  private weightsFor(
+  /**
+   * Цели правила. Пустой список — ВСЕ сделки: окно правила сохраняло
+   * `[]` там, где человек ничего не выбирал, и такое правило молча не
+   * распределяло ничего (найдено при разборе FT-011).
+   */
+  private targetsFor(
     r: any,
-    revenueByDeal: Record<number, number>,
-  ): AllocationWeight[] {
+    metricsByDeal: Record<number, AllocationTarget>,
+  ): AllocationTarget[] {
     if (r.allocationKey === 'manual_share') {
-      return Object.entries(r.manualShares ?? {}).map(([dealId, weight]) => ({
-        dealId: Number(dealId),
-        weight: Number(weight),
+      return Object.keys(r.manualShares ?? {}).map((id) => ({
+        ...(metricsByDeal[Number(id)] ?? {}),
+        id: Number(id),
+        name: metricsByDeal[Number(id)]?.name ?? `№ ${id}`,
       }));
     }
-    const ids: number[] =
-      r.targetDealIds ?? Object.keys(revenueByDeal).map(Number);
-    return ids.map((id: number) => ({ dealId: id, weight: revenueByDeal[id] ?? 0 }));
+    const chosen: number[] | null =
+      (r.targetIds?.length ? r.targetIds : null) ??
+      (r.targetDealIds?.length ? r.targetDealIds : null);
+    const ids = chosen ?? Object.keys(metricsByDeal).map(Number);
+    return ids.map(
+      (id) => metricsByDeal[id] ?? { id, name: `№ ${id}`, revenue: 0 },
+    );
   }
 }

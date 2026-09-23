@@ -89,6 +89,8 @@ export class CreateBankTransactionService {
       // забыть в нём поле — значит молча потерять выбор человека, ничего
       // при этом не сломав.
       'isIntercompany',
+      // Месяц начисления (FT-013 ТЗ-3) — тот же белый список.
+      'accrualPeriod',
     ]);
     // Retreive the next invoice number.
     const autoNextNumber = await this.autoIncrement.getNextTransactionNumber();

@@ -56,6 +56,7 @@ import {
 } from './MoneyIn.zod';
 import { showApiError } from '@/utils/showApiError';
 import { IntercompanyField } from '@/components/legal-entities/IntercompanyField';
+import { AccrualPeriodField } from '../../AccrualPeriodField';
 
 // ---------------------------------------------------------------------------
 // Типы данных и локальные касты легаси-хуков (сами хуки без типов).
@@ -291,6 +292,7 @@ function MoneyInFormInner({
       exchange_rate: '1',
       description: '',
       is_intercompany: false,
+      accrual_period: '',
     },
   });
 
@@ -403,6 +405,9 @@ function MoneyInFormInner({
       // Без этой строки галочка «внутригрупповая» была бы пустой кнопкой —
       // нажимается, а ничего не меняет (остаток К2).
       is_intercompany: Boolean(values.is_intercompany),
+      // Месяц начисления (FT-013 ТЗ-3) — в белом списке, иначе до сервера
+      // не доедет. Пусто — не отправляем вовсе.
+      ...(values.accrual_period ? { accrual_period: values.accrual_period } : {}),
       ...(transactionNoManually
         ? { transaction_number_manually: transactionNoManually }
         : {}),
@@ -700,6 +705,9 @@ function MoneyInFormInner({
               {/* Внутригрупповая операция (остаток К2). Поля нет вовсе,
                   пока юрлицо одно: внутригрупповых операций не бывает. */}
               <IntercompanyField name="is_intercompany" />
+
+              {/* Месяц начисления (FT-013 ТЗ-3). */}
+              <AccrualPeriodField />
 
               {/* Описание */}
               <FormField

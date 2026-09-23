@@ -14,6 +14,10 @@ import {
 import { accountNet } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/managementReportScope';
 import { PL_ARTICLE_KINDS } from '@/modules/ManagementArticles/constants';
+import {
+  applyAccrualDateRange,
+  profitDateOf,
+} from '@/modules/ManagementArticles/utils/accrualPeriod';
 import { ACCOUNT_TYPE } from '@/constants/accounts';
 import { ReportPeriod } from '../CashFlowArticles/periodizeRows';
 import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentReceivedEntry';
@@ -57,6 +61,7 @@ export interface PnlEntry {
 
 export interface PnlSource {
   articles: any[];
+  // Изменяемо намеренно: распределение косвенных (FT-011) подменяет записи.
   /** Счета: имя, сторона, тип — для строк «счёт без статьи». */
   accountsById: Map<number, { name: string; accountNormal: string; accountType: string }>;
   entriesByPeriod: PnlEntry[][];
@@ -103,10 +108,15 @@ export class ManagerialPnlSourceService {
     >,
   ) {}
 
+  /**
+   * @param excluded виды документов отключённых источников (FT-012 ТЗ-3):
+   *   их проводки отчёт не читает, но и не удаляет.
+   */
   public async load(
     query: any,
     periods: ReportPeriod[],
     basis: PnlBasis,
+    excluded: Set<string> = new Set(),
   ): Promise<PnlSource> {
     const articles = await this.articleModel()
       .query()
@@ -173,6 +183,7 @@ export class ManagerialPnlSourceService {
         legs.forEach((leg) => {
           if (!settledKeys.has(`${leg.referenceType}:${leg.referenceId}`)) return;
           if (loaded.isCashAccount(leg.accountId)) return;
+          if (excluded.has(leg.referenceType)) return;
           push(
             index,
             leg.accountId,
@@ -188,8 +199,16 @@ export class ManagerialPnlSourceService {
       // счетов признаются по факту платежа — тем же правилом, что в
       // бухгалтерском ОПиУ по деньгам (иначе два отчёта «по деньгам»
       // разошлись бы в выручке; найдено живой проверкой этапа 32).
-      const settledLegs = loaded.allLegs.filter((leg) =>
-        settledKeys.has(`${leg.referenceType}:${leg.referenceId}`),
+      // Оплата счёта признаёт доход счёта — значит, выключенные «Сделки»
+      // выключают и её (FT-012 ТЗ-3).
+      const paymentOf: Record<string, string> = {
+        PaymentReceive: 'SaleInvoice',
+        BillPayment: 'Bill',
+      };
+      const settledLegs = loaded.allLegs.filter(
+        (leg) =>
+          settledKeys.has(`${leg.referenceType}:${leg.referenceId}`) &&
+          !excluded.has(paymentOf[leg.referenceType] ?? ''),
       );
       const recognized = await recognizeSettlementLegs(
         settledLegs as any,
@@ -219,21 +238,24 @@ export class ManagerialPnlSourceService {
     const rows: any[] = await this.accountTransactionModel()
       .query()
       .onBuild((qb: any) => {
-        qb.select(['accountId', 'projectId', 'date']);
+        qb.select(['accountId', 'projectId', 'date', 'accrualPeriod']);
         qb.sum('credit as credit');
         qb.sum('debit as debit');
-        qb.groupBy(['accountId', 'projectId', 'date']);
-        qb.modify(
-          'filterDateRange',
+        qb.groupBy(['accountId', 'projectId', 'date', 'accrualPeriod']);
+        // Месяц начисления (FT-013 ТЗ-3): операция с ним идёт в свой месяц.
+        applyAccrualDateRange(
+          qb,
           periods[0].fromDate,
           periods[periods.length - 1].toDate,
         );
         // Подразделения, юрлица, направления — одним общим местом (FT-008).
         applyManagementReportScope(qb, query);
+        // Отключённые источники данных (FT-012 ТЗ-3).
+        if (excluded.size) qb.whereNotIn('referenceType', [...excluded]);
       });
 
     rows.forEach((row) => {
-      const index = periodIndexOf(periods, legDate(row));
+      const index = periodIndexOf(periods, profitDateOf(row, periods[0].fromDate));
       if (index < 0) return;
       push(
         index,

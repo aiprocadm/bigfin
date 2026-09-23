@@ -41,10 +41,15 @@ import {
   ManagerialPnlQuery,
   PNL_GROUPINGS,
   PnlGrouping,
+  SPREAD_BASES,
+  SpreadBase,
   pnlQueryFromSearch,
   pnlRows,
   pnlSearchFromQuery,
 } from './managerialPnlRows';
+import { hasWaterfall, pnlWaterfall } from './pnlWaterfall';
+import { PnlWaterfallChart } from './PnlWaterfallChart';
+import { PnlSourcesPanel } from './PnlSourcesPanel';
 
 /**
  * Нет права на управленческий ОПиУ: у ролей, заведённых до его появления,
@@ -66,6 +71,9 @@ interface LegalEntityOption {
  * Строится от яруса статьи (`pl_type`), а не от вида счёта: собственник
  * настраивает ярус в карточке статьи, а не в плане счетов.
  */
+
+/** Причины, по которым ФОТ не раскрыт до сотрудников (FT-014 ТЗ-3). */
+const PAYROLL_STATUS_NOTES = ['no_access', 'no_article', 'grouping', 'legal_entity', 'no_tier'];
 export default function ManagerialPnl() {
   const location = useLocation();
   const history = useHistory();
@@ -99,6 +107,7 @@ export default function ManagerialPnl() {
   );
   const { data, isLoading, isFetching, isError, error, refetch } =
     useManagerialPnlTable(serverQuery, { keepPreviousData: true }) as any;
+  const payrollGrouping = data?.meta?.payroll_grouping ?? data?.meta?.payrollGrouping;
   const { data: legalEntities } = useLegalEntities() as {
     data?: LegalEntityOption[];
   };
@@ -157,6 +166,17 @@ export default function ManagerialPnl() {
       reportTo: query.toDate,
     });
   };
+
+  // Водопад (FT-015) — из последней колонки таблицы: это «Итого», а при
+  // одной колонке — она сама. Второго запроса нет.
+  const waterfall = React.useMemo(() => {
+    const values = new Map<string, number>();
+    serverRows.forEach((row: any) => {
+      const last = row.cells[row.cells.length - 1];
+      values.set(row.id, Number(last?.value) || 0);
+    });
+    return pnlWaterfall((id) => values.get(id) ?? 0);
+  }, [serverRows]);
 
   const revenueRow = serverRows.find((row: any) => row.id === 'revenue');
   const hasMovement = serverRows.some((row: any) =>
@@ -257,6 +277,63 @@ export default function ManagerialPnl() {
         </div>
       </div>
 
+      {/* Распределение косвенных по направлениям (FT-011 ТЗ-3) — только
+          когда ярусы раскрыты до направлений: иначе его не видно. */}
+      {(query.group ?? 'articles') !== 'articles' && (
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          <label className="flex items-center gap-2 text-text-secondary">
+            <Checkbox
+              checked={Boolean(query.spreadIndirect)}
+              onCheckedChange={(checked: boolean) =>
+                setQuery({ spreadIndirect: Boolean(checked) })
+              }
+            />
+            {intl.get('managerial_pnl.spread.toggle')}
+          </label>
+          {query.spreadIndirect && (
+            <label className="flex items-center gap-1 text-xs text-text-secondary">
+              {intl.get('managerial_pnl.spread.base')}
+              <select
+                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
+                value={query.spreadBase ?? 'revenue'}
+                onChange={(event) =>
+                  setQuery({ spreadBase: event.target.value as SpreadBase })
+                }
+              >
+                {SPREAD_BASES.map((base) => (
+                  <option key={base} value={base}>
+                    {intl.get(`cost_allocation.key.${base}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {/* Какая база применена и где не сработала (критерий 4 FT-011). */}
+          {data?.meta?.spread && (
+            <span className="text-xs text-text-muted">
+              {Number(data.meta.spread.zero_base_periods ?? data.meta.spread.zeroBasePeriods) > 0
+                ? intl.get('managerial_pnl.spread.zero_base')
+                : intl.get('managerial_pnl.spread.applied', {
+                    base: intl.get(`cost_allocation.key.${data.meta.spread.base}`),
+                  })}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Откуда берутся данные (FT-012 ТЗ-3). */}
+      <PnlSourcesPanel
+        sources={data?.meta?.pnl_sources ?? data?.meta?.pnlSources}
+        payrollGrouping={payrollGrouping?.mode}
+      />
+      {/* Почему зарплата не раскрыта до сотрудников (FT-014 ТЗ-3). */}
+      {payrollGrouping?.mode === 'employees' &&
+        PAYROLL_STATUS_NOTES.includes(payrollGrouping.status) && (
+          <p className="text-xs text-text-muted">
+            {intl.get(`managerial_pnl.payroll.status.${payrollGrouping.status}`)}
+          </p>
+        )}
+
       {screenState === 'loading' ? (
         <div className="flex flex-col gap-2 rounded-default border border-border p-6">
           {Array.from({ length: 8 }, (_, row) => (
@@ -292,6 +369,8 @@ export default function ManagerialPnl() {
           </Link>
         </div>
       ) : (
+        <>
+        {hasWaterfall(waterfall) && <PnlWaterfallChart steps={waterfall} />}
         <ReportSheet
           sheetType={intl.get('managerial_pnl.title')}
           dateText={data?.meta?.formatted_date_range}
@@ -312,6 +391,7 @@ export default function ManagerialPnl() {
             maxBodyHeight={680}
           />
         </ReportSheet>
+        </>
       )}
 
       <ReportDrillDownPanel

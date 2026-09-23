@@ -43,6 +43,10 @@ export class BankTransactionGL {
       isIntercompany: Boolean(
         (this.bankTransactionModel as any).isIntercompany,
       ),
+
+      // Месяц начисления (FT-013 ТЗ-3) живёт у документа и переносится на
+      // каждую проводку: отчёт о прибыли читает проводки.
+      accrualPeriod: (this.bankTransactionModel as any).accrualPeriod ?? null,
     };
   }
 

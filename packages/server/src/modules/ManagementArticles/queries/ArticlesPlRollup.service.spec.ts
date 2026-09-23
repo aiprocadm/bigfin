@@ -140,28 +140,60 @@ describe('ArticlesPlRollupService.getRollup (date filter)', () => {
     return { service, modify, where, txnQb };
   };
 
+  /**
+   * Условия отбора по датам, развёрнутые из вложенных `where(fn)`: с месяцем
+   * начисления (FT-013 ТЗ-3) отбор — «по дате ИЛИ по месяцу начисления».
+   */
+  const conditionsOf = (where: jest.Mock) => {
+    const found: any[] = [];
+    const recorder = (): any => {
+      const qb: any = {
+        where: (...args: any[]) => {
+          if (typeof args[0] === 'function') args[0](recorder());
+          else found.push(args);
+          return qb;
+        },
+        orWhere: (fn: any) => {
+          fn(recorder());
+          return qb;
+        },
+        whereNull: (column: string) => {
+          found.push([column, 'is null']);
+          return qb;
+        },
+        whereNotNull: (column: string) => {
+          found.push([column, 'is not null']);
+          return qb;
+        },
+      };
+      return qb;
+    };
+    where.mock.calls
+      .filter(([arg]) => typeof arg === 'function')
+      .forEach(([fn]) => fn(recorder()));
+    return found;
+  };
+
   it('applies the date filter when only fromDate is provided', async () => {
-    const { service, modify } = makeService();
+    const { service, where } = makeService();
 
     await service.getRollup({ fromDate: '2026-01-01' } as any);
 
-    expect(modify).toHaveBeenCalledWith(
-      'filterDateRange',
-      '2026-01-01',
-      undefined,
-    );
+    const conditions = conditionsOf(where);
+    expect(conditions).toContainEqual(['date', '>=', '2026-01-01']);
+    expect(conditions).toContainEqual(['accrualPeriod', '>=', '2026-01']);
+    expect(conditions.some(([column, op]) => column === 'date' && op === '<=')).toBe(false);
   });
 
   it('applies the date filter when only toDate is provided', async () => {
-    const { service, modify } = makeService();
+    const { service, where } = makeService();
 
     await service.getRollup({ toDate: '2026-12-31' } as any);
 
-    expect(modify).toHaveBeenCalledWith(
-      'filterDateRange',
-      undefined,
-      '2026-12-31',
-    );
+    const conditions = conditionsOf(where);
+    expect(conditions).toContainEqual(['date', '<=', '2026-12-31']);
+    expect(conditions).toContainEqual(['accrualPeriod', '<=', '2026-12']);
+    expect(conditions.some(([column, op]) => column === 'date' && op === '>=')).toBe(false);
   });
 
   it('does not apply the date filter when neither bound is provided', async () => {

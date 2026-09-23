@@ -70,13 +70,25 @@ export function cashNetsByAccount(
   }));
 }
 
-/** Дата ноги строкой `ГГГГ-ММ-ДД` — база отдаёт её объектом даты. */
+const pad2 = (value: number): string => (value < 10 ? `0${value}` : `${value}`);
+
+/**
+ * Дата ноги строкой `ГГГГ-ММ-ДД` — база отдаёт её объектом даты.
+ *
+ * Без библиотеки дат: функция зовётся на каждую ногу отчёта, а на 50 000
+ * операций разбор через moment съедал заметную долю из трёх секунд,
+ * отведённых отчёту (FT-001). Дата читается в местном времени — так же, как
+ * её отдаёт драйвер базы, поэтому граница месяца не сдвигается.
+ */
 export function legDate(leg: { date?: Date | string | null }): string | null {
   if (!leg.date) return null;
   if (typeof leg.date === 'string') return leg.date.slice(0, 10);
+  if (!(leg.date instanceof Date) || Number.isNaN(leg.date.getTime())) {
+    return null;
+  }
 
-  const parsed = moment(leg.date);
-  return parsed.isValid() ? parsed.format('YYYY-MM-DD') : null;
+  const date = leg.date;
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
 }
 
 /**

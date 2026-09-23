@@ -218,3 +218,17 @@ describe('дата ноги', () => {
     expect(legDate({ date: null })).toBeNull();
   });
 });
+
+describe('дата ноги: края', () => {
+  it('однозначные месяц и день дополняются нулём', () => {
+    expect(legDate({ date: new Date(2026, 0, 5) })).toBe('2026-01-05');
+  });
+
+  it('последний миг месяца остаётся в своём месяце', () => {
+    expect(legDate({ date: new Date(2026, 0, 31, 23, 59, 59) })).toBe('2026-01-31');
+  });
+
+  it('негодная дата — пусто, а не «NaN-NaN-NaN»', () => {
+    expect(legDate({ date: new Date('мусор') })).toBeNull();
+  });
+});

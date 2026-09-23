@@ -1,8 +1,12 @@
 // © 2026 Bigfin
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsOptional } from 'class-validator';
+import { IsBoolean, IsDateString, IsIn, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
+
+import { parseBoolean } from '@/utils/parse-boolean';
 
 import { FinancialSheetBranchesQueryDto } from '../../dtos/FinancialSheetBranchesQuery.dto';
+import { CASHFLOW_DATE_GROUPS, CashFlowDateGroup } from './periodizeRows';
 
 /**
  * Отбор отчёта «Деньги (ДДС по статьям)».
@@ -29,6 +33,29 @@ export class CashFlowArticlesQueryDto extends FinancialSheetBranchesQueryDto {
   @IsDateString()
   @IsOptional()
   toDate: Date | string;
+
+  /**
+   * Масштаб колонок (FT-001 ТЗ-3). По умолчанию — месяцы: так отвечают на
+   * самый частый вопрос «в каком месяце ушли деньги».
+   */
+  @ApiPropertyOptional({
+    description: 'Масштаб колонок-периодов',
+    enum: CASHFLOW_DATE_GROUPS,
+    default: 'month',
+  })
+  @IsIn(CASHFLOW_DATE_GROUPS as unknown as string[])
+  @IsOptional()
+  dateGroup?: CashFlowDateGroup;
+
+  @ApiPropertyOptional({
+    description: 'Показывать колонку «Итого»',
+    default: true,
+    type: Boolean,
+  })
+  @Transform(({ value }) => parseBoolean(value, true))
+  @IsBoolean()
+  @IsOptional()
+  showTotalColumn?: boolean;
 }
 
 export class CashFlowArticlesResponseDto {

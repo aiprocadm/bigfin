@@ -26,6 +26,7 @@ const ARTICLES = [
 const ACCOUNTS = [
   { id: 50, name: 'Касса', accountType: 'cash', accountNormal: 'debit' },
   { id: 60, name: 'Поставщики', accountType: 'accounts-payable', accountNormal: 'credit' },
+  { id: 70, name: 'Покупатели', accountType: 'accounts-receivable', accountNormal: 'debit' },
   ...ARTICLES.map((a) => ({
     id: 100 + a.id,
     name: a.name,
@@ -58,6 +59,14 @@ function makeLegs() {
     legs.push({ ...base, accountId: 100 + article.id, debit: income ? 0 : amount, credit: income ? amount : 0 });
     legs.push({ ...base, accountId: other, debit: income ? amount : 0, credit: income ? 0 : amount });
   }
+  // Счёт покупателю выставлен в феврале, оплачен отдельной оплатой в марте:
+  // у самого счёта нет денежной ноги, у оплаты нет ноги выручки.
+  const invoice = { referenceType: 'SaleInvoice', referenceId: 5001, date: new Date(2026, 1, 10), projectId: null };
+  legs.push({ ...invoice, accountId: 101, debit: 0, credit: 60000 });
+  legs.push({ ...invoice, accountId: 70, debit: 60000, credit: 0 });
+  const payment = { referenceType: 'PaymentReceive', referenceId: 6001, date: new Date(2026, 2, 5), projectId: null };
+  legs.push({ ...payment, accountId: 50, debit: 60000, credit: 0 });
+  legs.push({ ...payment, accountId: 70, debit: 0, credit: 60000 });
   return legs;
 }
 const LEGS = makeLegs();
@@ -113,6 +122,11 @@ function makeService() {
   });
   const accountTransactionModel = () => ({
     query: () => ({
+      // Строки оплачиваемых документов — для признания выручки по оплате.
+      where: (_column: string, referenceType: string) => ({
+        whereIn: async (_c: string, ids: number[]) =>
+          LEGS.filter((leg) => leg.referenceType === referenceType && ids.includes(leg.referenceId)),
+      }),
       onBuild: (build: (qb: any) => void) => {
         // Кассовая свёртка читает ноги целиком, начисление — сгруппированные.
         let grouped = false;
@@ -152,12 +166,23 @@ function makeService() {
     accountModel as any,
     accountTransactionModel as any,
   );
+  const paymentEntries = () => ({
+    query: () => ({
+      whereIn: async (_c: string, ids: number[]) =>
+        ids.includes(6001)
+          ? [{ paymentReceiveId: 6001, invoiceId: 5001, paymentAmount: 60000 }]
+          : [],
+    }),
+  });
+  const billEntries = () => ({ query: () => ({ whereIn: async () => [] }) });
   const source = new ManagerialPnlSourceService(
     cashRollup,
     articleModel as any,
     articleAccountModel as any,
     accountModel as any,
     accountTransactionModel as any,
+    paymentEntries as any,
+    billEntries as any,
   );
   return new ManagerialPnlService(
     source,
@@ -239,6 +264,30 @@ describe('управленческий ОПиУ: лестница сходитс
 
     expect(cash.total.amounts.administrative).toBeLessThan(accrual.total.amounts.administrative);
     expect(cash.total.amounts.administrative).toBeGreaterThan(0);
+  });
+
+  it('по деньгам: счёт, оплаченный позже, даёт выручку в месяце оплаты (как бухгалтерский ОПиУ)', async () => {
+    const range = { fromDate: '2026-02-01', toDate: '2026-03-31', dateGroup: 'month' };
+    const cash = (await service.sheet({ ...range, basis: 'cash' } as any)).data;
+    const accrual = (await service.sheet({ ...range, basis: 'accrual' } as any)).data;
+    const revenueOf = (data: any, key: string) =>
+      data.periods.find((p: any) => p.key === key).column.amounts.revenue;
+    const cashWithout = (await makeServiceWithoutInvoice()).data;
+
+    // По начислению — в феврале, по деньгам — в марте.
+    expect(revenueOf(accrual, 'p0') - revenueOf(cashWithout, 'p0')).toBeGreaterThanOrEqual(0);
+    expect(revenueOf(cash, 'p1') - revenueOf(cashWithout, 'p1')).toBe(60000);
+    expect(revenueOf(cash, 'p0')).toBe(revenueOf(cashWithout, 'p0'));
+
+    async function makeServiceWithoutInvoice() {
+      const index = LEGS.findIndex((leg) => leg.referenceId === 6001);
+      const removed = LEGS.splice(index, 2);
+      try {
+        return await service.sheet({ ...range, basis: 'cash' } as any);
+      } finally {
+        LEGS.splice(index, 0, ...removed);
+      }
+    }
   });
 
   it('критерий 3: колонка без выручки — рентабельности «н/о» (пусто), не 0 % и не 100 %', async () => {

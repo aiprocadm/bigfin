@@ -20,7 +20,11 @@ const applyToTypeAccessor = (rule: any) => {
 
 /** Что делает правило: заполнить поля, разбить, перевод (FT-030…FT-032). */
 const ruleTypeAccessor = (rule: any) => (
-  <Tag minimal>{intl.get(`banking.rules.rule_type.${rule.rule_type || 'assign'}`)}</Tag>
+  <span style={{ display: 'inline-flex', gap: 4 }}>
+    <Tag minimal>{intl.get(`banking.rules.rule_type.${rule.rule_type || 'assign'}`)}</Tag>
+    {/* Пауза (FT-035): правило есть, но не срабатывает. */}
+    {rule.paused_at && <Tag minimal intent={Intent.WARNING}>{intl.get('banking.rules.paused')}</Tag>}
+  </span>
 );
 
 const conditionsAccessor = (rule: any) => (

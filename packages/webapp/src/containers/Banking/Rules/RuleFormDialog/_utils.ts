@@ -31,6 +31,9 @@ export const initialValues = {
   assignProjectId: '',
   assignContactId: '',
   transferToAccountId: '',
+  // Сделка и этап (FT-033 ТЗ-3).
+  assignDealId: '',
+  assignDealStageId: '',
   splits: [emptySplit(), emptySplit()],
 };
 
@@ -51,6 +54,8 @@ export interface RuleFormValues {
   assignProjectId: string | number;
   assignContactId: string | number;
   transferToAccountId: string | number;
+  assignDealId: string | number;
+  assignDealStageId: string | number;
   splits: RuleSplitFormLine[];
 }
 
@@ -59,7 +64,10 @@ export const newSplitLine = emptySplit;
 /** Не больше стольких условий — как на сервере (FT-030). */
 export const MAX_RULE_CONDITIONS = 50;
 
-export const RULE_TYPES = ['assign', 'split', 'transfer'] as const;
+export const RULE_TYPES = ['assign', 'split', 'transfer', 'deal'] as const;
+
+/** Условия правила «сделка» по ТЗ — описание и контрагент (FT-033). */
+export const DEAL_CONDITION_FIELDS = ['description', 'payee'];
 
 export const getRuleTypeOptions = () =>
   RULE_TYPES.map((value) => ({ value, text: intl.get(`banking.rules.rule_type.${value}`) }));
@@ -108,6 +116,28 @@ export function toBankRulePayload(values: RuleFormValues) {
         }
       : {}),
     ...(ruleType === 'transfer' ? { transferToAccountId: idOrNull(values.transferToAccountId) } : {}),
+    ...(ruleType === 'deal'
+      ? {
+          assignCategory: values.assignCategory || undefined,
+          assignAccountId: idOrNull(values.assignAccountId),
+          assignContactId: idOrNull(values.assignContactId),
+          assignDealId: idOrNull(values.assignDealId),
+          assignDealStageId: idOrNull(values.assignDealStageId),
+        }
+      : {}),
+  };
+}
+
+/** Черновик для проверки конфликта (FT-035): только охват правила. */
+export function toConflictDraft(values: RuleFormValues, id?: number | null) {
+  const payload = toBankRulePayload(values);
+  return {
+    ...(id ? { id } : {}),
+    order: payload.order,
+    applyIfAccountId: payload.applyIfAccountId,
+    applyIfTransactionType: payload.applyIfTransactionType,
+    conditionsType: payload.conditionsType,
+    conditions: payload.conditions,
   };
 }
 

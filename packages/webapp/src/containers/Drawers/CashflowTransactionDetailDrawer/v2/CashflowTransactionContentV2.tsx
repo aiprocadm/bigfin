@@ -4,6 +4,7 @@ import { CashflowTransactionCardsV2 } from './CashflowTransactionCardsV2';
 import { CashflowTransactionHeaderV2 } from './CashflowTransactionHeaderV2';
 import { CashflowTransactionSkeletonV2 } from './CashflowTransactionSkeletonV2';
 import { TransactionSplitPanel } from './TransactionSplitPanel';
+import { RuleApplicationsPanel } from './RuleApplicationsPanel';
 import type { CashflowTransactionDetail } from './types';
 
 interface CashflowTransactionContentV2Props {
@@ -65,6 +66,11 @@ export function CashflowTransactionContentV2({
           Родительская операция при этом не трогается — в отчёты идут части,
           в сверку с банком родитель.
         */}
+        {/* Какие автоправила разнесли операцию и что поставили (FT-036). */}
+        {transaction?.id != null && (
+          <RuleApplicationsPanel transactionId={Number(transaction.id)} />
+        )}
+
         {transaction?.id != null && (
           <TransactionSplitPanel
             referenceType={String(transaction.transaction_type ?? '')}

@@ -1,4 +1,8 @@
+import React from 'react';
+import intl from 'react-intl-universal';
+import { Button, Intent } from '@blueprintjs/core';
 import {
+  AppToaster,
   DataTable,
   DashboardContentTable,
   TableSkeletonHeader,
@@ -20,6 +24,9 @@ import { BankRulesTableActionsMenu } from './_components';
 import { BankRulesLandingEmptyState } from './BankRulesLandingEmptyState';
 import { useRulesListBoot } from './RulesListBoot';
 import { DialogsName } from '@/constants/dialogs';
+import { useCloneBankRule, usePauseBankRule } from '@/hooks/query/bank-rules';
+import { showApiError } from '@/utils/showApiError';
+import { RulesOrderPanel } from './RulesOrderPanel';
 
 /**
  * Retrieves the rules table.
@@ -35,6 +42,26 @@ function RulesTable({
   // Invoices table columns.
   const columns = useBankRulesTableColumns();
   const { bankRules, isEmptyState } = useRulesListBoot();
+  const [ordering, setOrdering] = React.useState(false);
+  const { mutateAsync: pauseRule } = usePauseBankRule();
+  const { mutateAsync: cloneRule } = useCloneBankRule();
+
+  // Пауза и копия (FT-035 ТЗ-3).
+  const handleTogglePause = (rule: any) =>
+    pauseRule({ id: rule.id, paused: !rule.paused_at })
+      .then(() =>
+        AppToaster.show({
+          intent: Intent.SUCCESS,
+          message: intl.get(rule.paused_at ? 'banking.rules.resumed' : 'banking.rules.paused_toast'),
+        }),
+      )
+      .catch(showApiError);
+  const handleClone = (rule: any) =>
+    cloneRule(rule.id)
+      .then(() =>
+        AppToaster.show({ intent: Intent.SUCCESS, message: intl.get('banking.rules.cloned') }),
+      )
+      .catch(showApiError);
 
   // Handle edit bank rule.
   const handleDeleteBankRule = ({ id }: { id: number }) => {
@@ -56,8 +83,22 @@ function RulesTable({
     return <BankRulesLandingEmptyState />;
   }
 
+  // Порядок правил (FT-035): отдельный режим списка.
+  if (ordering) {
+    return (
+      <DashboardContentTable>
+        <RulesOrderPanel rules={bankRules as any[]} onDone={() => setOrdering(false)} />
+      </DashboardContentTable>
+    );
+  }
+
   return (
     <DashboardContentTable>
+      <div style={{ padding: '8px 16px 0' }}>
+        <Button minimal small icon="sort" onClick={() => setOrdering(true)}>
+          {intl.get('banking.rules.order.open')}
+        </Button>
+      </div>
       <DataTable
         columns={columns}
         data={bankRules}
@@ -81,6 +122,8 @@ function RulesTable({
           onDelete: handleDeleteBankRule,
           onEdit: handleEditBankRule,
           onApplyToPast: handleApplyToPast,
+          onTogglePause: handleTogglePause,
+          onClone: handleClone,
         }}
       />
     </DashboardContentTable>

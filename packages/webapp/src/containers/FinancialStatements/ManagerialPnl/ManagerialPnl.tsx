@@ -41,6 +41,8 @@ import {
   ManagerialPnlQuery,
   PNL_GROUPINGS,
   PnlGrouping,
+  SPREAD_BASES,
+  SpreadBase,
   pnlQueryFromSearch,
   pnlRows,
   pnlSearchFromQuery,
@@ -270,6 +272,50 @@ export default function ManagerialPnl() {
           </label>
         </div>
       </div>
+
+      {/* Распределение косвенных по направлениям (FT-011 ТЗ-3) — только
+          когда ярусы раскрыты до направлений: иначе его не видно. */}
+      {(query.group ?? 'articles') !== 'articles' && (
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          <label className="flex items-center gap-2 text-text-secondary">
+            <Checkbox
+              checked={Boolean(query.spreadIndirect)}
+              onCheckedChange={(checked: boolean) =>
+                setQuery({ spreadIndirect: Boolean(checked) })
+              }
+            />
+            {intl.get('managerial_pnl.spread.toggle')}
+          </label>
+          {query.spreadIndirect && (
+            <label className="flex items-center gap-1 text-xs text-text-secondary">
+              {intl.get('managerial_pnl.spread.base')}
+              <select
+                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
+                value={query.spreadBase ?? 'revenue'}
+                onChange={(event) =>
+                  setQuery({ spreadBase: event.target.value as SpreadBase })
+                }
+              >
+                {SPREAD_BASES.map((base) => (
+                  <option key={base} value={base}>
+                    {intl.get(`cost_allocation.key.${base}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {/* Какая база применена и где не сработала (критерий 4 FT-011). */}
+          {data?.meta?.spread && (
+            <span className="text-xs text-text-muted">
+              {Number(data.meta.spread.zero_base_periods ?? data.meta.spread.zeroBasePeriods) > 0
+                ? intl.get('managerial_pnl.spread.zero_base')
+                : intl.get('managerial_pnl.spread.applied', {
+                    base: intl.get(`cost_allocation.key.${data.meta.spread.base}`),
+                  })}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Откуда берутся данные (FT-012 ТЗ-3). */}
       <PnlSourcesPanel sources={data?.meta?.pnl_sources ?? data?.meta?.pnlSources} />

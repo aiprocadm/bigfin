@@ -15,10 +15,23 @@ export const PNL_GROUPINGS = ['articles', 'directions', 'directions_articles'] a
 export type PnlGrouping = (typeof PNL_GROUPINGS)[number];
 export type PnlBasis = 'accrual' | 'cash';
 
+/** Базы распределения косвенных (FT-011 ТЗ-3) — как на сервере. */
+export const SPREAD_BASES = [
+  'revenue',
+  'production_payroll',
+  'gross_profit_1',
+  'equal',
+  'manual_share',
+] as const;
+export type SpreadBase = (typeof SPREAD_BASES)[number];
+
 export interface ManagerialPnlQuery
   extends Omit<CashFlowArticlesQuery, 'group'> {
   basis: PnlBasis;
   group?: PnlGrouping;
+  /** Распределить косвенные по направлениям (FT-011 ТЗ-3). */
+  spreadIndirect?: boolean;
+  spreadBase?: SpreadBase;
 }
 
 /**
@@ -42,10 +55,18 @@ export function pnlQueryFromSearch(
     ? (rawGroup as PnlGrouping)
     : undefined;
 
+  const spreadIndirect = params.get('spread') === '1';
+  const rawBase = params.get('spreadBase');
+  const spreadBase = (SPREAD_BASES as readonly string[]).includes(rawBase ?? '')
+    ? (rawBase as SpreadBase)
+    : undefined;
+
   return {
     ...base,
     basis,
     ...(group && group !== 'articles' ? { group } : {}),
+    ...(spreadIndirect ? { spreadIndirect: true } : {}),
+    ...(spreadBase && spreadBase !== 'revenue' ? { spreadBase } : {}),
   };
 }
 
@@ -59,6 +80,8 @@ export function pnlSearchFromQuery(search: string, query: ManagerialPnlQuery): s
   setOrDelete('scale', query.dateGroup, 'month');
   setOrDelete('basis', query.basis, 'accrual');
   setOrDelete('group', query.group, 'articles');
+  setOrDelete('spread', query.spreadIndirect ? '1' : undefined, '');
+  setOrDelete('spreadBase', query.spreadBase, 'revenue');
   params.delete('legalEntityIds');
   (query.legalEntityIds ?? []).forEach((id) => params.append('legalEntityIds', String(id)));
   const result = params.toString();

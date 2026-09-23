@@ -191,6 +191,12 @@
   "cost_allocation.field.active": "Активно",
   "cost_allocation.key.revenue": "По выручке",
   "cost_allocation.key.manual_share": "Ручные доли",
+  "cost_allocation.key.production_payroll": "По ФОТ (статья зарплаты из настроек)",
+  "cost_allocation.key.gross_profit_1": "По валовой прибыли ВП1",
+  "cost_allocation.key.equal": "Поровну",
+  "cost_allocation.field.target_type": "Между кем делить",
+  "cost_allocation.target_type.deal": "Сделки — для прибыльности сделки",
+  "cost_allocation.target_type.direction": "Направления — для управленческого ОПиУ",
   "cost_allocation.error.name_required": "Укажите название правила",
   "cost_allocation.error.source_article_required": "Выберите статью расхода",
   "budgets.page_title": "Бюджеты",
@@ -5160,5 +5166,9 @@
   "managerial_pnl.sources.credits": "Кредиты и займы",
   "managerial_pnl.sources.fixed_assets": "Основные средства: амортизация и выбытие",
   "managerial_pnl.sources.taxes": "Налоги",
-  "managerial_pnl.sources.no_ledger": "Этот модуль в прибыль сам не пишет: расходы попадают в отчёт из операций оплаты."
+  "managerial_pnl.sources.no_ledger": "Этот модуль в прибыль сам не пишет: расходы попадают в отчёт из операций оплаты.",
+  "managerial_pnl.spread.toggle": "Распределять косвенные расходы по направлениям",
+  "managerial_pnl.spread.base": "База",
+  "managerial_pnl.spread.applied": "Общепроизводственные, административные и коммерческие расходы без направления распределены: {base}. Выручка и прямые расходы не распределяются.",
+  "managerial_pnl.spread.zero_base": "База распределения нулевая — косвенные оставлены нераспределёнными."
 }

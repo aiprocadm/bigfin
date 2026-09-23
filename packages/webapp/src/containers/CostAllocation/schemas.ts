@@ -2,7 +2,17 @@
 import { z } from 'zod';
 import intl from 'react-intl-universal';
 
-export const ALLOCATION_KEYS = ['revenue', 'manual_share'] as const;
+// Пять баз распределения (FT-011 ТЗ-3) — тот же список, что на сервере.
+export const ALLOCATION_KEYS = [
+  'revenue',
+  'production_payroll',
+  'gross_profit_1',
+  'equal',
+  'manual_share',
+] as const;
+
+/** Между кем делится пул: сделки или направления (FT-011 ТЗ-3). */
+export const ALLOCATION_TARGET_TYPES = ['deal', 'direction'] as const;
 
 export const getCostAllocationRuleSchema = () =>
   z.object({
@@ -13,6 +23,7 @@ export const getCostAllocationRuleSchema = () =>
     allocationKey: z.enum(ALLOCATION_KEYS),
     manualShares: z.record(z.number().nonnegative()).optional(),
     targetDealIds: z.array(z.number()).optional(),
+    targetType: z.enum(ALLOCATION_TARGET_TYPES).optional(),
     validFrom: z.string().optional(),
     validTo: z.string().optional(),
     isActive: z.boolean().optional(),

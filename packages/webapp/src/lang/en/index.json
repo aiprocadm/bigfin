@@ -191,6 +191,12 @@
   "cost_allocation.field.active": "Active",
   "cost_allocation.key.revenue": "By revenue",
   "cost_allocation.key.manual_share": "Manual shares",
+  "cost_allocation.key.production_payroll": "By payroll (payroll article from settings)",
+  "cost_allocation.key.gross_profit_1": "By gross profit GP1",
+  "cost_allocation.key.equal": "Equally",
+  "cost_allocation.field.target_type": "Split between",
+  "cost_allocation.target_type.deal": "Deals — for deal profitability",
+  "cost_allocation.target_type.direction": "Directions — for the managerial P&L",
   "cost_allocation.error.name_required": "Enter a rule name",
   "cost_allocation.error.source_article_required": "Select a cost article",
   "budgets.page_title": "Budgets",
@@ -5160,5 +5166,9 @@
   "managerial_pnl.sources.credits": "Loans",
   "managerial_pnl.sources.fixed_assets": "Fixed assets: depreciation and disposal",
   "managerial_pnl.sources.taxes": "Taxes",
-  "managerial_pnl.sources.no_ledger": "This module does not post to profit itself: costs come from payment transactions."
+  "managerial_pnl.sources.no_ledger": "This module does not post to profit itself: costs come from payment transactions.",
+  "managerial_pnl.spread.toggle": "Spread indirect costs across directions",
+  "managerial_pnl.spread.base": "Base",
+  "managerial_pnl.spread.applied": "Overhead, administrative and selling costs without a direction are spread: {base}. Revenue and direct costs are never spread.",
+  "managerial_pnl.spread.zero_base": "The allocation base is zero — indirect costs are left unallocated."
 }

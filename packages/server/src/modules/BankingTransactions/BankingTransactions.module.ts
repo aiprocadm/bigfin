@@ -1,4 +1,7 @@
 import { TransactionsLockingModule } from '@/modules/TransactionsLocking/TransactionsLocking.module';
+import { ImportBatchesController } from './controllers/ImportBatches.controller';
+import { ImportBatchesService } from './commands/ImportBatches.service';
+import { ImportBatch } from './models/ImportBatch';
 import { BankingTrashController } from './controllers/BankingTrash.controller';
 import { TransactionsTrashService } from './commands/TransactionsTrash.service';
 import { RolesModule } from '../Roles/Roles.module';
@@ -50,6 +53,7 @@ import { SaleInvoice } from '@/modules/SaleInvoices/models/SaleInvoice';
 import { Bill } from '@/modules/Bills/models/Bill';
 
 const models = [
+  RegisterTenancyModel(ImportBatch),
   RegisterTenancyModel(UncategorizedBankTransaction),
   RegisterTenancyModel(BankTransaction),
   RegisterTenancyModel(BankTransactionLine),
@@ -84,9 +88,12 @@ const models = [
     BankingPendingTransactionsController,
     // Корзина операций (FT-042 ТЗ-3).
     BankingTrashController,
+    // История импорта и откат (FT-043 ТЗ-3).
+    ImportBatchesController,
   ],
   providers: [
     TransactionsTrashService,
+    ImportBatchesService,
     ClearSplitsOnCashflowDeletedSubscriber,
     SetAccrualPeriodService,
     GetTransactionsSummaryService,
@@ -124,6 +131,8 @@ const models = [
     BankTransactionGLEntriesService,
     // Корзина — для отката импорта и сверки (FT-042, FT-043, FT-040).
     TransactionsTrashService,
+    // Пакеты импорта — каждому загрузчику выписки (FT-043).
+    ImportBatchesService,
   ],
 })
 export class BankingTransactionsModule { }

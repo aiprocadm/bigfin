@@ -108,6 +108,12 @@ export class TransactionsTrashService {
           const transaction: any = await this.bankTransactionModel().query(tx).findById(item.id);
           if (!transaction) throw new ServiceError(TRASH_ERRORS.NOT_FOUND, 'Операция не найдена', item);
           if (transaction.deletedAt) continue;
+          // Удаление снимает проводки — отчёты закрытого периода поменялись
+          // бы так же, как от новой операции.
+          await this.lockingGuard.validateTransactionsLocking(
+            transaction.date,
+            TransactionsLockingGroup.Financial,
+          );
           await this.bankTransactionModel().query(tx).findById(item.id).patch(marks as any);
           await this.glEntries.revertJournalEntries(item.id, tx);
           // Строка выписки, из которой разнесли операцию, уходит вместе с ней:

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
+import { ImportBatchesService } from '@/modules/BankingTransactions/commands/ImportBatches.service';
 import { BankConnectorsRegistry } from '../connectors/BankConnectors.registry';
 import { BankApiSyncSettingsService } from '../BankApiSyncSettings.service';
 import { BankProviderId } from '../connectors/BankProvider.types';
@@ -30,6 +31,8 @@ export class ImportBankStatementService {
     private readonly registry: BankConnectorsRegistry,
     private readonly settings: BankApiSyncSettingsService,
     private readonly createUncategorized: CreateUncategorizedTransactionService,
+    // Пакет импорта (FT-043 ТЗ-3).
+    private readonly importBatches: ImportBatchesService,
 
     @Inject(UncategorizedBankTransaction.name)
     private readonly uncategorizedModel: TenantModelProxy<
@@ -66,6 +69,11 @@ export class ImportBankStatementService {
     );
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      // Один импорт — один пакет: по нему его можно откатить (FT-043).
+      const importBatchId = await this.importBatches.open(
+        { source: 'bank', accountId, fileName: provider },
+        trx,
+      );
       let imported = 0;
       let skipped = 0;
 
@@ -74,9 +82,7 @@ export class ImportBankStatementService {
           skipped++;
           continue;
         }
-        const exists = await this.uncategorizedModel()
-          .query(trx)
-          .findOne({ accountId, externalId: rec.externalId });
+        const exists = await this.importBatches.isDuplicate(accountId, rec.externalId, trx);
         if (exists) {
           skipped++;
           continue;
@@ -84,6 +90,7 @@ export class ImportBankStatementService {
         await this.createUncategorized.create(
           {
             date: rec.date,
+            importBatchId,
             accountId,
             amount: rec.amount,
             currencyCode,
@@ -97,6 +104,7 @@ export class ImportBankStatementService {
         );
         imported++;
       }
+      await this.importBatches.close(importBatchId, imported, trx);
       return { imported, skipped };
     });
   }

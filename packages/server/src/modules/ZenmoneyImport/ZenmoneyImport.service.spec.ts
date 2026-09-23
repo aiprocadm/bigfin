@@ -54,6 +54,13 @@ function makeDeps(
     api as any,
     settings as any,
     createUncategorized as any,
+    // Пакеты импорта (FT-043): дубль ищется по тем же строкам.
+    ((model: any) => ({
+  open: async () => 1,
+  close: async () => undefined,
+  isDuplicate: async (accountId: number, externalId: string) =>
+    Boolean(await model().query().findOne({ accountId, externalId })),
+}))(uncategorizedModel) as any,
     uncategorizedModel as any,
   );
   return { service, api, settings, created, getSaved: () => savedTimestamp };

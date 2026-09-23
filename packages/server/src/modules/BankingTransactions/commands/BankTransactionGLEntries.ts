@@ -9,12 +9,9 @@ import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/Ma
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { BankTransactionGLSplit } from './BankTransactionGL';
 
-/**
- * Вид ссылки, под которым автоправило «Разбить» хранит части денежной
- * операции (FT-031 ТЗ-3). Ручная панель разбиения пишет туда вид операции
- * («OtherExpense» и т. п.) — такие части проводок не меняют, как и раньше.
- */
-export const CASHFLOW_SPLIT_REFERENCE = 'CashflowTransaction';
+import { CASHFLOW_SPLIT_REFERENCE } from '@/modules/TransactionSplits/constants';
+
+export { CASHFLOW_SPLIT_REFERENCE };
 
 @Injectable()
 export class BankTransactionGLEntriesService {

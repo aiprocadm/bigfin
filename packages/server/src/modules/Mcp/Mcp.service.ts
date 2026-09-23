@@ -50,11 +50,16 @@ export class McpService {
   private handlers(caller: McpCaller): McpHandlers {
     return {
       listTools: () =>
-        MCP_TOOLS.map(({ name, title, description, inputSchema }) => ({
+        MCP_TOOLS.map(({ name, title, description, inputSchema, scope }) => ({
           name,
           title,
           description,
           inputSchema,
+          // Подсказка агенту по спецификации MCP: инструмент ничего не меняет.
+          annotations: { title, readOnlyHint: true, openWorldHint: false },
+          // Какое право токена нужно — экран «MCP-сервер» показывает по нему,
+          // что доступно выбранному токену.
+          _meta: { 'bigfin/scope': scope },
         })),
       callTool: async (name, args) => {
         const result = await this.callTool(name, args, caller);

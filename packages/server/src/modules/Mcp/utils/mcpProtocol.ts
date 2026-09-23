@@ -28,7 +28,14 @@ export interface McpToolResult {
 }
 
 export interface McpHandlers {
-  listTools: () => { name: string; title?: string; description: string; inputSchema: object }[];
+  listTools: () => {
+    name: string;
+    title?: string;
+    description: string;
+    inputSchema: object;
+    annotations?: object;
+    _meta?: object;
+  }[];
   callTool: (name: string, args: Record<string, unknown>) => Promise<McpToolResult>;
 }
 

@@ -230,7 +230,60 @@ function verify(body: string, headers: Record<string, string>, secret: string) {
 
 ---
 
-## 4. Что держать в голове
+## 4. MCP-сервер для ИИ-агентов
+
+MCP (Model Context Protocol) — общий язык, на котором ИИ-агенты (Claude, GPT,
+Yandex AI Studio и другие) подключают внешние данные. Bigfin отвечает на нём по
+адресу `https://app.bigfin.ru/api/mcp` (транспорт «streamable HTTP»).
+
+- **Вход — тем же токеном `bgf_` и заголовком `organization-id`.** Агент
+  видит ровно то, что разрешено токену и его владельцу, включая ограничения
+  роли по статьям, направлениям и счетам.
+- **Только чтение.** Каждый инструмент — один вызов уже существующей ручки
+  API, поэтому числа совпадают с экраном по построению.
+- **Каждый ответ несёт `meta`**: период, фильтры, юрлица, валюту и время
+  расчёта. Агенту не нужно угадывать контекст.
+- **Не больше 60 вызовов инструментов в минуту на токен.** Защита от
+  зациклившегося агента.
+
+| Инструмент | Что возвращает | Право токена |
+|---|---|---|
+| `get_cash_flow` | Деньги по статьям (ОДДС); без дат — прошлый месяц | `reports:read` |
+| `get_managerial_pnl` | Управленческий ОПиУ с ярусами МД → ВП1 → ВП2 → ОП → ЧП | `reports:read` |
+| `get_balance_sheet` | Баланс | `reports:read` |
+| `get_cash_gaps` | Прогноз кассовых разрывов по счетам | `reports:read` |
+| `get_debts` | Долги нам и наши, просрочка | `reports:read` |
+| `list_transactions` | Операции по денежным счетам | `transactions:read` |
+| `get_articles` | Справочник статей | `reports:read` |
+| `get_budget_plan_fact` | План-факт бюджета | `reports:read` |
+
+Готовые настройки для подключения — в Настройках → Публичный API →
+«MCP-сервер для ИИ-агентов», там же журнал последних вызовов.
+
+Агенты, которые умеют MCP по HTTP:
+
+```bash
+claude mcp add --transport http bigfin https://app.bigfin.ru/api/mcp \
+  --header "Authorization: Bearer bgf_ваш_токен" \
+  --header "organization-id: ваш_идентификатор_организации"
+```
+
+Claude Desktop говорит с серверами через stdio — ему нужен мост `mcp-remote`
+(см. готовый `claude_desktop_config.json` на экране настроек).
+
+Проверить вручную:
+
+```bash
+curl -X POST https://app.bigfin.ru/api/mcp \
+  -H "Authorization: Bearer bgf_ваш_токен" \
+  -H "organization-id: ваш_идентификатор_организации" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_cash_flow","arguments":{"fromDate":"2026-08-01","toDate":"2026-08-31"}}}'
+```
+
+---
+
+## 5. Что держать в голове
 
 - Токен и секрет вебхука не хранят в коде и не кладут в репозиторий —
   только в переменных окружения.

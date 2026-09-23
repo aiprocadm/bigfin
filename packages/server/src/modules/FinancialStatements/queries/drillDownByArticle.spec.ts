@@ -218,3 +218,39 @@ describe('раскрытие ячейки матрицы «Деньги» (FT-00
     expect(withReport.total - columnOnly.total).toBe(4000);
   });
 });
+
+describe('раскрытие строки управленческого ОПиУ (FT-010 ТЗ-3)', () => {
+  // Ярусы: «Расходы» — административные, «Аренда» наследует; «Доходы» — выручка.
+  beforeAll(() => {
+    Object.assign(articles[0], { plType: 'administrative' });
+    Object.assign(articles[1], { plType: null });
+    Object.assign(articles[2], { plType: 'revenue' });
+  });
+
+  it('критерий 4: ярус целиком — все его статьи; по начислению — и неоплаченное', async () => {
+    const service = buildService();
+    const cash = await service.getDrillDownByPlType('administrative', '2026-04-01', '2026-04-30');
+    const accrual = await service.getDrillDownByPlType('administrative', '2026-04-01', '2026-04-30', {
+      basis: 'accrual',
+    });
+
+    // По деньгам: аренда 30 000 + прочие 5 000 + 4 000 документа на
+    // границе колонок из соседней проверки (он оплачен 31 марта, но признак
+    // здесь считается по апрелю — в оплаченные не попадает).
+    expect(cash.total).toBe(35000);
+    // По начислению добавляются закупка в долг 99 000, перевод 7 000 на
+    // счёт аренды и 4 000 документа на границе.
+    expect(accrual.total).toBe(35000 + 99000 + 7000 + 4000);
+  });
+
+  it('статья в своём ярусе: подстатья с другим ярусом в раскрытие родителя не попадает', async () => {
+    Object.assign(articles[1], { plType: 'direct_variable' });
+    const service = buildService();
+
+    const parent = await service.getDrillDownByArticle(1, '2026-04-01', '2026-04-30', {
+      plType: 'administrative',
+    });
+
+    expect(parent.total).toBe(5000);
+  });
+});

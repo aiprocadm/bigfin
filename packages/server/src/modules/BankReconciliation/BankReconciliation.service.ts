@@ -282,6 +282,7 @@ export class BankReconciliationService {
         live.push({
           kind: 'document',
           id: ref.referenceId,
+          refType: ref.referenceType,
           date: ref.date,
           amount,
           description: ref.referenceType,

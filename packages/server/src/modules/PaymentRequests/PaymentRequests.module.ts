@@ -11,6 +11,8 @@ import { CreatePaymentRequestService } from './commands/CreatePaymentRequest.ser
 import { ApprovePaymentRequestService } from './commands/ApprovePaymentRequest.service';
 import { RejectPaymentRequestService } from './commands/RejectPaymentRequest.service';
 import { CancelPaymentRequestService } from './commands/CancelPaymentRequest.service';
+import { EditPaymentRequestService } from './commands/EditPaymentRequest.service';
+import { PaymentRequestInstallmentsService } from './commands/PaymentRequestInstallments.service';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
@@ -25,6 +27,9 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     ApprovePaymentRequestService,
     RejectPaymentRequestService,
     CancelPaymentRequestService,
+    // Черновик и плановые оплаты заявки (FT-053 ТЗ-3).
+    EditPaymentRequestService,
+    PaymentRequestInstallmentsService,
   ],
 })
 export class PaymentRequestsModule {}

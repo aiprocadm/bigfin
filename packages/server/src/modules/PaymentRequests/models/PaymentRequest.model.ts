@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { Model } from 'objection';
 import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
 
 export class PaymentRequest extends TenantBaseModel {
@@ -15,6 +16,10 @@ export class PaymentRequest extends TenantBaseModel {
   approvedBy!: number | null;
   approvedAt!: string | null;
   plannedOperationId!: number | null;
+  /** Ссылка на документ и обоснование платежа (FT-053 ТЗ-3, D17). */
+  documentUrl!: string | null;
+  justification!: string | null;
+  installments?: any[];
 
   /** Колонки, по которым ищет поиск в шапке (Р3 карты v43). */
   static get searchColumns() {
@@ -33,6 +38,23 @@ export class PaymentRequest extends TenantBaseModel {
    */
   get timestamps() {
     return ['createdAt', 'updatedAt'];
+  }
+
+  /** Плановые оплаты заявки (FT-053 ТЗ-3). */
+  static get relationMappings() {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { PaymentRequestInstallment } = require('./PaymentRequestInstallment.model');
+    return {
+      installments: {
+        relation: Model.HasManyRelation,
+        modelClass: PaymentRequestInstallment,
+        join: {
+          from: 'payment_requests.id',
+          to: 'payment_request_installments.requestId',
+        },
+        modify: (query: any) => query.orderBy('sortOrder', 'asc'),
+      },
+    };
   }
 
   /**

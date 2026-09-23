@@ -84,8 +84,7 @@ export class MaterializePlannedOperationService {
     // вот этим» видно в плане, и второй факт его уже не закроет.
     await this.operationModel()
       .query()
-      .findById(op.id)
-      .patch({ matchedTransactionId: Number((transaction as any).id) } as any);
+      .patchAndFetchById(op.id, { matchedTransactionId: Number((transaction as any).id) } as any);
 
     return transaction;
   }

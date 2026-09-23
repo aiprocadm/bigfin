@@ -8,7 +8,7 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { PaymentRequest } from '../models/PaymentRequest.model';
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { validateStatusTransition } from '../utils/validateStatusTransition';
-import { ERRORS } from '../constants';
+import { ERRORS, PAYMENT_REQUEST_SOURCE } from '../constants';
 
 @Injectable()
 export class CancelPaymentRequestService {
@@ -51,6 +51,13 @@ export class CancelPaymentRequestService {
     validateStatusTransition(request.status, 'cancelled');
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      // Все плановые оплаты заявки уходят из прогноза, а не только первая
+      // (FT-053 ТЗ-3): их находит ссылка на заявку.
+      await this.operationModel()
+        .query(trx)
+        .where('sourceType', PAYMENT_REQUEST_SOURCE)
+        .where('sourceId', request.id)
+        .patch({ status: 'cancelled' } as any);
       if (request.plannedOperationId) {
         await this.operationModel()
           .query(trx)

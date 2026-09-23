@@ -7,6 +7,8 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { PaymentRequest } from '../models/PaymentRequest.model';
 import { CommandPaymentRequestValidatorService } from './CommandPaymentRequestValidator.service';
 import { CreatePaymentRequestDto } from '../dtos/PaymentRequest.dto';
+import { normalizeInstallments, requestDueDate } from '../utils/installments';
+import { PaymentRequestInstallmentsService } from './PaymentRequestInstallments.service';
 
 @Injectable()
 export class CreatePaymentRequestService {
@@ -14,6 +16,7 @@ export class CreatePaymentRequestService {
     private readonly uow: UnitOfWork,
     private readonly validator: CommandPaymentRequestValidatorService,
     private readonly tenancyContext: TenancyContext,
+    private readonly installments: PaymentRequestInstallmentsService,
 
     @Inject(PaymentRequest.name)
     private readonly requestModel: TenantModelProxy<typeof PaymentRequest>,
@@ -25,16 +28,23 @@ export class CreatePaymentRequestService {
   public async create(dto: CreatePaymentRequestDto) {
     await this.validator.validateRefs(dto);
     const user: any = await this.tenancyContext.getSystemUser();
+    const { installments = [], asDraft, ...fields } = dto;
+    // Оплаты сходятся с суммой, срок — указанный или первая оплата (FT-053).
+    const plan = installments.length ? normalizeInstallments(dto.amount, installments) : [];
+    const dueDate = requestDueDate(dto.dueDate, installments);
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
-      return this.requestModel()
+      const request: any = await this.requestModel()
         .query(trx)
         .insert({
-          ...dto,
+          ...fields,
+          dueDate,
           currencyCode: dto.currencyCode || 'RUB',
-          status: 'pending',
+          status: asDraft ? 'draft' : 'pending',
           createdBy: user.id,
         } as any);
+      await this.installments.replace(request.id, plan, trx);
+      return request;
     });
   }
 }

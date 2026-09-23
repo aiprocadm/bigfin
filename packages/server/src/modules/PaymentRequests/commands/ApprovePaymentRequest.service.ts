@@ -10,6 +10,7 @@ import { PaymentRequest } from '../models/PaymentRequest.model';
 import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperation.model';
 import { validateStatusTransition } from '../utils/validateStatusTransition';
 import { ERRORS, PAYMENT_REQUEST_SOURCE } from '../constants';
+import { PaymentRequestInstallmentsService } from './PaymentRequestInstallments.service';
 
 @Injectable()
 export class ApprovePaymentRequestService {
@@ -22,6 +23,8 @@ export class ApprovePaymentRequestService {
 
     @Inject(PlannedOperation.name)
     private readonly operationModel: TenantModelProxy<typeof PlannedOperation>,
+
+    private readonly installments: PaymentRequestInstallmentsService,
   ) {}
 
   /**
@@ -34,22 +37,45 @@ export class ApprovePaymentRequestService {
     const user: any = await this.tenancyContext.getSystemUser();
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
-      const operation: any = await this.operationModel()
-        .query(trx)
-        .insert({
-          direction: 'outflow',
-          amount: request.amount,
-          currencyCode: request.currencyCode,
-          plannedDate: moment(request.dueDate).format('YYYY-MM-DD'),
-          articleId: request.articleId,
-          accountId: request.accountId,
-          branchId: request.branchId,
-          contactId: request.contactId,
-          status: 'confirmed',
-          sourceType: PAYMENT_REQUEST_SOURCE,
-          sourceId: request.id,
-          description: request.description || `Заявка №${request.id}`,
-        } as any);
+      const plannedOutflow = (plannedDate: string, amount: number, accountId: number | null) =>
+        this.operationModel()
+          .query(trx)
+          .insert({
+            direction: 'outflow',
+            amount,
+            currencyCode: request.currencyCode,
+            plannedDate,
+            articleId: request.articleId,
+            accountId,
+            branchId: request.branchId,
+            contactId: request.contactId,
+            status: 'confirmed',
+            sourceType: PAYMENT_REQUEST_SOURCE,
+            sourceId: request.id,
+            description: request.description || `Заявка №${request.id}`,
+          } as any) as any;
+
+      // Несколько плановых оплат (FT-053 ТЗ-3) — по плановой операции на
+      // каждую: календарь видит, когда и с какого счёта уйдут деньги.
+      const installments: any[] = await this.installments.list(id, trx);
+      let operation: any;
+      if (installments.length > 0) {
+        for (const installment of installments) {
+          const created: any = await plannedOutflow(
+            moment(installment.dueDate).format('YYYY-MM-DD'),
+            Number(installment.amount),
+            installment.accountId ?? request.accountId,
+          );
+          await this.installments.linkPlan(installment.id, created.id, trx);
+          operation = operation ?? created;
+        }
+      } else {
+        operation = await plannedOutflow(
+          moment(request.dueDate).format('YYYY-MM-DD'),
+          request.amount,
+          request.accountId,
+        );
+      }
 
       await this.requestModel()
         .query(trx)

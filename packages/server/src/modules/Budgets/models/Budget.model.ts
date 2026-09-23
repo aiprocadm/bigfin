@@ -8,6 +8,8 @@ export class Budget extends TenantBaseModel {
   periodGranularity!: string;
   activeScenario!: string;
   branchId!: number | null;
+  /** Привязка планового остатка: от факта или от плана (FT-056 ТЗ-3). */
+  planAnchor!: string;
 
   /** Колонки, по которым ищет поиск в шапке (Ш3 карты v48). */
   static get searchColumns() {

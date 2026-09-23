@@ -9,6 +9,7 @@ import {
   Query,
   Req,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
@@ -16,7 +17,7 @@ import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
 import { PaymentRequestsApplication } from './PaymentRequests.application';
-import { CreatePaymentRequestDto } from './dtos/PaymentRequest.dto';
+import { CreatePaymentRequestDto, EditPaymentRequestDto } from './dtos/PaymentRequest.dto';
 import { GetPaymentRequestsQueryDto } from './dtos/GetPaymentRequestsQuery.dto';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
@@ -46,6 +47,18 @@ export class PaymentRequestsController {
   @ApiOperation({ summary: 'Create a payment request (status pending).' })
   create(@Body() dto: CreatePaymentRequestDto) {
     return this.application.createPaymentRequest(dto);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Edit a draft payment request (author only).' })
+  edit(@Param('id', ParseIntPipe) id: number, @Body() dto: EditPaymentRequestDto) {
+    return this.application.editPaymentRequest(id, dto);
+  }
+
+  @Post(':id/submit')
+  @ApiOperation({ summary: 'Submit a draft payment request for approval (author only).' })
+  submit(@Param('id', ParseIntPipe) id: number) {
+    return this.application.submitPaymentRequest(id);
   }
 
   @Post(':id/approve')

@@ -117,6 +117,10 @@ const GUARDED_ELSEWHERE: string[] = [
   // Отменяет заявку её автор — или тот, кто заявки одобряет. Правом такое не
   // описать: важно, ЧЬЯ это заявка, поэтому проверка живёт в самой службе.
   'PaymentRequests/PaymentRequests.controller.ts#cancel',
+  // Черновик заявки правит и отправляет на согласование только его автор
+  // (FT-053 ТЗ-3) — та же проверка «чья заявка» в службе.
+  'PaymentRequests/PaymentRequests.controller.ts#edit',
+  'PaymentRequests/PaymentRequests.controller.ts#submit',
 
   // Своя новая организация: человек заводит её себе, спрашивать не у кого.
   'ee/Workspaces/Workspaces.controller.ts#createWorkspace',

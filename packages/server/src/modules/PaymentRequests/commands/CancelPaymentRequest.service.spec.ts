@@ -39,8 +39,11 @@ const buildService = ({
     }),
   });
 
+  // Все плановые оплаты заявки отменяются по ссылке на неё (FT-053 ТЗ-3).
+  const bySource: any = { patch: () => Promise.resolve(1) };
+  bySource.where = () => bySource;
   const operationModel = () => ({
-    query: () => ({ findById: () => ({ patch: () => Promise.resolve(1) }) }),
+    query: () => ({ findById: () => ({ patch: () => Promise.resolve(1) }), where: () => bySource }),
   });
 
   const uow = {

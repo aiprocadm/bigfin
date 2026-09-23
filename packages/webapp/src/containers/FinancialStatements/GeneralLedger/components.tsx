@@ -25,6 +25,7 @@ import {
   useGeneralLedgerSheetCsvExport,
   useGeneralLedgerSheetXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * General ledger sheet alerts.
@@ -75,6 +76,7 @@ export function GeneralLedgerSheetLoadingBar() {
  * @returns {JSX.Element}
  */
 export const GeneralLedgerSheetExportMenu = () => {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -146,6 +148,12 @@ export const GeneralLedgerSheetExportMenu = () => {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

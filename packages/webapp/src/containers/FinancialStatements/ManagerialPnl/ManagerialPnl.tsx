@@ -27,6 +27,7 @@ import {
   useManagerialPnlCsvExport,
   useManagerialPnlXlsxExport,
 } from '@/hooks/query/FinancialReports';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 import { ReportPeriodBar } from '../v2';
 import { ReportScopeNote } from '../ReportScopeNote';
@@ -113,6 +114,9 @@ export default function ManagerialPnl() {
   };
   const { open: exportCsv } = useManagerialPnlCsvExport(serverQuery) as any;
   const { open: exportXlsx } = useManagerialPnlXlsxExport(serverQuery) as any;
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопки CSV/XLSX не показываем.
+  const canExport = useCanExport();
 
   const locale = intl.getInitOptions?.()?.currentLocale || 'ru';
   const serverColumns = data?.table?.columns ?? [];
@@ -196,16 +200,18 @@ export default function ManagerialPnl() {
         <p className="max-w-[70ch] text-sm text-text-secondary">
           {intl.get('managerial_pnl.page_hint')}
         </p>
-        <div className="flex items-end gap-2">
-          <Button variant="secondary" onClick={() => exportCsv?.()}>
-            <Download className="mr-2 h-4 w-4" />
-            CSV
-          </Button>
-          <Button variant="secondary" onClick={() => exportXlsx?.()}>
-            <Download className="mr-2 h-4 w-4" />
-            XLSX
-          </Button>
-        </div>
+        {canExport && (
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={() => exportCsv?.()}>
+              <Download className="mr-2 h-4 w-4" />
+              CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportXlsx?.()}>
+              <Download className="mr-2 h-4 w-4" />
+              XLSX
+            </Button>
+          </div>
+        )}
       </div>
 
       <ReportPeriodBar

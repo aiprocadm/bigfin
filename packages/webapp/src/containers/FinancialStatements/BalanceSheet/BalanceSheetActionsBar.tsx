@@ -19,6 +19,7 @@ import { withBalanceSheetActions } from './withBalanceSheetActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose, saveInvoke } from '@/utils';
 import { DialogsName } from '@/constants/dialogs';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Balance sheet - actions bar.
@@ -37,6 +38,9 @@ function BalanceSheetActionsBar({
   numberFormat,
   onNumberFormatSubmit,
 }: any) {
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него кнопку
+  // «Экспорт» не показываем. Печать (PDF) этим правом не закрыта.
+  const canExport = useCanExport();
   const { isLoading, refetchBalanceSheet } = useBalanceSheetContext();
 
   // Handle filter toggle click.
@@ -110,18 +114,20 @@ function BalanceSheetActionsBar({
           icon={<Icon icon="print-16" iconSize={16} />}
           text={<T id={'print'} />}
         />
-        <Popover
-          content={<BalanceSheetExportMenu />}
-          interactionKind={PopoverInteractionKind.CLICK}
-          placement="bottom-start"
-          minimal
-        >
-          <Button
-            className={Classes.MINIMAL}
-            icon={<Icon icon="file-export-16" iconSize={16} />}
-            text={<T id={'export'} />}
-          />
-        </Popover>
+        {canExport && (
+          <Popover
+            content={<BalanceSheetExportMenu />}
+            interactionKind={PopoverInteractionKind.CLICK}
+            placement="bottom-start"
+            minimal
+          >
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="file-export-16" iconSize={16} />}
+              text={<T id={'export'} />}
+            />
+          </Popover>
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

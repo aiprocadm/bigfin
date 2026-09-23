@@ -25,6 +25,7 @@ import { withWarehouseTransfers } from './withWarehouseTransfers';
 import { withWarehouseTransfersActions } from './withWarehouseTransfersActions';
 
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Warehouse Transfers actions bar.
@@ -43,6 +44,9 @@ function WarehouseTransfersActionsBar({
   addSetting,
 }) {
   const history = useHistory();
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): кнопку «Экспорт»
+  // без него не показываем.
+  const canExport = useCanExport();
 
   // credit note list context.
   const { WarehouseTransferView, fields, refresh } =
@@ -112,11 +116,13 @@ function WarehouseTransfersActionsBar({
           icon={<Icon icon={'file-import-16'} />}
           text={<T id={'import'} />}
         />
-        <Button
-          className={Classes.MINIMAL}
-          icon={<Icon icon={'file-export-16'} iconSize={'16'} />}
-          text={<T id={'export'} />}
-        />
+        {canExport && (
+          <Button
+            className={Classes.MINIMAL}
+            icon={<Icon icon={'file-export-16'} iconSize={'16'} />}
+            text={<T id={'export'} />}
+          />
+        )}
         <NavbarDivider />
         <DashboardRowsHeightButton
           initialValue={warehouseTransferTableSize}

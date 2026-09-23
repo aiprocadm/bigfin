@@ -23,6 +23,7 @@ import {
   useTrialBalanceSheetCsvExport,
   useTrialBalanceSheetXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import { useTrialBalanceSheetHttpQuery } from './utils';
 
 /**
@@ -74,6 +75,7 @@ export function TrialBalanceSheetAlerts() {
  * Trial balance sheet export menu.
  */
 export const TrialBalanceSheetExportMenu = () => {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -145,6 +147,12 @@ export const TrialBalanceSheetExportMenu = () => {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

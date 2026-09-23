@@ -1,6 +1,10 @@
 import { Response } from 'express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Headers, Query, Res } from '@nestjs/common';
+import { Controller, Get, Headers, Query, Res, UseGuards } from '@nestjs/common';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject, ExportAction } from '@/modules/Roles/Roles.types';
 import { AcceptType } from '@/constants/accept-type';
 import { ExportQuery } from './dtos/ExportQuery.dto';
 import { ExportResourceService } from './ExportService';
@@ -9,6 +13,10 @@ import { convertAcceptFormatToFormat } from './Export.utils';
 
 @Controller('/export')
 @ApiTags('Export')
+// Выгрузка — отдельное право (FT-082 ТЗ-3): видеть раздел и унести базу
+// целиком — разные доверия. Пометка на классе закрывает и PDF-выгрузку.
+@UseGuards(AuthorizationGuard, PermissionGuard)
+@RequirePermission(ExportAction.Run, AbilitySubject.Export)
 export class ExportController {
   constructor(
     private readonly exportResourceApp: ExportResourceService,

@@ -18,6 +18,7 @@ import {
   useAPAgingSheetCsvExport,
   useAPAgingSheetXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Retrieve AP aging summary columns.
@@ -48,6 +49,7 @@ export function APAgingSummarySheetLoadingBar() {
  * @returns {JSX.Element}
  */
 export function APAgingSummaryExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = { isCloseButtonShown: true, timeout: 2000 };
@@ -113,6 +115,12 @@ export function APAgingSummaryExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

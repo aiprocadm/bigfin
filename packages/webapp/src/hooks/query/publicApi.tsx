@@ -145,6 +145,27 @@ export function useDeleteWebhook(props?: any) {
   );
 }
 
+/**
+ * Инструменты MCP-сервера (FT-090 ТЗ-3) — спрашиваем у самого сервера, чтобы
+ * экран не расходился с тем, что увидит агент.
+ */
+export function useMcpTools(props?: any) {
+  return useRequestQuery(
+    ['MCP_TOOLS'],
+    {
+      method: 'post',
+      url: 'mcp',
+      data: { jsonrpc: '2.0', id: 1, method: 'tools/list' },
+    },
+    {
+      select: (res: any) => res.data?.result?.tools ?? [],
+      defaultData: [],
+      staleTime: Infinity,
+      ...props,
+    },
+  );
+}
+
 /** Журнал доставок: почему событие не дошло до получателя. */
 export function useWebhookDeliveries(webhookId?: number, props?: any) {
   return useRequestQuery(

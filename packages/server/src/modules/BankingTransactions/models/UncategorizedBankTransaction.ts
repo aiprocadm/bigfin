@@ -2,11 +2,22 @@
 import * as moment from 'moment';
 import { Model } from 'objection';
 import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
+import { rowScopedQueryBuilder, tableRefOf } from '@/modules/Roles/utils/rowScopedQueryBuilder';
+import { applyColumnsRowScope } from '@/modules/Roles/utils/rowScope';
 import { UncategorizedBankTransactionMeta } from './UncategorizedBankTransaction.meta';
 import { InjectModelMeta } from '@/modules/Tenancy/TenancyModels/decorators/InjectModelMeta.decorator';
 
 @InjectModelMeta(UncategorizedBankTransactionMeta)
 export class UncategorizedBankTransaction extends TenantBaseModel {
+  /**
+   * Строки выписки — только разрешённых счетов (FT-080 ТЗ-3). Статьи и
+   * направления у строки ещё нет, она их ждёт: ограничение по ним сюда не
+   * применяется, иначе сотрудник не смог бы разнести ни одной строки.
+   */
+  static QueryBuilder = rowScopedQueryBuilder((builder, scope) =>
+    applyColumnsRowScope(builder, scope, { account: `${tableRefOf(builder)}.account_id` }),
+  );
+
   readonly amount!: number;
   readonly date!: Date | string;
   readonly categorized!: boolean;

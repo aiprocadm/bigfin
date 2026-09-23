@@ -1,3 +1,8 @@
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { CashflowAction } from '@/modules/BankingTransactions/types/BankingTransactions.types';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import {
   ApiTags,
   ApiOperation,
@@ -5,7 +10,7 @@ import {
   getSchemaPath,
   ApiExtraModels,
 } from '@nestjs/swagger';
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { DashboardService } from './Dashboard.service';
 import { GetMoneySummaryService } from './queries/GetMoneySummary.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
@@ -14,6 +19,7 @@ import { GetDashboardBootMetaResponseDto } from './dtos/GetDashboardBootMetaResp
 
 @ApiTags('Dashboard')
 @Controller('dashboard')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 @ApiExtraModels(GetDashboardBootMetaResponseDto)
 export class DashboardController {
   constructor(
@@ -33,6 +39,7 @@ export class DashboardController {
       'Одна ручка на весь виджет: шапка есть на каждом экране, и три ' +
       'запроса на каждом переходе — это три запроса на каждый щелчок.',
   })
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('money-widget')
   getMoneyWidget() {
     return this.moneyWidgetService.getMoneyWidget();
@@ -44,6 +51,9 @@ export class DashboardController {
     description: 'The dashboard details have been successfully retrieved.',
     schema: { $ref: getSchemaPath(GetDashboardBootMetaResponseDto) },
   })
+  // Загрузка витрины открыта намеренно: по ней интерфейс узнаёт, что
+  // пользователю можно. Закрыть её правом — не пустить никого, кроме
+  // владельцев этого права.
   @Get('boot')
   getBootMeta() {
     return this.dashboardService.getBootMeta();
@@ -57,6 +67,7 @@ export class DashboardController {
     status: 200,
     description: 'Суммы приходят числом и читаемой записью в валюте организации.',
   })
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('money-summary')
   getMoneySummary() {
     return this.moneySummaryService.getMoneySummary();
@@ -73,6 +84,7 @@ export class DashboardController {
       'Доходы, расходы и прибыль берутся из отчёта о прибылях и убытках — ' +
       'суммы совпадают с разделом «Отчёты».',
   })
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('overview')
   getOverview(
     @Query('from') from?: string,

@@ -23,12 +23,21 @@ import {
   Warehouse,
 } from 'lucide-react';
 
+import { AbilitySubject, ExportAction } from '@/constants/abilityOption';
+
 export interface PreferencesMenuItem {
   /** Ключ i18n для подписи пункта. */
   labelId: string;
   href: string;
   icon: LucideIcon;
   disabled?: boolean;
+  /**
+   * Право, без которого пункт не показываем (то же правило, что у бокового
+   * меню: список — «хватит любого из»). Без пометки пункт виден всем.
+   */
+  permission?:
+    | { ability: string; subject: string }
+    | { ability: string; subject: string }[];
 }
 
 export interface PreferencesMenuSection {
@@ -49,7 +58,14 @@ export const PreferencesMenu: PreferencesMenuSection[] = [
       { labelId: 'preferences.security.menu', href: '/preferences/security', icon: ShieldCheck },
       { labelId: 'display_preferences.menu', href: '/preferences/display', icon: LayoutDashboard },
       { labelId: 'account_groups.menu', href: '/preferences/account-groups', icon: Blocks },
-      { labelId: 'export_data.menu', href: '/preferences/export-data', icon: Download },
+      // «Выгрузить всё» — таблица со всеми данными: без права «Выгрузка
+      // данных» сервер ответит 403 (FT-082 ТЗ-3), пункт не показываем.
+      {
+        labelId: 'export_data.menu',
+        href: '/preferences/export-data',
+        icon: Download,
+        permission: { ability: ExportAction.Run, subject: AbilitySubject.Export },
+      },
     ],
   },
   {

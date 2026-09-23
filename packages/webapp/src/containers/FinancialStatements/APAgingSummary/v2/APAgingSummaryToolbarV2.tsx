@@ -13,6 +13,7 @@ import {
   useAPAgingSheetXlsxExport,
 } from '@/hooks/query';
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 import {
   FinancialReportToolbar,
@@ -93,6 +94,10 @@ function APAgingSummaryToolbarV2Root({
 
   const { mutateAsync: xlsxExport } = useXlsxExportTyped(httpQuery, {});
   const { mutateAsync: csvExport } = useCsvExportTyped(httpQuery, {});
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому пункты XLSX/CSV не передаём. Печать (PDF)
+  // этим правом не закрыта и остаётся.
+  const canExport = useCanExport();
 
   const notifyExported = () => {
     showToast({
@@ -118,8 +123,8 @@ function APAgingSummaryToolbarV2Root({
       onCustomizeClick={() => toggleFilterDrawer()}
       onRefreshClick={() => refetch()}
       onPrintClick={handlePrintClick}
-      onXlsxExportClick={handleXlsxExportClick}
-      onCsvExportClick={handleCsvExportClick}
+      onXlsxExportClick={canExport ? handleXlsxExportClick : undefined}
+      onCsvExportClick={canExport ? handleCsvExportClick : undefined}
       numberFormat={numberFormat ?? {}}
       onNumberFormatSubmit={onNumberFormatSubmit}
       numberFormatDisabled={isAPAgingFetching}

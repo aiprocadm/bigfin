@@ -11,6 +11,8 @@ import { PlannedOperation } from '@/modules/PaymentCalendar/models/PlannedOperat
 import { validateStatusTransition } from '../utils/validateStatusTransition';
 import { ERRORS, PAYMENT_REQUEST_SOURCE } from '../constants';
 import { PaymentRequestInstallmentsService } from './PaymentRequestInstallments.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { events } from '@/common/events/events';
 
 @Injectable()
 export class ApprovePaymentRequestService {
@@ -25,6 +27,8 @@ export class ApprovePaymentRequestService {
     private readonly operationModel: TenantModelProxy<typeof PlannedOperation>,
 
     private readonly installments: PaymentRequestInstallmentsService,
+
+    private readonly eventEmitter?: EventEmitter2,
   ) {}
 
   /**
@@ -89,6 +93,11 @@ export class ApprovePaymentRequestService {
           plannedOperationId: operation.id,
         } as any);
 
+      // Одобрение рассылается подписчикам (FT-092 ТЗ-3).
+      await this.eventEmitter?.emitAsync(events.paymentRequest.onApproved, {
+        paymentRequest: { ...request, status: 'approved', plannedOperationId: operation.id },
+        trx,
+      });
       return this.requestModel().query(trx).findById(id);
     });
   }

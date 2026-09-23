@@ -121,6 +121,10 @@ const GUARDED_ELSEWHERE: string[] = [
   // (FT-053 ТЗ-3) — та же проверка «чья заявка» в службе.
   'PaymentRequests/PaymentRequests.controller.ts#edit',
   'PaymentRequests/PaymentRequests.controller.ts#submit',
+  // Вход MCP-сервера (FT-090 ТЗ-3): POST — это транспорт JSON-RPC, сама ручка
+  // ничего не меняет, а каждый инструмент зовёт GET-ручку тем же токеном —
+  // права проверяет она (сторож `Mcp/mcpTools.spec.ts`).
+  'Mcp/Mcp.controller.ts#rpc',
 
   // Своя новая организация: человек заводит её себе, спрашивать не у кого.
   'ee/Workspaces/Workspaces.controller.ts#createWorkspace',

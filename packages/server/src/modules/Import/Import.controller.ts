@@ -1,3 +1,4 @@
+import { NotDataExport } from '@/modules/Roles/utils/exportRight';
 import { Response, NextFunction } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { defaultTo } from 'lodash';
@@ -94,6 +95,9 @@ export class ImportController {
   /**
    * Retrieves the csv/xlsx sample sheet of the given resource name.
    */
+  // Образец — придуманные строки, а не данные организации: право
+  // «Выгрузка данных» для него не нужно (FT-082 ТЗ-3).
+  @NotDataExport()
   @Get('/sample')
   @ApiOperation({ summary: 'Get import sample' })
   @ApiResponse({ status: 200, description: 'Sample data' })

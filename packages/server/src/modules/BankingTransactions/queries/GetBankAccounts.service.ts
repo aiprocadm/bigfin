@@ -1,3 +1,4 @@
+import { applyColumnsRowScope, currentRowScope } from '@/modules/Roles/utils/rowScope';
 import { Injectable, Inject } from '@nestjs/common';
 import { BankAccount } from '../models/BankAccount';
 import { DynamicListService } from '@/modules/DynamicListing/DynamicList.service';
@@ -42,6 +43,9 @@ export class GetBankAccountsService {
         ACCOUNT_TYPE.CREDIT_CARD,
       ]);
       builder.modify('inactiveMode', filter.inactiveMode);
+      // Роль с ограничением по счетам видит только свои счета (FT-080
+      // ТЗ-3): чужой счёт не показывается даже названием.
+      applyColumnsRowScope(builder, currentRowScope(), { account: 'id' });
     });
     // Retrieves the transformed accounts.
     const transformed = await this.transformer.transform(

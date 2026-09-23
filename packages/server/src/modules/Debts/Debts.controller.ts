@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
   Controller,
@@ -52,16 +53,20 @@ const CONTACT_EDIT = [
 export class DebtsController {
   constructor(private readonly application: DebtsApplication) {}
 
+  @RequireAnyPermission({ ability: 'View', subject: AbilitySubject.SaleInvoice }, { ability: 'View', subject: AbilitySubject.Bill })
   @Get('overview')
   @ApiOperation({
     summary: 'Debts overview: AR/AP totals, aging buckets, top debtors.',
   })
+  @RequireApiScope('reports:read')
   getOverview(@Query() query: GetDebtsOverviewQueryDto) {
     return this.application.getOverview(query);
   }
 
+  @RequireAnyPermission({ ability: 'View', subject: AbilitySubject.SaleInvoice }, { ability: 'View', subject: AbilitySubject.Bill })
   @Get('contact/:contactId')
   @ApiOperation({ summary: 'Unpaid documents of a contact (drill-down).' })
+  @RequireApiScope('reports:read')
   getContactDebts(
     @Param('contactId', ParseIntPipe) contactId: number,
     @Query() query: GetContactDebtsQueryDto,
@@ -80,6 +85,7 @@ export class DebtsController {
     return this.application.remindDebtor(invoiceId);
   }
 
+  @RequireAnyPermission({ ability: 'View', subject: AbilitySubject.SaleInvoice }, { ability: 'View', subject: AbilitySubject.Bill })
   @Get('repayment-plans')
   @ApiOperation({ summary: 'List repayment plans with progress.' })
   getRepaymentPlans(

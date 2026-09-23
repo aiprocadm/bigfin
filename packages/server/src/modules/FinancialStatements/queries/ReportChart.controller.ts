@@ -1,4 +1,8 @@
 // © 2026 Bigfin
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -24,7 +28,10 @@ import { DrillDownQueryDto } from './DrillDownQuery.dto';
  * двенадцати столбцов незачем.
  */
 @ApiTags('Financial Reports')
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('financial-reports/chart')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard)
 export class ReportChartController {
@@ -34,6 +41,7 @@ export class ReportChartController {
     private readonly balanceStructure: GetBalanceStructureService,
   ) {}
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({ summary: 'Ряды графика отчёта по месяцам.' })
   @ApiResponse({
@@ -48,6 +56,7 @@ export class ReportChartController {
     return this.reportChart.getChart(kind, query.from, query.to);
   }
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get('structure')
   @ApiOperation({ summary: 'Структура баланса: имущество и его источники.' })
   @ApiResponse({
@@ -61,6 +70,7 @@ export class ReportChartController {
     return this.balanceStructure.getStructure(query.from, query.to);
   }
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get('drill-down')
   @ApiOperation({
     summary: 'Операции, из которых сложилась сумма отчёта.',

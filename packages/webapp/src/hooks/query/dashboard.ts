@@ -3,6 +3,7 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 
 import useApiRequest from '@/hooks/useRequest';
+import { useCanViewMoney } from '@/hooks/utils/useAbilityContext';
 import { transformToCamelCase } from '@/utils';
 
 /** Сколько ответ считается свежим. Столько же живёт кэш на сервере. */
@@ -20,6 +21,8 @@ export function useMoneyWidget(
   options?: UseQueryOptions<any, Error>,
 ): UseQueryResult<any, Error> {
   const apiRequest = useApiRequest();
+  // Без права на деньги не спрашиваем: 403 закрыл бы весь экран (FT-084).
+  const canViewMoney = useCanViewMoney();
 
   return useQuery<any, Error>(
     ['DASHBOARD_MONEY_WIDGET'],
@@ -33,6 +36,7 @@ export function useMoneyWidget(
       // ронять шапку, без которой человек не сможет никуда уйти.
       retry: false,
       ...options,
+      enabled: canViewMoney && (options?.enabled ?? true),
     },
   );
 }

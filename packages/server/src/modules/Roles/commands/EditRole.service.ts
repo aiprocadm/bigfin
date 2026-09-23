@@ -50,6 +50,10 @@ export class EditRoleService {
         allowedLegalEntityIds: editRoleDTO.allowedLegalEntityIds?.length
           ? editRoleDTO.allowedLegalEntityIds
           : null,
+        // Ограничения по строкам (FT-080): пустой список — тоже `null`.
+        allowedArticleIds: editRoleDTO.allowedArticleIds?.length ? editRoleDTO.allowedArticleIds : null,
+        allowedProjectIds: editRoleDTO.allowedProjectIds?.length ? editRoleDTO.allowedProjectIds : null,
+        allowedAccountIds: editRoleDTO.allowedAccountIds?.length ? editRoleDTO.allowedAccountIds : null,
         permissions,
       });
       // Triggers `onRoleEdited` event.

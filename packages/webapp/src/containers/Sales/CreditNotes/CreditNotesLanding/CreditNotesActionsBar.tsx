@@ -41,6 +41,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { DialogsName } from '@/constants/dialogs';
 import { compose } from '@/utils';
 import { DRAWERS } from '@/constants/drawers';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import { useBulkDeleteCreditNotesDialog } from './hooks/use-bulk-delete-credit-notes-dialog';
 
 /**
@@ -97,6 +98,10 @@ function CreditNotesActionsBar({
     history.push('/credit-notes/import');
   };
   // Handle the export button click.
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'credit_note' });
   };
@@ -180,12 +185,14 @@ function CreditNotesActionsBar({
           text={<T id={'import'} />}
           onClick={handleImportBtnClick}
         />
-        <Button
-          className={Classes.MINIMAL}
-          icon={<Icon icon={'file-export-16'} iconSize={'16'} />}
-          text={<T id={'export'} />}
-          onClick={handleExportBtnClick}
-        />
+        {canExport && (
+          <Button
+            className={Classes.MINIMAL}
+            icon={<Icon icon={'file-export-16'} iconSize={'16'} />}
+            text={<T id={'export'} />}
+            onClick={handleExportBtnClick}
+          />
+        )}
         <NavbarDivider />
         <DashboardRowsHeightButton
           initialValue={creditNoteTableSize}

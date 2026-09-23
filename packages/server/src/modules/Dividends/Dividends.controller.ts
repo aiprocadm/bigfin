@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -33,6 +35,7 @@ import { Features } from '@/common/types/Features';
 export class DividendsController {
   constructor(private readonly application: DividendsApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('summary')
   @ApiOperation({
     summary:
@@ -42,6 +45,7 @@ export class DividendsController {
     return this.application.getSummary();
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('payouts')
   @ApiOperation({ summary: 'List owner payouts (newest first).' })
   getPayouts() {

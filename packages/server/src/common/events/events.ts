@@ -482,6 +482,16 @@ export const events = {
   /**
    * Roles service events.
    */
+  // Заявки на оплату (FT-092 ТЗ-3): одобрение рассылается вебхуком.
+  paymentRequest: {
+    onApproved: 'onPaymentRequestApproved',
+  },
+
+  // MCP-сервер для ИИ-агентов (FT-090 ТЗ-3): журнал последних вызовов.
+  mcp: {
+    onToolCalled: 'onMcpToolCalled',
+  },
+
   roles: {
     onCreate: 'onRoleCreate',
     onCreated: 'onRoleCreated',
@@ -489,6 +499,8 @@ export const events = {
     onEdited: 'onRoleEdited',
     onDelete: 'onRoleDelete',
     onDeleted: 'onRoleDeleted',
+    // Владелец начал смотреть глазами сотрудника (FT-081 ТЗ-3).
+    onAccessPreviewStarted: 'onRoleAccessPreviewStarted',
   },
 
   tenantUser: {

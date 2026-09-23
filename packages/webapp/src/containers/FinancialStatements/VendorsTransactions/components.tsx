@@ -19,6 +19,7 @@ import {
   useVendorsTransactionsXlsxExport,
 } from '@/hooks/query';
 import { Align } from '@/constants';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Retrieve vendors transactions columns.
@@ -112,6 +113,7 @@ export function VendorsTransactionsLoadingBar() {
  * Vendor transactions export menu.
  */
 export function VendorTransactionsExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -180,6 +182,12 @@ export function VendorTransactionsExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

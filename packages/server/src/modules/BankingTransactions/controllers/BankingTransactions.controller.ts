@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { SetAccrualPeriodService } from '../commands/SetAccrualPeriod.service';
 import {
   Patch,
@@ -48,6 +49,7 @@ export class BankingTransactionsController {
     private readonly summaryService: GetTransactionsSummaryService,
   ) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('summary')
   @ApiOperation({
     summary: 'Итоги реестра операций под тем же отбором, что и список.',
@@ -58,10 +60,12 @@ export class BankingTransactionsController {
       'Сколько операций и на какую сумму. Переводы между своими счетами ' +
       'в итог не входят и показываются отдельно.',
   })
+  @RequireApiScope('transactions:read')
   getSummary(@Query() filter: GetBankTransactionsQueryDto) {
     return this.summaryService.getSummary(filter);
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'Get bank account transactions' })
   @ApiResponse({
@@ -95,6 +99,7 @@ export class BankingTransactionsController {
     type: Number,
     description: 'Number of items per page',
   })
+  @RequireApiScope('transactions:read')
   async getBankAccountTransactions(
     @Query() query: GetBankTransactionsQueryDto,
   ) {
@@ -115,6 +120,7 @@ export class BankingTransactionsController {
     description: 'Invalid input data',
   })
   @ApiBody({ type: CreateBankTransactionDto })
+  @RequireApiScope('transactions:write')
   async createTransaction(@Body() transactionDTO: CreateBankTransactionDto) {
     return this.bankingTransactionsApplication.createTransaction(
       transactionDTO,
@@ -129,6 +135,7 @@ export class BankingTransactionsController {
   @Post('bulk')
   @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
   @ApiOperation({ summary: 'Создать несколько операций одним запросом; ошибка строки не отменяет остальные.' })
+  @RequireApiScope('transactions:write')
   async createTransactionsBulk(@Body() body: BulkCreateBankTransactionsDto) {
     return this.bankingTransactionsApplication.createTransactionsBulk(body.items);
   }
@@ -172,6 +179,7 @@ export class BankingTransactionsController {
     );
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific bank transaction by ID' })
   @ApiResponse({
@@ -191,6 +199,7 @@ export class BankingTransactionsController {
     type: String,
     description: 'Bank transaction ID',
   })
+  @RequireApiScope('transactions:read')
   async getTransaction(@Param('id') transactionId: string) {
     return this.bankingTransactionsApplication.getTransaction(
       Number(transactionId),

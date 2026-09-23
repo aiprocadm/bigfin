@@ -18,6 +18,15 @@ export class Role extends TenantBaseModel {
   allowedLegalEntityIds: number[] | null;
 
   /**
+   * Ограничения по строкам (FT-080 ТЗ-3): статьи, направления, денежные
+   * счета. Пусто — без ограничения. Применяются к каждому чтению проводок,
+   * календаря и строк выписки (`Roles/utils/rowScope.ts`).
+   */
+  allowedArticleIds: number[] | null;
+  allowedProjectIds: number[] | null;
+  allowedAccountIds: number[] | null;
+
+  /**
    * Table name
    */
   static get tableName() {
@@ -33,7 +42,12 @@ export class Role extends TenantBaseModel {
    * всем юрлицам сразу.
    */
   static get jsonAttributes() {
-    return ['allowedLegalEntityIds'];
+    return [
+      'allowedLegalEntityIds',
+      'allowedArticleIds',
+      'allowedProjectIds',
+      'allowedAccountIds',
+    ];
   }
 
   /**

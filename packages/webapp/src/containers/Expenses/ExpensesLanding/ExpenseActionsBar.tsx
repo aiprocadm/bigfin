@@ -35,6 +35,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withSettings } from '@/containers/Settings/withSettings';
 
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import { isEmpty } from 'lodash';
 import { useBulkDeleteExpensesDialog } from './hooks/use-bulk-delete-expenses-dialog';
 
@@ -103,6 +104,10 @@ function ExpensesActionsBar({
     addSetting('expenses', 'tableSize', size);
   };
   // Handle the export button click.
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'expense' });
   };
@@ -183,12 +188,14 @@ function ExpensesActionsBar({
           text={<T id={'import'} />}
           onClick={handleImportBtnClick}
         />
-        <Button
-          className={Classes.MINIMAL}
-          icon={<Icon icon="file-export-16" iconSize={16} />}
-          text={<T id={'export'} />}
-          onClick={handleExportBtnClick}
-        />
+        {canExport && (
+          <Button
+            className={Classes.MINIMAL}
+            icon={<Icon icon="file-export-16" iconSize={16} />}
+            text={<T id={'export'} />}
+            onClick={handleExportBtnClick}
+          />
+        )}
         <NavbarDivider />
         <DashboardRowsHeightButton
           initialValue={expensesTableSize}

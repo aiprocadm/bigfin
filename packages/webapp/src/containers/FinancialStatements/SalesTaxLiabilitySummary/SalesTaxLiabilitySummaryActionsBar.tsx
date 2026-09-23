@@ -20,6 +20,7 @@ import { withSalesTaxLiabilitySummaryActions } from './withSalesTaxLiabilitySumm
 import { SalesTaxLiabilityExportMenu } from './components';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Sales tax liability summary - actions bar.
@@ -38,6 +39,9 @@ function SalesTaxLiabilitySummaryActionsBar({
   numberFormat,
   onNumberFormatSubmit,
 }: any) {
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него кнопку
+  // «Экспорт» не показываем. Печать (PDF) этим правом не закрыта.
+  const canExport = useCanExport();
   const { isLoading, refetchSalesTaxLiabilitySummary } =
     useSalesTaxLiabilitySummaryContext();
 
@@ -111,18 +115,20 @@ function SalesTaxLiabilitySummaryActionsBar({
           text={<T id={'print'} />}
           onClick={handlePrintBtnClick}
         />
-        <Popover
-          content={<SalesTaxLiabilityExportMenu />}
-          interactionKind={PopoverInteractionKind.CLICK}
-          placement="bottom-start"
-          minimal
-        >
-          <Button
-            className={Classes.MINIMAL}
-            icon={<Icon icon="file-export-16" iconSize={16} />}
-            text={<T id={'export'} />}
-          />
-        </Popover>
+        {canExport && (
+          <Popover
+            content={<SalesTaxLiabilityExportMenu />}
+            interactionKind={PopoverInteractionKind.CLICK}
+            placement="bottom-start"
+            minimal
+          >
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="file-export-16" iconSize={16} />}
+              text={<T id={'export'} />}
+            />
+          </Popover>
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

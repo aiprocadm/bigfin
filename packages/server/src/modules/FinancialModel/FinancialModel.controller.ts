@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -38,12 +40,14 @@ import {
 export class FinancialModelController {
   constructor(private readonly application: FinancialModelApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('overview')
   @ApiOperation({ summary: 'Обзор финмодели: маржа, выручка на сотрудника, маржа во времени.' })
   getOverview(@Query() query: FinancialOverviewQueryDto) {
     return this.application.getOverview(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('segments')
   @ApiOperation({
     summary:
@@ -53,12 +57,14 @@ export class FinancialModelController {
     return this.application.getSegments(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('marketing')
   @ApiOperation({ summary: 'Маркетинговые метрики: CAC, ROMI, LTV (по каналам и итого).' })
   getMarketing(@Query() query: FinancialOverviewQueryDto) {
     return this.application.getMarketingMetrics(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('break-even')
   @ApiOperation({
     summary: 'Точка безубыточности: постоянные затраты, маржа, выручка безубыточности.',
@@ -67,6 +73,7 @@ export class FinancialModelController {
     return this.application.getBreakEven(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('expenses-analysis')
   @ApiOperation({
     summary:
@@ -78,6 +85,7 @@ export class FinancialModelController {
     return this.application.getExpensesAnalysis(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('articles')
   @ApiOperation({ summary: 'Расходные статьи с пометкой постоянная/переменная.' })
   listExpenseArticles() {
@@ -94,6 +102,7 @@ export class FinancialModelController {
     return this.application.setCostBehavior(id, dto.behavior ?? null);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('marketing/channels')
   @ApiOperation({ summary: 'Список каналов привлечения.' })
   listChannels() {

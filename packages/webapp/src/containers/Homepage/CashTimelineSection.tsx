@@ -7,6 +7,7 @@ import { CashTimeline } from '@/components/ui/cash-timeline';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Features } from '@/constants/features';
 import { useFeatureCan } from '@/hooks/state';
+import { useCanViewMoney } from '@/hooks/utils/useAbilityContext';
 import { usePaymentCalendar } from '@/hooks/query/paymentCalendar';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatDayMonth } from '@/utils/formatDayMonth';
@@ -29,7 +30,10 @@ const HORIZON_DAYS = 30;
  */
 export default function CashTimelineSection() {
   const { featureCan } = useFeatureCan();
-  const calendarOn = featureCan(Features.PaymentCalendar);
+  // Календарь платежей на сервере закрыт тем же правом, что и сводка денег
+  // (FT-084): без него не спрашиваем, иначе 403 закроет весь экран.
+  const canViewMoney = useCanViewMoney();
+  const calendarOn = featureCan(Features.PaymentCalendar) && canViewMoney;
 
   const { data: summary, isLoading: summaryLoading } = useMoneySummary();
 

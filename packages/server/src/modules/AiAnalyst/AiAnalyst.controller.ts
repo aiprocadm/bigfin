@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -30,6 +31,7 @@ export class AiAnalystController {
     private readonly settings: AiAnalystSettingsService,
   ) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('availability')
   @ApiOperation({ summary: 'Доступен ли раздел и, если нет, почему именно.' })
   @ApiResponse({
@@ -42,6 +44,7 @@ export class AiAnalystController {
     return this.insights.getAvailability();
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('settings')
   @ApiOperation({ summary: 'Настройки провайдера (без ключа доступа).' })
   async getSettings() {
@@ -73,6 +76,7 @@ export class AiAnalystController {
     return this.getSettings();
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('insights/:scope')
   @ApiOperation({ summary: 'Выводы «Что говорят цифры» для экрана.' })
   @ApiResponse({

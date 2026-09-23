@@ -67,6 +67,10 @@ export const transformToObject = (role) => {
     // Юрлица роли (§8.4). Поле, которое форма не подставила, ушло бы на
     // сервер пустым и молча сняло бы ограничение доступа.
     allowed_legal_entity_ids: role.allowed_legal_entity_ids ?? [],
+    // Ограничения по строкам (FT-080): по той же причине подставляются все.
+    allowed_article_ids: role.allowed_article_ids ?? [],
+    allowed_project_ids: role.allowed_project_ids ?? [],
+    allowed_account_ids: role.allowed_account_ids ?? [],
     permissions,
     serviceFullAccess,
   };
@@ -126,6 +130,9 @@ export const getNewRoleInitialValues = (schema) => {
     // Ничего не отмечено — доступ ко всем юрлицам. Так ведут себя владелец
     // и администратор (§8.4).
     allowed_legal_entity_ids: [],
+    allowed_article_ids: [],
+    allowed_project_ids: [],
+    allowed_account_ids: [],
     permissions,
     serviceFullAccess,
   };

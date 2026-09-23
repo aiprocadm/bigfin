@@ -42,6 +42,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshJournals } from '@/hooks/query/manualJournals';
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 import { useBulkDeleteManualJournalsDialog } from '../hooks/use-bulk-delete-manual-journals-dialog';
 import { useManualJournalsContext } from '../ManualJournalsListProvider';
@@ -277,6 +278,10 @@ function ManualJournalsToolbarV2Root({
     history.push('/manual-journals/import');
   };
 
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'manual_journal' });
   };
@@ -364,10 +369,12 @@ function ManualJournalsToolbarV2Root({
               <Upload className="mr-2 h-4 w-4" aria-hidden />
               {intl.get('import')}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleExportBtnClick}>
-              <Download className="mr-2 h-4 w-4" aria-hidden />
-              {intl.get('export')}
-            </DropdownMenuItem>
+            {canExport && (
+              <DropdownMenuItem onClick={handleExportBtnClick}>
+                <Download className="mr-2 h-4 w-4" aria-hidden />
+                {intl.get('export')}
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

@@ -23,6 +23,8 @@ export const AbilitySubject = {
   TaxRate: 'TaxRate',
   BankRule: 'BankRule',
   AuditLog: 'AuditLog',
+  // Выгрузка данных — отдельное право (FT-082 ТЗ-3).
+  Export: 'Export',
 };
 
 export const ItemAction = {
@@ -204,4 +206,9 @@ export const BankRuleAction = {
 
 export const AuditLogAction = {
   View: 'View',
+};
+
+// Выгрузка данных таблицей (FT-082 ТЗ-3).
+export const ExportAction = {
+  Run: 'Run',
 };

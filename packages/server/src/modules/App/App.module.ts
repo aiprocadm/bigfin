@@ -40,6 +40,7 @@ import { BudgetsModule } from '../Budgets/Budgets.module';
 import { LegalEntitiesModule } from '../LegalEntities/LegalEntities.module';
 import { ProjectsModule } from '../Projects/Projects.module';
 import { PublicApiModule } from '../PublicApi/PublicApi.module';
+import { McpModule } from '../Mcp/Mcp.module';
 import { AiAnalystModule } from '../AiAnalyst/AiAnalyst.module';
 import { AiChatModule } from '../AiChat/AiChat.module';
 import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
@@ -253,6 +254,8 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     ProjectsModule,
     // Публичный API и вебхуки (этап 15 ТЗ).
     PublicApiModule,
+    // MCP-сервер для ИИ-агентов поверх публичного API (FT-090 ТЗ-3).
+    McpModule,
     // ИИ-аналитик (этап 13 ТЗ). Флаг по умолчанию выключен.
     AiAnalystModule,
     // ИИ-чат по финансам (этап 14 ТЗ). Тот же флаг, что у аналитика.

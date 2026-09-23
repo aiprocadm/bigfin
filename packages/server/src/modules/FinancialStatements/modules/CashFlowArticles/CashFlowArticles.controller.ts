@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Controller, Get, Headers, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import {
@@ -30,6 +31,8 @@ import {
  * Пять форматов через заголовок `Accept`, как у всех отчётов: человек,
  * научившийся выгружать один отчёт, умеет выгружать все.
  */
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('/reports/cash-flow-articles')
 @ApiTags('Reports')
 @ApiCommonHeaders()

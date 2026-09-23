@@ -36,6 +36,7 @@ import { RegistryRowMenu, useRegistryRowActions } from './RegistryRowActions';
 import { RegistryTypeChips, SavedFiltersMenu } from './RegistryQuickFilters';
 import { BulkTransactionsDialog } from './BulkTransactionsDialog';
 import { DialogsName } from '@/constants/dialogs';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
 import { BulkActionsBar } from './BulkActionsBar';
@@ -79,6 +80,9 @@ export default function AllTransactionsPage() {
   const history = useHistory();
   const location = useLocation();
   const { openDialog } = useDialogActions();
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку «Экспорт» не показываем.
+  const canExport = useCanExport();
   const { openDrawer } = useDrawerActions();
   const { featureCan } = useFeatureCan();
   // Направления и сделки — одна таблица, и обе живут за одним флагом.
@@ -248,16 +252,18 @@ export default function AllTransactionsPage() {
                 <Button variant="secondary" onClick={() => setBulkOpen(true)}>
                   {intl.get('all_transactions.bulk.open')}
                 </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    openDialog(DialogsName.Export, {
-                      resource: 'bank_transaction',
-                    })
-                  }
-                >
-                  {intl.get('export')}
-                </Button>
+                {canExport && (
+                  <Button
+                    variant="secondary"
+                    onClick={() =>
+                      openDialog(DialogsName.Export, {
+                        resource: 'bank_transaction',
+                      })
+                    }
+                  >
+                    {intl.get('export')}
+                  </Button>
+                )}
               </div>
             }
           />

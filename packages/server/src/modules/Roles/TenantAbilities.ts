@@ -7,6 +7,26 @@ import { RolePermission } from './models/RolePermission.model';
 export const ABILITIES_CACHE = new LruCache(1000);
 
 /**
+ * Ключ кеша прав — ОРГАНИЗАЦИЯ + пользователь.
+ *
+ * Раньше ключом был один номер пользователя. Человек бывает владельцем в
+ * своей организации и рядовым сотрудником в чужой — права владельца из
+ * кеша ушли бы в чужую организацию. Не случалось это лишь потому, что для
+ * обычного входа кеш писался под пустым ключом и не срабатывал вовсе
+ * (найдено при подключении токенов API, этап 39 ТЗ-3).
+ */
+export const abilityCacheKey = (organizationId: unknown, userId: unknown) =>
+  `${String(organizationId ?? '')}:${String(userId ?? '')}`;
+
+/** Сбросить права пользователя во ВСЕХ организациях. */
+export function purgeUserAbilities(userId: unknown) {
+  const suffix = `:${String(userId ?? '')}`;
+  (ABILITIES_CACHE.keys() as string[]).forEach((key) => {
+    if (String(key).endsWith(suffix)) ABILITIES_CACHE.del(key);
+  });
+}
+
+/**
  * Retrieve ability for the given role.
  * @param {} role
  * @returns

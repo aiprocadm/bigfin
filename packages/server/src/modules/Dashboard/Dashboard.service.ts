@@ -1,3 +1,5 @@
+import { currentAccessPreview } from '@/modules/Roles/utils/accessPreview';
+import { currentRowScope, describeRowScope } from '@/modules/Roles/utils/rowScope';
 import { Inject } from '@nestjs/common';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { FeaturesManager } from '../Features/FeaturesManager';
@@ -15,6 +17,10 @@ interface IDashboardBootMeta {
   abilities: IRoleAbility[];
   features: IFeatureAllItem[];
   isBigfinCloud: boolean;
+  /** Ограничение роли по строкам — для плашки «показаны только доступные вам» (FT-080). */
+  rowScope: ReturnType<typeof describeRowScope>;
+  /** Режим проверки доступа: чьими глазами смотрит владелец (FT-081). */
+  accessPreview: { userId: number; name: string } | null;
 }
 
 export class DashboardService {
@@ -41,8 +47,15 @@ export class DashboardService {
       abilities,
       features,
       isBigfinCloud: this.configService.get('cloud.hostedOnCloud'),
+      rowScope: describeRowScope(currentRowScope()),
+      accessPreview: this.describeAccessPreview(),
     };
   };
+
+  private describeAccessPreview() {
+    const preview = currentAccessPreview();
+    return preview ? { userId: preview.tenantUserId, name: preview.name } : null;
+  }
 
   /**
    * Transformes role permissions to abilities.
@@ -62,10 +75,12 @@ export class DashboardService {
    */
   private getBootAbilities = async (): Promise<IRoleAbility[]> => {
     const authorizedUser = await this.tenancyContext.getSystemUser();
+    // В режиме проверки доступа витрина строится по правам сотрудника.
+    const userId = currentAccessPreview()?.systemUserId ?? authorizedUser.id;
 
     const tenantUser = await this.tenantUserModel()
       .query()
-      .findOne('systemUserId', authorizedUser.id)
+      .findOne('systemUserId', userId)
       .withGraphFetched('role.permissions')
       .throwIfNotFound();
 

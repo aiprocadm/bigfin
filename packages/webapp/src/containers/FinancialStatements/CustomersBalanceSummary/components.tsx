@@ -19,6 +19,7 @@ import {
   useCustomerBalanceSummaryCsvExport,
   useCustomerBalanceSummaryXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Retrieve customers balance summary columns.
@@ -95,6 +96,7 @@ export function CustomersBalanceLoadingBar() {
  * Customer balance summary export menu.
  */
 export function CustomerBalanceSummaryExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -166,6 +168,12 @@ export function CustomerBalanceSummaryExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

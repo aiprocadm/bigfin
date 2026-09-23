@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import { Body, Controller, Get, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -32,12 +33,14 @@ export class CapitalizationController {
     private readonly settings: CapitalizationSettingsService,
   ) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({ summary: 'Стоимость бизнеса: чистые активы, оценка, доля владельца.' })
   getCapitalization(@Query() query: CapitalizationQueryDto) {
     return this.capitalization.getCapitalization(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('settings')
   @ApiOperation({ summary: 'Настройки оценки: множитель прибыли.' })
   getSettings() {

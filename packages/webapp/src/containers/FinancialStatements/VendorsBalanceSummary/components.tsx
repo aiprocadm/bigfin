@@ -12,6 +12,7 @@ import {
   useVendorBalanceSummaryCsvExport,
   useVendorBalanceSummaryXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Retrieve vendors balance summary columns.
@@ -97,6 +98,7 @@ export function VendorsSummarySheetLoadingBar() {
  * @returns {JSX.Element}
  */
 export function VendorSummarySheetExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -164,6 +166,12 @@ export function VendorSummarySheetExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport().then(() => {});
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

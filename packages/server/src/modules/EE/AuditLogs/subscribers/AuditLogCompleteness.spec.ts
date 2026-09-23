@@ -47,6 +47,7 @@ const SENSITIVE_EVENTS: Array<[string, string]> = [
   ['роль создана', events.roles.onCreated],
   ['роль изменена', events.roles.onEdited],
   ['роль удалена', events.roles.onDeleted],
+  ['начата проверка доступа глазами сотрудника', events.roles.onAccessPreviewStarted],
   // состав команды
   ['участник изменён', events.tenantUser.onEdited],
   ['участник активирован', events.tenantUser.onActivated],

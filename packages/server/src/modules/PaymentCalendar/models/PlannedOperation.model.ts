@@ -1,7 +1,20 @@
 import { Model } from 'objection';
 import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
+import { rowScopedQueryBuilder, tableRefOf } from '@/modules/Roles/utils/rowScopedQueryBuilder';
+import { applyColumnsRowScope } from '@/modules/Roles/utils/rowScope';
 
 export class PlannedOperation extends TenantBaseModel {
+  /** Календарь видит только разрешённые роли статьи и счета (FT-080 ТЗ-3). */
+  static QueryBuilder = rowScopedQueryBuilder((builder, scope) => {
+    const table = tableRefOf(builder);
+    applyColumnsRowScope(builder, scope, {
+      article: `${table}.article_id`,
+      project: `${table}.project_id`,
+      account: `${table}.account_id`,
+      legalEntity: `${table}.legal_entity_id`,
+    });
+  });
+
   direction!: string;
   amount!: number;
   currencyCode!: string;

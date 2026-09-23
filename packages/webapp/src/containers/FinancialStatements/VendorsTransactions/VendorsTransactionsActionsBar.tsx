@@ -21,6 +21,7 @@ import { compose, saveInvoke } from '@/utils';
 import { VendorTransactionsExportMenu } from './components';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * vendors transactions actions bar.
@@ -39,6 +40,9 @@ function VendorsTransactionsActionsBar({
   //#withDialogActions
   openDialog
 }: any) {
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него кнопку
+  // «Экспорт» не показываем. Печать (PDF) этим правом не закрыта.
+  const canExport = useCanExport();
   const { isVendorsTransactionsLoading, refetch } =
     useVendorsTransactionsContext();
 
@@ -113,18 +117,20 @@ function VendorsTransactionsActionsBar({
           text={<T id={'print'} />}
           onClick={handlePrintBtnClick}
         />
-        <Popover
-          content={<VendorTransactionsExportMenu />}
-          interactionKind={PopoverInteractionKind.CLICK}
-          placement="bottom-start"
-          minimal
-        >
-          <Button
-            className={Classes.MINIMAL}
-            icon={<Icon icon="file-export-16" iconSize={16} />}
-            text={<T id={'export'} />}
-          />
-        </Popover>
+        {canExport && (
+          <Popover
+            content={<VendorTransactionsExportMenu />}
+            interactionKind={PopoverInteractionKind.CLICK}
+            placement="bottom-start"
+            minimal
+          >
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="file-export-16" iconSize={16} />}
+              text={<T id={'export'} />}
+            />
+          </Popover>
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

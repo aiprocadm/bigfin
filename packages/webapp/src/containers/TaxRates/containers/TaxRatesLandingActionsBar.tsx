@@ -13,6 +13,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 
 import { DialogsName } from '@/constants/dialogs';
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import { useHistory } from 'react-router-dom';
 
 /**
@@ -32,6 +33,10 @@ function TaxRatesActionsBar({
   const handleImportBtnClick = () => {
     history.push('/tax-rates/import');
   };
+
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
 
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'tax_rate' });
@@ -56,12 +61,14 @@ function TaxRatesActionsBar({
           text={<T id={'import'} />}
           onClick={handleImportBtnClick}
         />
-        <Button
-          className={Classes.MINIMAL}
-          icon={<Icon icon="file-export-16" iconSize={16} />}
-          text={<T id={'export'} />}
-          onClick={handleExportBtnClick}
-        />
+        {canExport && (
+          <Button
+            className={Classes.MINIMAL}
+            icon={<Icon icon="file-export-16" iconSize={16} />}
+            text={<T id={'export'} />}
+            onClick={handleExportBtnClick}
+          />
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

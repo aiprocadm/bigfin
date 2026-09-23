@@ -58,71 +58,89 @@
 Токен передаётся в заголовке `Authorization`:
 
 ```bash
-curl https://app.bigfin.ru/api/financial-statements/balance-sheet \
+curl https://app.bigfin.ru/api/reports/balance-sheet \
   -H "Authorization: Bearer bgf_ваш_токен" \
   -H "organization-id: ваш_идентификатор_организации" \
+  -H "Accept: application/json" \
   -G \
   --data-urlencode "fromDate=2026-01-01" \
   --data-urlencode "toDate=2026-12-31"
 ```
 
-Создание операции:
+Список операций по всем счетам (право `transactions:read`):
 
 ```bash
-curl -X POST https://app.bigfin.ru/api/transactions \
+curl https://app.bigfin.ru/api/banking/transactions \
+  -H "Authorization: Bearer bgf_ваш_токен" \
+  -H "organization-id: ваш_идентификатор_организации" \
+  -G --data-urlencode "fromDate=2026-09-01" --data-urlencode "toDate=2026-09-30"
+```
+
+Создание операции (право `transactions:write`). `cashflowAccountId` — денежный
+счёт (банк, касса), `creditAccountId` — счёт статьи, `transactionType` — вид
+операции: `OtherExpense` (расход), `OtherIncome` (приход), `OwnerContribution`,
+`OwnerDrawing`, `TransferToAccount`, `TransferFromAccount`:
+
+```bash
+curl -X POST https://app.bigfin.ru/api/banking/transactions \
   -H "Authorization: Bearer bgf_ваш_токен" \
   -H "organization-id: ваш_идентификатор_организации" \
   -H "Content-Type: application/json" \
   -d '{
     "date": "2026-09-18",
+    "transactionType": "OtherExpense",
     "amount": 15000,
-    "accountId": 12,
-    "articleId": 47,
+    "cashflowAccountId": 12,
+    "creditAccountId": 47,
     "description": "Оплата за сентябрь"
   }'
 ```
 
 ### На TypeScript
 
-Готовый набор типов собирается из той же спеки, что и Swagger UI, — пакет
-`@bigfin/sdk-ts`.
+Типы и функции-запросы собираются из той же спеки, что и Swagger UI, —
+пакет `@bigfin/sdk-ts` в папке `shared/sdk-ts` этого репозитория (в npm он не
+публикуется). Адрес в `baseUrl` — без `/api`: пути в пакете уже начинаются с него.
 
 ```ts
-import { createClient } from '@bigfin/sdk-ts';
+import { createApiFetcher, fetchBalanceSheetJson } from '@bigfin/sdk-ts';
 
-const client = createClient({
-  baseUrl: 'https://app.bigfin.ru/api',
-  token: process.env.BIGFIN_TOKEN,       // токен НЕ хранят в коде
-  organizationId: process.env.BIGFIN_ORG,
+const fetcher = createApiFetcher({
+  baseUrl: 'https://app.bigfin.ru',
+  init: {
+    headers: {
+      Authorization: `Bearer ${process.env.BIGFIN_TOKEN}`, // токен НЕ хранят в коде
+      'organization-id': process.env.BIGFIN_ORG!,
+      Accept: 'application/json',
+    },
+  },
 });
 
-// Отчёт о прибылях и убытках за год.
-const report = await client.financialStatements.profitLoss({
+// Баланс на конец года.
+const report = await fetchBalanceSheetJson(fetcher, {
   fromDate: '2026-01-01',
   toDate: '2026-12-31',
 });
-
-for (const row of report.rows) {
-  console.log(row.name, row.total.formattedAmount);
-}
 ```
 
-```ts
-// Завести операцию.
-await client.transactions.create({
-  date: '2026-09-18',
-  amount: 15000,
-  accountId: 12,
-  articleId: 47,
-  description: 'Оплата за сентябрь',
-});
-```
+Для ручек, у которых в пакете нет готовой функции, есть `rawRequest(fetcher,
+'POST', '/api/banking/transactions', тело)`.
 
 ### Ответы об ошибке
 
-На неверный, отозванный или истёкший токен ответ **всегда один и тот же**.
-Мы намеренно не пишем, что именно не так: разные ответы («истёк» против
-«не существует») подсказали бы тому, кто перебирает токены, что он угадал.
+Тело ошибки всегда одной формы: `{ "errors": [{ "type": "…", "message": "…" }] }`.
+
+| Ответ | `type` | Что случилось |
+|---|---|---|
+| 401 | `API_TOKEN_INVALID` | Такого токена нет. Подробностей нет намеренно: перебирающему токены не нужно знать, насколько он близок. |
+| 403 | `API_TOKEN_INACTIVE` | Токен отозван или истёк. Это знает только тот, у кого токен уже был, поэтому говорим прямо — выпустите новый. |
+| 403 | `API_SCOPE_MISSING` | У токена нет нужного права — в тексте сказано, какого. |
+| 403 | `API_SCOPE_NOT_AVAILABLE` | Эта ручка по токену недоступна вовсе (например, настройки организации). |
+| 403 | `API_TOKEN_ORGANIZATION_MISMATCH` | Токен выпущен для другой организации, чем в заголовке `organization-id`. |
+
+Кроме прав токена действуют права его владельца: токен сотрудника не видит
+больше, чем сам сотрудник, включая ограничения его роли по статьям,
+направлениям и счетам.
 
 ---
 
@@ -212,7 +230,60 @@ function verify(body: string, headers: Record<string, string>, secret: string) {
 
 ---
 
-## 4. Что держать в голове
+## 4. MCP-сервер для ИИ-агентов
+
+MCP (Model Context Protocol) — общий язык, на котором ИИ-агенты (Claude, GPT,
+Yandex AI Studio и другие) подключают внешние данные. Bigfin отвечает на нём по
+адресу `https://app.bigfin.ru/api/mcp` (транспорт «streamable HTTP»).
+
+- **Вход — тем же токеном `bgf_` и заголовком `organization-id`.** Агент
+  видит ровно то, что разрешено токену и его владельцу, включая ограничения
+  роли по статьям, направлениям и счетам.
+- **Только чтение.** Каждый инструмент — один вызов уже существующей ручки
+  API, поэтому числа совпадают с экраном по построению.
+- **Каждый ответ несёт `meta`**: период, фильтры, юрлица, валюту и время
+  расчёта. Агенту не нужно угадывать контекст.
+- **Не больше 60 вызовов инструментов в минуту на токен.** Защита от
+  зациклившегося агента.
+
+| Инструмент | Что возвращает | Право токена |
+|---|---|---|
+| `get_cash_flow` | Деньги по статьям (ОДДС); без дат — прошлый месяц | `reports:read` |
+| `get_managerial_pnl` | Управленческий ОПиУ с ярусами МД → ВП1 → ВП2 → ОП → ЧП | `reports:read` |
+| `get_balance_sheet` | Баланс | `reports:read` |
+| `get_cash_gaps` | Прогноз кассовых разрывов по счетам | `reports:read` |
+| `get_debts` | Долги нам и наши, просрочка | `reports:read` |
+| `list_transactions` | Операции по денежным счетам | `transactions:read` |
+| `get_articles` | Справочник статей | `reports:read` |
+| `get_budget_plan_fact` | План-факт бюджета | `reports:read` |
+
+Готовые настройки для подключения — в Настройках → Публичный API →
+«MCP-сервер для ИИ-агентов», там же журнал последних вызовов.
+
+Агенты, которые умеют MCP по HTTP:
+
+```bash
+claude mcp add --transport http bigfin https://app.bigfin.ru/api/mcp \
+  --header "Authorization: Bearer bgf_ваш_токен" \
+  --header "organization-id: ваш_идентификатор_организации"
+```
+
+Claude Desktop говорит с серверами через stdio — ему нужен мост `mcp-remote`
+(см. готовый `claude_desktop_config.json` на экране настроек).
+
+Проверить вручную:
+
+```bash
+curl -X POST https://app.bigfin.ru/api/mcp \
+  -H "Authorization: Bearer bgf_ваш_токен" \
+  -H "organization-id: ваш_идентификатор_организации" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_cash_flow","arguments":{"fromDate":"2026-08-01","toDate":"2026-08-31"}}}'
+```
+
+---
+
+## 5. Что держать в голове
 
 - Токен и секрет вебхука не хранят в коде и не кладут в репозиторий —
   только в переменных окружения.

@@ -5,6 +5,7 @@ import { EditRoleService } from './commands/EditRole.service';
 import { GetRoleService } from './queries/GetRole.service';
 import { GetRolesService } from './queries/GetRoles.service';
 import { RolePermissionsSchema } from './queries/RolePermissionsSchema';
+import { CreatePreviewSessionService } from './commands/CreatePreviewSession.service';
 
 @Injectable()
 export class RolesApplication {
@@ -15,7 +16,13 @@ export class RolesApplication {
     private readonly getRoleService: GetRoleService,
     private readonly getRolesService: GetRolesService,
     private readonly getRolePermissionsSchemaService: RolePermissionsSchema,
+    private readonly previewSession: CreatePreviewSessionService,
   ) {}
+
+  /** Начать проверку доступа глазами сотрудника (FT-081 ТЗ-3). */
+  async startAccessPreview(tenantUserId: number) {
+    return this.previewSession.start(tenantUserId);
+  }
 
   /**
    * Creates a new role.

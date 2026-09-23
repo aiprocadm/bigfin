@@ -11,6 +11,12 @@ import {
   RequiredPermission,
 } from './RequirePermission.decorator';
 import { REQUIRED_ANY_PERMISSION_KEY } from './RequireAnyPermission.decorator';
+import { AbilitySubject, ExportAction } from './Roles.types';
+import {
+  asksForSpreadsheet,
+  EXPORT_NOT_ALLOWED_MESSAGE,
+  NOT_DATA_EXPORT_KEY,
+} from './utils/exportRight';
 
 /**
  * Guard that checks CASL `ability` on the request (attached by AuthorizationGuard).
@@ -28,12 +34,28 @@ export class PermissionGuard implements CanActivate {
       RequiredPermission[]
     >(REQUIRED_ANY_PERMISSION_KEY, [context.getHandler(), context.getClass()]);
 
+    const request = context.switchToHttp().getRequest<Request>();
+    const ability = (request as any).ability;
+
+    // Таблица (Excel, CSV) — это унос данных, и на него нужно отдельное
+    // право поверх права на просмотр (FT-082 ТЗ-3). Проверка здесь, а не в
+    // каждом отчёте: новый отчёт не должен открыть выгрузку молча.
+    const notDataExport = this.reflector.getAllAndOverride<boolean>(
+      NOT_DATA_EXPORT_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (
+      ability &&
+      !notDataExport &&
+      asksForSpreadsheet(request.headers?.accept) &&
+      !ability.can(ExportAction.Run, AbilitySubject.Export)
+    ) {
+      throw new ForbiddenException(EXPORT_NOT_ALLOWED_MESSAGE);
+    }
+
     if (!requiredPermission && !requiredAnyPermission?.length) {
       return true;
     }
-
-    const request = context.switchToHttp().getRequest<Request>();
-    const ability = (request as any).ability;
 
     if (!ability) {
       throw new ForbiddenException(

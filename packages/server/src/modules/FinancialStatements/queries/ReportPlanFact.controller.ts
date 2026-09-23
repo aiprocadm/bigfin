@@ -1,4 +1,8 @@
 // © 2026 Bigfin
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -17,12 +21,16 @@ import { ReportPlanFactQueryDto } from './ReportPlanFactQuery.dto';
  * без заведённого бюджета колонок нет вовсе.
  */
 @ApiTags('Financial Reports')
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('financial-reports/plan-fact')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard)
 export class ReportPlanFactController {
   constructor(private readonly planFact: GetReportPlanFactService) {}
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({ summary: 'План по счетам отчёта за период.' })
   @ApiResponse({

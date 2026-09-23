@@ -179,10 +179,17 @@ describe('выключенный раздел', () => {
     // Экраны спрашивают сервер ДО проверки флага (иначе ломается порядок
     // хуков), и сервер отвечает 403. Раньше витрина на любой 403 показывала
     // «У вас нет прав» — поверх экрана, где написано «Раздел выключен».
-    const handler = source
-      .split('\n')
+    // Проверяется ИМЕННО ветка, которая поднимает плашку «нет прав»: над ней
+    // могут стоять другие 403 (режим проверки доступа, FT-081), и первая
+    // строка с 403 — не обязательно она.
+    const lines = source.split('\n');
+    const deniedAt = lines.findIndex((line) => line.includes('access_denied'));
+    const handler = lines
+      .slice(0, deniedAt)
+      .reverse()
       .find((line) => line.includes('status === 403'));
 
+    expect(deniedAt).toBeGreaterThan(0);
     expect(handler).toContain('isFeatureDisabledResponse(');
   });
 });

@@ -38,6 +38,7 @@ import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { EnsureUserVerifiedGuard } from './guards/EnsureUserVerified.guard';
 import { ApiKeyAuthGuard } from './api-key/AuthApiKey.guard';
 import { MixedAuthGuard } from './api-key/MixedAuth.guard';
+import { ApiTokenAuthGuard } from './api-token/ApiTokenAuth.guard';
 import { ApiKeyStrategy } from './api-key/AuthApiKey.strategy';
 import { ApiKeyModel } from './models/ApiKey.model';
 import { AuthApiKeysController } from './AuthApiKeys.controllers';
@@ -91,6 +92,8 @@ const models = [
   // способом, что обычный вход (Д1 карты v18).
   exports: [...models, AuthSigninService],
   providers: [
+    // Вход по токену публичного API `bgf_…` (FT-091 ТЗ-3).
+    ApiTokenAuthGuard,
     ...models,
     LocalStrategy,
     JwtStrategy,

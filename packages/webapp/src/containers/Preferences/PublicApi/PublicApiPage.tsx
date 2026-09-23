@@ -22,6 +22,7 @@ import { pickScreenState } from '@/components/ui/screen-state';
 import { ScreenError } from '@/components/ui/screen-error';
 import { cn } from '@/lib/cn';
 
+import { McpServerSection } from './McpServerSection';
 import {
   canRevoke,
   isDeliverySuccessful,
@@ -398,6 +399,9 @@ export default function PublicApiPreferences() {
           </p>
         )}
       </Section>
+
+      {/* MCP-сервер для ИИ-агентов (FT-090 ТЗ-3): тем же токеном. */}
+      <McpServerSection tokens={tokens.data ?? []} />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Response } from 'express';
 import {
   Body,
@@ -105,6 +106,7 @@ export class SaleInvoicesController {
     status: 201,
     description: 'Sale invoice created successfully',
   })
+  @RequireApiScope('invoices:write')
   createSaleInvoice(@Body() saleInvoiceDTO: CreateSaleInvoiceDto) {
     return this.saleInvoiceApplication.createSaleInvoice(saleInvoiceDTO);
   }
@@ -230,6 +232,7 @@ export class SaleInvoicesController {
     type: Number,
     description: 'The sale invoice id',
   })
+  @RequireApiScope('invoices:read')
   async getSaleInvoice(
     @Param('id', ParseIntPipe) id: number,
     @Headers('accept') acceptHeader: string,
@@ -272,6 +275,7 @@ export class SaleInvoicesController {
       ],
     },
   })
+  @RequireApiScope('invoices:read')
   getSaleInvoices(@Query() filterDTO: GetSaleInvoicesQueryDto) {
     return this.saleInvoiceApplication.getSaleInvoices(filterDTO);
   }
@@ -347,6 +351,7 @@ export class SaleInvoicesController {
     type: Number,
     description: 'The sale invoice id',
   })
+  @RequireApiScope('invoices:read')
   getInvoicePayments(@Param('id', ParseIntPipe) id: number) {
     return this.saleInvoiceApplication.getInvoicePayments(id);
   }

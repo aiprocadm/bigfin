@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards,
 } from '@nestjs/common';
@@ -33,6 +34,7 @@ import { Features } from '@/common/types/Features';
 export class DealStagesController {
   constructor(private readonly application: DealStagesApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get()
   @ApiOperation({ summary: 'List a deal\'s stages with recognition summary.' })
   list(

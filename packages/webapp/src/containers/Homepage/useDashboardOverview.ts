@@ -2,6 +2,7 @@
 // дженериков, и строгая типизация здесь спорит с ним, а не помогает.
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import useApiRequest from '@/hooks/useRequest';
+import { useCanViewMoney } from '@/hooks/utils/useAbilityContext';
 import { transformToCamelCase } from '@/utils';
 
 export interface OverviewAmount {
@@ -133,6 +134,8 @@ export function useDashboardOverview(
   options?: UseQueryOptions<DashboardOverview, Error>,
 ): UseQueryResult<DashboardOverview, Error> {
   const apiRequest = useApiRequest();
+  // Без права на деньги не спрашиваем: 403 закрыл бы весь экран (FT-084).
+  const canViewMoney = useCanViewMoney();
 
   return useQuery<DashboardOverview, Error>(
     ['DASHBOARD_OVERVIEW', period.fromDate, period.toDate, directionsSortBy],
@@ -146,6 +149,10 @@ export function useDashboardOverview(
           },
         })
         .then((res) => transformToCamelCase(res.data)),
-    { keepPreviousData: true, ...options },
+    {
+      keepPreviousData: true,
+      ...options,
+      enabled: canViewMoney && (options?.enabled ?? true),
+    },
   );
 }

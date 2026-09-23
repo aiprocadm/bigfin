@@ -22,6 +22,7 @@ import { ImportBatchesService } from '../commands/ImportBatches.service';
 export class ImportBatchesController {
   constructor(private readonly batches: ImportBatchesService) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'История импорта выписок.' })
   list(@Query('accountId') accountId?: string) {

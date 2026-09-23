@@ -39,5 +39,11 @@
   "inventory_valuation_summary": "Inventory valuation summary",
   "inventory_items_details": "Inventory items details",
   "trial_balance_sheet": "Trial balance sheet",
-  "sales_tax_liability_summary": "Sales tax liability summary"
+  "sales_tax_liability_summary": "Sales tax liability summary",
+  "export": "Data export",
+  "export_run": "Download tables (Excel, CSV) and full export",
+  "audit_log": "Audit log",
+  "attachments": "Attachments",
+  "payment_requests": "Payment requests",
+  "payment_requests_view_all": "See requests of all employees"
 }

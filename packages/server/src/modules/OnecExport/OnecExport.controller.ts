@@ -4,7 +4,12 @@ import {
   Get,
   Header,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { AbilitySubject, ExportAction } from '@/modules/Roles/Roles.types';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetOnecExportService } from './GetOnecExport.service';
 import { FeaturesManager } from '@/modules/Features/FeaturesManager';
@@ -13,6 +18,10 @@ import { AccountDateRangeQueryDto } from '@/common/dtos/DateRangeQuery.dto';
 
 @Controller('onec-export')
 @ApiTags('onec-export')
+// Выписка для 1С — все операции по счёту за период: та же выгрузка
+// данных, что и Excel, и закрыта тем же правом (FT-082 ТЗ-3).
+@UseGuards(AuthorizationGuard, PermissionGuard)
+@RequirePermission(ExportAction.Run, AbilitySubject.Export)
 export class OnecExportController {
   constructor(
     private readonly getExport: GetOnecExportService,

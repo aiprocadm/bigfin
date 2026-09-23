@@ -21,6 +21,7 @@ import { withCustomersTransactionsActions } from './withCustomersTransactionsAct
 import { compose, saveInvoke } from '@/utils';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { DialogsName } from '@/constants/dialogs';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Customers transactions actions bar.
@@ -39,6 +40,9 @@ function CustomersTransactionsActionsBar({
   // #withDialogActions
   openDialog
 }: any) {
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него кнопку
+  // «Экспорт» не показываем. Печать (PDF) этим правом не закрыта.
+  const canExport = useCanExport();
   const { isCustomersTransactionsLoading, CustomersTransactionsRefetch } =
     useCustomersTransactionsContext();
 
@@ -113,18 +117,20 @@ function CustomersTransactionsActionsBar({
           text={<T id={'print'} />}
           onClick={handlePrintBtnClick}
         />
-        <Popover
-          content={<CustomersTransactionsExportMenu />}
-          interactionKind={PopoverInteractionKind.CLICK}
-          placement="bottom-start"
-          minimal
-        >
-          <Button
-            className={Classes.MINIMAL}
-            icon={<Icon icon="file-export-16" iconSize={16} />}
-            text={<T id={'export'} />}
-          />
-        </Popover>
+        {canExport && (
+          <Popover
+            content={<CustomersTransactionsExportMenu />}
+            interactionKind={PopoverInteractionKind.CLICK}
+            placement="bottom-start"
+            minimal
+          >
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="file-export-16" iconSize={16} />}
+              text={<T id={'export'} />}
+            />
+          </Popover>
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

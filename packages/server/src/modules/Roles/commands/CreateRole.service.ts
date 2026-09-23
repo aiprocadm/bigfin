@@ -42,6 +42,10 @@ export class CreateRoleService {
         allowedLegalEntityIds: createRoleDTO.allowedLegalEntityIds?.length
           ? createRoleDTO.allowedLegalEntityIds
           : null,
+        // Ограничения по строкам (FT-080): пустой список — тоже `null`.
+        allowedArticleIds: createRoleDTO.allowedArticleIds?.length ? createRoleDTO.allowedArticleIds : null,
+        allowedProjectIds: createRoleDTO.allowedProjectIds?.length ? createRoleDTO.allowedProjectIds : null,
+        allowedAccountIds: createRoleDTO.allowedAccountIds?.length ? createRoleDTO.allowedAccountIds : null,
         permissions,
       });
       // Triggers `onRoleCreated` event.

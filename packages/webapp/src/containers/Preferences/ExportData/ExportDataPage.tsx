@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import intl from 'react-intl-universal';
 import { Intent } from '@blueprintjs/core';
 import { useMutation } from 'react-query';
-import { Download } from 'lucide-react';
+import { Download, Lock } from 'lucide-react';
 
 import { AppToaster } from '@/components';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { downloadFile } from '@/hooks/useDownloadFile';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import useApiRequest from '@/hooks/useRequest';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
 import { showApiError } from '@/utils/showApiError';
@@ -23,6 +25,7 @@ interface ExportDataPageProps {
  */
 function ExportDataPage({ changePreferencesPageTitle }: ExportDataPageProps) {
   const apiRequest: any = useApiRequest();
+  const canExport = useCanExport();
 
   useEffect(() => {
     changePreferencesPageTitle(intl.get('export_data.title'));
@@ -41,6 +44,22 @@ function ExportDataPage({ changePreferencesPageTitle }: ExportDataPageProps) {
       onError: (error) => showApiError(error),
     },
   );
+
+  // Полная выгрузка — книга Excel, а таблицу сервер без права «Выгрузка
+  // данных» не отдаёт: ответ 403 открыл бы общий экран «нет доступа»
+  // (FT-082 ТЗ-3). Поэтому кнопки нет — вместо неё объяснение, у кого
+  // просить право. Проверка — после всех хуков.
+  if (!canExport) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon={<Lock className="h-8 w-8" aria-hidden />}
+          title={intl.get('export_right.no_access.title')}
+          description={intl.get('export_right.no_access.description')}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">

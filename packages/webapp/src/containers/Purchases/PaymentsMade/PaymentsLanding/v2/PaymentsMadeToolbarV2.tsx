@@ -41,6 +41,7 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshPaymentMades } from '@/hooks/query/paymentMades';
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 import { usePaymentMadesListContext } from '../PaymentMadesListProvider';
 import { withPaymentMade } from '../withPaymentMade';
@@ -267,6 +268,10 @@ function PaymentsMadeToolbarV2Root({
     history.push('/payments-made/import');
   };
 
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'bill_payment' });
   };
@@ -331,10 +336,12 @@ function PaymentsMadeToolbarV2Root({
               <Upload className="mr-2 h-4 w-4" aria-hidden />
               {intl.get('import')}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleExportBtnClick}>
-              <Download className="mr-2 h-4 w-4" aria-hidden />
-              {intl.get('export')}
-            </DropdownMenuItem>
+            {canExport && (
+              <DropdownMenuItem onClick={handleExportBtnClick}>
+                <Download className="mr-2 h-4 w-4" aria-hidden />
+                {intl.get('export')}
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
 

@@ -39,5 +39,11 @@
   "inventory_valuation_summary": "Сводка по оценке склада",
   "inventory_items_details": "Детали складских позиций",
   "trial_balance_sheet": "Оборотно-сальдовая ведомость",
-  "sales_tax_liability_summary": "Налог с продаж"
+  "sales_tax_liability_summary": "Налог с продаж",
+  "export": "Выгрузка данных",
+  "export_run": "Скачивать таблицы (Excel, CSV) и полную выгрузку",
+  "audit_log": "Журнал действий",
+  "attachments": "Вложения",
+  "payment_requests": "Заявки на оплату",
+  "payment_requests_view_all": "Видеть заявки всех сотрудников"
 }

@@ -1,4 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { CashflowAction } from '@/modules/BankingTransactions/types/BankingTransactions.types';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -14,6 +19,7 @@ import { GetPendingTransactionsQueryDto } from '../dtos/GetPendingTransactionsQu
 import { GetPendingTransactionResponseDto } from '../dtos/GetPendingTransactionResponse.dto';
 
 @Controller('banking/pending')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 @ApiTags('Banking Pending Transactions')
 @ApiExtraModels(GetPendingTransactionResponseDto, PaginatedResponseDto)
 @ApiCommonHeaders()
@@ -22,6 +28,7 @@ export class BankingPendingTransactionsController {
     private readonly bankingTransactionsApplication: BankingTransactionsApplication,
   ) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'Get pending bank account transactions' })
   @ApiResponse({

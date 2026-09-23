@@ -36,6 +36,15 @@ export interface DrillDownTarget {
   /** Границы всего отчёта — по ним считается «оплачено деньгами». */
   reportFrom?: string;
   reportTo?: string;
+  /**
+   * Ярус управленческого ОПиУ (FT-010 ТЗ-3): без статьи — весь ярус, со
+   * статьёй — статья только в своём ярусе.
+   */
+  plType?: string;
+  /** Метод учёта отчёта: по начислению — все проводки, не только оплаченные. */
+  basis?: 'cash' | 'accrual';
+  /** Заголовок панели, когда раскрывается ярус целиком. */
+  title?: string;
 }
 
 interface DrillDownRow {
@@ -101,6 +110,8 @@ export default function ReportDrillDownPanel({
       target?.projectsIds,
       target?.reportFrom,
       target?.reportTo,
+      target?.plType,
+      target?.basis,
     ],
     () =>
       apiRequest
@@ -120,10 +131,12 @@ export default function ReportDrillDownPanel({
             projectsIds: target?.projectsIds,
             reportFrom: target?.reportFrom,
             reportTo: target?.reportTo,
+            plType: target?.plType,
+            basis: target?.basis,
           },
         })
         .then((res: any) => transformToCamelCase(res.data)),
-    { enabled: Boolean(target?.accountId || target?.articleId) },
+    { enabled: Boolean(target?.accountId || target?.articleId || target?.plType) },
   );
 
   if (!target) return null;
@@ -135,7 +148,8 @@ export default function ReportDrillDownPanel({
       <header className="flex items-start justify-between gap-3 border-b border-border p-4">
         <div>
           <h2 className="text-base font-medium text-text-primary">
-            {(data as any)?.articleName ??
+            {target.title ??
+              (data as any)?.articleName ??
               (data as any)?.accountName ??
               target.articleName ??
               target.accountName ??

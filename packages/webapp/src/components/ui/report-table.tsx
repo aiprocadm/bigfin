@@ -1,8 +1,14 @@
 import * as React from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, HelpCircle } from 'lucide-react';
 import intl from 'react-intl-universal';
 import { cn } from '@/lib/cn';
 import { computeVirtualWindow } from './data-table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './tooltip';
 
 /**
  * Движок отчётных таблиц (ОПиУ, Баланс, ДДС и т.п.) по стандарту «Простота Bigfin».
@@ -47,6 +53,11 @@ export interface ReportTableRow {
   /** Сервер шлёт массив (например ['TOTAL']); допускаем и строку. */
   row_types?: string | string[];
   children?: ReportTableRow[];
+  /**
+   * Подсказка к названию строки: формула и смысл (FT-016 ТЗ-3). Рядом с
+   * названием появляется «?».
+   */
+  hint?: string;
 }
 
 export interface ReportTableColumn {
@@ -383,6 +394,7 @@ function ReportRowView({
                     depth > 1 && <span className="w-3 shrink-0" aria-hidden />
                   )}
                   <span>{value}</span>
+                  {row.hint ? <RowHint text={row.hint} label={value} /> : null}
                 </span>
               ) : hideValues ? null : column.render ? (
                 column.render(row)
@@ -411,6 +423,28 @@ function ReportRowView({
           );
         })}
     </tr>
+  );
+}
+
+/** «?» у названия строки: формула по наведению и по нажатию (FT-016). */
+function RowHint({ text, label }: { text: string; label: string }) {
+  return (
+    <TooltipProvider delayDuration={150}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={`${label}: ${text}`}
+            className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded text-text-muted hover:text-text-primary"
+          >
+            <HelpCircle aria-hidden className="h-3.5 w-3.5" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-xs text-xs leading-snug">
+          {text}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 

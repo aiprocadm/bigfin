@@ -17,3 +17,4 @@ export * from './use-vendor-transactions';
 export * from './use-sales-tax-liabilities-summary';
 export * from './use-transactions-by-reference';
 export * from './use-cash-flow-articles';
+export * from './use-managerial-pnl';

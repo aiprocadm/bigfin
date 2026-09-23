@@ -11,6 +11,7 @@ import {
   type ReportScale,
 } from '../v2';
 import { isTotalRow } from './cashFlowArticlesRows';
+import { formulaHintOf } from '../reportFormulas';
 
 /**
  * Матрица «Деньги по статьям»: статьи × периоды + «Итого» (FT-001 ТЗ-3) —
@@ -382,6 +383,8 @@ export function matrixRows(
 
       return {
         id: row.id,
+        // Подсказка-формула у расчётных строк (FT-016 ТЗ-3).
+        hint: formulaHintOf(row.id),
         cells: row.cells.map((cell, index) => {
           if (index === 0) {
             return {

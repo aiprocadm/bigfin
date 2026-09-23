@@ -1,3 +1,4 @@
+import { currentRowScope, describeRowScope } from '@/modules/Roles/utils/rowScope';
 import { Inject } from '@nestjs/common';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { FeaturesManager } from '../Features/FeaturesManager';
@@ -15,6 +16,8 @@ interface IDashboardBootMeta {
   abilities: IRoleAbility[];
   features: IFeatureAllItem[];
   isBigfinCloud: boolean;
+  /** Ограничение роли по строкам — для плашки «показаны только доступные вам» (FT-080). */
+  rowScope: ReturnType<typeof describeRowScope>;
 }
 
 export class DashboardService {
@@ -41,6 +44,7 @@ export class DashboardService {
       abilities,
       features,
       isBigfinCloud: this.configService.get('cloud.hostedOnCloud'),
+      rowScope: describeRowScope(currentRowScope()),
     };
   };
 

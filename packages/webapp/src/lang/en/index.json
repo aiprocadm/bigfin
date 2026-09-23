@@ -5502,5 +5502,12 @@
   "budgets.cash_plan.plan_net": "Change (plan)",
   "budgets.cash_plan.closing_plan": "Closing balance (plan)",
   "budgets.cash_plan.fact_closing": "Closing balance (actual)",
-  "budgets.cash_plan.save_failed": "Could not save the setting"
+  "budgets.cash_plan.save_failed": "Could not save the setting",
+  "roles.row_scope.title": "Limit access to data",
+  "roles.row_scope.hint": "Nothing selected means no limit. When you tick directions, accounts or articles, the role sees only their operations in every report, register, calendar and export, and totals are counted over them only.",
+  "roles.row_scope.projects": "Directions",
+  "roles.row_scope.accounts": "Money accounts",
+  "roles.row_scope.articles": "Articles",
+  "roles.row_scope.selected": "{count} selected",
+  "row_scope.notice": "Only the data available to your role is shown: other directions, accounts or articles are excluded, and totals are counted without them."
 }

@@ -5502,5 +5502,12 @@
   "budgets.cash_plan.plan_net": "Изменение (план)",
   "budgets.cash_plan.closing_plan": "Денег на конец (план)",
   "budgets.cash_plan.fact_closing": "Денег на конец (факт)",
-  "budgets.cash_plan.save_failed": "Не удалось сохранить настройку"
+  "budgets.cash_plan.save_failed": "Не удалось сохранить настройку",
+  "roles.row_scope.title": "Ограничить доступ к данным",
+  "roles.row_scope.hint": "Ничего не отмечено — без ограничения. Если отметить направления, счета или статьи, роль увидит только их операции во всех отчётах, реестре, календаре и выгрузках, а итоги посчитаются только по ним.",
+  "roles.row_scope.projects": "Направления",
+  "roles.row_scope.accounts": "Денежные счета",
+  "roles.row_scope.articles": "Статьи",
+  "roles.row_scope.selected": "выбрано: {count}",
+  "row_scope.notice": "Показаны только данные, доступные вашей роли: чужие направления, счета и статьи исключены, итоги посчитаны без них."
 }

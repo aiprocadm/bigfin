@@ -3,6 +3,8 @@ import * as moment from 'moment';
 import { unitOfTime } from 'moment';
 import { isEmpty, castArray } from 'lodash';
 import { BaseModel } from '@/models/Model';
+import { rowScopedQueryBuilder, tableRefOf } from '@/modules/Roles/utils/rowScopedQueryBuilder';
+import { applyLedgerRowScope } from '@/modules/Roles/utils/rowScope';
 import { Account } from './Account.model';
 import { getTransactionTypeLabel } from '@/modules/BankingTransactions/utils';
 import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
@@ -10,6 +12,14 @@ import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCur
 
 @PreventMutateBaseCurrency()
 export class AccountTransaction extends BaseModel {
+  /**
+   * Ограничение роли по статьям, направлениям, счетам и юрлицам (FT-080
+   * ТЗ-3) — на каждое чтение проводок. Одно место на все отчёты.
+   */
+  static QueryBuilder = rowScopedQueryBuilder((builder, scope) =>
+    applyLedgerRowScope(builder, scope, builder.modelClass().knex(), tableRefOf(builder)),
+  );
+
   public readonly referenceType: string;
   public readonly referenceId: number;
   public readonly accountId: number;

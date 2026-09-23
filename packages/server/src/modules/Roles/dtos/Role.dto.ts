@@ -83,6 +83,42 @@ class CommandRoleDto {
     description: 'Юрлица, к которым допущена роль. Пусто — ко всем.',
   })
   allowedLegalEntityIds?: number[];
+
+  /** Статьи роли (FT-080 ТЗ-3). Пусто — без ограничения. */
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @Type(() => Number)
+  @ApiProperty({
+    required: false,
+    example: [1, 2],
+    description: 'Статьи, к которым допущена роль. Пусто — ко всем.',
+  })
+  allowedArticleIds?: number[];
+
+  /** Направления роли (FT-080 ТЗ-3). Пусто — без ограничения. */
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @Type(() => Number)
+  @ApiProperty({
+    required: false,
+    example: [1, 2],
+    description: 'Направления, к которым допущена роль. Пусто — ко всем.',
+  })
+  allowedProjectIds?: number[];
+
+  /** Денежные счета роли (FT-080 ТЗ-3). Пусто — без ограничения. */
+  @IsOptional()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @Type(() => Number)
+  @ApiProperty({
+    required: false,
+    example: [1, 2],
+    description: 'Денежные счета, к которым допущена роль. Пусто — ко всем.',
+  })
+  allowedAccountIds?: number[];
 }
 
 export class CreateRoleDto extends CommandRoleDto {

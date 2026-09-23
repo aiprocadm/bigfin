@@ -11,6 +11,7 @@ import {
   IsPositive,
   IsString,
   ValidateNested,
+  IsBoolean,
 } from 'class-validator';
 import { DIRECTIONS, FREQUENCIES, STATUSES } from '../constants';
 
@@ -113,6 +114,22 @@ class CommandPlannedOperationDto {
   @IsOptional()
   @ApiPropertyOptional({ type: RecurrenceDto })
   recurrence?: RecurrenceDto;
+
+  // Автоподтверждение фактом (FT-052 ТЗ-3).
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Закрыть план, когда появится совпадающая операция' })
+  autoConfirm?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Сумма факта должна совпасть до копейки' })
+  matchExactAmount?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiPropertyOptional({ description: 'Подтверждать фактом с любым контрагентом' })
+  matchAnyContact?: boolean;
 }
 
 export class CreatePlannedOperationDto extends CommandPlannedOperationDto {}

@@ -27,8 +27,27 @@ import {
  * по поддельной базе.
  */
 
-/** Минимальная подделка knex: ровно те приёмы, что зовёт миграция. */
-function makeKnex(initialRows: any[] = [], withKeyColumn = false) {
+/**
+ * Минимальная подделка knex: ровно те приёмы, что зовёт миграция.
+ *
+ * `camelResults` — отвечать так, как отвечает НАСТОЯЩАЯ база продукта: с
+ * преобразователем имён колонка `ARTICLE_ID` приезжает как `articleId`.
+ * Без этого флага подделка отдаёт имя, под которым колонку спросили
+ * (`article_id`), — и именно поэтому ошибка отката долго не ловилась.
+ */
+function makeKnex(
+  initialRows: any[] = [],
+  withKeyColumn = false,
+  camelResults = false,
+) {
+  const camel = (name: string) =>
+    camelResults
+      ? name.replace(/_([a-z])/g, (_m, letter) => letter.toUpperCase())
+      : name;
+  const camelRow = (row: any) =>
+    Object.fromEntries(
+      Object.entries(row).map(([key, value]) => [camel(key), value]),
+    );
   const tables: Record<string, any[]> = {
     management_articles: [...initialRows],
     management_article_accounts: [],
@@ -70,7 +89,7 @@ function makeKnex(initialRows: any[] = [], withKeyColumn = false) {
         return Promise.resolve(rows()[0]);
       },
       select() {
-        return Promise.resolve(rows().map((row) => ({ ...row })));
+        return Promise.resolve(rows().map((row) => camelRow(row)));
       },
       distinct(column: string) {
         const seen = new Set(
@@ -78,7 +97,9 @@ function makeKnex(initialRows: any[] = [], withKeyColumn = false) {
             .map((row) => row[column])
             .filter((value) => value != null),
         );
-        return Promise.resolve([...seen].map((value) => ({ [column]: value })));
+        return Promise.resolve(
+          [...seen].map((value) => ({ [camel(column)]: value })),
+        );
       },
       delete() {
         const doomed = new Set(rows().map((row) => row.id));
@@ -287,6 +308,30 @@ describe('догоняющий сид балансовых статей', () => 
       expect(left).toContain('owner_contribution');
       // Родитель занятой статьи тоже остаётся: удалив его, мы порвали бы
       // ссылку у оставшегося ребёнка.
+      expect(left).toContain('equity');
+      expect(left).not.toContain('loan_received');
+    });
+
+    it('с НАСТОЯЩИМИ именами полей тоже не трогает размеченную статью', async () => {
+      // Настоящая база отдаёт `articleId` и `parentId`, а не `article_id`.
+      // Откат, читавший только `article_id`, не видел ни одного размеченного
+      // счёта и ни одного ребёнка — и удалял ВСЕ балансовые статьи, включая
+      // те, которыми уже размечены операции.
+      const knex = makeKnex([], false, true);
+      await seedBalanceArticlesUp(knex);
+
+      const used = articlesOf(knex).find(
+        (row: any) => row.seed_key === 'owner_contribution',
+      );
+      knex.__tables.management_article_accounts.push({
+        article_id: used.id,
+        account_id: 500,
+      });
+
+      await seedBalanceArticlesDown(knex);
+
+      const left = articlesOf(knex).map((row: any) => row.seed_key);
+      expect(left).toContain('owner_contribution');
       expect(left).toContain('equity');
       expect(left).not.toContain('loan_received');
     });

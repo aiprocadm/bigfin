@@ -487,6 +487,11 @@ export const events = {
     onApproved: 'onPaymentRequestApproved',
   },
 
+  // MCP-сервер для ИИ-агентов (FT-090 ТЗ-3): журнал последних вызовов.
+  mcp: {
+    onToolCalled: 'onMcpToolCalled',
+  },
+
   roles: {
     onCreate: 'onRoleCreate',
     onCreated: 'onRoleCreated',

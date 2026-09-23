@@ -1038,6 +1038,17 @@ export class FinancialAuditLogSubscriber {
     });
   }
 
+  // --- MCP-сервер (FT-090 ТЗ-3) ---
+  // Экран «MCP-сервер» показывает последние вызовы отсюда: какой инструмент
+  // и каким токеном читал данные организации.
+  @OnEvent(events.mcp.onToolCalled)
+  async onMcpToolCalled({ tool, ok, apiTokenId }: any) {
+    await this.write(undefined, 'mcp_tool_called', 'ApiToken', apiTokenId ? Number(apiTokenId) : null, {
+      tool,
+      ok,
+    });
+  }
+
   // --- Roles ---
   // Смотреть чужими глазами без следа нельзя даже владельцу (FT-081).
   @OnEvent(events.roles.onAccessPreviewStarted)

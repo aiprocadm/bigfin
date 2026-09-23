@@ -1,5 +1,6 @@
 // © 2026 Bigfin
 import { TokenRejection } from './apiTokens';
+import { ANY_API_SCOPE } from '../RequireApiScope.decorator';
 
 /**
  * Решение по запросу с токеном API (FT-091 ТЗ-3). Без базы — его держат
@@ -45,6 +46,10 @@ export function apiTokenDecision(input: {
       type: 'API_SCOPE_NOT_AVAILABLE',
       message: 'Эта ручка недоступна по токену API',
     };
+  }
+  // Посредник (вход MCP): право проверит ручка, которую он позовёт.
+  if (input.requiredScope === ANY_API_SCOPE && input.scopes.length > 0) {
+    return { allow: true };
   }
   if (!input.scopes.includes(input.requiredScope)) {
     return {

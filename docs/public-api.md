@@ -58,71 +58,89 @@
 Токен передаётся в заголовке `Authorization`:
 
 ```bash
-curl https://app.bigfin.ru/api/financial-statements/balance-sheet \
+curl https://app.bigfin.ru/api/reports/balance-sheet \
   -H "Authorization: Bearer bgf_ваш_токен" \
   -H "organization-id: ваш_идентификатор_организации" \
+  -H "Accept: application/json" \
   -G \
   --data-urlencode "fromDate=2026-01-01" \
   --data-urlencode "toDate=2026-12-31"
 ```
 
-Создание операции:
+Список операций по всем счетам (право `transactions:read`):
 
 ```bash
-curl -X POST https://app.bigfin.ru/api/transactions \
+curl https://app.bigfin.ru/api/banking/transactions \
+  -H "Authorization: Bearer bgf_ваш_токен" \
+  -H "organization-id: ваш_идентификатор_организации" \
+  -G --data-urlencode "fromDate=2026-09-01" --data-urlencode "toDate=2026-09-30"
+```
+
+Создание операции (право `transactions:write`). `cashflowAccountId` — денежный
+счёт (банк, касса), `creditAccountId` — счёт статьи, `transactionType` — вид
+операции: `OtherExpense` (расход), `OtherIncome` (приход), `OwnerContribution`,
+`OwnerDrawing`, `TransferToAccount`, `TransferFromAccount`:
+
+```bash
+curl -X POST https://app.bigfin.ru/api/banking/transactions \
   -H "Authorization: Bearer bgf_ваш_токен" \
   -H "organization-id: ваш_идентификатор_организации" \
   -H "Content-Type: application/json" \
   -d '{
     "date": "2026-09-18",
+    "transactionType": "OtherExpense",
     "amount": 15000,
-    "accountId": 12,
-    "articleId": 47,
+    "cashflowAccountId": 12,
+    "creditAccountId": 47,
     "description": "Оплата за сентябрь"
   }'
 ```
 
 ### На TypeScript
 
-Готовый набор типов собирается из той же спеки, что и Swagger UI, — пакет
-`@bigfin/sdk-ts`.
+Типы и функции-запросы собираются из той же спеки, что и Swagger UI, —
+пакет `@bigfin/sdk-ts` в папке `shared/sdk-ts` этого репозитория (в npm он не
+публикуется). Адрес в `baseUrl` — без `/api`: пути в пакете уже начинаются с него.
 
 ```ts
-import { createClient } from '@bigfin/sdk-ts';
+import { createApiFetcher, fetchBalanceSheetJson } from '@bigfin/sdk-ts';
 
-const client = createClient({
-  baseUrl: 'https://app.bigfin.ru/api',
-  token: process.env.BIGFIN_TOKEN,       // токен НЕ хранят в коде
-  organizationId: process.env.BIGFIN_ORG,
+const fetcher = createApiFetcher({
+  baseUrl: 'https://app.bigfin.ru',
+  init: {
+    headers: {
+      Authorization: `Bearer ${process.env.BIGFIN_TOKEN}`, // токен НЕ хранят в коде
+      'organization-id': process.env.BIGFIN_ORG!,
+      Accept: 'application/json',
+    },
+  },
 });
 
-// Отчёт о прибылях и убытках за год.
-const report = await client.financialStatements.profitLoss({
+// Баланс на конец года.
+const report = await fetchBalanceSheetJson(fetcher, {
   fromDate: '2026-01-01',
   toDate: '2026-12-31',
 });
-
-for (const row of report.rows) {
-  console.log(row.name, row.total.formattedAmount);
-}
 ```
 
-```ts
-// Завести операцию.
-await client.transactions.create({
-  date: '2026-09-18',
-  amount: 15000,
-  accountId: 12,
-  articleId: 47,
-  description: 'Оплата за сентябрь',
-});
-```
+Для ручек, у которых в пакете нет готовой функции, есть `rawRequest(fetcher,
+'POST', '/api/banking/transactions', тело)`.
 
 ### Ответы об ошибке
 
-На неверный, отозванный или истёкший токен ответ **всегда один и тот же**.
-Мы намеренно не пишем, что именно не так: разные ответы («истёк» против
-«не существует») подсказали бы тому, кто перебирает токены, что он угадал.
+Тело ошибки всегда одной формы: `{ "errors": [{ "type": "…", "message": "…" }] }`.
+
+| Ответ | `type` | Что случилось |
+|---|---|---|
+| 401 | `API_TOKEN_INVALID` | Такого токена нет. Подробностей нет намеренно: перебирающему токены не нужно знать, насколько он близок. |
+| 403 | `API_TOKEN_INACTIVE` | Токен отозван или истёк. Это знает только тот, у кого токен уже был, поэтому говорим прямо — выпустите новый. |
+| 403 | `API_SCOPE_MISSING` | У токена нет нужного права — в тексте сказано, какого. |
+| 403 | `API_SCOPE_NOT_AVAILABLE` | Эта ручка по токену недоступна вовсе (например, настройки организации). |
+| 403 | `API_TOKEN_ORGANIZATION_MISMATCH` | Токен выпущен для другой организации, чем в заголовке `organization-id`. |
+
+Кроме прав токена действуют права его владельца: токен сотрудника не видит
+больше, чем сам сотрудник, включая ограничения его роли по статьям,
+направлениям и счетам.
 
 ---
 

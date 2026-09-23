@@ -68,6 +68,8 @@ const OPEN_READS: string[] = [
   'Marketplaces/Marketplaces.controller.ts#status',
   'Marketplaces/Marketplaces.controller.ts#wbSummary',
   'Miscellaneous/Miscellaneous.controller.ts#getDateFormats',
+  // Вход MCP (FT-090): GET только отвечает «потока нет» (405), данных не отдаёт.
+  'Mcp/Mcp.controller.ts#stream',
   'MoySklad/MoySklad.controller.ts#preview',
   'MoySklad/MoySklad.controller.ts#status',
   'Notifications/Notifications.controller.ts#getPreferences',

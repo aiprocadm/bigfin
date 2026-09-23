@@ -2,6 +2,9 @@
 import { ForbiddenException } from '@nestjs/common';
 import { AuthorizationGuard } from '../Authorization.guard';
 import { ABILITIES_CACHE } from '../TenantAbilities';
+import { RolesController } from '../Roles.controller';
+import { REQUIRE_OWNER_KEY } from '../RequireOwner.decorator';
+import { OwnerGuard } from '../Owner.guard';
 import {
   ACCESS_PREVIEW_HEADER,
   assertPreviewReadOnly,
@@ -101,5 +104,15 @@ describe('режим проверки доступа', () => {
       switchToHttp: () => ({ getRequest: () => ownerReq }),
     } as any);
     expect(ownerReq.ability.can('manage', 'all')).toBe(true);
+  });
+});
+
+describe('начать проверку доступа может только владелец', () => {
+  it('ручка стоит в классе ролей под стражем владельца', () => {
+    // Пометка класса действует на каждую ручку: отдельная на методе не нужна,
+    // но снять её с класса — значит открыть режим всем.
+    expect(Reflect.getMetadata(REQUIRE_OWNER_KEY, RolesController)).toBe(true);
+    expect(Reflect.getMetadata('__guards__', RolesController)).toContain(OwnerGuard);
+    expect(typeof RolesController.prototype.startAccessPreview).toBe('function');
   });
 });

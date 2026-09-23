@@ -2,6 +2,7 @@ import { TransactionsLockingModule } from '@/modules/TransactionsLocking/Transac
 import { ImportBatchesController } from './controllers/ImportBatches.controller';
 import { ImportBatchesService } from './commands/ImportBatches.service';
 import { ImportBatch } from './models/ImportBatch';
+import { TransactionTag } from './models/TransactionTag';
 import { BankingTrashController } from './controllers/BankingTrash.controller';
 import { TransactionsTrashService } from './commands/TransactionsTrash.service';
 import { RolesModule } from '../Roles/Roles.module';
@@ -54,6 +55,8 @@ import { Bill } from '@/modules/Bills/models/Bill';
 
 const models = [
   RegisterTenancyModel(ImportBatch),
+  // Метка операции (FT-025 ТЗ-3).
+  RegisterTenancyModel(TransactionTag),
   RegisterTenancyModel(UncategorizedBankTransaction),
   RegisterTenancyModel(BankTransaction),
   RegisterTenancyModel(BankTransactionLine),

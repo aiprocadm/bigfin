@@ -115,6 +115,28 @@ export class GetBankTransactionsQueryDto {
   })
   contactId?: number;
 
+  /** Направление (FT-021 ТЗ-3). */
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @ApiProperty({
+    description: 'Filter by project (direction) id.',
+    required: false,
+    type: Number,
+  })
+  projectId?: number;
+
+  /** Метка операции (FT-025 ТЗ-3). */
+  @IsOptional()
+  @IsString()
+  @MaxLength(64)
+  @ApiProperty({
+    description: 'Filter by transaction tag.',
+    required: false,
+    type: String,
+  })
+  tag?: string;
+
   /** Поиск по номеру документа, номеру-ссылке и примечанию. */
   @IsOptional()
   @IsString()

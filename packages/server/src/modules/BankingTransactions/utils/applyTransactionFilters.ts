@@ -30,6 +30,13 @@ export interface TransactionListFilters {
    * пересечение».
    */
   states?: string[];
+  /**
+   * Направление (FT-021 ТЗ-3). На денежной ноге направления нет — оно на
+   * встречной, поэтому отбирается документ целиком.
+   */
+  projectId?: number;
+  /** Метка операции (FT-025 ТЗ-3): хранится у документа, не у проводки. */
+  tag?: string;
 }
 
 /** Состояния, по которым можно отбирать. */
@@ -132,6 +139,8 @@ export function applyTransactionFilters(
     search,
     minAmount,
     maxAmount,
+    projectId,
+    tag,
   } = filters ?? {};
 
   if (accountId) {
@@ -187,6 +196,23 @@ export function applyTransactionFilters(
           .whereIn('account_id', articleAccountIds);
       });
     }
+  }
+
+  if (projectId) {
+    query.whereIn(['reference_type', 'reference_id'], (builder: any) => {
+      builder
+        .select('reference_type', 'reference_id')
+        .from('accounts_transactions')
+        .where('project_id', projectId);
+    });
+  }
+  if (tag) {
+    query.whereIn(['reference_type', 'reference_id'], (builder: any) => {
+      builder
+        .select('reference_type', 'reference_id')
+        .from('transaction_tags')
+        .where('tag', tag);
+    });
   }
 
   if (search) {

@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -40,6 +42,7 @@ export class PayrollController {
   constructor(private readonly application: PayrollApplication) {}
 
   // ---- Settings ----
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('settings')
   @ApiOperation({ summary: 'Payroll rates settings (with defaults applied).' })
   getSettings() {
@@ -47,6 +50,7 @@ export class PayrollController {
   }
 
   // ---- Employees ----
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('employees')
   @ApiOperation({ summary: 'List employees.' })
   getEmployees(
@@ -81,6 +85,7 @@ export class PayrollController {
   }
 
   // ---- KPI targets ----
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('kpi/targets')
   @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @ApiOperation({ summary: 'List manager KPI targets (optionally by year).' })
@@ -115,6 +120,7 @@ export class PayrollController {
     return this.application.deleteKpiTarget(id);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('kpi/summary')
   @RequireFeature(Features.PAYROLL, Features.PAYROLL_KPI)
   @ApiOperation({ summary: 'Monthly KPI plan/fact/bonus summary by manager.' })
@@ -123,6 +129,7 @@ export class PayrollController {
   }
 
   // ---- Taxes summary ----
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('taxes-summary')
   @ApiOperation({ summary: 'Monthly payroll taxes summary (approved runs).' })
   getTaxesSummary(@Query() query: GetPayrollTaxesSummaryQueryDto) {
@@ -130,12 +137,14 @@ export class PayrollController {
   }
 
   // ---- Runs ----
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('runs')
   @ApiOperation({ summary: 'List payroll runs (with totals).' })
   getRuns(@Query() query: GetPayrollRunsQueryDto) {
     return this.application.getRuns(query.year);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('runs/:id')
   @ApiOperation({ summary: 'Get a payroll run with lines and totals.' })
   getRun(@Param('id', ParseIntPipe) id: number) {

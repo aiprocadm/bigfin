@@ -258,6 +258,7 @@ export const SidebarMenu = [
         type: ISidebarMenuItemType.Link,
         feature: Features.VatAnalysis,
         accountantOnly: true,
+        permission: { subject: AbilitySubject.Report, ability: ReportsAction.READ_SALES_TAX_LIABILITY_SUMMARY },
       },
       {
         text: <T id={'sidebar.financial_ratios'} />,
@@ -265,6 +266,7 @@ export const SidebarMenu = [
         type: ISidebarMenuItemType.Link,
         feature: Features.FinancialRatios,
         accountantOnly: true,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
       {
         text: <T id={'sidebar.data_quality'} />,
@@ -272,6 +274,7 @@ export const SidebarMenu = [
         type: ISidebarMenuItemType.Link,
         feature: Features.DataQuality,
         accountantOnly: true,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_TRIAL_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_GENERAL_LEDGET }],
       },
     ],
   },
@@ -288,12 +291,14 @@ export const SidebarMenu = [
         href: '/payment-calendar',
         type: ISidebarMenuItemType.Link,
         feature: Features.PaymentCalendar,
+        permission: { subject: AbilitySubject.Cashflow, ability: CashflowAction.View },
       },
       {
         text: <T id={'sidebar.budgets'} />,
         href: '/budgets',
         type: ISidebarMenuItemType.Link,
         feature: Features.Budgets,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_CASHFLOW_ARTICLES }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_MANAGERIAL_PROFIT_LOSS }],
       },
       {
         text: <T id={'sidebar.payment_requests'} />,
@@ -306,6 +311,7 @@ export const SidebarMenu = [
         href: '/financial-model',
         type: ISidebarMenuItemType.Link,
         feature: Features.FinancialModel,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
       {
         // Этап 14 ТЗ. Пункт появляется только с включённым разделом: вести
@@ -314,6 +320,7 @@ export const SidebarMenu = [
         href: '/ai-chat',
         type: ISidebarMenuItemType.Link,
         feature: Features.AiAnalyst,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
     ],
   },
@@ -335,18 +342,21 @@ export const SidebarMenu = [
         href: '/deals',
         type: ISidebarMenuItemType.Link,
         feature: Features.Projects,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_MANAGERIAL_PROFIT_LOSS }, { subject: AbilitySubject.Invoice, ability: SaleInvoiceAction.View }],
       },
       {
         text: <T id={'sidebar.debts'} />,
         href: '/debts',
         type: ISidebarMenuItemType.Link,
         feature: Features.Debts,
+        permission: [{ subject: AbilitySubject.Invoice, ability: SaleInvoiceAction.View }, { subject: AbilitySubject.Bill, ability: BillAction.View }],
       },
       {
         text: <T id={'sidebar.credits'} />,
         href: '/credits',
         type: ISidebarMenuItemType.Link,
         feature: Features.Credits,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
     ],
   },
@@ -429,12 +439,14 @@ export const SidebarMenu = [
         href: '/payroll',
         type: ISidebarMenuItemType.Link,
         feature: Features.Payroll,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
       {
         text: <T id={'sidebar.fixed_assets'} />,
         href: '/fixed-assets',
         type: ISidebarMenuItemType.Link,
         feature: Features.FixedAssets,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
       {
         text: <T id={'sidebar.tax_rates'} />,
@@ -456,6 +468,7 @@ export const SidebarMenu = [
         href: '/dividends',
         type: ISidebarMenuItemType.Link,
         feature: Features.Dividends,
+        permission: [{ subject: AbilitySubject.Report, ability: ReportsAction.READ_BALANCE_SHEET }, { subject: AbilitySubject.Report, ability: ReportsAction.READ_PROFIT_LOSS }],
       },
 
       // Склад и бухгалтерия: в режиме «Бизнес» скрыты (п. 1.3 ТЗ).

@@ -67,6 +67,7 @@ class TrashListQueryDto {
 export class BankingTrashController {
   constructor(private readonly trash: TransactionsTrashService) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'Содержимое корзины: операции и строки выписки.' })
   list(@Query() query: TrashListQueryDto) {

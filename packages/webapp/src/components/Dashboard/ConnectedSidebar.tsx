@@ -11,10 +11,10 @@ import { useInterfaceMode } from '@/hooks/state/interfaceMode';
 import { isAccountantOnlyHidden } from '@/constants/interfaceMode';
 import { Features } from '@/constants/features';
 import { ISidebarMenuItemType } from '@/containers/Dashboard/Sidebar/interfaces';
+import { permissionAllows } from './permissionAllows';
 
 // Формы создания (/new) в основную навигацию не выводим.
 const isCreateRoute = (href) => /\/new(\/|$)/.test(href);
-
 /**
  * Рекурсивно собирает все навигационные ссылки (с href) из ветки меню,
  * пропуская формы создания, дубли и модули с выключенным флагом.
@@ -31,9 +31,7 @@ function collectLinks(node, acc, seen, guards) {
 
     // Право на раздел: прежнее меню его проверяло, новое — потеряло, и
     // человеку показывали пункт, который ему закрыт (Л1 карты v34).
-    const permissionOk =
-      !node.permission ||
-      ability.can(node.permission.ability, node.permission.subject);
+    const permissionOk = permissionAllows(ability, node.permission);
 
     // Режим «Бизнес» прячет чисто-бухгалтерские экраны, и маршрут уводит
     // с них на главную. Меню обязано знать то же правило — иначе шесть

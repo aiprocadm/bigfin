@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -38,6 +39,7 @@ import { CreateProjectDto, EditProjectDto } from './dtos/Project.dto';
 export class ProjectsController {
   constructor(private readonly application: ProjectsApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get()
   @ApiOperation({
     summary: 'Список направлений со счётчиком отнесённых операций.',
@@ -46,6 +48,7 @@ export class ProjectsController {
     return this.application.getProjects();
   }
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get(':id')
   @ApiOperation({ summary: 'Одно направление.' })
   getProject(@Param('id') id: string) {

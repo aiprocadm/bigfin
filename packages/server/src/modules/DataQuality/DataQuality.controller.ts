@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Controller,
   ForbiddenException,
@@ -47,6 +49,7 @@ export class DataQualityController {
     if (!enabled) throw new ForbiddenException('Качество данных выключено');
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('unmapped-operations')
   @ApiOperation({
     summary: 'P&L accounts without a management article, with their operations.',
@@ -56,6 +59,7 @@ export class DataQualityController {
     return this.application.getUnmappedOperations(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('duplicates')
   @ApiOperation({
     summary: 'Possible duplicated documents: same (date, account, amount, side) from different sources.',
@@ -65,6 +69,7 @@ export class DataQualityController {
     return this.application.getPossibleDuplicates(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('pl-cashflow')
   @ApiOperation({
     summary: 'Monthly P&L vs cashflow comparison (plNet/cashNet/diff).',
@@ -74,6 +79,7 @@ export class DataQualityController {
     return this.application.getPlCashflowComparison(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('accrual-shifts')
   @ApiOperation({
     summary:
@@ -84,6 +90,7 @@ export class DataQualityController {
     return this.application.getAccrualShifts(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('unbalanced-journals')
   @ApiOperation({
     summary: 'Documents whose journal does not balance (debit ≠ credit).',
@@ -93,6 +100,7 @@ export class DataQualityController {
     return this.application.getUnbalancedJournals(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('drifted-balances')
   @ApiOperation({
     summary:
@@ -103,6 +111,7 @@ export class DataQualityController {
     return this.application.getDriftedBalances();
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('failed-mails')
   @ApiOperation({
     summary: 'Mails that finally failed to deliver during the last 7 days.',
@@ -112,6 +121,7 @@ export class DataQualityController {
     return this.application.getFailedMails();
   }
 
+  @RequireAnyPermission({ ability: 'read-trial-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-general-ledger', subject: AbilitySubject.Report })
   @Get('crooked-currency-journals')
   @ApiOperation({
     summary:

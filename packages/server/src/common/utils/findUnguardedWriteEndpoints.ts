@@ -46,9 +46,17 @@ const hasMark = (text: string) =>
  * обработчика и строкой с именем текущего: порядок пометок внутри блока
  * значения не имеет, поэтому блок берётся целиком.
  */
-export const parseWriteEndpoints = (
+export const parseWriteEndpoints = (source: string, file: string): WriteEndpoint[] =>
+  parseEndpoints(source, file, WRITE_DECORATOR);
+
+/** Ручки чтения — для сторожа прав на чтение (FT-084 ТЗ-3). */
+export const READ_DECORATOR = /@(Get)\s*\(/;
+
+/** Разбор ручек по виду запроса: запись, чтение. */
+export const parseEndpoints = (
   source: string,
   file: string,
+  decorator: RegExp,
 ): WriteEndpoint[] => {
   const lines = source.split('\n');
   const classIndex = lines.findIndex((line) => CLASS_LINE.test(line));
@@ -68,7 +76,7 @@ export const parseWriteEndpoints = (
     if (!handler) return;
 
     const block = lines.slice(blockStart, index + 1).join('\n');
-    const write = block.match(WRITE_DECORATOR);
+    const write = block.match(decorator);
 
     if (write) {
       endpoints.push({

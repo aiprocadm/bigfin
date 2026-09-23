@@ -63,12 +63,14 @@ class ResolveDto {
 export class BankReconciliationController {
   constructor(private readonly reconciliation: BankReconciliationService) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'История сверок (180 дней).' })
   list(@Query('accountId') accountId?: string) {
     return this.reconciliation.list(accountId ? Number(accountId) : undefined);
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get(':id')
   @ApiOperation({ summary: 'Сверка: остатки, расхождение, два списка.' })
   get(@Param('id') id: string) {

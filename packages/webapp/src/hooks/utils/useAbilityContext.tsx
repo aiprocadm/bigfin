@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAbility } from '@casl/react';
+import { permissionAllows } from '@/components/Dashboard/permissionAllows';
 import { AbilityContext } from '@/components';
 // Прямой путь, а не сборный '@/components': хук главной грузится раньше
 // сборного файла, и через него контекст приходит пустым.
@@ -15,10 +16,9 @@ export const useAbilitiesFilter = () => {
 
   return React.useCallback(
     (items: any) => {
-      return items.filter(
-        (item: any) =>
-          !item.permission ||
-          ability.can(item.permission.ability, item.permission.subject),
+      // То же правило, что у меню: список прав — «хватит любого из».
+      return items.filter((item: any) =>
+        permissionAllows(ability, item.permission),
       );
     },
     [ability],

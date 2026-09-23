@@ -1,3 +1,4 @@
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
@@ -43,6 +44,7 @@ export class BudgetsController {
     private readonly planning: BudgetPlanningService,
   ) {}
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get(':id/cash-plan')
   @ApiOperation({ summary: 'Денежный план по месяцам с привязкой остатка к факту или плану (FT-056).' })
   @RequireApiScope('reports:read')
@@ -64,6 +66,7 @@ export class BudgetsController {
     return this.planning.autofillApply(id, body);
   }
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({ summary: 'List budgets.' })
   @RequireApiScope('reports:read')
@@ -71,6 +74,7 @@ export class BudgetsController {
     return this.application.getBudgets(keyword);
   }
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get(':id')
   @ApiOperation({ summary: 'Get a budget with its grid lines.' })
   @RequireApiScope('reports:read')
@@ -78,6 +82,7 @@ export class BudgetsController {
     return this.application.getBudget(id);
   }
 
+  @RequireAnyPermission({ ability: 'read-profit-loss', subject: AbilitySubject.Report }, { ability: 'read-cashflow-articles', subject: AbilitySubject.Report }, { ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report })
   @Get(':id/plan-fact')
   @ApiOperation({ summary: 'Plan vs fact report for a budget.' })
   @RequireApiScope('reports:read')

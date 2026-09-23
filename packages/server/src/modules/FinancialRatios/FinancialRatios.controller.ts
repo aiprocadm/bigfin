@@ -1,3 +1,5 @@
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   BadRequestException,
   Controller,
@@ -28,6 +30,7 @@ export class FinancialRatiosController {
     private readonly featuresManager: FeaturesManager,
   ) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({
     summary: 'Финансовые коэффициенты, вертикальный и горизонтальный анализ.',

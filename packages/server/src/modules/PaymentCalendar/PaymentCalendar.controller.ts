@@ -63,6 +63,7 @@ export class PaymentCalendarController {
     return metadata?.tenantId;
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('matrix')
   @ApiOperation({ summary: 'Календарь матрицей «план / факт» с накопительным плановым остатком (FT-050).' })
   @RequireApiScope('reports:read')
@@ -76,6 +77,7 @@ export class PaymentCalendarController {
     });
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('gap-scenarios')
   @ApiOperation({ summary: 'Что можно перенести до разрыва и к какому дню он исчезнет (FT-051).' })
   async getGapScenarios(@Query() query: GapScenariosQueryDto) {
@@ -96,6 +98,7 @@ export class PaymentCalendarController {
     return this.gapScenarios.reschedule(id, body.plannedDate);
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'Payment calendar forecast for a horizon.' })
   @RequireApiScope('reports:read')
@@ -104,6 +107,7 @@ export class PaymentCalendarController {
     return this.application.getForecast(metadata?.tenantId, query);
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('cash-gaps')
   @ApiOperation({
     summary: 'Кассовые разрывы по каждому счёту, с глубиной и датой выхода.',
@@ -113,6 +117,7 @@ export class PaymentCalendarController {
     return this.accountsCashGaps.getAccountsCashGaps(Number(horizonDays));
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('planned-operations')
   @ApiOperation({ summary: 'List planned operations.' })
   getPlannedOperations(@Query() query: GetPlannedOperationsQueryDto) {

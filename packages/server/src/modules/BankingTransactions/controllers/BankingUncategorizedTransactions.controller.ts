@@ -1,4 +1,9 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { PermissionGuard } from '@/modules/Roles/Permission.guard';
+import { AuthorizationGuard } from '@/modules/Roles/Authorization.guard';
+import { CashflowAction } from '@/modules/BankingTransactions/types/BankingTransactions.types';
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -15,6 +20,7 @@ import { ApiCommonHeaders } from '@/common/decorators/ApiCommonHeaders';
 import { UncategorizedTransactionIdsQueryDto } from '@/common/dtos/UncategorizedTransactionIdsQuery.dto';
 
 @Controller('banking/uncategorized')
+@UseGuards(AuthorizationGuard, PermissionGuard)
 @ApiTags('Banking Uncategorized Transactions')
 @ApiExtraModels(GetAutofillCategorizeTransactionResponseDto)
 @ApiCommonHeaders()
@@ -23,6 +29,7 @@ export class BankingUncategorizedTransactionsController {
     private readonly bankingTransactionsApplication: BankingTransactionsApplication,
   ) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('autofill')
   @ApiOperation({ summary: 'Get autofill values for categorize transactions' })
   @ApiQuery({
@@ -46,6 +53,7 @@ export class BankingUncategorizedTransactionsController {
     );
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({
     summary: 'Get uncategorized transactions of all bank accounts',
@@ -66,6 +74,7 @@ export class BankingUncategorizedTransactionsController {
     );
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('accounts/:accountId')
   @ApiOperation({
     summary: 'Get uncategorized transactions for a specific bank account',
@@ -103,6 +112,7 @@ export class BankingUncategorizedTransactionsController {
     );
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get(':uncategorizedTransactionId')
   @ApiOperation({ summary: 'Get a specific uncategorized transaction by ID' })
   @ApiResponse({

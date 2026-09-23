@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -31,16 +33,19 @@ import { GetCreditsQueryDto } from './dtos/GetCreditsQuery.dto';
 export class CreditsController {
   constructor(private readonly application: CreditsApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('summary')
   @ApiOperation({ summary: 'Credits summary: outstanding debt, next payment.' })
   getSummary() { return this.application.getSummary(); }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({ summary: 'List credits with outstanding balance.' })
   getCredits(@Query() query: GetCreditsQueryDto) {
     return this.application.getCredits(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get(':id')
   @ApiOperation({ summary: 'Get a credit with its installment schedule.' })
   getCredit(@Param('id', ParseIntPipe) id: number) {

@@ -52,3 +52,28 @@ describe('меню и его пометки', () => {
     expect(sidebar).toContain('isAccountantOnlyHidden(');
   });
 });
+
+describe('право пункта меню', () => {
+  // Функция в своём файле: модуль меню тянет весь интерфейс, а проверке
+  // нужна только она.
+  const ability = {
+    can: (action: string, subject: string) =>
+      action === 'View' && subject === 'Bill',
+  };
+
+  it('без пометки — пускает', async () => {
+    const { permissionAllows } = await import('./permissionAllows');
+    expect(permissionAllows(ability, undefined)).toBe(true);
+  });
+
+  it('список прав — хватит любого из (как на сервере, FT-084)', async () => {
+    const { permissionAllows } = await import('./permissionAllows');
+    const debts = [
+      { ability: 'View', subject: 'SaleInvoice' },
+      { ability: 'View', subject: 'Bill' },
+    ];
+    expect(permissionAllows(ability, debts)).toBe(true);
+    expect(permissionAllows(ability, [debts[0]])).toBe(false);
+    expect(permissionAllows(ability, debts[0])).toBe(false);
+  });
+});

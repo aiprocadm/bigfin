@@ -1,4 +1,6 @@
 // © 2026 Bigfin
+import { AbilitySubject } from '@/modules/Roles/Roles.types';
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -34,18 +36,21 @@ import { GetFixedAssetsQueryDto } from './dtos/GetFixedAssetsQuery.dto';
 export class FixedAssetsController {
   constructor(private readonly application: FixedAssetsApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get('summary')
   @ApiOperation({ summary: 'Fixed assets summary: gross, accumulated, net.' })
   getSummary() {
     return this.application.getSummary();
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get()
   @ApiOperation({ summary: 'List fixed assets with net value.' })
   getFixedAssets(@Query() query: GetFixedAssetsQueryDto) {
     return this.application.getFixedAssets(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-balance-sheet', subject: AbilitySubject.Report }, { ability: 'read-profit-loss', subject: AbilitySubject.Report })
   @Get(':id')
   @ApiOperation({ summary: 'Get a fixed asset with its depreciation schedule.' })
   getDetail(@Param('id', ParseIntPipe) id: number) {

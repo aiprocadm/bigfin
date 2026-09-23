@@ -49,6 +49,7 @@ export class BankingTransactionsController {
     private readonly summaryService: GetTransactionsSummaryService,
   ) {}
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get('summary')
   @ApiOperation({
     summary: 'Итоги реестра операций под тем же отбором, что и список.',
@@ -64,6 +65,7 @@ export class BankingTransactionsController {
     return this.summaryService.getSummary(filter);
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get()
   @ApiOperation({ summary: 'Get bank account transactions' })
   @ApiResponse({
@@ -177,6 +179,7 @@ export class BankingTransactionsController {
     );
   }
 
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
   @Get(':id')
   @ApiOperation({ summary: 'Get a specific bank transaction by ID' })
   @ApiResponse({

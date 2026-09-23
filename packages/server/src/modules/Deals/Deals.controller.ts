@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireAnyPermission } from '@/modules/Roles/RequireAnyPermission.decorator';
 import {
   Body,
   Controller,
@@ -38,12 +39,14 @@ import { Features } from '@/common/types/Features';
 export class DealsController {
   constructor(private readonly application: DealsApplication) {}
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get()
   @ApiOperation({ summary: 'List deals (filter by status).' })
   getList(@Query() query: GetDealsQueryDto) {
     return this.application.getDeals(query);
   }
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get('summary')
   @ApiOperation({ summary: 'Deals dashboard summary (per-deal margins + totals).' })
   getSummary(
@@ -53,12 +56,14 @@ export class DealsController {
     return this.application.getSummary({ fromDate, toDate });
   }
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get(':id')
   @ApiOperation({ summary: 'Get a deal.' })
   get(@Param('id', ParseIntPipe) id: number) {
     return this.application.getDeal(id);
   }
 
+  @RequireAnyPermission({ ability: 'read-managerial-profit-loss', subject: AbilitySubject.Report }, { ability: 'View', subject: AbilitySubject.SaleInvoice })
   @Get(':id/profitability')
   @ApiOperation({ summary: 'Deal profitability (revenue − direct costs).' })
   profitability(

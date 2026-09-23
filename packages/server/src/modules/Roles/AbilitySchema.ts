@@ -260,6 +260,10 @@ export const AbilitySchema: ISubjectAbilitiesSchema[] = [
         label: 'ability.cashflow_articles_report',
       },
       {
+        key: ReportsAction.READ_MANAGERIAL_PROFIT_LOSS,
+        label: 'ability.managerial_profit_loss_report',
+      },
+      {
         key: ReportsAction.READ_AR_AGING_SUMMARY,
         label: 'ability.AR_aging_summary_report',
       },

@@ -74,18 +74,32 @@ export class ReportChartController {
   getDrillDown(@Query() query: DrillDownQueryDto) {
     // Статья важнее счёта, когда пришли оба: человек щёлкнул по строке
     // отчёта, а строка отчёта — это статья.
+    const scope = {
+      branchesIds: query.branchesIds,
+      legalEntityIds: query.legalEntityIds,
+      projectsIds: query.projectsIds,
+      reportFrom: query.reportFrom,
+      reportTo: query.reportTo,
+      basis: query.basis,
+      plType: query.plType,
+    };
+
+    // Ярус целиком (строка группы управленческого ОПиУ, FT-010).
+    if (query.plType !== undefined && query.articleId === undefined) {
+      return this.drillDown.getDrillDownByPlType(
+        query.plType,
+        query.from,
+        query.to,
+        scope,
+      );
+    }
+
     if (query.articleId !== undefined) {
       return this.drillDown.getDrillDownByArticle(
         query.articleId,
         query.from,
         query.to,
-        {
-          branchesIds: query.branchesIds,
-          legalEntityIds: query.legalEntityIds,
-          projectsIds: query.projectsIds,
-          reportFrom: query.reportFrom,
-          reportTo: query.reportTo,
-        },
+        scope,
       );
     }
 

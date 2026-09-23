@@ -26,6 +26,8 @@
   "journal": "Журнал",
   "general_ledger": "Главная книга",
   "cashflow_report": "Движение денежных средств",
+  "cashflow_articles_report": "Деньги (ДДС по статьям)",
+  "managerial_profit_loss_report": "Управленческий ОПиУ",
   "AR_aging_summary_report": "Сводка по дебиторской задолженности",
   "AP_aging_summary_report": "Сводка по кредиторской задолженности",
   "purchases_by_items": "Закупки по позициям",

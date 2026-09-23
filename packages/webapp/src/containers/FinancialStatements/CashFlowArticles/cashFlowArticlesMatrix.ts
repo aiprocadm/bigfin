@@ -11,6 +11,7 @@ import {
   type ReportScale,
 } from '../v2';
 import { isTotalRow } from './cashFlowArticlesRows';
+import { formulaHintOf } from '../reportFormulas';
 
 /**
  * Матрица «Деньги по статьям»: статьи × периоды + «Итого» (FT-001 ТЗ-3) —
@@ -346,9 +347,10 @@ export function formatShare(
   total: number,
   locale = 'ru',
 ): string | undefined {
-  if (!(total > 0)) {
-    return value === 0 ? undefined : intl.get('reports.percent.not_applicable');
-  }
+  // Нулевая ячейка — без доли вовсе: «0,00 %» под «0,00 ₽» ничего не
+  // добавляет, а колонка начинает пестреть (живая проверка этапа 31).
+  if (value === 0) return undefined;
+  if (!(total > 0)) return intl.get('reports.percent.not_applicable');
   const percent = new Intl.NumberFormat(locale, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -381,6 +383,8 @@ export function matrixRows(
 
       return {
         id: row.id,
+        // Подсказка-формула у расчётных строк (FT-016 ТЗ-3).
+        hint: formulaHintOf(row.id),
         cells: row.cells.map((cell, index) => {
           if (index === 0) {
             return {

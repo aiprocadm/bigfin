@@ -247,10 +247,12 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/profit-loss-sheet`,
+    // Управленческий или бухгалтерский ОПиУ — переключатель на странице
+    // (FT-010 ТЗ-3); бухгалтерский открывается прежним экраном.
     component: lazy(
       () =>
         import(
-          '@/containers/FinancialStatements/ProfitLossSheet/ProfitLossSheet'
+          '@/containers/FinancialStatements/ManagerialPnl/ProfitLossPage'
         ),
     ),
     breadcrumb: intl.get('profit_loss_sheet'),

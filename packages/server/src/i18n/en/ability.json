@@ -26,6 +26,8 @@
   "journal": "Journal",
   "general_ledger": "General ledger",
   "cashflow_report": "Cashflow",
+  "cashflow_articles_report": "Cash by articles",
+  "managerial_profit_loss_report": "Managerial profit and loss",
   "AR_aging_summary_report": "A/R aging summary",
   "AP_aging_summary_report": "A/P aging summary",
   "purchases_by_items": "Purchases by items",

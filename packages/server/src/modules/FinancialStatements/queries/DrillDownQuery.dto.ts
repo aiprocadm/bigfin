@@ -4,10 +4,13 @@ import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
+  IsIn,
   IsInt,
   IsOptional,
   ValidateIf,
 } from 'class-validator';
+
+import { MANAGERIAL_PL_TYPES } from '../modules/ManagerialProfitLoss/computeManagerialTiers';
 
 import { DateRangeQueryDto } from '@/common/dtos/DateRangeQuery.dto';
 
@@ -31,7 +34,11 @@ function toIdList({ value }: { value: unknown }) {
 }
 
 export class DrillDownQueryDto extends DateRangeQueryDto {
-  @ValidateIf((dto: DrillDownQueryDto) => dto.articleId === undefined)
+  // Счёт нужен, только когда не пришли ни статья, ни ярус.
+  @ValidateIf(
+    (dto: DrillDownQueryDto) =>
+      dto.articleId === undefined && dto.plType === undefined,
+  )
   @Type(() => Number)
   @IsInt()
   @ApiPropertyOptional({ description: 'Номер счёта', example: 1001 })
@@ -84,4 +91,16 @@ export class DrillDownQueryDto extends DateRangeQueryDto {
   @IsDateString()
   @ApiPropertyOptional({ description: 'Конец всего отчёта' })
   reportTo?: string;
+
+  /** Метод учёта отчёта (FT-010): по начислению — все проводки, не только оплаченные. */
+  @IsOptional()
+  @IsIn(['cash', 'accrual'])
+  @ApiPropertyOptional({ enum: ['cash', 'accrual'] })
+  basis?: 'cash' | 'accrual';
+
+  /** Ярус прибыли: раскрыть весь ярус или статью только в её ярусе. */
+  @IsOptional()
+  @IsIn(MANAGERIAL_PL_TYPES as unknown as string[])
+  @ApiPropertyOptional({ enum: MANAGERIAL_PL_TYPES })
+  plType?: string;
 }

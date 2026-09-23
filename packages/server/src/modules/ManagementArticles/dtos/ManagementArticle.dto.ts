@@ -1,5 +1,6 @@
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -14,6 +15,7 @@ import {
   CASHFLOW_SECTIONS,
   COST_BEHAVIORS,
 } from '../constants';
+import { PL_TYPES } from '../utils/plTypes';
 
 class CommandManagementArticleDto {
   @IsString()
@@ -57,6 +59,29 @@ class CommandManagementArticleDto {
       'у выручки постоянных и переменных не бывает.',
   })
   costBehavior?: string;
+
+  /**
+   * Ярус управленческого ОПиУ (FT-009 ТЗ-3).
+   *
+   * Домен и совместимость с видом статьи проверяет служба, а не DTO:
+   * ТЗ требует на это ответ 422 с понятным кодом, а проверка DTO отвечает
+   * общим 400. `null` — снять ярус (у дочерней статьи это «как у
+   * родителя»).
+   */
+  // Пустая строка из формы — это «не выбрано», в базу она ложится как null.
+  @Transform(({ value }) => (value === '' ? null : value))
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    example: 'direct_variable',
+    enum: PL_TYPES,
+    nullable: true,
+    required: false,
+    description:
+      'Ярус в управленческом отчёте о прибыли. Только у доходных и ' +
+      'расходных статей; пусто у дочерней — как у родителя.',
+  })
+  plType?: string | null;
 
   @ToNumber()
   @IsInt()

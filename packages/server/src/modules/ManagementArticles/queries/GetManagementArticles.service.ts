@@ -4,6 +4,7 @@ import { ManagementArticle } from '../models/ManagementArticle.model';
 import { GetManagementArticlesQueryDto } from '../dtos/GetManagementArticlesQuery.dto';
 import { GetManagementArticlesResponse } from '../ManagementArticle.interfaces';
 import { buildArticleTree } from '../utils/buildArticleTree';
+import { resolvePlType } from '../utils/plTypes';
 
 @Injectable()
 export class GetManagementArticlesService {
@@ -34,7 +35,9 @@ export class GetManagementArticlesService {
         query.orderBy('sortOrder', 'asc');
       });
 
-    const rows = await this.withAccountsCount(articles);
+    const rows = this.withEffectivePlType(
+      await this.withAccountsCount(articles),
+    );
 
     if (!asTree) {
       return { data: rows };
@@ -46,6 +49,23 @@ export class GetManagementArticlesService {
     }
 
     return { data: tree };
+  }
+
+  /**
+   * Действующий ярус управленческого ОПиУ каждой статьи (FT-009 ТЗ-3).
+   *
+   * Наследование считается по тому же списку: у дочерней статьи тот же
+   * вид, что у родителя, поэтому отбор по виду родителя не теряет.
+   */
+  private withEffectivePlType(rows: any[]): any[] {
+    return rows.map((row: any) => {
+      const resolved = resolvePlType(row.id, rows);
+      return {
+        ...row,
+        effectivePlType: resolved.plType,
+        plTypeInherited: resolved.inherited,
+      };
+    });
   }
 
   /**

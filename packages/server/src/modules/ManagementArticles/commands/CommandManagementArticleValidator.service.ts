@@ -1,10 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { ManagementArticle } from '../models/ManagementArticle.model';
 import { ManagementArticleAccount } from '../models/ManagementArticleAccount.model';
 import { BALANCE_ARTICLE_KINDS, ERRORS } from '../constants';
+import { plTypeError } from '../utils/plTypes';
 
 @Injectable()
 export class CommandManagementArticleValidatorService {
@@ -106,6 +107,31 @@ export class CommandManagementArticleValidatorService {
     if (!costBehavior) return;
     if (kind !== 'expense') {
       throw new ServiceError(ERRORS.COST_BEHAVIOR_ONLY_FOR_EXPENSE);
+    }
+  }
+
+  /**
+   * Ярус управленческого ОПиУ допустим только при подходящем виде статьи
+   * (FT-009 ТЗ-3).
+   *
+   * Балансовым статьям ярус не положен вовсе, выручка у расходной статьи
+   * перевернула бы знак в отчёте. Проверка на сервере, а не только в
+   * форме: статьи заводят и импортом, и через API. Ответ 422 с кодом —
+   * так требует ТЗ, чтобы интеграция могла отличить «не тот ярус» от
+   * «кривой запрос».
+   */
+  public validatePlTypeMatchesKind(
+    kind: string,
+    plType?: string | null,
+  ) {
+    const error = plTypeError(kind, plType);
+    if (error) {
+      throw new ServiceError(
+        error,
+        undefined,
+        { kind, plType },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
   }
 

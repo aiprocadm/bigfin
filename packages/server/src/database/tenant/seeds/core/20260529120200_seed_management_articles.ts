@@ -38,6 +38,9 @@ export default class SeedManagementArticles extends TenantSeeder {
           kind: article.kind,
           cashflow_section: article.cashflow_section,
           sort_order: article.sort_order,
+          // Ярус управленческого ОПиУ (FT-009 ТЗ-3). У балансовых статей его
+          // нет и быть не может — там `null`.
+          pl_type: (article as { pl_type?: string }).pl_type ?? null,
           seed_key: article.key,
           active: true,
           created_at: now,

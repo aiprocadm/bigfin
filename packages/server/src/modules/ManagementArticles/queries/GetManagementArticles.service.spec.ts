@@ -44,6 +44,34 @@ describe('GetManagementArticlesService', () => {
     expect((res.data[0] as any).children).toBeUndefined();
   });
 
+  it('отдаёт действующий ярус и признак наследования (FT-009 ТЗ-3)', async () => {
+    const rows = [
+      { id: 1, name: 'Расходы', parentId: null, plType: 'administrative' },
+      { id: 2, name: 'Бухгалтерия', parentId: 1, plType: null },
+      { id: 3, name: 'Эквайринг', parentId: 1, plType: 'direct_variable' },
+    ];
+    const articleModel = () => ({
+      query: () => makeBuilder(rows),
+      knex: () => knexCountStub(),
+    });
+    const res = await new GetManagementArticlesService(
+      articleModel as any,
+    ).getManagementArticles({});
+    const byId = (id: number) => (res.data as any[]).find((a) => a.id === id);
+
+    // Своя статья человека — ярус родителя, помечен унаследованным: экран
+    // покажет «как у родителя», и человек увидит, откуда он взялся.
+    expect(byId(2)).toMatchObject({
+      plType: null,
+      effectivePlType: 'administrative',
+      plTypeInherited: true,
+    });
+    expect(byId(3)).toMatchObject({
+      effectivePlType: 'direct_variable',
+      plTypeInherited: false,
+    });
+  });
+
   it('returns a nested tree when tree=true', async () => {
     const res = await buildService().getManagementArticles({ tree: 'true' });
     expect(res.data).toHaveLength(1);

@@ -14,6 +14,8 @@ describe('CreateManagementArticleService', () => {
       validateKindMatchesParent: jest.fn().mockResolvedValue(undefined),
       // Пометка «постоянный / переменный» — проверка синхронная (этап 9 ТЗ).
       validateCostBehaviorMatchesKind: jest.fn(),
+      // Ярус управленческого ОПиУ (FT-009 ТЗ-3) — тоже синхронная проверка.
+      validatePlTypeMatchesKind: jest.fn(),
       validateCashflowSectionPresence: jest.fn(),
       validateAccountsExist: jest.fn().mockResolvedValue(undefined),
       validateAccountsMatchKind: jest.fn().mockResolvedValue(undefined),
@@ -31,9 +33,15 @@ describe('CreateManagementArticleService', () => {
     const result = await service.create({
       name: 'Аренда',
       kind: 'expense',
+      plType: 'administrative',
     } as any);
 
     expect(validator.validateNameUniqueness).toHaveBeenCalledWith('Аренда');
+    // Ярус проверяется ДО записи в базу, с видом статьи.
+    expect(validator.validatePlTypeMatchesKind).toHaveBeenCalledWith(
+      'expense',
+      'administrative',
+    );
     expect(insert).toHaveBeenCalled();
     expect(result).toEqual(inserted);
   });

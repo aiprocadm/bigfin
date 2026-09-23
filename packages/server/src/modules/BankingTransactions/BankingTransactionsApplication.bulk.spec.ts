@@ -95,4 +95,16 @@ describe('пакетный ввод операций (FT-024)', () => {
     ]);
     expect(splitCalls[0][2]).toBe('tx');
   });
+
+  it('отказ кодом без текста — строка получает понятную фразу (живая проверка этапа 37)', async () => {
+    const { app } = makeApp();
+    (app as any).createTransactionService.newCashflowTransaction = async () => {
+      const error: any = new Error('');
+      error.errorType = 'CREDIT_ACCOUNTS_HAS_INVALID_TYPE';
+      throw error;
+    };
+    const result = await app.createTransactionsBulk([item(1)]);
+    expect(result.results[0]).toMatchObject({ message: 'Статья (счёт) не подходит для этого вида операции' });
+  });
 });
+

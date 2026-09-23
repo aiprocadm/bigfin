@@ -72,4 +72,14 @@ describe('проводки денежной операции', () => {
     expect(entries[0]).toMatchObject({ debit: 100000 });
     expect(entries.slice(1).map((e) => e.credit)).toEqual([60000, 40000]);
   });
+
+  it('части 11 + 1 от 12 проводятся ровно так (живая проверка этапа 37: было 11,01 + 0,99)', () => {
+    const { entries } = new BankTransactionGL(expense({ localAmount: 12 }), [
+      { accountId: 1021, projectId: null, amount: 11 },
+      { accountId: 1024, projectId: null, amount: 1 },
+    ] as any).getCashflowLedger();
+    expect(entries.slice(1).map((e) => e.debit)).toEqual([11, 1]);
+    expect(sum(entries, 'debit')).toBe(sum(entries, 'credit'));
+  });
 });
+

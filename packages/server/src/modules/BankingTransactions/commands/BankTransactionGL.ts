@@ -2,7 +2,7 @@ import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { BankTransaction } from '../models/BankTransaction';
 import { transformCashflowTransactionType } from '../utils';
 import { Ledger } from '@/modules/Ledger/Ledger';
-import { splitByShares } from '@/modules/BankRules/utils/splitShares';
+import { splitByAmounts } from '@/modules/BankRules/utils/splitShares';
 
 /**
  * Часть операции для проводок (FT-031 ТЗ-3): куда уходит доля суммы.
@@ -134,10 +134,14 @@ export class BankTransactionGL {
    * разошлись бы с деньгами на копейку, и проводка не сошлась бы.
    */
   private get splitCreditGLEntries(): ILedgerEntry[] {
-    const total = this.splits.reduce((sum, part) => sum + Number(part.amount), 0);
     const local = this.bankTransactionModel.localAmount;
-    const shares = this.splits.map((part) => (Number(part.amount) / total) * 100);
-    const localParts = splitByShares(local, shares);
+    // Делим ПО СУММАМ частей в целых копейках, а не через проценты: доля
+    // 11/12 = 91,666…% после округления вниз теряла копейку, и части 11 + 1
+    // проводились как 11,01 + 0,99 (найдено живой проверкой этапа 37).
+    const localParts = splitByAmounts(
+      local,
+      this.splits.map((part) => Number(part.amount)),
+    );
     const isCashDebit = this.bankTransactionModel.isCashDebit;
 
     return this.splits.map((part, index) => ({

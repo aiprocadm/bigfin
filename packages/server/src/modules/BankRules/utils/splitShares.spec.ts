@@ -1,5 +1,5 @@
 // © 2026 Bigfin
-import { splitByShares, validateShares } from './splitShares';
+import { splitByAmounts, splitByShares, validateShares } from './splitShares';
 
 describe('разбиение по долям (FT-031)', () => {
   it('приёмка ТЗ: 100 000 ₽ и 70/30 — две части 70 000 и 30 000', () => {
@@ -47,3 +47,19 @@ describe('разбиение по долям (FT-031)', () => {
     expect(validateShares([33.3333, 33.3333, 33.3334]).isValid).toBe(true);
   });
 });
+
+describe('части по суммам (живая проверка этапа 37)', () => {
+  it('12 = 11 + 1 — ровно, без потерянной копейки', () => {
+    expect(splitByAmounts(12, [11, 1])).toEqual([11, 1]);
+    // Та же пара через доли раньше давала 11,01 + 0,99.
+    expect(splitByShares(12, [(11 / 12) * 100, (1 / 12) * 100])).toEqual([11, 1]);
+  });
+
+  it('при курсе ≠ 1 сумма частей строго равна сумме по счёту денег', () => {
+    const parts = splitByAmounts(1234.57, [11, 1]);
+    expect(Math.round(parts.reduce((a, b) => a + b, 0) * 100)).toBe(123457);
+    expect(splitByAmounts(10, [1, 1, 1])).toEqual([3.34, 3.33, 3.33]);
+    expect(splitByAmounts(10, [0, 0])).toEqual([0, 0]);
+  });
+});
+

@@ -2,12 +2,15 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { toast } from 'sonner';
+import { Lock } from 'lucide-react';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
 import useApiRequest from '@/hooks/useRequest';
 import { DateField } from '@/components/ui/date-field';
 import { CashAccountField } from '@/components/ui/cash-account-field';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { EmptyState } from '@/components/ui/empty-state';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 const monthAgo = () => {
   const d = new Date();
@@ -27,8 +30,24 @@ export default function OnecExportPage() {
   const [from, setFrom] = React.useState(monthAgo());
   const [to, setTo] = React.useState(today());
   const [loading, setLoading] = React.useState(false);
+  const canExport = useCanExport();
 
   if (!featureCan('onec_export')) return <ModuleDisabled />;
+
+  // Файл для 1С — унос данных: без права «Выгрузка данных» сервер ответит
+  // 403 и откроется общий экран «нет доступа» (FT-082 ТЗ-3). Поэтому кнопки
+  // скачивания нет — вместо неё объяснение, у кого просить право.
+  if (!canExport) {
+    return (
+      <div className="p-6">
+        <EmptyState
+          icon={<Lock className="h-8 w-8" aria-hidden />}
+          title={intl.get('export_right.no_access.title')}
+          description={intl.get('export_right.no_access.description')}
+        />
+      </div>
+    );
+  }
 
   const handleDownload = async () => {
     setLoading(true);

@@ -17,6 +17,7 @@ import {
   useARAgingSheetCsvExport,
   useARAgingSheetXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Retrieve AR aging summary columns.
@@ -47,6 +48,7 @@ export function ARAgingSummarySheetLoadingBar() {
  * @returns {JSX.Element}
  */
 export function ARAgingSummaryExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -116,6 +118,12 @@ export function ARAgingSummaryExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

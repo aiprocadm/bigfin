@@ -29,6 +29,7 @@ import {
   useCashFlowArticlesCsvExport,
   useCashFlowArticlesXlsxExport,
 } from '@/hooks/query/FinancialReports';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 import { ReportPeriodBar } from '../v2';
 import { ReportScopeNote } from '../ReportScopeNote';
@@ -137,6 +138,9 @@ export default function CashFlowArticles() {
 
   const { open: exportCsv } = useCashFlowArticlesCsvExport(serverQuery) as any;
   const { open: exportXlsx } = useCashFlowArticlesXlsxExport(serverQuery) as any;
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопки CSV/XLSX не показываем.
+  const canExport = useCanExport();
 
   const locale = intl.getInitOptions?.()?.currentLocale || 'ru';
   const serverColumns: MatrixServerColumn[] = data?.table?.columns ?? [];
@@ -227,16 +231,18 @@ export default function CashFlowArticles() {
             {intl.get('cash_flow_articles.page_hint')}
           </p>
         </div>
-        <div className="flex items-end gap-2">
-          <Button variant="secondary" onClick={() => exportCsv?.()}>
-            <Download className="mr-2 h-4 w-4" />
-            CSV
-          </Button>
-          <Button variant="secondary" onClick={() => exportXlsx?.()}>
-            <Download className="mr-2 h-4 w-4" />
-            XLSX
-          </Button>
-        </div>
+        {canExport && (
+          <div className="flex items-end gap-2">
+            <Button variant="secondary" onClick={() => exportCsv?.()}>
+              <Download className="mr-2 h-4 w-4" />
+              CSV
+            </Button>
+            <Button variant="secondary" onClick={() => exportXlsx?.()}>
+              <Download className="mr-2 h-4 w-4" />
+              XLSX
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Период и масштаб — на странице, одним нажатием (FIN-012). */}

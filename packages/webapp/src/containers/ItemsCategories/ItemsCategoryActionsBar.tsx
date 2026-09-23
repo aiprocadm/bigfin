@@ -23,6 +23,7 @@ import { compose } from '@/utils';
 import { useItemsCategoriesContext } from './ItemsCategoriesProvider';
 import { useHistory } from 'react-router-dom';
 import { DialogsName } from '@/constants/dialogs';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Items categories actions bar.
@@ -74,6 +75,10 @@ function ItemsCategoryActionsBar({
     });
   };
   // Handle the export button click.
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'item_category' });
   };
@@ -120,12 +125,14 @@ function ItemsCategoryActionsBar({
           text={<T id={'import'} />}
           onClick={handleImportBtnClick}
         />
-        <Button
-          className={Classes.MINIMAL}
-          icon={<Icon icon="file-export-16" iconSize={16} />}
-          text={<T id={'export'} />}
-          onClick={handleExportBtnClick}
-        />
+        {canExport && (
+          <Button
+            className={Classes.MINIMAL}
+            icon={<Icon icon="file-export-16" iconSize={16} />}
+            text={<T id={'export'} />}
+            onClick={handleExportBtnClick}
+          />
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

@@ -46,6 +46,7 @@ import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshPaymentReceive } from '@/hooks/query/paymentReceives';
 import { compose } from '@/utils';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 import { usePaymentsReceivedListContext } from '../PaymentsReceivedListProvider';
 import { useBulkDeletePaymentReceivesDialog } from '../hooks/use-bulk-delete-payment-receives-dialog';
@@ -286,6 +287,10 @@ function PaymentsReceivedToolbarV2Root({
     history.push('/payments-received/import');
   };
 
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'payment_receive' });
   };
@@ -377,10 +382,12 @@ function PaymentsReceivedToolbarV2Root({
               <Upload className="mr-2 h-4 w-4" aria-hidden />
               {intl.get('import')}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleExportBtnClick}>
-              <Download className="mr-2 h-4 w-4" aria-hidden />
-              {intl.get('export')}
-            </DropdownMenuItem>
+            {canExport && (
+              <DropdownMenuItem onClick={handleExportBtnClick}>
+                <Download className="mr-2 h-4 w-4" aria-hidden />
+                {intl.get('export')}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleCustomizeBtnClick}>
               <Settings2 className="mr-2 h-4 w-4" aria-hidden />

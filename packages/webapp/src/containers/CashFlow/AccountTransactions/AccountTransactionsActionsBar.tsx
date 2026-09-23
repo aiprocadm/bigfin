@@ -52,6 +52,7 @@ import {
 import { DialogsName } from '@/constants/dialogs';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 function AccountTransactionsActionsBar({
   // #withDialogActions
@@ -116,6 +117,10 @@ function AccountTransactionsActionsBar({
     history.push(`/cashflow-accounts/${accountId}/import`);
   };
   // Кнопка «Экспорт» была мёртвой — без обработчика (С2 карты v14).
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403, поэтому кнопку не показываем.
+  const canExport = useCanExport();
+
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'bank_transaction' });
   };
@@ -247,12 +252,14 @@ function AccountTransactionsActionsBar({
             icon={<Icon icon="print-16" iconSize={16} />}
             text={<T id={'print'} />}
           />
-          <Button
-            className={Classes.MINIMAL}
-            icon={<Icon icon="file-export-16" iconSize={16} />}
-            text={<T id={'export'} />}
-            onClick={handleExportBtnClick}
-          />
+          {canExport && (
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="file-export-16" iconSize={16} />}
+              text={<T id={'export'} />}
+              onClick={handleExportBtnClick}
+            />
+          )}
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="file-import-16" iconSize={16} />}
@@ -309,11 +316,13 @@ function AccountTransactionsActionsBar({
                   icon={<Icon icon="print-16" iconSize={16} />}
                   text={<T id={'print'} />}
                 />
-                <MenuItem
-                  icon={<Icon icon="file-export-16" iconSize={16} />}
-                  text={<T id={'export'} />}
-                  onClick={handleExportBtnClick}
-                />
+                {canExport && (
+                  <MenuItem
+                    icon={<Icon icon="file-export-16" iconSize={16} />}
+                    text={<T id={'export'} />}
+                    onClick={handleExportBtnClick}
+                  />
+                )}
                 <MenuItem
                   icon={<Icon icon="file-import-16" iconSize={16} />}
                   text={<T id={'import'} />}

@@ -16,6 +16,7 @@ import {
   useSalesTaxLiabilitySummaryCsvExport,
   useSalesTaxLiabilitySummaryXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import { useSalesByItemsContext } from '../SalesByItems/SalesByItemProvider';
 
 /**
@@ -35,6 +36,7 @@ export function SalesTaxLiabilitySummaryLoadingBar() {
  * @returns {JSX.Element}
  */
 export function SalesTaxLiabilityExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -110,6 +112,12 @@ export function SalesTaxLiabilityExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

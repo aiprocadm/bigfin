@@ -34,6 +34,18 @@ export const useAbilitiesFilter = () => {
  * Вне поставщика прав (экран входа, тесты) — считаем «можно»: там этих
  * запросов не бывает, а ломать их молча хуже.
  */
+/**
+ * Можно ли человеку выгружать данные таблицей (FT-082 ТЗ-3).
+ *
+ * Сервер отвечает 403 на любой Excel/CSV без права «Выгрузка данных» —
+ * кнопку, которая заведомо закончится отказом, не показываем. PDF (печать)
+ * этим правом не закрыт: это документ, а не унос базы.
+ */
+export const useCanExport = (): boolean => {
+  const ability = React.useContext(DirectAbilityContext) as any;
+  return !ability || ability.can('Run', 'Export');
+};
+
 export const useCanViewMoney = (): boolean => {
   const ability = React.useContext(DirectAbilityContext) as any;
   return !ability || ability.can('View', 'Cashflow');

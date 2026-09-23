@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import {
   ReportNumberFormatPopover,
   type ReportNumberFormatValues,
@@ -54,13 +55,21 @@ export function FinancialReportToolbar({
   onCustomizeClick,
   onRefreshClick,
   onPrintClick,
-  onXlsxExportClick,
-  onCsvExportClick,
+  onXlsxExportClick: onXlsxExportClickProp,
+  onCsvExportClick: onCsvExportClickProp,
   numberFormat,
   onNumberFormatSubmit,
   numberFormatDisabled,
   children,
 }: FinancialReportToolbarProps) {
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него сервер
+  // ответит 403 и витрина покажет общий экран «нет доступа». Поэтому пункты
+  // XLSX/CSV прячем здесь же, даже если отчёт их передал. Печать (PDF)
+  // этим правом не закрыта.
+  const canExport = useCanExport();
+  const onXlsxExportClick = canExport ? onXlsxExportClickProp : undefined;
+  const onCsvExportClick = canExport ? onCsvExportClickProp : undefined;
+
   const hasMoreMenu = Boolean(
     onPrintClick || onXlsxExportClick || onCsvExportClick,
   );

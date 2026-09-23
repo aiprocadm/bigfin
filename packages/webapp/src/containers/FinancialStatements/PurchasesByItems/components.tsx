@@ -17,6 +17,7 @@ import {
   usePurchasesByItemsCsvExport,
   usePurchasesByItemsXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 /**
  * Purchases by items progress loading bar.
@@ -36,6 +37,7 @@ export function PurchasesByItemsLoadingBar() {
  * @returns {JSX.Element}
  */
 export const PurchasesByItemsExportMenu = () => {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = { isCloseButtonShown: true, timeout: 2000 };
@@ -101,6 +103,12 @@ export const PurchasesByItemsExportMenu = () => {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

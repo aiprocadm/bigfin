@@ -21,6 +21,7 @@ import {
   useCashFlowStatementCsvExport,
   useCashFlowStatementXlsxExport,
 } from '@/hooks/query';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 import FinancialLoadingBar from '../FinancialLoadingBar';
 
 import { dynamicColumns } from './dynamicColumns';
@@ -89,6 +90,7 @@ export function CashFlowStatementAlerts() {
  * @returns {JSX.Element}
  */
 export function CashflowSheetExportMenu() {
+  const canExport = useCanExport();
   // Ключ уведомления: до первого показа его нет.
   const toastKey = useRef<string | null>(null);
   const commonToastConfig = {
@@ -162,6 +164,12 @@ export function CashflowSheetExportMenu() {
   const handleXlsxExportBtnClick = () => {
     xlsxExport();
   };
+
+  // Без права «Выгрузка данных» сервер ответит 403 (FT-082 ТЗ-3) —
+  // пунктов XLSX/CSV не показываем. Проверка — после всех хуков.
+  if (!canExport) {
+    return null;
+  }
 
   return (
     <Menu>

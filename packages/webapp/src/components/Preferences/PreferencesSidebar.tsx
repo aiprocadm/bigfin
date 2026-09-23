@@ -4,6 +4,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { FormattedMessage as T } from '@/components';
 import { PreferencesMenu } from '@/constants/preferencesMenu';
+import { permissionAllows } from '@/components/Dashboard/permissionAllows';
+// Прямой путь, а не сборный '@/components' — как в useCanExport.
+import { AbilityContext } from '@/components/Dashboard/DashboardAbilityProvider';
 import { cn } from '@/lib/cn';
 import PreferencesSidebarContainer from './PreferencesSidebarContainer';
 
@@ -15,6 +18,12 @@ import '@/style/pages/Preferences/Sidebar.scss';
 export default function PreferencesSidebar() {
   const history = useHistory();
   const location = useLocation();
+  const ability = React.useContext(AbilityContext);
+
+  // Пункт с пометкой права показываем, только если право есть. Вне
+  // поставщика прав (тесты) — показываем всё, как useCanExport.
+  const itemAllowed = (item: { permission?: Parameters<typeof permissionAllows>[1] }) =>
+    !ability || permissionAllows(ability, item.permission);
 
   return (
     <PreferencesSidebarContainer>
@@ -29,7 +38,7 @@ export default function PreferencesSidebar() {
               {intl.get(section.titleId)}
             </div>
 
-            {section.items.map((item) => {
+            {section.items.filter(itemAllowed).map((item) => {
               const Icon = item.icon;
               const active = item.href === location.pathname;
               return (

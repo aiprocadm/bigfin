@@ -21,6 +21,7 @@ import {
   CashflowAction,
   PreferencesAbility,
   TaxRateAction,
+  ExportAction,
 } from '@/constants/abilityOption';
 
 /**
@@ -589,6 +590,12 @@ export const SidebarMenu = [
         href: '/onec-export',
         type: ISidebarMenuItemType.Link,
         feature: Features.OnecExport,
+        // Выгрузка в 1С — унос данных: без права «Выгрузка данных» сервер
+        // ответит 403 (FT-082 ТЗ-3), и пункт вёл бы в тупик.
+        permission: {
+          subject: AbilitySubject.Export,
+          ability: ExportAction.Run,
+        },
       },
       {
         text: <T id={'sidebar.zenmoney'} />,

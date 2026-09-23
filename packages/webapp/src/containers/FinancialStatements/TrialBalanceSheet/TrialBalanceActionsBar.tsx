@@ -20,6 +20,7 @@ import { compose, saveInvoke } from '@/utils';
 import { useTrialBalanceSheetContext } from './TrialBalanceProvider';
 import { TrialBalanceSheetExportMenu } from './components';
 import { DialogsName } from '@/constants/dialogs';
+import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
 function TrialBalanceActionsBar({
   // #withTrialBalance
@@ -35,6 +36,9 @@ function TrialBalanceActionsBar({
   numberFormat,
   onNumberFormatSubmit,
 }: any) {
+  // Выгрузка таблицей — отдельное право (FT-082 ТЗ-3): без него кнопку
+  // «Экспорт» не показываем. Печать (PDF) этим правом не закрыта.
+  const canExport = useCanExport();
   const { refetchSheet, isLoading } = useTrialBalanceSheetContext();
 
   // Handle filter toggle click.
@@ -108,18 +112,20 @@ function TrialBalanceActionsBar({
           text={<T id={'print'} />}
           onClick={handlePrintBtnClick}
         />
-        <Popover
-          content={<TrialBalanceSheetExportMenu />}
-          interactionKind={PopoverInteractionKind.CLICK}
-          placement="bottom-start"
-          minimal
-        >
-          <Button
-            className={Classes.MINIMAL}
-            icon={<Icon icon="file-export-16" iconSize={16} />}
-            text={<T id={'export'} />}
-          />
-        </Popover>
+        {canExport && (
+          <Popover
+            content={<TrialBalanceSheetExportMenu />}
+            interactionKind={PopoverInteractionKind.CLICK}
+            placement="bottom-start"
+            minimal
+          >
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="file-export-16" iconSize={16} />}
+              text={<T id={'export'} />}
+            />
+          </Popover>
+        )}
       </NavbarGroup>
     </DashboardActionsBar>
   );

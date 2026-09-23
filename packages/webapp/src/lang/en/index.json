@@ -3791,6 +3791,8 @@
   "export_data.description": "All organization data as one Excel workbook: invoices, bills, contacts, items, transactions and catalogs — one sheet per list.",
   "export_data.button": "Export everything (xlsx)",
   "export_data.done": "The organization data file has been downloaded.",
+  "export_right.no_access.title": "No permission to export data",
+  "export_right.no_access.description": "Downloading spreadsheets and export files requires the \"Data export\" permission. The organization owner can grant it in the role settings.",
   "interface_mode.description": "Business mode hides bookkeeping screens (manual journals, ledgers, trial balance, period locking). Accountant mode shows everything.",
   "interface_mode.business": "Business",
   "interface_mode.accountant": "Accountant",

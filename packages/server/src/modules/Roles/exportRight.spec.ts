@@ -10,6 +10,7 @@ import { asksForSpreadsheet } from './utils/exportRight';
 import { ReportsAction } from '@/modules/FinancialStatements/types/Report.types';
 import { ExportController } from '@/modules/Export/Export.controller';
 import { OnecExportController } from '@/modules/OnecExport/OnecExport.controller';
+import { ImportController } from '@/modules/Import/Import.controller';
 import { BalanceSheetStatementController } from '@/modules/FinancialStatements/modules/BalanceSheet/BalanceSheet.controller';
 import { staffRolePermissions } from '@/database/tenant/seeds/core/20210812121909_seed_roles_permissions';
 
@@ -69,6 +70,10 @@ describe('право «Выгрузка данных»', () => {
     expect(run(BalanceSheetStatementController, handler, [READ_BALANCE, EXPORT], 'application/xlsx')()).toBe(true);
     // Право выгрузки не заменяет право на сам отчёт.
     expect(run(BalanceSheetStatementController, handler, [EXPORT], 'application/xlsx')).toThrow(ForbiddenException);
+  });
+
+  it('образец для импорта — таблица без данных организации, право не нужно', () => {
+    expect(run(ImportController, 'downloadImportSample', [], 'application/xlsx')()).toBe(true);
   });
 
   it('владелец («можно всё») выгружает без отдельной галочки', () => {

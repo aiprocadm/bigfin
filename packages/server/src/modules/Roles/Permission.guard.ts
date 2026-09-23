@@ -15,6 +15,7 @@ import { AbilitySubject, ExportAction } from './Roles.types';
 import {
   asksForSpreadsheet,
   EXPORT_NOT_ALLOWED_MESSAGE,
+  NOT_DATA_EXPORT_KEY,
 } from './utils/exportRight';
 
 /**
@@ -39,8 +40,13 @@ export class PermissionGuard implements CanActivate {
     // Таблица (Excel, CSV) — это унос данных, и на него нужно отдельное
     // право поверх права на просмотр (FT-082 ТЗ-3). Проверка здесь, а не в
     // каждом отчёте: новый отчёт не должен открыть выгрузку молча.
+    const notDataExport = this.reflector.getAllAndOverride<boolean>(
+      NOT_DATA_EXPORT_KEY,
+      [context.getHandler(), context.getClass()],
+    );
     if (
       ability &&
+      !notDataExport &&
       asksForSpreadsheet(request.headers?.accept) &&
       !ability.can(ExportAction.Run, AbilitySubject.Export)
     ) {

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
+import { ImportBatchesService } from '@/modules/BankingTransactions/commands/ImportBatches.service';
 import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
 import { CreateUncategorizedTransactionService } from '@/modules/BankingCategorize/commands/CreateUncategorizedTransaction.service';
 import { UncategorizedBankTransaction } from '@/modules/BankingTransactions/models/UncategorizedBankTransaction';
@@ -18,6 +19,8 @@ export class Import1CStatementService {
   constructor(
     private readonly uow: UnitOfWork,
     private readonly createUncategorized: CreateUncategorizedTransactionService,
+    // Пакет импорта (FT-043 ТЗ-3).
+    private readonly importBatches: ImportBatchesService,
 
     @Inject(UncategorizedBankTransaction.name)
     private readonly uncategorizedModel: TenantModelProxy<
@@ -43,12 +46,18 @@ export class Import1CStatementService {
     ourAccountNumber: string,
     currencyCode: string,
     buffer: Buffer,
+    fileName?: string,
   ): Promise<Import1CResult> {
     const text = decodeStatementBuffer(buffer);
     const parsed = parse1CStatement(text);
     const ourAccount = ourAccountNumber || parsed.headerAccount;
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      // Один импорт — один пакет: по нему его можно откатить (FT-043).
+      const importBatchId = await this.importBatches.open(
+        { source: 'file', accountId, fileName: fileName ?? null },
+        trx,
+      );
       let imported = 0;
       // Честный итог: раздельно по причинам (И1 карты v12).
       let duplicates = 0;
@@ -66,9 +75,7 @@ export class Import1CStatementService {
         }
 
         const externalId = dedupeKey(buildExternalId(doc));
-        const exists = await this.uncategorizedModel()
-          .query(trx)
-          .findOne({ accountId, externalId });
+        const exists = await this.importBatches.isDuplicate(accountId, externalId, trx);
 
         if (exists) {
           duplicates++;
@@ -84,6 +91,7 @@ export class Import1CStatementService {
         await this.createUncategorized.create(
           {
             date: doc.date,
+            importBatchId,
             accountId,
             amount,
             currencyCode,
@@ -98,6 +106,7 @@ export class Import1CStatementService {
 
         imported++;
       }
+      await this.importBatches.close(importBatchId, imported, trx);
 
       return {
         imported,

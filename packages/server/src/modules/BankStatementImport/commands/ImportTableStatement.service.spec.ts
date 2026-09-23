@@ -31,9 +31,17 @@ function makeDeps(existing: any[] = []) {
   };
   const uow = { withTransaction: (fn: any) => fn({} as any) };
 
+  // Пакеты импорта (FT-043): дубль ищется по тем же строкам.
+  const importBatches = ((model: any) => ({
+  open: async () => 1,
+  close: async () => undefined,
+  isDuplicate: async (accountId: number, externalId: string) =>
+    Boolean(await model().query().findOne({ accountId, externalId })),
+}))(uncategorizedModel);
   const service = new ImportTableStatementService(
     uow as any,
     createUncategorized as any,
+    importBatches as any,
     uncategorizedModel as any,
   );
   return { service, rows, createUncategorized };

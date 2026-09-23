@@ -36,6 +36,10 @@ export class BankTransaction extends TenantBaseModel {
   contactId?: number;
   /** Направление (FT-030 ТЗ-3). */
   projectId?: number | null;
+  /** Корзина (FT-042 ТЗ-3): когда, кем и почему удалена. */
+  deletedAt?: Date | string | null;
+  deletedBy?: number | null;
+  deleteReason?: string | null;
   userId: number;
 
   publishedAt: Date;
@@ -148,6 +152,16 @@ export class BankTransaction extends TenantBaseModel {
        */
       notCategorized(query) {
         query.whereNull('cashflowTransactions.uncategorizedTransactionId');
+      },
+
+      /** Не в корзине (FT-042 ТЗ-3). */
+      notDeleted(query) {
+        query.whereNull('cashflowTransactions.deletedAt');
+      },
+
+      /** В корзине (FT-042 ТЗ-3). */
+      deleted(query) {
+        query.whereNotNull('cashflowTransactions.deletedAt');
       },
 
       /**

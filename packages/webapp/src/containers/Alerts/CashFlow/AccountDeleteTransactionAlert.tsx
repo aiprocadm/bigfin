@@ -8,7 +8,7 @@ import { DRAWERS } from '@/constants/drawers';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
-import { useDeleteCashflowTransaction } from '@/hooks/query';
+import { useMoveToTrash } from '@/hooks/query/bankingTrash';
 import { compose } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
 
@@ -48,12 +48,11 @@ function AccountDeleteTransactionAlertRoot({
   WithAlertStoreConnectProps &
   WithAlertActionsProps &
   WithDrawerActionsProps) {
-  // Легаси-хук мутации без типов — уточняем сигнатуру локально.
-  const { mutateAsync: deleteTransactionMutate, isLoading } =
-    useDeleteCashflowTransaction({}) as unknown as {
-      mutateAsync: (id?: number | string) => Promise<unknown>;
-      isLoading: boolean;
-    };
+  // Удаление — в корзину (FT-042 ТЗ-3): из отчётов уходит сразу, вернуть
+  // можно 90 дней. Безвозвратно удаляет только владелец — из корзины.
+  const { mutateAsync: moveToTrash, isLoading } = useMoveToTrash();
+  const deleteTransactionMutate = (id?: number | string) =>
+    moveToTrash([{ kind: 'cashflow', id: Number(id) }]);
   const referenceId = payload?.referenceId;
 
   // Отмена: закрываем алерт по имени (redux).
@@ -66,7 +65,7 @@ function AccountDeleteTransactionAlertRoot({
     deleteTransactionMutate(referenceId)
       .then(() => {
         AppToaster.show({
-          message: intl.get('cash_flow_transaction.delete.alert_message'),
+          message: intl.get('cash_flow_transaction.delete.trashed'),
           intent: Intent.SUCCESS,
         });
         closeDrawer(DRAWERS.CASHFLOW_TRNASACTION_DETAILS);
@@ -81,9 +80,7 @@ function AccountDeleteTransactionAlertRoot({
     <ConfirmDialog
       open={Boolean(isOpen)}
       title={intl.get('cash_flow_transaction.delete.title')}
-      description={intl.getHTML(
-        'cash_flow_transaction_once_delete_this_transaction_you_will_able_to_restore_it',
-      )}
+      description={intl.get('cash_flow_transaction.delete.to_trash')}
       confirmLabel={intl.get('delete')}
       intent="danger"
       loading={isLoading}

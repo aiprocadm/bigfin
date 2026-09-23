@@ -60,6 +60,7 @@ import { OnecExportModule } from '../OnecExport/OnecExport.module';
 import { OnecImportModule } from '../OnecImport/OnecImport.module';
 import { AcquiringModule } from '../Acquiring/Acquiring.module';
 import { ZenmoneyImportModule } from '../ZenmoneyImport/ZenmoneyImport.module';
+import { BankReconciliationModule } from '../BankReconciliation/BankReconciliation.module';
 import { VatAnalysisModule } from '../VatAnalysis/VatAnalysis.module';
 import { RuPrintFormsModule } from '../RuPrintForms/RuPrintForms.module';
 import { FinancialRatiosModule } from '../FinancialRatios/FinancialRatios.module';
@@ -274,6 +275,8 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     OnecImportModule,
     AcquiringModule,
     ZenmoneyImportModule,
+    // Сверка с банком и уборка корзины (FT-040…FT-042 ТЗ-3).
+    BankReconciliationModule,
     VatAnalysisModule,
     RuPrintFormsModule,
     FinancialRatiosModule,

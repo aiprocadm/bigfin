@@ -31,6 +31,8 @@ export class GetRecognizedTransactionsService {
           q.withGraphFetched('recognizedTransaction.assignAccount');
           q.withGraphFetched('recognizedTransaction.bankRule');
           q.whereNotNull('recognizedTransactionId');
+          // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+          q.modify('notDeleted');
 
           // Exclude the excluded transactions.
           q.modify('notExcluded');

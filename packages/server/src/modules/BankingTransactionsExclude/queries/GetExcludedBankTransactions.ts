@@ -38,6 +38,8 @@ export class GetExcludedBankTransactionsService {
       .query()
       .onBuild((q) => {
         q.modify('excluded');
+        // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+        q.modify('notDeleted');
         q.orderBy('date', 'DESC');
 
         if (_query.accountId) {

@@ -87,6 +87,8 @@ export class RecognizeTranasctionsService {
         .onBuild((query) => {
           query.modify('notRecognized');
           query.modify('notCategorized');
+          // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+          query.modify('notDeleted');
 
           // Filter the transactions based on the given criteria.
           if (transactionsCriteria?.batch) {

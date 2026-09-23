@@ -17,6 +17,12 @@ export class UncategorizedBankTransaction extends TenantBaseModel {
   readonly plaidTransactionId!: string;
   readonly recognizedTransactionId!: number;
   readonly excludedAt: Date;
+  /** Корзина (FT-042 ТЗ-3). */
+  readonly deletedAt: Date | string | null;
+  readonly deletedBy: number | null;
+  readonly deleteReason: string | null;
+  /** Пакет импорта (FT-043 ТЗ-3). */
+  readonly importBatchId: number | null;
   readonly pending: boolean;
   readonly categorizeRefId!: number;
   readonly categorizeRefType!: string;
@@ -120,6 +126,16 @@ export class UncategorizedBankTransaction extends TenantBaseModel {
        */
       notExcluded(query) {
         query.whereNull('excluded_at');
+      },
+
+      /** Не в корзине (FT-042 ТЗ-3). */
+      notDeleted(query) {
+        query.whereNull('uncategorized_cashflow_transactions.deleted_at');
+      },
+
+      /** В корзине (FT-042 ТЗ-3). */
+      deleted(query) {
+        query.whereNotNull('uncategorized_cashflow_transactions.deleted_at');
       },
 
       /**

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
+import { ImportBatchesService } from '@/modules/BankingTransactions/commands/ImportBatches.service';
 import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
 import { CreateUncategorizedTransactionService } from '@/modules/BankingCategorize/commands/CreateUncategorizedTransaction.service';
 import { UncategorizedBankTransaction } from '@/modules/BankingTransactions/models/UncategorizedBankTransaction';
@@ -35,6 +36,8 @@ export class ImportTableStatementService {
   constructor(
     private readonly uow: UnitOfWork,
     private readonly createUncategorized: CreateUncategorizedTransactionService,
+    // Пакет импорта (FT-043 ТЗ-3).
+    private readonly importBatches: ImportBatchesService,
 
     @Inject(UncategorizedBankTransaction.name)
     private readonly uncategorizedModel: TenantModelProxy<
@@ -75,18 +78,24 @@ export class ImportTableStatementService {
     const parsed = parseTableStatement(buffer, fileName);
 
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      // Один импорт — один пакет: по нему его можно откатить (FT-043).
+      const importBatchId = await this.importBatches.open(
+        { source: 'file', accountId, fileName },
+        trx,
+      );
       let imported = 0;
       // Честный итог (И1 карты v12): дубли и нераспознанные строки — раздельно.
       let duplicates = 0;
 
       for (const row of parsed.rows) {
-        if (await this.exists(accountId, row.externalId, trx)) {
+        if (await this.importBatches.isDuplicate(accountId, row.externalId, trx)) {
           duplicates += 1;
           continue;
         }
         await this.createUncategorized.create(
           {
             date: row.date,
+            importBatchId,
             accountId,
             amount: row.amount,
             currencyCode: currencyCode || 'RUB',
@@ -100,6 +109,7 @@ export class ImportTableStatementService {
         );
         imported += 1;
       }
+      await this.importBatches.close(importBatchId, imported, trx);
       const unparsed = parsed.skipped ?? 0;
       return {
         imported,
@@ -116,9 +126,8 @@ export class ImportTableStatementService {
     externalId: string,
     trx?: Knex.Transaction,
   ): Promise<boolean> {
-    const found = await this.uncategorizedModel()
-      .query(trx)
-      .findOne({ accountId, externalId });
-    return !!found;
+    // Предпросмотр ничего не меняет в базе: строки, удалённые откатом,
+    // не чистятся, а просто не считаются дублями (FT-043).
+    return this.importBatches.isDuplicate(accountId, externalId, trx, { purge: false });
   }
 }

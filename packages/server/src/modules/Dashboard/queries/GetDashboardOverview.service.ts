@@ -276,6 +276,8 @@ export class GetDashboardOverviewService {
         .where('categorized', false)
         .modify('notExcluded')
         .modify('notPending')
+        // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+        .modify('notDeleted')
         .resultSize();
 
       return Number(rows ?? 0);

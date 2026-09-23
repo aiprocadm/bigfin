@@ -10,6 +10,7 @@
  */
 import { Test, TestingModule } from '@nestjs/testing';
 import { Import1CStatementService } from './commands/Import1CStatement.service';
+import { ImportBatchesService } from '@/modules/BankingTransactions/commands/ImportBatches.service';
 import { CreateUncategorizedTransactionService } from '@/modules/BankingCategorize/commands/CreateUncategorizedTransaction.service';
 import { UncategorizedBankTransaction } from '@/modules/BankingTransactions/models/UncategorizedBankTransaction';
 import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
@@ -163,6 +164,16 @@ describe('Import1CStatementService', () => {
         {
           provide: UncategorizedBankTransaction.name,
           useValue: uncategorizedModelFn,
+        },
+        // Пакеты импорта (FT-043): дубль ищется по тем же строкам.
+        {
+          provide: ImportBatchesService,
+          useValue: ((model: any) => ({
+  open: async () => 1,
+  close: async () => undefined,
+  isDuplicate: async (accountId: number, externalId: string) =>
+    Boolean(await model().query().findOne({ accountId, externalId })),
+}))(() => uncategorizedModelFn()),
         },
       ],
     }).compile();

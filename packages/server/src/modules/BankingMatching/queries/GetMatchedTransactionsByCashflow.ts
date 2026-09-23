@@ -32,6 +32,8 @@ export class GetMatchedTransactionsByCashflow extends GetMatchedTransactionsByTy
     const transactions = await this.bankTransactionModel()
       .query()
       .onBuild((q) => {
+        // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+        q.modify('notDeleted');
         // Not matched to bank transaction.
         q.withGraphJoined('matchedBankTransaction');
         q.whereNull('matchedBankTransaction.id');

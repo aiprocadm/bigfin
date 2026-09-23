@@ -46,6 +46,8 @@ export class GetOnecExportService {
     const txns = await this.bankTransactionModel()
       .query()
       .where('cashflowAccountId', accountId)
+      // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+      .modify('notDeleted')
       .where('date', '>=', from)
       .where('date', '<=', to)
       .orderBy('date', 'asc');

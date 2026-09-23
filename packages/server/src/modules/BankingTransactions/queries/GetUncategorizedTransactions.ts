@@ -49,6 +49,8 @@ export class GetUncategorizedTransactions {
             q.where('accountId', accountId);
           }
           q.where('categorized', false);
+          // Корзина (FT-042 ТЗ-3): удалённое не показывается и не считается.
+          q.modify('notDeleted');
 
           q.modify('notExcluded');
           q.modify('notPending');

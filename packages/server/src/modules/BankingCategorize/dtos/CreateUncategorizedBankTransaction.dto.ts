@@ -1,6 +1,10 @@
 import { IsBoolean, IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UncategorizedBankTransactionDto {
+  /** Пакет импорта (FT-043 ТЗ-3): по нему импорт откатывается целиком. */
+  @IsOptional()
+  importBatchId?: number;
+
   @IsDateString()
   date: Date | string;
 

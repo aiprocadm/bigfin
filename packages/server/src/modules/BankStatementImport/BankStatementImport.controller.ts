@@ -82,6 +82,8 @@ export class BankStatementImportController {
       accountNumber,
       currencyCode || 'RUB',
       file.buffer,
+      // Имя файла — в историю импорта (FT-043 ТЗ-3).
+      file.originalname,
     );
   }
   @Post(':accountId/import/table/preview')

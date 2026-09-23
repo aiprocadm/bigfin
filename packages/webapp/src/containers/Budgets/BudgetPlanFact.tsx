@@ -1,4 +1,5 @@
 import React from 'react';
+import { BudgetUsageWidget } from './BudgetPlanningPanels';
 import intl from 'react-intl-universal';
 import { Button } from '@/components/ui/button';
 import { useBudgetPlanFact } from '@/hooks/query/budgets';
@@ -47,6 +48,8 @@ export function BudgetPlanFact({
 
   return (
     <div className="flex flex-col gap-3">
+      {/* «Освоено X из Y» по расходам (FT-055 ТЗ-3). */}
+      <BudgetUsageWidget usage={(data as any)?.expense_usage ?? (data as any)?.expenseUsage} />
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-3 text-sm">
           {COLUMN_KEYS.map((key) => {

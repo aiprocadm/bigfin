@@ -55,6 +55,7 @@ import { BudgetLine } from '@/modules/Budgets/models/BudgetLine.model';
 import { DebtRepaymentPlan } from '@/modules/Debts/models/DebtRepaymentPlan.model';
 import { DebtRepaymentInstallment } from '@/modules/Debts/models/DebtRepaymentInstallment.model';
 import { PaymentRequest } from '@/modules/PaymentRequests/models/PaymentRequest.model';
+import { PaymentRequestInstallment } from '@/modules/PaymentRequests/models/PaymentRequestInstallment.model';
 import { Deal } from '@/modules/Deals/models/Deal.model';
 import { DealStage } from '@/modules/Deals/models/DealStage.model';
 import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocationRule.model';
@@ -132,6 +133,8 @@ const models = [
   DebtRepaymentPlan,
   DebtRepaymentInstallment,
   PaymentRequest,
+  // Плановые оплаты заявки (FT-053 ТЗ-3, D18).
+  PaymentRequestInstallment,
   Deal,
   DealStage,
   CostAllocationRule,

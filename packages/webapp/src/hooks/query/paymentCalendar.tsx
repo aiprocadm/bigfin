@@ -25,6 +25,10 @@ export interface PlannedOperationValues {
     interval: number;
     endDate?: string;
   } | null;
+  /** Автоподтверждение фактом (FT-052 ТЗ-3). */
+  autoConfirm?: boolean;
+  matchExactAmount?: boolean;
+  matchAnyContact?: boolean;
 }
 
 export type EditPlannedOperationArgs = [number | string, PlannedOperationValues];
@@ -155,3 +159,44 @@ export function usePlannedOperationsTruncated(query?: any, props?: any) {
     },
   );
 }
+
+/**
+ * Календарь матрицей «план / факт» (FT-050 ТЗ-3): плановый остаток
+ * накапливается от факта на начало.
+ */
+export function useCalendarMatrix(query: Record<string, unknown>, props?: any) {
+  return useRequestQuery(
+    [t.PAYMENT_CALENDAR_FORECAST, 'matrix', query],
+    { method: 'get', url: 'payment-calendar/matrix', params: query },
+    { select: (res: any) => res.data, defaultData: null, ...props },
+  );
+}
+
+/** «Что можно перенести» до разрыва (FT-051 ТЗ-3). */
+export function useGapScenarios(query: Record<string, unknown>, props?: any) {
+  return useRequestQuery(
+    [t.PAYMENT_CALENDAR_FORECAST, 'gap-scenarios', query],
+    { method: 'get', url: 'payment-calendar/gap-scenarios', params: query },
+    { select: (res: any) => res.data, defaultData: null, ...props },
+  );
+}
+
+/** Прогноз после переноса — без сохранения (FT-051 ТЗ-3). */
+export function useWhatIf() {
+  const apiRequest = useApiRequest();
+  return useMutation((body: { moves: Array<{ plannedOperationId: number; date: string }>; horizonDays?: number }) =>
+    apiRequest.post('payment-calendar/what-if', body).then((res: any) => res.data),
+  );
+}
+
+/** «Перенести» разовый план на другую дату (FT-051 ТЗ-3). */
+export function useReschedulePlannedOperation() {
+  const client = useQueryClient();
+  const apiRequest = useApiRequest();
+  return useMutation(
+    ({ id, plannedDate }: { id: number; plannedDate: string }) =>
+      apiRequest.post(`payment-calendar/planned-operations/${id}/reschedule`, { plannedDate }).then((res: any) => res.data),
+    { onSuccess: () => commonInvalidate(client) },
+  );
+}
+

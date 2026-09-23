@@ -16,6 +16,8 @@ import { BudgetsApplication } from './Budgets.application';
 import { CreateBudgetDto, EditBudgetDto } from './dtos/Budget.dto';
 import { UpsertBudgetLinesDto } from './dtos/UpsertBudgetLines.dto';
 import { GetBudgetPlanFactQueryDto } from './dtos/GetBudgetPlanFactQuery.dto';
+import { BudgetAutofillDto, BudgetCashPlanQueryDto } from './dtos/BudgetPlanning.dto';
+import { BudgetPlanningService } from './queries/BudgetPlanning.service';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
@@ -35,7 +37,30 @@ import { PreferencesAction } from '@/modules/Settings/Settings.types';
 @UseGuards(FeatureGuard, AuthorizationGuard, PermissionGuard)
 @RequireFeature(Features.BUDGETS)
 export class BudgetsController {
-  constructor(private readonly application: BudgetsApplication) {}
+  constructor(
+    private readonly application: BudgetsApplication,
+    private readonly planning: BudgetPlanningService,
+  ) {}
+
+  @Get(':id/cash-plan')
+  @ApiOperation({ summary: 'Денежный план по месяцам с привязкой остатка к факту или плану (FT-056).' })
+  cashPlan(@Param('id', ParseIntPipe) id: number, @Query() query: BudgetCashPlanQueryDto) {
+    return this.planning.cashPlan(id, query.scenario, query.anchor as any);
+  }
+
+  @Post(':id/autofill/preview')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'Предпросмотр автозаполнения бюджета из истории (FT-054).' })
+  autofillPreview(@Param('id', ParseIntPipe) id: number, @Body() body: BudgetAutofillDto) {
+    return this.planning.autofillPreview(id, body);
+  }
+
+  @Post(':id/autofill')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'Заполнить бюджет по прошлому году с коэффициентом (FT-054).' })
+  autofill(@Param('id', ParseIntPipe) id: number, @Body() body: BudgetAutofillDto) {
+    return this.planning.autofillApply(id, body);
+  }
 
   @Get()
   @ApiOperation({ summary: 'List budgets.' })

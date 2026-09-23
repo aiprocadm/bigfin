@@ -80,6 +80,11 @@ export class MaterializePlannedOperationService {
       } as unknown as CreateBankTransactionDto);
 
     await this.advancePlan(op, date);
+    // План помнит операцию, которая его исполнила (FT-052 ТЗ-3): «исполнен
+    // вот этим» видно в плане, и второй факт его уже не закроет.
+    await this.operationModel()
+      .query()
+      .patchAndFetchById(op.id, { matchedTransactionId: Number((transaction as any).id) } as any);
 
     return transaction;
   }

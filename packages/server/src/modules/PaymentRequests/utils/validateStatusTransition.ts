@@ -3,6 +3,8 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { ERRORS } from '../constants';
 
 const ALLOWED: Record<string, string[]> = {
+  // Черновик (FT-053 ТЗ-3) отправляют на согласование или отменяют.
+  draft: ['pending', 'cancelled'],
   pending: ['approved', 'rejected', 'cancelled'],
   approved: ['cancelled'],
   rejected: [],

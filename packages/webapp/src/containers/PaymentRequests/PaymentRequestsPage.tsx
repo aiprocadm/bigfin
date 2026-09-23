@@ -16,15 +16,22 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
-import { usePaymentRequestsTruncated } from '@/hooks/query/paymentRequests';
+import {
+  usePaymentRequestsTotals,
+  usePaymentRequestsTruncated,
+  useSubmitPaymentRequest,
+} from '@/hooks/query/paymentRequests';
+import { formattedAmount } from '@/utils';
 import { ListTruncated } from '@/components/ui/list-truncated';
 
-type StatusFilter = '' | 'pending' | 'approved' | 'rejected' | 'cancelled';
+type StatusFilter = '' | 'draft' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
 const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 
 const STATUS_TABS: { key: StatusFilter; label: string }[] = [
   { key: '', label: 'payment_requests.filter.all' },
+  // Черновики (FT-053 ТЗ-3).
+  { key: 'draft', label: 'payment_requests.status.draft' },
   { key: 'pending', label: 'payment_requests.status.pending' },
   { key: 'approved', label: 'payment_requests.status.approved' },
   { key: 'rejected', label: 'payment_requests.status.rejected' },
@@ -46,13 +53,18 @@ export default function PaymentRequestsPage() {
   const approve = useApprovePaymentRequest({});
   const reject = useRejectPaymentRequest({});
   const cancel = useCancelPaymentRequest({});
+  const submit = useSubmitPaymentRequest();
+
+  // С2 карты v49. Список не молчит о том, что показал не всё. Хук стоит ДО
+  // раннего выхода: раньше он вызывался после него, и при выключении модуля
+  // число хуков менялось между отрисовками — React падает на таком.
+  const { data: truncated } = usePaymentRequestsTruncated(status ? { status } : {});
+  // Итоги по каждой валюте (FT-053 ТЗ-3).
+  const { data: totals } = usePaymentRequestsTotals(status ? { status } : {});
 
   if (!featureCan('payment_requests')) return <ModuleDisabled />;
 
   const rows: any[] = requests ?? [];
-
-  // С2 карты v49. Список не молчит о том, что показал не всё.
-  const { data: truncated } = usePaymentRequestsTruncated(status ? { status } : {});
 
   const act = async (mutation: any, id: number, okKey: string) => {
     try {
@@ -86,6 +98,19 @@ export default function PaymentRequestsPage() {
           </Button>
         ))}
       </div>
+
+      {(totals ?? []).length > 0 && (
+        <div className="flex flex-wrap gap-4 text-sm text-text-secondary">
+          {(totals ?? []).map((total: any) => (
+            <span key={total.currencyCode ?? total.currency_code}>
+              {intl.get('payment_requests.totals', {
+                amount: formattedAmount(total.amount, total.currencyCode ?? total.currency_code),
+                count: total.count,
+              })}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="flex flex-col divide-y rounded-control border">
         {rows.length === 0 && (
@@ -134,7 +159,12 @@ export default function PaymentRequestsPage() {
                   </Button>
                 </>
               )}
-              {(r.status === 'pending' || r.status === 'approved') && (
+              {r.status === 'draft' && (
+                <Button size="sm" onClick={() => act(submit, r.id, 'payment_requests.submitted_ok')}>
+                  {intl.get('payment_requests.action.submit')}
+                </Button>
+              )}
+              {(r.status === 'draft' || r.status === 'pending' || r.status === 'approved') && (
                 <Button
                   size="sm"
                   variant="ghost"

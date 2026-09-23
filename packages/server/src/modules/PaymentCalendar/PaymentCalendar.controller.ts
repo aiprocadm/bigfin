@@ -22,6 +22,14 @@ import {
 } from './dtos/PlannedOperation.dto';
 import { GetPlannedOperationsQueryDto } from './dtos/GetPlannedOperationsQuery.dto';
 import { GetPaymentCalendarQueryDto } from './dtos/GetPaymentCalendarQuery.dto';
+import {
+  CalendarMatrixQueryDto,
+  GapScenariosQueryDto,
+  ReschedulePlannedOperationDto,
+  WhatIfDto,
+} from './dtos/PlanningScenarios.dto';
+import { GetCalendarMatrixService } from './queries/GetCalendarMatrix.service';
+import { GapScenariosService } from './queries/GapScenarios.service';
 import { FeatureGuard } from '@/modules/Features/Feature.guard';
 import { RequireFeature } from '@/modules/Features/RequireFeature.decorator';
 import { Features } from '@/common/types/Features';
@@ -45,7 +53,46 @@ export class PaymentCalendarController {
     private readonly application: PaymentCalendarApplication,
     private readonly tenancyContext: TenancyContext,
     private readonly accountsCashGaps: GetAccountsCashGapsService,
+    private readonly calendarMatrix: GetCalendarMatrixService,
+    private readonly gapScenarios: GapScenariosService,
   ) {}
+
+  private async tenantId(): Promise<number> {
+    const metadata: any = await this.tenancyContext.getTenantMetadata();
+    return metadata?.tenantId;
+  }
+
+  @Get('matrix')
+  @ApiOperation({ summary: 'Календарь матрицей «план / факт» с накопительным плановым остатком (FT-050).' })
+  async getMatrix(@Query() query: CalendarMatrixQueryDto) {
+    return this.calendarMatrix.matrix(await this.tenantId(), {
+      fromDate: query.fromDate,
+      toDate: query.toDate,
+      granularity: (query.granularity ?? 'month') as any,
+      groupBy: (query.groupBy ?? 'articles') as any,
+      accountId: query.accountId,
+    });
+  }
+
+  @Get('gap-scenarios')
+  @ApiOperation({ summary: 'Что можно перенести до разрыва и к какому дню он исчезнет (FT-051).' })
+  async getGapScenarios(@Query() query: GapScenariosQueryDto) {
+    return this.gapScenarios.scenarios(await this.tenantId(), query.horizonDays, query.accountId);
+  }
+
+  @Post('what-if')
+  @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
+  @ApiOperation({ summary: 'Прогноз после переноса платежей — без сохранения (FT-051).' })
+  async whatIf(@Body() body: WhatIfDto) {
+    return this.gapScenarios.whatIf(await this.tenantId(), body.moves, body.horizonDays, body.accountId);
+  }
+
+  @Post('planned-operations/:id/reschedule')
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
+  @ApiOperation({ summary: 'Перенести разовый план на другую дату (FT-051).' })
+  reschedule(@Param('id', ParseIntPipe) id: number, @Body() body: ReschedulePlannedOperationDto) {
+    return this.gapScenarios.reschedule(id, body.plannedDate);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Payment calendar forecast for a horizon.' })

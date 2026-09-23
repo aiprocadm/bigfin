@@ -17,8 +17,13 @@ export interface PaymentRequestValues {
   contactId?: number | null;
   accountId?: number | null;
   branchId?: number | null;
-  dueDate: string;
+  dueDate?: string;
   description?: string;
+  // FT-053 ТЗ-3: документ, обоснование, оплаты частями, черновик.
+  documentUrl?: string;
+  justification?: string;
+  installments?: Array<{ dueDate: string; amount: number; accountId?: number }>;
+  asDraft?: boolean;
 }
 
 const invalidate = (client: QueryClient) => {
@@ -104,4 +109,26 @@ export function usePaymentRequestsTruncated(query?: any, props?: any) {
       ...props,
     },
   );
+}
+
+/** Итоги по каждой валюте (FT-053 ТЗ-3) — из того же ответа, что список. */
+export function usePaymentRequestsTotals(query?: any, props?: any) {
+  return useRequestQuery(
+    [t.PAYMENT_REQUESTS, query],
+    { method: 'get', url: 'payment-requests', params: query },
+    {
+      select: (res: any) => (res?.data?.totals ?? []) as Array<{ currency_code?: string; currencyCode?: string; amount: number; count: number }>,
+      defaultData: [],
+      ...props,
+    },
+  );
+}
+
+/** Черновик → на согласование (FT-053 ТЗ-3). */
+export function useSubmitPaymentRequest() {
+  const client = useQueryClient();
+  const apiRequest = useApiRequest();
+  return useMutation((id: number) => apiRequest.post(`payment-requests/${id}/submit`).then((res: any) => res.data), {
+    onSuccess: () => invalidate(client),
+  });
 }

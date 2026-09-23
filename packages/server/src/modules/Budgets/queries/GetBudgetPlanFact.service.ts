@@ -10,6 +10,7 @@ import { PlanFactResponse, PlanFactRow } from '../Budgets.interfaces';
 import { computeVariance } from '../utils/computeVariance';
 import { computeBudgetPace } from '../utils/computeBudgetPace';
 import { ERRORS } from '../constants';
+import { expenseUsage } from '../utils/budgetPlanning';
 
 @Injectable()
 export class GetBudgetPlanFactService {
@@ -115,6 +116,8 @@ export class GetBudgetPlanFactService {
       period: `${query.fromDate}..${query.toDate}`,
       rows,
       pace,
+      // «Освоено X из Y» по расходам с уровнем для цвета (FT-055 ТЗ-3).
+      expenseUsage: expenseUsage(rows as any[]),
     };
   }
 }

@@ -16,7 +16,8 @@ export class GetPaymentRequestService {
    * Одна заявка по id (или ServiceError, если не найдена).
    */
   public async getPaymentRequest(id: number) {
-    const request = await this.requestModel().query().findById(id);
+    // С плановыми оплатами (FT-053 ТЗ-3).
+    const request = await this.requestModel().query().findById(id).withGraphFetched('installments');
     if (!request) throw new ServiceError(ERRORS.PAYMENT_REQUEST_NOT_FOUND);
     return request;
   }

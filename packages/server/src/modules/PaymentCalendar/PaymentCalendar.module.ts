@@ -13,6 +13,9 @@ import { BankingTransactionsModule } from '@/modules/BankingTransactions/Banking
 import { GetPlannedOperationsService } from './queries/GetPlannedOperations.service';
 import { GetPaymentCalendarForecastService } from './queries/GetPaymentCalendarForecast.service';
 import { GetAccountsCashGapsService } from './queries/GetAccountsCashGaps.service';
+import { GetCalendarMatrixService } from './queries/GetCalendarMatrix.service';
+import { GapScenariosService } from './queries/GapScenarios.service';
+import { AutoConfirmPlansOnFactSubscriber } from './subscribers/AutoConfirmPlansOnFact';
 import { FeaturesModule } from '@/modules/Features/Features.module';
 
 @Module({
@@ -25,6 +28,11 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
   ],
   controllers: [PaymentCalendarController],
   providers: [
+    // Матрица «план / факт» и сценарий переноса (FT-050, FT-051 ТЗ-3).
+    GetCalendarMatrixService,
+    GapScenariosService,
+    // Автоподтверждение плана фактом (FT-052 ТЗ-3).
+    AutoConfirmPlansOnFactSubscriber,
     PaymentCalendarApplication,
     CommandPlannedOperationValidatorService,
     CreatePlannedOperationService,

@@ -108,3 +108,28 @@ export function useDeleteBudget(
     { onSuccess: () => invalidate(client), ...props },
   );
 }
+
+/** Денежный план по месяцам с привязкой остатка (FT-056 ТЗ-3). */
+export function useBudgetCashPlan(id: number | undefined, query: Record<string, unknown>, props?: any) {
+  return useRequestQuery(
+    [t.BUDGETS, 'cash-plan', id, query],
+    { method: 'get', url: `budgets/${id}/cash-plan`, params: query },
+    { select: (res: any) => res.data, defaultData: null, enabled: !!id, ...props },
+  );
+}
+
+/** Автозаполнение бюджета из истории: предпросмотр и запись (FT-054 ТЗ-3). */
+export function useBudgetAutofill() {
+  const client = useQueryClient();
+  const api: any = useApiRequest();
+  const preview = useMutation(({ id, body }: { id: number; body: Record<string, unknown> }) =>
+    api.post(`budgets/${id}/autofill/preview`, body).then((res: any) => res.data),
+  );
+  const apply = useMutation(
+    ({ id, body }: { id: number; body: Record<string, unknown> }) =>
+      api.post(`budgets/${id}/autofill`, body).then((res: any) => res.data),
+    { onSuccess: () => invalidate(client) },
+  );
+  return { preview, apply };
+}
+

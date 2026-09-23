@@ -22,6 +22,8 @@ import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 import { usePlannedOperationsTruncated } from '@/hooks/query/paymentCalendar';
 import { ListTruncated } from '@/components/ui/list-truncated';
+import { CalendarMatrixView } from './CalendarMatrixView';
+import { GapScenariosPanel } from './GapScenariosPanel';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -75,6 +77,8 @@ export default function PaymentCalendarPage() {
   const [source, setSource] = React.useState<'cashflow' | 'pnl'>('cashflow');
   const todayRef = React.useRef<HTMLDivElement | null>(null);
   const [showForm, setShowForm] = React.useState(false);
+  // Второй взгляд на те же деньги — матрица «план / факт» (FT-050 ТЗ-3).
+  const [view, setView] = React.useState<'list' | 'matrix'>('list');
   const [editing, setEditing] = React.useState<PlannedOperation | undefined>();
 
   const fromDate = moment().format('YYYY-MM-DD');
@@ -184,12 +188,16 @@ export default function PaymentCalendarPage() {
       </div>
 
       {gap && (
-        <div className="sticky top-0 z-10 rounded-control bg-red-50 px-4 py-2 text-red-700">
-          ⚠{' '}
-          {intl.get('payment_calendar.gap_warning', {
-            days: gap.daysFromStart,
-            amount: formatOrganizationMoney(gap.amount),
-          })}
+        <div className="sticky top-0 z-10 flex flex-col gap-2 rounded-control bg-red-50 px-4 py-2 text-red-700">
+          <span>
+            ⚠{' '}
+            {intl.get('payment_calendar.gap_warning', {
+              days: gap.daysFromStart,
+              amount: formatOrganizationMoney(gap.amount),
+            })}
+          </span>
+          {/* «Что можно перенести» (FT-051 ТЗ-3). */}
+          <GapScenariosPanel />
         </div>
       )}
       <div className="flex items-center justify-between">
@@ -200,6 +208,16 @@ export default function PaymentCalendarPage() {
             телефоне не помещаются: ряд занимал 544 px при экране 390.
             Переносим (И2 карты v33). */}
         <div className="flex flex-wrap items-center gap-2">
+          {(['list', 'matrix'] as const).map((mode) => (
+            <Button
+              key={mode}
+              variant={view === mode ? 'primary' : 'secondary'}
+              size="sm"
+              onClick={() => setView(mode)}
+            >
+              {intl.get(`payment_calendar.view.${mode}`)}
+            </Button>
+          ))}
           {(['week', 'month', 'quarter'] as const).map((h) => (
             <Button
               key={h}
@@ -266,7 +284,9 @@ export default function PaymentCalendarPage() {
       )}
       {truncated && <ListTruncated shown={days.length} />}
 
-      <div className="flex flex-col">
+      {view === 'matrix' && <CalendarMatrixView accountId={accountId} />}
+
+      <div className={view === 'matrix' ? 'hidden' : 'flex flex-col'}>
         {byPeriods
           ? periods.map((period: any) => (
               /* Якорь текущего периода: к нему возвращает «На сегодня». */

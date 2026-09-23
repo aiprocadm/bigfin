@@ -1,4 +1,6 @@
 import React from 'react';
+import { autoConfirmHint } from './autoConfirmHint';
+import { useAutoCompleteContacts } from '@/hooks/query/contacts';
 import intl from 'react-intl-universal';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -70,10 +72,22 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
       frequency: operation?.recurrence?.frequency ?? 'monthly',
       interval: operation?.recurrence?.interval ?? 1,
       endDate: operation?.recurrence?.endDate ?? '',
+      autoConfirm: !!operation?.autoConfirm,
+      matchExactAmount: !!operation?.matchExactAmount,
+      matchAnyContact: !!operation?.matchAnyContact,
     },
   });
 
   const repeat = form.watch('repeat');
+  const autoConfirm = form.watch('autoConfirm');
+  const hint = autoConfirmHint({
+    accountId: form.watch('accountId'),
+    contactId: form.watch('contactId'),
+    amount: form.watch('amount'),
+    plannedDate: form.watch('plannedDate'),
+    matchAnyContact: form.watch('matchAnyContact'),
+  });
+  const { data: contacts } = useAutoCompleteContacts();
   const direction = form.watch('direction');
 
   // Income articles for inflows, expense articles for outflows.
@@ -94,6 +108,9 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
       accountId: values.accountId ?? undefined,
       contactId: values.contactId ?? undefined,
       description: values.description || undefined,
+      autoConfirm: !!values.autoConfirm,
+      matchExactAmount: !!values.matchExactAmount,
+      matchAnyContact: !!values.matchAnyContact,
       recurrence: values.repeat
         ? {
             frequency: values.frequency ?? 'monthly',
@@ -262,6 +279,35 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
                 </FormItem>
               )}
             />
+            {/* Контрагент: без него план не подтвердится фактом автоматически
+                (FT-052 ТЗ-3), если не отмечено «с любым контрагентом». */}
+            <FormField
+              control={form.control}
+              name="contactId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{intl.get('payment_calendar.field.contact')}</FormLabel>
+                  <FormControl>
+                    <select
+                      className={selectClassName}
+                      value={field.value == null ? '' : String(field.value)}
+                      onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    >
+                      <option value="">—</option>
+                      {((contacts ?? []) as any[]).map((contact) => (
+                        <option key={contact.id} value={contact.id}>
+                          {contact.display_name ?? contact.displayName}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="description"
@@ -277,6 +323,46 @@ export function PlannedOperationDialog({ operation, onDone, onCancel }: Props) {
                 </FormItem>
               )}
             />
+            {/* Автоподтверждение фактом (FT-052 ТЗ-3). */}
+            <div className="flex flex-col gap-2 rounded-control border p-3 text-sm">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={!!autoConfirm}
+                  onChange={(e) => form.setValue('autoConfirm', e.target.checked)}
+                />
+                <span>{intl.get('payment_calendar.auto_confirm.title')}</span>
+              </label>
+              {autoConfirm && (
+                <>
+                  <label className="flex items-center gap-2 pl-6">
+                    <input
+                      type="checkbox"
+                      checked={!!form.watch('matchExactAmount')}
+                      onChange={(e) => form.setValue('matchExactAmount', e.target.checked)}
+                    />
+                    <span>{intl.get('payment_calendar.auto_confirm.exact_amount')}</span>
+                  </label>
+                  <label className="flex items-center gap-2 pl-6">
+                    <input
+                      type="checkbox"
+                      checked={!!form.watch('matchAnyContact')}
+                      onChange={(e) => form.setValue('matchAnyContact', e.target.checked)}
+                    />
+                    <span>{intl.get('payment_calendar.auto_confirm.any_contact')}</span>
+                  </label>
+                  <p className={hint.ready ? 'text-success' : 'text-warning'}>
+                    {hint.ready
+                      ? intl.get('payment_calendar.auto_confirm.ready')
+                      : intl.get('payment_calendar.auto_confirm.missing', {
+                          fields: hint.missing
+                            .map((field) => intl.get(`payment_calendar.auto_confirm.field.${field}`))
+                            .join(', '),
+                        })}
+                  </p>
+                </>
+              )}
+            </div>
             <FormField
               control={form.control}
               name="repeat"

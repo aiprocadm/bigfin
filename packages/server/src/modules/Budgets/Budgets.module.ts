@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BudgetPlanningService } from './queries/BudgetPlanning.service';
 import { TenancyDatabaseModule } from '@/modules/Tenancy/TenancyDB/TenancyDB.module';
 import { ManagementArticlesModule } from '@/modules/ManagementArticles/ManagementArticles.module';
 import { BudgetsController } from './Budgets.controller';
@@ -26,6 +27,8 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
     GetBudgetsService,
     GetBudgetService,
     GetBudgetPlanFactService,
+    // Автозаполнение и денежный план (FT-054, FT-056 ТЗ-3).
+    BudgetPlanningService,
   ],
 })
 export class BudgetsModule {}

@@ -28,4 +28,5 @@ export interface PlanFactResponse {
    * выполнено и вывод словами.
    */
   pace?: unknown;
+  expenseUsage?: unknown;
 }

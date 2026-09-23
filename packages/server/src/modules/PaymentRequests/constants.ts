@@ -7,9 +7,12 @@ export const ERRORS = {
   ACCOUNT_NOT_FOUND: 'ACCOUNT_NOT_FOUND',
   INVALID_AMOUNT: 'INVALID_AMOUNT',
   INVALID_STATUS_TRANSITION: 'INVALID_STATUS_TRANSITION',
+  NOT_EDITABLE: 'PAYMENT_REQUEST_NOT_EDITABLE',
 };
 
 export const REQUEST_STATUSES = [
+  // Черновик (FT-053 ТЗ-3): заявку собирают, но на согласование не отдают.
+  'draft',
   'pending',
   'approved',
   'rejected',

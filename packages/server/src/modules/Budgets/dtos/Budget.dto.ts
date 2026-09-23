@@ -30,6 +30,14 @@ class CommandBudgetDto {
   @IsOptional()
   @ApiPropertyOptional({ example: 1, description: 'Branch id (optional)' })
   branchId?: number;
+
+  // Привязка планового остатка (FT-056 ТЗ-3): fact — от факта прошлого
+  // месяца, plan — траектория «если план сбудется».
+  @IsString()
+  @IsIn(['fact', 'plan'])
+  @IsOptional()
+  @ApiPropertyOptional({ enum: ['fact', 'plan'], example: 'fact' })
+  planAnchor?: string;
 }
 
 export class CreateBudgetDto extends CommandBudgetDto {}

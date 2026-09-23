@@ -65,6 +65,8 @@ describe('MaterializePlannedOperationService', () => {
     expect(opQuery.patchAndFetchById).toHaveBeenCalledWith(3, {
       status: 'done',
     });
+    // План помнит операцию, которая его исполнила (FT-052 ТЗ-3).
+    expect(opQuery.patchAndFetchById).toHaveBeenCalledWith(3, { matchedTransactionId: 77 });
     expect(result).toEqual({ id: 77 });
   });
 

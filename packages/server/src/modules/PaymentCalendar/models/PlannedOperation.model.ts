@@ -16,6 +16,12 @@ export class PlannedOperation extends TenantBaseModel {
   sourceId!: number | null;
   recurrence!: Record<string, any> | null;
   description!: string | null;
+  /** Автоподтверждение фактом (FT-052 ТЗ-3). */
+  autoConfirm!: boolean;
+  matchExactAmount!: boolean;
+  matchAnyContact!: boolean;
+  /** Операция, которая исполнила план (последнее вхождение у повтора). */
+  matchedTransactionId!: number | null;
 
   /**
    * Table name.

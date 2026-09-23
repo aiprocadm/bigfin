@@ -113,6 +113,13 @@ export async function up(knex: Knex): Promise<void> {
  * значит осиротить разметку — молча и без возможности восстановить. Поэтому
  * удаляются только статьи, у которых нет ни привязанных счетов, ни детей.
  *
+ * ИМЕНА ПОЛЕЙ В ОТВЕТЕ. Продукт отображает имена в верхний регистр, а ответ
+ * базы обратно — в camelCase: колонка `ARTICLE_ID` приезжает как `articleId`.
+ * Первая версия читала только `article_id` и `ARTICLE_ID`, не видела ни одного
+ * размеченного счёта и ни одного ребёнка — и удаляла ВСЕ балансовые статьи,
+ * включая те, которыми уже размечены операции. Найдено 23.09, когда тенантные
+ * миграции впервые начали накатываться на стенд.
+ *
  * Колонка `seed_key` при откате НЕ УДАЛЯЕТСЯ. Если хоть одна статья
  * осталась, ключ — единственное, по чему её потом узнают: удалив колонку,
  * повторный накат завёл бы дубли.
@@ -136,7 +143,7 @@ export async function down(knex: Knex): Promise<void> {
         await knex('management_article_accounts')
           .whereIn('article_id', ids)
           .distinct('article_id')
-      ).map((row: any) => row.article_id ?? row.ARTICLE_ID)
+      ).map((row: any) => row.articleId ?? row.article_id ?? row.ARTICLE_ID)
     : [];
 
   const mapped = new Set<number>(mappedIds);
@@ -159,7 +166,7 @@ export async function down(knex: Knex): Promise<void> {
     const stillParents = new Set<number>(
       (
         await knex(TABLE).whereIn('parent_id', alive).distinct('parent_id')
-      ).map((row: any) => row.parent_id ?? row.PARENT_ID),
+      ).map((row: any) => row.parentId ?? row.parent_id ?? row.PARENT_ID),
     );
 
     const removable = alive.filter(

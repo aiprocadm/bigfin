@@ -44,33 +44,50 @@ const legs = [
   { accountId: 10, debit: 0, credit: 7000, date: '2026-04-11', referenceType: 'TransferToAccount', referenceId: 5, transactionType: 'TransferToAccount' },
 ];
 
-/** Подделка запроса: применяет `whereIn` и границы дат по-настоящему. */
+/**
+ * Подделка запроса: применяет по-настоящему `whereIn`, границы дат,
+ * отбор по юрлицу (вложенное условие) и `modify`.
+ */
 const makeQuery = (rows: any[]) => {
-  const state: any = { whereIn: null, from: null, to: null };
+  const filters: Array<(row: any) => boolean> = [];
+  const camel = (column: string) =>
+    column.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
   const builder: any = {
     whereIn: (column: string, values: any[]) => {
-      state.whereIn = { column, values };
+      filters.push((row) => values.includes(row[camel(column)]));
       return builder;
     },
-    where: (column: string, op: string, value: any) => {
-      if (column === 'date' && op === '>=') state.from = value;
-      if (column === 'date' && op === '<=') state.to = value;
+    where: (column: any, op?: any, value?: any) => {
+      if (typeof column === 'function') {
+        // Вложенное условие отбора по юрлицу: «в списке ИЛИ пусто».
+        const alternatives: Array<(row: any) => boolean> = [];
+        const sub: any = {
+          whereIn: (c: string, values: any[]) => {
+            alternatives.push((row) => values.includes(row[camel(c)]));
+            return sub;
+          },
+          orWhereNull: (c: string) => {
+            alternatives.push((row) => row[camel(c)] == null);
+            return sub;
+          },
+        };
+        column(sub);
+        filters.push((row) => alternatives.some((keep) => keep(row)));
+        return builder;
+      }
+      if (column === 'date' && op === '>=') filters.push((r) => r.date >= value);
+      if (column === 'date' && op === '<=') filters.push((r) => r.date <= value);
+      return builder;
+    },
+    modify: (fn: any) => {
+      if (typeof fn === 'function') fn(builder);
       return builder;
     },
     withGraphFetched: () => builder,
     orderBy: () => builder,
     limit: () => builder,
-    then: (resolve: any) => {
-      let result = rows;
-      if (state.whereIn) {
-        result = result.filter((row: any) =>
-          state.whereIn.values.includes(row[state.whereIn.column]),
-        );
-      }
-      if (state.from) result = result.filter((r: any) => r.date >= state.from);
-      if (state.to) result = result.filter((r: any) => r.date <= state.to);
-      return resolve(result);
-    },
+    then: (resolve: any) =>
+      resolve(rows.filter((row) => filters.every((keep) => keep(row)))),
   };
   return builder;
 };
@@ -161,5 +178,43 @@ describe('раскрытие суммы по статье', () => {
     await expect(
       buildService().getDrillDownByArticle(999, '2026-04-01', '2026-04-30'),
     ).rejects.toThrow();
+  });
+});
+
+describe('раскрытие ячейки матрицы «Деньги» (FT-004 ТЗ-3)', () => {
+  it('учитывает юрлицо отчёта: операции другого юрлица в панель не попадают', async () => {
+    // Аренда за апрель проведена вторым юрлицом, прочие расходы — первым.
+    const tagged = legs.map((leg) => ({
+      ...leg,
+      legalEntityId: leg.referenceId === 1 ? 2 : 1,
+    }));
+    legs.splice(0, legs.length, ...tagged);
+
+    const service = buildService();
+    const first = await service.getDrillDownByArticle(1, '2026-04-01', '2026-04-30', {
+      legalEntityIds: [1],
+    });
+    const all = await service.getDrillDownByArticle(1, '2026-04-01', '2026-04-30');
+
+    expect(all.total).toBe(35000);
+    expect(first.total).toBe(5000);
+  });
+
+  it('«оплачено деньгами» считается по границам всего отчёта, а не колонки', async () => {
+    // Документ оплачен 31 марта, а в расходы проведён 1 апреля: отчёт за
+    // март–апрель ставит его в апрельскую колонку — панель обязана тоже.
+    legs.push(
+      { accountId: 10, debit: 0, credit: 4000, date: '2026-03-31', referenceType: 'Expense', referenceId: 77, transactionType: 'Expense' } as any,
+      { accountId: 501, debit: 4000, credit: 0, date: '2026-04-01', referenceType: 'Expense', referenceId: 77, transactionType: 'Expense' } as any,
+    );
+    const service = buildService();
+
+    const columnOnly = await service.getDrillDownByArticle(2, '2026-04-01', '2026-04-30');
+    const withReport = await service.getDrillDownByArticle(2, '2026-04-01', '2026-04-30', {
+      reportFrom: '2026-03-01',
+      reportTo: '2026-04-30',
+    });
+
+    expect(withReport.total - columnOnly.total).toBe(4000);
   });
 });

@@ -123,7 +123,16 @@ export function periodIndexOf(
 export interface LoadedRollup {
   articles: any[];
   map: any[];
+  /** Ноги, которые складываются в суммы: с учётом отбора по направлениям. */
   legs: CashRollupLeg[];
+  /**
+   * ВСЕ ноги отрезка — только для признака «оплачено деньгами».
+   *
+   * Направление стоит на ноге статьи, а на денежной ноге его обычно нет.
+   * Отбери мы ноги по направлению ДО признака — денежная нога отпала бы, и
+   * документ, честно оплаченный деньгами, перестал бы им считаться.
+   */
+  allLegs: CashRollupLeg[];
   isCashAccount: (id: number) => boolean;
   mappedAccountIds: Set<number>;
   normalByAccountId: Map<number, string>;
@@ -158,7 +167,7 @@ export class ArticlesCashflowRollupService {
   public async getRollup(query: ArticlesRollupQueryDto) {
     const loaded = await this.load(query);
     const settledKeys = cashSettledReferenceKeys(
-      loaded.legs as any,
+      loaded.allLegs as any,
       loaded.isCashAccount,
     );
 
@@ -219,7 +228,7 @@ export class ArticlesCashflowRollupService {
     } as ArticlesRollupQueryDto);
 
     const settledKeys = cashSettledReferenceKeys(
-      loaded.legs as any,
+      loaded.allLegs as any,
       loaded.isCashAccount,
     );
 
@@ -254,11 +263,17 @@ export class ArticlesCashflowRollupService {
         if (query.fromDate || query.toDate) {
           qb.modify('filterDateRange', query.fromDate, query.toDate);
         }
-        // Подразделения, юрлица, направления — одним общим местом (FT-008).
-        // Отбор стоит ДО определения «оплачено деньгами»: признак считается
-        // по ногам выбранного юрлица, как в бухгалтерском ДДС.
-        applyManagementReportScope(qb, query);
+        // Подразделения и юрлица — одним общим местом (FT-008). Отбор стоит
+        // ДО определения «оплачено деньгами»: признак считается по ногам
+        // выбранного юрлица, как в бухгалтерском ДДС. Направления — ниже,
+        // в памяти: см. `allLegs`.
+        applyManagementReportScope(qb, { ...query, projectsIds: undefined });
       });
+
+    const projectIds = new Set<number>((query.projectsIds ?? []).map(Number));
+    const scopedLegs = projectIds.size
+      ? (legs as any[]).filter((leg) => projectIds.has(Number(leg.projectId)))
+      : (legs as any[]);
 
     const mappedAccountIds = new Set<number>(
       (map as any[]).map((m: any) => m.accountId),
@@ -274,7 +289,8 @@ export class ArticlesCashflowRollupService {
     return {
       articles: articles as any[],
       map: map as any[],
-      legs: legs as any[],
+      legs: scopedLegs,
+      allLegs: legs as any[],
       isCashAccount: (id: number) => cashAccountIds.has(id),
       mappedAccountIds,
       normalByAccountId,

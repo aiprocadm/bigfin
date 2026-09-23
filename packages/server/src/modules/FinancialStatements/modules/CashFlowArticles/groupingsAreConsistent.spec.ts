@@ -140,6 +140,21 @@ describe('шесть группировок отчёта «Деньги» сог
     expect(Math.abs(rent - rentAll)).toBeLessThan(0.01);
   });
 
+  it('отбор по направлению не теряет оплаченные документы (денежная нога без направления)', async () => {
+    // Направление стоит на ноге выручки, а на денежной ноге его нет. Отбери
+    // мы ноги по направлению ДО признака «оплачено деньгами» — денежная нога
+    // отпала бы, и выручка направления обнулилась бы.
+    const filtered = (
+      await service.sheet({ ...RANGE, dateGroup: 'quarter', projectsIds: [10] } as any)
+    ).data;
+    const revenue = tableOf(filtered).rows.get('article-2').values.total;
+    const direction = tableOf(await sheet('directions')).rows.get('inflow-direction-10')
+      .values.total;
+
+    expect(revenue).toBeGreaterThan(0);
+    expect(Math.abs(revenue - direction)).toBeLessThan(0.01);
+  });
+
   it('«Итого» не зависит от масштаба и в группировке по контрагентам', async () => {
     const monthly = tableOf(await sheet('contacts', 'month'), { showEmpty: true }).rows;
     const quarterly = tableOf(await sheet('contacts', 'quarter'), { showEmpty: true }).rows;

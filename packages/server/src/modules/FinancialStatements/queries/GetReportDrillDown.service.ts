@@ -11,6 +11,10 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { formatNumber } from '@/utils/format-number';
 import {
+  applyManagementReportScope,
+  ManagementReportScope,
+} from '@/modules/ManagementArticles/utils/managementReportScope';
+import {
   isCreditNormalAccount,
   reportAccountNet,
 } from './reportAccountNet';
@@ -64,6 +68,15 @@ export interface DrillDownResult {
   isTruncated: boolean;
   transactions: DrillDownRow[];
   currencyCode: string;
+}
+
+/**
+ * Отбор отчёта, из ячейки которого раскрывают сумму (FT-004 ТЗ-3), и
+ * границы всего отчёта — по ним считается признак «оплачено деньгами».
+ */
+export interface DrillDownScope extends ManagementReportScope {
+  reportFrom?: string;
+  reportTo?: string;
 }
 
 /** Сколько строк показываем за раз: длинный список никто не читает целиком. */
@@ -124,6 +137,7 @@ export class GetReportDrillDownService {
     articleId: number,
     fromDate: string,
     toDate: string,
+    scope: DrillDownScope = {},
   ): Promise<DrillDownResult> {
     const article: any = await this.articleModel().query().findById(articleId);
 
@@ -151,7 +165,13 @@ export class GetReportDrillDownService {
       ]),
     );
 
-    const settledKeys = await this.cashSettledKeysOfPeriod(fromDate, toDate);
+    // Признак «оплачено деньгами» — по границам ВСЕГО отчёта и по отбору
+    // без направлений: так же, как его считает сам отчёт (FT-004 ТЗ-3).
+    const settledKeys = await this.cashSettledKeysOfPeriod(
+      scope.reportFrom ?? fromDate,
+      scope.reportTo ?? toDate,
+      { ...scope, projectsIds: undefined },
+    );
     const isSettled = (row: any) =>
       settledKeys.has(`${row.referenceType}:${row.referenceId}`);
 
@@ -160,6 +180,7 @@ export class GetReportDrillDownService {
       .whereIn('accountId', accountIds)
       .where('date', '>=', fromDate)
       .where('date', '<=', toDate)
+      .modify((qb: any) => applyManagementReportScope(qb, scope))
       .withGraphFetched('contact')
       .orderBy('date', 'desc');
 
@@ -278,6 +299,7 @@ export class GetReportDrillDownService {
   private async cashSettledKeysOfPeriod(
     fromDate: string,
     toDate: string,
+    scope: ManagementReportScope = {},
   ): Promise<Set<string>> {
     const cashAccounts: any[] = await this.accountModel()
       .query()
@@ -289,7 +311,8 @@ export class GetReportDrillDownService {
     const legs: any[] = await this.transactionModel()
       .query()
       .where('date', '>=', fromDate)
-      .where('date', '<=', toDate);
+      .where('date', '<=', toDate)
+      .modify((qb: any) => applyManagementReportScope(qb, scope));
 
     return cashSettledReferenceKeys(legs as any, (accountId: number) =>
       cashAccountIds.has(accountId),

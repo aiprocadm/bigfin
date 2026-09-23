@@ -79,6 +79,13 @@ export class ReportChartController {
         query.articleId,
         query.from,
         query.to,
+        {
+          branchesIds: query.branchesIds,
+          legalEntityIds: query.legalEntityIds,
+          projectsIds: query.projectsIds,
+          reportFrom: query.reportFrom,
+          reportTo: query.reportTo,
+        },
       );
     }
 

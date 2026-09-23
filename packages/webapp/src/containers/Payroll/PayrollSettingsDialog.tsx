@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { payrollSettingsSchema, PayrollSettingsFormValues } from './schemas';
 import { usePayrollSettings } from '@/hooks/query/payroll';
+import { useManagementArticles } from '@/hooks/query/managementArticles';
 import { useSaveSettings } from '@/hooks/query/settings';
 import t from '@/hooks/query/types';
 import { MoneyField } from '@/components/ui/money-field';
@@ -39,6 +40,16 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
   const queryClient = useQueryClient();
   const { data: settings, isLoading: settingsLoading } = usePayrollSettings();
   const saveSettings = useSaveSettings({});
+  const { data: articles } = useManagementArticles();
+  // Выплаты — расход: в выборе только расходные статьи.
+  const expenseArticles = React.useMemo(
+    () => ((articles as any[]) ?? []).filter((article) => article.kind === 'expense'),
+    [articles],
+  );
+  const articleId = (raw: unknown) => {
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  };
 
   const form = useForm<PayrollSettingsFormValues>({
     resolver: zodResolver(payrollSettingsSchema),
@@ -48,6 +59,8 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
       contribRate: Number(settings?.contribRate ?? 30),
       mspRate: Number(settings?.mspRate ?? 15),
       mspThreshold: Number(settings?.mspThreshold ?? 40639.5),
+      payrollArticleId: articleId(settings?.payrollArticleId),
+      taxesArticleId: articleId(settings?.taxesArticleId),
     },
   });
 
@@ -63,6 +76,8 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
         contribRate: Number(settings.contribRate ?? 30),
         mspRate: Number(settings.mspRate ?? 15),
         mspThreshold: Number(settings.mspThreshold ?? 40639.5),
+        payrollArticleId: articleId(settings.payrollArticleId),
+        taxesArticleId: articleId(settings.taxesArticleId),
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,6 +92,9 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
           { group: 'payroll', key: 'contrib_rate', value: String(values.contribRate) },
           { group: 'payroll', key: 'msp_rate', value: String(values.mspRate) },
           { group: 'payroll', key: 'msp_threshold', value: String(values.mspThreshold) },
+          // «0» — статья не выбрана: читатель настроек понимает это как «нет».
+          { group: 'payroll', key: 'payroll_article_id', value: String(values.payrollArticleId ?? 0) },
+          { group: 'payroll', key: 'taxes_article_id', value: String(values.taxesArticleId ?? 0) },
         ],
       } as any);
       queryClient.invalidateQueries(t.PAYROLL_SETTINGS);
@@ -220,6 +238,45 @@ export function PayrollSettingsDialog({ onDone, onCancel }: Props) {
                 />
               </>
             )}
+            {(['payrollArticleId', 'taxesArticleId'] as const).map((name) => (
+              <FormField
+                key={name}
+                control={form.control}
+                name={name}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {intl.get(
+                        name === 'payrollArticleId'
+                          ? 'payroll.settings.payroll_article'
+                          : 'payroll.settings.taxes_article',
+                      )}
+                    </FormLabel>
+                    <FormControl>
+                      <select
+                        className={selectClassName}
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(articleId(e.target.value))}
+                        onBlur={field.onBlur}
+                        name={field.name}
+                        ref={field.ref}
+                      >
+                        <option value="">{intl.get('payroll.settings.article_none')}</option>
+                        {expenseArticles.map((article: any) => (
+                          <option key={article.id} value={article.id}>
+                            {article.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <p className="text-muted-foreground text-xs">
+              {intl.get('payroll.settings.articles_hint')}
+            </p>
             <p className="text-muted-foreground text-xs">
               {intl.get('payroll.settings.hint')}
             </p>

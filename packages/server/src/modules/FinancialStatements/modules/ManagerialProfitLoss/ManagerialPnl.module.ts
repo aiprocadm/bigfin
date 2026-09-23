@@ -8,6 +8,8 @@ import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ManagerialPnlController } from './ManagerialPnl.controller';
 import { ManagerialPnlApplication } from './ManagerialPnlApplication';
 import { ManagerialPnlService } from './ManagerialPnlService';
+import { FeaturesModule } from '@/modules/Features/Features.module';
+import { PayrollByEmployeesService } from './PayrollByEmployees.service';
 import { ManagerialPnlSourceService } from './ManagerialPnlSource.service';
 
 /**
@@ -15,12 +17,13 @@ import { ManagerialPnlSourceService } from './ManagerialPnlSource.service';
  * видов счетов. Бухгалтерский ОПиУ остаётся рядом как есть.
  */
 @Module({
-  imports: [FinancialSheetCommonModule, ManagementArticlesModule],
+  imports: [FinancialSheetCommonModule, ManagementArticlesModule, FeaturesModule],
   controllers: [ManagerialPnlController],
   providers: [
     ManagerialPnlApplication,
     ManagerialPnlService,
     ManagerialPnlSourceService,
+    PayrollByEmployeesService,
     TenancyContext,
   ],
 })

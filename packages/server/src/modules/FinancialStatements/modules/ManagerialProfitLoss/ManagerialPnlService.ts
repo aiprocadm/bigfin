@@ -11,6 +11,8 @@ import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
 import { readOrganizationCalendar } from '@/modules/Settings/organizationCalendar';
 import { excludedReferenceTypes, readPnlSources } from './pnlSources';
 import { spreadIndirectCosts } from './spreadIndirect';
+import { expandPayrollByEmployees } from './payrollByEmployees';
+import { PayrollByEmployeesService } from './PayrollByEmployees.service';
 import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocationRule.model';
 import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
@@ -72,6 +74,8 @@ export class ManagerialPnlService {
 
     @Inject(CostAllocationRule.name)
     private readonly ruleModel: TenantModelProxy<typeof CostAllocationRule>,
+
+    private readonly payrollByEmployees: PayrollByEmployeesService,
   ) {}
 
   public async sheet(query: ManagerialPnlQueryDto): Promise<ManagerialPnlSheet> {
@@ -129,6 +133,38 @@ export class ManagerialPnlService {
       total: buildManagerialPnlColumn(loaded.entriesByPeriod.flat(), context),
     };
 
+    // «ФОТ по сотрудникам» (FT-014 ТЗ-3): строка зарплаты раскрывается до
+    // сотрудников из утверждённых расчётов; суммы отчёта не меняются.
+    const payroll = await this.payrollByEmployees.load({
+      settings,
+      periods,
+      basis,
+      group,
+      legalEntityIds: query.legalEntityIds,
+    });
+    let payrollStatus: string = payroll.status;
+    if (payroll.status === 'applied' && payroll.payrollArticleId) {
+      const articleId = payroll.payrollArticleId;
+      const total = expandPayrollByEmployees(
+        data.total,
+        articleId,
+        payroll.byPeriod.flat(),
+        payroll.roster,
+      );
+      data.total = total.column;
+      data.periods = data.periods.map((period, index) => ({
+        ...period,
+        column: expandPayrollByEmployees(
+          period.column,
+          articleId,
+          payroll.byPeriod[index],
+          payroll.roster,
+        ).column,
+      }));
+      // Статье зарплаты не задан ярус — раскрывать нечего, и экран скажет.
+      if (!total.found) payrollStatus = 'no_tier';
+    }
+
     return {
       data,
       query,
@@ -137,6 +173,7 @@ export class ManagerialPnlService {
         pnlSources: sources,
         // Какая база применена (критерий 4 FT-011) и где она оказалась нулевой.
         spread,
+        payrollGrouping: { mode: payroll.mode, status: payrollStatus },
       },
     };
   }

@@ -71,6 +71,9 @@ interface LegalEntityOption {
  * Строится от яруса статьи (`pl_type`), а не от вида счёта: собственник
  * настраивает ярус в карточке статьи, а не в плане счетов.
  */
+
+/** Причины, по которым ФОТ не раскрыт до сотрудников (FT-014 ТЗ-3). */
+const PAYROLL_STATUS_NOTES = ['no_access', 'no_article', 'grouping', 'legal_entity', 'no_tier'];
 export default function ManagerialPnl() {
   const location = useLocation();
   const history = useHistory();
@@ -104,6 +107,7 @@ export default function ManagerialPnl() {
   );
   const { data, isLoading, isFetching, isError, error, refetch } =
     useManagerialPnlTable(serverQuery, { keepPreviousData: true }) as any;
+  const payrollGrouping = data?.meta?.payroll_grouping ?? data?.meta?.payrollGrouping;
   const { data: legalEntities } = useLegalEntities() as {
     data?: LegalEntityOption[];
   };
@@ -318,7 +322,17 @@ export default function ManagerialPnl() {
       )}
 
       {/* Откуда берутся данные (FT-012 ТЗ-3). */}
-      <PnlSourcesPanel sources={data?.meta?.pnl_sources ?? data?.meta?.pnlSources} />
+      <PnlSourcesPanel
+        sources={data?.meta?.pnl_sources ?? data?.meta?.pnlSources}
+        payrollGrouping={payrollGrouping?.mode}
+      />
+      {/* Почему зарплата не раскрыта до сотрудников (FT-014 ТЗ-3). */}
+      {payrollGrouping?.mode === 'employees' &&
+        PAYROLL_STATUS_NOTES.includes(payrollGrouping.status) && (
+          <p className="text-xs text-text-muted">
+            {intl.get(`managerial_pnl.payroll.status.${payrollGrouping.status}`)}
+          </p>
+        )}
 
       {screenState === 'loading' ? (
         <div className="flex flex-col gap-2 rounded-default border border-border p-6">

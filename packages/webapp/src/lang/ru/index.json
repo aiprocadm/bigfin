@@ -5170,5 +5170,14 @@
   "managerial_pnl.spread.toggle": "Распределять косвенные расходы по направлениям",
   "managerial_pnl.spread.base": "База",
   "managerial_pnl.spread.applied": "Общепроизводственные, административные и коммерческие расходы без направления распределены: {base}. Выручка и прямые расходы не распределяются.",
-  "managerial_pnl.spread.zero_base": "База распределения нулевая — косвенные оставлены нераспределёнными."
+  "managerial_pnl.spread.zero_base": "База распределения нулевая — косвенные оставлены нераспределёнными.",
+  "managerial_pnl.payroll.grouping": "Группировка ФОТ",
+  "managerial_pnl.payroll.by_articles": "По статьям",
+  "managerial_pnl.payroll.by_employees": "По сотрудникам",
+  "managerial_pnl.payroll.other": "Остаток статьи вне расчётов зарплаты",
+  "managerial_pnl.payroll.status.no_access": "Модуль «Зарплата» выключен — ФОТ показан по статьям.",
+  "managerial_pnl.payroll.status.no_article": "В настройках зарплаты не выбрана статья — раскрывать до сотрудников нечего.",
+  "managerial_pnl.payroll.status.grouping": "До сотрудников ФОТ раскрывается на вкладке «По статьям»: в расчёте зарплаты нет направления.",
+  "managerial_pnl.payroll.status.legal_entity": "При отборе по юрлицу ФОТ не раскрывается: сотрудник не привязан к юрлицу.",
+  "managerial_pnl.payroll.status.no_tier": "У статьи зарплаты не задан ярус — сначала укажите его в справочнике статей."
 }

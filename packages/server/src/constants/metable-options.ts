@@ -93,6 +93,10 @@ export const SettingsOptions = {
     fixed_assets: { type: 'boolean' },
     taxes: { type: 'boolean' },
   },
+  // Настройки управленческого ОПиУ: группировка ФОТ (FT-014 ТЗ-3).
+  managerial_pnl: {
+    payroll_grouping: { type: 'string' },
+  },
   manual_journals: {
     next_number: {
       type: 'string',

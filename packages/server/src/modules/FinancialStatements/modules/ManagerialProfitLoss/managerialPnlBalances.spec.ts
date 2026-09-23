@@ -3,6 +3,7 @@ import { ArticlesCashflowRollupService, legDate } from '@/modules/ManagementArti
 import { ManagerialPnlService } from './ManagerialPnlService';
 import { ManagerialPnlSourceService } from './ManagerialPnlSource.service';
 import { ManagerialPnlTable } from './ManagerialPnlTable';
+import { PayrollByEmployeesService } from './PayrollByEmployees.service';
 
 /**
  * Управленческий ОПиУ целиком (FT-010 ТЗ-3): служба, настоящие расчёты,
@@ -74,6 +75,70 @@ function makeLegs() {
   return legs;
 }
 const LEGS = makeLegs();
+
+/**
+ * Расчёты зарплаты (FT-014): мартовский утверждён и выплачен в апреле,
+ * майский — черновик и в отчёт не попадает.
+ */
+const RUNS = [
+  { id: 1, periodMonth: '2026-03-01', payDate: '2026-04-05', status: 'approved' },
+  { id: 2, periodMonth: '2026-05-01', payDate: '2026-05-10', status: 'draft' },
+];
+const RUN_LINES = [
+  { runId: 1, employeeId: 20, netAmount: 40000 },
+  { runId: 1, employeeId: 21, netAmount: 30000 },
+  { runId: 2, employeeId: 20, netAmount: 99999 },
+];
+const EMPLOYEES = [
+  { id: 20, fullName: 'Петрова Анна' },
+  { id: 21, fullName: 'Иванов Олег' },
+];
+
+function makePayroll(settings: Record<string, unknown>) {
+  const day = (value: string) => value.slice(0, 10);
+  const runModel = () => ({
+    query: () => {
+      const conditions: Array<(run: any) => boolean> = [];
+      const qb: any = {
+        modify: (name: string) => {
+          if (name === 'approvedOnly') conditions.push((run) => run.status === 'approved');
+          return qb;
+        },
+        where: (field: string, op: string, value: string) => {
+          conditions.push((run) =>
+            op === '>=' ? day(run[field]) >= value : day(run[field]) <= value,
+          );
+          return qb;
+        },
+        then: (resolve: any, reject: any) =>
+          Promise.resolve(RUNS.filter((run) => conditions.every((c) => c(run)))).then(
+            resolve,
+            reject,
+          ),
+      };
+      return qb;
+    },
+  });
+  const lineModel = () => ({
+    query: () => ({
+      whereIn: async (_c: string, ids: number[]) =>
+        RUN_LINES.filter((line) => ids.includes(line.runId)),
+    }),
+  });
+  const employeeModel = () => ({
+    query: () => ({
+      whereIn: (_c: string, ids: number[]) => ({
+        select: async () => EMPLOYEES.filter((e) => ids.includes(e.id)),
+      }),
+    }),
+  });
+  return new PayrollByEmployeesService(
+    { accessible: async () => settings['feature.payroll'] !== false } as any,
+    runModel as any,
+    lineModel as any,
+    employeeModel as any,
+  );
+}
 
 /** Группирует ноги как SQL: счёт × направление × день, в границах дат. */
 function groupedQuery(build: (qb: any) => void) {
@@ -201,10 +266,11 @@ function makeService(settings: Record<string, unknown> = {}) {
     (() => ({ query: () => ({ whereIn: () => ({ select: async () => [{ id: 10, name: 'Кофейня' }] }) }) })) as any,
     (async () => ({
       get: ({ group, key }: { group: string; key: string }) =>
-        group === 'pnl_sources' ? settings[key] : undefined,
+        group === 'pnl_sources' ? settings[key] : settings[`${group}.${key}`],
     })) as any,
     // Правил распределения нет.
     (() => ({ query: async () => [] })) as any,
+    makePayroll(settings),
   );
 }
 
@@ -349,5 +415,71 @@ describe('управленческий ОПиУ: лестница сходитс
 
     expect(revenue.children.map((c) => c.name)).toEqual(['Кофейня', 'Без направления']);
     expect(Math.abs(sum - (revenue.amount ?? 0))).toBeLessThan(0.01);
+  });
+});
+
+describe('ФОТ по сотрудникам (FT-014)', () => {
+  const byEmployees = {
+    'managerial_pnl.payroll_grouping': 'employees',
+    'payroll.payroll_article_id': 5,
+  };
+  const find = (rows: any[], id: string): any => {
+    for (const row of rows) {
+      if (row.id === id) return row;
+      const inner = find(row.children, id);
+      if (inner) return inner;
+    }
+    return undefined;
+  };
+
+  it('по начислению: сотрудники в месяце расчёта, черновик не виден, прибыль не меняется', async () => {
+    const plain = await makeService().sheet({ ...YEAR, dateGroup: 'month' } as any);
+    const sheet = await makeService(byEmployees).sheet({ ...YEAR, dateGroup: 'month' } as any);
+
+    expect(sheet.meta.payrollGrouping).toEqual({ mode: 'employees', status: 'applied' });
+    const march = sheet.data.periods[2].column;
+    expect(find(march.rows, 'article-5-employee-20').amount).toBe(40000);
+    expect(find(march.rows, 'article-5-employee-21').amount).toBe(30000);
+    // Май: расчёт — черновик, поэтому ноль, а не 99 999.
+    expect(find(sheet.data.periods[4].column.rows, 'article-5-employee-20').amount).toBe(0);
+
+    [...sheet.data.periods.map((p) => p.column), sheet.data.total].forEach((column, i) => {
+      const office = find(column.rows, 'article-5');
+      const sum = office.children.reduce((s: number, c: any) => s + c.amount, 0);
+      expect(Math.abs(sum - office.amount)).toBeLessThan(0.01);
+      const before = i < 12 ? plain.data.periods[i].column : plain.data.total;
+      expect(column.tiers).toEqual(before.tiers);
+    });
+    // Сотрудники по алфавиту.
+    expect(find(sheet.data.total.rows, 'article-5').children.map((c: any) => c.name)).toEqual([
+      'Иванов Олег',
+      'Петрова Анна',
+      'Остаток статьи вне расчётов зарплаты',
+    ]);
+  });
+
+  it('по деньгам: сотрудники в месяце выплаты', async () => {
+    const sheet = await makeService(byEmployees).sheet({
+      ...YEAR,
+      dateGroup: 'month',
+      basis: 'cash',
+    } as any);
+    expect(find(sheet.data.periods[2].column.rows, 'article-5-employee-20').amount).toBe(0);
+    expect(find(sheet.data.periods[3].column.rows, 'article-5-employee-20').amount).toBe(40000);
+  });
+
+  it('не раскрывается без модуля «Зарплата», по направлениям и при отборе по юрлицу', async () => {
+    const cases: Array<[Record<string, unknown>, any, string]> = [
+      [{ ...byEmployees, 'feature.payroll': false }, {}, 'no_access'],
+      [byEmployees, { group: 'directions' }, 'grouping'],
+      [byEmployees, { legalEntityIds: [1] }, 'legal_entity'],
+      [{ 'managerial_pnl.payroll_grouping': 'employees' }, {}, 'no_article'],
+      [{}, {}, 'off'],
+    ];
+    for (const [settings, extra, status] of cases) {
+      const sheet = await makeService(settings).sheet({ ...YEAR, dateGroup: 'total', ...extra } as any);
+      expect(sheet.meta.payrollGrouping.status).toBe(status);
+      expect(find(sheet.data.total.rows, 'article-5-employee-20')).toBeUndefined();
+    }
   });
 });

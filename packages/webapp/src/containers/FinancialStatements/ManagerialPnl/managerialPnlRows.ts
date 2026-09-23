@@ -214,5 +214,6 @@ function managerialLabelKey(id: string): string | undefined {
   ]);
   if (LADDER.has(id)) return `managerial_pnl.row.${id}`;
   if (id.endsWith('-direction-none')) return 'cash_flow_articles.no_direction';
+  if (id.endsWith('-employee-other')) return 'managerial_pnl.payroll.other';
   return undefined;
 }

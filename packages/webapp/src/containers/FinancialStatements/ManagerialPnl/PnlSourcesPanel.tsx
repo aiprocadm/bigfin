@@ -3,6 +3,8 @@ import intl from 'react-intl-universal';
 import { useQueryClient } from 'react-query';
 
 import { Checkbox } from '@/components/ui/checkbox';
+import { Features } from '@/constants/features';
+import { useFeatureCan } from '@/hooks/state/feature';
 import { useSaveSettings } from '@/hooks/query/settings';
 import t from '@/hooks/query/types';
 
@@ -28,13 +30,26 @@ export const PNL_SOURCES_WITHOUT_LEDGER = ['payroll', 'taxes'];
  * организации: выключенный модуль перестаёт питать отчёт, проводки при
  * этом не удаляются.
  */
-export function PnlSourcesPanel({ sources }: { sources?: Record<string, boolean> }) {
+export function PnlSourcesPanel({
+  sources,
+  payrollGrouping,
+}: {
+  sources?: Record<string, boolean>;
+  /** Группировка ФОТ (FT-014 ТЗ-3): «articles» или «employees». */
+  payrollGrouping?: string;
+}) {
   const [open, setOpen] = React.useState(false);
   const client = useQueryClient();
   const { mutateAsync: save, isLoading } = useSaveSettings();
+  const { featureCan } = useFeatureCan();
 
   const change = async (key: string, value: boolean) => {
     await save({ options: [{ group: 'pnl_sources', key, value }] });
+    client.invalidateQueries(t.FINANCIAL_REPORT);
+  };
+
+  const changePayrollGrouping = async (value: string) => {
+    await save({ options: [{ group: 'managerial_pnl', key: 'payroll_grouping', value }] });
     client.invalidateQueries(t.FINANCIAL_REPORT);
   };
 
@@ -82,6 +97,22 @@ export function PnlSourcesPanel({ sources }: { sources?: Record<string, boolean>
               </label>
             );
           })}
+          {/* Группировка ФОТ (FT-014 ТЗ-3) — только при модуле «Зарплата»:
+              расчёты зарплаты видит лишь тот, у кого модуль включён. */}
+          {featureCan(Features.Payroll) && (
+            <label className="mt-1 flex flex-wrap items-center gap-2 border-t border-border pt-2 text-sm">
+              {intl.get('managerial_pnl.payroll.grouping')}
+              <select
+                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
+                value={payrollGrouping === 'employees' ? 'employees' : 'articles'}
+                disabled={isLoading}
+                onChange={(event) => changePayrollGrouping(event.target.value)}
+              >
+                <option value="articles">{intl.get('managerial_pnl.payroll.by_articles')}</option>
+                <option value="employees">{intl.get('managerial_pnl.payroll.by_employees')}</option>
+              </select>
+            </label>
+          )}
         </div>
       )}
     </div>

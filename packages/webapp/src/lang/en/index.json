@@ -5170,5 +5170,14 @@
   "managerial_pnl.spread.toggle": "Spread indirect costs across directions",
   "managerial_pnl.spread.base": "Base",
   "managerial_pnl.spread.applied": "Overhead, administrative and selling costs without a direction are spread: {base}. Revenue and direct costs are never spread.",
-  "managerial_pnl.spread.zero_base": "The allocation base is zero — indirect costs are left unallocated."
+  "managerial_pnl.spread.zero_base": "The allocation base is zero — indirect costs are left unallocated.",
+  "managerial_pnl.payroll.grouping": "Payroll grouping",
+  "managerial_pnl.payroll.by_articles": "By articles",
+  "managerial_pnl.payroll.by_employees": "By employees",
+  "managerial_pnl.payroll.other": "Article remainder outside payroll runs",
+  "managerial_pnl.payroll.status.no_access": "The Payroll module is off — payroll is shown by articles.",
+  "managerial_pnl.payroll.status.no_article": "No payroll article is selected in payroll settings — nothing to break down by employees.",
+  "managerial_pnl.payroll.status.grouping": "Payroll breaks down by employees on the \"By articles\" tab: payroll runs have no direction.",
+  "managerial_pnl.payroll.status.legal_entity": "Payroll is not broken down when filtering by legal entity: employees are not linked to one.",
+  "managerial_pnl.payroll.status.no_tier": "The payroll article has no tier — set it in the articles directory first."
 }

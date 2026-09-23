@@ -197,12 +197,15 @@ export class TransactionsTrashService {
    * Удалить окончательно — только из корзины и не в закрытом периоде.
    * Денежная операция уходит обычным путём удаления (подписчики снимут
    * части разбиения и запишут аудит), строки выписки — вслед за ней.
+   *
+   * `trx` — чужая транзакция (например, импорта): стирание тогда
+   * отменится вместе с ней.
    */
-  public async purge(items: TrashItemRef[]) {
+  public async purge(items: TrashItemRef[], trx?: Knex.Transaction) {
     let purged = 0;
     for (const item of items) {
       if (item.kind === 'cashflow') {
-        const transaction: any = await this.bankTransactionModel().query().findById(item.id);
+        const transaction: any = await this.bankTransactionModel().query(trx).findById(item.id);
         if (!transaction) continue;
         if (!transaction.deletedAt) {
           throw new ServiceError(TRASH_ERRORS.NOT_IN_TRASH, 'Окончательно удаляются только операции из корзины', item, HttpStatus.UNPROCESSABLE_ENTITY);
@@ -215,22 +218,27 @@ export class TransactionsTrashService {
             .where('categorizeRefId', item.id)
             .delete();
           await this.deleteCashflow.deleteCashflowTransaction(item.id, tx);
-        });
+        }, trx);
       } else {
-        const row: any = await this.uncategorizedModel().query().findById(item.id);
+        const row: any = await this.uncategorizedModel().query(trx).findById(item.id);
         if (!row) continue;
         if (!row.deletedAt) {
           throw new ServiceError(TRASH_ERRORS.NOT_IN_TRASH, 'Окончательно удаляются только строки из корзины', item, HttpStatus.UNPROCESSABLE_ENTITY);
         }
         if (row.categorized && row.categorizeRefType === 'CashflowTransaction') {
-          await this.purge([{ kind: 'cashflow', id: row.categorizeRefId }]);
+          await this.purge([{ kind: 'cashflow', id: row.categorizeRefId }], trx);
         } else {
-          await this.uncategorizedModel().query().findById(item.id).delete();
+          await this.uncategorizedModel().query(trx).findById(item.id).delete();
         }
       }
       purged += 1;
     }
     return { purged };
+  }
+
+  /** Период даты закрыт — окончательно удалить операцию в нём нельзя. */
+  public isPeriodClosed(date: any) {
+    return this.lockingGuard.isTransactionsLocking(date, TransactionsLockingGroup.Financial);
   }
 
   /**

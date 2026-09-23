@@ -4,10 +4,14 @@ import { ImportBatchesService } from './ImportBatches.service';
 /**
  * Пакеты импорта и откат (FT-043 ТЗ-3) на подделках.
  */
-function makeBatches(lines: any[], batch: any = { id: 5, rolledBackAt: null }) {
+function makeBatches(
+  lines: any[],
+  batch: any = { id: 5, rolledBackAt: null },
+  closedDates: string[] = [],
+) {
   const store = new Map(lines.map((r) => [r.id, { ...r }]));
   const batches = new Map<number, any>([[batch.id, { ...batch }]]);
-  const calls: any = { trashed: [], deleted: [], closed: [] };
+  const calls: any = { trashed: [], purged: [], closed: [] };
 
   const uncategorizedModel = () => ({
     query: () => {
@@ -15,10 +19,6 @@ function makeBatches(lines: any[], batch: any = { id: 5, rolledBackAt: null }) {
       const q: any = {
         findOne: async (where: any) =>
           [...store.values()].find((r) => Object.entries(where).every(([k, v]) => r[k] === v)),
-        deleteById: async (id: number) => {
-          calls.deleted.push(id);
-          store.delete(id);
-        },
         where: (field: string, value: any) => {
           filters.push((r) => r[field] === value);
           return q;
@@ -51,6 +51,12 @@ function makeBatches(lines: any[], batch: any = { id: 5, rolledBackAt: null }) {
       calls.trashed.push({ items, reason, trx });
       return { trashed: items.length };
     },
+    purge: async (items: any[], trx: any) => {
+      calls.purged.push({ items, trx });
+      for (const item of items) store.delete(item.id);
+      return { purged: items.length };
+    },
+    isPeriodClosed: async (date: string) => closedDates.includes(date),
   };
   const uow = { withTransaction: async (fn: any) => fn('tx') };
   const service = new ImportBatchesService(
@@ -69,13 +75,24 @@ describe('пакеты импорта (FT-043)', () => {
     { id: 2, accountId: 1000, externalId: 'b', importBatchId: 5, deletedAt: null, categorized: true },
     { id: 3, accountId: 1000, externalId: 'old', deletedAt: '2026-09-01', deleteReason: 'import_rollback' },
     { id: 4, accountId: 1000, externalId: 'mine', deletedAt: '2026-09-01', deleteReason: 'manual' },
+    {
+      id: 6,
+      accountId: 1000,
+      externalId: 'sorted',
+      date: '2026-08-10',
+      categorized: true,
+      categorizeRefType: 'CashflowTransaction',
+      categorizeRefId: 21,
+      deletedAt: '2026-09-01',
+      deleteReason: 'import_rollback',
+    },
   ];
 
   it('дубль: живая строка — дубль; удалённая откатом — заменяется; удалённая вручную — остаётся дублем', async () => {
     const { service, calls } = makeBatches(rows);
     expect(await service.isDuplicate(1000, 'a')).toBe(true);
-    expect(await service.isDuplicate(1000, 'old')).toBe(false);
-    expect(calls.deleted).toEqual([3]);
+    expect(await service.isDuplicate(1000, 'old', 'trx' as any)).toBe(false);
+    expect(calls.purged).toEqual([{ items: [{ kind: 'bank_line', id: 3 }], trx: 'trx' }]);
     expect(await service.isDuplicate(1000, 'mine')).toBe(true);
     expect(await service.isDuplicate(1000, 'new')).toBe(false);
   });
@@ -83,7 +100,22 @@ describe('пакеты импорта (FT-043)', () => {
   it('предпросмотр ничего не удаляет', async () => {
     const { service, calls } = makeBatches(rows);
     expect(await service.isDuplicate(1000, 'old', undefined, { purge: false })).toBe(false);
-    expect(calls.deleted).toEqual([]);
+    expect(await service.isDuplicate(1000, 'sorted', undefined, { purge: false })).toBe(false);
+    expect(calls.purged).toEqual([]);
+  });
+
+  it('строку успели разнести до отката — она и её операция стираются в транзакции импорта', async () => {
+    // Живой случай стенда: правило разнесло строку, импорт откатили,
+    // тот же файл загрузили снова — строка должна лечь заново.
+    const { service, calls } = makeBatches(rows);
+    expect(await service.isDuplicate(1000, 'sorted', 'trx' as any)).toBe(false);
+    expect(calls.purged).toEqual([{ items: [{ kind: 'bank_line', id: 6 }], trx: 'trx' }]);
+  });
+
+  it('разнесённая строка в закрытом периоде остаётся дублем: операцию там не трогаем', async () => {
+    const { service, calls } = makeBatches(rows, undefined, ['2026-08-10']);
+    expect(await service.isDuplicate(1000, 'sorted', 'trx' as any)).toBe(true);
+    expect(calls.purged).toEqual([]);
   });
 
   it('откат: все живые строки пакета — в корзину одной транзакцией, пакет помечен', async () => {

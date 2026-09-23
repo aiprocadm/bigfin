@@ -22,7 +22,8 @@ export interface StatementOp {
 
 /** Наша операция на счёте: строка выписки или денежная операция без неё. */
 export interface OurLine {
-  kind: 'bank_line' | 'cashflow';
+  /** document — документ другого раздела (оплата счёта, расход, проводка). */
+  kind: 'bank_line' | 'cashflow' | 'document';
   id: number;
   date: string;
   amount: number;
@@ -122,11 +123,12 @@ export function reconcile(
     else unmatched.push(op);
   }
 
-  const deletedUsed = new Set<number>();
+  // Номера строк выписки и операций могут совпасть — различаем по виду.
+  const deletedUsed = new Set<string>();
   const findDeleted = (op: StatementOp) =>
     deleted.find(
       (line) =>
-        !deletedUsed.has(line.id) &&
+        !deletedUsed.has(keyOf(line)) &&
         ((op.externalId && line.externalId === op.externalId) ||
           tripleKey(line.date, line.amount) === tripleKey(op.date, op.amount)),
     );
@@ -134,7 +136,7 @@ export function reconcile(
   return {
     missingHere: unmatched.map((op) => {
       const match = findDeleted(op);
-      if (match) deletedUsed.add(match.id);
+      if (match) deletedUsed.add(keyOf(match));
       return match ? { op, deleted: match } : { op };
     }),
     missingBank: ours.filter((line) => !used.has(keyOf(line))),

@@ -5339,5 +5339,13 @@
   "reconciliation.history_open": "нет у нас: {here}, нет в банке: {bank}",
   "reconciliation.status.running": "идёт",
   "reconciliation.status.done": "готово",
-  "reconciliation.status.failed": "не удалась"
+  "reconciliation.status.failed": "не удалась",
+  "reconciliation.document_type.PaymentReceive": "Оплата от покупателя",
+  "reconciliation.document_type.BillPayment": "Оплата поставщику",
+  "reconciliation.document_type.Expense": "Расход",
+  "reconciliation.document_type.ManualJournal": "Ручная проводка",
+  "reconciliation.document_type.SaleReceipt": "Чек продажи",
+  "reconciliation.document_type.RefundCreditNote": "Возврат покупателю",
+  "reconciliation.document_type.RefundVendorCredit": "Возврат от поставщика",
+  "reconciliation.document_type.other": "Документ другого раздела"
 }

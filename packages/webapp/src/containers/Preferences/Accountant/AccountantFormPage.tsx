@@ -25,6 +25,9 @@ import { compose, transformToForm, transfromToSnakeCase } from '@/utils';
 const defaultFormValues = flatten({
   organization: {
     accountingBasis: 'accrual',
+    weekStartDay: '1',
+    highlightWeekends: true,
+    showWeekdays: false,
   },
   accounts: {
     accountCodeRequired: false,
@@ -75,6 +78,10 @@ function AccountantFormPage({
   ACCOUNT_ID_KEYS.forEach((key) => {
     merged[key] = merged[key] == null ? '' : String(merged[key]);
   });
+  // День начала недели хранится числом, а в выпадающем списке — строкой.
+  merged['organization.weekStartDay'] = String(
+    merged['organization.weekStartDay'] || '1',
+  );
   const initialValues = unflatten(merged) as AccountantFormValues;
 
   const form = useForm<AccountantFormValues>({
@@ -88,6 +95,7 @@ function AccountantFormPage({
     ACCOUNT_ID_KEYS.forEach((key) => {
       flat[key] = flat[key] === '' ? '' : Number(flat[key]);
     });
+    flat['organization.weekStartDay'] = Number(flat['organization.weekStartDay']);
     const options = transferObjectOptionsToArray(
       transfromToSnakeCase(unflatten(flat)),
     );

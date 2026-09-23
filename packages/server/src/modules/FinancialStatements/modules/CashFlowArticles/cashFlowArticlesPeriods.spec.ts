@@ -2,12 +2,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ServiceError } from '@/modules/Items/ServiceError';
-import {
-  ArticlesCashflowRollupService,
-  legDate,
-} from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
-import { CashFlowArticlesService } from './CashFlowArticlesService';
+import { legDate } from '@/modules/ManagementArticles/queries/ArticlesCashflowRollup.service';
 import { CashFlowArticlesTable } from './CashFlowArticlesTable';
+import { LEGS, makeService } from './cashFlowArticlesFixture';
 import { PERIOD_TOO_WIDE_FOR_GRANULARITY } from './periodizeRows';
 
 /**
@@ -20,161 +17,16 @@ import { PERIOD_TOO_WIDE_FOR_GRANULARITY } from './periodizeRows';
  * начало прячет ошибку «забыли прибавить начало».
  */
 
-// Счета: 100 и 101 — денежные; 500 — расход «Аренда», 600 — доход
-// «Выручка», 700 — расход, НЕ привязанный к статье (уходит в «не разнесено»).
-const ACCOUNTS = [
-  { id: 100, accountType: 'bank', accountNormal: 'debit' },
-  { id: 101, accountType: 'cash', accountNormal: 'debit' },
-  { id: 500, accountType: 'expense', accountNormal: 'debit' },
-  { id: 600, accountType: 'income', accountNormal: 'credit' },
-  { id: 700, accountType: 'expense', accountNormal: 'debit' },
-];
-const ARTICLES = [
-  { id: 1, name: 'Расходы', kind: 'expense', parentId: null, sortOrder: 1 },
-  { id: 3, name: 'Аренда', kind: 'expense', parentId: 1, sortOrder: 2 },
-  { id: 2, name: 'Выручка', kind: 'income', parentId: null, sortOrder: 3 },
-];
-const MAP = [
-  { accountId: 500, articleId: 3 },
-  { accountId: 600, articleId: 2 },
-];
-
-/** Повторяемый «случайный» ряд: упавший тест должен падать так же завтра. */
-function prng(seed: number) {
-  let state = seed;
-  return () => {
-    state = (state * 1103515245 + 12345) % 2147483648;
-    return state / 2147483648;
-  };
-}
-
-function makeLegs(count: number) {
-  const random = prng(20260923);
-  const legs: any[] = [];
-  const day0 = new Date('2020-10-01T00:00:00').getTime();
-  const days = 640; // по конец мая 2022
-
-  for (let id = 1; id <= count; id += 1) {
-    const date = new Date(day0 + Math.floor(random() * days) * 86400000);
-    // Июль 2021 оставляем пустым: месяц без операций, но с остатком.
-    if (date.getFullYear() === 2021 && date.getMonth() === 6) continue;
-
-    const amount = Math.round(random() * 100000_00) / 100;
-    const kind = random();
-    const base = { referenceType: 'CashflowTransaction', referenceId: id, date };
-
-    if (kind < 0.4) {
-      legs.push({ ...base, accountId: 100, debit: amount, credit: 0 });
-      legs.push({ ...base, accountId: 600, debit: 0, credit: amount });
-    } else if (kind < 0.75) {
-      legs.push({ ...base, accountId: 500, debit: amount, credit: 0 });
-      legs.push({ ...base, accountId: 100, debit: 0, credit: amount });
-    } else if (kind < 0.85) {
-      legs.push({ ...base, accountId: 700, debit: amount, credit: 0 });
-      legs.push({ ...base, accountId: 100, debit: 0, credit: amount });
-    } else {
-      legs.push({
-        ...base,
-        accountId: 101,
-        debit: amount,
-        credit: 0,
-        transactionType: 'TransferToAccount',
-      });
-      legs.push({
-        ...base,
-        accountId: 100,
-        debit: 0,
-        credit: amount,
-        transactionType: 'TransferFromAccount',
-      });
-    }
-  }
-  return legs;
-}
-
-const LEGS = makeLegs(5000);
-
-/** Мини-исполнитель запроса: понимает ровно те условия, что ставит служба. */
-function runQuery(rows: any[], build: (qb: any) => void) {
-  const filters: Array<(row: any) => boolean> = [];
-  let aggregate = false;
-  const qb: any = {
-    sum: () => {
-      aggregate = true;
-      return qb;
-    },
-    whereIn: (column: string, values: any[]) => {
-      filters.push((row) => values.includes(row[column]));
-      return qb;
-    },
-    where: (column: any, op?: string, value?: any) => {
-      if (typeof column === 'function') return qb; // разрез: в фикстуре не задан
-      const at = (row: any) => legDate(row);
-      if (op === '<') filters.push((row) => at(row) < value);
-      if (op === '<=') filters.push((row) => at(row) <= value);
-      if (op === '>=') filters.push((row) => at(row) >= value);
-      return qb;
-    },
-    modify: (name: string, from?: string, to?: string) => {
-      if (name === 'filterDateRange') {
-        if (from) filters.push((row) => legDate(row) >= from);
-        if (to) filters.push((row) => legDate(row) <= to);
-      }
-      return qb;
-    },
-  };
-  build(qb);
-
-  const found = rows.filter((row) => filters.every((keep) => keep(row)));
-  if (!aggregate) return found;
-
-  return [
-    {
-      debit: found.reduce((sum, row) => sum + Number(row.debit || 0), 0),
-      credit: found.reduce((sum, row) => sum + Number(row.credit || 0), 0),
-    },
-  ];
-}
-
-function makeService() {
-  const accountModel = () => ({
-    query: () => ({
-      whereIn: (column: string, values: any[]) =>
-        Promise.resolve(ACCOUNTS.filter((a: any) => values.includes(a[column]))),
-      onBuild: (build: (qb: any) => void) =>
-        Promise.resolve(runQuery(ACCOUNTS, build)),
-    }),
-  });
-  const accountTransactionModel = () => ({
-    query: () => ({
-      onBuild: (build: (qb: any) => void) =>
-        Promise.resolve(runQuery(LEGS, build)),
-    }),
-  });
-  const rollup = new ArticlesCashflowRollupService(
-    (() => ({
-      query: () => ({ orderBy: () => Promise.resolve(ARTICLES) }),
-    })) as any,
-    (() => ({ query: () => Promise.resolve(MAP) })) as any,
-    accountModel as any,
-    accountTransactionModel as any,
-  );
-  const meta = { meta: async () => ({}) };
-
-  return new CashFlowArticlesService(
-    rollup,
-    meta as any,
-    accountModel as any,
-    accountTransactionModel as any,
-  );
-}
-
 const RANGE = { fromDate: '2021-01-01', toDate: '2022-05-31' };
 const i18n = { t: (key: string) => key } as any;
 
 /** Таблица → «ключ строки → ячейки по ключу колонки». */
 function cellsByRow(data: any, showTotalColumn = true) {
-  const table = new CashFlowArticlesTable(data, i18n, showTotalColumn);
+  const table = new CashFlowArticlesTable(data, i18n, {
+    showTotalColumn,
+    showEmpty: true,
+    showTransfers: true,
+  });
   const columns = table.tableColumns();
   const result = new Map<string, Record<string, number>>();
 

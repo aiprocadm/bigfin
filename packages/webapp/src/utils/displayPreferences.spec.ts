@@ -55,6 +55,25 @@ describe('личные настройки вида', () => {
     expect(getDisplayPreferences().showCents).toBe(false);
   });
 
+  it('сохранение одной галочки не сбрасывает остальные', () => {
+    // Экран настроек и отчёт «Деньги» присылают только изменённое. Раньше
+    // остальные значения в памяти откатывались к умолчаниям: выключил
+    // проценты — и копейки молча вернулись.
+    setDisplayPreferences({ showCents: false });
+    setDisplayPreferences({ showPercent: false });
+
+    expect(getDisplayPreferences().showCents).toBe(false);
+    expect(getDisplayPreferences().showPercent).toBe(false);
+  });
+
+  it('тумблеры отчётов по умолчанию: проценты есть, пустых строк и переводов нет', () => {
+    expect(getDisplayPreferences()).toMatchObject({
+      showPercent: true,
+      showEmptyRows: false,
+      showTransfers: false,
+    });
+  });
+
   it('пустой ответ не ломает настройки', () => {
     setDisplayPreferences(undefined);
 

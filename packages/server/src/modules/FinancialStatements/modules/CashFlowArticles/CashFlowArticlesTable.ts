@@ -9,9 +9,27 @@ import {
   NAME_COLUMN_KEY,
   TOTAL_COLUMN_KEY,
 } from '../../common/ManagerialReportColumns';
-import { CashFlowArticleRow } from './buildCashFlowArticlesReport';
 import { reportValuesByRowKey } from './cashFlowArticlesMatrix';
 import { ICashFlowArticlesData } from './CashFlowArticles.types';
+import { CashGroupNode } from './groupings/cashGroupNodes';
+
+export interface CashFlowArticlesTableOptions {
+  /** Колонка «Итого»; по умолчанию есть. */
+  showTotalColumn?: boolean;
+  /**
+   * Показывать строки, где во всех колонках ноль (FT-005 ТЗ-3). По
+   * умолчанию НЕТ: двадцать шесть нулевых статей заслоняют пять настоящих.
+   */
+  showEmpty?: boolean;
+  /**
+   * Показывать переводы между своими счетами (FT-006 ТЗ-3). По умолчанию
+   * НЕТ: денег у бизнеса они не меняют и на остатки не влияют.
+   */
+  showTransfers?: boolean;
+}
+
+/** Группы и разделы не прячутся никогда, даже пустые: это каркас отчёта. */
+const NEVER_HIDDEN_ROW_TYPES = ['SECTION', 'INFLOW', 'OUTFLOW'];
 
 /**
  * Таблица отчёта «Деньги (ДДС по статьям)» — из неё же делаются CSV, XLSX и
@@ -22,9 +40,10 @@ import { ICashFlowArticlesData } from './CashFlowArticles.types';
  * и не сортируется — файл выглядит правильным и бесполезен (приёмка 4
  * FIN-013). Поэтому сюда попадает необработанное число, а не подпись.
  *
- * МАТРИЦА (FT-001 ТЗ-3): колонка на каждый период и «Итого». Строки строятся
- * по «Итого» — статьи во всех колонках одни и те же, — а значение в каждой
- * колонке находится по устойчивому ключу строки (`article-7`, `net`…).
+ * МАТРИЦА (FT-001, FT-002 ТЗ-3): колонка на каждый период и «Итого»; строки
+ * — в выбранной группировке. Строки строятся по «Итого» — в нём есть все
+ * строки всех колонок, — а значение в каждой колонке находится по
+ * устойчивому ключу строки (`article-7`, `inflow-contact-12`, `net`…).
  */
 export class CashFlowArticlesTable {
   /** Значения строк по колонкам: ключ колонки → ключ строки → число. */
@@ -33,7 +52,7 @@ export class CashFlowArticlesTable {
   constructor(
     private readonly data: ICashFlowArticlesData,
     private readonly i18n: I18nService,
-    private readonly showTotalColumn: boolean = true,
+    private readonly options: CashFlowArticlesTableOptions = {},
   ) {
     const periods = data.periods ?? [];
 
@@ -41,7 +60,7 @@ export class CashFlowArticlesTable {
       key: period.key,
       values: reportValuesByRowKey(period.report),
     }));
-    if (hasTotalColumn(periods.length, showTotalColumn)) {
+    if (hasTotalColumn(periods.length, options.showTotalColumn)) {
       this.values.push({
         key: TOTAL_COLUMN_KEY,
         values: reportValuesByRowKey(data),
@@ -63,7 +82,7 @@ export class CashFlowArticlesTable {
       nameLabel: this.t('cash_flow_articles.column.name', 'Статья'),
       totalLabel: this.t('cash_flow_articles.column.total', 'Итого'),
       periods: this.data.periods ?? [],
-      showTotalColumn: this.showTotalColumn,
+      showTotalColumn: this.options.showTotalColumn,
     });
   }
 
@@ -96,70 +115,57 @@ export class CashFlowArticlesTable {
     return this.values.some((column) => (column.values.get(id) ?? 0) !== 0);
   }
 
-  /** Дерево статей в строки: отступ несёт `level`, а не пробелы в тексте. */
-  private articleRows(rows: CashFlowArticleRow[]): ITableRow[] {
-    return rows.map((row) =>
-      this.row(
-        row.name,
-        'ARTICLE',
-        `article-${row.id}`,
-        this.articleRows(row.children),
-      ),
+  /**
+   * Пустая строка: ноль во всех колонках у неё И у всех потомков.
+   *
+   * Потомков проверяем отдельно: у родителя плюс и минус детей могут
+   * погасить друг друга, и, спрятав его, мы спрятали бы настоящие деньги.
+   */
+  private isEmpty(node: CashGroupNode): boolean {
+    return (
+      !this.anyNonZero(node.id) &&
+      node.children.every((child) => this.isEmpty(child))
     );
   }
 
-  public tableData(): ITableRow[] {
-    const sectionLabels: Record<string, string> = {
-      operating: this.t(
-        'cash_flow_articles.section.operating',
-        'Операционная деятельность',
-      ),
-      investing: this.t(
-        'cash_flow_articles.section.investing',
-        'Инвестиционная деятельность',
-      ),
-      financing: this.t(
-        'cash_flow_articles.section.financing',
-        'Финансовая деятельность',
-      ),
-    };
+  /**
+   * Строки группировки. Пустые прячутся, если не просили иначе; строки
+   * «Без контрагента» / «Без направления» не прячутся никогда — по ним
+   * видно, сколько денег осталось без пометки.
+   */
+  private nodeRows(nodes: CashGroupNode[]): ITableRow[] {
+    return nodes
+      .filter(
+        (node) =>
+          this.options.showEmpty ||
+          node.isNone ||
+          NEVER_HIDDEN_ROW_TYPES.includes(node.rowType) ||
+          !this.isEmpty(node),
+      )
+      .map((node) =>
+        this.row(
+          node.labelKey ? this.t(node.labelKey, node.name) : node.name,
+          node.rowType,
+          node.id,
+          this.nodeRows(node.children),
+        ),
+      );
+  }
 
+  public tableData(): ITableRow[] {
     const rows: ITableRow[] = [
       this.row(
         this.t('cash_flow_articles.opening_balance', 'Остаток на начало'),
         'OPENING',
         'opening',
       ),
+      ...this.nodeRows(this.data.rows ?? []),
     ];
-
-    this.data.sections.forEach((section) => {
-      rows.push(
-        this.row(
-          sectionLabels[section.section],
-          'SECTION',
-          `section-${section.section}`,
-          [
-            this.row(
-              this.t('cash_flow_articles.inflow', 'Поступления'),
-              'INFLOW',
-              `inflow-${section.section}`,
-              this.articleRows(section.inflow.rows),
-            ),
-            this.row(
-              this.t('cash_flow_articles.outflow', 'Выплаты'),
-              'OUTFLOW',
-              `outflow-${section.section}`,
-              this.articleRows(section.outflow.rows),
-            ),
-          ],
-        ),
-      );
-    });
 
     // Строка появляется ТОЛЬКО когда есть что показать: постоянный ноль
     // «не разнесено» приучает не читать эту строку вовсе. В матрице —
     // когда ненулевая хоть одна колонка: в «Итого» суммы разных месяцев
-    // могут погасить друг друга, а в самих месяцах деньги мимо статей были.
+    // могут погасить друг друга, а в самих месяцах деньги мимо строк были.
     if (this.anyNonZero('unclassified')) {
       rows.push(
         this.row(
@@ -181,27 +187,32 @@ export class CashFlowArticlesTable {
         'CLOSING',
         'closing',
       ),
-      this.row(
-        this.t(
-          'cash_flow_articles.transfers',
-          'Переводы между своими счетами',
-        ),
-        'TRANSFERS',
-        'transfers',
-        [
-          this.row(
-            this.t('cash_flow_articles.transfers_in', 'Зачисления'),
-            'TRANSFER_IN',
-            'transfers-in',
-          ),
-          this.row(
-            this.t('cash_flow_articles.transfers_out', 'Списания'),
-            'TRANSFER_OUT',
-            'transfers-out',
-          ),
-        ],
-      ),
     );
+
+    if (this.options.showTransfers) {
+      rows.push(
+        this.row(
+          this.t(
+            'cash_flow_articles.transfers',
+            'Переводы между своими счетами',
+          ),
+          'TRANSFERS',
+          'transfers',
+          [
+            this.row(
+              this.t('cash_flow_articles.transfers_in', 'Зачисления'),
+              'TRANSFER_IN',
+              'transfers-in',
+            ),
+            this.row(
+              this.t('cash_flow_articles.transfers_out', 'Списания'),
+              'TRANSFER_OUT',
+              'transfers-out',
+            ),
+          ],
+        ),
+      );
+    }
 
     return rows;
   }

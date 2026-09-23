@@ -23,12 +23,21 @@ export interface DisplayPreferences {
   showPastGaps: boolean;
   /** Показывать ли подсказки-вопросы. */
   showHints: boolean;
+  /** Доля под суммой в отчётах (FT-003 ТЗ-3). */
+  showPercent: boolean;
+  /** Строки с нулём во всех колонках (FT-005 ТЗ-3). */
+  showEmptyRows: boolean;
+  /** Переводы между своими счетами в «Деньгах» (FT-006 ТЗ-3). */
+  showTransfers: boolean;
 }
 
 const DEFAULTS: DisplayPreferences = {
   showCents: true,
   showPastGaps: false,
   showHints: true,
+  showPercent: true,
+  showEmptyRows: false,
+  showTransfers: false,
 };
 
 let current: DisplayPreferences = { ...DEFAULTS };
@@ -50,9 +59,11 @@ export function getDisplayPreferences(): DisplayPreferences {
 export function setDisplayPreferences(raw: unknown): void {
   const source = (raw ?? {}) as Record<string, unknown>;
 
+  // Пришла не вся пачка, а одна галочка (её только что сохранили) — прочие
+  // остаются как были, а не откатываются к умолчаниям.
   const bool = (key: keyof DisplayPreferences): boolean => {
     const value = source[key];
-    if (value === undefined || value === null) return DEFAULTS[key];
+    if (value === undefined || value === null) return current[key];
     if (typeof value === 'string') return value !== 'false' && value !== '0';
 
     return Boolean(value);
@@ -62,6 +73,9 @@ export function setDisplayPreferences(raw: unknown): void {
     showCents: bool('showCents'),
     showPastGaps: bool('showPastGaps'),
     showHints: bool('showHints'),
+    showPercent: bool('showPercent'),
+    showEmptyRows: bool('showEmptyRows'),
+    showTransfers: bool('showTransfers'),
   };
 }
 

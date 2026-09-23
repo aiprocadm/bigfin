@@ -30,6 +30,9 @@ export interface CashRollupLeg {
   credit: number | string | null;
   date?: Date | string | null;
   transactionType?: string | null;
+  /** Контрагент и направление — для группировок отчёта «Деньги» (FT-002). */
+  contactId?: number | null;
+  projectId?: number | null;
 }
 
 /** Период, на который раскладывается свёртка. */
@@ -117,10 +120,19 @@ export function periodIndexOf(
   return -1;
 }
 
-interface LoadedRollup {
+export interface LoadedRollup {
   articles: any[];
   map: any[];
+  /** Ноги, которые складываются в суммы: с учётом отбора по направлениям. */
   legs: CashRollupLeg[];
+  /**
+   * ВСЕ ноги отрезка — только для признака «оплачено деньгами».
+   *
+   * Направление стоит на ноге статьи, а на денежной ноге его обычно нет.
+   * Отбери мы ноги по направлению ДО признака — денежная нога отпала бы, и
+   * документ, честно оплаченный деньгами, перестал бы им считаться.
+   */
+  allLegs: CashRollupLeg[];
   isCashAccount: (id: number) => boolean;
   mappedAccountIds: Set<number>;
   normalByAccountId: Map<number, string>;
@@ -155,11 +167,11 @@ export class ArticlesCashflowRollupService {
   public async getRollup(query: ArticlesRollupQueryDto) {
     const loaded = await this.load(query);
     const settledKeys = cashSettledReferenceKeys(
-      loaded.legs as any,
+      loaded.allLegs as any,
       loaded.isCashAccount,
     );
 
-    return this.fold(loaded, loaded.legs, settledKeys);
+    return this.foldLegs(loaded, loaded.legs, settledKeys);
   }
 
   /**
@@ -182,14 +194,41 @@ export class ArticlesCashflowRollupService {
   ): Promise<Array<CashRollupPeriod & { rows: any[] }>> {
     if (periods.length === 0) return [];
 
+    const { loaded, settledKeys, buckets } = await this.loadByPeriods(
+      query,
+      periods,
+    );
+
+    return periods.map((period, index) => ({
+      ...period,
+      rows: this.foldLegs(loaded, buckets[index], settledKeys),
+    }));
+  }
+
+  /**
+   * Ноги отрезка, разложенные по периодам, и признак «оплачено деньгами» —
+   * сырьё для свёртки по статьям и для других группировок отчёта «Деньги»
+   * (FT-002 ТЗ-3: контрагенты, счета, направления).
+   *
+   * Отдаётся наружу, чтобы группировки не читали ноги второй раз: другой
+   * запрос — другой отбор, и «Чистый поток» разошёлся бы между вкладками.
+   */
+  public async loadByPeriods(
+    query: ArticlesRollupQueryDto,
+    periods: CashRollupPeriod[],
+  ): Promise<{
+    loaded: LoadedRollup;
+    settledKeys: Set<string>;
+    buckets: CashRollupLeg[][];
+  }> {
     const loaded = await this.load({
       ...query,
-      fromDate: periods[0].fromDate,
-      toDate: periods[periods.length - 1].toDate,
+      fromDate: periods[0]?.fromDate,
+      toDate: periods[periods.length - 1]?.toDate,
     } as ArticlesRollupQueryDto);
 
     const settledKeys = cashSettledReferenceKeys(
-      loaded.legs as any,
+      loaded.allLegs as any,
       loaded.isCashAccount,
     );
 
@@ -199,10 +238,7 @@ export class ArticlesCashflowRollupService {
       if (index >= 0) buckets[index].push(leg);
     });
 
-    return periods.map((period, index) => ({
-      ...period,
-      rows: this.fold(loaded, buckets[index], settledKeys),
-    }));
+    return { loaded, settledKeys, buckets };
   }
 
   /** Статьи, карта счетов, денежные счета и ноги отрезка — один раз. */
@@ -227,11 +263,17 @@ export class ArticlesCashflowRollupService {
         if (query.fromDate || query.toDate) {
           qb.modify('filterDateRange', query.fromDate, query.toDate);
         }
-        // Подразделения, юрлица, направления — одним общим местом (FT-008).
-        // Отбор стоит ДО определения «оплачено деньгами»: признак считается
-        // по ногам выбранного юрлица, как в бухгалтерском ДДС.
-        applyManagementReportScope(qb, query);
+        // Подразделения и юрлица — одним общим местом (FT-008). Отбор стоит
+        // ДО определения «оплачено деньгами»: признак считается по ногам
+        // выбранного юрлица, как в бухгалтерском ДДС. Направления — ниже,
+        // в памяти: см. `allLegs`.
+        applyManagementReportScope(qb, { ...query, projectsIds: undefined });
       });
+
+    const projectIds = new Set<number>((query.projectsIds ?? []).map(Number));
+    const scopedLegs = projectIds.size
+      ? (legs as any[]).filter((leg) => projectIds.has(Number(leg.projectId)))
+      : (legs as any[]);
 
     const mappedAccountIds = new Set<number>(
       (map as any[]).map((m: any) => m.accountId),
@@ -247,7 +289,8 @@ export class ArticlesCashflowRollupService {
     return {
       articles: articles as any[],
       map: map as any[],
-      legs: legs as any[],
+      legs: scopedLegs,
+      allLegs: legs as any[],
       isCashAccount: (id: number) => cashAccountIds.has(id),
       mappedAccountIds,
       normalByAccountId,
@@ -255,7 +298,7 @@ export class ArticlesCashflowRollupService {
   }
 
   /** Ноги → суммы статей с подъёмом в предков. */
-  private fold(
+  public foldLegs(
     loaded: LoadedRollup,
     legs: CashRollupLeg[],
     settledKeys: Set<string>,

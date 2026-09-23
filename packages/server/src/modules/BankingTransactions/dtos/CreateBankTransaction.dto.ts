@@ -7,6 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -133,6 +134,21 @@ export class CreateBankTransactionDto {
   @IsOptional()
   @IsBoolean()
   isIntercompany?: boolean;
+
+  /**
+   * Месяц начисления (FT-013 ТЗ-3), 'YYYY-MM'. Аренду за декабрь заплатили
+   * 5 января — в отчёте о прибыли она нужна в декабре, а в отчёте о деньгах
+   * остаётся на дате платежа. Пусто — месяц платежа, как было.
+   */
+  @ApiPropertyOptional({
+    description: 'Месяц начисления, YYYY-MM',
+    example: '2025-12',
+  })
+  @IsOptional()
+  @Matches(/^\d{4}-(0[1-9]|1[0-2])$/, {
+    message: 'Месяц начисления — в виде ГГГГ-ММ, например 2025-12',
+  })
+  accrualPeriod?: string | null;
 
   @ApiPropertyOptional({
     description: 'ID of the branch where the transaction occurred',

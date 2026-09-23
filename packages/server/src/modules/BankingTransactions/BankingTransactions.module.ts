@@ -1,3 +1,5 @@
+import { TransactionsLockingModule } from '@/modules/TransactionsLocking/TransactionsLocking.module';
+import { SetAccrualPeriodService } from './commands/SetAccrualPeriod.service';
 import { Module } from '@nestjs/common';
 import { RegisterTenancyModel } from '../Tenancy/TenancyModels/Tenancy.module';
 import { UncategorizedBankTransaction } from './models/UncategorizedBankTransaction';
@@ -56,6 +58,8 @@ const models = [
 
 @Module({
   imports: [
+    // Месяц начисления не переносится в закрытый период (FT-013 ТЗ-3).
+    TransactionsLockingModule,
     AutoIncrementOrdersModule,
     LedgerModule,
     BranchesModule,
@@ -70,6 +74,7 @@ const models = [
     BankingPendingTransactionsController,
   ],
   providers: [
+    SetAccrualPeriodService,
     GetTransactionsSummaryService,
     TenancyContext,
     BankTransactionsExportable,

@@ -67,6 +67,10 @@ function makeLegs() {
   const payment = { referenceType: 'PaymentReceive', referenceId: 6001, date: new Date(2026, 2, 5), projectId: null };
   legs.push({ ...payment, accountId: 50, debit: 60000, credit: 0 });
   legs.push({ ...payment, accountId: 70, debit: 0, credit: 60000 });
+  // Аренда офиса за декабрь 2025, оплаченная 5 января 2026 (FT-013).
+  const rent = { referenceType: 'CashflowTransaction', referenceId: 7001, date: new Date(2026, 0, 5), projectId: null, accrualPeriod: '2025-12' };
+  legs.push({ ...rent, accountId: 105, debit: 5000, credit: 0 });
+  legs.push({ ...rent, accountId: 50, debit: 0, credit: 5000 });
   return legs;
 }
 const LEGS = makeLegs();
@@ -94,8 +98,8 @@ function groupedQuery(build: (qb: any) => void) {
   LEGS.forEach((leg) => {
     const day = legDate(leg)!;
     if (day < from || day > to) return;
-    const key = `${leg.accountId}|${leg.projectId}|${day}`;
-    const row = groups.get(key) ?? { accountId: leg.accountId, projectId: leg.projectId, date: day, credit: 0, debit: 0 };
+    const key = `${leg.accountId}|${leg.projectId}|${day}|${leg.accrualPeriod ?? ''}`;
+    const row = groups.get(key) ?? { accountId: leg.accountId, projectId: leg.projectId, date: day, accrualPeriod: leg.accrualPeriod ?? null, credit: 0, debit: 0 };
     row.credit += leg.credit;
     row.debit += leg.debit;
     groups.set(key, row);
@@ -288,6 +292,19 @@ describe('управленческий ОПиУ: лестница сходитс
         LEGS.splice(index, 0, ...removed);
       }
     }
+  });
+
+  it('FT-013: платёж 05.01.2026 с начислением 2025-12 — в прибыли декабря, по деньгам — в январе', async () => {
+    const range = { fromDate: '2025-12-01', toDate: '2026-01-31', dateGroup: 'month' };
+    const accrual = (await service.sheet({ ...range, basis: 'accrual' } as any)).data;
+    const cash = (await service.sheet({ ...range, basis: 'cash' } as any)).data;
+    const admin = (data: any, key: string) =>
+      data.periods.find((p: any) => p.key === key).column.amounts.administrative;
+
+    // В декабре 2025 других операций нет — только эта аренда.
+    expect(admin(accrual, 'p0')).toBe(5000);
+    expect(admin(cash, 'p0')).toBe(0);
+    expect(admin(cash, 'p1') - admin(accrual, 'p1')).toBeGreaterThanOrEqual(0);
   });
 
   it('критерий 3: колонка без выручки — рентабельности «н/о» (пусто), не 0 % и не 100 %', async () => {

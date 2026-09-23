@@ -83,6 +83,12 @@ export interface ILedgerEntry {
    * посчитать одну и ту же выручку в сводном отчёте.
    */
   isIntercompany?: boolean;
+
+  /**
+   * Месяц начисления, 'YYYY-MM' (FT-013 ТЗ-3). Пусто — месяц даты проводки.
+   * Отчёт о прибыли кладёт проводку в этот месяц, отчёт о деньгах — нет.
+   */
+  accrualPeriod?: string | null;
 }
 
 export interface ISaveLedgerEntryQueuePayload {

@@ -14,6 +14,10 @@ import {
 import { accountNet } from '@/modules/ManagementArticles/queries/ArticlesPlRollup.service';
 import { applyManagementReportScope } from '@/modules/ManagementArticles/utils/managementReportScope';
 import { PL_ARTICLE_KINDS } from '@/modules/ManagementArticles/constants';
+import {
+  applyAccrualDateRange,
+  profitDateOf,
+} from '@/modules/ManagementArticles/utils/accrualPeriod';
 import { ACCOUNT_TYPE } from '@/constants/accounts';
 import { ReportPeriod } from '../CashFlowArticles/periodizeRows';
 import { PaymentReceivedEntry } from '@/modules/PaymentReceived/models/PaymentReceivedEntry';
@@ -219,12 +223,13 @@ export class ManagerialPnlSourceService {
     const rows: any[] = await this.accountTransactionModel()
       .query()
       .onBuild((qb: any) => {
-        qb.select(['accountId', 'projectId', 'date']);
+        qb.select(['accountId', 'projectId', 'date', 'accrualPeriod']);
         qb.sum('credit as credit');
         qb.sum('debit as debit');
-        qb.groupBy(['accountId', 'projectId', 'date']);
-        qb.modify(
-          'filterDateRange',
+        qb.groupBy(['accountId', 'projectId', 'date', 'accrualPeriod']);
+        // Месяц начисления (FT-013 ТЗ-3): операция с ним идёт в свой месяц.
+        applyAccrualDateRange(
+          qb,
           periods[0].fromDate,
           periods[periods.length - 1].toDate,
         );
@@ -233,7 +238,7 @@ export class ManagerialPnlSourceService {
       });
 
     rows.forEach((row) => {
-      const index = periodIndexOf(periods, legDate(row));
+      const index = periodIndexOf(periods, profitDateOf(row, periods[0].fromDate));
       if (index < 0) return;
       push(
         index,

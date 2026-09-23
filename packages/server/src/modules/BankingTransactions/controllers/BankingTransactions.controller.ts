@@ -1,4 +1,6 @@
+import { SetAccrualPeriodService } from '../commands/SetAccrualPeriod.service';
 import {
+  Patch,
   Body,
   Controller,
   Delete,
@@ -38,6 +40,7 @@ import { CashflowAction } from '../types/BankingTransactions.types';
 @UseGuards(AuthorizationGuard, PermissionGuard)
 export class BankingTransactionsController {
   constructor(
+    private readonly setAccrualPeriodService: SetAccrualPeriodService,
     private readonly bankingTransactionsApplication: BankingTransactionsApplication,
     private readonly summaryService: GetTransactionsSummaryService,
   ) {}
@@ -112,6 +115,22 @@ export class BankingTransactionsController {
   async createTransaction(@Body() transactionDTO: CreateBankTransactionDto) {
     return this.bankingTransactionsApplication.createTransaction(
       transactionDTO,
+    );
+  }
+
+  /**
+   * Месяц начисления нескольким операциям сразу (FT-013 ТЗ-3) — из реестра.
+   * `accrualPeriod: null` — снять, операция вернётся в месяц платежа.
+   */
+  @Patch('accrual-period')
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
+  @ApiOperation({ summary: 'Проставить месяц начисления операциям' })
+  async setAccrualPeriod(
+    @Body() body: { ids: number[]; accrualPeriod: string | null },
+  ) {
+    return this.setAccrualPeriodService.setAccrualPeriod(
+      Array.isArray(body?.ids) ? body.ids : [],
+      body?.accrualPeriod ?? null,
     );
   }
 

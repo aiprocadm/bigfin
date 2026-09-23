@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
   Controller,
@@ -67,6 +68,7 @@ export class ManagementArticlesController {
       items: { $ref: getSchemaPath(ManagementArticleResponseDto) },
     },
   })
+  @RequireApiScope('reports:read')
   getManagementArticles(@Query() filterDto: GetManagementArticlesQueryDto) {
     return this.application.getManagementArticles(filterDto);
   }
@@ -75,12 +77,14 @@ export class ManagementArticlesController {
   @ApiOperation({
     summary: 'Куда попадает статья: схема трёх отчётов с подсветкой.',
   })
+  @RequireApiScope('reports:read')
   getReportMap(@Query() query: GetArticleReportMapQueryDto) {
     return this.reportMap.getReportMap(query);
   }
 
   @Get('pl-rollup')
   @ApiOperation({ summary: 'Management P&L rolled up by articles.' })
+  @RequireApiScope('reports:read')
   getArticlesPlRollup(@Query() query: ArticlesRollupQueryDto) {
     return this.application.getArticlesPlRollup(query);
   }
@@ -102,6 +106,7 @@ export class ManagementArticlesController {
     description: 'The management article details have been retrieved.',
     schema: { $ref: getSchemaPath(ManagementArticleResponseDto) },
   })
+  @RequireApiScope('reports:read')
   getManagementArticle(@Param('id', ParseIntPipe) id: number) {
     return this.application.getManagementArticle(id);
   }

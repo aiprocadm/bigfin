@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Response } from 'express';
 import { ApiExtraModels, ApiOperation, ApiTags, ApiResponse, ApiProduces, getSchemaPath } from '@nestjs/swagger';
 import { Controller, Get, Headers, Query, Res,
@@ -17,6 +18,8 @@ import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { ReportsAction } from '../../types/Report.types';
 
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('reports/inventory-item-details')
 @ApiTags('Reports')
 @ApiCommonHeaders()

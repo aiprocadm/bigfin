@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
   Controller,
@@ -50,6 +51,7 @@ export class CustomersController {
     description: 'The customer details have been successfully retrieved.',
     schema: { $ref: getSchemaPath(CustomerResponseDto) },
   })
+  @RequireApiScope('contacts:read')
   getCustomer(@Param('id') customerId: number) {
     return this.customersApplication.getCustomer(customerId);
   }
@@ -65,6 +67,7 @@ export class CustomersController {
       items: { $ref: getSchemaPath(CustomerResponseDto) },
     },
   })
+  @RequireApiScope('contacts:read')
   getCustomers(@Query() filterDTO: GetCustomersQueryDto) {
     return this.customersApplication.getCustomers(filterDTO);
   }
@@ -77,6 +80,7 @@ export class CustomersController {
     description: 'The customer has been successfully created.',
     schema: { $ref: getSchemaPath(CustomerResponseDto) },
   })
+  @RequireApiScope('contacts:write')
   createCustomer(@Body() customerDTO: CreateCustomerDto) {
     return this.customersApplication.createCustomer(customerDTO);
   }

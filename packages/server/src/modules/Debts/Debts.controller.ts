@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
   Controller,
@@ -56,12 +57,14 @@ export class DebtsController {
   @ApiOperation({
     summary: 'Debts overview: AR/AP totals, aging buckets, top debtors.',
   })
+  @RequireApiScope('reports:read')
   getOverview(@Query() query: GetDebtsOverviewQueryDto) {
     return this.application.getOverview(query);
   }
 
   @Get('contact/:contactId')
   @ApiOperation({ summary: 'Unpaid documents of a contact (drill-down).' })
+  @RequireApiScope('reports:read')
   getContactDebts(
     @Param('contactId', ParseIntPipe) contactId: number,
     @Query() query: GetContactDebtsQueryDto,

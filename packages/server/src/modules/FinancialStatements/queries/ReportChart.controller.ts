@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -24,6 +25,8 @@ import { DrillDownQueryDto } from './DrillDownQuery.dto';
  * двенадцати столбцов незачем.
  */
 @ApiTags('Financial Reports')
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('financial-reports/chart')
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard)

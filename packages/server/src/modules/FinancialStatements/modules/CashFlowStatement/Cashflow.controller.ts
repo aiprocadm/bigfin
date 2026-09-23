@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Response } from 'express';
 import { Controller, Get, Headers, Query, Res, UseGuards } from '@nestjs/common';
 import { AcceptType } from '@/constants/accept-type';
@@ -24,6 +25,8 @@ import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { ReportsAction } from '../../types/Report.types';
 import { GetLegalEntityAccessService } from '@/modules/LegalEntities/queries/GetLegalEntityAccess.service';
 
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('reports/cashflow-statement')
 @ApiTags('Reports')
 @ApiCommonHeaders()

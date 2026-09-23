@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
   Controller,
@@ -64,6 +65,7 @@ export class PaymentCalendarController {
 
   @Get('matrix')
   @ApiOperation({ summary: 'Календарь матрицей «план / факт» с накопительным плановым остатком (FT-050).' })
+  @RequireApiScope('reports:read')
   async getMatrix(@Query() query: CalendarMatrixQueryDto) {
     return this.calendarMatrix.matrix(await this.tenantId(), {
       fromDate: query.fromDate,
@@ -96,6 +98,7 @@ export class PaymentCalendarController {
 
   @Get()
   @ApiOperation({ summary: 'Payment calendar forecast for a horizon.' })
+  @RequireApiScope('reports:read')
   async getForecast(@Query() query: GetPaymentCalendarQueryDto) {
     const metadata: any = await this.tenancyContext.getTenantMetadata();
     return this.application.getForecast(metadata?.tenantId, query);
@@ -105,6 +108,7 @@ export class PaymentCalendarController {
   @ApiOperation({
     summary: 'Кассовые разрывы по каждому счёту, с глубиной и датой выхода.',
   })
+  @RequireApiScope('reports:read')
   getCashGaps(@Query('horizonDays') horizonDays?: string) {
     return this.accountsCashGaps.getAccountsCashGaps(Number(horizonDays));
   }

@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -17,6 +18,8 @@ import { ReportPlanFactQueryDto } from './ReportPlanFactQuery.dto';
  * без заведённого бюджета колонок нет вовсе.
  */
 @ApiTags('Financial Reports')
+// Отчёт открыт токену API с правом reports:read (FT-091 ТЗ-3).
+@RequireApiScope('reports:read')
 @Controller('financial-reports/plan-fact')
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard)

@@ -10,6 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { ClsService } from 'nestjs-cls';
 import { IS_PUBLIC_ROUTE } from '../Auth/Auth.constants';
 import { getAuthApiKey } from '../Auth/Auth.utils';
+import { bearerApiToken } from '../Auth/api-token/ApiTokenAuth.guard';
 import { UserTenant } from '../System/models/UserTenant.model';
 import { TenantModel } from '../System/models/TenantModel';
 
@@ -52,6 +53,16 @@ export class TenancyGlobalGuard implements CanActivate {
     if (isPublic || isTenantAgnostic || isAuthApiKey) {
       return true;
     }
+    // Токен публичного API (FT-091 ТЗ-3): организацию назвал сам токен, но
+    // членство его владельца проверяется — уволенный сотрудник не должен
+    // ходить в данные чужим токеном.
+    const tokenOrganizationId = bearerApiToken(authorization)
+      ? this.clsService.get<string>('organizationId')
+      : null;
+    return this.checkMembership(tokenOrganizationId ?? organizationId);
+  }
+
+  private async checkMembership(organizationId: string | undefined): Promise<boolean> {
     if (!organizationId) {
       throw new UnauthorizedException('Organization ID is required.');
     }

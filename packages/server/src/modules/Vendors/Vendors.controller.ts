@@ -1,3 +1,4 @@
+import { RequireApiScope } from '@/modules/PublicApi/RequireApiScope.decorator';
 import {
   Body,
   Controller,
@@ -43,6 +44,7 @@ export class VendorsController {
   @Get()
   @RequirePermission(VendorAction.View, AbilitySubject.Vendor)
   @ApiOperation({ summary: 'Retrieves the vendors.' })
+  @RequireApiScope('contacts:read')
   getVendors(@Query() filterDTO: GetVendorsQueryDto) {
     return this.vendorsApplication.getVendors(filterDTO);
   }
@@ -50,6 +52,7 @@ export class VendorsController {
   @Get(':id')
   @RequirePermission(VendorAction.View, AbilitySubject.Vendor)
   @ApiOperation({ summary: 'Retrieves the vendor details.' })
+  @RequireApiScope('contacts:read')
   getVendor(@Param('id') vendorId: number) {
     return this.vendorsApplication.getVendor(vendorId);
   }
@@ -57,6 +60,7 @@ export class VendorsController {
   @Post()
   @RequirePermission(VendorAction.Create, AbilitySubject.Vendor)
   @ApiOperation({ summary: 'Create a new vendor.' })
+  @RequireApiScope('contacts:write')
   createVendor(@Body() vendorDTO: CreateVendorDto) {
     return this.vendorsApplication.createVendor(vendorDTO);
   }

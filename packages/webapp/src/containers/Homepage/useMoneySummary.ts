@@ -2,6 +2,7 @@
 // дженериков, и строгая типизация здесь спорит с ним, а не помогает.
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import useApiRequest from '@/hooks/useRequest';
+import { useCanViewMoney } from '@/hooks/utils/useAbilityContext';
 import { transformToCamelCase } from '@/utils';
 
 export interface MoneySummaryAmount {
@@ -41,6 +42,8 @@ export function useMoneySummary(
   options?: UseQueryOptions<MoneySummary, Error>,
 ): UseQueryResult<MoneySummary, Error> {
   const apiRequest = useApiRequest();
+  // Без права на деньги не спрашиваем: 403 закрыл бы весь экран (FT-084).
+  const canViewMoney = useCanViewMoney();
 
   return useQuery<MoneySummary, Error>(
     ['DASHBOARD_MONEY_SUMMARY'],
@@ -48,6 +51,6 @@ export function useMoneySummary(
       apiRequest
         .get('dashboard/money-summary', {})
         .then((res) => transformToCamelCase(res.data)),
-    { ...options },
+    { ...options, enabled: canViewMoney && (options?.enabled ?? true) },
   );
 }

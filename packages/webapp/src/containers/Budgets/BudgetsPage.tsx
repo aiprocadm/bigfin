@@ -1,4 +1,5 @@
 import React from 'react';
+import { BudgetAutofillButton, BudgetCashPlan } from './BudgetPlanningPanels';
 import intl from 'react-intl-universal';
 import moment from 'moment';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ export default function BudgetsPage() {
   const { data: budgets } = useBudgets({});
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Budget | undefined>();
-  const [tab, setTab] = React.useState<'grid' | 'planfact'>('grid');
+  const [tab, setTab] = React.useState<'grid' | 'planfact' | 'cashplan'>('grid');
   const { search } = useLocation();
 
   // Карта v48. Поиск в шапке приводит сюда с номером найденного бюджета:
@@ -97,6 +98,18 @@ export default function BudgetsPage() {
               >
                 {intl.get('budgets.planfact.title')}
               </Button>
+              {/* Денежный план с привязкой остатка — у бюджета движения
+                  денег (FT-056 ТЗ-3). */}
+              {shownBudget.type === 'bdds' && (
+                <Button
+                  variant={tab === 'cashplan' ? 'primary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setTab('cashplan')}
+                >
+                  {intl.get('budgets.cash_plan.title')}
+                </Button>
+              )}
+              <BudgetAutofillButton budget={shownBudget} scenario={scenario} />
             </div>
             {/* На телефоне три кнопки в строку не помещаются: ряд занимал
                 421 px при экране 390, и «Пессимистичный» обрезало
@@ -118,6 +131,8 @@ export default function BudgetsPage() {
           </div>
           {tab === 'grid' ? (
             <BudgetGrid budgetId={shownBudget.id} scenario={scenario} />
+          ) : tab === 'cashplan' ? (
+            <BudgetCashPlan budget={shownBudget} scenario={scenario} />
           ) : (
             <BudgetPlanFact
               budgetId={shownBudget.id}

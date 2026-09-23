@@ -24,6 +24,10 @@ export const getPlannedOperationSchema = () =>
     frequency: z.enum(['daily', 'weekly', 'monthly']).optional(),
     interval: z.number().positive().optional(),
     endDate: z.string().optional(),
+    // Автоподтверждение фактом (FT-052 ТЗ-3).
+    autoConfirm: z.boolean().optional(),
+    matchExactAmount: z.boolean().optional(),
+    matchAnyContact: z.boolean().optional(),
   });
 
 export type PlannedOperationFormValues = z.infer<
@@ -39,6 +43,9 @@ export interface PlannedOperation {
   accountId: number | null;
   contactId: number | null;
   description: string | null;
+  autoConfirm?: boolean;
+  matchExactAmount?: boolean;
+  matchAnyContact?: boolean;
   recurrence: {
     frequency: 'daily' | 'weekly' | 'monthly';
     interval: number;

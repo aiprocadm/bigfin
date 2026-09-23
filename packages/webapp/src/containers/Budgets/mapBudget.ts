@@ -22,6 +22,8 @@ export interface Budget {
   fiscalYear: number | null;
   periodGranularity: string;
   activeScenario: string;
+  /** Привязка планового остатка (FT-056 ТЗ-3). */
+  planAnchor?: string;
   lines: BudgetLine[];
 }
 
@@ -40,6 +42,7 @@ export interface PlanFact {
   scenario: string;
   period: string;
   rows: PlanFactRow[];
+  expenseUsage?: { plan: number; fact: number; percent: number | null; level: string } | null;
 }
 
 const num = (value: unknown, fallback = 0): number => {
@@ -71,6 +74,7 @@ export const mapBudget = (raw: any): Budget => ({
     (pick(raw, 'period_granularity', 'periodGranularity') as string) ?? 'month',
   activeScenario:
     (pick(raw, 'active_scenario', 'activeScenario') as string) ?? 'realistic',
+  planAnchor: (pick(raw, 'plan_anchor', 'planAnchor') as string) ?? 'fact',
   lines: (raw?.lines ?? []).map(mapBudgetLine),
 });
 
@@ -97,4 +101,6 @@ export const mapPlanFact = (raw: any): PlanFact => ({
   scenario: raw?.scenario ?? '',
   period: raw?.period ?? '',
   rows: (raw?.rows ?? []).map(mapPlanFactRow),
+  // «Освоено X из Y» по расходам (FT-055 ТЗ-3).
+  expenseUsage: raw?.expense_usage ?? raw?.expenseUsage ?? null,
 });

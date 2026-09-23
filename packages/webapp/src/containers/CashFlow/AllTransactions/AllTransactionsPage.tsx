@@ -26,7 +26,15 @@ import {
   useAllUncategorizedInfinity,
 } from '@/hooks/query/cashflowAccounts';
 import { useAccounts, useCashflowAccounts } from '@/hooks/query';
-import { useDialogActions } from '@/hooks/state';
+import { useDialogActions, useDrawerActions, useFeatureCan } from '@/hooks/state';
+import { Features } from '@/constants';
+import { useDeals } from '@/hooks/query/deals';
+import { useManagementArticles } from '@/hooks/query/managementArticles';
+import { useTransactionTags } from '@/hooks/query/transactionActions';
+import { handleCashFlowTransactionType } from '../AccountTransactions/utils';
+import { RegistryRowMenu, useRegistryRowActions } from './RegistryRowActions';
+import { RegistryTypeChips, SavedFiltersMenu } from './RegistryQuickFilters';
+import { BulkTransactionsDialog } from './BulkTransactionsDialog';
 import { DialogsName } from '@/constants/dialogs';
 import { useAllTransactionsColumns } from './useAllTransactionsColumns';
 import { useUncategorizedColumns } from './useUncategorizedColumns';
@@ -71,6 +79,16 @@ export default function AllTransactionsPage() {
   const history = useHistory();
   const location = useLocation();
   const { openDialog } = useDialogActions();
+  const { openDrawer } = useDrawerActions();
+  const { featureCan } = useFeatureCan();
+  // Направления и сделки — одна таблица, и обе живут за одним флагом.
+  const projectsEnabled = !!featureCan(Features.Projects);
+  const { data: projects = [] } = useDeals({}, { enabled: projectsEnabled });
+  const { data: articles = [] } = useManagementArticles();
+  const { data: tags = [] } = useTransactionTags();
+  const rowActions = useRegistryRowActions();
+  // «Несколько операций» (FT-024 ТЗ-3).
+  const [bulkOpen, setBulkOpen] = React.useState(false);
 
   // Отборы читаем из адреса; период по умолчанию — текущий месяц.
   const filters = React.useMemo<ScreenFilters>(() => {
@@ -154,8 +172,20 @@ export default function AllTransactionsPage() {
 
   const allColumns = useAllTransactionsColumns();
   const columns = React.useMemo(
-    () => visibleRegistryColumns(allColumns as any[], columnsVisible),
-    [allColumns, columnsVisible],
+    () => [
+      ...visibleRegistryColumns(allColumns as any[], columnsVisible),
+      // Меню операции (FT-022 ТЗ-3): девять действий, недоступное —
+      // с объяснением. Колонку нельзя снять: без неё действия не найти.
+      {
+        id: 'actions',
+        Header: '',
+        disableSortBy: true,
+        Cell: ({ row }: any) => (
+          <RegistryRowMenu row={row.original} projectsEnabled={projectsEnabled} onAction={rowActions.run} />
+        ),
+      },
+    ],
+    [allColumns, columnsVisible, projectsEnabled, rowActions.run],
   );
   const awaitingColumns = useUncategorizedColumns(chartAccounts as any[]);
 
@@ -215,6 +245,9 @@ export default function AllTransactionsPage() {
                     {intl.get('all_transactions.import_statement')}
                   </Button>
                 )}
+                <Button variant="secondary" onClick={() => setBulkOpen(true)}>
+                  {intl.get('all_transactions.bulk.open')}
+                </Button>
                 <Button
                   variant="secondary"
                   onClick={() =>
@@ -293,27 +326,68 @@ export default function AllTransactionsPage() {
               onChange={(date) => patch({ toDate: fromDate(date) })}
             />
 
+            {/* Ряд типов с «Без статьи (N)» (FT-020 ТЗ-3) и быстрые
+                фильтры (FT-021). */}
+            <RegistryTypeChips filters={filters} patch={patch} uncategorizedCount={awaitingTotal} />
+            <SavedFiltersMenu filters={filters} onApply={setFilters} />
+
+            {/* Статья учёта: раньше приходила только из отчёта, теперь её
+                можно выбрать и сохранить в быстрый фильтр (FT-021). */}
             <Select
-              value={filters.flow ?? 'all'}
-              onValueChange={(value) =>
-                patch({ flow: value === 'all' ? undefined : (value as 'in' | 'out') })
-              }
+              value={filters.articleId ? String(filters.articleId) : 'all'}
+              onValueChange={(value) => patch({ articleId: value === 'all' ? undefined : Number(value) })}
             >
               <SelectTrigger className="w-[200px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">
-                  {intl.get('all_transactions.flow.all')}
-                </SelectItem>
-                <SelectItem value="in">
-                  {intl.get('all_transactions.flow.in')}
-                </SelectItem>
-                <SelectItem value="out">
-                  {intl.get('all_transactions.flow.out')}
-                </SelectItem>
+                <SelectItem value="all">{intl.get('all_transactions.filter.article_all')}</SelectItem>
+                {(articles as any[]).map((article: any) => (
+                  <SelectItem key={article.id} value={String(article.id)}>
+                    {article.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
+
+            {projectsEnabled && (
+              <Select
+                value={filters.projectId ? String(filters.projectId) : 'all'}
+                onValueChange={(value) => patch({ projectId: value === 'all' ? undefined : Number(value) })}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{intl.get('all_transactions.filter.project_all')}</SelectItem>
+                  {(projects as any[]).map((project: any) => (
+                    <SelectItem key={project.id} value={String(project.id)}>
+                      {project.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Метка (FT-025): отбор появляется, когда меток есть хоть одна. */}
+            {(tags.length > 0 || filters.tag) && (
+              <Select
+                value={filters.tag ?? 'all'}
+                onValueChange={(value) => patch({ tag: value === 'all' ? undefined : value })}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{intl.get('all_transactions.filter.tag_all')}</SelectItem>
+                  {[...new Set([...(tags as string[]), ...(filters.tag ? [filters.tag] : [])])].map((tag) => (
+                    <SelectItem key={tag} value={tag}>
+                      {tag}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
             {/* СОСТАВ КОЛОНОК (T-34). Обязательных здесь нет вовсе: их
                 нельзя снять, и показывать заблокированную галочку значит
@@ -442,6 +516,11 @@ export default function AllTransactionsPage() {
             enableSelection
             selectedIds={selectedIds}
             onSelectionChange={setSelectedIds}
+            // Щелчок по строке открывает карточку операции (FT-022): там
+            // части, история и действия документа.
+            onRowClick={
+              isAwaiting ? undefined : (row: any) => handleCashFlowTransactionType(row, openDrawer)
+            }
             // На телефоне строка выкладывается блоком, а не столбцами:
             // таблица из шести колонок на экране в 390 точек прокручивается
             // вбок, и человек не видит строку целиком. Это главный
@@ -522,6 +601,10 @@ export default function AllTransactionsPage() {
           ответ из виду.
         */}
         <TransactionsSummaryBar filters={query} />
+        {rowActions.dialogs}
+        {bulkOpen && (
+          <BulkTransactionsDialog defaultAccountId={filters.accountId} onClose={() => setBulkOpen(false)} />
+        )}
       </div>
     </DashboardInsider>
   );

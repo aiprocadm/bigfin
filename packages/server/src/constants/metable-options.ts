@@ -93,6 +93,11 @@ export const SettingsOptions = {
     fixed_assets: { type: 'boolean' },
     taxes: { type: 'boolean' },
   },
+  // Общие для организации сохранённые фильтры реестра (FT-021 ТЗ-3):
+  // JSON-список; личные живут в настройках человека.
+  registry: {
+    shared_filters: { type: 'string' },
+  },
   // Настройки управленческого ОПиУ: группировка ФОТ (FT-014 ТЗ-3).
   managerial_pnl: {
     payroll_grouping: { type: 'string' },

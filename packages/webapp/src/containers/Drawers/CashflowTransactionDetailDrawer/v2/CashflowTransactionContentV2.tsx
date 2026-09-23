@@ -1,9 +1,11 @@
+import intl from 'react-intl-universal';
 import { useCashflowTransaction } from '@/hooks/query';
 
 import { CashflowTransactionCardsV2 } from './CashflowTransactionCardsV2';
 import { CashflowTransactionHeaderV2 } from './CashflowTransactionHeaderV2';
 import { CashflowTransactionSkeletonV2 } from './CashflowTransactionSkeletonV2';
 import { TransactionSplitPanel } from './TransactionSplitPanel';
+import { HistoryList } from '@/containers/CashFlow/AllTransactions/RegistryRowActions';
 import { RuleApplicationsPanel } from './RuleApplicationsPanel';
 import type { CashflowTransactionDetail } from './types';
 
@@ -71,10 +73,19 @@ export function CashflowTransactionContentV2({
           <RuleApplicationsPanel transactionId={Number(transaction.id)} />
         )}
 
+        {/* История изменений (FT-026 ТЗ-3): кто, когда, что изменил —
+            журнал действий и автоправила одной лентой. */}
+        {transaction?.id != null && (
+          <section className="rounded-default border border-border bg-surface p-4">
+            <h3 className="mb-2 text-sm font-medium">{intl.get('all_transactions.actions.history')}</h3>
+            <HistoryList row={{ reference_type: 'CashflowTransaction', reference_id: transaction.id }} />
+          </section>
+        )}
+
         {transaction?.id != null && (
           <TransactionSplitPanel
-            referenceType={String(transaction.transaction_type ?? '')}
-            referenceId={Number(transaction.id)}
+            cashflowId={Number(transaction.id)}
+            legacyReferenceType={String(transaction.transaction_type ?? '')}
             parentAmount={splitParentAmount(transaction)}
           />
         )}

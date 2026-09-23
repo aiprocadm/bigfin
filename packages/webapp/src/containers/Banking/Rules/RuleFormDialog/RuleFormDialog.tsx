@@ -15,9 +15,9 @@ function RuleFormDialogRoot({
   dialogName,
   // Значение по умолчанию обязательно: обёртка отдаёт «ничего», пока окно не
   // открывали, и разбор без него падал бы (Д3 карты v76).
-  payload: { bankRuleId = null } = { bankRuleId: null },
+  payload: { bankRuleId = null, prefill = null } = { bankRuleId: null, prefill: null },
   isOpen,
-}: DialogReduxProps<{ bankRuleId?: number | null }>) {
+}: DialogReduxProps<{ bankRuleId?: number | null; prefill?: Record<string, unknown> | null }>) {
   return (
     <Dialog
       name={dialogName}
@@ -33,6 +33,7 @@ function RuleFormDialogRoot({
         <RuleFormContent
           dialogName={dialogName}
           bankRuleId={bankRuleId ?? undefined}
+          prefill={prefill ?? undefined}
         />
       </DialogSuspense>
     </Dialog>

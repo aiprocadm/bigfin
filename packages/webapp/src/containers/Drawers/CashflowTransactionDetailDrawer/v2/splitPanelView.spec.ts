@@ -1,7 +1,13 @@
 // © 2026 Bigfin
 import { describe, expect, it } from 'vitest';
 
-import { evaluateSplit, suggestedAmount } from './splitPanelView';
+import {
+  amountFromPercent,
+  equalSplit,
+  evaluateSplit,
+  percentOf,
+  suggestedAmount,
+} from './splitPanelView';
 
 /**
  * Этап 10 ТЗ. Суммы частей ОБЯЗАНЫ сходиться с операцией: иначе в отчёты
@@ -90,3 +96,21 @@ describe('подсказка суммы новой части', () => {
     expect(suggestedAmount(-5_000)).toBe(0);
   });
 });
+
+describe('разбиение в форме операции (FT-023)', () => {
+  it('«Поровну»: копейки не теряются, остаток — первой части', () => {
+    const parts = equalSplit(100, 3);
+    expect(parts).toEqual([33.34, 33.33, 33.33]);
+    expect(evaluateSplit(100, parts.map((amount) => ({ amount, articleId: 1 }))).isValid).toBe(true);
+    expect(equalSplit(-90, 2)).toEqual([45, 45]);
+    expect(equalSplit(100, 0)).toEqual([]);
+  });
+
+  it('₽ ↔ %: туда и обратно без дрейфа', () => {
+    expect(percentOf(250, 1000)).toBe(25);
+    expect(amountFromPercent(25, 1000)).toBe(250);
+    expect(amountFromPercent(33.33, 100)).toBe(33.33);
+    expect(percentOf(10, 0)).toBe(0);
+  });
+});
+

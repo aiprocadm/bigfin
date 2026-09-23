@@ -26,6 +26,8 @@ export const DISPLAY_PREFERENCE_DEFAULTS: Record<string, unknown> = {
   showEmptyRows: false,
   /** Переводы между своими счетами в «Деньгах» (FT-006 ТЗ-3). */
   showTransfers: false,
+  /** Личные сохранённые фильтры реестра (FT-021 ТЗ-3). */
+  registryFilters: [],
 };
 
 /** Ключи, которые продукт умеет хранить. Всё прочее — отказ. */

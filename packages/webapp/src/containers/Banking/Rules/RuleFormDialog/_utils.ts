@@ -34,6 +34,8 @@ export const initialValues = {
   // Сделка и этап (FT-033 ТЗ-3).
   assignDealId: '',
   assignDealStageId: '',
+  // Метка операции (FT-025 ТЗ-3) — у правила любого вида.
+  assignTag: '',
   splits: [emptySplit(), emptySplit()],
 };
 
@@ -56,6 +58,7 @@ export interface RuleFormValues {
   transferToAccountId: string | number;
   assignDealId: string | number;
   assignDealStageId: string | number;
+  assignTag?: string;
   splits: RuleSplitFormLine[];
 }
 
@@ -98,6 +101,8 @@ export function toBankRulePayload(values: RuleFormValues) {
     applyIfTransactionType: values.applyIfTransactionType || null,
     conditionsType: values.conditionsType,
     conditions: values.conditions,
+    // Метка (FT-025 ТЗ-3) — у правила любого вида; пусто — без метки.
+    assignTag: (values.assignTag ?? '').trim() || null,
     ...(ruleType === 'assign'
       ? {
           assignCategory: values.assignCategory || undefined,

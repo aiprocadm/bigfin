@@ -80,7 +80,7 @@ function RuleFormContentFormRoot({
   closeDialog,
   openDialog,
 }: WithDialogActionsProps) {
-  const { accounts, bankRule, isEditMode, bankRuleId } =
+  const { accounts, bankRule, isEditMode, bankRuleId, prefill } =
     useRuleFormDialogBoot();
   const { mutateAsync: createBankRule } = useCreateBankRule();
   const { mutateAsync: editBankRule } = useEditBankRule();
@@ -96,13 +96,17 @@ function RuleFormContentFormRoot({
   const validationSchema = getCreateRuleFormSchema();
 
   const fromServer: any = transformToForm(transformToCamelCase(bankRule), initialValues);
+  // Новое правило из операции реестра (FT-022 ТЗ-3): счёт, направление и
+  // условие уже подставлены — человеку остаётся выбрать, что ставить.
+  const fromOperation: any = !bankRule && prefill ? prefill : {};
   const _initialValues = {
     ...initialValues,
     ...fromServer,
+    ...fromOperation,
     // Пусто на сервере — «поступления и списания», в форме — пустая строка.
     applyIfTransactionType: bankRule
       ? (bankRule as any).apply_if_transaction_type ?? ''
-      : initialValues.applyIfTransactionType,
+      : fromOperation.applyIfTransactionType ?? initialValues.applyIfTransactionType,
     // У правила другого типа строк разбиения нет — две пустые на случай,
     // если человек сменит тип на «Разбить».
     splits: fromServer?.splits?.length ? fromServer.splits : initialValues.splits,
@@ -215,6 +219,16 @@ function RuleFormContentFormRoot({
         </h3>
 
         <RuleActionsByType />
+
+        {/* Метка операции (FT-025 ТЗ-3) — у правила любого вида. */}
+        <FFormGroup
+          name={'assignTag'}
+          label={intl.get('banking.rules.field.assign_tag')}
+          helperText={intl.get('banking.rules.field.assign_tag_hint')}
+          style={{ maxWidth: 300 }}
+        >
+          <FInputGroup name={'assignTag'} maxLength={64} />
+        </FFormGroup>
 
         <RuleFormActions />
         <Alert

@@ -51,6 +51,8 @@ const NUMERIC_KEYS = [
   'contactId',
   'minAmount',
   'maxAmount',
+  // Направление (FT-021 ТЗ-3).
+  'projectId',
 ] as const;
 
 /** Читает отборы из строки запроса адреса. */
@@ -68,6 +70,8 @@ export const filtersFromSearch = (search: string): ScreenFilters => {
   text('fromDate');
   text('toDate');
   text('search');
+  // Метка операции (FT-025 ТЗ-3).
+  text('tag');
 
   const flow = params.get('flow');
   if (flow === 'in' || flow === 'out') {

@@ -3,10 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as moment from 'moment';
 import { Knex } from 'knex';
 import { AuditLog } from '@/modules/EE/AuditLogs/models/AuditLog.model';
-import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TENANCY_DB_CONNECTION } from '@/modules/Tenancy/TenancyDB/TenancyDB.constants';
-import { buildTransactionHistory } from '../utils/transactionHistory';
+import { auditSubjectOf, buildTransactionHistory } from '../utils/transactionHistory';
 
 /**
  * История изменений операции (FT-026 ТЗ-3): журнал действий по документу
@@ -27,8 +26,8 @@ export class GetTransactionHistoryService {
   ) {}
 
   public async history(referenceType: string, referenceId: number) {
-    // Денежные операции журнал пишет под своим субъектом.
-    const subject = referenceType === 'CashflowTransaction' ? AbilitySubject.Cashflow : referenceType;
+    // Журнал пишет документы под своими именами (Cashflow, ManualJournal…).
+    const subject = auditSubjectOf(referenceType);
     const auditRows: any[] = await this.auditLogModel()
       .query()
       .where('subject', subject)

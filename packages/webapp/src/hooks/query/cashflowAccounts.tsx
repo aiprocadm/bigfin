@@ -121,6 +121,10 @@ export interface AllTransactionsFilters {
   /** Сумма от и до. */
   minAmount?: number;
   maxAmount?: number;
+  /** Направление (FT-021 ТЗ-3). */
+  projectId?: number;
+  /** Метка операции (FT-025 ТЗ-3). */
+  tag?: string;
 }
 
 /**

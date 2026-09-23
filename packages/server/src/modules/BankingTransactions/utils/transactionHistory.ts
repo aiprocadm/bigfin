@@ -1,6 +1,22 @@
 // © 2026 Bigfin
 
 /**
+ * Вид документа реестра → под каким именем его пишет журнал действий.
+ * Имена расходятся исторически: ручная проводка в реестре — `Journal`, в
+ * журнале — `ManualJournal`; оплата поставщику — `BillPayment` против
+ * `PaymentMade`. Без перевода история таких документов была бы пустой.
+ */
+const AUDIT_SUBJECT_BY_REFERENCE: Record<string, string> = {
+  CashflowTransaction: 'Cashflow',
+  Journal: 'ManualJournal',
+  BillPayment: 'PaymentMade',
+};
+
+export function auditSubjectOf(referenceType: string): string {
+  return AUDIT_SUBJECT_BY_REFERENCE[referenceType] ?? referenceType;
+}
+
+/**
  * История изменений операции (FT-026 ТЗ-3): «кто, когда, что изменил».
  *
  * Два источника в одной ленте: журнал действий (человек и службы продукта)

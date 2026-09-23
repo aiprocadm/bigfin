@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { auditSubjectOf } from '@/modules/BankingTransactions/utils/transactionHistory';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Knex } from 'knex';
 import { events } from '@/common/events/events';
@@ -670,7 +671,9 @@ export class FinancialAuditLogSubscriber {
     await this.write(
       trx,
       'tagged',
-      referenceType === 'CashflowTransaction' ? AbilitySubject.Cashflow : referenceType,
+      // То же имя, под которым журнал пишет сам документ, — иначе панель
+      // истории не нашла бы метку рядом с остальными записями.
+      auditSubjectOf(referenceType),
       Number(referenceId),
       { tag, oldTag },
     );

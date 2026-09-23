@@ -31,11 +31,16 @@ export function useAllTransactionsColumns() {
         accessor: 'note',
         disableSortBy: true,
         Cell: ({ row }: any) => (
-          <span
-            className="block max-w-[320px] truncate"
-            title={row.original.note || ''}
-          >
-            {row.original.note || '—'}
+          <span className="flex max-w-[360px] items-center gap-1.5">
+            <span className="truncate" title={row.original.note || ''}>
+              {row.original.note || '—'}
+            </span>
+            {/* Метка операции (FT-025 ТЗ-3). */}
+            {row.original.tag && (
+              <span className="shrink-0 rounded-full border border-border px-2 text-xs text-text-secondary">
+                {row.original.tag}
+              </span>
+            )}
           </span>
         ),
       },

@@ -203,6 +203,8 @@ function makeService(settings: Record<string, unknown> = {}) {
       get: ({ group, key }: { group: string; key: string }) =>
         group === 'pnl_sources' ? settings[key] : undefined,
     })) as any,
+    // Правил распределения нет.
+    (() => ({ query: async () => [] })) as any,
   );
 }
 

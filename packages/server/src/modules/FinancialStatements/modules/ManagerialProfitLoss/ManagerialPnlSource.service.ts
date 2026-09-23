@@ -61,6 +61,7 @@ export interface PnlEntry {
 
 export interface PnlSource {
   articles: any[];
+  // Изменяемо намеренно: распределение косвенных (FT-011) подменяет записи.
   /** Счета: имя, сторона, тип — для строк «счёт без статьи». */
   accountsById: Map<number, { name: string; accountNormal: string; accountType: string }>;
   entriesByPeriod: PnlEntry[][];

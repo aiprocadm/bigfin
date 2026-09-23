@@ -2,7 +2,7 @@
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsDateString, IsIn, IsInt, IsObject, IsString } from 'class-validator';
-import { ALLOCATION_KEYS } from '../constants';
+import { ALLOCATION_KEYS, ALLOCATION_TARGET_TYPES } from '../constants';
 
 class CommandCostAllocationRuleDto {
   @IsString()
@@ -28,6 +28,19 @@ class CommandCostAllocationRuleDto {
   @IsOptional()
   @ApiPropertyOptional({ example: [1, 2], description: 'Restrict targets (revenue key)' })
   targetDealIds?: number[];
+
+  /** Между кем делится пул (FT-011 ТЗ-3). По умолчанию — сделки, как было. */
+  @IsIn(ALLOCATION_TARGET_TYPES as unknown as string[])
+  @IsOptional()
+  @ApiPropertyOptional({ enum: ALLOCATION_TARGET_TYPES, default: 'deal' })
+  targetType?: 'deal' | 'direction';
+
+  /** Цели; пусто — все цели своего вида. */
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  @ApiPropertyOptional({ example: [1, 2], description: 'Цели распределения' })
+  targetIds?: number[];
 
   @IsDateString()
   @IsOptional()

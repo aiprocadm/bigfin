@@ -7,6 +7,10 @@ import { parseBoolean } from '@/utils/parse-boolean';
 import { FinancialSheetBranchesQueryDto } from '../../dtos/FinancialSheetBranchesQuery.dto';
 import { CASHFLOW_DATE_GROUPS, CashFlowDateGroup } from '../CashFlowArticles/periodizeRows';
 import { PNL_GROUPINGS, PnlGrouping } from './buildManagerialPnlReport';
+import {
+  ALLOCATION_BASES,
+  AllocationBase,
+} from '@/modules/CostAllocation/utils/allocationBases';
 
 /**
  * Отбор управленческого ОПиУ (FT-010 ТЗ-3).
@@ -52,4 +56,19 @@ export class ManagerialPnlQueryDto extends FinancialSheetBranchesQueryDto {
   @IsBoolean()
   @IsOptional()
   showEmpty?: boolean;
+
+  /**
+   * Распределить косвенные расходы без направления по направлениям
+   * (FT-011 ТЗ-3). Имеет смысл, когда ярусы раскрыты до направлений.
+   */
+  @ApiPropertyOptional({ default: false, type: Boolean })
+  @Transform(({ value }) => parseBoolean(value, false))
+  @IsBoolean()
+  @IsOptional()
+  spreadIndirect?: boolean;
+
+  @ApiPropertyOptional({ enum: ALLOCATION_BASES, default: 'revenue' })
+  @IsIn(ALLOCATION_BASES as unknown as string[])
+  @IsOptional()
+  spreadBase?: AllocationBase;
 }

@@ -10,6 +10,8 @@ import { SettingsStore } from '@/modules/Settings/SettingsStore';
 import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
 import { readOrganizationCalendar } from '@/modules/Settings/organizationCalendar';
 import { excludedReferenceTypes, readPnlSources } from './pnlSources';
+import { spreadIndirectCosts } from './spreadIndirect';
+import { CostAllocationRule } from '@/modules/CostAllocation/models/CostAllocationRule.model';
 import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
 import {
@@ -67,6 +69,9 @@ export class ManagerialPnlService {
 
     @Inject(SETTINGS_PROVIDER)
     private readonly settingsStore: () => Promise<SettingsStore>,
+
+    @Inject(CostAllocationRule.name)
+    private readonly ruleModel: TenantModelProxy<typeof CostAllocationRule>,
   ) {}
 
   public async sheet(query: ManagerialPnlQueryDto): Promise<ManagerialPnlSheet> {
@@ -86,6 +91,26 @@ export class ManagerialPnlService {
       excludedReferenceTypes(sources),
     );
     const projectNames = await this.projectNames(loaded.entriesByPeriod.flat());
+
+    // Распределение косвенных по направлениям (FT-011 ТЗ-3) — только когда
+    // ярусы раскрыты до направлений: на вкладке «статьи» итоги от него не
+    // меняются, и делать его незачем.
+    const spreadBase = query.spreadBase ?? 'revenue';
+    let spread: { base: string; applied: boolean; zeroBasePeriods: number } | null = null;
+    if (query.spreadIndirect && group !== 'articles') {
+      const result = spreadIndirectCosts({
+        entriesByPeriod: loaded.entriesByPeriod,
+        articles: loaded.articles,
+        base: spreadBase,
+        projectName: (id) => projectNames.get(id),
+        payrollArticleId:
+          Number(settings.get({ group: 'payroll', key: 'payroll_article_id' })) || null,
+        manualShares:
+          spreadBase === 'manual_share' ? await this.directionManualShares() : undefined,
+      });
+      loaded.entriesByPeriod = result.entriesByPeriod;
+      spread = { base: spreadBase, applied: true, zeroBasePeriods: result.zeroBasePeriods };
+    }
     const context = {
       articles: loaded.articles,
       group,
@@ -104,7 +129,16 @@ export class ManagerialPnlService {
       total: buildManagerialPnlColumn(loaded.entriesByPeriod.flat(), context),
     };
 
-    return { data, query, meta: { ...(await this.meta(query, basis)), pnlSources: sources } };
+    return {
+      data,
+      query,
+      meta: {
+        ...(await this.meta(query, basis)),
+        pnlSources: sources,
+        // Какая база применена (критерий 4 FT-011) и где она оказалась нулевой.
+        spread,
+      },
+    };
   }
 
   private periodsOf(
@@ -125,6 +159,19 @@ export class ManagerialPnlService {
       }
       throw error;
     }
+  }
+
+  /**
+   * Ручные доли направлений — из действующего правила распределения с целью
+   * «направления» и ключом «вручную» (FT-011 ТЗ-3).
+   */
+  private async directionManualShares(): Promise<Record<string, number>> {
+    const rules: any[] = await this.ruleModel().query();
+    const rule = rules.find(
+      (r) =>
+        r.isActive && r.targetType === 'direction' && r.allocationKey === 'manual_share',
+    );
+    return (rule?.manualShares ?? {}) as Record<string, number>;
   }
 
   private async projectNames(entries: { projectId: number | null }[]) {

@@ -34,6 +34,8 @@ export class BankTransaction extends TenantBaseModel {
 
   branchId: number;
   contactId?: number;
+  /** Направление (FT-030 ТЗ-3). */
+  projectId?: number | null;
   userId: number;
 
   publishedAt: Date;

@@ -10,7 +10,7 @@ import { safeCallback } from '@/utils';
  * @returns {JSX.Element}
  */
 export function BankRulesTableActionsMenu({
-  payload: { onEdit, onDelete },
+  payload: { onEdit, onDelete, onApplyToPast },
   row: { original },
 }: any) {
   return (
@@ -20,6 +20,12 @@ export function BankRulesTableActionsMenu({
           icon={<Icon icon="pen-18" />}
           text={intl.get('banking.rules.edit')}
           onClick={safeCallback(onEdit, original)}
+        />
+        {/* «Применить к прошлым операциям» (FT-034 ТЗ-3). */}
+        <MenuItem
+          icon={<Icon icon="done" />}
+          text={intl.get('banking.rules.apply_past.menu')}
+          onClick={safeCallback(onApplyToPast, original)}
         />
       </Can>
       <Can I={BankRuleAction.Delete} a={AbilitySubject.BankRule}>

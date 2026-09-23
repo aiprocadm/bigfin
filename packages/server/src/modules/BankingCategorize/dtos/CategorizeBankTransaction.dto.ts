@@ -106,6 +106,12 @@ export class CategorizeBankTransactionDto {
   @IsNumber()
   @IsOptional()
   contactId?: number;
+
+  // Направление (FT-030 ТЗ-3): разноска по автоправилу его ставит.
+  @ApiPropertyOptional({ description: 'Направление (проект)', type: Number, example: 3 })
+  @IsNumber()
+  @IsOptional()
+  projectId?: number | null;
 }
 
 /**

@@ -12,5 +12,7 @@
     "connected_message": "✅ Bigfin connected. Notifications will arrive here."
   },
   "mail_failed.title": "Email was not sent",
-  "mail_failed.body": "The email could not be delivered after several attempts. Reason: {reason}. Check the mail settings and resend it from the document."
+  "mail_failed.body": "The email could not be delivered after several attempts. Reason: {reason}. Check the mail settings and resend it from the document.",
+  "bank_rule_applied.title": "Auto-rule applied",
+  "bank_rule_applied.body": "Rule \"{ruleName}\" categorized transactions: {applied}. Skipped: {skipped} — you can categorize them manually in Money."
 }

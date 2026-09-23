@@ -83,6 +83,8 @@ export enum DialogsName {
   SalesTaxLiabilitySummaryPdfPreview = 'SalesTaxLiabilitySummaryPdfPreview',
   Export = 'Export',
   BankRuleForm = 'BankRuleForm',
+  // «Применить к прошлым операциям?» (FT-034 ТЗ-3).
+  BankRuleApplyToPast = 'BankRuleApplyToPast',
   DisconnectBankAccountConfirmation = 'DisconnectBankAccountConfirmation',
   SharePaymentLink = 'SharePaymentLink',
   SelectPaymentMethod = 'SelectPaymentMethodsDialog',

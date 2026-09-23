@@ -717,3 +717,32 @@ export function usePendingBankTransactionsInfinity(
     },
   );
 }
+
+/**
+ * Предпросмотр «применить к прошлым» (FT-034 ТЗ-3): неразнесённые строки,
+ * подходящие под правило.
+ */
+export function useBankRulePreview(ruleId?: number | null, props?: any) {
+  const apiRequest = useApiRequest();
+  return useQuery(
+    ['BANK_RULE_PREVIEW', ruleId],
+    () => apiRequest.get(`/banking/rules/${ruleId}/preview`).then((res) => res.data),
+    { enabled: Boolean(ruleId), ...props },
+  );
+}
+
+/** Разнести отмеченные строки по правилу — в фоне (FT-034 ТЗ-3). */
+export function useApplyBankRuleToPast() {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+  return useMutation(
+    ({ ruleId, ids }: { ruleId: number; ids: number[] }) =>
+      apiRequest.post(`/banking/rules/${ruleId}/apply`, { ids }).then((res) => res.data),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(queryClient);
+        queryClient.invalidateQueries('BANK_RULE_PREVIEW');
+      },
+    },
+  );
+}

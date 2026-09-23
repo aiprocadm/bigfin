@@ -2,14 +2,29 @@ import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { BankTransaction } from '../models/BankTransaction';
 import { transformCashflowTransactionType } from '../utils';
 import { Ledger } from '@/modules/Ledger/Ledger';
+import { splitByShares } from '@/modules/BankRules/utils/splitShares';
+
+/**
+ * Часть операции для проводок (FT-031 ТЗ-3): куда уходит доля суммы.
+ * Сумма — в валюте операции; перевод в валюту учёта делается здесь.
+ */
+export interface BankTransactionGLSplit {
+  accountId: number;
+  accountNormal?: string;
+  projectId?: number | null;
+  amount: number;
+}
 
 export class BankTransactionGL {
   private bankTransactionModel: BankTransaction;
+  private splits: BankTransactionGLSplit[];
   /**
    * @param {BankTransaction} bankTransactionModel - The bank transaction model.
+   * @param splits - части операции; пусто — операция проводится целиком.
    */
-  constructor(bankTransactionModel: BankTransaction) {
+  constructor(bankTransactionModel: BankTransaction, splits: BankTransactionGLSplit[] = []) {
     this.bankTransactionModel = bankTransactionModel;
+    this.splits = splits;
   }
 
   /**
@@ -47,6 +62,10 @@ export class BankTransactionGL {
       // Месяц начисления (FT-013 ТЗ-3) живёт у документа и переносится на
       // каждую проводку: отчёт о прибыли читает проводки.
       accrualPeriod: (this.bankTransactionModel as any).accrualPeriod ?? null,
+
+      // Направление (FT-030 ТЗ-3) — так же: отчёты по направлениям читают
+      // его у проводок.
+      projectId: (this.bankTransactionModel as any).projectId ?? null,
     };
   }
 
@@ -96,9 +115,40 @@ export class BankTransactionGL {
    */
   private getJournalEntries(): ILedgerEntry[] {
     const debitEntry = this.cashflowDebitGLEntry;
+    if (this.splits.length > 0) {
+      // Деньги ушли одной суммой — проводка по счёту денег одна и без
+      // направления: у частей они разные.
+      return [{ ...debitEntry, projectId: null }, ...this.splitCreditGLEntries];
+    }
     const creditEntry = this.cashflowCreditGLEntry;
 
     return [debitEntry, creditEntry];
+  }
+
+  /**
+   * Проводки «куда» по частям (FT-031 ТЗ-3): в отчёты идут части, в сверку
+   * с банком — одна операция по счёту денег.
+   *
+   * Суммы частей в валюте учёта раскладываются в копейках от суммы проводки
+   * по счёту денег, остаток — первой части: иначе при курсе ≠ 1 части
+   * разошлись бы с деньгами на копейку, и проводка не сошлась бы.
+   */
+  private get splitCreditGLEntries(): ILedgerEntry[] {
+    const total = this.splits.reduce((sum, part) => sum + Number(part.amount), 0);
+    const local = this.bankTransactionModel.localAmount;
+    const shares = this.splits.map((part) => (Number(part.amount) / total) * 100);
+    const localParts = splitByShares(local, shares);
+    const isCashDebit = this.bankTransactionModel.isCashDebit;
+
+    return this.splits.map((part, index) => ({
+      ...this.commonEntry,
+      accountId: part.accountId,
+      accountNormal: part.accountNormal,
+      projectId: part.projectId ?? null,
+      credit: isCashDebit ? localParts[index] : 0,
+      debit: isCashDebit ? 0 : localParts[index],
+      index: 2 + index,
+    })) as ILedgerEntry[];
   }
 
   /**

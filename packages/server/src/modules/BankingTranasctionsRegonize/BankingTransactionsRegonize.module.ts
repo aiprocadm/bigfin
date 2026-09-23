@@ -16,6 +16,10 @@ import { BullModule } from '@nestjs/bullmq';
 import { RecognizeUncategorizedTransactionsQueue } from './_types';
 import { RegonizeTransactionsPrcessor } from './jobs/RecognizeTransactionsJob';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
+import { ApplyBankRuleService } from './commands/ApplyBankRule.service';
+import { ApplyRuleToPastService } from './commands/ApplyRuleToPast.service';
+import { BankingCategorizeModule } from '../BankingCategorize/BankingCategorize.module';
+import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
 
 const models = [RegisterTenancyModel(RecognizedBankTransaction)];
 
@@ -23,6 +27,9 @@ const models = [RegisterTenancyModel(RecognizedBankTransaction)];
   imports: [
     BankingTransactionsModule,
     TenancyModule,
+    // Правило разносит строку тем же путём, что и человек (FT-030 ТЗ-3).
+    forwardRef(() => BankingCategorizeModule),
+    TransactionSplitsModule,
     forwardRef(() => BankRulesModule),
     BullModule.registerQueue({
       name: RecognizeUncategorizedTransactionsQueue,
@@ -38,6 +45,8 @@ const models = [RegisterTenancyModel(RecognizedBankTransaction)];
     GetRecognizedTransactionsService,
     RevertRecognizedTransactionsService,
     RecognizeTranasctionsService,
+    ApplyBankRuleService,
+    ApplyRuleToPastService,
     TriggerRecognizedTransactionsSubscriber,
     GetRecognizedTransactionService,
     RegonizeTransactionsPrcessor,
@@ -46,6 +55,7 @@ const models = [RegisterTenancyModel(RecognizedBankTransaction)];
     ...models,
     RevertRecognizedTransactionsService,
     RecognizeTranasctionsService,
+    ApplyRuleToPastService,
   ],
   controllers: [BankingRecognizedTransactionsController],
 })

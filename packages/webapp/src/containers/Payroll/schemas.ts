@@ -25,6 +25,10 @@ export const payrollSettingsSchema = z.object({
   contribRate: z.coerce.number().min(0).max(100),
   mspRate: z.coerce.number().min(0).max(100),
   mspThreshold: z.coerce.number().min(0),
+  // Статьи, на которые утверждённый расчёт ставит выплаты: «на руки» — на
+  // статью зарплаты, НДФЛ и взносы — на статью налогов. Пусто — без статьи.
+  payrollArticleId: z.number().int().positive().nullable().optional(),
+  taxesArticleId: z.number().int().positive().nullable().optional(),
 });
 export type PayrollSettingsFormValues = z.infer<typeof payrollSettingsSchema>;
 

@@ -97,6 +97,24 @@ export const SettingsOptions = {
   managerial_pnl: {
     payroll_grouping: { type: 'string' },
   },
+  // Ставки и статьи модуля «Зарплата». Группы здесь не было: окно
+  // «Настройки зарплаты» получало отказ на каждое сохранение, а статью
+  // зарплаты нельзя было задать вовсе — утверждённый расчёт ставил платежи
+  // без статьи, а ФОТ по сотрудникам и база «по ФОТ» не работали.
+  payroll: {
+    ndfl_rate: { type: 'number' },
+    contrib_mode: { type: 'string' },
+    contrib_rate: { type: 'number' },
+    msp_rate: { type: 'number' },
+    msp_threshold: { type: 'number' },
+    payroll_article_id: { type: 'number' },
+    taxes_article_id: { type: 'number' },
+  },
+  // Множитель прибыли для оценки стоимости бизнеса. Служба пишет его прямо
+  // в хранилище, но объявлен он здесь, чтобы тип читался одинаково.
+  capitalization: {
+    profit_multiple: { type: 'number' },
+  },
   manual_journals: {
     next_number: {
       type: 'string',

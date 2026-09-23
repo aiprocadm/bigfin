@@ -5179,5 +5179,9 @@
   "managerial_pnl.payroll.status.no_article": "No payroll article is selected in payroll settings — nothing to break down by employees.",
   "managerial_pnl.payroll.status.grouping": "Payroll breaks down by employees on the \"By articles\" tab: payroll runs have no direction.",
   "managerial_pnl.payroll.status.legal_entity": "Payroll is not broken down when filtering by legal entity: employees are not linked to one.",
-  "managerial_pnl.payroll.status.no_tier": "The payroll article has no tier — set it in the articles directory first."
+  "managerial_pnl.payroll.status.no_tier": "The payroll article has no tier — set it in the articles directory first.",
+  "payroll.settings.payroll_article": "Payroll article",
+  "payroll.settings.taxes_article": "Payroll taxes article",
+  "payroll.settings.article_none": "Not selected",
+  "payroll.settings.articles_hint": "An approved payroll run puts payments on these articles in the payment calendar: net pay on the payroll article, personal income tax and contributions on the taxes article. The managerial P&L breaks payroll down by employees using the payroll article."
 }

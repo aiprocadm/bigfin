@@ -34,6 +34,26 @@ describe('сверка с банком (FT-040, FT-041)', () => {
     expect(result.missingBank).toHaveLength(1);
   });
 
+  it('документы разных разделов с одним номером — разные строки', () => {
+    // Живой случай стенда: дивиденды №1, оплата покупателя №1 и оплата
+    // поставщику №1. Пара для дивидендов не должна «занимать» оплаты.
+    const result = reconcile(
+      [
+        { date: '2026-08-04', amount: -100000, externalId: null },
+        { date: '2026-07-30', amount: 100000, externalId: null },
+        { date: '2026-07-30', amount: -50000, externalId: null },
+      ],
+      [
+        { kind: 'document', refType: 'DividendPayout', id: 1, date: '2026-08-04', amount: -100000 },
+        { kind: 'document', refType: 'PaymentReceive', id: 1, date: '2026-07-30', amount: 100000 },
+        { kind: 'document', refType: 'BillPayment', id: 1, date: '2026-07-30', amount: -50000 },
+        { kind: 'document', refType: 'Expense', id: 1, date: '2026-07-31', amount: -700 },
+      ],
+    );
+    expect(result.missingHere).toEqual([]);
+    expect(result.missingBank.map((l) => l.refType)).toEqual(['Expense']);
+  });
+
   it('допуск 0 дней: тот же платёж днём позже — не пара', () => {
     const result = reconcile([{ date: '2026-06-03', amount: -150, externalId: null }], [
       { kind: 'cashflow', id: 1, date: '2026-06-04', amount: -150 },

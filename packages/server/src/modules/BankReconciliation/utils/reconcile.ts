@@ -25,6 +25,11 @@ export interface OurLine {
   /** document — документ другого раздела (оплата счёта, расход, проводка). */
   kind: 'bank_line' | 'cashflow' | 'document';
   id: number;
+  /**
+   * Тип документа для вида document: номера у разных разделов свои
+   * (оплата покупателя №1 и оплата поставщику №1 — разные документы).
+   */
+  refType?: string | null;
   date: string;
   amount: number;
   externalId?: string | null;
@@ -95,7 +100,9 @@ export function reconcile(
   deleted: DeletedLine[] = [],
 ): ReconcileResult {
   const used = new Set<string>();
-  const keyOf = (line: OurLine) => `${line.kind}:${line.id}`;
+  // Ярлык строки: вид + тип документа + номер. Без типа документа оплата
+  // покупателя №1 и оплата поставщику №1 считались бы одной строкой.
+  const keyOf = (line: OurLine) => `${line.kind}:${line.refType ?? ''}:${line.id}`;
   const byExternal = new Map<string, OurLine[]>();
   const byTriple = new Map<string, OurLine[]>();
   for (const line of ours) {

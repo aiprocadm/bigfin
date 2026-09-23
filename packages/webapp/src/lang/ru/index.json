@@ -4478,6 +4478,8 @@
   "cash_flow_articles.error.too_wide": "Слишком много колонок. Выберите более крупный масштаб или сузьте период.",
   "managerial_pnl.title": "Управленческий ОПиУ",
   "managerial_pnl.page_hint": "Сколько остаётся от выручки после каждого слоя расходов: маржинальный доход, валовая прибыль по направлениям и общая, операционная и чистая прибыль.",
+  "managerial_pnl.waterfall_title": "Куда уходит выручка: от выручки до чистой прибыли",
+  "managerial_pnl.waterfall_of_revenue": "от выручки",
   "managerial_pnl.column.name": "Показатель",
   "managerial_pnl.view.aria": "Вид отчёта о прибыли",
   "managerial_pnl.view.managerial": "Управленческий",

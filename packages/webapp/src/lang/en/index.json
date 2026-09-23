@@ -4478,6 +4478,8 @@
   "cash_flow_articles.error.too_wide": "Too many columns. Choose a larger scale or narrow the period.",
   "managerial_pnl.title": "Managerial P&L",
   "managerial_pnl.page_hint": "What is left of revenue after each layer of costs: contribution margin, gross profit by direction and overall, operating and net profit.",
+  "managerial_pnl.waterfall_title": "Where revenue goes: from revenue to net profit",
+  "managerial_pnl.waterfall_of_revenue": "of revenue",
   "managerial_pnl.column.name": "Line",
   "managerial_pnl.view.aria": "Profit report view",
   "managerial_pnl.view.managerial": "Managerial",

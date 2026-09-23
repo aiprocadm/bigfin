@@ -45,6 +45,8 @@ import {
   pnlRows,
   pnlSearchFromQuery,
 } from './managerialPnlRows';
+import { hasWaterfall, pnlWaterfall } from './pnlWaterfall';
+import { PnlWaterfallChart } from './PnlWaterfallChart';
 
 /**
  * Нет права на управленческий ОПиУ: у ролей, заведённых до его появления,
@@ -157,6 +159,17 @@ export default function ManagerialPnl() {
       reportTo: query.toDate,
     });
   };
+
+  // Водопад (FT-015) — из последней колонки таблицы: это «Итого», а при
+  // одной колонке — она сама. Второго запроса нет.
+  const waterfall = React.useMemo(() => {
+    const values = new Map<string, number>();
+    serverRows.forEach((row: any) => {
+      const last = row.cells[row.cells.length - 1];
+      values.set(row.id, Number(last?.value) || 0);
+    });
+    return pnlWaterfall((id) => values.get(id) ?? 0);
+  }, [serverRows]);
 
   const revenueRow = serverRows.find((row: any) => row.id === 'revenue');
   const hasMovement = serverRows.some((row: any) =>
@@ -292,6 +305,8 @@ export default function ManagerialPnl() {
           </Link>
         </div>
       ) : (
+        <>
+        {hasWaterfall(waterfall) && <PnlWaterfallChart steps={waterfall} />}
         <ReportSheet
           sheetType={intl.get('managerial_pnl.title')}
           dateText={data?.meta?.formatted_date_range}
@@ -312,6 +327,7 @@ export default function ManagerialPnl() {
             maxBodyHeight={680}
           />
         </ReportSheet>
+        </>
       )}
 
       <ReportDrillDownPanel

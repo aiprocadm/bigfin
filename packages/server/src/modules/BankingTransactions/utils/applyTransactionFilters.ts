@@ -2,6 +2,34 @@
 import { hasDueSql } from '@/common/utils/paymentStatusSql';
 import { INVOICE_PAYMENT_COLUMNS } from '@/modules/SaleInvoices/models/SaleInvoice';
 import { BILL_PAYMENT_COLUMNS } from '@/modules/Bills/models/Bill';
+import { ACCOUNT_TYPE } from '@/constants/accounts';
+
+/**
+ * Реестр — это движение ДЕНЕГ: в нём только ноги денежных счетов (банк,
+ * касса, карта) — те же виды, что в списке «Кассы и банковские счета».
+ *
+ * НАЙДЕНО ЖИВОЙ ПРОВЕРКОЙ ЭТАПА 37. Без этого условия список «по всем
+ * счетам» показывал ОБЕ ноги каждой проводки: «Прочие расходы»,
+ * «Кредиторская задолженность» стояли в колонке «Счёт», за квартал на
+ * стенде было 43 строки вместо 8, а итог «поступления − выплаты» всегда
+ * выходил нулём — каждая сумма входила дважды, с разными знаками.
+ */
+export const REGISTRY_ACCOUNT_TYPES: string[] = [
+  ACCOUNT_TYPE.BANK,
+  ACCOUNT_TYPE.CASH,
+  ACCOUNT_TYPE.CREDIT_CARD,
+];
+
+/**
+ * С отбором «нам должны / мы должны / просрочено» в реестре нужны и
+ * неоплаченные счета — а у них нет денежной ноги. Такой счёт виден ОДНОЙ
+ * строкой долга (расчёты с покупателями или поставщиками), а не тремя
+ * (долг, доход, НДС), как было до живой проверки этапа 37.
+ */
+export const REGISTRY_DEBT_ACCOUNT_TYPES: string[] = [
+  ACCOUNT_TYPE.ACCOUNTS_RECEIVABLE,
+  ACCOUNT_TYPE.ACCOUNTS_PAYABLE,
+];
 
 /**
  * Отборы списка операций — ОДИН набор на список и на итоги (FIN-008 ТЗ-2).
@@ -128,6 +156,16 @@ export function applyTransactionFilters(
   filters: TransactionListFilters,
   articleAccountIds: number[] | null = null,
 ): any {
+  const byDebtState = (filters?.states ?? []).some((state) =>
+    (TRANSACTION_STATE_FILTERS as readonly string[]).includes(state),
+  );
+  const accountTypes = byDebtState
+    ? [...REGISTRY_ACCOUNT_TYPES, ...REGISTRY_DEBT_ACCOUNT_TYPES]
+    : REGISTRY_ACCOUNT_TYPES;
+  query.whereIn('account_id', (builder: any) => {
+    builder.select('id').from('accounts').whereIn('account_type', accountTypes);
+  });
+
   applyStateFilter(query, filters?.states);
 
   const {

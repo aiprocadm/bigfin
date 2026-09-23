@@ -38,9 +38,22 @@ const makeQuery = () => {
       calls.push(['andWhere', ...args]);
       return query;
     },
+    // Подзапрос записывается меткой: здесь важно, ЧТО ограничено.
+    whereIn: (column: string, values: any) => {
+      calls.push(['whereIn', column, typeof values === 'function' ? CASH_ACCOUNTS : values]);
+      return query;
+    },
   };
   return { query, calls };
 };
+
+/**
+ * Реестр — движение денег: первым условием всегда идёт «только денежные
+ * счета» (живая проверка этапа 37: без него в списке были обе ноги каждой
+ * проводки, а итог всегда выходил нулём).
+ */
+const CASH_ACCOUNTS = 'денежные счета';
+const CASH = ['whereIn', 'account_id', CASH_ACCOUNTS];
 
 /** Репозиторий без моделей: для наложения отборов они не нужны. */
 const makeRepo = (query: any) => {
@@ -64,13 +77,13 @@ const makeRepo = (query: any) => {
 const applyFilters = (repo: any, query: any) => repo.applyFilters(query);
 
 describe('список операций по всем счетам', () => {
-  it('без счёта условие по счёту не накладывается', () => {
+  it('без счёта — только денежные счета, конкретный счёт не накладывается', () => {
     const repo = makeRepo({ page: 1, pageSize: 50 } as any);
     const { query, calls } = makeQuery();
 
     applyFilters(repo, query);
 
-    expect(calls).toEqual([]);
+    expect(calls).toEqual([CASH]);
   });
 
   it('со счётом условие по счёту остаётся прежним', () => {
@@ -79,7 +92,7 @@ describe('список операций по всем счетам', () => {
 
     applyFilters(repo, query);
 
-    expect(calls).toEqual([['where', 'account_id', 7]]);
+    expect(calls).toEqual([CASH, ['where', 'account_id', 7]]);
   });
 
   it('период накладывается двумя границами', () => {
@@ -94,6 +107,7 @@ describe('список операций по всем счетам', () => {
     applyFilters(repo, query);
 
     expect(calls).toEqual([
+      CASH,
       ['where', 'date', '>=', '2026-01-01'],
       ['where', 'date', '<=', '2026-01-31'],
     ]);
@@ -103,12 +117,12 @@ describe('список операций по всем счетам', () => {
     const inRepo = makeRepo({ page: 1, pageSize: 50, flow: 'in' } as any);
     const inQuery = makeQuery();
     applyFilters(inRepo, inQuery.query);
-    expect(inQuery.calls).toEqual([['where', 'debit', '>', 0]]);
+    expect(inQuery.calls).toEqual([CASH, ['where', 'debit', '>', 0]]);
 
     const outRepo = makeRepo({ page: 1, pageSize: 50, flow: 'out' } as any);
     const outQuery = makeQuery();
     applyFilters(outRepo, outQuery.query);
-    expect(outQuery.calls).toEqual([['where', 'credit', '>', 0]]);
+    expect(outQuery.calls).toEqual([CASH, ['where', 'credit', '>', 0]]);
   });
 
   it('поиск идёт по номеру, номеру-ссылке и примечанию', () => {
@@ -118,6 +132,7 @@ describe('список операций по всем счетам', () => {
     applyFilters(repo, query);
 
     expect(calls).toEqual([
+      CASH,
       [
         'group',
         [

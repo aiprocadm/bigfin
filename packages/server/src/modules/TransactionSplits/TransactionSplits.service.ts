@@ -53,7 +53,7 @@ export class TransactionSplitsService {
     const validation = validateSplits(input.parentAmount, input.lines);
 
     if (!validation.isValid) {
-      throw new ServiceError(SPLIT_ERRORS.SPLIT_NOT_BALANCED, undefined, {
+      throw new ServiceError(SPLIT_ERRORS.SPLIT_NOT_BALANCED, 'Части не сходятся с суммой операции', {
         problem: validation.problem,
         remaining: validation.remaining,
       });

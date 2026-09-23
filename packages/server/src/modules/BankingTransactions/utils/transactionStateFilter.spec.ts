@@ -25,8 +25,19 @@ const sqlFor = (...states: string[]): string => {
 };
 
 describe('отбор реестра по состоянию', () => {
-  it('без отбора запрос не ограничивается', () => {
-    expect(sqlFor()).toBe('select * from `accounts_transactions`');
+  it('без отбора — только ноги денежных счетов, и больше ничего', () => {
+    // Реестр — движение денег (живая проверка этапа 37: без этого условия
+    // в списке стояли обе ноги каждой проводки, а итог всегда был нулём).
+    expect(sqlFor()).toBe(
+      "select * from `accounts_transactions` where `account_id` in (select `id` from `accounts` where `account_type` in ('bank', 'cash', 'credit-card'))",
+    );
+  });
+
+  it('с отбором по долгу виден и неоплаченный счёт — одной строкой долга', () => {
+    const sql = sqlFor('receivable');
+    expect(sql).toContain("'bank', 'cash', 'credit-card', 'accounts-receivable', 'accounts-payable'");
+    // Без отбора по долгу — только деньги.
+    expect(sqlFor()).not.toContain('accounts-receivable');
   });
 
   it('«нам должны» смотрит на СЧЕТА ПОКУПАТЕЛЯМ с остатком', () => {
@@ -82,6 +93,6 @@ describe('отбор реестра по состоянию', () => {
 
   it('чужое состояние отбором НЕ становится', () => {
     // Опечатка в адресе не должна молча показывать пустой список.
-    expect(sqlFor('просрочено')).toBe('select * from `accounts_transactions`');
+    expect(sqlFor('просрочено')).toBe(sqlFor());
   });
 });

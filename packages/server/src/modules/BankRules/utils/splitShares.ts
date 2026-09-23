@@ -39,7 +39,27 @@ export function validateShares(shares: number[]): ShareCheck {
  */
 export function splitByShares(amount: number, shares: number[]): number[] {
   const cents = Math.round(Math.abs(Number(amount)) * 100);
-  const parts = shares.map((share) => Math.floor((cents * Number(share)) / 100));
+  // Малый запас от погрешности дробей: 1200 × 91,666…/100 даёт 1099,999…,
+  // и без него округление вниз теряло бы целую копейку.
+  const parts = shares.map((share) => Math.floor((cents * Number(share)) / 100 + 1e-7));
+  const remainder = cents - parts.reduce((sum, part) => sum + part, 0);
+  if (parts.length > 0) parts[0] += remainder;
+  return parts.map((part) => part / 100);
+}
+
+/**
+ * Суммы частей в валюте учёта по суммам частей в валюте операции — целыми
+ * копейками, остаток первой строке. При курсе 1 части проводятся ровно
+ * такими, какими их ввёл человек; при другом курсе сумма частей строго
+ * равна сумме по счёту денег, и проводка сходится.
+ */
+export function splitByAmounts(amount: number, partAmounts: number[]): number[] {
+  const cents = Math.round(Math.abs(Number(amount)) * 100);
+  const partCents = partAmounts.map((part) => Math.round(Math.abs(Number(part)) * 100));
+  const totalCents = partCents.reduce((sum, part) => sum + part, 0);
+  if (totalCents === 0) return partAmounts.map(() => 0);
+  // Целочисленная арифметика: произведение и деление — без дробей.
+  const parts = partCents.map((part) => Math.floor((cents * part) / totalCents));
   const remainder = cents - parts.reduce((sum, part) => sum + part, 0);
   if (parts.length > 0) parts[0] += remainder;
   return parts.map((part) => part / 100);

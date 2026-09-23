@@ -3,6 +3,7 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
 import { TransactionActionsService } from './commands/TransactionActions.service';
+import { cashflowErrorText } from './utils/cashflowErrorText';
 import { DeleteCashflowTransaction } from './commands/DeleteCashflowTransaction.service';
 import { CreateBankTransactionService } from './commands/CreateBankTransaction.service';
 import { GetBankTransactionService } from './queries/GetBankTransaction.service';
@@ -97,11 +98,8 @@ export class BankingTransactionsApplication {
         const created: any = await this.createTransaction(dto);
         results.push({ index, id: Number(created.id) });
       } catch (error: any) {
-        results.push({
-          index,
-          error: error?.errorType ?? error?.name ?? 'CREATE_FAILED',
-          message: error?.message ?? 'Не удалось сохранить операцию',
-        });
+        const type = error?.errorType ?? error?.name ?? 'CREATE_FAILED';
+        results.push({ index, error: type, message: cashflowErrorText(type, error?.message) });
       }
     }
     const created = results.filter((result) => 'id' in result).length;

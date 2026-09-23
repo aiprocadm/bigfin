@@ -78,7 +78,10 @@ describe('подпись яруса', () => {
 describe('у каждого яруса есть все подписи на обоих языках', () => {
   // Ярус без подписи на экране выглядел бы ключом перевода. Проверяем
   // словари напрямую, а не через подменённый intl.
-  const dictionaries = { ru, en } as Record<string, Record<string, string>>;
+  const dictionaries = { ru, en } as unknown as Record<
+    string,
+    Record<string, string>
+  >;
 
   Object.entries(dictionaries).forEach(([lang, dict]) => {
     it(`${lang}: название, пример и действие для каждого яруса`, () => {

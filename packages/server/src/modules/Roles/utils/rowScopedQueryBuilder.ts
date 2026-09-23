@@ -25,6 +25,12 @@ export function rowScopedQueryBuilder(
       super(modelClass);
       (this as any).onBuild((builder: any) => {
         if (!builder.isFind() || builder.context()?.skipRowScope) return;
+        // Подзапрос к ДРУГОЙ таблице (`b.select('id').from('accounts')`
+        // внутри запроса проводок) Objection строит тем же построителем.
+        // Фильтр проводок в нём — несуществующая колонка и 500 (реестр на
+        // стенде, этап 39). Фильтруем только запрос к таблице своей модели.
+        const model = builder.modelClass();
+        if (builder.tableNameFor(model) !== model.getTableName()) return;
         const scope = currentRowScope();
         if (scope) apply(builder, scope);
       });

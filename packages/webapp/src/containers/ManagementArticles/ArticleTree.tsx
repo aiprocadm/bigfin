@@ -2,7 +2,9 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import { Button } from '@/components/ui/button';
 import { Lock, Map, Pencil, Trash2 } from 'lucide-react';
-import { ManagementArticle } from './schemas';
+import { Badge } from '@/components/ui/badge';
+import { describeTier } from './plTypes';
+import { ManagementArticle, PL_ARTICLE_KINDS } from './schemas';
 import { buildArticleSummary } from './articleSummary';
 import { isSystemArticle } from './articleKindTabs';
 
@@ -53,6 +55,12 @@ export function ArticleTree({
                     {intl.get('management_articles.system_article')}
                   </title>
                 </Lock>
+              )}
+              {PL_ARTICLE_KINDS.includes(node.kind) && (
+                <TierBadge
+                  plType={node.effectivePlType}
+                  inherited={node.plTypeInherited}
+                />
               )}
               {(() => {
                 const summary = buildArticleSummary(node as any);
@@ -117,5 +125,47 @@ export function ArticleTree({
         </li>
       ))}
     </ul>
+  );
+}
+
+/**
+ * Бейдж яруса управленческого ОПиУ (FT-009 ТЗ-3).
+ *
+ * Унаследованный ярус приглушён и подписан «как у родителя»: человек должен
+ * видеть, что ярус он не выбирал, а получил от родительской статьи. Ярус не
+ * задан вовсе — бейдж того же цвета, что «счета не привязаны»: это такая же
+ * недонастройка, и в отчёте такая статья встанет строкой «Не отнесено к
+ * ярусу».
+ *
+ * Смысл несёт не цвет, а слова: полная фраза — в подсказке и для читалки
+ * экрана.
+ */
+function TierBadge({
+  plType,
+  inherited,
+}: {
+  plType?: string | null;
+  inherited?: boolean;
+}) {
+  const tier = describeTier(plType, inherited);
+  const title = tier.inherited
+    ? `${tier.sentence} (${intl.get('management_articles.pl_type_inherited')})`
+    : tier.sentence;
+
+  return (
+    <Badge
+      variant={tier.unassigned ? 'outline' : 'secondary'}
+      className={
+        tier.unassigned
+          ? 'font-normal text-amber-600'
+          : tier.inherited
+            ? 'font-normal text-text-secondary'
+            : 'font-normal'
+      }
+      title={title}
+      aria-label={title}
+    >
+      {tier.label}
+    </Badge>
   );
 }

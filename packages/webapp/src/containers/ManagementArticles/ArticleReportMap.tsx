@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useArticleReportMap } from '@/hooks/query/managementArticles';
+import { describeTier } from './plTypes';
 
 export interface ReportMapNode {
   key: string;
@@ -89,17 +90,53 @@ function MapCard({
   nodes,
   turnover,
   reportLink,
+  footer,
 }: {
   title: string;
   nodes: ReportMapNode[];
   turnover?: string | null;
   reportLink?: string;
+  footer?: React.ReactNode;
 }) {
   return (
     <section className="rounded-default border border-border p-4">
       <h3 className="mb-2 text-sm font-semibold">{title}</h3>
       <MapNodes nodes={nodes} turnover={turnover} reportLink={reportLink} />
+      {footer}
     </section>
+  );
+}
+
+/**
+ * Ярус статьи в управленческом отчёте о прибыли (FT-009 ТЗ-3).
+ *
+ * Карточка «Прибыль» говорила только «доход» или «расход». Теперь — ЧТО
+ * именно статья делает с прибылью: «Прямые переменные → уменьшает
+ * маржинальный доход». Ярус не задан — сказано прямо, где его выбрать.
+ */
+function PlTierNote({
+  tier,
+}: {
+  tier: { plType: string | null; inherited: boolean };
+}) {
+  const described = describeTier(tier.plType, tier.inherited);
+
+  return (
+    <div className="mt-2 border-t border-border pt-2 text-sm">
+      <p className="text-xs text-text-secondary">
+        {intl.get('article_report_map.pl_tier_title')}
+      </p>
+      <p>
+        {described.sentence}
+        {described.inherited &&
+          ` (${intl.get('management_articles.pl_type_inherited')})`}
+      </p>
+      {described.unassigned && (
+        <p className="text-xs text-amber-600">
+          {intl.get('article_report_map.pl_tier_setup')}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -170,6 +207,7 @@ export function ArticleReportMap({
           title={intl.get('article_report_map.card.profit_loss')}
           nodes={map.profitLoss ?? []}
           turnover={turnover}
+          footer={map.plTier ? <PlTierNote tier={map.plTier} /> : null}
         />
         <MapCard
           title={intl.get('article_report_map.card.balance')}

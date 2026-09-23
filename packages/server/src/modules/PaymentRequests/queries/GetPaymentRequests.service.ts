@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { currentAccessPreview } from '@/modules/Roles/utils/accessPreview';
 import { totalsByCurrency } from '../utils/installments';
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
@@ -44,6 +45,8 @@ export class GetPaymentRequestsService {
   }
 
   private async currentUserId(): Promise<number | null> {
+    const preview = currentAccessPreview();
+    if (preview) return preview.systemUserId;
     const user: any = await this.tenancyContext?.getSystemUser();
     return user?.id ?? null;
   }

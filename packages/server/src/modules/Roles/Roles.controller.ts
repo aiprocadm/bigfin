@@ -37,6 +37,16 @@ import { RequireOwner } from './RequireOwner.decorator';
 export class RolesController {
   constructor(private readonly rolesApp: RolesApplication) { }
 
+  // Статичный путь — до ручек с `:id`, чтобы не спутаться с номером роли.
+  @Post('access-preview')
+  @ApiOperation({
+    summary: 'Начать проверку доступа: посмотреть, что видит сотрудник (FT-081).',
+  })
+  async startAccessPreview(@Body('userId', ParseIntPipe) userId: number) {
+    const data = await this.rolesApp.startAccessPreview(userId);
+    return { data };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a new role' })
   @ApiBody({ type: CreateRoleDto })

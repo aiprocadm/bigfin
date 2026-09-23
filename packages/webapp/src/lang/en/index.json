@@ -5509,5 +5509,9 @@
   "roles.row_scope.accounts": "Money accounts",
   "roles.row_scope.articles": "Articles",
   "roles.row_scope.selected": "{count} selected",
-  "row_scope.notice": "Only the data available to your role is shown: other directions, accounts or articles are excluded, and totals are counted without them."
+  "row_scope.notice": "Only the data available to your role is shown: other directions, accounts or articles are excluded, and totals are counted without them.",
+  "access_preview.start": "See what this user sees",
+  "access_preview.banner": "Access check mode: you see Bigfin as {name}. Changes are disabled.",
+  "access_preview.exit": "Exit",
+  "access_preview.read_only": "Access check mode: changes are disabled. Exit the mode to work."
 }

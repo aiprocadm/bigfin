@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { assertPreviewReadOnly, resolveAccessPreview } from './utils/accessPreview';
 import {
   CallHandler,
   ExecutionContext,
@@ -59,10 +60,14 @@ export class RowScopeInterceptor implements NestInterceptor {
     const organizationId = this.cls.get('organizationId');
     if (!userId || !organizationId) return next.handle();
 
-    const scope = await this.scopeFor(organizationId, userId);
+    const request = context.switchToHttp().getRequest();
+    // Режим проверки доступа (FT-081 ТЗ-3): смотреть можно, менять — нет.
+    const preview = await resolveAccessPreview(request, this.cls, this.tenantUserModel);
+    assertPreviewReadOnly(preview, request?.method);
+
+    const scope = await this.scopeFor(organizationId, preview?.systemUserId ?? userId);
     this.cls.set(ROW_SCOPE_CLS_KEY, scope);
 
-    const request = context.switchToHttp().getRequest();
     const forbidden =
       forbiddenRowScopeRequest(request?.query, scope) ??
       forbiddenRowScopeRequest(request?.body, scope);

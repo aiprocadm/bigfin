@@ -5,6 +5,9 @@ import { Intent } from '@blueprintjs/core';
 import { DataTable } from '@/components/ui/data-table';
 import { AppToaster } from '@/components';
 import { useResendInvitation } from '@/hooks/query';
+import useApiRequest from '@/hooks/useRequest';
+import { useAuthOrganizationId } from '@/hooks/state';
+import { writeAccessPreview } from '@/services/accessPreview';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { compose } from '@/utils';
@@ -92,12 +95,36 @@ function UsersDataTable({
     [resendInvitation],
   );
 
+  // Проверка доступа (FT-081 ТЗ-3): сервер отмечает начало в журнале и
+  // подтверждает, что сотрудник есть; дальше витрина перезагружается уже с
+  // его правами и ограничениями.
+  const apiRequest = useApiRequest();
+  const organizationId = useAuthOrganizationId();
+  const handlePreviewAccess = useCallback(
+    (user: UserRow) => {
+      apiRequest
+        .post('roles/access-preview', { user_id: user.id })
+        .then((res: any) => {
+          const data = res?.data?.data ?? {};
+          writeAccessPreview({
+            userId: Number(data.user_id ?? data.userId ?? user.id),
+            name: data.name ?? user.full_name ?? user.email,
+            organizationId: String(organizationId),
+          });
+          window.location.assign('/');
+        })
+        .catch(() => {});
+    },
+    [apiRequest, organizationId],
+  );
+
   const columns = useUsersTableColumns({
     onEdit: handleEditUser,
     onActivate: handleActivateUser,
     onInactivate: handleInactivateUser,
     onDelete: handleDeleteUser,
     onResendInvitation: handleResendInvitation,
+    onPreviewAccess: handlePreviewAccess,
   });
 
   return (

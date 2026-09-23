@@ -13,6 +13,8 @@ interface DashboardShellProps {
    * что кнопка «Ещё» живёт в ней, а состояние меню — здесь.
    */
   bottomNav?: (openMenu: () => void) => React.ReactNode;
+  /** Полоса над всем экраном — например, режим проверки доступа (FT-081). */
+  banner?: React.ReactNode;
   className?: string;
 }
 
@@ -21,6 +23,7 @@ export const DashboardShell = ({
   topbar,
   children,
   bottomNav,
+  banner,
   className,
 }: DashboardShellProps) => {
   // Состояние выезжающего меню на мобильном. Это UI-состояние, не бизнес-логика.
@@ -30,6 +33,7 @@ export const DashboardShell = ({
 
   return (
     <div className={cn('bigfin-ui flex h-screen flex-col', className)}>
+      {banner}
       {/* Верхняя строка: бургер (только на мобильном) + верхняя панель.
 
           Бургер остаётся, хотя внизу есть «Ещё»: привычка тянуться вверх

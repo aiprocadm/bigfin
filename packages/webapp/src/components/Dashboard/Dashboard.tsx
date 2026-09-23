@@ -17,6 +17,7 @@ import { ConnectedSidebar } from '@/components/Dashboard/ConnectedSidebar';
 import { ConnectedTopbar } from '@/components/Dashboard/ConnectedTopbar';
 import { ConnectedBottomNav } from '@/components/Dashboard/ConnectedBottomNav';
 import { Toaster } from '@/components/ui/sonner';
+import { AccessPreviewBanner } from './AccessPreviewBanner';
 
 /**
  * Dashboard preferences.
@@ -27,6 +28,7 @@ function DashboardPreferences() {
       sidebar={<ConnectedSidebar />}
       topbar={<ConnectedTopbar />}
       bottomNav={(openMenu) => <ConnectedBottomNav onOpenMenu={openMenu} />}
+      banner={<AccessPreviewBanner />}
     >
       <PreferencesPage />
     </DashboardShell>
@@ -42,6 +44,7 @@ function DashboardAnyPage() {
       sidebar={<ConnectedSidebar />}
       topbar={<ConnectedTopbar />}
       bottomNav={(openMenu) => <ConnectedBottomNav onOpenMenu={openMenu} />}
+      banner={<AccessPreviewBanner />}
     >
       <DashboardContent />
     </DashboardShell>

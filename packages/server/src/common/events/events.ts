@@ -494,6 +494,8 @@ export const events = {
     onEdited: 'onRoleEdited',
     onDelete: 'onRoleDelete',
     onDeleted: 'onRoleDeleted',
+    // Владелец начал смотреть глазами сотрудника (FT-081 ТЗ-3).
+    onAccessPreviewStarted: 'onRoleAccessPreviewStarted',
   },
 
   tenantUser: {

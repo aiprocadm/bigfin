@@ -1,3 +1,4 @@
+import { resolveAccessPreview } from './utils/accessPreview';
 import {
   Injectable,
   CanActivate,
@@ -30,22 +31,23 @@ export class AuthorizationGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const userId = this.clsService.get('userId');
+    // Режим проверки доступа (FT-081): права — того, чьими глазами смотрят.
+    const preview = await resolveAccessPreview(request, this.clsService, this.tenantUserModel);
+    const userId = preview?.systemUserId ?? this.clsService.get('userId');
     // Права — у пользователя В ОРГАНИЗАЦИИ: ключ и чтения, и записи один.
     const key = abilityCacheKey(this.clsService.get('organizationId'), userId);
 
     if (ABILITIES_CACHE.has(key)) {
       (request as any).ability = ABILITIES_CACHE.get(key);
     } else {
-      const ability = await this.getAbilityForUser();
+      const ability = await this.getAbilityForUser(userId);
       (request as any).ability = ability;
       ABILITIES_CACHE.set(key, ability);
     }
     return true;
   }
 
-  async getAbilityForUser() {
-    const userId = this.clsService.get('userId');
+  async getAbilityForUser(userId = this.clsService.get('userId')) {
     const tenantUser = await this.tenantUserModel()
       .query()
       .findOne('systemUserId', userId)

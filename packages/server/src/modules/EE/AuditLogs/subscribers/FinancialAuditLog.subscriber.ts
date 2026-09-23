@@ -1039,6 +1039,14 @@ export class FinancialAuditLogSubscriber {
   }
 
   // --- Roles ---
+  // Смотреть чужими глазами без следа нельзя даже владельцу (FT-081).
+  @OnEvent(events.roles.onAccessPreviewStarted)
+  async onAccessPreviewStarted({ tenantUserId, name }: any) {
+    await this.write(undefined, 'access_preview_started', AbilitySubject.TeamMember, Number(tenantUserId), {
+      name,
+    });
+  }
+
   @OnEvent(events.roles.onCreated)
   async onRoleCreated({ role, trx }: IRoleCreatedPayload) {
     await this.write(trx, 'created', AbilitySubject.Role, role.id, {

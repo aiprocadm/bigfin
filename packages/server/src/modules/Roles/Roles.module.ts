@@ -15,6 +15,7 @@ import { AuthorizationGuard } from './Authorization.guard';
 import { PermissionGuard } from './Permission.guard';
 import { OwnerGuard } from './Owner.guard';
 import { RowScopeInterceptor } from './RowScope.interceptor';
+import { CreatePreviewSessionService } from './commands/CreatePreviewSession.service';
 
 const models = [
   RegisterTenancyModel(Role),
@@ -31,6 +32,7 @@ const models = [
     GetRolesService,
     RolesApplication,
     RolePermissionsSchema,
+    CreatePreviewSessionService,
     AuthorizationGuard,
     PermissionGuard,
     OwnerGuard,

@@ -1,4 +1,5 @@
 // © 2026 Bigfin
+import { currentAccessPreview } from '@/modules/Roles/utils/accessPreview';
 import { Inject, Injectable } from '@nestjs/common';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
@@ -25,7 +26,8 @@ export class GetPaymentRequestService {
     // ответ не должен подтверждать, что заявка с таким номером есть (FT-083).
     if (onlyOwn) {
       const user: any = await this.tenancyContext?.getSystemUser();
-      if ((request as any).createdBy !== user?.id) {
+      const viewerId = currentAccessPreview()?.systemUserId ?? user?.id;
+      if ((request as any).createdBy !== viewerId) {
         throw new ServiceError(ERRORS.PAYMENT_REQUEST_NOT_FOUND);
       }
     }

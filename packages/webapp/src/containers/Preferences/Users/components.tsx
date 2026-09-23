@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import {
+  Eye,
   MoreHorizontal,
   Pause,
   Pencil,
@@ -35,6 +36,8 @@ export interface UserRowActions {
   onInactivate: (row: UserRow) => void;
   onDelete: (row: UserRow) => void;
   onResendInvitation: (row: UserRow) => void;
+  /** Посмотреть, что видит этот пользователь (FT-081 ТЗ-3). */
+  onPreviewAccess?: (row: UserRow) => void;
 }
 
 /**
@@ -117,6 +120,12 @@ export function UserActionsMenu({
               <Pencil className="mr-2 h-4 w-4" aria-hidden />
               {intl.get('edit_user')}
             </DropdownMenuItem>
+            {row.active && actions.onPreviewAccess && (
+              <DropdownMenuItem onClick={() => actions.onPreviewAccess?.(row)}>
+                <Eye className="mr-2 h-4 w-4" aria-hidden />
+                {intl.get('access_preview.start')}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             {row.active ? (
               <DropdownMenuItem onClick={() => actions.onInactivate(row)}>

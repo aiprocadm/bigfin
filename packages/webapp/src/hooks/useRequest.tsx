@@ -13,6 +13,13 @@ import { getCookie, normalizeApiPath } from '../utils';
 import { getRequestLocale } from '../services/requestLocale';
 import { isFeatureDisabledResponse } from './featureDisabledResponse';
 import {
+  ACCESS_PREVIEW_HEADER,
+  accessPreviewHeaderValue,
+  exitAccessPreview,
+  isAccessPreviewReadOnly,
+  isAccessPreviewRejected,
+} from '../services/accessPreview';
+import {
   withCamelAliases,
   shouldAliasResponse,
 } from '../utils/withCamelAliases';
@@ -45,6 +52,12 @@ export default function useApiRequest() {
         }
         if (locale) {
           request.headers['Accept-Language'] = locale;
+        }
+        // Режим проверки доступа (FT-081): владелец смотрит глазами
+        // сотрудника. Решение — за сервером, он проверяет каждый запрос.
+        const previewUserId = accessPreviewHeaderValue(organizationId);
+        if (previewUserId) {
+          request.headers[ACCESS_PREVIEW_HEADER] = previewUserId;
         }
         return request;
       },
@@ -83,6 +96,21 @@ export default function useApiRequest() {
         if (status === 401) {
           setGlobalErrors({ session_expired: true });
           setLogout();
+        }
+        // Режим проверки не принят (роль сменилась, сотрудника удалили) —
+        // снимаем его, иначе владелец застрянет на «нет доступа».
+        if (status === 403 && isAccessPreviewRejected(data)) {
+          exitAccessPreview();
+          return Promise.reject(error);
+        }
+        // Изменение в режиме проверки — не отказ в правах, а правило режима:
+        // сказать об этом строкой, а не закрывать экран.
+        if (status === 403 && isAccessPreviewReadOnly(data)) {
+          AppToaster.show({
+            message: intl.get('access_preview.read_only'),
+            intent: Intent.WARNING,
+          });
+          return Promise.reject(error);
         }
         if (status === 403 && !isFeatureDisabledResponse(data)) {
           // Выключенный модуль тоже отвечает 403, но это не отказ в правах:

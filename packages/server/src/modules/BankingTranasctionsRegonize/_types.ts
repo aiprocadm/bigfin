@@ -15,6 +15,15 @@ export const RecognizeUncategorizedTransactionsJob =
 export const RecognizeUncategorizedTransactionsQueue =
   'recognize-uncategorized-transactions-queue';
 
+/** «Применить к прошлым операциям» (FT-034 ТЗ-3) — в той же очереди. */
+export const ApplyBankRuleToPastJob = 'apply-bank-rule-to-past-job';
+
+export interface ApplyBankRuleToPastJobPayload extends TenantJobPayload {
+  ruleId: number;
+  /** Строки, отмеченные в предпросмотре. */
+  ids: number[];
+}
+
 export interface RecognizeUncategorizedTransactionsJobPayload extends TenantJobPayload {
   ruleId: number,
   transactionsCriteria?: RecognizeTransactionsCriteria;

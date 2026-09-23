@@ -25,6 +25,8 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { PreferencesAction } from '@/modules/Settings/Settings.types';
+import { ApplyRuleToPastService } from '@/modules/BankingTranasctionsRegonize/commands/ApplyRuleToPast.service';
+import { ApplyBankRuleToPastDto } from './dtos/ApplyBankRuleToPast.dto';
 
 @Controller('banking/rules')
 @ApiTags('Bank Rules')
@@ -32,7 +34,28 @@ import { PreferencesAction } from '@/modules/Settings/Settings.types';
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard, PermissionGuard)
 export class BankRulesController {
-  constructor(private readonly bankRulesApplication: BankRulesApplication) {}
+  constructor(
+    private readonly bankRulesApplication: BankRulesApplication,
+    private readonly applyRuleToPast: ApplyRuleToPastService,
+  ) {}
+
+  // «Применить к прошлым операциям» (FT-034 ТЗ-3): сначала список ровно тех
+  // строк, что подходят, потом — фоновая задача по отмеченным.
+  @Get(':id/preview')
+  @ApiOperation({ summary: 'Неразнесённые строки выписки, подходящие под правило.' })
+  async previewBankRule(@Param('id') ruleId: number) {
+    return this.applyRuleToPast.preview(Number(ruleId));
+  }
+
+  @Post(':id/apply')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'Разнести отмеченные строки по правилу в фоне.' })
+  async applyBankRuleToPast(
+    @Param('id') ruleId: number,
+    @Body() body: ApplyBankRuleToPastDto,
+  ) {
+    return this.applyRuleToPast.queueApply(Number(ruleId), body.ids);
+  }
 
   @Post()
   @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)

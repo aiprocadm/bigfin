@@ -5,9 +5,12 @@ import { ClsService, UseCls } from 'nestjs-cls';
 import { RecognizeTranasctionsService } from '../commands/RecognizeTranasctions.service';
 import { RevertRecognizedTransactionsService } from '../commands/RevertRecognizedTransactions.service';
 import {
+  ApplyBankRuleToPastJob,
+  ApplyBankRuleToPastJobPayload,
   RecognizeUncategorizedTransactionsJobPayload,
   RecognizeUncategorizedTransactionsQueue,
 } from '../_types';
+import { ApplyRuleToPastService } from '../commands/ApplyRuleToPast.service';
 
 @Processor({
   name: RecognizeUncategorizedTransactionsQueue,
@@ -22,6 +25,7 @@ export class RegonizeTransactionsPrcessor extends WorkerHost {
   constructor(
     private readonly recognizeTranasctionsService: RecognizeTranasctionsService,
     private readonly revertRecognizedTransactionsService: RevertRecognizedTransactionsService,
+    private readonly applyRuleToPast: ApplyRuleToPastService,
     private readonly clsService: ClsService,
   ) {
     super();
@@ -31,11 +35,21 @@ export class RegonizeTransactionsPrcessor extends WorkerHost {
    * Triggers sending invoice mail.
    */
   @UseCls()
-  async process(job: Job<RecognizeUncategorizedTransactionsJobPayload>) {
-    const { ruleId, transactionsCriteria, shouldRevert, apply } = job.data;
-
+  async process(job: Job<RecognizeUncategorizedTransactionsJobPayload | ApplyBankRuleToPastJobPayload>) {
     this.clsService.set('organizationId', job.data.organizationId);
     this.clsService.set('userId', job.data.userId);
+
+    // «Применить к прошлым» (FT-034) — своя задача в той же очереди.
+    if (job.name === ApplyBankRuleToPastJob) {
+      const { ruleId, ids } = job.data as ApplyBankRuleToPastJobPayload;
+      const outcomes = await this.applyRuleToPast.run(ruleId, ids);
+      return {
+        applied: outcomes.filter((o) => o.status === 'applied').length,
+        skipped: outcomes.filter((o) => o.status === 'skipped'),
+      };
+    }
+    const { ruleId, transactionsCriteria, shouldRevert, apply } =
+      job.data as RecognizeUncategorizedTransactionsJobPayload;
 
     try {
       // If shouldRevert is true, first revert recognized transactions before re-recognizing.

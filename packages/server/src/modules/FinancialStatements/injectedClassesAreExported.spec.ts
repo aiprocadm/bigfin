@@ -64,6 +64,9 @@ interface Injection {
 function injectionsOf(file: string): Injection[] {
   const source = read(file);
   const found: Injection[] = [];
+  // Параметры конструктора — до первой закрывающей скобки перед телом.
+  const constructorParams =
+    /constructor\s*\(([\s\S]*?)\)\s*\{/.exec(source)?.[1] ?? '';
 
   const importRe = /import\s*\{([^}]*)\}\s*from\s*'([^']*)'/g;
   let match: RegExpExecArray | null;
@@ -86,8 +89,12 @@ function injectionsOf(file: string): Injection[] {
       .map((name) => name.trim())
       .filter(Boolean)
       .forEach((className) => {
+        // Смотрим ТОЛЬКО параметры конструктора. Раньше тип искался по всему
+        // файлу, и описание формы данных в параметре обычного метода
+        // (`scope: ManagementReportScope`) принималось за внедряемый класс —
+        // сторож требовал экспортировать из модуля то, что вообще не класс.
         const askedInConstructor = new RegExp(`:\\s*${className}\\b`).test(
-          source,
+          constructorParams,
         );
 
         if (!askedInConstructor) return;
@@ -141,9 +148,15 @@ function moduleClassName(moduleFile: string): string {
 }
 
 describe('сервер и правда соберётся: зависимости доступны', () => {
+  // Службы бывают названы и `Foo.service.ts`, и `FooService.ts` (так
+  // названа служба «Денег по статьям»). Второе написание сторож не видел
+  // вовсе — поймано мутацией на этапе 31: убранный экспорт свёртки прошёл.
   const files = [
-    ...collect(REPORTS_ROOT, '.service.ts'),
-    ...collect(REPORTS_ROOT, '.controller.ts'),
+    ...new Set([
+      ...collect(REPORTS_ROOT, '.service.ts'),
+      ...collect(REPORTS_ROOT, 'Service.ts'),
+      ...collect(REPORTS_ROOT, '.controller.ts'),
+    ]),
   ];
 
   it('файлы модуля отчётов и правда найдены', () => {

@@ -1,4 +1,5 @@
 import { TransactionsLockingModule } from '@/modules/TransactionsLocking/TransactionsLocking.module';
+import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
 import { SetAccrualPeriodService } from './commands/SetAccrualPeriod.service';
 import { Module } from '@nestjs/common';
 import { RegisterTenancyModel } from '../Tenancy/TenancyModels/Tenancy.module';
@@ -60,6 +61,9 @@ const models = [
   imports: [
     // Месяц начисления не переносится в закрытый период (FT-013 ТЗ-3).
     TransactionsLockingModule,
+    // Части операции от автоправила «Разбить» (FT-031 ТЗ-3) проводятся
+    // отдельными проводками.
+    TransactionSplitsModule,
     AutoIncrementOrdersModule,
     LedgerModule,
     BranchesModule,
@@ -105,7 +109,9 @@ const models = [
     ...models,
     RemovePendingUncategorizedTransaction,
     CommandBankTransactionValidator,
-    CreateBankTransactionService
+    CreateBankTransactionService,
+    // Автоправило «Разбить» пересобирает проводки по частям (FT-031 ТЗ-3).
+    BankTransactionGLEntriesService,
   ],
 })
 export class BankingTransactionsModule { }

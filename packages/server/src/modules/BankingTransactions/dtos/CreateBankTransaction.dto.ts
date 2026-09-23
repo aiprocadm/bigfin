@@ -197,4 +197,12 @@ export class CreateBankTransactionDto {
   @ToNumber()
   @IsInt()
   contactId?: number;
+
+  // Направление операции (FT-030 ТЗ-3): ставит автоправило или человек.
+  // Живёт у документа — проводки при перепроводке собираются из него.
+  @ApiPropertyOptional({ description: 'Направление (проект)', type: Number, example: 3 })
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  projectId?: number | null;
 }

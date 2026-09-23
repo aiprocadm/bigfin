@@ -45,6 +45,7 @@ export interface ICashflowCommandDTO {
   publish: boolean;
   branchId?: number;
   contactId?: number;
+  projectId?: number | null;
   plaidTransactionId?: string;
 }
 

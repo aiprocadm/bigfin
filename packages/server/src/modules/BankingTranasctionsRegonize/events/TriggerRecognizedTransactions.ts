@@ -15,6 +15,26 @@ import {
   RecognizeUncategorizedTransactionsQueue,
 } from '../_types';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { runAfterTransaction } from '@/modules/Tenancy/TenancyDB/TransactionsHooks';
+import { IUncategorizedTransactionCreatedEventPayload } from '@/modules/BankingCategorize/types/BankingCategorize.types';
+
+/** Окно склейки задач «разнести новые строки» по одному счёту, мс. */
+export const APPLY_RULES_WINDOW_MS = 10_000;
+
+/**
+ * Номер задачи «разнести новые строки счёта»: один на организацию, счёт и
+ * окно времени. Импорт на 300 строк шлёт 300 сигналов — очередь по
+ * одинаковому номеру примет из них одну задачу.
+ *
+ * Окно в номере обязательно: готовые задачи хранятся сутки, и номер без
+ * времени молча отверг бы следующий импорт того же счёта до завтра.
+ */
+export const applyRulesJobId = (
+  organizationId: string,
+  accountId: number,
+  now: number,
+) =>
+  `apply-rules:${organizationId}:${accountId}:${Math.floor(now / APPLY_RULES_WINDOW_MS)}`;
 
 @Injectable()
 export class TriggerRecognizedTransactionsSubscriber {
@@ -55,7 +75,6 @@ export class TriggerRecognizedTransactionsSubscriber {
     oldBankRule,
     bankRule,
   }: IBankRuleEventEditedPayload) {
-    
     // Cannot continue if the new and old bank rule values are the same,
     // after excluding `createdAt` and `updatedAt` dates.
     if (
@@ -106,6 +125,52 @@ export class TriggerRecognizedTransactionsSubscriber {
   /**
    * Triggers the recognize bank transactions once the imported file commit.
    * @param {IImportFileCommitedEventPayload} payload -
+   */
+  @OnEvent(events.cashflow.onTransactionUncategorizedCreated)
+  async applyRulesOnUncategorizedCreated({
+    uncategorizedTransaction,
+    trx,
+  }: IUncategorizedTransactionCreatedEventPayload) {
+    const tenantPayload = await this.tenancyContect.getTenantJobPayload();
+    const accountId = Number((uncategorizedTransaction as any).accountId);
+
+    // Только после фиксации импорта: задача, начатая раньше, не увидела бы
+    // строк, которые ещё не сохранены, — и они остались бы неразнесёнными.
+    runAfterTransaction(trx, async () => {
+      // Сбой очереди не должен ронять сервер: приём «после фиксации»
+      // выбрасывает ошибку в пустоту. Импорт уже сохранён — строки просто
+      // подождут ручной разноски.
+      try {
+        await this.recognizeTransactionsQueue.add(
+          RecognizeUncategorizedTransactionsJob,
+          {
+            ...tenantPayload,
+            transactionsCriteria: { accountId },
+            // Новые строки выписки — разносить сразу (FT-030 ТЗ-3).
+            apply: true,
+          } as RecognizeUncategorizedTransactionsJobPayload,
+          {
+            jobId: applyRulesJobId(
+              String(tenantPayload.organizationId),
+              accountId,
+              Date.now(),
+            ),
+            // Небольшая пауза: пока идёт импорт, сигналы продолжают приходить.
+            delay: 3000,
+          },
+        );
+      } catch (error) {
+        console.error(
+          '[bank-rules] не удалось поставить разноску новых строк',
+          error,
+        );
+      }
+    });
+  }
+
+  /**
+   * Импорт через общий механизм файлов больше не нужен здесь: новые строки
+   * любого импорта ловит обработчик выше.
    */
   @OnEvent(events.import.onImportCommitted)
   async triggerRecognizeTransactionsOnImportCommitted({

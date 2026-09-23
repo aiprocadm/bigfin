@@ -35,6 +35,7 @@ export interface ICategorizeCashflowTransactioDTO {
   description: string;
   branchId: number;
   contactId?: number;
+  projectId?: number | null;
 }
 
 

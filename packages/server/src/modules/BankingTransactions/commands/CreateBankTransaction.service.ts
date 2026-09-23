@@ -91,6 +91,8 @@ export class CreateBankTransactionService {
       'isIntercompany',
       // Месяц начисления (FT-013 ТЗ-3) — тот же белый список.
       'accrualPeriod',
+      // Направление (FT-030 ТЗ-3) — туда же.
+      'projectId',
     ]);
     // Retreive the next invoice number.
     const autoNextNumber = await this.autoIncrement.getNextTransactionNumber();

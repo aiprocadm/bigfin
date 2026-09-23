@@ -32,7 +32,7 @@ export class RegonizeTransactionsPrcessor extends WorkerHost {
    */
   @UseCls()
   async process(job: Job<RecognizeUncategorizedTransactionsJobPayload>) {
-    const { ruleId, transactionsCriteria, shouldRevert } = job.data;
+    const { ruleId, transactionsCriteria, shouldRevert, apply } = job.data;
 
     this.clsService.set('organizationId', job.data.organizationId);
     this.clsService.set('userId', job.data.userId);
@@ -47,12 +47,18 @@ export class RegonizeTransactionsPrcessor extends WorkerHost {
           transactionsCriteria,
         );
       }
-      await this.recognizeTranasctionsService.recognizeTransactions(
+      const result = await this.recognizeTranasctionsService.recognizeTransactions(
         ruleId,
         transactionsCriteria,
+        undefined,
+        { apply },
       );
+      return result;
     } catch (error) {
-      console.log(error);
+      // Раньше ошибка тонула в console.log, и задача считалась успешной.
+      // Теперь она падает честно — очередь видит сбой и хранит причину.
+      console.error('[bank-rules] распознавание не удалось', error);
+      throw error;
     }
   }
 }

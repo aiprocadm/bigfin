@@ -9,6 +9,7 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { SettingsStore } from '@/modules/Settings/SettingsStore';
 import { SETTINGS_PROVIDER } from '@/modules/Settings/Settings.types';
 import { readOrganizationCalendar } from '@/modules/Settings/organizationCalendar';
+import { excludedReferenceTypes, readPnlSources } from './pnlSources';
 import { describeLegalEntityScope } from '@/modules/LegalEntities/utils/legalEntityScope';
 import { FinancialSheetMeta } from '../../common/FinancialSheetMeta';
 import {
@@ -72,10 +73,18 @@ export class ManagerialPnlService {
     const group = query.group ?? 'articles';
     const basis = query.basis ?? 'accrual';
     const dateGroup = query.dateGroup ?? 'month';
-    const { weekStartDay } = readOrganizationCalendar(await this.settingsStore());
+    const settings = await this.settingsStore();
+    const { weekStartDay } = readOrganizationCalendar(settings);
     const periods = this.periodsOf(query, dateGroup, weekStartDay);
+    // Откуда берутся данные (FT-012 ТЗ-3): выключенный модуль не читается.
+    const sources = readPnlSources(settings);
 
-    const loaded = await this.source.load(query, periods, basis);
+    const loaded = await this.source.load(
+      query,
+      periods,
+      basis,
+      excludedReferenceTypes(sources),
+    );
     const projectNames = await this.projectNames(loaded.entriesByPeriod.flat());
     const context = {
       articles: loaded.articles,
@@ -95,7 +104,7 @@ export class ManagerialPnlService {
       total: buildManagerialPnlColumn(loaded.entriesByPeriod.flat(), context),
     };
 
-    return { data, query, meta: await this.meta(query, basis) };
+    return { data, query, meta: { ...(await this.meta(query, basis)), pnlSources: sources } };
   }
 
   private periodsOf(

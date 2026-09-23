@@ -5149,5 +5149,16 @@
   "data_quality.accrual_shifts.empty": "No such transactions: cash and profit for the period count the same transactions.",
   "data_quality.accrual_shifts.effect": "What it means",
   "data_quality.accrual_shifts.kind.out": "Paid in the period, in profit of another month",
-  "data_quality.accrual_shifts.kind.in": "In profit of the period, paid in another month"
+  "data_quality.accrual_shifts.kind.in": "In profit of the period, paid in another month",
+  "managerial_pnl.sources.title": "Where the data comes from",
+  "managerial_pnl.sources.all_on": "all sources on",
+  "managerial_pnl.sources.off_count": "sources off: {count}",
+  "managerial_pnl.sources.hint": "A switched-off module stops feeding this report. Transactions are not deleted — e.g. keep depreciation in Fixed assets but record it in profit with your own transaction.",
+  "managerial_pnl.sources.operations": "Transactions (cash, expenses, manual journals)",
+  "managerial_pnl.sources.deals": "Deals: sales and purchases",
+  "managerial_pnl.sources.payroll": "Payroll",
+  "managerial_pnl.sources.credits": "Loans",
+  "managerial_pnl.sources.fixed_assets": "Fixed assets: depreciation and disposal",
+  "managerial_pnl.sources.taxes": "Taxes",
+  "managerial_pnl.sources.no_ledger": "This module does not post to profit itself: costs come from payment transactions."
 }

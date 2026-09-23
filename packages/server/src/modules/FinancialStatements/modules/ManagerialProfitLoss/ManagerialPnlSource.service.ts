@@ -107,10 +107,15 @@ export class ManagerialPnlSourceService {
     >,
   ) {}
 
+  /**
+   * @param excluded виды документов отключённых источников (FT-012 ТЗ-3):
+   *   их проводки отчёт не читает, но и не удаляет.
+   */
   public async load(
     query: any,
     periods: ReportPeriod[],
     basis: PnlBasis,
+    excluded: Set<string> = new Set(),
   ): Promise<PnlSource> {
     const articles = await this.articleModel()
       .query()
@@ -177,6 +182,7 @@ export class ManagerialPnlSourceService {
         legs.forEach((leg) => {
           if (!settledKeys.has(`${leg.referenceType}:${leg.referenceId}`)) return;
           if (loaded.isCashAccount(leg.accountId)) return;
+          if (excluded.has(leg.referenceType)) return;
           push(
             index,
             leg.accountId,
@@ -192,8 +198,16 @@ export class ManagerialPnlSourceService {
       // счетов признаются по факту платежа — тем же правилом, что в
       // бухгалтерском ОПиУ по деньгам (иначе два отчёта «по деньгам»
       // разошлись бы в выручке; найдено живой проверкой этапа 32).
-      const settledLegs = loaded.allLegs.filter((leg) =>
-        settledKeys.has(`${leg.referenceType}:${leg.referenceId}`),
+      // Оплата счёта признаёт доход счёта — значит, выключенные «Сделки»
+      // выключают и её (FT-012 ТЗ-3).
+      const paymentOf: Record<string, string> = {
+        PaymentReceive: 'SaleInvoice',
+        BillPayment: 'Bill',
+      };
+      const settledLegs = loaded.allLegs.filter(
+        (leg) =>
+          settledKeys.has(`${leg.referenceType}:${leg.referenceId}`) &&
+          !excluded.has(paymentOf[leg.referenceType] ?? ''),
       );
       const recognized = await recognizeSettlementLegs(
         settledLegs as any,
@@ -235,6 +249,8 @@ export class ManagerialPnlSourceService {
         );
         // Подразделения, юрлица, направления — одним общим местом (FT-008).
         applyManagementReportScope(qb, query);
+        // Отключённые источники данных (FT-012 ТЗ-3).
+        if (excluded.size) qb.whereNotIn('referenceType', [...excluded]);
       });
 
     rows.forEach((row) => {

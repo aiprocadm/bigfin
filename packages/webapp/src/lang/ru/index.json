@@ -5149,5 +5149,16 @@
   "data_quality.accrual_shifts.empty": "Таких операций нет: деньги и прибыль за период считают одни и те же операции.",
   "data_quality.accrual_shifts.effect": "Что это значит",
   "data_quality.accrual_shifts.kind.out": "Оплачена в периоде, в прибыли — в другом месяце",
-  "data_quality.accrual_shifts.kind.in": "В прибыли периода, оплачена в другом месяце"
+  "data_quality.accrual_shifts.kind.in": "В прибыли периода, оплачена в другом месяце",
+  "managerial_pnl.sources.title": "Откуда берутся данные",
+  "managerial_pnl.sources.all_on": "все источники включены",
+  "managerial_pnl.sources.off_count": "выключено источников: {count}",
+  "managerial_pnl.sources.hint": "Выключенный модуль перестаёт попадать в этот отчёт. Сами операции не удаляются — например, амортизацию можно вести в «Основных средствах», а в прибыли учитывать своей операцией.",
+  "managerial_pnl.sources.operations": "Операции (деньги, расходы, проводки вручную)",
+  "managerial_pnl.sources.deals": "Сделки: продажи и закупки",
+  "managerial_pnl.sources.payroll": "Зарплата",
+  "managerial_pnl.sources.credits": "Кредиты и займы",
+  "managerial_pnl.sources.fixed_assets": "Основные средства: амортизация и выбытие",
+  "managerial_pnl.sources.taxes": "Налоги",
+  "managerial_pnl.sources.no_ledger": "Этот модуль в прибыль сам не пишет: расходы попадают в отчёт из операций оплаты."
 }

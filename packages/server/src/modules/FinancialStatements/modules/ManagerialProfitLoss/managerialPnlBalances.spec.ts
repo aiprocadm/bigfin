@@ -79,12 +79,17 @@ const LEGS = makeLegs();
 function groupedQuery(build: (qb: any) => void) {
   let from = '0000-00-00';
   let to = '9999-99-99';
+  let notIn: string[] = [];
   const qb: any = {
     select: () => qb,
     sum: () => qb,
     groupBy: () => qb,
     where: () => qb,
     whereIn: () => qb,
+    whereNotIn: (_column: string, values: string[]) => {
+      notIn = values;
+      return qb;
+    },
     modify: (name: string, a?: string, b?: string) => {
       if (name === 'filterDateRange') {
         if (a) from = a;
@@ -98,6 +103,7 @@ function groupedQuery(build: (qb: any) => void) {
   LEGS.forEach((leg) => {
     const day = legDate(leg)!;
     if (day < from || day > to) return;
+    if (notIn.includes(leg.referenceType)) return;
     const key = `${leg.accountId}|${leg.projectId}|${day}|${leg.accrualPeriod ?? ''}`;
     const row = groups.get(key) ?? { accountId: leg.accountId, projectId: leg.projectId, date: day, accrualPeriod: leg.accrualPeriod ?? null, credit: 0, debit: 0 };
     row.credit += leg.credit;
@@ -107,7 +113,7 @@ function groupedQuery(build: (qb: any) => void) {
   return [...groups.values()];
 }
 
-function makeService() {
+function makeService(settings: Record<string, unknown> = {}) {
   const articleModel = () => ({
     query: () => ({
       whereIn: () => ({ orderBy: () => Promise.resolve(ARTICLES) }),
@@ -193,7 +199,10 @@ function makeService() {
     { meta: async () => ({ dateFormat: 'DD.MM.YYYY' }) } as any,
     { t: (key: string) => key } as any,
     (() => ({ query: () => ({ whereIn: () => ({ select: async () => [{ id: 10, name: 'Кофейня' }] }) }) })) as any,
-    (async () => ({ get: () => undefined })) as any,
+    (async () => ({
+      get: ({ group, key }: { group: string; key: string }) =>
+        group === 'pnl_sources' ? settings[key] : undefined,
+    })) as any,
   );
 }
 
@@ -305,6 +314,21 @@ describe('управленческий ОПиУ: лестница сходитс
     expect(admin(accrual, 'p0')).toBe(5000);
     expect(admin(cash, 'p0')).toBe(0);
     expect(admin(cash, 'p1') - admin(accrual, 'p1')).toBeGreaterThanOrEqual(0);
+  });
+
+  it('FT-012: выключенные «Сделки» убирают выручку счетов в обоих методах; всё включено — как было', async () => {
+    const range = { fromDate: '2026-02-01', toDate: '2026-03-31', dateGroup: 'total' };
+    const noDeals = makeService({ deals: false });
+    const allOn = makeService({ operations: true, deals: true, credits: true, fixed_assets: true });
+
+    for (const basis of ['accrual', 'cash']) {
+      const base = (await service.sheet({ ...range, basis } as any)).data.total.amounts.revenue;
+      const on = (await allOn.sheet({ ...range, basis } as any)).data.total.amounts.revenue;
+      const off = (await noDeals.sheet({ ...range, basis } as any)).data.total.amounts.revenue;
+
+      expect(on).toBe(base);
+      expect(base - off).toBe(60000);
+    }
   });
 
   it('критерий 3: колонка без выручки — рентабельности «н/о» (пусто), не 0 % и не 100 %', async () => {

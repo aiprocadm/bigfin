@@ -84,6 +84,15 @@ export const SettingsOptions = {
       type: 'boolean',
     },
   },
+  // Откуда берутся данные управленческого ОПиУ (FT-012 ТЗ-3).
+  pnl_sources: {
+    operations: { type: 'boolean' },
+    deals: { type: 'boolean' },
+    payroll: { type: 'boolean' },
+    credits: { type: 'boolean' },
+    fixed_assets: { type: 'boolean' },
+    taxes: { type: 'boolean' },
+  },
   manual_journals: {
     next_number: {
       type: 'string',

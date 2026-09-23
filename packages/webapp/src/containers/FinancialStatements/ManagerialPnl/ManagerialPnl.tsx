@@ -47,6 +47,7 @@ import {
 } from './managerialPnlRows';
 import { hasWaterfall, pnlWaterfall } from './pnlWaterfall';
 import { PnlWaterfallChart } from './PnlWaterfallChart';
+import { PnlSourcesPanel } from './PnlSourcesPanel';
 
 /**
  * Нет права на управленческий ОПиУ: у ролей, заведённых до его появления,
@@ -269,6 +270,9 @@ export default function ManagerialPnl() {
           </label>
         </div>
       </div>
+
+      {/* Откуда берутся данные (FT-012 ТЗ-3). */}
+      <PnlSourcesPanel sources={data?.meta?.pnl_sources ?? data?.meta?.pnlSources} />
 
       {screenState === 'loading' ? (
         <div className="flex flex-col gap-2 rounded-default border border-border p-6">

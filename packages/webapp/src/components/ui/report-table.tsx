@@ -98,8 +98,30 @@ export interface ReportTableProps {
   rowHeight?: number;
   overscan?: number;
   maxBodyHeight?: number;
+  /**
+   * Шапка остаётся на месте при прокрутке вниз — и БЕЗ виртуализации
+   * (FT-005b ТЗ-3). Таблица получает свою высоту и прокручивается внутри:
+   * иначе прилипать шапке не к чему.
+   */
+  stickyHeader?: boolean;
+  /**
+   * Первая колонка (название строки) остаётся на месте при прокрутке вбок
+   * (FT-005b). Без неё в матрице на двенадцать месяцев человек видит числа,
+   * но уже не видит, к какой статье они относятся.
+   */
+  stickyFirstColumn?: boolean;
   className?: string;
 }
+
+/**
+ * Классы закреплённой первой колонки.
+ *
+ * Фон обязателен: без него числа, уезжающие под колонку, просвечивают
+ * сквозь название. Тень вместо рамки — рамка у закреплённой ячейки при
+ * `border-collapse` уезжает вместе с соседями.
+ */
+export const STICKY_FIRST_COLUMN_CLASS =
+  'sticky left-0 shadow-[inset_-1px_0_0_var(--color-border)]';
 
 /** Приводит row_types к массиву строк. */
 function toRowTypes(rowTypes: ReportTableRow['row_types']): string[] {
@@ -221,6 +243,7 @@ interface ReportRowViewProps {
   rowHeight?: number;
   onRowClick?: (row: ReportTableRow) => void;
   canDrillDown?: (row: ReportTableRow) => boolean;
+  stickyFirstColumn?: boolean;
 }
 
 function ReportRowView({
@@ -231,6 +254,7 @@ function ReportRowView({
   rowHeight,
   onRowClick,
   canDrillDown,
+  stickyFirstColumn,
 }: ReportRowViewProps) {
   const { row, path, depth, hasChildren, isExpanded, isFinal } = flat;
   const isTotal = isTotalRow(row);
@@ -248,7 +272,7 @@ function ReportRowView({
         'border-b border-border/60',
         isTotal && 'border-t border-t-border font-semibold',
         isFinal && 'border-b-0 bg-surface-elevated font-semibold',
-        drillable && 'cursor-pointer hover:bg-surface-elevated',
+        drillable && 'group cursor-pointer hover:bg-surface-elevated',
       )}
     >
         {columns.map((column, columnIndex) => {
@@ -265,6 +289,13 @@ function ReportRowView({
                   'text-right tabular-nums whitespace-nowrap',
                 column.align === 'center' && 'text-center',
                 !isNameColumn && negative && !isTotal && 'text-text-secondary',
+                isNameColumn &&
+                  stickyFirstColumn && [
+                    STICKY_FIRST_COLUMN_CLASS,
+                    'z-[1]',
+                    isFinal ? 'bg-surface-elevated' : 'bg-surface',
+                    drillable && 'group-hover:bg-surface-elevated',
+                  ],
               )}
               style={
                 isNameColumn && depth > 1
@@ -327,6 +358,8 @@ export function ReportTable({
   rowHeight = 32,
   overscan = 8,
   maxBodyHeight = 560,
+  stickyHeader = false,
+  stickyFirstColumn = false,
   className,
 }: ReportTableProps) {
   const [expanded, setExpanded] = React.useState<Set<string>>(() =>
@@ -379,13 +412,17 @@ export function ReportTable({
     ? flatVisible.slice(vwin.startIndex, vwin.endIndex)
     : flatVisible;
 
+  // Своя высота нужна и виртуализации, и прилипающей шапке: шапка
+  // прилипает к краю того, что прокручивается, а не к окну браузера.
+  const scrollsInside = virtualized || stickyHeader;
+
   return (
     <div
       className={cn(
-        virtualized ? 'overflow-auto' : 'overflow-x-auto',
+        scrollsInside ? 'overflow-auto' : 'overflow-x-auto',
         className,
       )}
-      style={virtualized ? { maxHeight: maxBodyHeight } : undefined}
+      style={scrollsInside ? { maxHeight: maxBodyHeight } : undefined}
       onScroll={
         virtualized
           ? (e) => setScrollTop((e.currentTarget as HTMLElement).scrollTop)
@@ -393,15 +430,23 @@ export function ReportTable({
       }
     >
       <table className="w-full border-collapse text-sm">
-        <thead className={cn(virtualized && 'sticky top-0 z-10 bg-surface')}>
+        <thead
+          className={cn(scrollsInside && 'sticky top-0 z-10 bg-surface')}
+        >
           <tr className="border-b border-border">
-            {columns.map((column) => (
+            {columns.map((column, columnIndex) => (
               <th
                 key={column.key}
                 className={cn(
                   'px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary',
                   column.align === 'right' && 'text-right',
                   column.align === 'center' && 'text-center',
+                  // Угол: закреплён и сверху, и слева — поверх всех ячеек.
+                  columnIndex === 0 &&
+                    stickyFirstColumn && [
+                      STICKY_FIRST_COLUMN_CLASS,
+                      'z-20 bg-surface',
+                    ],
                 )}
               >
                 {column.label}
@@ -435,6 +480,7 @@ export function ReportTable({
               rowHeight={virtualized ? rowHeight : undefined}
               onRowClick={onRowClick}
               canDrillDown={canDrillDown}
+              stickyFirstColumn={stickyFirstColumn}
             />
           ))}
           {vwin && vwin.padBottom > 0 && (

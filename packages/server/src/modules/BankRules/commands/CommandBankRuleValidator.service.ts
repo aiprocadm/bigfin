@@ -8,6 +8,7 @@ import { ManagementArticleAccount } from '@/modules/ManagementArticles/models/Ma
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CommandBankRuleDto } from '../dtos/BankRule.dto';
 import { validateShares } from '../utils/splitShares';
+import { DealStage } from '@/modules/Deals/models/DealStage.model';
 
 export const BANK_RULE_ERRORS = {
   /** Перевод между счетами разной валюты (FT-032, 422 по ТЗ). */
@@ -17,7 +18,14 @@ export const BANK_RULE_ERRORS = {
   TRANSFER_RULE_TARGET_NOT_CASH: 'TRANSFER_RULE_TARGET_NOT_CASH',
   SPLIT_SHARES_NOT_100: 'BANK_RULE_SPLIT_SHARES_NOT_100',
   SPLIT_ARTICLE_WITHOUT_ACCOUNT: 'BANK_RULE_SPLIT_ARTICLE_WITHOUT_ACCOUNT',
+  DEAL_RULE_DEAL_REQUIRED: 'BANK_RULE_DEAL_REQUIRED',
+  DEAL_RULE_DIRECTION_REQUIRED: 'BANK_RULE_DEAL_DIRECTION_REQUIRED',
+  DEAL_RULE_STAGE_MISMATCH: 'BANK_RULE_DEAL_STAGE_MISMATCH',
+  DEAL_RULE_CONDITION_FIELD: 'BANK_RULE_DEAL_CONDITION_FIELD',
 };
+
+/** Условия правила «сделка» по ТЗ — описание и контрагент (FT-033). */
+const DEAL_CONDITION_FIELDS = ['description', 'payee'];
 
 /** Счета, между которыми бывает перевод: касса, банк, карта. */
 const CASH_ACCOUNT_TYPES = [ACCOUNT_TYPE.CASH, ACCOUNT_TYPE.BANK, ACCOUNT_TYPE.CREDIT_CARD];
@@ -34,12 +42,49 @@ export class CommandBankRuleValidatorService {
 
     @Inject(ManagementArticleAccount.name)
     private readonly articleAccountModel: TenantModelProxy<typeof ManagementArticleAccount>,
+
+    @Inject(DealStage.name)
+    private readonly dealStageModel: TenantModelProxy<typeof DealStage>,
   ) {}
 
   public async validate(dto: CommandBankRuleDto): Promise<void> {
     const ruleType = dto.ruleType ?? 'assign';
     if (ruleType === 'split') await this.validateSplit(dto);
     if (ruleType === 'transfer') await this.validateTransfer(dto);
+    if (ruleType === 'deal') await this.validateDeal(dto);
+  }
+
+  /**
+   * «Привязать к сделке» (FT-033): отдельные правила на поступления и на
+   * списания, условия — описание и контрагент, сделка или её этап.
+   */
+  private async validateDeal(dto: CommandBankRuleDto) {
+    const fail = (code: string, message: string) => {
+      throw new ServiceError(code, message, null, HttpStatus.UNPROCESSABLE_ENTITY);
+    };
+    const deal = (dto as any).assignDealId;
+    const stage = (dto as any).assignDealStageId;
+    if (!deal && !stage) {
+      fail(BANK_RULE_ERRORS.DEAL_RULE_DEAL_REQUIRED, 'Выберите сделку или этап сделки');
+    }
+    if (!dto.applyIfTransactionType) {
+      fail(
+        BANK_RULE_ERRORS.DEAL_RULE_DIRECTION_REQUIRED,
+        'Правило сделки — отдельно для поступлений и для списаний',
+      );
+    }
+    if ((dto.conditions ?? []).some((c) => !DEAL_CONDITION_FIELDS.includes(c.field))) {
+      fail(
+        BANK_RULE_ERRORS.DEAL_RULE_CONDITION_FIELD,
+        'Условия правила сделки — описание и контрагент',
+      );
+    }
+    if (stage && deal) {
+      const found: any = await this.dealStageModel().query().findById(stage);
+      if (!found || Number(found.dealId) !== Number(deal)) {
+        fail(BANK_RULE_ERRORS.DEAL_RULE_STAGE_MISMATCH, 'Этап не относится к выбранной сделке');
+      }
+    }
   }
 
   /** Доли — ровно 100 %, и у каждой статьи есть счёт для проводки. */

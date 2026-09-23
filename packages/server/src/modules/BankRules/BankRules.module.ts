@@ -9,16 +9,20 @@ import { RegisterTenancyModel } from '../Tenancy/TenancyModels/Tenancy.module';
 import { BankRuleCondition } from './models/BankRuleCondition';
 import { BankRule } from './models/BankRule';
 import { BankRuleSplit } from './models/BankRuleSplit';
+import { TransactionRuleApplication } from './models/TransactionRuleApplication';
 import { BankRulesController } from './BankRules.controller';
 import { UnlinkBankRuleOnDeleteBankRuleSubscriber } from './events/UnlinkBankRuleOnDeleteBankRule';
 import { DeleteBankRulesService } from './commands/DeleteBankRules.service';
 import { CommandBankRuleValidatorService } from './commands/CommandBankRuleValidator.service';
+import { BankRuleManagementService } from './commands/BankRuleManagement.service';
+import { GetTransactionRuleApplicationsService } from './queries/GetTransactionRuleApplications.service';
 import { BankingTransactionsRegonizeModule } from '../BankingTranasctionsRegonize/BankingTransactionsRegonize.module';
 
 const models = [
   RegisterTenancyModel(BankRule),
   RegisterTenancyModel(BankRuleCondition),
   RegisterTenancyModel(BankRuleSplit),
+  RegisterTenancyModel(TransactionRuleApplication),
 ];
 
 @Module({
@@ -30,6 +34,8 @@ const models = [
     DeleteBankRuleService,
     DeleteBankRulesService,
     CommandBankRuleValidatorService,
+    BankRuleManagementService,
+    GetTransactionRuleApplicationsService,
     GetBankRuleService,
     GetBankRulesService,
     BankRulesApplication,

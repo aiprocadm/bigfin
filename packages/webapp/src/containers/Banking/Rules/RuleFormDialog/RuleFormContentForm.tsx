@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import intl from 'react-intl-universal';
 import { get } from 'lodash';
-import { Button, Classes, Intent, Radio, Tag } from '@blueprintjs/core';
+import { Alert, Button, Classes, Intent, Radio, Tag } from '@blueprintjs/core';
 import * as R from 'ramda';
 import { getCreateRuleFormSchema } from './RuleFormContentForm.schema';
 import {
@@ -16,7 +16,11 @@ import {
   Group,
   Stack,
 } from '@/components';
-import { useCreateBankRule, useEditBankRule } from '@/hooks/query/bank-rules';
+import {
+  useCheckBankRuleConflicts,
+  useCreateBankRule,
+  useEditBankRule,
+} from '@/hooks/query/bank-rules';
 import {
   getFields,
   RuleFormValues,
@@ -30,7 +34,11 @@ import {
   newSplitLine,
   splitSharesTotal,
   toBankRulePayload,
+  toConflictDraft,
+  DEAL_CONDITION_FIELDS,
 } from './_utils';
+import { useDeals } from '@/hooks/query/deals';
+import { useDealStages } from '@/hooks/query/dealStages';
 import { useManagementArticles } from '@/hooks/query/managementArticles';
 import { useAutoCompleteContacts } from '@/hooks/query/contacts';
 import { useProjects } from '@/containers/Projects/hooks/projects';
@@ -38,16 +46,6 @@ import { ProjectsSelect } from '@/containers/Projects/components';
 import { Features } from '@/constants/features';
 import { useFeatureCan } from '@/hooks/state/feature';
 
-/**
- * Направления берутся из модуля «Сделки»: выключен модуль — список не
- * запрашивается (иначе 403) и поле направления не показывается.
- */
-function useRuleProjects() {
-  const { featureCan } = useFeatureCan();
-  const enabled = !!featureCan(Features.Projects);
-  const { data } = useProjects({}, { enabled });
-  return { enabled, projects: (data as any)?.projects ?? data ?? [] };
-}
 import { useRuleFormDialogBoot } from './RuleFormBoot';
 import {
   transformToCamelCase,
@@ -62,6 +60,17 @@ import { DialogsName } from '@/constants/dialogs';
 import { getAddMoneyInOptions, getAddMoneyOutOptions } from '@/constants';
 import { showApiError } from '@/utils/showApiError';
 
+/**
+ * Направления берутся из модуля «Сделки»: выключен модуль — список не
+ * запрашивается (иначе 403) и поле направления не показывается.
+ */
+function useRuleProjects() {
+  const { featureCan } = useFeatureCan();
+  const enabled = !!featureCan(Features.Projects);
+  const { data } = useProjects({}, { enabled });
+  return { enabled, projects: (data as any)?.projects ?? data ?? [] };
+}
+
 // Retrieves the add money in button options.
 const MoneyInOptions = getAddMoneyInOptions();
 const MoneyOutOptions = getAddMoneyOutOptions();
@@ -75,6 +84,14 @@ function RuleFormContentFormRoot({
     useRuleFormDialogBoot();
   const { mutateAsync: createBankRule } = useCreateBankRule();
   const { mutateAsync: editBankRule } = useEditBankRule();
+  const { mutateAsync: checkConflicts } = useCheckBankRuleConflicts();
+  // Конфликт с существующими правилами — показывается ДО сохранения
+  // (FT-035 ТЗ-3). Человек решает сам: сохранить или вернуться.
+  const [pending, setPending] = React.useState<null | {
+    values: RuleFormValues;
+    helpers: FormikHelpers<RuleFormValues>;
+    conflicts: any[];
+  }>(null);
 
   const validationSchema = getCreateRuleFormSchema();
 
@@ -90,8 +107,26 @@ function RuleFormContentFormRoot({
     // если человек сменит тип на «Разбить».
     splits: fromServer?.splits?.length ? fromServer.splits : initialValues.splits,
   };
+  // Сначала — проверка конфликта; сохранение — после ответа человека.
+  const handleSubmit = async (
+    values: RuleFormValues,
+    helpers: FormikHelpers<RuleFormValues>,
+  ) => {
+    try {
+      const result: any = await checkConflicts(toConflictDraft(values, bankRuleId));
+      const conflicts = result?.conflicts ?? [];
+      if (conflicts.length > 0) {
+        setPending({ values, helpers, conflicts });
+        return;
+      }
+    } catch {
+      // Проверка — подсказка, а не замок: её сбой не мешает сохранить.
+    }
+    save(values, helpers);
+  };
+
   // Handles the form submitting.
-  const handleSubmit = (
+  const save = (
     values: RuleFormValues,
     { setSubmitting }: FormikHelpers<RuleFormValues>,
   ) => {
@@ -182,6 +217,41 @@ function RuleFormContentFormRoot({
         <RuleActionsByType />
 
         <RuleFormActions />
+        <Alert
+          isOpen={Boolean(pending)}
+          intent={Intent.WARNING}
+          icon="warning-sign"
+          confirmButtonText={intl.get('banking.rules.conflict.save_anyway')}
+          cancelButtonText={intl.get('banking.rules.conflict.back')}
+          onConfirm={() => {
+            const next = pending;
+            setPending(null);
+            if (next) save(next.values, next.helpers);
+          }}
+          onCancel={() => {
+            pending?.helpers.setSubmitting(false);
+            setPending(null);
+          }}
+        >
+          <p>{intl.get('banking.rules.conflict.intro')}</p>
+          <ul style={{ paddingLeft: 18 }}>
+            {(pending?.conflicts ?? []).map((conflict: any) => (
+              <li key={conflict.rule_id ?? conflict.ruleId} style={{ marginBottom: 6 }}>
+                <b>{conflict.rule_name ?? conflict.ruleName}</b>
+                {' — '}
+                {(conflict.same_conditions ?? conflict.sameConditions)
+                  ? intl.get('banking.rules.conflict.same_conditions')
+                  : intl.get('banking.rules.conflict.overlap', { count: conflict.overlap })}
+                {'. '}
+                {intl.get(
+                  conflict.winner === 'new'
+                    ? 'banking.rules.conflict.new_wins'
+                    : 'banking.rules.conflict.existing_wins',
+                )}
+              </li>
+            ))}
+          </ul>
+        </Alert>
       </Form>
     </Formik>
   );
@@ -232,7 +302,11 @@ function RuleFormConditions() {
             >
               <FSelect
                 name={`conditions[${index}].field`}
-                items={getFields()}
+                items={
+                  values.ruleType === 'deal'
+                    ? getFields().filter((f) => DEAL_CONDITION_FIELDS.includes(f.value))
+                    : getFields()
+                }
                 popoverProps={{ minimal: true }}
                 onItemChange={handleConditionFieldChange(index)}
               />
@@ -387,7 +461,8 @@ function RuleAssignCategoryField() {
     <FFormGroup
       name={'assignCategory'}
       label={intl.get('transaction_type')}
-      labelInfo={<Tag minimal>{intl.get('required')}</Tag>}
+      // Не обязателен: без него вид выводится из направления денег
+      // (поступление — прочий доход, списание — прочий расход).
       style={{ maxWidth: 300 }}
     >
       <FSelect
@@ -450,6 +525,15 @@ function RuleActionsByType() {
 
   if (values.ruleType === 'split') return <RuleSplitLines />;
   if (values.ruleType === 'transfer') return <RuleTransferFields />;
+  if (values.ruleType === 'deal') {
+    return (
+      <>
+        <RuleAssignCategoryField />
+        <RuleAssignCategoryAccountField />
+        <RuleDealFields />
+      </>
+    );
+  }
   return (
     <>
       <RuleAssignCategoryField />
@@ -610,6 +694,71 @@ function RuleTransferFields() {
           filterByTypes={['cash', 'bank', 'credit-card']}
         />
       </FFormGroup>
+    </>
+  );
+}
+
+/**
+ * «Привязать к сделке» (FT-033 ТЗ-3): сделка или её этап. Сделка ставится
+ * операции направлением (это одна таблица); этап остаётся в следе
+ * применения. Модуль «Сделки» выключен — поля не запрашиваются (иначе 403).
+ */
+function RuleDealFields() {
+  const { values, setFieldValue } = useFormikContext<RuleFormValues>();
+  const { featureCan } = useFeatureCan();
+  const enabled = !!featureCan(Features.Projects);
+  const { data: deals } = useDeals({}, { enabled });
+  const dealId = values.assignDealId ? Number(values.assignDealId) : 0;
+  const { data: stages } = useDealStages(dealId, {}, { enabled: enabled && dealId > 0 });
+
+  if (!enabled) {
+    return (
+      <p className={Classes.TEXT_MUTED} style={{ fontSize: 12 }}>
+        {intl.get('banking.rules.deal.module_off')}
+      </p>
+    );
+  }
+  return (
+    <>
+      <p className={Classes.TEXT_MUTED} style={{ fontSize: 12 }}>
+        {intl.get('banking.rules.deal.hint')}
+      </p>
+      <Group style={{ maxWidth: 600 }} align={'flex-start'}>
+        <FFormGroup
+          name={'assignDealId'}
+          label={intl.get('banking.rules.field.assign_deal')}
+          style={{ flex: '1 0' }}
+        >
+          <FSelect
+            name={'assignDealId'}
+            items={(deals as any[]) ?? []}
+            valueAccessor={'id'}
+            textAccessor={'name'}
+            placeholder={intl.get('banking.rules.field.not_set')}
+            popoverProps={{ minimal: true }}
+            onItemChange={(item: any) => {
+              setFieldValue('assignDealId', item.id);
+              // Этап другой сделки не подходит — сбрасываем.
+              setFieldValue('assignDealStageId', '');
+            }}
+          />
+        </FFormGroup>
+        <FFormGroup
+          name={'assignDealStageId'}
+          label={intl.get('banking.rules.field.assign_deal_stage')}
+          style={{ flex: '1 0' }}
+        >
+          <FSelect
+            name={'assignDealStageId'}
+            items={(stages as any[]) ?? []}
+            valueAccessor={'id'}
+            textAccessor={'name'}
+            disabled={!dealId}
+            placeholder={intl.get('banking.rules.field.not_set')}
+            popoverProps={{ minimal: true }}
+          />
+        </FFormGroup>
+      </Group>
     </>
   );
 }

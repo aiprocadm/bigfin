@@ -54,6 +54,8 @@ const makeRepo = (query: any) => {
     null as any,
     null as any,
     null as any,
+    // Подключение к базе — для следа автоправил (FT-036); отборам не нужно.
+    null as any,
   );
   repo.setQuery(query);
   return repo;

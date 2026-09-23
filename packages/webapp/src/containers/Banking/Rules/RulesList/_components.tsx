@@ -10,7 +10,7 @@ import { safeCallback } from '@/utils';
  * @returns {JSX.Element}
  */
 export function BankRulesTableActionsMenu({
-  payload: { onEdit, onDelete, onApplyToPast },
+  payload: { onEdit, onDelete, onApplyToPast, onTogglePause, onClone },
   row: { original },
 }: any) {
   return (
@@ -26,6 +26,17 @@ export function BankRulesTableActionsMenu({
           icon={<Icon icon="done" />}
           text={intl.get('banking.rules.apply_past.menu')}
           onClick={safeCallback(onApplyToPast, original)}
+        />
+        {/* Пауза и копия (FT-035 ТЗ-3). */}
+        <MenuItem
+          icon={<Icon icon="done" />}
+          text={intl.get(original?.paused_at ? 'banking.rules.resume' : 'banking.rules.pause')}
+          onClick={safeCallback(onTogglePause, original)}
+        />
+        <MenuItem
+          icon={<Icon icon="duplicate-24" />}
+          text={intl.get('banking.rules.clone')}
+          onClick={safeCallback(onClone, original)}
         />
       </Can>
       <Can I={BankRuleAction.Delete} a={AbilitySubject.BankRule}>

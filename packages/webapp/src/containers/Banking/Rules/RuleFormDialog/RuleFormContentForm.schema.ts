@@ -17,7 +17,7 @@ export const getCreateRuleFormSchema = () =>
     name: Yup.string()
       .required()
       .label(intl.get('banking.rules.field.rule_name')),
-    ruleType: Yup.string().oneOf(['assign', 'split', 'transfer']).required(),
+    ruleType: Yup.string().oneOf(['assign', 'split', 'transfer', 'deal']).required(),
     // Счёт обязателен только у перевода: остальные правила бывают «для
     // любого счёта» (FT-030 ТЗ-3).
     applyIfAccountId: Yup.mixed().when('ruleType', {
@@ -38,7 +38,7 @@ export const getCreateRuleFormSchema = () =>
       .label(intl.get('banking.rules.field.categorize_when')),
     assignCategory: Yup.string().nullable().label(intl.get('transaction_type')),
     assignAccountId: Yup.mixed().when('ruleType', {
-      is: 'assign',
+      is: (type: string) => type === 'assign' || type === 'deal',
       then: Yup.string()
         .required()
         .label(intl.get('banking.rules.field.account_category')),
@@ -51,6 +51,23 @@ export const getCreateRuleFormSchema = () =>
         .label(intl.get('banking.rules.field.transfer_to_account')),
       otherwise: Yup.mixed().nullable(),
     }),
+    // Сделка (FT-033): сделка или этап обязательны, и правило — отдельно
+    // для поступлений и для списаний.
+    assignDealStageId: Yup.mixed().when(['ruleType', 'assignDealId'], {
+      is: (type: string, deal: any) => type === 'deal' && !deal,
+      then: Yup.string()
+        .required(intl.get('banking.rules.deal.required'))
+        .label(intl.get('banking.rules.field.assign_deal')),
+      otherwise: Yup.mixed().nullable(),
+    }),
+    applyIfTransactionTypeForDeal: Yup.mixed().test(
+      'deal-direction',
+      intl.get('banking.rules.deal.direction_required'),
+      function () {
+        const { ruleType, applyIfTransactionType } = this.parent as any;
+        return ruleType !== 'deal' || Boolean(applyIfTransactionType);
+      },
+    ),
     // Доли разбиения (FT-031): от двух строк, у каждой статья, в сумме 100 %.
     splits: Yup.mixed().when('ruleType', {
       is: 'split',

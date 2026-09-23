@@ -27,6 +27,13 @@ import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { PreferencesAction } from '@/modules/Settings/Settings.types';
 import { ApplyRuleToPastService } from '@/modules/BankingTranasctionsRegonize/commands/ApplyRuleToPast.service';
 import { ApplyBankRuleToPastDto } from './dtos/ApplyBankRuleToPast.dto';
+import { BankRuleManagementService } from './commands/BankRuleManagement.service';
+import { GetTransactionRuleApplicationsService } from './queries/GetTransactionRuleApplications.service';
+import {
+  BankRuleConflictsDto,
+  PauseBankRuleDto,
+  ReorderBankRulesDto,
+} from './dtos/BankRuleManagement.dto';
 
 @Controller('banking/rules')
 @ApiTags('Bank Rules')
@@ -37,7 +44,50 @@ export class BankRulesController {
   constructor(
     private readonly bankRulesApplication: BankRulesApplication,
     private readonly applyRuleToPast: ApplyRuleToPastService,
+    private readonly management: BankRuleManagementService,
+    private readonly ruleApplications: GetTransactionRuleApplicationsService,
   ) {}
+
+  // Ручки с постоянными словами — ДО ручек с «:id»: иначе «order» и
+  // «conflicts» приняли бы за номер правила.
+
+  // Порядок перетаскиванием (FT-035 ТЗ-3): весь список сверху вниз.
+  @Put('order')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'Новый порядок правил сверху вниз.' })
+  async reorderBankRules(@Body() body: ReorderBankRulesDto) {
+    return this.management.reorder(body.ids);
+  }
+
+  // Конфликт с существующими правилами — до сохранения (FT-035).
+  @Post('conflicts')
+  // Проверяет только тот, кто сохраняет правило, — то же право.
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'С какими правилами спорит черновик правила.' })
+  async bankRuleConflicts(@Body() body: BankRuleConflictsDto) {
+    return this.management.conflicts(body);
+  }
+
+  // История применений к денежной операции (FT-036).
+  @Get('applications/transaction/:transactionId')
+  @ApiOperation({ summary: 'Какие автоправила и что поставили операции.' })
+  async transactionRuleApplications(@Param('transactionId') transactionId: number) {
+    return this.ruleApplications.byTransaction(Number(transactionId));
+  }
+
+  @Post(':id/pause')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'Поставить правило на паузу или снять с неё.' })
+  async pauseBankRule(@Param('id') ruleId: number, @Body() body: PauseBankRuleDto) {
+    return this.management.setPaused(Number(ruleId), body.paused);
+  }
+
+  @Post(':id/clone')
+  @RequirePermission(PreferencesAction.Mutate, AbilitySubject.Preferences)
+  @ApiOperation({ summary: 'Копия правила « (копия)» — на паузе, в конце списка.' })
+  async cloneBankRule(@Param('id') ruleId: number) {
+    return this.management.clone(Number(ruleId));
+  }
 
   // «Применить к прошлым операциям» (FT-034 ТЗ-3): сначала список ровно тех
   // строк, что подходят, потом — фоновая задача по отмеченным.

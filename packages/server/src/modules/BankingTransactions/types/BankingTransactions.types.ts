@@ -208,4 +208,9 @@ export interface ICashflowAccountTransaction {
   contactName?: string;
   /** Назначение платежа. */
   note?: string;
+  /**
+   * Бейдж «А» (FT-036 ТЗ-3): операцию разнесло автоправило. `ruleName`
+   * пуст, если правило с тех пор удалили.
+   */
+  autoRule?: { ruleId: number; ruleName: string | null } | null;
 }

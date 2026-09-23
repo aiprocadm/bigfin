@@ -746,3 +746,56 @@ export function useApplyBankRuleToPast() {
     },
   );
 }
+
+/** Новый порядок правил сверху вниз (FT-035 ТЗ-3). */
+export function useReorderBankRules() {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+  return useMutation(
+    (ids: number[]) => apiRequest.put('/banking/rules/order', { ids }).then((res) => res.data),
+    { onSuccess: () => commonInvalidateQueries(queryClient) },
+  );
+}
+
+/** Пауза правила (FT-035 ТЗ-3). */
+export function usePauseBankRule() {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+  return useMutation(
+    ({ id, paused }: { id: number; paused: boolean }) =>
+      apiRequest.post(`/banking/rules/${id}/pause`, { paused }).then((res) => res.data),
+    { onSuccess: () => commonInvalidateQueries(queryClient) },
+  );
+}
+
+/** Копия правила « (копия)» (FT-035 ТЗ-3). */
+export function useCloneBankRule() {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+  return useMutation(
+    (id: number) => apiRequest.post(`/banking/rules/${id}/clone`).then((res) => res.data),
+    { onSuccess: () => commonInvalidateQueries(queryClient) },
+  );
+}
+
+/** Конфликт черновика с существующими правилами — до сохранения (FT-035). */
+export function useCheckBankRuleConflicts() {
+  const apiRequest = useApiRequest();
+  return useMutation((draft: any) =>
+    apiRequest.post('/banking/rules/conflicts', draft).then((res) => res.data),
+  );
+}
+
+/** Какие автоправила и что поставили операции (FT-036 ТЗ-3). */
+export function useTransactionRuleApplications(transactionId?: number | null, props?: any) {
+  const apiRequest = useApiRequest();
+  return useQuery(
+    ['BANK_RULE_APPLICATIONS', transactionId],
+    () =>
+      apiRequest
+        .get(`/banking/rules/applications/transaction/${transactionId}`)
+        .then((res) => res.data),
+    { enabled: Boolean(transactionId), ...props },
+  );
+}
+

@@ -2,6 +2,7 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import { Money } from '@/components/ui/money';
 import { TransactionStateBadges } from './TransactionStateBadges';
+import { AutoRuleBadge } from './AutoRuleBadge';
 
 /**
  * Колонки списка операций по всем счетам (этап 3 ТЗ).
@@ -54,7 +55,11 @@ export function useAllTransactionsColumns() {
         accessor: 'states',
         disableSortBy: true,
         Cell: ({ row: { original } }: any) => (
-          <TransactionStateBadges states={original?.states ?? []} />
+          <>
+            {/* Бейдж «А»: разнесло автоправило (FT-036 ТЗ-3). */}
+            <AutoRuleBadge autoRule={original?.auto_rule ?? original?.autoRule} />
+            <TransactionStateBadges states={original?.states ?? []} />
+          </>
         ),
       },
       {

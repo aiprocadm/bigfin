@@ -5530,5 +5530,10 @@
   "mcp.journal": "Recent calls",
   "mcp.journal_empty": "No agent has called the tools yet.",
   "mcp.call_ok": "done",
-  "mcp.call_failed": "refused"
+  "mcp.call_failed": "refused",
+  "report_cache.data_as_of": "Data as of {time} (saved result)",
+  "report_cache.rebuild": "Rebuild",
+  "report_cache.rebuilding": "Rebuilding the report… {progress}%",
+  "report_cache.rebuilt": "The report has been rebuilt",
+  "report_cache.failed": "Could not rebuild the report. Try again later."
 }

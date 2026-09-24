@@ -5530,5 +5530,10 @@
   "mcp.journal": "Последние вызовы",
   "mcp.journal_empty": "Агенты ещё не вызывали инструменты.",
   "mcp.call_ok": "выполнен",
-  "mcp.call_failed": "отказ"
+  "mcp.call_failed": "отказ",
+  "report_cache.data_as_of": "Данные на {time} (сохранённый расчёт)",
+  "report_cache.rebuild": "Пересобрать",
+  "report_cache.rebuilding": "Пересобираем отчёт… {progress}%",
+  "report_cache.rebuilt": "Отчёт пересобран",
+  "report_cache.failed": "Не удалось пересобрать отчёт. Попробуйте позже."
 }

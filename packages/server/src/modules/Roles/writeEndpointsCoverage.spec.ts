@@ -125,6 +125,9 @@ const GUARDED_ELSEWHERE: string[] = [
   // ничего не меняет, а каждый инструмент зовёт GET-ручку тем же токеном —
   // права проверяет она (сторож `Mcp/mcpTools.spec.ts`).
   'Mcp/Mcp.controller.ts#rpc',
+  // «Пересобрать отчёт» (FT-093): сбрасывает кэш своей организации и зовёт
+  // сам отчёт тем же входом — права на отчёт проверяет он.
+  'ReportCache/ReportCache.controller.ts#start',
 
   // Своя новая организация: человек заводит её себе, спрашивать не у кого.
   'ee/Workspaces/Workspaces.controller.ts#createWorkspace',

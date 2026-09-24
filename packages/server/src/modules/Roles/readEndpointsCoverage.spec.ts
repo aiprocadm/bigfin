@@ -70,6 +70,8 @@ const OPEN_READS: string[] = [
   'Miscellaneous/Miscellaneous.controller.ts#getDateFormats',
   // Вход MCP (FT-090): GET только отвечает «потока нет» (405), данных не отдаёт.
   'Mcp/Mcp.controller.ts#stream',
+  // Ход пересборки отчёта (FT-093): шаг и проценты, без данных отчёта.
+  'ReportCache/ReportCache.controller.ts#progress',
   'MoySklad/MoySklad.controller.ts#preview',
   'MoySklad/MoySklad.controller.ts#status',
   'Notifications/Notifications.controller.ts#getPreferences',

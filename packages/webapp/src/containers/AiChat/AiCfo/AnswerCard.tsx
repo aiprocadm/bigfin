@@ -94,7 +94,7 @@ export function AnswerCard({ reply, examples = [], onPickExample }: AnswerCardPr
 
       {reasons.length > 0 && (
         <section className="flex flex-col gap-1">
-          <h4 className="text-xs font-medium uppercase text-text-muted">
+          <h4 className="text-xs font-medium text-text-muted">
             {intl.get('ai_cfo.answer.reasons')}
           </h4>
           <ul className="flex flex-col gap-1">
@@ -162,7 +162,7 @@ export function AnswerCard({ reply, examples = [], onPickExample }: AnswerCardPr
 
       {actions.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h4 className="text-xs font-medium uppercase text-text-muted">
+          <h4 className="text-xs font-medium text-text-muted">
             {intl.get('ai_cfo.answer.actions')}
           </h4>
           {actions.map((action) => (

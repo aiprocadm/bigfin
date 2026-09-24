@@ -29,6 +29,8 @@ const defaultInitialValues = {
   code: '',
   description: '',
   currency_code: '',
+  // Налоговый режим денежного счёта (FT-070 ТЗ-3); пусто — как у организации.
+  tax_regime: '',
   subaccount: false,
 };
 

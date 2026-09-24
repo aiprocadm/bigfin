@@ -54,6 +54,14 @@ const MONEY_GATES: Gate[] = [
     ability: CashflowAction.Create,
     subject: AbilitySubject.Cashflow,
   },
+  // Фиксация остатка создаёт корректирующую операцию (FT-071 ТЗ-3).
+  {
+    title: 'зафиксировать остаток счёта',
+    controller: BankingTransactionsController,
+    handler: 'fixAccountBalance',
+    ability: CashflowAction.Create,
+    subject: AbilitySubject.Cashflow,
+  },
   {
     title: 'удалить банковскую операцию',
     controller: BankingTransactionsController,
@@ -281,8 +289,9 @@ describe('денежные ручки спрашивают права', () => {
   });
 
   it('денежная группа закрыта целиком', () => {
-    // Двадцать одна записывающая ручка в семи контроллерах. Число меняется
-    // только вместе с осознанным решением, что группа стала другой.
-    expect(MONEY_GATES).toHaveLength(21);
+    // Двадцать две записывающие ручки в семи контроллерах (22-я — фиксация
+    // остатка, FT-071 ТЗ-3). Число меняется только вместе с осознанным
+    // решением, что группа стала другой.
+    expect(MONEY_GATES).toHaveLength(22);
   });
 });

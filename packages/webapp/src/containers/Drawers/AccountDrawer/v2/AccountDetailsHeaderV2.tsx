@@ -32,6 +32,10 @@ import { compose } from '@/utils';
 
 import type { AccountDetail } from './types';
 import { accountTypeLabel } from '@/utils/accountTypeLabel';
+import {
+  accountSupportsTaxRegime,
+  accountTaxRegimeLabel,
+} from '@/constants/accountTaxRegimes';
 
 interface AccountDetailsHeaderV2Props {
   account: AccountDetail;
@@ -158,6 +162,17 @@ function AccountDetailsHeaderV2Root({
       {accountTypeLabel(account.account_type, account.account_type_label) ? (
         <p className="text-sm text-text-secondary">
           {accountTypeLabel(account.account_type, account.account_type_label)}
+        </p>
+      ) : null}
+
+      {/* Налоговый режим денежного счёта (FT-070 ТЗ-3). Не выбран — пишем
+          это прямо: «как у организации» тоже ответ, и человеку видно, по
+          какой ставке считается оценка налога. */}
+      {accountSupportsTaxRegime(account.account_type) ? (
+        <p className="text-sm text-text-secondary">
+          {intl.get('accounts.tax_regime.label')}:{' '}
+          {accountTaxRegimeLabel(account.tax_regime) ||
+            intl.get('accounts.tax_regime.as_organization')}
         </p>
       ) : null}
     </DrawerHeader>

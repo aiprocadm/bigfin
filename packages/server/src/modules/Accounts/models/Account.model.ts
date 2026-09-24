@@ -37,6 +37,12 @@ export class Account extends TenantBaseModel {
    */
   public legalEntityId!: number | null;
 
+  /**
+   * Налоговый режим денежного счёта (FT-070 ТЗ-3); `null` — «как у
+   * организации». Домен — `utils/accountTaxRegime.ts`.
+   */
+  public taxRegime?: string | null;
+
   public name!: string;
   public slug!: string;
   public code!: string;

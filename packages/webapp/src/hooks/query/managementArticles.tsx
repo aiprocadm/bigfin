@@ -14,7 +14,7 @@ export interface ManagementArticleValues {
   /** Пять видов статьи учёта (FIN-001 ТЗ-2), а не два. */
   kind: 'income' | 'expense' | 'asset' | 'liability' | 'equity';
   parentId?: number | null;
-  cashflowSection?: 'operating' | 'investing' | 'financing';
+  cashflowSection?: 'operating' | 'investing' | 'financing' | 'adjustments';
   accountIds?: number[];
 }
 

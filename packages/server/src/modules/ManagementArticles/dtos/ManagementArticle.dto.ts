@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import {
   ARTICLE_KINDS,
-  CASHFLOW_SECTIONS,
+  ARTICLE_CASHFLOW_SECTIONS,
   COST_BEHAVIORS,
 } from '../constants';
 import { PL_TYPES } from '../utils/plTypes';
@@ -39,11 +39,11 @@ class CommandManagementArticleDto {
   kind: string;
 
   @IsString()
-  @IsIn(CASHFLOW_SECTIONS as unknown as string[])
+  @IsIn(ARTICLE_CASHFLOW_SECTIONS as unknown as string[])
   @IsOptional()
   @ApiProperty({
     example: 'operating',
-    enum: CASHFLOW_SECTIONS,
+    enum: ARTICLE_CASHFLOW_SECTIONS,
     description: 'Cash flow statement section (optional)',
   })
   cashflowSection?: string;

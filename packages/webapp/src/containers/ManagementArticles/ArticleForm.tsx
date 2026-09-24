@@ -355,6 +355,16 @@ export function ArticleForm({
                           'management_articles.cashflow_section.financing',
                         )}
                       </option>
+                      {/* Служебный раздел фиксации остатка (FT-071 ТЗ-3)
+                          не предлагается, а только показывается у статьи,
+                          которая уже в нём. */}
+                      {field.value === 'adjustments' && (
+                        <option value="adjustments">
+                          {intl.get(
+                            'management_articles.cashflow_section.adjustments',
+                          )}
+                        </option>
+                      )}
                     </select>
                   </FormControl>
                   <FormMessage />

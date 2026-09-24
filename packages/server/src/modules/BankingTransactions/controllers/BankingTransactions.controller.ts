@@ -36,6 +36,8 @@ import { PermissionGuard } from '@/modules/Roles/Permission.guard';
 import { RequirePermission } from '@/modules/Roles/RequirePermission.decorator';
 import { AbilitySubject } from '@/modules/Roles/Roles.types';
 import { CashflowAction } from '../types/BankingTransactions.types';
+import { FixAccountBalanceService } from '../commands/FixAccountBalance.service';
+import { FixAccountBalanceDto } from '../dtos/FixAccountBalance.dto';
 
 @Controller('banking/transactions')
 @ApiTags('Banking Transactions')
@@ -47,6 +49,7 @@ export class BankingTransactionsController {
     private readonly setAccrualPeriodService: SetAccrualPeriodService,
     private readonly bankingTransactionsApplication: BankingTransactionsApplication,
     private readonly summaryService: GetTransactionsSummaryService,
+    private readonly fixAccountBalanceService: FixAccountBalanceService,
   ) {}
 
   @RequirePermission(CashflowAction.View, AbilitySubject.Cashflow)
@@ -138,6 +141,24 @@ export class BankingTransactionsController {
   @RequireApiScope('transactions:write')
   async createTransactionsBulk(@Body() body: BulkCreateBankTransactionsDto) {
     return this.bankingTransactionsApplication.createTransactionsBulk(body.items);
+  }
+
+  /**
+   * Фиксация остатка на дату (FT-071 ТЗ-3): «по выписке на конец дня
+   * столько-то». Разница с учётом становится корректирующей операцией —
+   * поэтому и право то же, что на создание операции.
+   * Разницы нет — операция не создаётся, ответ `created: false`.
+   */
+  @Post('fix-balance')
+  @RequirePermission(CashflowAction.Create, AbilitySubject.Cashflow)
+  @ApiOperation({
+    summary:
+      'Зафиксировать остаток счёта на конец дня: на разницу создаётся корректирующая операция.',
+  })
+  @ApiBody({ type: FixAccountBalanceDto })
+  @RequireApiScope('transactions:write')
+  async fixAccountBalance(@Body() body: FixAccountBalanceDto) {
+    return this.fixAccountBalanceService.fixBalance(body);
   }
 
   /**

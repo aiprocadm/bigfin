@@ -17,6 +17,9 @@ export interface AccountDetail {
 
   currency_code?: string;
   formatted_amount?: string;
+
+  /** Налоговый режим денежного счёта (FT-070 ТЗ-3); пусто — как у организации. */
+  tax_regime?: string | null;
 }
 
 /**

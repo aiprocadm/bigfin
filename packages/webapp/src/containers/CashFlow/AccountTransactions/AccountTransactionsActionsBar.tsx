@@ -1,5 +1,5 @@
 import intl from 'react-intl-universal';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button,
   NavbarGroup,
@@ -25,7 +25,10 @@ import {
   FormattedMessage as T,
   AppToaster,
   If,
+  Can,
 } from '@/components';
+import { AbilitySubject, CashflowAction } from '@/constants/abilityOption';
+import { FixAccountBalanceDialog } from './FixAccountBalanceDialog';
 
 import { CashFlowMenuItems } from './utils';
 import {
@@ -124,6 +127,11 @@ function AccountTransactionsActionsBar({
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'bank_transaction' });
   };
+  // «Зафиксировать остаток» (FT-071 ТЗ-3): окно живёт здесь же, а не в
+  // общем реестре диалогов — ему нужен только этот счёт.
+  const [isFixBalanceOpen, setFixBalanceOpen] = useState(false);
+  const handleFixBalanceClick = () => setFixBalanceOpen(true);
+
   // Handle bank rules click.
   const handleBankRulesClick = () => {
     history.push(`/bank-rules?accountId=${accountId}`);
@@ -266,6 +274,14 @@ function AccountTransactionsActionsBar({
             text={<T id={'import'} />}
             onClick={handleImportBtnClick}
           />
+          <Can I={CashflowAction.Create} a={AbilitySubject.Cashflow}>
+            <Button
+              className={Classes.MINIMAL}
+              icon={<Icon icon="tick" iconSize={16} />}
+              text={intl.get('fix_balance.action')}
+              onClick={handleFixBalanceClick}
+            />
+          </Can>
           <NavbarDivider />
         </If>
 
@@ -328,6 +344,13 @@ function AccountTransactionsActionsBar({
                   text={<T id={'import'} />}
                   onClick={handleImportBtnClick}
                 />
+                <Can I={CashflowAction.Create} a={AbilitySubject.Cashflow}>
+                  <MenuItem
+                    icon={<Icon icon="tick" iconSize={16} />}
+                    text={intl.get('fix_balance.action')}
+                    onClick={handleFixBalanceClick}
+                  />
+                </Can>
               </Menu>
             }
           >
@@ -434,6 +457,14 @@ function AccountTransactionsActionsBar({
         >
           <Button icon={<Icon icon="cog-16" iconSize={16} />} minimal={true} />
         </Popover>
+        {isFixBalanceOpen && (
+          <FixAccountBalanceDialog
+            accountId={accountId}
+            accountName={currentAccount?.name}
+            currencyCode={currentAccount?.currency_code}
+            onClose={() => setFixBalanceOpen(false)}
+          />
+        )}
         <NavbarDivider />
         <Button
           className={Classes.MINIMAL}

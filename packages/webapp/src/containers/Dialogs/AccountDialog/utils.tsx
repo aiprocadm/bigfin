@@ -3,6 +3,7 @@ import intl from 'react-intl-universal';
 import * as R from 'ramda';
 import { isUndefined } from 'lodash';
 import { defaultFastFieldShouldUpdate } from '@/utils';
+import { taxRegimeForRequest } from '@/constants/accountTaxRegimes';
 
 export const AccountDialogAction = {
   Edit: 'edit',
@@ -130,10 +131,22 @@ export const parentAccountShouldUpdate = (newProps, oldProps) => {
 };
 
 /**
+ * Налоговый режим (FT-070 ТЗ-3): у кассы и банка — выбранный или пусто
+ * («как у организации»), у остальных счетов поле не отправляется вовсе.
+ */
+const withTaxRegime = (form) => {
+  const taxRegime = taxRegimeForRequest(form.account_type, form.tax_regime);
+  const { tax_regime, ...rest } = form;
+
+  return taxRegime === undefined ? rest : { ...rest, tax_regime: taxRegime };
+};
+
+/**
  * Transformes the form values to the request.
  */
 export const transformFormToReq = (form) => {
   return R.compose(
+    withTaxRegime,
     R.omit(['subaccount']),
     R.when(
       R.propSatisfies(R.equals(R.__, false), 'subaccount'),

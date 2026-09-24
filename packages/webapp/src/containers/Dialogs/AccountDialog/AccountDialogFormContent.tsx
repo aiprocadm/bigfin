@@ -13,10 +13,15 @@ import {
   FInputGroup,
   FCheckbox,
   FTextArea,
+  FSelect,
 } from '@/components';
 import { withAccounts } from '@/containers/Accounts/withAccounts';
 
 import { FOREIGN_CURRENCY_ACCOUNTS } from '@/constants/accountTypes';
+import {
+  accountSupportsTaxRegime,
+  getAccountTaxRegimeItems,
+} from '@/constants/accountTaxRegimes';
 
 import { useAutofocus } from '@/hooks';
 import { useAccountDialogContext } from './AccountDialogProvider';
@@ -37,6 +42,8 @@ function AccountFormDialogFields({
 }) {
   const { values, isSubmitting, setFieldValue } = useFormikContext<any>();
   const accountNameFieldRef = useAutofocus();
+  // Подписи режимов — из словаря при отрисовке, а не при импорте модуля.
+  const taxRegimeItems = React.useMemo(() => getAccountTaxRegimeItems(), []);
 
   // Account form context.
   const { fieldsDisabled, accounts, accountsTypes, currencies } =
@@ -134,6 +141,26 @@ function AccountFormDialogFields({
             />
           </FFormGroup>
         </If>
+
+        {/* Налоговый режим счёта (FT-070 ТЗ-3): только у кассы и банка —
+            по нему оценка налога считает деньги, пришедшие именно сюда. */}
+        {accountSupportsTaxRegime(values.account_type) && (
+          <FFormGroup
+            label={<T id={'accounts.tax_regime.label'} />}
+            name={'tax_regime'}
+            labelInfo={<Hint content={<T id="accounts.tax_regime.hint" />} />}
+            inline={true}
+          >
+            <FSelect
+              name={'tax_regime'}
+              items={taxRegimeItems}
+              valueAccessor={'value'}
+              textAccessor={'label'}
+              placeholder={<T id={'accounts.tax_regime.as_organization'} />}
+              popoverProps={{ minimal: true }}
+            />
+          </FFormGroup>
+        )}
 
         <FFormGroup
           label={<T id={'description'} />}

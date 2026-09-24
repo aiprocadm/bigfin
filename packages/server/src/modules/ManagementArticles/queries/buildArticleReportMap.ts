@@ -61,6 +61,15 @@ const SECTION_TITLES: Record<string, string> = {
   financing: 'Финансовая деятельность',
 };
 
+/**
+ * Служебный раздел «Корректировки остатка» (FT-071 ТЗ-3). В общую схему не
+ * входит: у организации без фиксаций остатка такого раздела в отчёте нет, и
+ * рисовать его всем значило бы обещать строку, которой не будет. Показываем
+ * только у статьи, которая в него попадает.
+ */
+const ADJUSTMENTS_SECTION = 'adjustments';
+const ADJUSTMENTS_TITLE = 'Корректировки остатка';
+
 /** Виды, дающие приток денег: у них кредитовая сторона счёта. */
 const INFLOW_KINDS = ['income', 'liability', 'equity'];
 
@@ -158,11 +167,22 @@ export function buildArticleReportMap(
 
   // Движение денег: туда попадают ВСЕ пять видов — деньги двигаются и
   // кредитом, и покупкой станка.
-  const section = (SECTION_TITLES as any)[article.cashflowSection ?? '']
+  const isAdjustment = article.cashflowSection === ADJUSTMENTS_SECTION;
+  const section = isAdjustment || (SECTION_TITLES as any)[article.cashflowSection ?? '']
     ? (article.cashflowSection as string)
     : 'operating';
   const direction = INFLOW_KINDS.includes(article.kind) ? 'inflow' : 'outflow';
   highlights.push({ report: 'cashFlow', path: [section, direction] });
+
+  const articleCashFlow = isAdjustment
+    ? [
+        ...empty.cashFlow,
+        node(ADJUSTMENTS_SECTION, ADJUSTMENTS_TITLE, [
+          node('inflow', 'Поступления'),
+          node('outflow', 'Выплаты'),
+        ]),
+      ]
+    : empty.cashFlow;
 
   // Прибыль: только доходы и расходы. Взнос учредителя не выручка, покупка
   // станка не расход — балансовым видам в ОПиУ места нет.
@@ -175,7 +195,8 @@ export function buildArticleReportMap(
     highlights.push({ report: 'balance', path: [balanceKey] });
   }
 
-  let { cashFlow, profitLoss, balance } = empty;
+  let { profitLoss, balance } = empty;
+  let cashFlow = articleCashFlow;
 
   highlights.forEach((item) => {
     if (item.report === 'cashFlow') cashFlow = highlight(cashFlow, item.path);

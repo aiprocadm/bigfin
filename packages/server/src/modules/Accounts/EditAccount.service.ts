@@ -8,6 +8,7 @@ import { events } from '@/common/events/events';
 import { EditAccountDTO } from './EditAccount.dto';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { AccountsSettingsService } from './AccountsSettings.service';
+import { normalizeAccountTaxRegime } from './utils/accountTaxRegime';
 
 @Injectable()
 export class EditAccount {
@@ -95,10 +96,24 @@ export class EditAccount {
         oldAccount,
         accountDTO,
       });
+      // Налоговый режим (FT-070 ТЗ-3): тип счёта менять нельзя, поэтому
+      // смысл режима решает старый тип. Не прислан — режим не трогаем:
+      // форма, не знающая о поле, не должна молча его стирать.
+      const { taxRegime, ...rest } = accountDTO;
+      const normalizedTaxRegime = normalizeAccountTaxRegime(
+        taxRegime,
+        oldAccount.accountType,
+      );
+
       // Update the account on the storage.
       const account = await this.accountModel()
         .query(trx)
-        .updateAndFetchById(accountId, { ...accountDTO });
+        .updateAndFetchById(accountId, {
+          ...rest,
+          ...(normalizedTaxRegime !== undefined
+            ? { taxRegime: normalizedTaxRegime }
+            : {}),
+        } as any);
 
       // Triggers `onAccountEdited` event.
       // await this.eventEmitter.emitAsync(events.accounts.onEdited, {

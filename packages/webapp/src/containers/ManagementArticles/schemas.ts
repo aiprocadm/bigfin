@@ -14,8 +14,11 @@ export const getArticleFormSchema = () =>
         message: intl.get('management_articles.error.kind_required'),
       }),
     }),
+    // `adjustments` — служебный раздел статьи «Корректировка остатка»
+    // (FT-071 ТЗ-3). Его не выбирают, но форма обязана его принять: иначе
+    // служебную статью нельзя было бы даже переименовать.
     cashflowSection: z
-      .enum(['operating', 'investing', 'financing'])
+      .enum(['operating', 'investing', 'financing', 'adjustments'])
       .optional()
       .or(z.literal('')),
     parentId: z.union([z.number(), z.null()]).optional(),
@@ -93,7 +96,12 @@ export interface ManagementArticle {
   name: string;
   kind: ArticleKind;
   parentId: number | null;
-  cashflowSection: 'operating' | 'investing' | 'financing' | null;
+  cashflowSection:
+    | 'operating'
+    | 'investing'
+    | 'financing'
+    | 'adjustments'
+    | null;
   /** 'fixed' | 'variable' | null — только у расходных статей. */
   costBehavior?: 'fixed' | 'variable' | null;
   /** Свой ярус управленческого ОПиУ (FT-009 ТЗ-3); `null` — не задан. */

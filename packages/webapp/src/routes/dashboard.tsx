@@ -1246,13 +1246,13 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     breadcrumb: intl.get('capitalization.page.title'),
     pageTitle: intl.get('capitalization.page.title'),
   },
-  // Спросить о своих финансах (этап 14 ТЗ): модель без доступа к базе —
-  // она может только позвать готовый отчёт из закрытого перечня.
+  // AI CFO (FT-100…FT-102 ТЗ-3) на месте «Спросить о своих финансах»
+  // (этап 14 ТЗ-1): адрес прежний, чтобы закладки и пункт меню не сломались.
   {
     path: `/ai-chat`,
     component: lazy(() => import('@/containers/AiChat/AiChatPage')),
-    breadcrumb: intl.get('ai_chat.page.title'),
-    pageTitle: intl.get('ai_chat.page.title'),
+    breadcrumb: intl.get('ai_cfo.page.title'),
+    pageTitle: intl.get('ai_cfo.page.title'),
   },
   // Financial model (Финмодель)
   {

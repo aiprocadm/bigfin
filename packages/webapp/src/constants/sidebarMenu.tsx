@@ -317,7 +317,7 @@ export const SidebarMenu = [
       {
         // Этап 14 ТЗ. Пункт появляется только с включённым разделом: вести
         // человека туда, где ему ответят «раздел выключен», — обман.
-        text: <T id={'ai_chat.page.title'} />,
+        text: <T id={'ai_cfo.page.title'} />,
         href: '/ai-chat',
         type: ISidebarMenuItemType.Link,
         feature: Features.AiAnalyst,

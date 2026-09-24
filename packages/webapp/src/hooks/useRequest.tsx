@@ -12,6 +12,7 @@ import { AppToaster } from '@/components/AppToaster';
 import { getCookie, normalizeApiPath } from '../utils';
 import { getRequestLocale } from '../services/requestLocale';
 import { isFeatureDisabledResponse } from './featureDisabledResponse';
+import { isAiCfoNoAccessResponse } from './aiCfoNoAccessResponse';
 import { recordReportResponse } from '../services/reportCacheState';
 import {
   ACCESS_PREVIEW_HEADER,
@@ -111,6 +112,16 @@ export default function useApiRequest() {
         if (status === 403 && isAccessPreviewReadOnly(data)) {
           AppToaster.show({
             message: intl.get('access_preview.read_only'),
+            intent: Intent.WARNING,
+          });
+          return Promise.reject(error);
+        }
+        // AI CFO не может ответить на ЭТОТ вопрос: нужного отчёта человек не
+        // видит. Остальные вопросы у него работают — закрывать экран плашкой
+        // «нет доступа» было бы неправдой; говорим строкой (FT-102).
+        if (status === 403 && isAiCfoNoAccessResponse(data)) {
+          AppToaster.show({
+            message: intl.get('ai_cfo.no_access'),
             intent: Intent.WARNING,
           });
           return Promise.reject(error);

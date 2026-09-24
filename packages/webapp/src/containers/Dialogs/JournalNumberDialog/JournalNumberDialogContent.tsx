@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import intl from 'react-intl-universal';
 import { DialogContent } from '@/components';
@@ -13,6 +12,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 import '@/style/pages/ManualJournal/JournalNumberDialog.scss';
 
@@ -31,13 +36,17 @@ function JournalNumberDialogContent({
   // #ownProps
   onConfirm,
   initialValues,
-}) {
+}: NumberDialogContentProps) {
   const { isLoading: isSettingsLoading } = useSettingsManualJournals();
   const { mutateAsync: saveSettingsMutate } = useSaveSettings();
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Handle the form submit.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Handle success.
     const handleSuccess = () => {
       setSubmitting(false);
@@ -63,7 +72,7 @@ function JournalNumberDialogContent({
   }, [closeDialog]);
 
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
 
@@ -106,11 +115,17 @@ export interface JournalNumberDialogContentProps {
 const JournalNumberDialogContentComposed: React.ComponentType<JournalNumberDialogContentProps> =
   compose(
     withDialogActions,
-    withSettings(({ manualJournalsSettings }) => ({
-      nextNumber: manualJournalsSettings?.nextNumber,
-      numberPrefix: manualJournalsSettings?.numberPrefix,
-      autoIncrement: manualJournalsSettings?.autoIncrement,
-    })),
+    withSettings(
+      ({
+        manualJournalsSettings,
+      }: {
+        manualJournalsSettings?: NumberSettingsGroup;
+      }) => ({
+        nextNumber: manualJournalsSettings?.nextNumber,
+        numberPrefix: manualJournalsSettings?.numberPrefix,
+        autoIncrement: manualJournalsSettings?.autoIncrement,
+      }),
+    ),
   )(JournalNumberDialogContent);
 
 export default JournalNumberDialogContentComposed;

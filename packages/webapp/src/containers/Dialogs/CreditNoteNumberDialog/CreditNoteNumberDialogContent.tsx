@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useSaveSettings } from '@/hooks/query';
@@ -14,6 +13,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 /**
  * credit note number dialog content
@@ -30,12 +35,16 @@ function CreditNoteNumberDialogContent({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: NumberDialogContentProps) {
   const { mutateAsync: saveSettings } = useSaveSettings();
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Handle the submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Handle the form success.
     const handleSuccess = () => {
       setSubmitting(false);
@@ -62,7 +71,7 @@ function CreditNoteNumberDialogContent({
     closeDialog('credit-number-form');
   };
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
   // Description.
@@ -105,11 +114,17 @@ const CreditNoteNumberDialogContentComposed: React.ComponentType<CreditNoteNumbe
   compose(
     withDialogActions,
     withSettingsActions,
-    withSettings(({ creditNoteSettings }) => ({
-      autoIncrement: creditNoteSettings?.autoIncrement,
-      nextNumber: creditNoteSettings?.nextNumber,
-      numberPrefix: creditNoteSettings?.numberPrefix,
-    })),
+    withSettings(
+      ({
+        creditNoteSettings,
+      }: {
+        creditNoteSettings?: NumberSettingsGroup;
+      }) => ({
+        autoIncrement: creditNoteSettings?.autoIncrement,
+        nextNumber: creditNoteSettings?.nextNumber,
+        numberPrefix: creditNoteSettings?.numberPrefix,
+      }),
+    ),
   )(CreditNoteNumberDialogContent);
 
 export default CreditNoteNumberDialogContentComposed;

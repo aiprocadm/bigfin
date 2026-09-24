@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 
@@ -14,6 +13,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 /**
  * Warehouse transfer no dialog content.
@@ -30,12 +35,16 @@ function WarehouseTransferNumberDialogContent({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: NumberDialogContentProps) {
   const { mutateAsync: saveSettings } = useSaveSettings();
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Handle the submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Handle the form success.
     const handleSuccess = () => {
       setSubmitting(false);
@@ -65,7 +74,7 @@ function WarehouseTransferNumberDialogContent({
   };
 
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
   // Description.
@@ -107,11 +116,17 @@ const WarehouseTransferNumberDialogContentComposed: React.ComponentType<Warehous
   compose(
     withDialogActions,
     withSettingsActions,
-    withSettings(({ warehouseTransferSettings }) => ({
-      autoIncrement: warehouseTransferSettings?.autoIncrement,
-      nextNumber: warehouseTransferSettings?.nextNumber,
-      numberPrefix: warehouseTransferSettings?.numberPrefix,
-    })),
+    withSettings(
+      ({
+        warehouseTransferSettings,
+      }: {
+        warehouseTransferSettings?: NumberSettingsGroup;
+      }) => ({
+        autoIncrement: warehouseTransferSettings?.autoIncrement,
+        nextNumber: warehouseTransferSettings?.nextNumber,
+        numberPrefix: warehouseTransferSettings?.numberPrefix,
+      }),
+    ),
   )(WarehouseTransferNumberDialogContent);
 
 export default WarehouseTransferNumberDialogContentComposed;

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useSaveSettings } from '@/hooks/query';
@@ -14,6 +13,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 import { DialogsName } from '@/constants/dialogs';
 
 /**
@@ -31,12 +36,16 @@ function InvoiceNumberDialogContent({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: NumberDialogContentProps) {
   const { mutateAsync: saveSettings } = useSaveSettings();
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Handle the submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Handle the form success.
     const handleSuccess = () => {
       setSubmitting(false);
@@ -62,7 +71,7 @@ function InvoiceNumberDialogContent({
     closeDialog(DialogsName.InvoiceNumberSettings);
   };
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
   // Description.
@@ -107,11 +116,13 @@ const InvoiceNumberDialogContentComposed: React.ComponentType<InvoiceNumberDialo
   compose(
     withDialogActions,
     withSettingsActions,
-    withSettings(({ invoiceSettings }) => ({
-      nextNumber: invoiceSettings?.nextNumber,
-      numberPrefix: invoiceSettings?.numberPrefix,
-      autoIncrement: invoiceSettings?.autoIncrement,
-    })),
+    withSettings(
+      ({ invoiceSettings }: { invoiceSettings?: NumberSettingsGroup }) => ({
+        nextNumber: invoiceSettings?.nextNumber,
+        numberPrefix: invoiceSettings?.numberPrefix,
+        autoIncrement: invoiceSettings?.autoIncrement,
+      }),
+    ),
   )(InvoiceNumberDialogContent);
 
 export default InvoiceNumberDialogContentComposed;

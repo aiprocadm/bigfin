@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import intl from 'react-intl-universal';
 
@@ -15,6 +14,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 /**
  * Receipt number dialog's content.
@@ -32,14 +37,18 @@ function ReceiptNumberDialogContent({
 
   // #withDialogActions
   closeDialog,
-}) {
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+}: NumberDialogContentProps & { receiptId?: number }) {
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   const { isLoading: isSettingsLoading } = useSettingsReceipts();
   const { mutateAsync: saveSettingsMutate } = useSaveSettings();
 
   // Handle the form submit.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     const handleSuccess = () => {
       setSubmitting(false);
       closeDialog('receipt-number-form');
@@ -63,7 +72,7 @@ function ReceiptNumberDialogContent({
   }, [closeDialog]);
 
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
 
@@ -107,11 +116,13 @@ export interface ReceiptNumberDialogContentProps {
 const ReceiptNumberDialogContentComposed: React.ComponentType<ReceiptNumberDialogContentProps> =
   compose(
     withDialogActions,
-    withSettings(({ receiptSettings }) => ({
-      nextNumber: receiptSettings?.nextNumber,
-      numberPrefix: receiptSettings?.numberPrefix,
-      autoIncrement: receiptSettings?.autoIncrement,
-    })),
+    withSettings(
+      ({ receiptSettings }: { receiptSettings?: NumberSettingsGroup }) => ({
+        nextNumber: receiptSettings?.nextNumber,
+        numberPrefix: receiptSettings?.numberPrefix,
+        autoIncrement: receiptSettings?.autoIncrement,
+      }),
+    ),
   )(ReceiptNumberDialogContent);
 
 export default ReceiptNumberDialogContentComposed;

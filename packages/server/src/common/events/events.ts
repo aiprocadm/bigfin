@@ -488,6 +488,12 @@ export const events = {
   },
 
   // MCP-сервер для ИИ-агентов (FT-090 ТЗ-3): журнал последних вызовов.
+  // AI CFO (FT-100…FT-102 ТЗ-3): инциденты с числами модели, оценка записки.
+  aiCfo: {
+    onNumberRejected: 'onAiCfoNumberRejected',
+    onMemoRated: 'onAiCfoMemoRated',
+  },
+
   mcp: {
     onToolCalled: 'onMcpToolCalled',
   },

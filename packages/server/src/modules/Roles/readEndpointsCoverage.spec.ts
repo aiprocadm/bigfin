@@ -70,6 +70,13 @@ const OPEN_READS: string[] = [
   'Miscellaneous/Miscellaneous.controller.ts#getDateFormats',
   // Вход MCP (FT-090): GET только отвечает «потока нет» (405), данных не отдаёт.
   'Mcp/Mcp.controller.ts#stream',
+  // Перечень вопросов AI CFO — подсказки без данных организации.
+  'AiCfo/AiCfo.controller.ts#intents',
+  // Записка и контекст AI CFO: числа берутся запросами к отчётам с правами
+  // самого человека — нет права на отчёт, нет и записки.
+  'AiCfo/AiCfo.controller.ts#memo',
+  'AiCfo/AiCfo.controller.ts#memoPdf',
+  'AiCfo/AiCfo.controller.ts#context',
   // Ход пересборки отчёта (FT-093): шаг и проценты, без данных отчёта.
   'ReportCache/ReportCache.controller.ts#progress',
   'MoySklad/MoySklad.controller.ts#preview',

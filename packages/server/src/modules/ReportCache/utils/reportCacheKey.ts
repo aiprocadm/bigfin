@@ -84,6 +84,9 @@ export const generationKey = (organizationId: string) => `tenant:${organizationI
 export const NON_FINANCIAL_MUTATIONS = [
   '/api/reports/cache',
   '/api/mcp',
+  // Вопросы к ИИ — POST из-за длины вопроса, данных не меняют.
+  '/api/ai-cfo/ask',
+  '/api/ai-chat/ask',
   '/api/notifications',
   // Настройки ВИДА (колонки, свёрнутые блоки) — не данные. Прочие настройки
   // (источники ОПиУ, неделя организации) меняют отчёты и сбрасывают кэш.

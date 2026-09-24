@@ -63,7 +63,7 @@ export class RowScopeInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     // Режим проверки доступа (FT-081 ТЗ-3): смотреть можно, менять — нет.
     const preview = await resolveAccessPreview(request, this.cls, this.tenantUserModel);
-    assertPreviewReadOnly(preview, request?.method);
+    assertPreviewReadOnly(preview, request?.method, request?.originalUrl ?? request?.url);
 
     const scope = await this.scopeFor(organizationId, preview?.systemUserId ?? userId);
     this.cls.set(ROW_SCOPE_CLS_KEY, scope);

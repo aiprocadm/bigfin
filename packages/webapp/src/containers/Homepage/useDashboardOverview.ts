@@ -5,6 +5,13 @@ import useApiRequest from '@/hooks/useRequest';
 import { useCanViewMoney } from '@/hooks/utils/useAbilityContext';
 import { transformToCamelCase } from '@/utils';
 
+import {
+  compareQueryParams,
+  defaultCompare,
+  type CompareKind,
+  type DashboardCompare,
+} from './dashboardCompare';
+
 export interface OverviewAmount {
   amount: number;
   formattedAmount: string;
@@ -99,8 +106,60 @@ export interface DirectionsProfit {
   sortBy: DirectionsSortBy;
 }
 
+/** Выполнение плана за период (FT-060 ТЗ-3). Суммы — в валюте организации. */
+export interface PlanProgress {
+  /** План на весь период. */
+  periodPlan: number;
+  /** План с начала периода по сегодня: доля прошедших дней. */
+  proratedPlan: number;
+  elapsedDays: number;
+  totalDays: number;
+  fact: number;
+  /** Факт к плану «по сегодня», %; `null` — плана на эти дни нет. */
+  completionPercent: number | null;
+}
+
+/** Точка накопленной выручки по дням (FT-062). `null` — точки нет. */
+export interface CumulativePoint {
+  date: string;
+  fact: number | null;
+  plan: number | null;
+  previous: number | null;
+}
+
+/** Строка «Поступления по направлениям» (FT-063). */
+export interface DirectionPlanRow {
+  /** `null` — строка «Без направления». */
+  projectId: number | null;
+  name: string | null;
+  plan: number;
+  fact: number;
+  deviation: number;
+  /** % выполнения; `null` — плана нет, делить не на что. */
+  completionPercent: number | null;
+}
+
+export interface HomepagePlan {
+  /** Бюджет, по которому считан план; `null` — бюджета на период нет. */
+  budget: { id: number; name: string } | null;
+  income: PlanProgress | null;
+  expenses: PlanProgress | null;
+  cumulative: CumulativePoint[];
+  directions: DirectionPlanRow[] | null;
+  /** Доли в выручке, %; `null` — выручки нет (FT-065). */
+  shares: {
+    expenses: number | null;
+    payroll: number | null;
+    payrollConfigured: boolean;
+  };
+}
+
 export interface DashboardOverview {
   period: { fromDate: string; toDate: string };
+  /** База сравнения, которую сервер взял на самом деле (FT-061). */
+  comparison?: { kind: CompareKind; fromDate: string; toDate: string };
+  /** План на главной; `null` — не посчитался (FT-060…FT-065). */
+  plan?: HomepagePlan | null;
   tiles: {
     cashBalance: OverviewAmount;
     income: OverviewTile;
@@ -131,14 +190,27 @@ export function useDashboardOverview(
   // Порядок направлений едет ТЕМ ЖЕ запросом: отдельная ручка под блок
   // означала бы второй запрос на главной (FIN-018).
   directionsSortBy: DirectionsSortBy = 'profit',
+  // База сравнения едет тем же запросом и входит в ключ кэша: иначе
+  // смена базы показала бы проценты к прежней (FT-061).
+  compare: DashboardCompare = defaultCompare(),
   options?: UseQueryOptions<DashboardOverview, Error>,
 ): UseQueryResult<DashboardOverview, Error> {
   const apiRequest = useApiRequest();
   // Без права на деньги не спрашиваем: 403 закрыл бы весь экран (FT-084).
   const canViewMoney = useCanViewMoney();
 
+  const compareParams = compareQueryParams(compare);
+
   return useQuery<DashboardOverview, Error>(
-    ['DASHBOARD_OVERVIEW', period.fromDate, period.toDate, directionsSortBy],
+    [
+      'DASHBOARD_OVERVIEW',
+      period.fromDate,
+      period.toDate,
+      directionsSortBy,
+      compareParams.compare,
+      compareParams.compareFrom ?? null,
+      compareParams.compareTo ?? null,
+    ],
     () =>
       apiRequest
         .get('dashboard/overview', {
@@ -146,6 +218,7 @@ export function useDashboardOverview(
             from: period.fromDate,
             to: period.toDate,
             directionsSortBy,
+            ...compareParams,
           },
         })
         .then((res) => transformToCamelCase(res.data)),

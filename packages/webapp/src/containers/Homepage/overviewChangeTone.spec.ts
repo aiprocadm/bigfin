@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isGoodChange } from './OverviewSection';
+import { isGoodChange } from './overviewChangeTone';
 
 /**
  * Хорошая ли новость это изменение показателя.

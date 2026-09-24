@@ -18,7 +18,7 @@ export const PopoverContent = React.forwardRef<
       sideOffset={sideOffset}
       // Контент в портале вне .bigfin-ui → подключаем шрифт и border-box вручную.
       className={cn(
-        'box-border font-sans z-50 w-72 rounded-control border border-border bg-surface p-4 text-text-primary shadow-md outline-none',
+        'box-border font-sans z-50 w-72 rounded-control border border-border bg-surface p-4 text-text-primary shadow-elev-2 outline-none',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         className,

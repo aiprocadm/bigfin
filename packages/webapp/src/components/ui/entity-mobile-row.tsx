@@ -75,7 +75,7 @@ export const EntityMobileRow = ({
     </div>
 
     {(subtitle || status) && (
-      <div className="flex items-center justify-between gap-3 text-[0.8125rem] text-text-secondary">
+      <div className="flex items-center justify-between gap-3 text-subhead text-text-secondary">
         <span className="truncate">{subtitle}</span>
         {status}
       </div>

@@ -352,7 +352,7 @@ export function LineItemsEditor({
         </Button>
 
         <div className="flex items-baseline gap-3">
-          <span className="text-[0.8125rem] font-medium text-text-secondary">
+          <span className="text-subhead font-medium text-text-secondary">
             {intl.get('total')}
           </span>
           <span className="text-sm font-semibold tabular-nums text-text-primary">
@@ -366,7 +366,7 @@ export function LineItemsEditor({
 
 /** Классы заголовочной ячейки — как в data-table. */
 const headCellClass =
-  'px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary';
+  'px-3 py-2 text-left text-subhead font-medium text-text-secondary';
 
 /**
  * Классы контролов внутри ячеек: без собственной рамки/фона, чтобы строки

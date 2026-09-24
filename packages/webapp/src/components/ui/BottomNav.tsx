@@ -71,7 +71,7 @@ export const BottomNav = ({
             // фон кнопки, но не рамку, и в окружении без общего сброса
             // браузер рисует свою — панель распадается на пять коробочек.
             'flex min-h-14 flex-1 flex-col items-center justify-center gap-1 border-0 bg-transparent px-1 py-2',
-            'text-[0.6875rem] font-medium transition-colors',
+            'text-caption transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action',
             active ? 'text-text-primary' : 'text-text-secondary',
           )}

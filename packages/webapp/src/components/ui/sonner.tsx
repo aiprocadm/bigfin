@@ -5,7 +5,7 @@ export const Toaster = (props: React.ComponentProps<typeof SonnerToaster>) => (
   <SonnerToaster
     position="top-right"
     toastOptions={{
-      className: 'rounded-default border border-border bg-surface text-text-primary shadow-lg',
+      className: 'rounded-default border border-border bg-surface text-text-primary shadow-elev-2',
       style: {
         fontFamily: 'var(--font-sans)',
       },

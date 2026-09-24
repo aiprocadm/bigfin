@@ -214,7 +214,7 @@ export function MoneyWidget({
             {/* На телефоне полная сумма не помещалась и обрезалась слева:
                 человек видел «749 839,09 ₽» вместо «1 749 839,09 ₽». Там —
                 короткая запись, полная — в окне по нажатию. */}
-            <span className="text-[15px] font-semibold tabular-nums leading-tight">
+            <span className="text-headline tabular-nums">
               <span className="sm:hidden">
                 {totalCompact || totalFormatted}
               </span>

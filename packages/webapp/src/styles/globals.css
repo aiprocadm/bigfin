@@ -43,12 +43,93 @@
   --color-warning: rgb(var(--c-warning));
   --color-info: rgb(var(--c-info));
 
+  /* Заливки и слои (ТЗ-4 §5.1). У material и scrim прозрачность уже внутри
+     токена (--material-alpha, --scrim-alpha): классы bg-material, bg-scrim. */
+  --color-fill-1: rgb(var(--c-fill-1));
+  --color-fill-2: rgb(var(--c-fill-2));
+  --color-material: rgb(var(--c-material) / var(--material-alpha));
+  --color-scrim: rgb(var(--c-scrim) / var(--scrim-alpha));
+
+  /* Ряды графиков (ТЗ-4 §6.2): fill-chart-1 … fill-chart-8, stroke-chart-problem. */
+  --color-chart-1: rgb(var(--c-chart-1));
+  --color-chart-2: rgb(var(--c-chart-2));
+  --color-chart-3: rgb(var(--c-chart-3));
+  --color-chart-4: rgb(var(--c-chart-4));
+  --color-chart-5: rgb(var(--c-chart-5));
+  --color-chart-6: rgb(var(--c-chart-6));
+  --color-chart-7: rgb(var(--c-chart-7));
+  --color-chart-8: rgb(var(--c-chart-8));
+  --color-chart-problem: rgb(var(--c-chart-problem));
+  --color-chart-brand: rgb(var(--c-chart-brand));
+
   --radius-default: var(--radius);
   /* Второе скругление — для органов управления (кнопки, поля). Разное
      скругление кодирует разный вес; одинаковое на всём не кодирует ничего. */
   --radius-control: var(--radius-ctl);
 
   --font-sans: 'Inter Variable', system-ui, sans-serif;
+
+  /* Высота всплывающего (R5 ТЗ-4): shadow-elev-1 … shadow-elev-3. */
+  --shadow-elev-1: var(--elev-1);
+  --shadow-elev-2: var(--elev-2);
+  --shadow-elev-3: var(--elev-3);
+
+  /* Движение (§5.4): ease-standard, ease-spring. Длительности — duration-150
+     / duration-220 / duration-320. */
+  --ease-standard: var(--motion-ease-standard);
+  --ease-spring: var(--motion-ease-spring);
+
+  /* Шрифтовая шкала (§5.2): text-hero … text-caption. Крупное — плотнее,
+     мелкое — свободнее: так трекинг подбирает шрифт Apple. Размеры «на
+     месте» (text-[13px]) вместо шкалы — нарушение, см. noRawDesignValues. */
+  --text-hero: 2.75rem;
+  --text-hero--line-height: 3rem;
+  --text-hero--letter-spacing: -0.025em;
+  --text-hero--font-weight: 600;
+  --text-large-title: 2rem;
+  --text-large-title--line-height: 2.375rem;
+  --text-large-title--letter-spacing: -0.022em;
+  --text-large-title--font-weight: 700;
+  --text-title-2: 1.375rem;
+  --text-title-2--line-height: 1.75rem;
+  --text-title-2--letter-spacing: -0.017em;
+  --text-title-2--font-weight: 600;
+  --text-title-3: 1.25rem;
+  --text-title-3--line-height: 1.5625rem;
+  --text-title-3--letter-spacing: -0.015em;
+  --text-title-3--font-weight: 600;
+  --text-headline: 0.9375rem;
+  --text-headline--line-height: 1.25rem;
+  --text-headline--letter-spacing: -0.01em;
+  --text-headline--font-weight: 600;
+  --text-body: var(--type-body-size);
+  --text-body--line-height: var(--type-body-leading);
+  --text-body--letter-spacing: -0.006em;
+  --text-callout: 0.875rem;
+  --text-callout--line-height: 1.25rem;
+  --text-callout--font-weight: 500;
+  --text-subhead: 0.8125rem;
+  --text-subhead--line-height: 1.125rem;
+  --text-footnote: 0.75rem;
+  --text-footnote--line-height: 1rem;
+  --text-caption: 0.6875rem;
+  --text-caption--line-height: 0.8125rem;
+  --text-caption--letter-spacing: 0.01em;
+  --text-caption--font-weight: 500;
+}
+
+/* «Уменьшить движение» в системе (P6, UI-043-3 ТЗ-4): анимации и переходы
+   сводятся к мгновенным. Правило общее, не только внутри .bigfin-ui: окна и
+   меню рисуются в портале у <body>, вне корня нового интерфейса. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Scope наших стилей — только для элементов внутри .bigfin-ui.
@@ -56,6 +137,9 @@
    старого UI во время Strangler Fig миграции. */
 .bigfin-ui {
   font-family: var(--font-sans);
+  /* Inter Variable сам подбирает рисунок под размер: крупные заголовки —
+     плотнее, мелкий текст — разборчивее (R1 ТЗ-4). */
+  font-optical-sizing: auto;
   color: var(--color-text-primary);
   background-color: var(--color-background);
   font-variant-numeric: tabular-nums;

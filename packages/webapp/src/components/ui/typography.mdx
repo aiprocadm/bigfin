@@ -2,37 +2,48 @@ import { Meta } from '@storybook/blocks';
 
 <Meta title="Brand/Typography" />
 
-# Типографика Bigfin v1
+# Типографика Bigfin
 
-**Один шрифт:** Inter Variable (open source, отличная кириллица).
-**Numeric:** все денежные значения используют `font-variant-numeric: tabular-nums` (встроено в `.bigfin-ui`).
+**Один шрифт — Inter Variable** с оптическими размерами: крупные заголовки
+набираются плотнее, мелкий текст — разборчивее. Фирменный шрифт Apple в веб
+встраивать нельзя (лицензия), Inter ближе всех по рисунку (R1 ТЗ-4).
 
-## Шкала размеров
+**Все суммы — моноширинными цифрами** (`tabular-nums`, включено во всём
+`.bigfin-ui`): столбцы выстраиваются по разрядам.
 
-<Sample className="text-4xl">Заголовок text-4xl (36px)</Sample>
-<Sample className="text-3xl">Заголовок text-3xl (30px) — h1 формы</Sample>
-<Sample className="text-2xl">Заголовок text-2xl (24px) — h2 секции</Sample>
-<Sample className="text-xl">Заголовок text-xl (20px) — h3 карточки</Sample>
-<Sample className="text-lg">Текст text-lg (18px)</Sample>
-<Sample className="text-base">Текст text-base (16px) — дефолт</Sample>
-<Sample className="text-sm">Текст text-sm (14px) — мелкий</Sample>
-<Sample className="text-xs">Текст text-xs (12px) — подписи</Sample>
+Размеры берутся **только из шкалы** — классами `text-hero` … `text-caption`.
+Размер «на месте» (`text-[13px]`) — нарушение: за этим следит проверка
+`noRawDesignValues.spec.ts`, а за полнотой этой страницы —
+`typographyDocMatchesTheme.spec.ts`.
 
-## Веса
+## Шкала (ТЗ-4 §5.2)
 
-<Sample className="text-base font-normal">Inter Variable — Regular 400</Sample>
-<Sample className="text-base font-medium">Inter Variable — Medium 500</Sample>
-<Sample className="text-base font-semibold">Inter Variable — Semibold 600</Sample>
-<Sample className="text-base font-bold">Inter Variable — Bold 700</Sample>
+| Класс | Размер / строка / начертание | Трекинг | Где |
+|---|---|---|---|
+| `text-hero` | 44 / 48 / 600 | −0.025em | сумма-герой главной |
+| `text-large-title` | 32 / 38 / 700 | −0.022em | заголовок страницы |
+| `text-title-2` | 22 / 28 / 600 | −0.017em | заголовок раздела |
+| `text-title-3` | 20 / 25 / 600 | −0.015em | заголовок карточки-блока |
+| `text-headline` | 15 / 20 / 600 | −0.01em | заголовок группы, шапка при прокрутке |
+| `text-body` | 14 / 20 / 400 (телефон 15 / 22) | −0.006em | основной текст |
+| `text-callout` | 14 / 20 / 500 | 0 | суммы в таблицах |
+| `text-subhead` | 13 / 18 / 400 | 0 | подписи, вторичный текст |
+| `text-footnote` | 12 / 16 / 400 | 0 | пояснения, оси графиков |
+| `text-caption` | 11 / 13 / 500 | +0.01em | метки на графиках, счётчики |
 
-## Числа (tabular)
+Прописные буквы для подписей не используются (`noShoutingLabels`).
 
-<div style={{ fontVariantNumeric: 'tabular-nums', color: '#fff', fontSize: 24, padding: 16, background: '#13182B', borderRadius: 8 }}>
-  1 234 567,89 ₽<br/>
-  0 123 456,78 ₽<br/>
-  9 999 999,99 ₽
+## Образцы
+
+<div className="bigfin-ui" style={{ padding: 16 }}>
+  <p className="text-hero">1 749 839,09 ₽</p>
+  <p className="text-large-title">Операции</p>
+  <p className="text-title-2">Деньги по месяцам</p>
+  <p className="text-title-3">Куда уходят деньги</p>
+  <p className="text-headline">Сентябрь 2026</p>
+  <p className="text-body">Основной текст: откуда пришли и куда ушли деньги.</p>
+  <p className="text-callout">500 000,00 ₽</p>
+  <p className="text-subhead">Подпись под суммой</p>
+  <p className="text-footnote">Ось графика: 1,6 млн ₽</p>
+  <p className="text-caption">Метка на графике</p>
 </div>
-
-export const Sample = ({ className, children }) => (
-  <div className={className} style={{ color: '#fff', marginBottom: 12, fontFamily: 'Inter Variable, sans-serif' }}>{children}</div>
-);

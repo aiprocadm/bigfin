@@ -184,7 +184,7 @@ const SidebarGroup = ({
         aria-expanded={open}
         onClick={() => setOpenedByHand(!open)}
         className={cn(
-          'mx-2 flex items-center gap-2 rounded-control px-3 py-2 text-left text-[0.8125rem] font-medium transition-colors',
+          'mx-2 flex items-center gap-2 rounded-control px-3 py-2 text-left text-subhead font-medium transition-colors',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
           // Заголовок раздела с текущей страницей — чернилами: он часть
           // ответа «где я».

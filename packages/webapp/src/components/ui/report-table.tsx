@@ -415,7 +415,7 @@ function ReportRowView({
                 value
               )}
               {note && !hideValues ? (
-                <div className="text-[0.6875rem] leading-tight text-text-muted">
+                <div className="text-caption text-text-muted">
                   {note}
                 </div>
               ) : null}
@@ -547,7 +547,7 @@ export function ReportTable({
               <th
                 key={column.key}
                 className={cn(
-                  'px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary',
+                  'px-3 py-2 text-left text-subhead font-medium text-text-secondary',
                   column.align === 'right' && 'text-right',
                   column.align === 'center' && 'text-center',
                   column.highlight && 'bg-surface-elevated',
@@ -653,7 +653,7 @@ export function ReportSheet({
     >
       <div className="mb-5">
         {companyName && (
-          <div className="text-[0.8125rem] text-text-muted">
+          <div className="text-subhead text-text-muted">
             {companyName}
           </div>
         )}

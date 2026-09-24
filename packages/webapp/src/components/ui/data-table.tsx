@@ -385,7 +385,7 @@ export function DataTable({
                     // ПРОПИСНЫЕ вразрядку кричат громче самих данных, ради
                     // которых таблица и нарисована, и читаются медленнее:
                     // у слова из прописных нет привычного глазу силуэта.
-                    'relative px-3 py-2 text-left text-[0.8125rem] font-medium text-text-secondary',
+                    'relative px-3 py-2 text-left text-subhead font-medium text-text-secondary',
                     col.align === 'right' && 'text-right',
                     // col.canSort учитывает и колоночный disableSortBy, и табличный
                     // (выставляется выше при отсутствии onSortChange).

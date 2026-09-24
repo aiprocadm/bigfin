@@ -21,7 +21,7 @@ const doc = fs.readFileSync(DOC, 'utf8');
 const tokens = fs.readFileSync(TOKENS, 'utf8');
 
 /** Имена токенов, упомянутые в документе. */
-const namedTokens = [...doc.matchAll(/--c-[a-z-]+|--radius(?:-ctl)?\b/g)].map(
+const namedTokens = [...doc.matchAll(/--c-[a-z0-9-]+|--radius(?:-ctl|-pill)?\b/g)].map(
   (match) => match[0],
 );
 

@@ -84,7 +84,7 @@ export const DocumentMobileRow = ({
       <MoneyCell amount={amount} currency={currency} />
     </div>
 
-    <div className="flex items-center justify-between gap-3 text-[0.8125rem] text-text-secondary">
+    <div className="flex items-center justify-between gap-3 text-subhead text-text-secondary">
       {/* «№ 1042 от 12 октября» — так это и произносят. Соединять мету
           средними точками («1042 · 12 октября») — приём из чужих шаблонов:
           точка ничего не значит и читается как пауза посреди фразы. */}
@@ -97,7 +97,7 @@ export const DocumentMobileRow = ({
     </div>
 
     {note && (
-      <span className="text-[0.8125rem] text-text-secondary">{note}</span>
+      <span className="text-subhead text-text-secondary">{note}</span>
     )}
   </div>
 );

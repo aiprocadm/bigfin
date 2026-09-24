@@ -93,7 +93,7 @@ export const CashTimeline = ({
     >
       <p
         id="cash-timeline-title"
-        className="text-[0.8125rem] text-text-secondary"
+        className="text-subhead text-text-secondary"
       >
         {intl.get('cash_timeline.title')}
       </p>
@@ -106,7 +106,7 @@ export const CashTimeline = ({
         {verdict && (
           <span
             className={cn(
-              'text-[0.9375rem]',
+              'text-headline font-normal',
               verdictIsProblem ? 'text-danger' : 'text-text-secondary',
             )}
           >
@@ -206,7 +206,7 @@ export const CashTimeline = ({
 
             {hovered && (
               <span
-                className="pointer-events-none absolute -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-control border border-border bg-surface px-2 py-1 text-xs text-text-primary shadow-sm"
+                className="pointer-events-none absolute -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-control border border-border bg-surface px-2 py-1 text-xs text-text-primary shadow-elev-1"
                 style={{
                   left: `${Math.min(88, Math.max(12, hovered.x * 100))}%`,
                   top: `${hovered.y * 100}%`,

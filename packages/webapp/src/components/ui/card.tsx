@@ -33,9 +33,9 @@ export const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    // 15px/600 — заголовок блока по шкале. 24px здесь спорил бы
-    // с заголовком страницы и с суммой-героем.
-    className={cn('text-[0.9375rem] font-semibold leading-tight tracking-[-0.01em]', className)}
+    // Заголовок блока по шкале — headline, 15px/600 (ТЗ-4 §5.2). 24px здесь
+    // спорил бы с заголовком страницы и с суммой-героем.
+    className={cn('text-headline', className)}
     {...props}
   />
 ));

@@ -98,13 +98,13 @@ function TopContractorsSection({ data, onRetry }: TopContractorsSectionProps) {
                   : formatOrganizationMoney(Number(value) || 0)
               }
             />
-            <Bar yAxisId="money" dataKey="revenue" fill="var(--c-action)" />
+            <Bar yAxisId="money" dataKey="revenue" fill="var(--color-action)" />
             {/* Линия накопительной доли: по ней видно, где набирается 80 %. */}
             <Line
               yAxisId="share"
               type="monotone"
               dataKey="cumulativePercent"
-              stroke="var(--c-text-secondary)"
+              stroke="var(--color-text-secondary)"
               dot={false}
             />
           </ComposedChart>

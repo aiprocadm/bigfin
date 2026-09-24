@@ -1,6 +1,7 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Money } from '@/components/ui/money';
+import { signedAmount } from './amountSign';
 import { TransactionStateBadges } from './TransactionStateBadges';
 import { AutoRuleBadge } from './AutoRuleBadge';
 
@@ -85,7 +86,10 @@ export function useAllTransactionsColumns() {
 
           return (
             <Money tone={isDeposit ? 'positive' : 'default'}>
-              {isDeposit ? formatted_deposit : formatted_withdrawal}
+              {signedAmount(
+                isDeposit ? formatted_deposit : formatted_withdrawal,
+                isDeposit,
+              )}
             </Money>
           );
         },

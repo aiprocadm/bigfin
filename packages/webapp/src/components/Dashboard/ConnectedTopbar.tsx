@@ -63,7 +63,20 @@ export const ConnectedTopbar = () => {
         ) : null
       }
       searchSlot={
-        <div className="relative">
+        <>
+          {/* На телефоне поле поиска сжималось до 16 точек и ложилось поверх
+              суммы денег, пряча её первую цифру (UI-042-1 ТЗ-4). Там —
+              значок-лупа, открывающая тот же поиск. */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            aria-label={intl.get('search')}
+            onClick={openSearch}
+          >
+            <Search className="h-5 w-5" aria-hidden />
+          </Button>
+          <div className="relative hidden sm:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           {/* Поле-триггер: открывает оверлей универсального поиска. */}
           <Input
@@ -79,7 +92,8 @@ export const ConnectedTopbar = () => {
             onClick={openSearch}
             onFocus={openSearch}
           />
-        </div>
+          </div>
+        </>
       }
       notificationsSlot={
         <>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Spinner, Tag, Icon } from '@blueprintjs/core';
 import { x } from '@xstyled/emotion';
-import { firstLettersArgs } from '@/utils';
+import { initials as nameInitials } from '@/utils/initials';
 
 /** Workspace row shape used by the organizations list table (camelCase API). */
 export type OrganizationsListWorkspaceRow = {
@@ -21,7 +21,7 @@ export function OrganizationsListWorkspaceCell({
   activeOrganizationId,
 }: OrganizationsListWorkspaceCellProps) {
   const name = workspace.metadata?.name || workspace.organizationId;
-  const initials = firstLettersArgs(...(name || '').split(' '));
+  const initials = nameInitials(name || '');
   const isActive = workspace.organizationId === activeOrganizationId;
   const logoUri = workspace.metadata?.logoUri;
 

@@ -3,20 +3,12 @@ import intl from 'react-intl-universal';
 import { FileText } from 'lucide-react';
 
 import { Money } from '@/components';
+import { initials } from '@/utils/initials';
 import {
   VendorsActionsMenuV2,
   type VendorRow,
   type VendorRowActions,
 } from './VendorsActionsMenuV2';
-
-/** Инициалы для аватара-плитки (первые буквы двух первых слов). */
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w.charAt(0))
-    .join('')
-    .toUpperCase();
 
 /**
  * Колонки таблицы поставщиков для нового DataTable (react-table v7 формат).

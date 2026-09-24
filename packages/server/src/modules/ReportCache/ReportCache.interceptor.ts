@@ -16,6 +16,33 @@ import {
 
 export const REPORT_CACHED_AT_HEADER = 'x-bigfin-report-cached-at';
 
+/** Вставить `cached_at` в начало готового JSON-объекта. */
+export function withCachedAt(text: string, cachedAt: string): string {
+  const trimmed = text.trimStart();
+  if (!trimmed.startsWith('{')) return text;
+  const field = `"cached_at":${JSON.stringify(cachedAt)}`;
+  const rest = trimmed.slice(1).trimStart();
+  return rest.startsWith('}') ? `{${field}${rest}` : `{${field},${rest}`;
+}
+
+/**
+ * Поймать текст, который сервер отправит человеку: `res.json` в Express
+ * превращает объект в строку и зовёт `res.send` — там его и берём, уже после
+ * всех общих преобразований. Только удачный JSON-ответ.
+ */
+export function captureSentJson(response: any, onText: (text: string) => void): void {
+  if (!response || typeof response.send !== 'function') return;
+  const original = response.send;
+  response.send = function (body: unknown) {
+    response.send = original;
+    const type = String(response.getHeader?.('Content-Type') ?? '');
+    if (response.statusCode === 200 && typeof body === 'string' && (!type || type.includes('json'))) {
+      onText(body);
+    }
+    return original.call(this, body);
+  };
+}
+
 /**
  * Кэш отчётов на входе (FT-093 ТЗ-3) — одно место на все `GET /api/reports/*`.
  *
@@ -58,18 +85,16 @@ export class ReportCacheInterceptor implements NestInterceptor {
     }
     return from(this.lookup(request, path, String(organizationId), String(userId))).pipe(
       mergeMap(({ key, hit }) => {
+        const response = context.switchToHttp().getResponse();
         if (hit) {
-          context.switchToHttp().getResponse()?.setHeader?.(REPORT_CACHED_AT_HEADER, hit.cachedAt);
-          const value = hit.value as any;
-          return of(value && typeof value === 'object' && !Array.isArray(value) ? { ...value, cached_at: hit.cachedAt } : value);
+          response?.setHeader?.(REPORT_CACHED_AT_HEADER, hit.cachedAt);
+          response?.setHeader?.('Content-Type', 'application/json; charset=utf-8');
+          // Строка проходит общие преобразования ответа нетронутой — отдаём
+          // готовый текст, как он ушёл в первый раз, плюс время расчёта.
+          return of(withCachedAt(hit.text, hit.cachedAt));
         }
-        return next.handle().pipe(
-          tap((value) => {
-            if (value && typeof value === 'object' && !Buffer.isBuffer(value)) {
-              void this.cache.put(key, value);
-            }
-          }),
-        );
+        captureSentJson(response, (text) => void this.cache.put(key, text));
+        return next.handle();
       }),
     );
   }

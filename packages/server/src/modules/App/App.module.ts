@@ -42,6 +42,7 @@ import { ProjectsModule } from '../Projects/Projects.module';
 import { PublicApiModule } from '../PublicApi/PublicApi.module';
 import { McpModule } from '../Mcp/Mcp.module';
 import { ReportCacheModule } from '../ReportCache/ReportCache.module';
+import { AiCfoModule } from '../AiCfo/AiCfo.module';
 import { AiAnalystModule } from '../AiAnalyst/AiAnalyst.module';
 import { AiChatModule } from '../AiChat/AiChat.module';
 import { TransactionSplitsModule } from '../TransactionSplits/TransactionSplits.module';
@@ -259,6 +260,8 @@ import { NotificationsModule } from '../Notifications/Notifications.module';
     McpModule,
     // Кэш отчётов и «Пересобрать» (FT-093 ТЗ-3).
     ReportCacheModule,
+    // AI CFO: записка, контекст бизнеса, диалог (FT-100…FT-102 ТЗ-3).
+    AiCfoModule,
     // ИИ-аналитик (этап 13 ТЗ). Флаг по умолчанию выключен.
     AiAnalystModule,
     // ИИ-чат по финансам (этап 14 ТЗ). Тот же флаг, что у аналитика.

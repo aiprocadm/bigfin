@@ -1038,6 +1038,20 @@ export class FinancialAuditLogSubscriber {
     });
   }
 
+  // --- AI CFO (FT-102 ТЗ-3) ---
+  // Правило 2: модель назвала число, которого нет в расчётах, — инцидент в
+  // журнал. Число человеку не показано (заменено на «см. отчёт»).
+  @OnEvent(events.aiCfo.onNumberRejected)
+  async onAiCfoNumberRejected({ intent, numbers }: any) {
+    await this.write(undefined, 'ai_cfo_number_rejected', 'AiCfo', null, { intent, numbers });
+  }
+
+  // Оценка полезности аналитической записки (FT-100).
+  @OnEvent(events.aiCfo.onMemoRated)
+  async onAiCfoMemoRated({ useful, comment, period }: any) {
+    await this.write(undefined, 'ai_cfo_memo_rated', 'AiCfo', null, { useful, comment, period });
+  }
+
   // --- MCP-сервер (FT-090 ТЗ-3) ---
   // Экран «MCP-сервер» показывает последние вызовы отсюда: какой инструмент
   // и каким токеном читал данные организации.

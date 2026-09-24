@@ -82,9 +82,20 @@ export async function resolveAccessPreview(
   return preview;
 }
 
+/**
+ * POST-ручки, которые ничего не меняют: вопрос к ИИ, MCP, предпросмотр
+ * переноса платежа. В режиме проверки их спрашивать можно — как раз затем,
+ * чтобы увидеть ответ глазами сотрудника. Список закрытый: новая ручка сюда
+ * не попадает сама.
+ */
+export const READ_ONLY_POSTS = ['/api/ai-cfo/ask', '/api/ai-chat/ask', '/api/mcp', '/api/payment-calendar/what-if'];
+
+const isReadOnlyPost = (method: unknown, url: unknown) =>
+  String(method ?? '').toUpperCase() === 'POST' && READ_ONLY_POSTS.includes(String(url ?? '').split('?')[0]);
+
 /** Отказ на любое изменение в режиме проверки. */
-export function assertPreviewReadOnly(preview: AccessPreview | null, method: unknown): void {
-  if (preview && !isReadOnlyMethod(method)) {
+export function assertPreviewReadOnly(preview: AccessPreview | null, method: unknown, url?: unknown): void {
+  if (preview && !isReadOnlyMethod(method) && !isReadOnlyPost(method, url)) {
     throw forbidden(
       'ACCESS_PREVIEW_READ_ONLY',
       'Режим проверки доступа: изменения недоступны. Выйдите из режима, чтобы работать.',

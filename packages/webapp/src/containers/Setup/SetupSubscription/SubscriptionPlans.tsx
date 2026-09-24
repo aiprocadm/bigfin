@@ -4,6 +4,7 @@ import { AppToaster, Group, GroupProps } from '@/components';
 import { SubscriptionPlansPeriod } from '@/store/plans/plans.reducer';
 import { SubscriptionPlan } from '@/containers/Subscriptions/component/SubscriptionPlan';
 import { useGetLemonSqueezyCheckout } from '@/hooks/query';
+import { loadLemonSqueezy } from '@/lib/lemonSqueezy';
 import { useSubscriptionPlans } from './hooks';
 import { withPlans, WithPlansProps } from '@/containers/Subscriptions/withPlans';
 import {
@@ -57,9 +58,10 @@ const SubscriptionPlanMapped = compose(
           : annuallyVariantId;
 
       getLemonCheckout({ variantId })
-        .then((res) => {
+        .then(async (res) => {
           const checkoutUrl = res.data.data.attributes.url;
-          window.LemonSqueezy.Url.Open(checkoutUrl);
+          const lemonSqueezy = await loadLemonSqueezy();
+          lemonSqueezy.Url.Open(checkoutUrl);
         })
         .catch(() => {
           AppToaster.show({

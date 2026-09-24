@@ -38,10 +38,12 @@ declare module 'react-scroll-sync';
 /**
  * Виджет оплаты Lemon Squeezy подключается тегом `<script>` и живёт в глобальном
  * объекте окна. Объявлено то, что витрина действительно у него зовёт
- * (Д7 карты v83).
+ * (Д7 карты v83). Скрипт грузится по требованию (`lib/lemonSqueezy.ts`),
+ * поэтому до загрузки объекта нет.
  */
 interface Window {
-  LemonSqueezy: {
+  createLemonSqueezy?: () => void;
+  LemonSqueezy?: {
     Setup: (options: {
       eventHandler: (event: { event: string }) => void;
     }) => void;

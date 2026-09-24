@@ -17,6 +17,8 @@ import { useBillingPageBoot } from './BillingPageBoot';
 import { getSubscriptionStatusText } from './_utils';
 import { compose } from '@/utils';
 import intl from 'react-intl-universal';
+import { AppToaster } from '@/components';
+import { loadLemonSqueezy } from '@/lib/lemonSqueezy';
 
 function SubscriptionRoot({
   openAlert,
@@ -35,9 +37,16 @@ function SubscriptionRoot({
     openAlert('resume-main-subscription');
   };
   const handleUpdatePaymentMethod = () => {
-    window.LemonSqueezy.Url.Open(
-      mainSubscription.lemonUrls?.updatePaymentMethod,
-    );
+    loadLemonSqueezy()
+      .then((lemonSqueezy) =>
+        lemonSqueezy.Url.Open(mainSubscription.lemonUrls?.updatePaymentMethod),
+      )
+      .catch(() =>
+        AppToaster.show({
+          message: intl.get('something_went_wrong'),
+          intent: Intent.DANGER,
+        }),
+      );
   };
   // Handle upgrade button click.
   const handleUpgradeBtnClick = () => {

@@ -68,7 +68,7 @@ export const SelectContent = React.forwardRef<
       ref={ref}
       // Список в портале вне .bigfin-ui → подключаем шрифт и border-box вручную.
       className={cn(
-        'box-border font-sans relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-control border border-border bg-surface text-text-primary shadow-elev-2',
+        'bigfin-portal box-border font-sans relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-control border border-border bg-surface text-text-primary shadow-elev-2',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         position === 'popper' &&

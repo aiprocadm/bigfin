@@ -1,6 +1,5 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import moment from 'moment';
 import { useHistory, useLocation } from 'react-router-dom';
 import { flatten, map } from 'lodash';
 
@@ -10,7 +9,8 @@ import { ListToolbar } from '@/components/ui/list-toolbar';
 import { DataTable } from '@/components/ui/data-table';
 import { TransactionMobileRow } from './TransactionMobileRow';
 import { signedAmount } from './amountSign';
-import { DatePicker } from '@/components/ui/date-picker';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { presetRange } from '@/components/ui/date-range';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
 import { MoneyField } from '@/components/ui/money-field';
@@ -63,10 +63,6 @@ const getRowId = (row: any) => `${row.reference_type}-${row.reference_id}`;
 
 /** У строк выписки свой номер есть. */
 const getUncategorizedRowId = (row: any) => String(row.id);
-
-const toDate = (value?: string) => (value ? moment(value).toDate() : undefined);
-const fromDate = (value?: Date) =>
-  value ? moment(value).format('YYYY-MM-DD') : undefined;
 
 /**
  * Экран «Операции» — список по ВСЕМ счетам сразу (этап 3 ТЗ).
@@ -323,23 +319,16 @@ export default function AllTransactionsPage() {
           )}
 
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            {/* Период — одна компактная группа «с — по». Поле даты по
-                умолчанию во всю ширину, и в строке фильтров «с» и «по»
-                вставали одно под другим (UI-042-4 ТЗ-4). Одно поле выбора
-                диапазона — этап 44. */}
-            <div className="flex items-center gap-2">
-              <DatePicker
-                className="w-40"
-                value={toDate(filters.fromDate)}
-                onChange={(date) => patch({ fromDate: fromDate(date) })}
-              />
-              <span className="text-text-secondary">—</span>
-              <DatePicker
-                className="w-40"
-                value={toDate(filters.toDate)}
-                onChange={(date) => patch({ toDate: fromDate(date) })}
-              />
-            </div>
+            {/* Период — одним полем «1–30 сент. 2026 г.» со стрелками
+                ‹ › (UI-044-2 ТЗ-4, пилот). Были два поля «с» и «по». */}
+            <DateRangePicker
+              value={
+                filters.fromDate && filters.toDate
+                  ? { from: filters.fromDate, to: filters.toDate }
+                  : presetRange('this_month', new Date().toISOString().slice(0, 10))
+              }
+              onChange={(range) => patch({ fromDate: range.from, toDate: range.to })}
+            />
 
             {/* Ряд типов с «Без статьи (N)» (FT-020 ТЗ-3) и быстрые
                 фильтры (FT-021). */}

@@ -38,7 +38,7 @@ export const DialogContent = React.forwardRef<
       // font-sans + box-border: содержимое в портале вне .bigfin-ui, поэтому
       // подключаем шрифт и border-box-модель отступов вручную.
       className={cn(
-        'box-border font-sans',
+        'bigfin-portal box-border font-sans',
         'fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4',
         'rounded-default border border-border bg-surface p-6 text-text-primary shadow-elev-3',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',

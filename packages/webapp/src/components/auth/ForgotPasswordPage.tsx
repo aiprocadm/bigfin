@@ -19,7 +19,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Link } from '@/components/ui/Link';
 import { Spinner } from '@/components/ui/Spinner';
-import { Toaster } from '@/components/ui/sonner';
 // The hooks module is @ts-nocheck legacy JS — useMutation params are
 // inferred as `void`, so we narrow them here at the call site.
 import { useAuthSendResetPassword } from '@/hooks/query/authentication';
@@ -57,7 +56,6 @@ export const ForgotPasswordPage = () => {
 
   return (
     <AuthLayout>
-      <Toaster />
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-text-primary">

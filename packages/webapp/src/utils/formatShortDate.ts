@@ -59,3 +59,32 @@ export const formatMonthShort = (value: string | null | undefined): string => {
 
   return new Intl.DateTimeFormat(uiLocale(), { month: 'short' }).format(parsed);
 };
+
+/**
+ * Период словами — «1–30 сент. 2026 г.», «1 сент. – 15 окт. 2026 г.»
+ * (UI-044-2 ТЗ-4). Общие месяц и год браузер пишет один раз сам
+ * (`formatRange`); один день — одной датой. Даты — `YYYY-MM-DD`, считаются в
+ * UTC, чтобы не съехать на сутки из-за часового пояса.
+ */
+export const formatDateRange = (
+  from: string | null | undefined,
+  to: string | null | undefined,
+): string => {
+  if (!from || !to) return '—';
+
+  const start = new Date(`${String(from).slice(0, 10)}T00:00:00Z`);
+  const end = new Date(`${String(to).slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    return `${from} — ${to}`;
+  }
+
+  const format = new Intl.DateTimeFormat(uiLocale(), {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  return typeof format.formatRange === 'function'
+    ? format.formatRange(start, end)
+    : `${format.format(start)} – ${format.format(end)}`;
+};

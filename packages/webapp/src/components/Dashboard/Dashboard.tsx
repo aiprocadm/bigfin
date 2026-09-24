@@ -16,7 +16,6 @@ import { DashboardShell } from '@/components/Dashboard/DashboardShell';
 import { ConnectedSidebar } from '@/components/Dashboard/ConnectedSidebar';
 import { ConnectedTopbar } from '@/components/Dashboard/ConnectedTopbar';
 import { ConnectedBottomNav } from '@/components/Dashboard/ConnectedBottomNav';
-import { Toaster } from '@/components/ui/sonner';
 import { AccessPreviewBanner } from './AccessPreviewBanner';
 
 /**
@@ -68,7 +67,6 @@ export default function Dashboard() {
       <DialogsContainer />
       <DrawersContainer />
       <AlertsContainer />
-      <Toaster />
     </DashboardProvider>
   );
 }

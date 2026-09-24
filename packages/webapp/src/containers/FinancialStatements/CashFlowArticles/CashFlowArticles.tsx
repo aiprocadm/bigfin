@@ -11,6 +11,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ScreenError } from '@/components/ui/screen-error';
 import { pickScreenState } from '@/components/ui/screen-state';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import {
   ReportSheet,
   ReportTable,
@@ -31,7 +33,7 @@ import {
 } from '@/hooks/query/FinancialReports';
 import { useCanExport } from '@/hooks/utils/useAbilityContext';
 
-import { ReportPeriodBar } from '../v2';
+import { REPORT_SCALES } from '../v2/reportControls';
 import { ReportScopeNote } from '../ReportScopeNote';
 import ReportDrillDownPanel, { DrillDownTarget } from '../ReportDrillDownPanel';
 import {
@@ -245,14 +247,26 @@ export default function CashFlowArticles() {
         )}
       </div>
 
-      {/* Период и масштаб — на странице, одним нажатием (FIN-012). */}
-      <ReportPeriodBar
-        range={query}
-        onRangeChange={(range) => setQuery(range)}
-        scale={query.dateGroup}
-        onScaleChange={(dateGroup) => setQuery({ dateGroup })}
-        extraSlot={
-          showEntityPicker ? (
+      {/* Период и масштаб — на странице, одним нажатием (FIN-012).
+          Пилот ТЗ-4 (UI-044-1/2): период — одно поле со стрелками ‹ ›,
+          масштаб — сегменты вместо ряда кнопок и серого системного списка.
+          Остальные отчёты получат ту же шапку в этапе 49. */}
+      <div className="flex flex-wrap items-center gap-3">
+        <DateRangePicker
+          value={{ from: query.fromDate, to: query.toDate }}
+          onChange={(range) => setQuery({ fromDate: range.from, toDate: range.to })}
+        />
+        <SegmentedControl
+          size="sm"
+          aria-label={intl.get('report_controls.scale')}
+          value={query.dateGroup}
+          onChange={(dateGroup) => setQuery({ dateGroup })}
+          options={REPORT_SCALES.map((value) => ({
+            value,
+            label: intl.get(`report_controls.scale.${value}`),
+          }))}
+        />
+        {showEntityPicker ? (
             <label className="flex items-center gap-1 text-xs text-text-secondary">
               {intl.get('cash_flow_articles.legal_entity')}
               <select
@@ -276,9 +290,8 @@ export default function CashFlowArticles() {
                 ))}
               </select>
             </label>
-          ) : null
-        }
-      />
+        ) : null}
+      </div>
 
       {/* Шесть группировок строк (FT-002). Меняются только строки: поток
           и остатки одинаковы на всех вкладках. */}

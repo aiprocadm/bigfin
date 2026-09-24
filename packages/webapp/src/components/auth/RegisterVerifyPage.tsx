@@ -7,7 +7,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLayout } from '@/components/ui/AuthLayout';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/Spinner';
-import { Toaster } from '@/components/ui/sonner';
 // Legacy JS hooks (// @ts-nocheck) — типы здесь сужаем вручную.
 import { useAuthActions, useAuthUserVerifyEmail } from '@/hooks/state';
 import { useAuthSignUpVerifyResendMail } from '@/hooks/query';
@@ -33,7 +32,6 @@ export const RegisterVerifyPage = () => {
 
   return (
     <AuthLayout>
-      <Toaster />
       <div className="flex flex-col gap-6">
         <div className="flex flex-col items-center gap-3 text-center">
           <span

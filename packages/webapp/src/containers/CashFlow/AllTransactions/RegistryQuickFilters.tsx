@@ -5,6 +5,7 @@ import { Intent } from '@blueprintjs/core';
 
 import { AppToaster } from '@/components';
 import { Button } from '@/components/ui/button';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Input } from '@/components/ui/input';
 import {
   Dialog,
@@ -22,7 +23,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useSaveRegistryFilters, useSavedRegistryFilters } from '@/hooks/query/registryFilters';
-import { cn } from '@/lib/cn';
 import type { ScreenFilters } from './allTransactionsFilters';
 import {
   applySavedFilter,
@@ -67,22 +67,23 @@ export function RegistryTypeChips({
         ? { status: 'uncategorized', flow: undefined }
         : { status: undefined, flow: id === 'all' ? undefined : id },
     );
+  // Тип — сегменты (UI-044-1 ТЗ-4, пилот): выбирается ровно один, а ряд
+  // кнопок с чернильной заливкой спорил с главной кнопкой экрана.
   return (
-    <div className="flex flex-wrap gap-1" role="group" aria-label={intl.get('all_transactions.chip.label')}>
-      {chips.map((chip) => (
-        <Button
-          key={chip.id}
-          type="button"
-          size="sm"
-          variant={active === chip.id ? 'primary' : 'secondary'}
-          aria-pressed={active === chip.id}
-          className={cn(chip.id === 'uncategorized' && uncategorizedCount > 0 && active !== chip.id && 'text-warning')}
-          onClick={() => select(chip.id)}
-        >
-          {chip.label}
-        </Button>
-      ))}
-    </div>
+    <SegmentedControl
+      aria-label={intl.get('all_transactions.chip.label')}
+      value={active}
+      onChange={select}
+      options={chips.map((chip) => ({
+        value: chip.id,
+        label:
+          chip.id === 'uncategorized' && uncategorizedCount > 0 && active !== chip.id ? (
+            <span className="text-warning">{chip.label}</span>
+          ) : (
+            chip.label
+          ),
+      }))}
+    />
   );
 }
 

@@ -17,6 +17,7 @@ import GlobalErrors from '@/containers/GlobalErrors/GlobalErrors';
 import { SplashScreen, DashboardThemeProvider } from '../components';
 import { queryConfig } from '../hooks/query/base';
 import { EnsureUserEmailNotVerified } from './Guards/EnsureUserEmailNotVerified';
+import { Toaster } from './ui/sonner';
 
 const DashboardPrivatePages = lazy(
   () => import('@/components/Dashboard/PrivatePages'),
@@ -79,6 +80,10 @@ function AppInsider({ history }: { history: History }) {
         </Suspense>
 
         <GlobalErrors />
+        {/* Показчик уведомлений — ОДИН на всё приложение (UI-044-9 ТЗ-4):
+            два рисуют каждое сообщение дважды, ни одного — и сообщения на
+            страницах вне рабочей части пропадают. */}
+        <Toaster />
       </DashboardThemeProvider>
     </div>
   );

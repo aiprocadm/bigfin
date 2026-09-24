@@ -148,9 +148,13 @@
 /* Scoped manual reset — заменяет Tailwind preflight, но действует
    ТОЛЬКО внутри .bigfin-ui. BlueprintJS-области не затронуты. */
 @layer base {
-  .bigfin-ui *,
-  .bigfin-ui *::before,
-  .bigfin-ui *::after {
+  /* Тот же сброс — и для всплывающего кита (класс .bigfin-portal): окна,
+     меню, поповеры рисуются в портале у <body>, вне .bigfin-ui, и без
+     сброса браузер рисовал внутри них кнопки в рамке и точки у списков
+     (UI-044 ТЗ-4, выбор периода). */
+  :is(.bigfin-ui, .bigfin-portal) *,
+  :is(.bigfin-ui, .bigfin-portal) *::before,
+  :is(.bigfin-ui, .bigfin-portal) *::after {
     box-sizing: border-box;
 
     /* ТОЛЩИНУ И ВИД РАМКИ ЗАДАВАТЬ ОБЯЗАТЕЛЬНО, а не только цвет.
@@ -171,16 +175,16 @@
     border-color: var(--color-border);
   }
 
-  .bigfin-ui button,
-  .bigfin-ui [role='button'] {
+  :is(.bigfin-ui, .bigfin-portal) button,
+  :is(.bigfin-ui, .bigfin-portal) [role='button'] {
     background-color: transparent;
     background-image: none;
     cursor: pointer;
   }
 
-  .bigfin-ui input,
-  .bigfin-ui select,
-  .bigfin-ui textarea {
+  :is(.bigfin-ui, .bigfin-portal) input,
+  :is(.bigfin-ui, .bigfin-portal) select,
+  :is(.bigfin-ui, .bigfin-portal) textarea {
     color: inherit;
     font: inherit;
   }
@@ -194,25 +198,25 @@
    *
    * Подчёркивание остаётся там, где его ставят намеренно: в тексте, где
    * ссылку надо отличить от слов вокруг, — классом `underline`. */
-  .bigfin-ui a {
+  :is(.bigfin-ui, .bigfin-portal) a {
     text-decoration: none;
   }
 
-  .bigfin-ui h1,
-  .bigfin-ui h2,
-  .bigfin-ui h3,
-  .bigfin-ui h4,
-  .bigfin-ui h5,
-  .bigfin-ui h6,
-  .bigfin-ui p,
-  .bigfin-ui ul,
-  .bigfin-ui ol {
+  :is(.bigfin-ui, .bigfin-portal) h1,
+  :is(.bigfin-ui, .bigfin-portal) h2,
+  :is(.bigfin-ui, .bigfin-portal) h3,
+  :is(.bigfin-ui, .bigfin-portal) h4,
+  :is(.bigfin-ui, .bigfin-portal) h5,
+  :is(.bigfin-ui, .bigfin-portal) h6,
+  :is(.bigfin-ui, .bigfin-portal) p,
+  :is(.bigfin-ui, .bigfin-portal) ul,
+  :is(.bigfin-ui, .bigfin-portal) ol {
     margin: 0;
     padding: 0;
   }
 
-  .bigfin-ui ul,
-  .bigfin-ui ol {
+  :is(.bigfin-ui, .bigfin-portal) ul,
+  :is(.bigfin-ui, .bigfin-portal) ol {
     list-style: none;
   }
 }

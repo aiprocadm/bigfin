@@ -19,7 +19,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Link } from '@/components/ui/Link';
 import { Spinner } from '@/components/ui/Spinner';
-import { Toaster } from '@/components/ui/sonner';
 // Сохраняем существующий provider — он несёт логику загрузки meta и обработки 404 токена.
 import {
   InviteAcceptProvider,
@@ -233,7 +232,6 @@ export const InviteAcceptPage = () => {
 
   return (
     <AuthLayout>
-      <Toaster />
       <div className="flex flex-col gap-6">
         <InviteAcceptProvider token={token}>
           <InviteAcceptForm />

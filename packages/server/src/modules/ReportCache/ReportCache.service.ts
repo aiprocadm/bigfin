@@ -12,7 +12,8 @@ import {
 export const REPORT_CACHE_STORE = 'REPORT_CACHE_STORE';
 
 export interface CachedReport {
-  value: unknown;
+  /** Готовый текст ответа — ровно то, что ушло человеку в первый раз. */
+  text: string;
   /** Когда посчитан — для плашки «Данные на …». */
   cachedAt: string;
 }
@@ -29,30 +30,24 @@ export class ReportCacheService {
     return Number((await this.store.get(generationKey(organizationId))) ?? 0) || 0;
   }
 
+  /**
+   * Хранится ГОТОВЫЙ ТЕКСТ ответа, а не объект. Объект после кэша снова
+   * прошёл бы общие преобразования сервера (переименование ключей, обход
+   * значений) — у годового отчёта по дням это сотни тысяч полей, и выигрыш
+   * кэша съедался почти целиком (живая проверка этапа 40: 853 → 693 мс).
+   * Первая строка записи — время расчёта, дальше — сам ответ.
+   */
   public async get(key: string): Promise<CachedReport | null> {
-    const text = await this.store.get(key);
-    if (!text) return null;
-    try {
-      return JSON.parse(text);
-    } catch {
-      return null;
-    }
+    const stored = await this.store.get(key);
+    if (!stored) return null;
+    const newline = stored.indexOf('\n');
+    if (newline < 0) return null;
+    return { cachedAt: stored.slice(0, newline), text: stored.slice(newline + 1) };
   }
 
-  /**
-   * Запомнить ответ. Снимок берётся СРАЗУ (JSON.stringify до первого await):
-   * дальше по цепочке ответ переименовывается в snake_case, и в кэш не должна
-   * попасть половина одного и половина другого.
-   */
-  public async put(key: string, value: unknown, now = moment()): Promise<boolean> {
-    let text: string;
-    try {
-      text = JSON.stringify({ value, cachedAt: now.format('YYYY-MM-DD HH:mm:ss') });
-    } catch {
-      return false;
-    }
-    if (Buffer.byteLength(text) > REPORT_CACHE_MAX_BYTES) return false;
-    await this.store.set(key, text, REPORT_CACHE_TTL_SECONDS);
+  public async put(key: string, text: string, now = moment()): Promise<boolean> {
+    if (typeof text !== 'string' || Buffer.byteLength(text) > REPORT_CACHE_MAX_BYTES) return false;
+    await this.store.set(key, `${now.format('YYYY-MM-DD HH:mm:ss')}\n${text}`, REPORT_CACHE_TTL_SECONDS);
     return true;
   }
 

@@ -2,7 +2,7 @@
 import { firstValueFrom, of } from 'rxjs';
 import { events } from '@/common/events/events';
 import { ReportCacheService } from './ReportCache.service';
-import { ReportCacheInterceptor } from './ReportCache.interceptor';
+import { ReportCacheInterceptor, withCachedAt } from './ReportCache.interceptor';
 import { ReportCacheInvalidationSubscriber } from './ReportCacheInvalidation.subscriber';
 import { ReportCacheStore } from './ReportCache.store';
 import { IGNORED_GROUPS, INVALIDATING_GROUPS, invalidatingEventNames } from './utils/invalidationMap';
@@ -39,13 +39,37 @@ const cls = (org = 'org-1', user = 7) => ({ get: (k: string) => ({ organizationI
 
 function http(request: any) {
   const headers: Record<string, string> = {};
+  const sent: string[] = [];
+  const response: any = {
+    statusCode: 200,
+    setHeader: (k: string, v: string) => (headers[k] = v),
+    getHeader: (k: string) => headers[k],
+    send(body: string) {
+      sent.push(body);
+      return response;
+    },
+  };
   return {
     headers,
+    sent,
+    response,
     context: {
       getType: () => 'http',
-      switchToHttp: () => ({ getRequest: () => request, getResponse: () => ({ setHeader: (k: string, v: string) => (headers[k] = v) }) }),
+      switchToHttp: () => ({ getRequest: () => request, getResponse: () => response }),
     } as any,
   };
+}
+
+/**
+ * Как Nest с Express: значение из цепочки превращается в строку и уходит
+ * через `res.send`; строка (ответ из кэша) уходит как есть.
+ */
+async function reply(interceptor: ReportCacheInterceptor, request: any, handler: { handle: () => any }) {
+  const call = http(request);
+  const value = await firstValueFrom(interceptor.intercept(call.context, handler));
+  call.response.send(typeof value === 'string' ? value : JSON.stringify(value));
+  await new Promise((r) => setImmediate(r));
+  return { ...call, body: JSON.parse(call.sent[0]) };
 }
 
 const report = (extra: any = {}) => ({
@@ -123,67 +147,86 @@ describe('AC 4: карта инвалидации', () => {
 });
 
 describe('перехватчик', () => {
-  it('AC 1: второй такой же запрос берётся из кэша, отчёт не считается', async () => {
-    const cache = new ReportCacheService(new MemoryStore());
-    const interceptor = new ReportCacheInterceptor(cache, cls());
+  it('AC 1: второй такой же запрос отдаётся готовым текстом из кэша, отчёт не считается', async () => {
+    const interceptor = new ReportCacheInterceptor(new ReportCacheService(new MemoryStore()), cls());
     let computed = 0;
     const handler = { handle: () => { computed += 1; return of({ data: { total: 42 }, meta: {} }); } };
-
-    const first = http(report());
-    const a = await firstValueFrom(interceptor.intercept(first.context, handler));
-    await new Promise((r) => setImmediate(r));
-    const second = http(report());
-    const b = await firstValueFrom(interceptor.intercept(second.context, handler));
+    const first = await reply(interceptor, report(), handler);
+    const second = await reply(interceptor, report(), handler);
     expect(computed).toBe(1);
-    expect(a).toEqual({ data: { total: 42 }, meta: {} });
-    expect(b).toMatchObject({ data: { total: 42 }, cached_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/) });
-    expect(second.headers['x-bigfin-report-cached-at']).toBe(b.cached_at);
+    expect(first.body).toEqual({ data: { total: 42 }, meta: {} });
+    expect(second.body).toMatchObject({ data: { total: 42 }, cached_at: expect.stringMatching(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/) });
+    expect(second.headers['x-bigfin-report-cached-at']).toBe(second.body.cached_at);
+  });
+
+  it('в кэш кладётся ТЕКСТ, ушедший человеку, — после всех преобразований', async () => {
+    const store = new MemoryStore();
+    const interceptor = new ReportCacheInterceptor(new ReportCacheService(store), cls());
+    const call = http(report());
+    await firstValueFrom(interceptor.intercept(call.context, { handle: () => of({ a: 1 }) }));
+    // Общие преобразования сервера переименовали ключи — в кэш идёт итог.
+    call.response.send('{"a_b":1}');
+    await new Promise((r) => setImmediate(r));
+    const [stored] = [...store.data.entries()].filter(([k]) => k.includes(':report:'));
+    expect(stored[1].split('\n')[1]).toBe('{"a_b":1}');
+  });
+
+  it('ошибка и не-JSON в кэш не попадают', async () => {
+    const store = new MemoryStore();
+    const interceptor = new ReportCacheInterceptor(new ReportCacheService(store), cls());
+    const failed = http(report());
+    await firstValueFrom(interceptor.intercept(failed.context, { handle: () => of({}) }));
+    failed.response.statusCode = 500;
+    failed.response.send('{"error":1}');
+    const pdf = http(report());
+    await firstValueFrom(interceptor.intercept(pdf.context, { handle: () => of({}) }));
+    pdf.headers['Content-Type'] = 'application/pdf';
+    pdf.response.send('%PDF');
+    await new Promise((r) => setImmediate(r));
+    expect([...store.data.keys()].filter((k) => k.includes(':report:'))).toEqual([]);
+  });
+
+  it('cached_at вставляется в любой объект', () => {
+    expect(JSON.parse(withCachedAt('{}', 'x'))).toEqual({ cached_at: 'x' });
+    expect(JSON.parse(withCachedAt(' {"a":1}', 'x'))).toEqual({ cached_at: 'x', a: 1 });
+    expect(withCachedAt('[1]', 'x')).toBe('[1]');
   });
 
   it('AC 2: изменяющий запрос сбрасывает кэш — следующий отчёт считается заново', async () => {
-    const cache = new ReportCacheService(new MemoryStore());
-    const interceptor = new ReportCacheInterceptor(cache, cls());
+    const interceptor = new ReportCacheInterceptor(new ReportCacheService(new MemoryStore()), cls());
     let computed = 0;
     const handler = { handle: () => { computed += 1; return of({ data: computed }); } };
-    await firstValueFrom(interceptor.intercept(http(report()).context, handler));
-    await new Promise((r) => setImmediate(r));
+    await reply(interceptor, report(), handler);
     await firstValueFrom(
       interceptor.intercept(http({ method: 'POST', originalUrl: '/api/banking/transactions', headers: {} }).context, { handle: () => of({ id: 1 }) }),
     );
     await new Promise((r) => setImmediate(r));
-    const again = await firstValueFrom(interceptor.intercept(http(report()).context, handler));
+    const again = await reply(interceptor, report(), handler);
     expect(computed).toBe(2);
-    expect(again).toEqual({ data: 2 });
+    expect(again.body).toEqual({ data: 2 });
   });
 
   it('разные люди — разный кэш: сотрудник не получит цифры владельца', async () => {
     const store = new MemoryStore();
     const owner = new ReportCacheInterceptor(new ReportCacheService(store), cls('org-1', 1));
     const staff = new ReportCacheInterceptor(new ReportCacheService(store), cls('org-1', 2));
-    await firstValueFrom(owner.intercept(http(report()).context, { handle: () => of({ data: 'всё' }) }));
-    await new Promise((r) => setImmediate(r));
-    const seen = await firstValueFrom(staff.intercept(http(report()).context, { handle: () => of({ data: 'своё' }) }));
-    expect(seen).toEqual({ data: 'своё' });
-    const preview = await firstValueFrom(
-      owner.intercept(http(report({ headers: { accept: 'application/json', 'x-bigfin-access-preview': '6' } })).context, { handle: () => of({ data: 'глазами' }) }),
-    );
-    expect(preview).toEqual({ data: 'глазами' });
+    await reply(owner, report(), { handle: () => of({ data: 'всё' }) });
+    expect((await reply(staff, report(), { handle: () => of({ data: 'своё' }) })).body).toEqual({ data: 'своё' });
+    const preview = await reply(owner, report({ headers: { accept: 'application/json', 'x-bigfin-access-preview': '6' } }), {
+      handle: () => of({ data: 'глазами' }),
+    });
+    expect(preview.body).toEqual({ data: 'глазами' });
   });
 
   it('«Пересобрать» обходит кэш и перезаписывает его', async () => {
-    const cache = new ReportCacheService(new MemoryStore());
-    const interceptor = new ReportCacheInterceptor(cache, cls());
+    const interceptor = new ReportCacheInterceptor(new ReportCacheService(new MemoryStore()), cls());
     let n = 0;
     const handler = { handle: () => of({ data: ++n }) };
-    await firstValueFrom(interceptor.intercept(http(report()).context, handler));
-    await new Promise((r) => setImmediate(r));
-    const fresh = await firstValueFrom(
-      interceptor.intercept(http(report({ headers: { accept: 'application/json', 'accept-language': 'ru', 'x-bigfin-report-cache': 'refresh' } })).context, handler),
-    );
-    expect(fresh).toEqual({ data: 2 });
-    await new Promise((r) => setImmediate(r));
-    const cached = await firstValueFrom(interceptor.intercept(http(report()).context, handler));
-    expect(cached).toMatchObject({ data: 2 });
+    await reply(interceptor, report(), handler);
+    const fresh = await reply(interceptor, report({ headers: { accept: 'application/json', 'accept-language': 'ru', 'x-bigfin-report-cache': 'refresh' } }), handler);
+    expect(fresh.body).toEqual({ data: 2 });
+    const cached = await reply(interceptor, report(), handler);
+    expect(cached.body).toMatchObject({ data: 2 });
     expect(n).toBe(2);
   });
 
@@ -192,12 +235,12 @@ describe('перехватчик', () => {
     let n = 0;
     const handler = { handle: () => of({ data: ++n }) };
     const xlsx = report({ headers: { accept: 'application/xlsx' } });
-    await firstValueFrom(interceptor.intercept(http(xlsx).context, handler));
-    await firstValueFrom(interceptor.intercept(http(xlsx).context, handler));
+    await reply(interceptor, xlsx, handler);
+    await reply(interceptor, xlsx, handler);
     expect(n).toBe(2);
     const anon = new ReportCacheInterceptor(new ReportCacheService(new MemoryStore()), { get: () => undefined } as any);
-    await firstValueFrom(anon.intercept(http(report()).context, handler));
-    await firstValueFrom(anon.intercept(http(report()).context, handler));
+    await reply(anon, report(), handler);
+    await reply(anon, report(), handler);
     expect(n).toBe(4);
   });
 });

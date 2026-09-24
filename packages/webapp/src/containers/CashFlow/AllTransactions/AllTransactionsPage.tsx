@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { ListToolbar } from '@/components/ui/list-toolbar';
 import { DataTable } from '@/components/ui/data-table';
 import { TransactionMobileRow } from './TransactionMobileRow';
+import { signedAmount } from './amountSign';
 import { DatePicker } from '@/components/ui/date-picker';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
@@ -322,15 +323,23 @@ export default function AllTransactionsPage() {
           )}
 
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <DatePicker
-              value={toDate(filters.fromDate)}
-              onChange={(date) => patch({ fromDate: fromDate(date) })}
-            />
-            <span className="text-text-secondary">—</span>
-            <DatePicker
-              value={toDate(filters.toDate)}
-              onChange={(date) => patch({ toDate: fromDate(date) })}
-            />
+            {/* Период — одна компактная группа «с — по». Поле даты по
+                умолчанию во всю ширину, и в строке фильтров «с» и «по»
+                вставали одно под другим (UI-042-4 ТЗ-4). Одно поле выбора
+                диапазона — этап 44. */}
+            <div className="flex items-center gap-2">
+              <DatePicker
+                className="w-40"
+                value={toDate(filters.fromDate)}
+                onChange={(date) => patch({ fromDate: fromDate(date) })}
+              />
+              <span className="text-text-secondary">—</span>
+              <DatePicker
+                className="w-40"
+                value={toDate(filters.toDate)}
+                onChange={(date) => patch({ toDate: fromDate(date) })}
+              />
+            </div>
 
             {/* Ряд типов с «Без статьи (N)» (FT-020 ТЗ-3) и быстрые
                 фильтры (FT-021). */}
@@ -537,11 +546,12 @@ export default function AllTransactionsPage() {
                   formattedDate={row.formatted_date}
                   payee={row.payee}
                   description={row.description}
-                  formattedAmount={
+                  formattedAmount={signedAmount(
                     Number(row.deposit) > 0
                       ? row.formatted_deposit_amount
-                      : row.formatted_withdrawal_amount
-                  }
+                      : row.formatted_withdrawal_amount,
+                    Number(row.deposit) > 0,
+                  )}
                   isDeposit={Number(row.deposit) > 0}
                 />
               ) : (
@@ -549,11 +559,12 @@ export default function AllTransactionsPage() {
                   formattedDate={row.formatted_date}
                   payee={row.contact_name}
                   description={row.note}
-                  formattedAmount={
+                  formattedAmount={signedAmount(
                     Number(row.deposit) > 0
                       ? row.formatted_deposit
-                      : row.formatted_withdrawal
-                  }
+                      : row.formatted_withdrawal,
+                    Number(row.deposit) > 0,
+                  )}
                   isDeposit={Number(row.deposit) > 0}
                 />
               )

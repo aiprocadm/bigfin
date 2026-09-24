@@ -1,4 +1,7 @@
 {
+  "compact.thousand": "K",
+  "compact.million": "M",
+  "compact.billion": "B",
   "data_quality.page_title": "Data quality",
   "data_quality.year": "Year",
   "data_quality.tab.unmapped": "No article",
@@ -100,6 +103,8 @@
   "deals.field.status": "Status",
   "deals.action.edit": "Edit",
   "deals.action.delete": "Delete",
+  "deals.delete_confirm.title": "Delete the deal “{name}”?",
+  "deals.delete_confirm.description": "The deal will be deleted for good and cannot be restored.",
   "deals.dashboard.title": "Overview",
   "deals.dashboard.profit": "Profit",
   "deals.dashboard.revenue": "Revenue",

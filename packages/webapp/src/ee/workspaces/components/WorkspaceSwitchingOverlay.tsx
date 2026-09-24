@@ -1,6 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { firstLettersArgs } from '@/utils';
+import { initials as nameInitials } from '@/utils/initials';
 import '@/ee/workspaces/style/components/WorkspaceSwitchingOverlay.scss';
 
 interface WorkspaceSwitchingOverlayProps {
@@ -12,7 +12,7 @@ interface WorkspaceSwitchingOverlayProps {
  * Displays a blurred backdrop with the workspace name and initials.
  */
 export function WorkspaceSwitchingOverlay({ workspaceName }: WorkspaceSwitchingOverlayProps) {
-  const initials = firstLettersArgs(...(workspaceName || '').split(' '));
+  const initials = nameInitials(workspaceName || '');
 
   return (
     <div className="workspace-switching-overlay">

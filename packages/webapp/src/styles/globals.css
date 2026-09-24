@@ -14,6 +14,12 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
+/* Анимации появления окон, меню, шторок (`animate-in`, `fade-in-0`,
+   `zoom-in-95`, `slide-in-from-*`). Пакет был установлен, классы стояли в
+   компонентах, но без этой строки Tailwind их не создавал — окна
+   «выпрыгивали» без плавности (UI-042-10 ТЗ-4). */
+@plugin 'tailwindcss-animate';
+
 @theme {
   --color-background: rgb(var(--c-background));
   --color-surface: rgb(var(--c-surface));
@@ -164,7 +170,10 @@
  * а объявления вне слоёв сильнее — иначе `h-9` перебивал бы минимум.
  * С планшета (768 px) правило не действует, там прежние размеры. */
 @media (max-width: 767px) {
-  .bigfin-ui button,
+  /* Галочки, переключатели и радиокнопки — тоже `button`, но растягивать их
+     нельзя: галочка 16×16 превращалась в столбик 16×44, отмеченная — в
+     чёрную полосу (UI-042-2 ТЗ-4). Их цель нажатия — вся подпись рядом. */
+  .bigfin-ui button:not([role='checkbox']):not([role='switch']):not([role='radio']),
   .bigfin-ui [role='button'],
   .bigfin-ui [role='combobox'] {
     min-height: 44px;

@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { formatMonthShort } from '@/utils/formatShortDate';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
+import { marginChartPoints } from './marginChartPoints';
 
 export interface MarginPoint {
   month: string;
@@ -20,10 +21,8 @@ export interface MarginPoint {
 }
 
 export function MarginOverTimeChart({ data }: { data: MarginPoint[] }) {
-  const points = (data ?? []).map((p) => ({
-    month: p.month,
-    marginPct: Math.round((p.margin ?? 0) * 1000) / 10, // % с 1 знаком
-  }));
+  // Месяц без выручки — разрыв линии, а не «маржа 0 %» (UI-042-7 ТЗ-4).
+  const points = marginChartPoints(data);
   return (
     <div style={{ width: '100%', height: 240 }}>
       <ResponsiveContainer>
@@ -34,12 +33,14 @@ export function MarginOverTimeChart({ data }: { data: MarginPoint[] }) {
           <Tooltip
             formatter={(v: any) => `${formatOrganizationNumber(v)}%`}
           />
+          {/* Ломаная, а не сглаженная: сглаживание придумывает значения
+              между месяцами (правило R17 ТЗ-4). */}
           <Line
-            type="monotone"
+            type="linear"
             dataKey="marginPct"
-            stroke="#e0a800"
+            stroke="var(--color-action)"
             strokeWidth={2}
-            dot={false}
+            dot={{ r: 2 }}
           />
         </LineChart>
       </ResponsiveContainer>

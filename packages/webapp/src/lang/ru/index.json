@@ -1,4 +1,7 @@
 {
+  "compact.thousand": "тыс.",
+  "compact.million": "млн",
+  "compact.billion": "млрд",
   "data_quality.page_title": "Качество данных",
   "data_quality.year": "Год",
   "data_quality.tab.unmapped": "Без статьи",
@@ -100,6 +103,8 @@
   "deals.field.status": "Статус",
   "deals.action.edit": "Изменить",
   "deals.action.delete": "Удалить",
+  "deals.delete_confirm.title": "Удалить сделку «{name}»?",
+  "deals.delete_confirm.description": "Сделка удалится насовсем, вернуть её будет нельзя.",
   "deals.dashboard.title": "Сводка",
   "deals.dashboard.profit": "Прибыль",
   "deals.dashboard.revenue": "Доход",

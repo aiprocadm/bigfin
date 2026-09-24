@@ -2,6 +2,7 @@ import React from 'react';
 import intl from 'react-intl-universal';
 
 import { Money } from '@/components/ui/money';
+import { signedAmount } from './amountSign';
 
 import { CategorizeInlineCell } from './CategorizeInlineCell';
 
@@ -72,9 +73,12 @@ export function useUncategorizedColumns(accounts: any[] = []) {
           // авария. Красный в этом продукте значит «проблема».
           return (
             <Money tone={isDeposit ? 'positive' : 'default'}>
-              {isDeposit
-                ? formatted_deposit_amount
-                : formatted_withdrawal_amount}
+              {signedAmount(
+                isDeposit
+                  ? formatted_deposit_amount
+                  : formatted_withdrawal_amount,
+                isDeposit,
+              )}
             </Money>
           );
         },

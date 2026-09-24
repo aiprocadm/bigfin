@@ -49,6 +49,8 @@ export interface MoneyWidgetAccount {
 
 export interface MoneyWidgetProps {
   totalFormatted: string;
+  /** Короткая сумма для телефона («1,75 млн ₽»): полная там не помещается (UI-042-1 ТЗ-4). */
+  totalCompact?: string;
   gap?: MoneyWidgetGap | null;
   sparkline?: number[];
   accounts?: MoneyWidgetAccount[];
@@ -179,6 +181,7 @@ function AccountRow({
 
 export function MoneyWidget({
   totalFormatted,
+  totalCompact,
   gap,
   sparkline = [],
   accounts = [],
@@ -208,8 +211,14 @@ export function MoneyWidget({
           )}
         >
           <span className="flex flex-col">
+            {/* На телефоне полная сумма не помещалась и обрезалась слева:
+                человек видел «749 839,09 ₽» вместо «1 749 839,09 ₽». Там —
+                короткая запись, полная — в окне по нажатию. */}
             <span className="text-[15px] font-semibold tabular-nums leading-tight">
-              {totalFormatted}
+              <span className="sm:hidden">
+                {totalCompact || totalFormatted}
+              </span>
+              <span className="hidden sm:inline">{totalFormatted}</span>
             </span>
             {gap && (
               <span

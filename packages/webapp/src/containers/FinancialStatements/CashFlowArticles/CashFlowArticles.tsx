@@ -289,7 +289,7 @@ export default function CashFlowArticles() {
             setQuery({ group: group as CashFlowGrouping })
           }
         >
-          <TabsList className="flex-wrap">
+          <TabsList>
             {CASHFLOW_GROUPINGS.map((group) => (
               <TabsTrigger key={group} value={group}>
                 {intl.get(`cash_flow_articles.group.${group}`)}

@@ -5,6 +5,14 @@ import { DealProgressBars } from './DealProgressBars';
 import { toast } from 'sonner';
 import { useFeatureCan } from '@/hooks/state/feature';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDeals, useDealsSummary, useDeleteDeal } from '@/hooks/query/deals';
 import { useEmployees } from '@/hooks/query/payroll';
@@ -39,6 +47,10 @@ export default function DealsPage() {
   const [editing, setEditing] = React.useState<any | null>(null);
   const [showForm, setShowForm] = React.useState(false);
   const [openDeal, setOpenDeal] = React.useState<any | null>(null);
+  // Удаление — только после подтверждения: сделка удаляется насовсем, а кнопка
+  // стояла текстом рядом с «Изменить» и срабатывала с одного нажатия
+  // (UI-042-9 ТЗ-4).
+  const [deleting, setDeleting] = React.useState<any | null>(null);
 
   const canDeals = featureCan('deals');
   // Сотрудников отдаёт «Зарплата»: без неё запрос вернёт 403, и пользователь
@@ -91,6 +103,8 @@ export default function DealsPage() {
       toast.success(intl.get('deals.deleted_ok'));
     } catch {
       toast.error(intl.get('deals.delete_error'));
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -186,19 +200,35 @@ export default function DealsPage() {
                     {fmt(m.profit)} · {pct(m.margin)}
                   </span>
                 )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setEditing(d);
-                    setShowForm(true);
-                  }}
-                >
-                  {intl.get('deals.action.edit')}
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => onDelete(d.id)}>
-                  {intl.get('deals.action.delete')}
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={intl.get('more_actions')}
+                    >
+                      <MoreHorizontal className="h-4 w-4" aria-hidden />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setEditing(d);
+                        setShowForm(true);
+                      }}
+                    >
+                      <Pencil className="mr-2 h-4 w-4" aria-hidden />
+                      {intl.get('deals.action.edit')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-danger focus:text-danger"
+                      onClick={() => setDeleting(d)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" aria-hidden />
+                      {intl.get('deals.action.delete')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           );
@@ -233,6 +263,19 @@ export default function DealsPage() {
           onCancel={() => setShowForm(false)}
         />
       )}
+
+      <ConfirmDialog
+        open={deleting !== null}
+        title={intl.get('deals.delete_confirm.title', {
+          name: deleting?.name ?? '',
+        })}
+        description={intl.get('deals.delete_confirm.description')}
+        confirmLabel={intl.get('deals.action.delete')}
+        intent="danger"
+        loading={del.isLoading}
+        onConfirm={() => deleting && onDelete(deleting.id)}
+        onCancel={() => setDeleting(null)}
+      />
     </div>
   );
 }

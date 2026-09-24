@@ -253,7 +253,7 @@ export default function ManagerialPnl() {
           value={query.group ?? 'articles'}
           onValueChange={(group) => setQuery({ group: group as PnlGrouping })}
         >
-          <TabsList className="flex-wrap">
+          <TabsList>
             {PNL_GROUPINGS.map((group) => (
               <TabsTrigger key={group} value={group}>
                 {intl.get(`managerial_pnl.group.${group}`)}

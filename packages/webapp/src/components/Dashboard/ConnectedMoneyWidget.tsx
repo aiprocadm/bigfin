@@ -2,6 +2,7 @@ import React from 'react';
 
 import { MoneyWidget } from '@/components/ui/money-widget';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formattedCompactAmount } from '@/utils/compactMoney';
 import { useMoneyWidget } from '@/hooks/query/dashboard';
 
 /**
@@ -21,6 +22,14 @@ export default function ConnectedMoneyWidget() {
   return (
     <MoneyWidget
       totalFormatted={widget.total?.formatted ?? ''}
+      totalCompact={
+        widget.total?.amount != null
+          ? formattedCompactAmount(
+              widget.total.amount,
+              widget.total.currencyCode,
+            )
+          : undefined
+      }
       gap={widget.gap ?? null}
       sparkline={widget.sparkline ?? []}
       accounts={widget.accounts ?? []}

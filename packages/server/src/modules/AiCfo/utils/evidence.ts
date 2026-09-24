@@ -317,19 +317,32 @@ export interface PlArticle {
   kind: string;
   amount: number;
 }
-const plArticles = (rollup: any): PlArticle[] =>
-  (Array.isArray(rollup) ? rollup : rollup?.data ?? []).map((r: any) => ({
-    id: Number(r.id),
-    name: r.name,
-    kind: r.kind,
-    amount: Number(r.amount) || 0,
-  }));
+/**
+ * Статьи-листья свёртки. Родитель в свёртке — сумма детей: оставь его, и
+ * «Доходы» с «Выручкой» считались бы дважды, а ответ называл бы общую статью
+ * вместо конкретной (живая проверка этапа 41).
+ */
+const plArticles = (rollup: any): PlArticle[] => {
+  const rows: any[] = Array.isArray(rollup) ? rollup : rollup?.data ?? [];
+  const parents = new Set(rows.map((r) => r.parent_id ?? r.parentId).filter((v) => v !== null && v !== undefined).map(Number));
+  return rows
+    .filter((r) => !parents.has(Number(r.id)))
+    .map((r) => ({ id: Number(r.id), name: r.name, kind: r.kind, amount: Number(r.amount) || 0 }));
+};
 
 /** «Какие расходы выросли сильнее всего?» */
 export function expenseGrowth(current: any, previous: any, period: Period, base: Period, currency: string): AiCfoAnswer {
   const cur = plArticles(current).filter((a) => a.kind === 'expense');
   const prev = new Map(plArticles(previous).map((a) => [a.id, a.amount]));
-  if (cur.every((a) => abs(a.amount) < EPS)) return emptyAnswer('expense_growth', period, base);
+  if (cur.every((a) => abs(a.amount) < EPS)) {
+    // Операции за период могут быть — нет именно расходов. «Операций нет»
+    // здесь было бы неправдой.
+    return {
+      ...emptyAnswer('expense_growth', period, base),
+      headline: `Расходов за период ${period.fromDate} — ${period.toDate} нет — расти нечему.`,
+      links: [{ label: 'Анализ расходов', href: `/expenses-analysis?from_date=${period.fromDate}&to_date=${period.toDate}` }],
+    };
+  }
   const rows = cur
     .map((a) => ({ ...a, before: prev.get(a.id) ?? 0 }))
     .map((a) => ({ ...a, delta: round2(a.amount - a.before), growth: growthPercent(a.amount, a.before) }))

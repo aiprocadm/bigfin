@@ -214,3 +214,26 @@ describe('даты в пояснении — не суммы', () => {
     expect(checked.text).toContain('01.11.2026');
   });
 });
+
+describe('свёртка статей: только листья', () => {
+  it('родитель «Доходы» не считается рядом с «Выручкой»', () => {
+    const now = [
+      { id: 1, name: 'Доходы', kind: 'income', amount: 60000, parent_id: null },
+      { id: 2, name: 'Выручка', kind: 'income', amount: 60000, parent_id: 1 },
+    ];
+    const before = [
+      { id: 1, name: 'Доходы', kind: 'income', amount: 1150000, parent_id: null },
+      { id: 2, name: 'Выручка', kind: 'income', amount: 1150000, parent_id: 1 },
+    ];
+    const answer = periodDiff(now, before, cash(0, 0, 0, 0), cash(0, 0, 0, 0), period, base, 'RUB');
+    expect(answer.headline).toContain('«Выручка»');
+    expect(answer.table!.rows.map((r) => r[0])).toEqual(['Выручка']);
+  });
+
+  it('нет расходов — так и сказано, а не «операций нет»', () => {
+    const answer = expenseGrowth([{ id: 5, name: 'Аренда', kind: 'expense', amount: 0, parent_id: 3 }], [], period, base, 'RUB');
+    expect(answer.empty).toBe(true);
+    expect(answer.headline).toContain('Расходов за период');
+    expect(answer.headline).not.toContain('операций нет');
+  });
+});

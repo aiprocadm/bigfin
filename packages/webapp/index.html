@@ -20,12 +20,17 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <div id="nprogress"></div>
+    <!--
+      Сетка flexboxgrid 6.3.1 лежит у нас (public/vendor), а не на чужом CDN:
+      стиль в <body> держит запуск приложения, пока не скачается, и медленный
+      из России cdnjs оставлял страницу пустой. Место в разметке прежнее —
+      порядок каскада стилей не меняется.
+    -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
+      href="/vendor/flexboxgrid-6.3.1/flexboxgrid.min.css"
       type="text/css"
     />
-    <script src="https://app.lemonsqueezy.com/js/lemon.js"></script>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

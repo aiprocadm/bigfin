@@ -129,6 +129,7 @@ sudo systemctl enable --now fin-backend
 # 8. Публикация
 sudo chmod o+x /home/aiproc          # чтобы nginx (www-data) дошёл до dist
 sudo cp ops/stand/nginx/fin.ptsfera.online.conf /etc/nginx/sites-available/
+sudo cp ops/stand/nginx/bigfin-gzip.conf /etc/nginx/snippets/   # сжатие ответов
 sudo ln -sf /etc/nginx/sites-available/fin.ptsfera.online.conf /etc/nginx/sites-enabled/
 sudo htpasswd /etc/nginx/.htpasswd-stand demo     # пароль — из менеджера секретов
 sudo nginx -t && sudo systemctl reload nginx
@@ -157,6 +158,7 @@ crontab -l 2>/dev/null | { cat; \
 | **`organization/build` отвечает 400** | `dateFormat` принимает только значения из списка: `DD/MM/yyyy`, а не `DD/MM/YYYY` | — |
 | **Окно пароля nginx выскакивает снова и снова, пользоваться невозможно** | Витрина шлёт токен в `Authorization: Bearer` (`hooks/useRequest.tsx`), он вытесняет пропуск basic-auth | `auth_basic off;` внутри `location /api/` (уже в конфиге) |
 | **Не открывается в Chrome/Яндексе, хотя `curl` даёт честный 401** | Кириллица в `auth_basic` — по RFC там только ASCII | Realm только латиницей |
+| **Страницы долго открываются, особенно первый вход и после обновления стенда** | В общем `nginx.conf` список `gzip_types` закомментирован, а по умолчанию nginx сжимает только HTML: скрипты и стили витрины (4,9 МБ) уходили без сжатия | `sudo bash ops/stand/enable-gzip.sh` — кладёт `ops/stand/nginx/bigfin-gzip.conf` в `/etc/nginx/snippets/` и точечно подключает его в конфиг сайта; при ошибке `nginx -t` всё возвращает. Станет ~1,3 МБ |
 
 ---
 

@@ -5,6 +5,7 @@ import { Box } from '@/components';
 import { SubscriptionPlansSection } from './SubscriptionPlansSection';
 import { withSubscriptionPlansActions } from '../../Subscriptions/withSubscriptionPlansActions';
 import styles from './SetupSubscription.module.scss';
+import { loadLemonSqueezy } from '@/lib/lemonSqueezy';
 
 /**
  * Subscription step of wizard setup.
@@ -20,13 +21,19 @@ function SetupSubscription({
   }, [initSubscriptionPlans]);
 
   useEffect(() => {
-    window.LemonSqueezy.Setup({
-      eventHandler: (event) => {
-        // Do whatever you want with this event data
-        if (event.event === 'Checkout.Success') {
-        }
-      },
-    });
+    // Виджет не скачался — экран тарифов всё равно показываем; ошибку
+    // человек увидит при нажатии «Подписаться».
+    loadLemonSqueezy()
+      .then((lemonSqueezy) =>
+        lemonSqueezy.Setup({
+          eventHandler: (event) => {
+            // Do whatever you want with this event data
+            if (event.event === 'Checkout.Success') {
+            }
+          },
+        }),
+      )
+      .catch(() => undefined);
   }, []);
 
   return (

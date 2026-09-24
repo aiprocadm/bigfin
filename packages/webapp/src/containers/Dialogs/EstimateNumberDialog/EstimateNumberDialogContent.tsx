@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import intl from 'react-intl-universal';
 
@@ -14,6 +13,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 /**
  * Estimate number dialog's content.
@@ -30,8 +35,9 @@ function EstimateNumberDialogContent({
   // #ownProps
   initialValues,
   onConfirm,
-}) {
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+}: NumberDialogContentProps) {
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Fetches the estimates settings.
   const { isLoading: isSettingsLoading } = useSettingsEstimates();
@@ -40,7 +46,10 @@ function EstimateNumberDialogContent({
   const { mutateAsync: saveSettingsMutate } = useSaveSettings();
 
   // Handle the submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Transformes the form values to settings to save it.
     const options = transformFormToSettings(values, 'sales_estimates');
 
@@ -64,7 +73,7 @@ function EstimateNumberDialogContent({
   }, [closeDialog]);
 
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
 
@@ -107,11 +116,13 @@ export interface EstimateNumberDialogContentProps {
 const EstimateNumberDialogContentComposed: React.ComponentType<EstimateNumberDialogContentProps> =
   compose(
     withDialogActions,
-    withSettings(({ estimatesSettings }) => ({
-      nextNumber: estimatesSettings?.nextNumber,
-      numberPrefix: estimatesSettings?.numberPrefix,
-      autoIncrement: estimatesSettings?.autoIncrement,
-    })),
+    withSettings(
+      ({ estimatesSettings }: { estimatesSettings?: NumberSettingsGroup }) => ({
+        nextNumber: estimatesSettings?.nextNumber,
+        numberPrefix: estimatesSettings?.numberPrefix,
+        autoIncrement: estimatesSettings?.autoIncrement,
+      }),
+    ),
   )(EstimateNumberDialogContent);
 
 export default EstimateNumberDialogContentComposed;

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback } from 'react';
 import intl from 'react-intl-universal';
 
@@ -16,6 +15,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 /**
  * Payment receive number dialog's content.
@@ -32,8 +37,9 @@ function PaymentNumberDialogContent({
   // #ownProps
   onConfirm,
   initialValues,
-}) {
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+}: NumberDialogContentProps) {
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   const { isLoading: isSettingsLoading } = useSettingsPaymentReceives();
   const { mutateAsync: saveSettingsMutate } = useSaveSettings();
@@ -48,7 +54,10 @@ function PaymentNumberDialogContent({
   };
 
   // Handle submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Transformes the form values to settings to save it.
     const options = transformFormToSettings(values, 'payment_receives');
 
@@ -73,7 +82,7 @@ function PaymentNumberDialogContent({
   }, [closeDialog]);
 
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
 
@@ -110,11 +119,17 @@ const PaymentNumberDialogContentComposed: React.ComponentType<PaymentNumberDialo
   compose(
     withDialogActions,
     withSettingsActions,
-    withSettings(({ paymentReceiveSettings }) => ({
-      nextNumber: paymentReceiveSettings?.nextNumber,
-      numberPrefix: paymentReceiveSettings?.numberPrefix,
-      autoIncrement: paymentReceiveSettings?.autoIncrement,
-    })),
+    withSettings(
+      ({
+        paymentReceiveSettings,
+      }: {
+        paymentReceiveSettings?: NumberSettingsGroup;
+      }) => ({
+        nextNumber: paymentReceiveSettings?.nextNumber,
+        numberPrefix: paymentReceiveSettings?.numberPrefix,
+        autoIncrement: paymentReceiveSettings?.autoIncrement,
+      }),
+    ),
   )(PaymentNumberDialogContent);
 
 export default PaymentNumberDialogContentComposed;

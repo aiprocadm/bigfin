@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useSaveSettings } from '@/hooks/query';
@@ -13,6 +12,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 import { compose } from '@/utils';
 
 /**
@@ -30,12 +35,16 @@ function TransactionNumberDialogContent({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: NumberDialogContentProps) {
   const { mutateAsync: saveSettings } = useSaveSettings();
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Handle the submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Handle the form success.
     const handleSuccess = () => {
       setSubmitting(false);
@@ -69,7 +78,7 @@ function TransactionNumberDialogContent({
   };
 
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
 
@@ -107,11 +116,13 @@ const TransactionNumberDialogContentComposed: React.ComponentType<TransactionNum
   compose(
     withDialogActions,
     withSettingsActions,
-    withSettings(({ cashflowSetting }) => ({
-      nextNumber: cashflowSetting?.nextNumber,
-      numberPrefix: cashflowSetting?.numberPrefix,
-      autoIncrement: cashflowSetting?.autoIncrement,
-    })),
+    withSettings(
+      ({ cashflowSetting }: { cashflowSetting?: NumberSettingsGroup }) => ({
+        nextNumber: cashflowSetting?.nextNumber,
+        numberPrefix: cashflowSetting?.numberPrefix,
+        autoIncrement: cashflowSetting?.autoIncrement,
+      }),
+    ),
   )(TransactionNumberDialogContent);
 
 export default TransactionNumberDialogContentComposed;

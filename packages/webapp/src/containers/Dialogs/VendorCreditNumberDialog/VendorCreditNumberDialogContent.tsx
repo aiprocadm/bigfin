@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useSaveSettings } from '@/hooks/query';
@@ -14,6 +13,12 @@ import {
   transformFormToSettings,
   transformSettingsToForm,
 } from '@/containers/JournalNumber/utils';
+import type {
+  NumberDialogContentProps,
+  NumberSettingsGroup,
+  ReferenceNumberFormValues,
+  ReferenceNumberSubmitHandler,
+} from '@/containers/JournalNumber/types';
 
 /**
  * Vendor credit number dialog
@@ -30,12 +35,16 @@ function VendorCreditNumberDialogContent({
 
   // #withDialogActions
   closeDialog,
-}) {
+}: NumberDialogContentProps) {
   const { mutateAsync: saveSettings } = useSaveSettings();
-  const [referenceFormValues, setReferenceFormValues] = React.useState(null);
+  const [referenceFormValues, setReferenceFormValues] =
+    React.useState<ReferenceNumberFormValues | null>(null);
 
   // Handle the submit form.
-  const handleSubmitForm = (values, { setSubmitting }) => {
+  const handleSubmitForm: ReferenceNumberSubmitHandler = (
+    values,
+    { setSubmitting },
+  ) => {
     // Handle the form success.
     const handleSuccess = () => {
       setSubmitting(false);
@@ -62,7 +71,7 @@ function VendorCreditNumberDialogContent({
     closeDialog('vendor-credit-form');
   };
   // Handle form change.
-  const handleChange = (values) => {
+  const handleChange = (values: ReferenceNumberFormValues) => {
     setReferenceFormValues(values);
   };
 
@@ -106,11 +115,17 @@ const VendorCreditNumberDialogContentComposed: React.ComponentType<VendorCreditN
   compose(
     withDialogActions,
     withSettingsActions,
-    withSettings(({ vendorsCreditNoteSetting }) => ({
-      autoIncrement: vendorsCreditNoteSetting?.autoIncrement,
-      nextNumber: vendorsCreditNoteSetting?.nextNumber,
-      numberPrefix: vendorsCreditNoteSetting?.numberPrefix,
-    })),
+    withSettings(
+      ({
+        vendorsCreditNoteSetting,
+      }: {
+        vendorsCreditNoteSetting?: NumberSettingsGroup;
+      }) => ({
+        autoIncrement: vendorsCreditNoteSetting?.autoIncrement,
+        nextNumber: vendorsCreditNoteSetting?.nextNumber,
+        numberPrefix: vendorsCreditNoteSetting?.numberPrefix,
+      }),
+    ),
   )(VendorCreditNumberDialogContent);
 
 export default VendorCreditNumberDialogContentComposed;

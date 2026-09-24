@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Topbar } from '@/components/ui/Topbar';
 import ConnectedMoneyWidget from './ConnectedMoneyWidget';
+import { OnboardingProgress } from './Onboarding/OnboardingProgress';
 import { useAuthActions, useDialogActions } from '@/hooks/state';
 import { useAuthenticatedAccount } from '@/hooks/query';
 import { firstLettersArgs } from '@/utils';
@@ -80,7 +81,15 @@ export const ConnectedTopbar = () => {
           />
         </div>
       }
-      notificationsSlot={<NotificationBell />}
+      notificationsSlot={
+        <>
+          {/* Онбординг «N из M» (FT-095 ТЗ-3) — рядом с колокольчиком: оба
+              про «что меня ждёт», и оба видны на телефоне. Сам решает,
+              показываться ли: только владельцу и пока есть что делать. */}
+          <OnboardingProgress />
+          <NotificationBell />
+        </>
+      }
       moneySlot={<ConnectedMoneyWidget />}
       quickActionsSlot={
         <DropdownMenu>

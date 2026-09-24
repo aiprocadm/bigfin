@@ -260,4 +260,44 @@ describe('отчёт «Деньги (ДДС по статьям)»', () => {
       ]);
     });
   });
+
+  describe('корректировки остатка (FT-071 ТЗ-3)', () => {
+    it('служебная статья — отдельный раздел, операционный поток не трогает', () => {
+      const report = buildCashFlowArticlesReport({
+        articles: [
+          ...articles,
+          article(20, 'Корректировка остатка', 'equity', 'adjustments'),
+        ],
+        amounts: [...amounts, { id: 20, amount: 700 }],
+        openingBalance: 0,
+        closingBalance: 1_020_700,
+      });
+      const bySection = (key: string) =>
+        report.sections.find((s) => s.section === key)!;
+
+      expect(report.sections.map((s) => s.section)).toEqual([
+        'operating',
+        'investing',
+        'financing',
+        'adjustments',
+      ]);
+      expect(bySection('adjustments').total).toBe(700);
+      // Операционный поток — ровно выручка минус аренда, без разницы с банком.
+      expect(bySection('operating').total).toBe(320_000);
+      // Остаток сходится: корректировка — часть потока, а не «не разнесено».
+      expect(report.unclassified).toBe(0);
+      expect(report.isBalanced).toBe(true);
+    });
+
+    it('без служебной статьи раздела нет — отчёт прежний', () => {
+      const report = buildCashFlowArticlesReport({
+        articles,
+        amounts,
+        openingBalance: 0,
+        closingBalance: 1_020_000,
+      });
+
+      expect(report.sections).toHaveLength(3);
+    });
+  });
 });

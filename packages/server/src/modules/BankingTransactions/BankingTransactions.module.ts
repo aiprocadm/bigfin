@@ -29,6 +29,7 @@ import { BankingTransactionsApplication } from './BankingTransactionsApplication
 import { AutoIncrementOrdersModule } from '../AutoIncrementOrders/AutoIncrementOrders.module';
 import { DeleteCashflowTransaction } from './commands/DeleteCashflowTransaction.service';
 import { CreateBankTransactionService } from './commands/CreateBankTransaction.service';
+import { FixAccountBalanceService } from './commands/FixAccountBalance.service';
 import { GetBankTransactionService } from './queries/GetBankTransaction.service';
 import { CommandBankTransactionValidator } from './commands/CommandCasflowValidator.service';
 import { BranchTransactionDTOTransformer } from '../Branches/integrations/BranchTransactionDTOTransform';
@@ -119,6 +120,8 @@ const models = [
     BankingTransactionsApplication,
     DeleteCashflowTransaction,
     CreateBankTransactionService,
+    // Фиксация остатка на дату (FT-071 ТЗ-3).
+    FixAccountBalanceService,
     GetBankTransactionService,
     GetBankAccountsService,
     CommandBankTransactionValidator,

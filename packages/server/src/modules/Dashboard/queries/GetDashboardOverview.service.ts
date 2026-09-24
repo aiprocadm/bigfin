@@ -1,5 +1,7 @@
 // © 2026 Bigfin
-import { Inject, Injectable } from '@nestjs/common';
+import { comparisonPeriod, ComparisonPeriod } from './computeComparison';
+import { GetHomepagePlanService, HomepagePlan } from './GetHomepagePlan.service';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import * as moment from 'moment';
 
 import { formatNumber } from '@/utils/format-number';
@@ -105,6 +107,13 @@ export interface DashboardOverview {
   topContractors: ParetoResult | null;
   /** «Прибыльность направлений» (FIN-018). `null` — блок не посчитался. */
   directionsProfit: DirectionsProfitResult | null;
+  /** С чем сравниваются плитки (FT-061): вид и даты базы. */
+  comparison: ComparisonPeriod;
+  /**
+   * План на главной (FT-060, FT-062, FT-063, FT-065). `null` — блок не
+   * посчитался; главная без него всё равно открывается.
+   */
+  plan: HomepagePlan | null;
   currencyCode: string;
 }
 
@@ -148,15 +157,21 @@ export class GetDashboardOverviewService {
     private readonly paymentRequestModel: TenantModelProxy<
       typeof PaymentRequest
     >,
+
+    // Необязательна только для проверок, собирающих службу вручную.
+    @Optional()
+    private readonly homepagePlan?: GetHomepagePlanService,
   ) {}
 
   public async getOverview(
     fromDate?: string,
     toDate?: string,
     directionsSortBy: DirectionsSortBy = 'profit',
+    compare?: { kind?: string; fromDate?: string; toDate?: string },
   ): Promise<DashboardOverview> {
     const period = this.resolvePeriod(fromDate, toDate);
-    const previous = this.previousPeriod(period);
+    // База сравнения (FT-061): прошлый период, два назад, год назад, свой.
+    const previous = comparisonPeriod(period, compare?.kind, compare);
 
     const metadata = await this.tenancyContext.getTenantMetadata();
     const currencyCode = (metadata as any)?.baseCurrency ?? 'RUB';
@@ -178,8 +193,16 @@ export class GetDashboardOverviewService {
     const netProfit = current.income - current.expenses;
     const previousNetProfit = prior.income - prior.expenses;
 
+    const plan = this.homepagePlan
+      ? await this.homepagePlan
+          .getPlan(period, previous, { income: current.income, expenses: current.expenses })
+          .catch(() => null)
+      : null;
+
     return {
       period,
+      comparison: previous,
+      plan,
       tiles: {
         cashBalance: summary.cashBalance,
         income: this.tile(current.income, prior.income, currencyCode),
@@ -326,21 +349,6 @@ export class GetDashboardOverviewService {
     return {
       fromDate: from.format('YYYY-MM-DD'),
       toDate: to.format('YYYY-MM-DD'),
-    };
-  }
-
-  /**
-   * Предыдущий период такой же длины: с ним сравнивается плитка.
-   * Месяц сравнивается с месяцем, квартал с кварталом.
-   */
-  private previousPeriod(period: { fromDate: string; toDate: string }) {
-    const from = moment(period.fromDate);
-    const to = moment(period.toDate);
-    const days = to.diff(from, 'days') + 1;
-
-    return {
-      fromDate: from.clone().subtract(days, 'days').format('YYYY-MM-DD'),
-      toDate: from.clone().subtract(1, 'days').format('YYYY-MM-DD'),
     };
   }
 

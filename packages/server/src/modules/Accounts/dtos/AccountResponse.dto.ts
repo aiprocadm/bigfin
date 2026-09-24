@@ -157,6 +157,15 @@ export class AccountResponseDto {
   })
   accountLevel?: number;
 
+  // Налоговый режим денежного счёта (FT-070 ТЗ-3); пусто — как у организации.
+  @ApiProperty({
+    description: 'Tax regime of the money account; null — as the organization',
+    example: 'USN_INCOME',
+    required: false,
+    nullable: true,
+  })
+  taxRegime?: string | null;
+
   @ApiProperty({
     description: 'The creation timestamp',
     example: '2024-03-20T10:00:00Z',

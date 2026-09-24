@@ -129,4 +129,17 @@ describe('схема «куда попадает статья»', () => {
       expect(highlighted(map.cashFlow)).toEqual(['operating.outflow']);
     });
   });
+
+  describe('корректировка остатка (FT-071 ТЗ-3)', () => {
+    it('служебная статья ведёт в свой раздел, а не в операционный', () => {
+      const map = mapOf(article('equity', 'adjustments'));
+
+      expect(highlighted(map.cashFlow)).toEqual(['adjustments.inflow']);
+      expect(map.cashFlow).toHaveLength(4);
+    });
+
+    it('у обычных статей служебного раздела в схеме нет', () => {
+      expect(mapOf(article('income')).cashFlow).toHaveLength(3);
+    });
+  });
 });

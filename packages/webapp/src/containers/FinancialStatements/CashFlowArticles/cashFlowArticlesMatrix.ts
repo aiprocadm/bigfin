@@ -272,6 +272,8 @@ const ROW_LABEL_KEYS: Record<string, string> = {
   'section-operating': 'cash_flow_articles.section.operating',
   'section-investing': 'cash_flow_articles.section.investing',
   'section-financing': 'cash_flow_articles.section.financing',
+  // Служебный раздел фиксации остатка (FT-071 ТЗ-3).
+  'section-adjustments': 'cash_flow_articles.section.adjustments',
   unclassified: 'cash_flow_articles.unclassified',
   net: 'cash_flow_articles.net_cash_flow',
   closing: 'cash_flow_articles.closing_balance',

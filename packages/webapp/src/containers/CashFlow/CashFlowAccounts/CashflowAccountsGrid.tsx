@@ -21,6 +21,9 @@ import {
 
 import { BankAccountsList, BankAccount, If, Icon, T, Can } from '@/components';
 import { useCashFlowAccountsContext } from './CashFlowAccountsProvider';
+// Пустой экран — каталог банков и вход в демо (FT-095 ТЗ-3). Вынесен в
+// отдельный файл с проверкой типов: этот файл пока без неё.
+import { CashflowAccountsEmptyState } from './CashflowAccountsEmptyState';
 
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
@@ -165,19 +168,6 @@ function CashflowAccountsGridItems({ accounts }) {
   return accounts.map((account) => (
     <CashflowBankAccountEnhanced account={account} />
   ));
-}
-
-/**
- * Cashflow accounts empty state.
- */
-function CashflowAccountsEmptyState() {
-  return (
-    <AccountsEmptyStateBase>
-      <AccountsEmptyStateTitle>
-        <T id={'cash_flow.accounts.no_results'} />
-      </AccountsEmptyStateTitle>
-    </AccountsEmptyStateBase>
-  );
 }
 
 /**
@@ -340,20 +330,3 @@ const CashflowAccountsGridWrap = styled.div`
 
 const CashflowBankAccountWrap = styled.div``;
 
-const AccountsEmptyStateBase = styled.div`
-  flex: 1;
-  text-align: center;
-  margin: 2rem 0;
-`;
-const AccountsEmptyStateTitle = styled.h1`
-  --x-text-color: #626b76;
-  
-  .bp4-dark & {
-    --x-text-color: rgba(255, 255, 255, 0.6);
-  }
-  font-size: 18px;
-  color: var(--x-text-color);
-  opacity: 0.8;
-  line-height: 1.6;
-  font-weight: 500;
-`;

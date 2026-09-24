@@ -46,6 +46,7 @@ import { FeaturesModule } from '@/modules/Features/Features.module';
   // Прогноз спрашивает и сводка на главной (Р3 карты v21). Провайдер чужого
   // модуля должен быть в exports, иначе сервер не поднимается — на этом уже
   // спотыкались дважды; держит сторож moneySummaryDeps.spec.ts.
-  exports: [GetPaymentCalendarForecastService, GetAccountsCashGapsService],
+  // Матрица план/факт нужна и главной — поступления по направлениям (FT-063).
+  exports: [GetPaymentCalendarForecastService, GetAccountsCashGapsService, GetCalendarMatrixService],
 })
 export class PaymentCalendarModule {}

@@ -73,6 +73,51 @@ export function useCreateCashflowTransaction(props?: any) {
   );
 }
 
+/** Фиксация остатка на дату (FT-071 ТЗ-3): что отправляем. */
+export interface FixAccountBalanceValues {
+  accountId: number;
+  /** День, на конец которого фиксируется остаток, ГГГГ-ММ-ДД. */
+  date: string;
+  /** Остаток по выписке, в валюте счёта. */
+  amount: number;
+}
+
+/** Что отвечает сервер: была ли корректировка и на какую сумму. */
+export interface FixAccountBalanceResult {
+  created: boolean;
+  previous_balance: number;
+  target_balance: number;
+  difference: number;
+  transaction_id: number | null;
+}
+
+/**
+ * Зафиксировать остаток счёта на конец дня (FT-071 ТЗ-3). Разница с учётом
+ * становится корректирующей операцией, поэтому после ответа обновляется всё
+ * то же, что после создания операции: остатки, история счёта, отчёты.
+ */
+export function useFixAccountBalance(props?: any) {
+  const queryClient = useQueryClient();
+  const apiRequest = useApiRequest();
+
+  return useMutation(
+    (values: FixAccountBalanceValues) =>
+      apiRequest
+        .post('banking/transactions/fix-balance', {
+          account_id: values.accountId,
+          date: values.date,
+          amount: values.amount,
+        })
+        .then((res: any) => res.data as FixAccountBalanceResult),
+    {
+      onSuccess: () => {
+        commonInvalidateQueries(queryClient);
+      },
+      ...props,
+    },
+  );
+}
+
 /**
  * Retrieve account transactions list.
  */

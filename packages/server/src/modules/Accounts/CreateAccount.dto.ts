@@ -6,7 +6,13 @@ import {
   MinLength,
   MaxLength,
   IsBoolean,
-  } from 'class-validator';
+  IsIn,
+} from 'class-validator';
+import {
+  ACCOUNT_TAX_REGIMES,
+  AccountTaxRegime,
+} from './utils/accountTaxRegime';
+
 
 export class CreateAccountDTO {
   /**
@@ -120,4 +126,19 @@ export class CreateAccountDTO {
     required: false,
   })
   plaidItemId?: string;
+
+  /**
+   * Налоговый режим денежного счёта (FT-070 ТЗ-3). Пусто — «как у
+   * организации». Имеет смысл только у кассы и банковского счёта; у
+   * остальных служба записывает пусто.
+   */
+  @IsOptional()
+  @IsIn(ACCOUNT_TAX_REGIMES as unknown as string[])
+  @ApiProperty({
+    description: 'Tax regime of the money account; empty — as the organization',
+    enum: ACCOUNT_TAX_REGIMES,
+    required: false,
+    nullable: true,
+  })
+  taxRegime?: AccountTaxRegime | null;
 }

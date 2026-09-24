@@ -12,6 +12,7 @@ import { AppToaster } from '@/components/AppToaster';
 import { getCookie, normalizeApiPath } from '../utils';
 import { getRequestLocale } from '../services/requestLocale';
 import { isFeatureDisabledResponse } from './featureDisabledResponse';
+import { recordReportResponse } from '../services/reportCacheState';
 import {
   ACCESS_PREVIEW_HEADER,
   accessPreviewHeaderValue,
@@ -74,6 +75,8 @@ export default function useApiRequest() {
         if (shouldAliasResponse(response.config?.url)) {
           withCamelAliases(response.data);
         }
+        // Пришёл ли отчёт из кэша — для плашки «Данные на …» (FT-093).
+        recordReportResponse(response as any);
         return response;
       },
       (error) => {

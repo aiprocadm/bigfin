@@ -1,8 +1,9 @@
 // © 2026 Bigfin
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { ProfitLossSheetService } from '@/modules/FinancialStatements/modules/ProfitLossSheet/ProfitLossSheetService';
 import { ProfitLossAggregateNodeId } from '@/modules/FinancialStatements/modules/ProfitLossSheet/ProfitLossSheet.types';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
+import { GetAccountsTaxEstimateService } from '@/modules/BankingAccounts/queries/GetAccountsTaxEstimate.service';
 import {
   estimateSimplifiedTax,
   SimplifiedTaxEstimate,
@@ -13,6 +14,9 @@ export class GetTaxEstimateService {
   constructor(
     private readonly profitLossSheet: ProfitLossSheetService,
     private readonly tenancyContext: TenancyContext,
+    // Необязательна, чтобы прежние тесты, собирающие службу вручную, жили.
+    @Optional()
+    private readonly accountsTaxEstimate?: GetAccountsTaxEstimateService,
   ) {}
 
   /**
@@ -31,6 +35,12 @@ export class GetTaxEstimateService {
   public async getTaxEstimate(
     today: string,
   ): Promise<SimplifiedTaxEstimate | null> {
+    // FT-070 ТЗ-3: у денежных счетов бывают свои налоговые режимы. Выбран
+    // хотя бы у одного — налог считается по каждому счёту и складывается.
+    // Не выбран ни у одного — ниже прежний расчёт, без единой перемены.
+    const byAccounts = await this.accountsTaxEstimate?.estimate(today);
+    if (byAccounts?.applicable) return byAccounts.estimate;
+
     const metadata = await this.tenancyContext.getTenantMetadata();
     const regime = (metadata as any)?.taxRegime ?? (metadata as any)?.tax_regime;
     // Своя ставка организации, если регион даёт льготу (Н3б карты v22).

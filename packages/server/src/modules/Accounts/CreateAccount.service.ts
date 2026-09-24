@@ -19,6 +19,7 @@ import { ServiceError } from '@/modules/Items/ServiceError';
 import { PartialModelObject } from 'objection';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { AccountsSettingsService } from './AccountsSettings.service';
+import { normalizeAccountTaxRegime } from './utils/accountTaxRegime';
 
 @Injectable()
 export class CreateAccountService {
@@ -102,8 +103,19 @@ export class CreateAccountService {
     createAccountDTO: CreateAccountDTO,
     baseCurrency: string,
   ): PartialModelObject<Account> => {
+    // Налоговый режим (FT-070 ТЗ-3) пишем только у денежного счёта и только
+    // из домена; не прислан — колонку не упоминаем вовсе.
+    const { taxRegime, ...rest } = createAccountDTO;
+    const normalizedTaxRegime = normalizeAccountTaxRegime(
+      taxRegime,
+      createAccountDTO.accountType,
+    );
+
     return {
-      ...createAccountDTO,
+      ...rest,
+      ...(normalizedTaxRegime !== undefined
+        ? { taxRegime: normalizedTaxRegime }
+        : {}),
       slug: kebabCase(createAccountDTO.name),
       currencyCode: createAccountDTO.currencyCode || baseCurrency,
 

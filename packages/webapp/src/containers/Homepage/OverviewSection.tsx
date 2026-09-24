@@ -2,7 +2,6 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import {
   Bar,
-  BarChart,
   CartesianGrid,
   Line,
   ComposedChart,
@@ -19,20 +18,28 @@ import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
+import { DateField } from '@/components/ui/date-field';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import { useDashboardOverview } from './useDashboardOverview';
 import AttentionList from './AttentionList';
 import TopContractorsSection from './TopContractorsSection';
 import DirectionsProfitSection from './DirectionsProfitSection';
-import type { DirectionsSortBy } from './useDashboardOverview';
+import { ComparisonBadge } from './ComparisonBadge';
+import { DashboardPeriodKind } from './dashboardPeriod';
 import {
-  DashboardPeriod,
-  DashboardPeriodKind,
-  defaultPeriod,
-  periodRange,
-  readStoredPeriod,
-  storePeriod,
-} from './dashboardPeriod';
+  COMPARE_KINDS,
+  CompareKind,
+  DashboardCompare,
+  formatBaseRange,
+} from './dashboardCompare';
+import type { OverviewParams } from './useOverviewParams';
 
 /** Виды периода в переключателе — без «произвольного»: он задаётся датами. */
 const PERIOD_KINDS: Array<Exclude<DashboardPeriodKind, 'custom'>> = [
@@ -41,28 +48,9 @@ const PERIOD_KINDS: Array<Exclude<DashboardPeriodKind, 'custom'>> = [
   'year',
 ];
 
-/**
- * Хорошая ли новость это изменение.
- *
- * У доходов и прибыли хорошо — расти. У расходов — наоборот: рост расходов
- * не радость, и красить его зелёным значит поздравлять человека с тем, что
- * он стал больше тратить.
- *
- * Зелёным отмечается только хорошее. Плохое НЕ красится красным: красный в
- * этом продукте значит «проблема», а выросшие расходы сами по себе ещё не
- * проблема — они могут быть ростом закупок под выросшие продажи.
- */
-export function isGoodChange(
-  tone: 'income' | 'expense' | undefined,
-  changePercent: number,
-): boolean {
-  // НОЛЬ — НЕ ХОРОШАЯ НОВОСТЬ, А ОТСУТСТВИЕ НОВОСТИ. Раньше «+0 %» красился
-  // зелёным: под убытком в 20 000 ₽ стояла зелёная подпись, и это читалось
-  // как поздравление. Ничего не изменилось — значит и красить нечего.
-  if (changePercent === 0) return false;
-
-  return tone === 'expense' ? changePercent < 0 : changePercent > 0;
-}
+// Правило цвета вынесено к значку сравнения; здесь — прежнее имя для тех,
+// кто ввозил его отсюда.
+export { isGoodChange } from './overviewChangeTone';
 
 interface TileProps {
   label: string;
@@ -115,25 +103,10 @@ function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileP
         {value}
       </div>
       {/*
-        Изменение показываем, только когда есть с чем сравнивать: пустой
-        прошлый период — это не «рост на 100%», а «сравнивать не с чем».
+        Изменение к базе сравнения. Пустая база — это не «рост на 100%», а
+        «сравнивать не с чем»: значок так и пишет, процента нет (FT-061).
       */}
-      {typeof changePercent === 'number' && (
-        <div
-          className={cn(
-            'mt-1 text-sm tabular-nums',
-            // ХОРОШО ЛИ ЭТО — ЗАВИСИТ ОТ ПОКАЗАТЕЛЯ, А НЕ ОТ ЗНАКА.
-            // Раньше рост красился зелёным всегда: рост РАСХОДОВ на 20%
-            // выглядел хорошей новостью, а их снижение — плохой.
-            isGoodChange(tone, changePercent)
-              ? 'text-success'
-              : 'text-text-primary',
-          )}
-        >
-          {changePercent >= 0 ? '+' : ''}
-          {changePercent}%
-        </div>
-      )}
+      <ComparisonBadge changePercent={changePercent} tone={tone} />
       {hint && <div className="mt-1 text-sm text-text-secondary">{hint}</div>}
     </Link>
   );
@@ -147,28 +120,23 @@ function Tile({ label, value, changePercent, hint, tone, icon: Icon, to }: TileP
  * расходы сервер берёт из отчёта о прибылях и убытках, поэтому главная и
  * раздел «Отчёты» показывают одно и то же.
  */
-export default function OverviewSection() {
-  const storage = typeof window !== 'undefined' ? window.localStorage : undefined;
-
-  const [period, setPeriod] = React.useState<DashboardPeriod>(() =>
-    readStoredPeriod(storage),
-  );
-
-  const choosePeriod = (kind: Exclude<DashboardPeriodKind, 'custom'>) => {
-    const next = { kind, ...periodRange(kind) };
-    setPeriod(next);
-    storePeriod(storage, next);
-  };
-
-  // ПОРЯДОК НАПРАВЛЕНИЙ ЖИВЁТ ЗДЕСЬ, а не внутри блока. Если бы блок
-  // спрашивал главную сам, ключ его запроса разошёлся бы с этим — и
-  // запросов на главной стало бы два вместо одного (правило п. 2.3 ТЗ).
-  const [directionsSortBy, setDirectionsSortBy] =
-    React.useState<DirectionsSortBy>('profit');
+export default function OverviewSection({ params }: { params: OverviewParams }) {
+  // ПЕРИОД, БАЗА И ПОРЯДОК НАПРАВЛЕНИЙ ЖИВУТ ВЫШЕ, в содержимом главной:
+  // блок «План» читает тот же ответ, и ключи запросов обязаны совпасть —
+  // иначе запросов на главной стало бы два вместо одного (п. 2.3 ТЗ).
+  const {
+    period,
+    choosePeriod,
+    compare,
+    chooseCompare,
+    directionsSortBy,
+    setDirectionsSortBy,
+  } = params;
 
   const { data, isLoading, isError, refetch } = useDashboardOverview(
     period,
     directionsSortBy,
+    compare,
   );
 
   if (isLoading) {
@@ -240,6 +208,8 @@ export default function OverviewSection() {
         ))}
       </div>
 
+      <CompareControl compare={compare} onChange={chooseCompare} />
+
       {/*
         ПЛИТКИ «ДЕНЬГИ НА СЧЕТАХ» ЗДЕСЬ БОЛЬШЕ НЕТ, и на то две причины.
 
@@ -287,6 +257,21 @@ export default function OverviewSection() {
           to="/financial-reports/profit-loss-sheet"
         />
       </div>
+
+      {/* С чем сравнили — датами, которые сервер взял на самом деле. Без
+          подписи «+12 %» непонятно к чему: к прошлому месяцу или к году
+          назад (FT-061). */}
+      {data.comparison && (
+        <p className="-mt-3 text-xs text-text-muted">
+          {intl.get('dashboard.compare.base', {
+            range: formatBaseRange(
+              data.comparison.fromDate,
+              data.comparison.toDate,
+              moment(period.fromDate).year(),
+            ),
+          })}
+        </p>
+      )}
 
       {/*
         «Требует внимания» идёт сразу под показателями: это то, ради чего
@@ -403,5 +388,73 @@ export default function OverviewSection() {
         }}
       />
     </section>
+  );
+}
+
+/**
+ * «Сравнить с» (FT-061 ТЗ-3): прошлый период · два периода назад · этот
+ * период в прошлом году · свой период.
+ *
+ * Выпадающий список, а не четыре кнопки: подписи длинные, и на телефоне
+ * ряд из них занял бы полэкрана над самими цифрами. Свой период вводится
+ * полем даты продукта — в формате организации, а не браузера.
+ */
+function CompareControl({
+  compare,
+  onChange,
+}: {
+  compare: DashboardCompare;
+  onChange: (compare: DashboardCompare) => void;
+}) {
+  return (
+    <div className="-mt-3 flex flex-wrap items-center gap-2">
+      <span className="text-sm text-text-secondary">
+        {intl.get('dashboard.compare.label')}
+      </span>
+      <div className="w-full sm:w-64">
+        <Select
+          value={compare.kind}
+          onValueChange={(kind) =>
+            onChange(
+              kind === 'custom'
+                ? { kind: 'custom', fromDate: compare.fromDate, toDate: compare.toDate }
+                : { kind: kind as CompareKind },
+            )
+          }
+        >
+          <SelectTrigger aria-label={intl.get('dashboard.compare.label')}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {COMPARE_KINDS.map((kind) => (
+              <SelectItem key={kind} value={kind}>
+                {intl.get(`dashboard.compare.kind_${kind}`)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {compare.kind === 'custom' && (
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <DateField
+            className="w-full sm:w-44"
+            value={compare.fromDate ?? ''}
+            placeholder={intl.get('dashboard.compare.from')}
+            onChange={(fromDate) =>
+              onChange({ ...compare, fromDate: fromDate || undefined })
+            }
+          />
+          <span className="hidden text-text-muted sm:inline">—</span>
+          <DateField
+            className="w-full sm:w-44"
+            value={compare.toDate ?? ''}
+            placeholder={intl.get('dashboard.compare.to')}
+            onChange={(toDate) =>
+              onChange({ ...compare, toDate: toDate || undefined })
+            }
+          />
+        </div>
+      )}
+    </div>
   );
 }

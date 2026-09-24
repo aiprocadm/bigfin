@@ -19,6 +19,8 @@ import { DynamicListModule } from '../DynamicListing/DynamicList.module';
 import { GetBankAccountSummary } from './queries/GetBankAccountSummary';
 import { MutateBaseCurrencyAccountsSubscriber } from '../Accounts/susbcribers/MutateBaseCurrencyAccounts.subscriber';
 import { MutateBaseCurrencyAccounts } from '../Accounts/MutateBaseCurrencyAccounts';
+import { GetAccountsTaxEstimateService } from './queries/GetAccountsTaxEstimate.service';
+import { TenancyContext } from '../Tenancy/TenancyContext.service';
 
 @Module({
   imports: [
@@ -42,8 +44,16 @@ import { MutateBaseCurrencyAccounts } from '../Accounts/MutateBaseCurrencyAccoun
     MutateBaseCurrencyAccounts,
     MutateBaseCurrencyAccountsSubscriber,
     AccountGroupsService,
+    // Оценка налога по режимам счетов (FT-070 ТЗ-3) — её зовёт оценка на
+    // главной, поэтому провайдер обязан быть и в exports.
+    GetAccountsTaxEstimateService,
+    TenancyContext,
   ],
-  exports: [BankAccountsApplication, AccountGroupsService],
+  exports: [
+    BankAccountsApplication,
+    AccountGroupsService,
+    GetAccountsTaxEstimateService,
+  ],
   controllers: [BankAccountsController, AccountGroupsController],
 })
 export class BankAccountsModule {}

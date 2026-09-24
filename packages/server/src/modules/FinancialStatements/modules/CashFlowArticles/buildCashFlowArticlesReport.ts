@@ -23,7 +23,23 @@ export const CASHFLOW_SECTIONS = [
   'financing',
 ] as const;
 
-export type CashFlowSection = (typeof CASHFLOW_SECTIONS)[number];
+/**
+ * Служебный раздел «Корректировки остатка» (FT-071 ТЗ-3).
+ *
+ * Сюда попадает только служебная статья «Корректировка остатка», которой
+ * фиксация остатка на дату выравнивает счёт по выписке. Это не деятельность
+ * бизнеса: разница между учётом и банком — не выручка, не закупка и не
+ * кредит. Положи её в операционный раздел — поехали бы операционный поток
+ * и всё, что на нём стоит (точка безубыточности, запас денег, ИИ-аналитик).
+ *
+ * Раздел появляется в отчёте, только если такая статья есть: у организаций,
+ * которые остаток не фиксировали, отчёт не меняется ни на строку.
+ */
+export const ADJUSTMENTS_SECTION = 'adjustments' as const;
+
+export type CashFlowSection =
+  | (typeof CASHFLOW_SECTIONS)[number]
+  | typeof ADJUSTMENTS_SECTION;
 
 /**
  * Виды статей, дающие ПРИТОК денег.
@@ -144,6 +160,8 @@ const isOutflowKind = (kind: string): boolean =>
 const sectionOf = (article: ReportArticle): CashFlowSection => {
   const value = article.cashflowSection;
 
+  if (value === ADJUSTMENTS_SECTION) return ADJUSTMENTS_SECTION;
+
   return (CASHFLOW_SECTIONS as readonly string[]).includes(value ?? '')
     ? (value as CashFlowSection)
     : 'operating';
@@ -199,7 +217,14 @@ export function buildCashFlowArticlesReport(
     (input.amounts ?? []).map((row) => [row.id, Number(row.amount) || 0]),
   );
 
-  const sections = CASHFLOW_SECTIONS.map((section) => {
+  const hasAdjustments = articles.some(
+    (article) => sectionOf(article) === ADJUSTMENTS_SECTION,
+  );
+  const sectionKeys: CashFlowSection[] = hasAdjustments
+    ? [...CASHFLOW_SECTIONS, ADJUSTMENTS_SECTION]
+    : [...CASHFLOW_SECTIONS];
+
+  const sections = sectionKeys.map((section) => {
     const ofSection = articles.filter((article) => sectionOf(article) === section);
 
     const inflowArticles = ofSection.filter((a) => isInflowKind(a.kind));

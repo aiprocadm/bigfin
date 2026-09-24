@@ -12,6 +12,8 @@ import { GetTaxEstimateService } from './queries/GetTaxEstimate.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
 import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
 import { GetHomepageInsightsService } from './queries/GetHomepageInsights.service';
+import { GetOnboardingStatusService } from './queries/GetOnboardingStatus.service';
+import { GetHomepagePlanService } from './queries/GetHomepagePlan.service';
 import { BankAccountsModule } from '@/modules/BankingAccounts/BankAccounts.module';
 import { ContactsModule } from '@/modules/Contacts/Contacts.module';
 
@@ -39,6 +41,11 @@ import { ContactsModule } from '@/modules/Contacts/Contacts.module';
     GetDashboardOverviewService,
     GetMoneyWidgetService,
     GetHomepageInsightsService,
+    // Онбординг в шапке (FT-095): зависит только от глобальных служб
+    // (база организации, настройки), поэтому новых imports не требует.
+    GetOnboardingStatusService,
+    // План на главной (FT-060…FT-065 ТЗ-3).
+    GetHomepagePlanService,
   ],
   controllers: [DashboardController],
   // Оценку налога спрашивает и правило уведомления «скоро платить налог»

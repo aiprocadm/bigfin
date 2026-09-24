@@ -15,6 +15,7 @@ import { DashboardService } from './Dashboard.service';
 import { GetMoneySummaryService } from './queries/GetMoneySummary.service';
 import { GetDashboardOverviewService } from './queries/GetDashboardOverview.service';
 import { GetMoneyWidgetService } from './queries/GetMoneyWidget.service';
+import { GetOnboardingStatusService } from './queries/GetOnboardingStatus.service';
 import { GetDashboardBootMetaResponseDto } from './dtos/GetDashboardBootMetaResponse.dto';
 
 @ApiTags('Dashboard')
@@ -27,7 +28,28 @@ export class DashboardController {
     private readonly moneySummaryService: GetMoneySummaryService,
     private readonly overviewService: GetDashboardOverviewService,
     private readonly moneyWidgetService: GetMoneyWidgetService,
+    private readonly onboardingService: GetOnboardingStatusService,
   ) {}
+
+  @ApiOperation({
+    summary:
+      'Онбординг в шапке: какие из восьми первых шагов сделаны и пропущены.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Отметки считаются по данным организации, пропуски — личные для ' +
+      'человека и хранятся в его настройках отображения.',
+  })
+  // Только тем, кто может сделать ВСЕ шаги: завести счёт, подключить банк,
+  // пригласить человека. Сотруднику с частью прав чек-лист показывал бы
+  // шаги, которые ему не по силам, — и ответы про чужие разделы (сколько
+  // правил, сколько людей), которых он не видит.
+  @RequirePermission('manage', 'all')
+  @Get('onboarding')
+  getOnboarding() {
+    return this.onboardingService.getStatus();
+  }
 
   @ApiOperation({
     summary:
@@ -92,12 +114,17 @@ export class DashboardController {
     // Порядок направлений: по прибыли или по рентабельности. Это два разных
     // вопроса, и переключатель на главной меняет именно его.
     @Query('directionsSortBy') directionsSortBy?: string,
+    // С чем сравнивать (FT-061): previous · previous2 · last_year · custom.
+    @Query('compare') compare?: string,
+    @Query('compareFrom') compareFrom?: string,
+    @Query('compareTo') compareTo?: string,
   ) {
     // Пять отдельных запросов на главной недопустимы (п. 2.3 ТЗ).
     return this.overviewService.getOverview(
       from,
       to,
       directionsSortBy === 'margin' ? 'margin' : 'profit',
+      { kind: compare, fromDate: compareFrom, toDate: compareTo },
     );
   }
 }

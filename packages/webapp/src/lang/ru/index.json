@@ -5803,5 +5803,6 @@
   "debts.aging.title": "Сроки долгов",
   "cashflow.accounts.total": "Деньги на всех счетах",
   "cashflow.accounts.where": "Где лежат деньги",
-  "cashflow.account.remaining": "Остаток"
+  "cashflow.account.remaining": "Остаток",
+  "money_form.save_and_more": "Сохранить и ещё"
 }

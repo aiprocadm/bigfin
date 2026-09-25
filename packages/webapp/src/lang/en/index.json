@@ -5803,5 +5803,6 @@
   "debts.aging.title": "Debt ageing",
   "cashflow.accounts.total": "Money in all accounts",
   "cashflow.accounts.where": "Where the money is",
-  "cashflow.account.remaining": "Balance"
+  "cashflow.account.remaining": "Balance",
+  "money_form.save_and_more": "Save and add another"
 }

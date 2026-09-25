@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { ComponentType, Suspense, lazy } from 'react';
 import intl from 'react-intl-universal';
 
@@ -45,6 +46,8 @@ function MoneyInDialogRoot({
   payload,
   closeDialog,
 }: MoneyInDialogProps & WithDialogActionsProps) {
+  // Номер формы: «Сохранить и ещё» пересоздаёт её с чистыми полями.
+  const [formKey, setFormKey] = React.useState(0);
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       closeDialog(dialogName);
@@ -75,6 +78,8 @@ function MoneyInDialogRoot({
           }
         >
           <MoneyInFormV2
+            key={formKey}
+            onAgain={() => setFormKey((value) => value + 1)}
             accountId={payload?.account_id ?? null}
             accountType={payload?.account_type ?? null}
             prefill={payload?.prefill ?? null}

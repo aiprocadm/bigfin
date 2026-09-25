@@ -5766,7 +5766,7 @@
   "dashboard.top_contractors.col.share": "Доля",
   "dashboard.top_contractors.col.cumulative": "Накопленная доля",
   "cash_timeline.horizon.aria": "Горизонт прогноза",
-  "cash_timeline.horizon.days": "{days} дней",
+  "cash_timeline.horizon.days": "{days, plural, one {# день} few {# дня} other {# дней}}",
   "homepage.more": "Ещё",
   "dashboard.period.aria": "Период",
   "dashboard.plan.ring.income": "Доходы",
@@ -5777,5 +5777,9 @@
   "all_transactions.more": "Ещё действия",
   "all_transactions.view": "Вид",
   "all_transactions.selected": "Выбрано: {count}",
-  "all_transactions.clear_selection": "Снять выбор"
+  "all_transactions.clear_selection": "Снять выбор",
+  "all_transactions.segment.all": "Все",
+  "all_transactions.segment.in": "Приход",
+  "all_transactions.segment.out": "Расход",
+  "report_controls.view": "Вид"
 }

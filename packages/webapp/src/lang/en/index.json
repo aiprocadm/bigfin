@@ -5766,7 +5766,7 @@
   "dashboard.top_contractors.col.share": "Share",
   "dashboard.top_contractors.col.cumulative": "Cumulative share",
   "cash_timeline.horizon.aria": "Forecast horizon",
-  "cash_timeline.horizon.days": "{days} days",
+  "cash_timeline.horizon.days": "{days, plural, one {# day} other {# days}}",
   "homepage.more": "More",
   "dashboard.period.aria": "Period",
   "dashboard.plan.ring.income": "Income",
@@ -5777,5 +5777,9 @@
   "all_transactions.more": "More actions",
   "all_transactions.view": "View",
   "all_transactions.selected": "Selected: {count}",
-  "all_transactions.clear_selection": "Clear selection"
+  "all_transactions.clear_selection": "Clear selection",
+  "all_transactions.segment.all": "All",
+  "all_transactions.segment.in": "Money in",
+  "all_transactions.segment.out": "Money out",
+  "report_controls.view": "View"
 }

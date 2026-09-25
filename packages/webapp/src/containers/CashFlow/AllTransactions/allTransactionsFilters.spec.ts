@@ -105,3 +105,28 @@ describe('отборы списка операций', () => {
     ).toEqual({ fromDate: '2026-01-01', flow: 'out' });
   });
 });
+
+describe('шторка «Фильтры» реестра (UI-048-1 ТЗ-4)', () => {
+  it('считает только отборы шторки: период, тип и поиск — в строке', async () => {
+    const { countSheetFilters } = await import('./allTransactionsFilters');
+    expect(
+      countSheetFilters({
+        fromDate: '2026-09-01',
+        toDate: '2026-09-30',
+        flow: 'in',
+        search: 'аренда',
+        articleId: 5,
+        states: ['overdue'],
+        minAmount: 100,
+      }),
+    ).toBe(3);
+    expect(countSheetFilters({ states: [] })).toBe(0);
+  });
+
+  it('«Сбросить» снимает отборы шторки и оставляет период, тип и поиск', async () => {
+    const { resetSheetFilters } = await import('./allTransactionsFilters');
+    expect(
+      resetSheetFilters({ fromDate: 'a', toDate: 'b', flow: 'out', search: 'x', accountId: 2, tag: 'т' }),
+    ).toEqual({ fromDate: 'a', toDate: 'b', flow: 'out', search: 'x' });
+  });
+});

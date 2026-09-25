@@ -9,6 +9,7 @@ import { TinkoffCard } from './TinkoffCard';
 import { AlfaCard } from './AlfaCard';
 import { ImportStatementForm } from './ImportStatementForm';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * ⑨c Страница банковских API: подключение банков волны 1 (Тинькофф,
@@ -29,9 +30,9 @@ export default function BankApiSyncPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('bank_api.page.title')}
-        </h1>
+        </PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('bank_api.page.subtitle')}
         </p>

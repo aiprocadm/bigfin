@@ -9,6 +9,7 @@ import {
 } from '@/hooks/query/financialRatios';
 import { DateField } from '@/components/ui/date-field';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
+import { PageTitle } from '@/components/ui/page-title';
 
 // Дата «сегодня» по местному времени: toISOString() отдаёт UTC, и ночью
 // в Москве поле «по» показывало вчерашний день.
@@ -72,9 +73,9 @@ export default function FinancialRatiosPage() {
   if (!enabled) {
     return (
       <div className="flex flex-col gap-2 p-6">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('financial_ratios.page.title')}
-        </h1>
+        </PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('financial_ratios.module_off')}
         </p>
@@ -101,9 +102,9 @@ export default function FinancialRatiosPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('financial_ratios.page.title')}
-        </h1>
+        </PageTitle>
         <div className="flex items-center gap-2">
           <DateField value={fromDate} onChange={setFromDate} className="rounded border px-2 py-1 text-sm" />
           <span className="text-muted-foreground">—</span>

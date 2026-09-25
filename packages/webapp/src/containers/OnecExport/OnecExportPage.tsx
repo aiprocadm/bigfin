@@ -11,6 +11,7 @@ import { CashAccountField } from '@/components/ui/cash-account-field';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useCanExport } from '@/hooks/utils/useAbilityContext';
+import { PageTitle } from '@/components/ui/page-title';
 
 const monthAgo = () => {
   const d = new Date();
@@ -75,7 +76,7 @@ export default function OnecExportPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">{intl.get('onec_export.page.title')}</h1>
+        <PageTitle>{intl.get('onec_export.page.title')}</PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('onec_export.page.subtitle')}
         </p>

@@ -10,6 +10,7 @@ import useFilterFinancialReports, {
 } from './FilterFinancialReports';
 import { financialReportMenus } from '@/constants/financialReportsMenu';
 import { MAIN_REPORTS, withoutMainReports } from './mainReports';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * Карточка одного отчёта — ссылка на страницу отчёта.
@@ -102,9 +103,9 @@ export default function FinancialReports() {
     <DashboardInsider name={'financial-reports'}>
       <div className="bigfin-ui min-h-full bg-background p-4 sm:p-6">
         <div className="mx-auto flex max-w-6xl flex-col gap-8">
-          <h1 className="text-xl font-semibold tracking-[-0.01em] text-text-primary">
+          <PageTitle>
             <T id={'all_financial_reports'} />
-          </h1>
+          </PageTitle>
 
           {/* Три главных отчёта — крупно и первыми (п. 4.1 ТЗ). */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

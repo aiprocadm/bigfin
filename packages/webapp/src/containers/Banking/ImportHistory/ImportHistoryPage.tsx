@@ -9,6 +9,7 @@ import { useCashflowAccounts } from '@/hooks/query/cashflowAccounts';
 import { useImportBatches, useRollbackImport } from '@/hooks/query/bankingTrash';
 import { showApiError } from '@/utils/showApiError';
 import { formatDay } from '../Trash/trashView';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * История импорта выписок и откат (FT-043 ТЗ-3). Откат переводит все строки
@@ -42,7 +43,7 @@ export default function ImportHistoryPage() {
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6">
       <div>
-        <h1 className="text-lg font-semibold">{intl.get('import_history.title')}</h1>
+        <PageTitle>{intl.get('import_history.title')}</PageTitle>
         <p className="text-sm text-text-secondary">{intl.get('import_history.hint')}</p>
       </div>
       {isLoading ? (

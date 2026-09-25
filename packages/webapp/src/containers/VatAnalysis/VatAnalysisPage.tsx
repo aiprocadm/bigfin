@@ -13,6 +13,7 @@ import {
   VatByRate,
 } from '@/hooks/query/vatAnalysis';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 const yearStart = () => `${new Date().getFullYear()}-01-01`;
 const today = () => new Date().toISOString().slice(0, 10);
@@ -51,9 +52,9 @@ export default function VatAnalysisPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('vat_analysis.page.title')}
-        </h1>
+        </PageTitle>
         <div className="flex items-center gap-2">
           {/* Период вводится полем продукта: дата в формате организации
               («26.08.2026»), а не в том, который выберет браузер (Р3 карты

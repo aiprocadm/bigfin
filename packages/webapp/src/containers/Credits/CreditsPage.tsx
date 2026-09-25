@@ -12,6 +12,7 @@ import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
 import { useHistory, useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { PageTitle } from '@/components/ui/page-title';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -54,9 +55,9 @@ export default function CreditsPage() {
     <div className="flex flex-col gap-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('credits.page.title')}
-        </h1>
+        </PageTitle>
         <Button onClick={() => setShowCreate(true)}>
           {intl.get('credits.action.new')}
         </Button>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/cn';
+import { PageTitle } from './page-title';
 import { ScreenHelp } from './screen-help';
 
 /**
@@ -38,7 +39,13 @@ export interface PageHeaderProps {
    * Не «продающее» описание и не инструкция: одно предложение о сути.
    */
   description?: React.ReactNode;
+  /** Одна главная кнопка экрана (правило P7). */
   action?: React.ReactNode;
+  /**
+   * Второстепенные действия — кнопка «⋯» с меню. Главная кнопка на экране
+   * одна; всё остальное уходит сюда, а не выстраивается рядом строем кнопок.
+   */
+  more?: React.ReactNode;
   className?: string;
   /**
    * Ключ справки, если он не выводится из адреса.
@@ -53,6 +60,7 @@ export function PageHeader({
   title,
   description,
   action,
+  more,
   className,
   helpTopic,
 }: PageHeaderProps) {
@@ -71,9 +79,8 @@ export function PageHeader({
     >
       <div className="min-w-0">
         <div className="flex items-center gap-1.5">
-          <h1 className="text-xl font-semibold tracking-[-0.01em] text-text-primary">
-            {title}
-          </h1>
+          {/* Крупный заголовок с переездом в шапку при прокрутке (R10). */}
+          <PageTitle>{title}</PageTitle>
           {/* Кнопка появляется только там, где есть что объяснить: пустая
               подсказка хуже её отсутствия. */}
           {topic && <ScreenHelp topic={topic} />}
@@ -86,7 +93,12 @@ export function PageHeader({
           </p>
         )}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
+      {(action || more) && (
+        <div className="flex shrink-0 items-center gap-2">
+          {action}
+          {more}
+        </div>
+      )}
     </div>
   );
 }

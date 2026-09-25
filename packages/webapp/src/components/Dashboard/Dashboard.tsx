@@ -6,7 +6,9 @@ import '@/style/pages/Dashboard/Dashboard.scss';
 import DashboardContent from '@/components/Dashboard/DashboardContent';
 import DialogsContainer from '@/components/DialogsContainer';
 import PreferencesPage from '@/components/Preferences/PreferencesPage';
-import DashboardUniversalSearch from '@/containers/UniversalSearch/DashboardUniversalSearch';
+import DashboardUniversalSearchItemActions from '@/containers/UniversalSearch/DashboardUniversalSearchItemActions';
+import DashboardUniversalSearchHotkeys from '@/containers/UniversalSearch/DashboardUniversalSearchHotkeys';
+import { ConnectedCommandPalette } from './ConnectedCommandPalette';
 import GlobalHotkeys from './GlobalHotkeys';
 import DashboardProvider from './DashboardProvider';
 import DrawersContainer from '@/components/DrawersContainer';
@@ -24,7 +26,9 @@ import { AccessPreviewBanner } from './AccessPreviewBanner';
 function DashboardPreferences() {
   return (
     <DashboardShell
-      sidebar={<ConnectedSidebar />}
+      // Одно меню настроек (UI-045-5 ТЗ-4): главное меню здесь — значками.
+      // Три колонки навигации рядом съедали половину экрана (O16).
+      sidebar={<ConnectedSidebar forceMini />}
       topbar={<ConnectedTopbar />}
       bottomNav={(openMenu) => <ConnectedBottomNav onOpenMenu={openMenu} />}
       banner={<AccessPreviewBanner />}
@@ -62,7 +66,14 @@ export default function Dashboard() {
       </Switch>
 
       <DashboardSockets />
-      <DashboardUniversalSearch />
+      {/* Командная строка вместо старого окна поиска (UI-045-4 ТЗ-4). Само
+          окно `UniversalSearch` не удалено — удаление только с разрешения
+          владельца, — но из интерфейса недоступно. Обработчики выбора
+          записи и клавиша Shift+P остаются: ими пользуется командная
+          строка. */}
+      <ConnectedCommandPalette />
+      <DashboardUniversalSearchItemActions />
+      <DashboardUniversalSearchHotkeys />
       <GlobalHotkeys />
       <DialogsContainer />
       <DrawersContainer />

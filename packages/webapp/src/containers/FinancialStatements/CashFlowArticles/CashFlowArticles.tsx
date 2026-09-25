@@ -53,6 +53,7 @@ import {
 } from './cashFlowArticlesMatrix';
 import { hasPeriodMovement, periodChartSeries } from './cashFlowArticlesChart';
 import { CashFlowChart } from './CashFlowChart';
+import { PageTitle } from '@/components/ui/page-title';
 
 interface LegalEntityOption {
   id: number;
@@ -222,9 +223,9 @@ export default function CashFlowArticles() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-xl font-semibold">
+            <PageTitle>
               {intl.get('cash_flow_articles.page_title')}
-            </h1>
+            </PageTitle>
             {/* Контекстная справка (FIN-025). Экран вложен в «Отчёты», и
                 ключ из адреса не выводится — поэтому назван явно. */}
             <ScreenHelp topic="cash_flow_articles" />

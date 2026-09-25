@@ -7,6 +7,7 @@ import useApiRequest from '@/hooks/useRequest';
 import { transformToCamelCase } from '@/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * Личные настройки отображения (FIN-026 ТЗ-2).
@@ -63,9 +64,9 @@ export default function DisplayPreferencesPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('display_preferences.page_title')}
-        </h1>
+        </PageTitle>
         <p className="mt-1 max-w-[70ch] text-sm text-text-secondary">
           {intl.get('display_preferences.page_hint')}
         </p>

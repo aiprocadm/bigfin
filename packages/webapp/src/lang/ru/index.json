@@ -5733,5 +5733,18 @@
   "ai_cfo.context.sales_model_mixed": "смешанная",
   "ai_cfo.context.save": "Сохранить",
   "ai_cfo.context.saved": "Контекст сохранён, записка обновится",
-  "ai_cfo.context.no_right": "Менять контекст может сотрудник с правом на настройки."
+  "ai_cfo.context.no_right": "Менять контекст может сотрудник с правом на настройки.",
+  "sidebar.expand": "Развернуть меню",
+  "sidebar.collapse": "Свернуть меню",
+  "topbar.search_commands": "Поиск и команды",
+  "command_palette.group.actions": "Действия",
+  "command_palette.group.go": "Перейти",
+  "command_palette.group.operations": "Операции",
+  "command_palette.operations_all": "Все операции на сумму {amount}",
+  "command_palette.keywords.money_in": "приход поступление пришли деньги оплата получил",
+  "command_palette.keywords.money_out": "расход выплата платёж оплатил списание",
+  "command_palette.keywords.invoice": "счёт покупателю выставить продажа",
+  "command_palette.keywords.bill": "счёт поставщика покупка закупка",
+  "command_palette.keywords.contact": "контрагент клиент покупатель завести",
+  "money_widget.sheet_title": "Деньги на счетах"
 }

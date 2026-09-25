@@ -23,6 +23,7 @@ import {
   useDeleteManagementArticle,
 } from '@/hooks/query/managementArticles';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 export default function ManagementArticlesPage() {
   const { featureCan } = useFeatureCan();
@@ -105,9 +106,9 @@ export default function ManagementArticlesPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('management_articles.page_title')}
-        </h1>
+        </PageTitle>
         <Button onClick={openCreate}>
           <Plus className="mr-2 h-4 w-4" />
           {intl.get('management_articles.add')}

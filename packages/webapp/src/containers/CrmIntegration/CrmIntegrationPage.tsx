@@ -16,6 +16,7 @@ import {
   CrmSyncResult,
 } from '@/hooks/query/crmIntegration';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * ⑯a Страница CRM-интеграции: подключение Битрикс24 (webhook-URL) и запуск
@@ -113,9 +114,9 @@ export default function CrmIntegrationPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('crm_integration.page.title')}
-        </h1>
+        </PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('crm_integration.page.subtitle')}
         </p>

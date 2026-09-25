@@ -14,6 +14,7 @@ import { Budget } from './schemas';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { PageTitle } from '@/components/ui/page-title';
 
 const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
 
@@ -48,9 +49,9 @@ export default function BudgetsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('budgets.page_title')}
-        </h1>
+        </PageTitle>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="mr-2 h-4 w-4" />
           {intl.get('budgets.add')}

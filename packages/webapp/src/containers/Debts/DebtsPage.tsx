@@ -8,6 +8,7 @@ import { DebtsContactRow } from './DebtsContactRow';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 type Side = 'receivable' | 'payable';
 
@@ -41,7 +42,7 @@ export default function DebtsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{intl.get('debts.title')}</h1>
+        <PageTitle>{intl.get('debts.title')}</PageTitle>
         <div className="flex items-center gap-2">
           {(['receivable', 'payable'] as const).map((s) => (
             <Button

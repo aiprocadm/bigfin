@@ -57,13 +57,14 @@ export default function PreferencesSidebar() {
                   )}
                 >
                   {/* Метка текущего раздела — та же, что в главном меню:
-                      жёлтая полоса у края, 3 точки шириной. Была чернильная
-                      и вдвое тоньше, и «текущий» в настройках выглядел иначе,
-                      чем «текущий» в продукте. */}
+                      жёлтая точка слева (§7 ТЗ-4, этап 45). Полоса у края
+                      читалась как отдельный цветной элемент (O16 живого
+                      прохода), а меню продукта с этапа 45 метит «где я»
+                      точкой — «текущий» везде выглядит одинаково. */}
                   {active ? (
                     <span
                       aria-hidden
-                      className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-accent"
+                      className="absolute left-1 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent"
                     />
                   ) : null}
                   <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} aria-hidden />

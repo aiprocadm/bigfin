@@ -14,6 +14,7 @@ import {
 } from '@/hooks/query/acquiring';
 import { DateField } from '@/components/ui/date-field';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 const monthAgo = () => {
   const d = new Date();
@@ -77,7 +78,7 @@ export default function AcquiringPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">{intl.get('acquiring.page.title')}</h1>
+        <PageTitle>{intl.get('acquiring.page.title')}</PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('acquiring.page.subtitle')}
         </p>

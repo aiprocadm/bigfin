@@ -1,12 +1,27 @@
 import * as React from 'react';
 import intl from 'react-intl-universal';
-import { ChevronDown, LucideIcon } from 'lucide-react';
+import {
+  ChevronDown,
+  LucideIcon,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from 'lucide-react';
 
 import { cn } from '@/lib/cn';
+import { Logo } from './Logo';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from './dropdown-menu';
 
 export interface SidebarItemData {
   href: string;
   label: React.ReactNode;
+  /** Подпись строкой — подсказка у значка в свёрнутом меню. */
+  labelText?: string;
   icon?: LucideIcon;
   active?: boolean;
   /** Число рядом с пунктом: сколько дел ждёт. Ноль и пустота не показываются. */
@@ -16,6 +31,10 @@ export interface SidebarItemData {
 export interface SidebarGroupData {
   /** Заголовок секции (необязательный — пункты без секции рендерятся без него). */
   title?: React.ReactNode;
+  /** Заголовок строкой — подсказка у значка группы в свёрнутом меню. */
+  titleText?: string;
+  /** Значок группы в свёрнутом меню (UI-045-3 ТЗ-4). */
+  icon?: LucideIcon;
   items: SidebarItemData[];
 }
 
@@ -26,6 +45,8 @@ interface SidebarProps {
   groups?: SidebarGroupData[];
   activeHref?: string;
   mini?: boolean;
+  /** Свернуть / развернуть меню. Без него кнопки нет (экраны настроек). */
+  onToggleMini?: () => void;
   onItemClick?: (item: SidebarItemData) => void;
   className?: string;
 }
@@ -46,21 +67,25 @@ interface SidebarProps {
  * независимо от специфичности — значит классы цвета на ссылках молча не
  * применялись вовсе. Лечение — в `globals.css`, там же и разбор.
  *
- * ТЕКУЩИЙ ПУНКТ РАЗЛИЧАЕТСЯ ПОВЕРХНОСТЬЮ, А НЕ КРАСКОЙ: белая «таблетка» на
- * серой панели, чернила вместо приглушённого, полужирный вместо обычного —
- * три отличия сразу, и ни одного нового цвета.
+ * ТЕКУЩИЙ ПУНКТ РАЗЛИЧАЕТСЯ ПОВЕРХНОСТЬЮ: заливка `fill-1` на светлой
+ * панели, чернила вместо приглушённого, полужирный вместо обычного — и
+ * жёлтая точка слева (§7 ТЗ-4, решение R3).
  *
- * ЖЁЛТОГО В МЕНЮ НЕТ, и это осознанно. Правило продукта: фирменный жёлтый
- * метит ОДИН смысловой момент на экране. На главной он уже стоит на точке
- * «сегодня» в ленте денег. Полоска в меню давала бы второй жёлтый момент — и
- * правило переставало бы работать. Убрать акцент, чтобы акцент остался
- * акцентом.
+ * ЖЁЛТОГО В МЕНЮ — ОДНА ТОЧКА. Правило продукта: фирменный жёлтый метит ОДИН
+ * смысловой момент. Раньше меню обходилось без него вовсе (полоска у каждого
+ * раздела была бы забором). ТЗ-4 отдало жёлтую метку «где я» текущему
+ * пункту — это единственный жёлтый в меню, и он маленький.
+ *
+ * СВЁРНУТОЕ МЕНЮ (UI-045-3) — значки групп шириной 64 точки; наведение
+ * показывает название, нажатие открывает пункты группы списком. Выбор
+ * запоминается (`ConnectedSidebar`).
  */
 export const Sidebar = ({
   items,
   groups,
   activeHref,
   mini = false,
+  onToggleMini,
   onItemClick,
   className,
 }: SidebarProps) => {
@@ -72,11 +97,27 @@ export const Sidebar = ({
     <nav
       aria-label={intl.get('sidebar.aria_label')}
       className={cn(
-        'flex h-full flex-col overflow-y-auto border-r border-border bg-surface-elevated py-3 transition-[width] duration-200',
+        'flex h-full flex-col overflow-y-auto border-r border-border bg-background pb-3 transition-[width] duration-200 ease-standard',
         mini ? 'w-16' : 'w-60',
         className,
       )}
     >
+      {/* Знак продукта над меню: шапка теперь стоит справа от меню, и
+          место под ним сверху слева — как у окна приложения macOS. */}
+      <div
+        className={cn(
+          'flex h-14 shrink-0 items-center',
+          mini ? 'justify-center' : 'px-5',
+        )}
+      >
+        {mini ? (
+          <span className="text-headline font-bold text-text-primary" aria-hidden>
+            B
+          </span>
+        ) : (
+          <Logo size="sm" />
+        )}
+      </div>
       {(() => {
         // Когда текущая страница НЕ внутри раздела — а «Главная» именно
         // такая, — открытым остаётся первый раздел.
@@ -106,6 +147,28 @@ export const Sidebar = ({
           />
         ));
       })()}
+      {onToggleMini && (
+        <button
+          type="button"
+          onClick={onToggleMini}
+          aria-label={intl.get(mini ? 'sidebar.expand' : 'sidebar.collapse')}
+          title={intl.get(mini ? 'sidebar.expand' : 'sidebar.collapse')}
+          className={cn(
+            // Кнопка сворачивания — только для ноутбука: на телефоне меню
+            // выезжает поверх и закрывается само.
+            'mx-2 mt-auto hidden min-h-9 items-center gap-3 rounded-control border-0 bg-transparent px-3 py-2 text-subhead text-text-secondary transition-colors md:flex',
+            'hover:bg-fill-1 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
+            mini && 'justify-center',
+          )}
+        >
+          {mini ? (
+            <PanelLeftOpen className="h-5 w-5 shrink-0" aria-hidden />
+          ) : (
+            <PanelLeftClose className="h-5 w-5 shrink-0" aria-hidden />
+          )}
+          {!mini && <span>{intl.get('sidebar.collapse')}</span>}
+        </button>
+      )}
     </nav>
   );
 };
@@ -147,6 +210,54 @@ const SidebarGroup = ({
   // меню.
   const [openedByHand, setOpenedByHand] = React.useState<boolean | null>(null);
   const open = hasActive || (openedByHand ?? openByDefault);
+
+  // Свёрнутое меню: раздел — один значок, пункты — списком по нажатию.
+  if (mini && group.title) {
+    const Icon = group.icon;
+    const label = group.titleText || '';
+    return (
+      <div className={cn('flex flex-col', !isFirst && 'mt-1')}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={label}
+              title={label}
+              className={cn(
+                'relative mx-2 flex min-h-10 items-center justify-center rounded-control border-0 px-3 py-2 transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
+                hasActive
+                  ? 'bg-fill-1 text-text-primary'
+                  : 'bg-transparent text-text-secondary hover:bg-fill-1/60 hover:text-text-primary',
+              )}
+            >
+              {hasActive && <ActiveDot />}
+              {Icon ? (
+                <Icon className="h-5 w-5 shrink-0" aria-hidden />
+              ) : (
+                <span className="text-subhead font-semibold">{label.slice(0, 1)}</span>
+              )}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="right" align="start" className="w-60">
+            <DropdownMenuLabel>{group.title}</DropdownMenuLabel>
+            {group.items.map((item) => (
+              <DropdownMenuItem
+                key={item.href}
+                onSelect={() => onItemClick?.(item)}
+                className={cn(
+                  (item.href === activeHref || item.active) &&
+                    'font-semibold text-text-primary',
+                )}
+              >
+                {item.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
 
   // У раздела без заголовка сворачивать нечего: это отдельно стоящий пункт
   // («Главная»), и заголовка у него нет по устройству меню.
@@ -211,10 +322,19 @@ const SidebarGroup = ({
         <span className="truncate">{group.title}</span>
       </button>
 
-      {open && (
-        // Отступ равен ширине стрелки с промежутком: текст пункта встаёт
-        // ровно под текст заголовка, и видно, чему пункт принадлежит.
-        <div className="flex flex-col gap-0.5 pl-[1.375rem]">
+      {/* Раскрытие плавное (UI-045-3 ТЗ-4): высота растёт от нуля за
+          200 мс, а не прыгает. Закрытые пункты не в порядке обхода с
+          клавиатуры — `inert`, иначе Tab уходил бы в невидимое. */}
+      <div
+        className={cn(
+          'grid transition-[grid-template-rows] duration-200 ease-standard',
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        )}
+        {...(open ? {} : { inert: '' })}
+      >
+        {/* Отступ равен ширине стрелки с промежутком: текст пункта встаёт
+            ровно под текст заголовка, и видно, чему пункт принадлежит. */}
+        <div className="flex min-h-0 flex-col gap-0.5 overflow-hidden pl-[1.375rem]">
           {group.items.map((item) => (
             <SidebarItem
               key={item.href}
@@ -225,7 +345,7 @@ const SidebarGroup = ({
             />
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -253,7 +373,12 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
       href={item.href}
       onClick={handleClick}
       aria-current={active ? 'page' : undefined}
-      title={mini && typeof item.label === 'string' ? item.label : undefined}
+      title={
+        mini
+          ? item.labelText ?? (typeof item.label === 'string' ? item.label : undefined)
+          : undefined
+      }
+      aria-label={mini ? item.labelText : undefined}
       className={cn(
         // На телефоне пункт не ниже 44 px: палец накрывает примерно
         // сантиметр, а пункты идут вплотную — промах уводит в соседний
@@ -265,14 +390,15 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
         'relative mx-2 flex min-h-11 items-center gap-3 rounded-control px-3 py-2 text-sm no-underline transition-colors md:min-h-0',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action',
         active
-          ? // ТЕКУЩИЙ ПУНКТ — БЕЛАЯ ТАБЛЕТКА НА СЕРОЙ ПАНЕЛИ. Контраст
-            // поверхности, а не цвета: ни одного нового оттенка, а видно
-            // мгновенно. Плюс чернила и полужирный — три отличия сразу.
-            'bg-surface font-semibold text-text-primary shadow-[0_1px_2px_rgba(16,24,40,0.06)]'
-          : 'font-medium text-text-secondary hover:bg-surface/70 hover:text-text-primary',
+          ? // ТЕКУЩИЙ ПУНКТ — ЗАЛИВКА НА СВЕТЛОЙ ПАНЕЛИ. Контраст
+            // поверхности, а не цвета; плюс чернила, полужирный и жёлтая
+            // точка — видно мгновенно.
+            'bg-fill-1 font-semibold text-text-primary'
+          : 'font-medium text-text-secondary hover:bg-fill-1/60 hover:text-text-primary',
         mini && 'justify-center',
       )}
     >
+      {active && <ActiveDot />}
       {Icon && <Icon className="h-[1.125rem] w-[1.125rem] shrink-0" aria-hidden />}
       {!mini && <span className="truncate">{item.label}</span>}
       {!mini && count !== null && (
@@ -283,3 +409,14 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
     </a>
   );
 };
+
+/**
+ * Жёлтая точка текущего пункта (§7 ТЗ-4) — единственный жёлтый в меню.
+ * Слева, в поле пункта, чтобы не сдвигать текст.
+ */
+const ActiveDot = () => (
+  <span
+    aria-hidden
+    className="absolute left-1 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent"
+  />
+);

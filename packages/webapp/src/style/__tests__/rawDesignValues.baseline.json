@@ -1,10 +1,8 @@
 {
   "components/Dashboard/BigfinLoading.tsx": 1,
-  "components/Dashboard/ConnectedTopbar.tsx": 1,
   "components/Preferences/PreferencesSidebar.tsx": 1,
   "components/ui/QrCode.tsx": 2,
   "components/ui/report-table.tsx": 1,
-  "components/ui/Sidebar.tsx": 1,
   "components/ui/tabs.tsx": 1,
   "containers/Acquiring/AcquiringPage.tsx": 1,
   "containers/BankApiSync/AlfaCard.tsx": 1,
@@ -33,7 +31,6 @@
   "containers/FinancialStatements/v2/ReportPeriodBar.tsx": 1,
   "containers/FixedAssets/FixedAssetDetailCard.tsx": 1,
   "containers/FixedAssets/FixedAssetsPage.tsx": 1,
-  "containers/Homepage/FirstStepsSection.tsx": 2,
   "containers/Homepage/HomepageContent.tsx": 1,
   "containers/Homepage/ShortcutBoxesSection.tsx": 1,
   "containers/Import/ImportFileMapping.tsx": 2,

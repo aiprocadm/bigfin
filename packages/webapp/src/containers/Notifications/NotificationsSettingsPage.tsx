@@ -31,6 +31,7 @@ import {
 } from './schema';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { MoneyField } from '@/components/ui/money-field';
+import { PageTitle } from '@/components/ui/page-title';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -234,9 +235,9 @@ export default function NotificationsSettingsPage() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <h1 className="text-xl font-semibold">
+      <PageTitle>
         {intl.get('notifications.settings.title')}
-      </h1>
+      </PageTitle>
 
       {isLoading ? (
         <div className="p-4 text-sm text-muted-foreground">

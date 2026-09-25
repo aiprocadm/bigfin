@@ -11,6 +11,7 @@ import {
 import { CostAllocationRuleDialog } from './CostAllocationRuleDialog';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 interface RuleRow {
   id: number;
@@ -89,9 +90,9 @@ export default function CostAllocationPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('cost_allocation.page.title')}
-        </h1>
+        </PageTitle>
         <Button onClick={() => setShowCreate(true)}>
           {intl.get('cost_allocation.action.create')}
         </Button>

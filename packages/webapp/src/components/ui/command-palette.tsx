@@ -136,6 +136,12 @@ export function CommandPalette({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={intl.get('command_palette.placeholder')}
+              // Рамку фокуса у этого поля рисовать нечему: поле — вся строка
+              // окна, и курсор в нём виден всегда. Правило фокуса Blueprint
+              // лежит вне слоёв и перебивает утилиту `outline-none` —
+              // гасим его прямо на поле (живой проход этапа 45: синий
+              // прямоугольник поверх строки).
+              style={{ outline: 'none' }}
               className="h-14 w-full bg-transparent text-body text-text-primary outline-none placeholder:text-text-muted"
             />
           </div>

@@ -29,7 +29,7 @@ export function useResourceData(type: string, query?: any, props?: any) {
  * @param {string} type
  * @returns {string}
  */
-function getResourceUrlFromType(type: string): string {
+export function getResourceUrlFromType(type: string): string {
   const config = {
     [RESOURCES_TYPES.INVOICE]: '/sale-invoices',
     [RESOURCES_TYPES.ESTIMATE]: '/sale-estimates',
@@ -142,7 +142,7 @@ const transformPlainList = (response: any) => ({
  * Detarmines the transformer based on the given resource type.
  * @param {string} type - Resource type.
  */
-const transformResourceData = (type: string) => (response: any) => {
+export const transformResourceData = (type: string) => (response: any) => {
   const pairs = {
     [RESOURCES_TYPES.ESTIMATE]: transformsEstimates,
     [RESOURCES_TYPES.INVOICE]: transformInvoices,

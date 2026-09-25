@@ -54,11 +54,17 @@ export interface ProgressRingProps {
   /** Что написать в центре: главная цифра. */
   children?: React.ReactNode;
   className?: string;
+  /**
+   * Толщина кольца. По умолчанию — от размера, но не тоньше 8: так кольцо
+   * читается на главной. Маленькому кольцу в шапке (UI-045-6) нужна тоньше,
+   * иначе от него остаётся сплошной кружок.
+   */
+  thickness?: number;
 }
 
-export function ProgressRing({ rings, size = 120, children, className }: ProgressRingProps) {
+export function ProgressRing({ rings, size = 120, children, className, thickness }: ProgressRingProps) {
   const shown = rings.slice(0, 3);
-  const stroke = Math.max(8, Math.round(size / 11));
+  const stroke = thickness ?? Math.max(8, Math.round(size / 11));
   const gap = 2;
   const summary = shown.map((ring) => `${ring.label}: ${formatShare(ring.value)}`).join(', ');
 

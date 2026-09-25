@@ -46,7 +46,7 @@ export const BottomNav = ({
   <nav
     aria-label={ariaLabel}
     className={cn(
-      'fixed inset-x-0 bottom-0 z-40 flex items-stretch border-t border-border bg-surface md:hidden',
+      'glass fixed inset-x-0 bottom-0 z-40 flex items-stretch border-t border-border md:hidden',
       'pb-[env(safe-area-inset-bottom)]',
       className,
     )}

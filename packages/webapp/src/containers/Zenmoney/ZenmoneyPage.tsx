@@ -13,6 +13,7 @@ import {
   useImportZenmoney,
 } from '@/hooks/query/zenmoney';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * ⑨b Страница импорта Дзенмани: подключение токеном + импорт операций в
@@ -63,7 +64,7 @@ export default function ZenmoneyPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">{intl.get('zenmoney.page.title')}</h1>
+        <PageTitle>{intl.get('zenmoney.page.title')}</PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('zenmoney.page.subtitle')}
         </p>

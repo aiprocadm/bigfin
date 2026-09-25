@@ -4,8 +4,9 @@ import { BarChart3, Home, Menu, Plus, Receipt } from 'lucide-react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { BottomNav, BottomNavItem } from '@/components/ui/BottomNav';
-import { DialogsName } from '@/constants/dialogs';
-import { useDialogActions } from '@/hooks/state';
+import { Sheet } from '@/components/ui/sheet';
+import { cn } from '@/lib/cn';
+import { useAddActions } from './addActions';
 
 interface ConnectedBottomNavProps {
   /** Открыть полное меню разделов. */
@@ -29,7 +30,8 @@ interface ConnectedBottomNavProps {
 export const ConnectedBottomNav = ({ onOpenMenu }: ConnectedBottomNavProps) => {
   const history = useHistory();
   const location = useLocation();
-  const { openDialog } = useDialogActions();
+  const addActions = useAddActions();
+  const [addOpen, setAddOpen] = React.useState(false);
 
   const items: BottomNavItem[] = [
     {
@@ -49,9 +51,10 @@ export const ConnectedBottomNav = ({ onOpenMenu }: ConnectedBottomNavProps) => {
       label: intl.get('topbar.add'),
       icon: Plus,
       emphasis: true,
-      // Приход — самое частое из быстрого: деньги чаще приходят, чем их
-      // записывают уходящими вручную (расходы обычно приезжают выпиской).
-      onClick: () => openDialog(DialogsName.MoneyInForm),
+      // Шторка «Добавить» (§7 ТЗ-4): тот же список, что у «＋» в шапке.
+      // Раньше кнопка сразу открывала приход — расход с телефона записать
+      // было нечем, кроме как через меню разделов.
+      onClick: () => setAddOpen(true),
     },
     {
       key: 'reports',
@@ -68,11 +71,46 @@ export const ConnectedBottomNav = ({ onOpenMenu }: ConnectedBottomNavProps) => {
   ];
 
   return (
-    <BottomNav
-      items={items}
-      activeHref={location.pathname}
-      onNavigate={(href) => history.push(href)}
-      ariaLabel={intl.get('bottom_nav.aria_label')}
-    />
+    <>
+      <BottomNav
+        items={items}
+        activeHref={location.pathname}
+        onNavigate={(href) => history.push(href)}
+        ariaLabel={intl.get('bottom_nav.aria_label')}
+      />
+      <Sheet
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        title={intl.get('topbar.add')}
+        side="bottom"
+      >
+        <ul className="-mx-2 flex flex-col">
+          {addActions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <li key={action.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAddOpen(false);
+                    action.run();
+                  }}
+                  className="flex min-h-12 w-full items-center gap-3 rounded-control border-0 bg-transparent px-2 text-left text-body text-text-primary hover:bg-fill-1"
+                >
+                  <Icon
+                    className={cn(
+                      'h-5 w-5 shrink-0',
+                      action.positive ? 'text-success' : 'text-text-secondary',
+                    )}
+                    aria-hidden
+                  />
+                  {action.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </Sheet>
+    </>
   );
 };

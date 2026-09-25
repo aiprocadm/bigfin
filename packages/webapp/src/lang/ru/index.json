@@ -5797,5 +5797,11 @@
   "budgets.card.usage": "Освоение расходов",
   "budgets.card.used": "Освоено {fact} из {plan}",
   "budgets.card.elapsed": "Прошло года",
-  "financial_model.no_data_hint": "Появится, когда за период будут операции с выручкой и расходами по статьям."
+  "financial_model.no_data_hint": "Появится, когда за период будут операции с выручкой и расходами по статьям.",
+  "debts.side.aria": "Чьи долги",
+  "debts.net_plain": "Итого с учётом наших долгов",
+  "debts.aging.title": "Сроки долгов",
+  "cashflow.accounts.total": "Деньги на всех счетах",
+  "cashflow.accounts.where": "Где лежат деньги",
+  "cashflow.account.remaining": "Остаток"
 }

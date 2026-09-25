@@ -20,7 +20,6 @@
   "containers/DataQuality/UnbalancedTab.tsx": 3,
   "containers/Deals/DealProfitability.tsx": 1,
   "containers/Debts/DebtsContactRow.tsx": 2,
-  "containers/Debts/DebtsPage.tsx": 1,
   "containers/Dividends/DividendsPage.tsx": 3,
   "containers/Drawers/CreditNoteDetailDrawer/v2/CreditNoteDetailOverviewTabV2.tsx": 1,
   "containers/Drawers/VendorCreditDetailDrawer/v2/VendorCreditDetailOverviewTabV2.tsx": 1,

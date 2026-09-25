@@ -2,7 +2,9 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useFeatureCan } from '@/hooks/state/feature';
-import { Button } from '@/components/ui/button';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { StatCard } from '@/components/ui/stat-card';
+import { DebtAgingBar } from './DebtAgingBar';
 import { useDebtsOverview, useRepaymentPlans } from '@/hooks/query/debts';
 import { DebtsContactRow } from './DebtsContactRow';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
@@ -14,12 +16,6 @@ type Side = 'receivable' | 'payable';
 
 const fmt = (n: number) => formatOrganizationMoney(n ?? 0);
 
-const BUCKET_LABELS = [
-  'debts.aging.0_30',
-  'debts.aging.31_60',
-  'debts.aging.61_90',
-  'debts.aging.90_plus',
-];
 
 export default function DebtsPage() {
   const { featureCan } = useFeatureCan();
@@ -41,62 +37,42 @@ export default function DebtsPage() {
 
   return (
     <div className="flex flex-col gap-4 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <PageTitle>{intl.get('debts.title')}</PageTitle>
-        <div className="flex items-center gap-2">
-          {(['receivable', 'payable'] as const).map((s) => (
-            <Button
-              key={s}
-              variant={side === s ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setSide(s)}
-            >
-              {intl.get(`debts.side.${s}`)}
-            </Button>
-          ))}
-        </div>
+        {/* Сторона — сегментами (UI-051-2): выбирается ровно одна. */}
+        <SegmentedControl
+          aria-label={intl.get('debts.side.aria')}
+          value={side}
+          onChange={setSide}
+          options={(['receivable', 'payable'] as const).map((s) => ({
+            value: s,
+            label: intl.get(`debts.side.${s}`),
+          }))}
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        <div className="rounded-control border p-3">
-          <div className="text-muted-foreground text-sm">
-            {intl.get('debts.total')}
-          </div>
-          <div className="text-lg font-semibold">{fmt(summary?.total ?? 0)}</div>
-        </div>
-        <div className="rounded-control border p-3">
-          <div className="text-muted-foreground text-sm">
-            {intl.get('debts.overdue')}
-          </div>
-          <div className="text-lg font-semibold text-red-600">
-            {fmt(summary?.overdueTotal ?? 0)}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label={intl.get('debts.total')} value={fmt(summary?.total ?? 0)} />
+        <StatCard
+          label={intl.get('debts.overdue')}
+          value={
+            <span className={(summary?.overdueTotal ?? 0) > 0 ? 'text-danger' : undefined}>
+              {fmt(summary?.overdueTotal ?? 0)}
+            </span>
+          }
+        />
         {overview?.net != null && (
-          <div className="rounded-control border p-3">
-            <div className="text-muted-foreground text-sm">
-              {intl.get('debts.net')}
-            </div>
-            <div className="text-lg font-semibold">{fmt(overview.net)}</div>
-          </div>
+          // «Нетто (деб. − кред.)» — жаргон (O13): словами, что это.
+          <StatCard label={intl.get('debts.net_plain')} value={fmt(overview.net)} />
         )}
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        {buckets.map((b, i) => (
-          <div key={i} className="rounded-control border px-3 py-2 text-sm">
-            <div className="text-muted-foreground">
-              {intl.get(BUCKET_LABELS[i])}
-            </div>
-            <div className="font-medium">{fmt(b)}</div>
-          </div>
-        ))}
-      </div>
+      <DebtAgingBar buckets={buckets} />
 
-      <h2 className="text-lg font-medium">
+      <h2 className="text-headline text-text-primary">
         {intl.get(side === 'receivable' ? 'debts.debtors' : 'debts.creditors')}
       </h2>
-      <div className="flex flex-col divide-y rounded-control border">
+      <div className="flex flex-col divide-y divide-border rounded-default border border-border bg-surface">
         {contacts.length === 0 && (
           <EmptyState
             title={intl.get('debts.empty_status.title')}
@@ -110,12 +86,12 @@ export default function DebtsPage() {
 
       {plansList.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-medium">{intl.get('debts.plan.title')}</h2>
+          <h2 className="text-headline text-text-primary">{intl.get('debts.plan.title')}</h2>
           {plansList.map((p) => (
-            <div key={p.id} className="rounded-control border p-3 text-sm">
+            <div key={p.id} className="rounded-control border border-border p-3 text-sm">
               <div className="flex justify-between">
                 <span>{p.description || `#${p.id}`}</span>
-                <span className="text-muted-foreground">
+                <span className="text-text-secondary">
                   {intl.get('debts.plan.progress', {
                     percent: Math.round(p.progress?.percentPaid ?? 0),
                   })}

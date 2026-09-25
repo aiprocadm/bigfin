@@ -5797,5 +5797,11 @@
   "budgets.card.usage": "Expenses used",
   "budgets.card.used": "Spent {fact} of {plan}",
   "budgets.card.elapsed": "Time elapsed in the year",
-  "financial_model.no_data_hint": "Appears once the period has revenue and expense operations with articles."
+  "financial_model.no_data_hint": "Appears once the period has revenue and expense operations with articles.",
+  "debts.side.aria": "Who owes",
+  "debts.net_plain": "Total including our debts",
+  "debts.aging.title": "Debt ageing",
+  "cashflow.accounts.total": "Money in all accounts",
+  "cashflow.accounts.where": "Where the money is",
+  "cashflow.account.remaining": "Balance"
 }

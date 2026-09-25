@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { AccountsSummary } from './AccountsSummary';
 import { compose } from 'lodash/fp';
 
 import '@/style/pages/CashFlow/CashFlowAccounts/List.scss';
@@ -38,6 +39,8 @@ function CashFlowAccountsList({
       <CashflowAccountsLoadingBar />
 
       <DashboardPageContent>
+        {/* Итог и «где лежат деньги» (C15, UI-051-1 ТЗ-4). */}
+        <AccountsSummary />
         <CashflowAccountsGrid />
       </DashboardPageContent>
 

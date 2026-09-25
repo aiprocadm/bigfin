@@ -32,6 +32,9 @@ describe('FeaturesConfigure — статьи учёта', () => {
 
     expect(enabled).toEqual([
       Features.MGMT_ARTICLES,
+      // Новые списки контрагентов — по умолчанию (UI-051-4 ТЗ-4).
+      Features.CUSTOMERS_LIST_V2,
+      Features.VENDORS_LIST_V2,
       Features.NOTIFICATIONS,
       Features.INTERFACE_MODES,
     ]);

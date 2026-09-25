@@ -37,7 +37,7 @@ function BankAccountBalance({ amount, loading }) {
       >
         {amount}
       </BankAccountBalanceAmount>
-      <BankAccountBalanceLabel>{intl.get('balance')}</BankAccountBalanceLabel>
+      <BankAccountBalanceLabel>{intl.get('cashflow.account.remaining')}</BankAccountBalanceLabel>
     </BankAccountBalanceWrap>
   );
 }
@@ -71,9 +71,9 @@ export function BankAccount({
         <BankAccountTitle className={clsx({ [Classes.SKELETON]: loading })}>
           {title}
         </BankAccountTitle>
-        <BnakAccountCode className={clsx({ [Classes.SKELETON]: loading })}>
-          {code}
-        </BnakAccountCode>
+        {/* Бухгалтерский номер счёта («10001») на карточке не показывается
+            (O12, UI-051-1 ТЗ-4): человеку без бухгалтерии он ничего не
+            говорит. Номер — в карточке самого счёта. */}
         {!loading && <BankAccountTypeIcon type={type} />}
       </BankAccountHeader>
 

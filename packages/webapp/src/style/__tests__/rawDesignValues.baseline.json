@@ -28,7 +28,6 @@
   "containers/FinancialModel/MarketingPanel.tsx": 1,
   "containers/FinancialRatios/FinancialRatiosPage.tsx": 4,
   "containers/FinancialStatements/FinancialReports.tsx": 1,
-  "containers/FinancialStatements/v2/ReportPeriodBar.tsx": 1,
   "containers/FixedAssets/FixedAssetDetailCard.tsx": 1,
   "containers/FixedAssets/FixedAssetsPage.tsx": 1,
   "containers/Homepage/HomepageContent.tsx": 1,

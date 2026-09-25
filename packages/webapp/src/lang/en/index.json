@@ -5781,5 +5781,10 @@
   "all_transactions.segment.all": "All",
   "all_transactions.segment.in": "Money in",
   "all_transactions.segment.out": "Money out",
-  "report_controls.view": "View"
+  "report_controls.view": "View",
+  "managerial_pnl.margin_chart_title": "Profitability by tiers",
+  "managerial_pnl.margin_series.md_margin": "Contribution margin %",
+  "managerial_pnl.margin_series.gp2_margin": "Gross profit %",
+  "managerial_pnl.margin_series.op_margin": "Operating profit %",
+  "managerial_pnl.margin_series.np_margin": "Net profit %"
 }

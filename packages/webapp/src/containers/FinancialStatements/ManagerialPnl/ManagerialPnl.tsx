@@ -1,5 +1,13 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { LegalEntitySelect } from '../v2/LegalEntitySelect';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Download } from 'lucide-react';
 
@@ -50,6 +58,8 @@ import {
 } from './managerialPnlRows';
 import { hasWaterfall, pnlWaterfall } from './pnlWaterfall';
 import { PnlWaterfallChart } from './PnlWaterfallChart';
+import { PnlMarginChart } from './PnlMarginChart';
+import { hasMarginSeries, pnlMarginSeries } from './pnlMarginSeries';
 import { PnlSourcesPanel } from './PnlSourcesPanel';
 
 /**
@@ -182,6 +192,11 @@ export default function ManagerialPnl() {
     return pnlWaterfall((id) => values.get(id) ?? 0);
   }, [serverRows]);
 
+  const marginPoints = React.useMemo(
+    () => pnlMarginSeries(serverRows, columns as any),
+    [serverRows, columns],
+  );
+
   const revenueRow = serverRows.find((row: any) => row.id === 'revenue');
   const hasMovement = serverRows.some((row: any) =>
     ['PL_GROUP', 'UNASSIGNED'].includes((row.row_types ?? row.rowTypes ?? [])[0]) &&
@@ -223,27 +238,11 @@ export default function ManagerialPnl() {
         onBasisChange={(basis) => setQuery({ basis })}
         extraSlot={
           showEntityPicker ? (
-            <label className="flex items-center gap-1 text-xs text-text-secondary">
-              {intl.get('cash_flow_articles.legal_entity')}
-              <select
-                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
-                value={query.legalEntityIds?.[0] ?? ''}
-                onChange={(event) =>
-                  setQuery({
-                    legalEntityIds: event.target.value
-                      ? [Number(event.target.value)]
-                      : undefined,
-                  })
-                }
-              >
-                <option value="">{intl.get('cash_flow_articles.legal_entity.all')}</option>
-                {legalEntities!.map((entity) => (
-                  <option key={entity.id} value={entity.id}>
-                    {entity.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <LegalEntitySelect
+              entities={legalEntities!}
+              value={query.legalEntityIds?.[0]}
+              onChange={(id) => setQuery({ legalEntityIds: id ? [id] : undefined })}
+            />
           ) : null
         }
       />
@@ -299,19 +298,21 @@ export default function ManagerialPnl() {
           {query.spreadIndirect && (
             <label className="flex items-center gap-1 text-xs text-text-secondary">
               {intl.get('managerial_pnl.spread.base')}
-              <select
-                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
+              <Select
                 value={query.spreadBase ?? 'revenue'}
-                onChange={(event) =>
-                  setQuery({ spreadBase: event.target.value as SpreadBase })
-                }
+                onValueChange={(value) => setQuery({ spreadBase: value as SpreadBase })}
               >
-                {SPREAD_BASES.map((base) => (
-                  <option key={base} value={base}>
-                    {intl.get(`cost_allocation.key.${base}`)}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="h-9 w-auto min-w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {SPREAD_BASES.map((base) => (
+                    <SelectItem key={base} value={base}>
+                      {intl.get(`cost_allocation.key.${base}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </label>
           )}
           {/* Какая база применена и где не сработала (критерий 4 FT-011). */}
@@ -377,6 +378,8 @@ export default function ManagerialPnl() {
       ) : (
         <>
         {hasWaterfall(waterfall) && <PnlWaterfallChart steps={waterfall} />}
+        {/* Рентабельность по ярусам во времени (C9) — из тех же строк. */}
+        {hasMarginSeries(marginPoints) && <PnlMarginChart points={marginPoints} />}
         <ReportSheet
           sheetType={intl.get('managerial_pnl.title')}
           dateText={data?.meta?.formatted_date_range}

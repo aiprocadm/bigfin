@@ -8,7 +8,7 @@ import { DashboardPageContent } from '@/components';
 // Легаси BalanceSheetHeader остаётся на месте (не удаляем).
 import { ReportPeriodBar } from '../v2';
 import { BalanceSheetHeaderV2 } from './v2/BalanceSheetHeaderV2';
-import BalanceSheetActionsBar from './BalanceSheetActionsBar';
+import { BalanceSheetActions } from './BalanceSheetActions';
 import { BalanceSheetProvider } from './BalanceSheetProvider';
 import { BalanceSheetBody } from './BalanceSheetBody';
 import { useBalanceSheetQuery } from './utils';
@@ -54,10 +54,9 @@ function BalanceSheet({
 
   return (
     <BalanceSheetProvider filter={query}>
-      <BalanceSheetActionsBar
-        numberFormat={query.numberFormat}
-        onNumberFormatSubmit={handleNumberFormatSubmit}
-      />
+      {/* Старая панель Blueprint (`BalanceSheetActionsBar`) не рисуется:
+          её действия — в строке шапки отчёта (UI-049-4 ТЗ-4, O14). Файл не
+          удалён — удаление только с разрешения владельца. */}
       <BalanceSheetLoadingBar />
       <BalanceSheetAlerts />
 
@@ -71,6 +70,12 @@ function BalanceSheet({
           onRangeChange={(range) => setLocationQuery({ ...query, ...range })}
           onCustomizeClick={() => toggleBalanceSheetFilterDrawer(true)}
           className="mb-4"
+          extraSlot={
+            <BalanceSheetActions
+              numberFormat={query.numberFormat}
+              onNumberFormatSubmit={handleNumberFormatSubmit}
+            />
+          }
         />
 
         <BalanceSheetHeaderV2

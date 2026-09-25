@@ -5781,5 +5781,10 @@
   "all_transactions.segment.all": "Все",
   "all_transactions.segment.in": "Приход",
   "all_transactions.segment.out": "Расход",
-  "report_controls.view": "Вид"
+  "report_controls.view": "Вид",
+  "managerial_pnl.margin_chart_title": "Рентабельность по ярусам",
+  "managerial_pnl.margin_series.md_margin": "МД %",
+  "managerial_pnl.margin_series.gp2_margin": "ВП2 %",
+  "managerial_pnl.margin_series.op_margin": "ОП %",
+  "managerial_pnl.margin_series.np_margin": "ЧП %"
 }

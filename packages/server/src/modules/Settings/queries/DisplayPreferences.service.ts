@@ -46,6 +46,11 @@ export const DISPLAY_PREFERENCE_DEFAULTS: Record<string, unknown> = {
   dashboardWidgets: { order: [], hidden: [] },
   // Цели на виджетах долей (FT-065): доля расходов и доля ФОТ в выручке, %.
   dashboardTargets: { expenseShare: null, payrollShare: null },
+  /**
+   * Тема оформления (этап 54 ТЗ-4, R14): light | dark | system. По
+   * умолчанию — как в системе. Личная настройка, как и остальные здесь.
+   */
+  theme: 'system',
 };
 
 /** Ключи, которые продукт умеет хранить. Всё прочее — отказ. */

@@ -1,3 +1,5 @@
+import { isThemeChoice, setThemeChoice } from '@/theme/theme';
+
 /**
  * Личные настройки вида (FIN-026 ТЗ-2).
  *
@@ -57,6 +59,11 @@ export function getDisplayPreferences(): DisplayPreferences {
  * @param {unknown} raw ответ сервера
  */
 export function setDisplayPreferences(raw: unknown): void {
+  // Тема оформления едет в тех же личных настройках (этап 54 ТЗ-4):
+  // пришла с сервера или сохранена на экране — применяем сразу.
+  const theme = (raw as Record<string, unknown> | null)?.theme;
+  if (isThemeChoice(theme)) setThemeChoice(theme);
+
   const source = (raw ?? {}) as Record<string, unknown>;
 
   // Пришла не вся пачка, а одна галочка (её только что сохранили) — прочие

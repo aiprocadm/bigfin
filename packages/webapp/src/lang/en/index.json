@@ -5804,5 +5804,10 @@
   "cashflow.accounts.total": "Money in all accounts",
   "cashflow.accounts.where": "Where the money is",
   "cashflow.account.remaining": "Balance",
-  "money_form.save_and_more": "Save and add another"
+  "money_form.save_and_more": "Save and add another",
+  "display_preferences.theme": "Theme",
+  "display_preferences.theme.light": "Light",
+  "display_preferences.theme.dark": "Dark",
+  "display_preferences.theme.system": "As in system",
+  "display_preferences.theme.hint": "«As in system» follows your phone or computer: dark in the evening, light by day."
 }

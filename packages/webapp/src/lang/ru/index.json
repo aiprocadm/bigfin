@@ -5804,5 +5804,10 @@
   "cashflow.accounts.total": "Деньги на всех счетах",
   "cashflow.accounts.where": "Где лежат деньги",
   "cashflow.account.remaining": "Остаток",
-  "money_form.save_and_more": "Сохранить и ещё"
+  "money_form.save_and_more": "Сохранить и ещё",
+  "display_preferences.theme": "Тема",
+  "display_preferences.theme.light": "Светлая",
+  "display_preferences.theme.dark": "Тёмная",
+  "display_preferences.theme.system": "Как в системе",
+  "display_preferences.theme.hint": "«Как в системе» следует настройке телефона или компьютера: вечером тёмная, днём светлая."
 }

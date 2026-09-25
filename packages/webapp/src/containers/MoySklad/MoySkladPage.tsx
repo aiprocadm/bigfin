@@ -17,6 +17,7 @@ import {
   MoyskladSale,
 } from '@/hooks/query/moysklad';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 // Сумму печатает общая утилита продукта: она знает валюту организации и
 // показывает рубль так, как принято — «45 000,00 ₽». Раньше здесь стоял
@@ -65,7 +66,7 @@ export default function MoySkladPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">{intl.get('moysklad.page.title')}</h1>
+        <PageTitle>{intl.get('moysklad.page.title')}</PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('moysklad.page.subtitle')}
         </p>

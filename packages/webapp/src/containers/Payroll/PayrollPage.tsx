@@ -20,6 +20,7 @@ import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
+import { PageTitle } from '@/components/ui/page-title';
 
 type TabKey = 'runs' | 'employees' | 'kpi';
 
@@ -91,9 +92,9 @@ export default function PayrollPage() {
     <div className="flex flex-col gap-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('payroll.page_title')}
-        </h1>
+        </PageTitle>
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"

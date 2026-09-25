@@ -24,6 +24,7 @@ import { usePlannedOperationsTruncated } from '@/hooks/query/paymentCalendar';
 import { ListTruncated } from '@/components/ui/list-truncated';
 import { CalendarMatrixView } from './CalendarMatrixView';
 import { GapScenariosPanel } from './GapScenariosPanel';
+import { PageTitle } from '@/components/ui/page-title';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -201,9 +202,9 @@ export default function PaymentCalendarPage() {
         </div>
       )}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('payment_calendar.page_title')}
-        </h1>
+        </PageTitle>
         {/* Три горизонта и кнопка «Добавить плановую операцию» в строку на
             телефоне не помещаются: ряд занимал 544 px при экране 390.
             Переносим (И2 карты v33). */}

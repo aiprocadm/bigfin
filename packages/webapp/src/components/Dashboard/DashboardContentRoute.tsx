@@ -5,6 +5,7 @@ import { getDashboardRoutes } from '@/routes/dashboard';
 import DashboardPage from './DashboardPage';
 import { useAccountantOnlyExplained } from '@/hooks/state/interfaceMode';
 import { AccountantOnly } from '@/components/ui/accountant-only';
+import { RouteTitle } from './RouteTitle';
 
 /**
  * Dashboard inner route content.
@@ -31,7 +32,11 @@ export interface DashboardRoute {
 
 function DashboardContentRouteContent({ route }: { route: DashboardRoute }) {
   return (
-    <DashboardPage
+    <>
+      {/* Крупный заголовок по подписи маршрута — для экранов, которые не
+          рисуют его сами (UI-045-1 ТЗ-4). */}
+      <RouteTitle title={route.pageTitle} />
+      <DashboardPage
       name={route.name}
       Component={route.component}
       pageTitle={route.pageTitle}
@@ -40,7 +45,8 @@ function DashboardContentRouteContent({ route }: { route: DashboardRoute }) {
       sidebarExpand={route.sidebarExpand}
       pageType={route.pageType}
       defaultSearchResource={route.defaultSearchResource}
-    />
+      />
+    </>
   );
 }
 

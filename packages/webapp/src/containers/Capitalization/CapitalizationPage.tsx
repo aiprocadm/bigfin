@@ -22,6 +22,7 @@ import {
   capitalizationWarning,
   primaryValuation,
 } from './capitalizationView';
+import { PageTitle } from '@/components/ui/page-title';
 
 const money = (value: number | null | undefined) =>
   formatOrganizationMoney(value ?? 0);
@@ -108,9 +109,9 @@ export default function CapitalizationPage() {
 
   return (
     <div className="flex flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">
+      <PageTitle>
         {intl.get('capitalization.page.title')}
-      </h1>
+      </PageTitle>
 
       {/*
         Предупреждение стоит НАД цифрами: оценка, посчитанная не из того,

@@ -5,6 +5,7 @@ import intl from 'react-intl-universal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AskPanel } from './AiCfo/AskPanel';
 import { MemoPanel } from './AiCfo/MemoPanel';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * AI CFO (FT-100…FT-102 ТЗ-3) — на месте прежнего экрана «Спросить о своих
@@ -23,7 +24,7 @@ export default function AiChatPage() {
   return (
     <div className="flex min-w-0 flex-col gap-4 p-4 sm:p-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">{intl.get('ai_cfo.page.title')}</h1>
+        <PageTitle>{intl.get('ai_cfo.page.title')}</PageTitle>
         <p className="text-sm text-text-muted">{intl.get('ai_cfo.hint')}</p>
       </div>
 

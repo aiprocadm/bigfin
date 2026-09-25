@@ -17,6 +17,7 @@ import {
 import { formattedAmount } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
 import { formatDay, TRASH_REASONS, trashKey } from './trashView';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * Корзина операций (FT-042 ТЗ-3): что удалено, кем и когда; вернуть или
@@ -72,7 +73,7 @@ export default function TrashPage() {
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6">
       <div>
-        <h1 className="text-lg font-semibold">{intl.get('trash.title')}</h1>
+        <PageTitle>{intl.get('trash.title')}</PageTitle>
         <p className="text-sm text-text-secondary">{intl.get('trash.hint')}</p>
       </div>
 

@@ -11,6 +11,7 @@ import {
   useDeleteAccountGroup,
   useEditAccountGroup,
 } from '@/hooks/query/accountGroups';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * Группы денежных счетов (FIN-017 ТЗ-2).
@@ -64,9 +65,9 @@ export default function AccountGroupsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('account_groups.page_title')}
-        </h1>
+        </PageTitle>
         <p className="mt-1 max-w-[70ch] text-sm text-text-secondary">
           {intl.get('account_groups.page_hint')}
         </p>

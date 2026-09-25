@@ -23,6 +23,7 @@ import {
 } from '@/hooks/query/paymentRequests';
 import { formattedAmount } from '@/utils';
 import { ListTruncated } from '@/components/ui/list-truncated';
+import { PageTitle } from '@/components/ui/page-title';
 
 type StatusFilter = '' | 'draft' | 'pending' | 'approved' | 'rejected' | 'cancelled';
 
@@ -78,9 +79,9 @@ export default function PaymentRequestsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('payment_requests.page_title')}
-        </h1>
+        </PageTitle>
         <Button onClick={() => setShowForm(true)}>
           {intl.get('payment_requests.create')}
         </Button>

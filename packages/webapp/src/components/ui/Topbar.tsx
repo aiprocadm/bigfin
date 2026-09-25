@@ -33,7 +33,9 @@ export const Topbar = ({
   return (
     <header
       className={cn(
-        'flex h-14 items-center gap-2 border-b border-border bg-background px-3 sm:px-4',
+        // Фона и линии у шапки нет: «стекло» и волосяную линию при прокрутке
+        // рисует каркас (UI-045-2 ТЗ-4) — он знает, прокручена ли страница.
+        'flex h-14 items-center gap-2 px-3 sm:px-4',
         className,
       )}
     >
@@ -41,7 +43,14 @@ export const Topbar = ({
         {titleSlot && (
           <div className="hidden shrink-0 md:block">{titleSlot}</div>
         )}
-        {searchSlot && <div className="min-w-0 max-w-md flex-1">{searchSlot}</div>}
+        {/* На телефоне поиск — одна лупа: место под неё закреплено, иначе
+            сжимающаяся колонка отдавала лупе ноль точек, и она ложилась
+            поверх суммы денег (живой проход этапа 45). */}
+        {searchSlot && (
+          <div className="shrink-0 sm:min-w-0 sm:max-w-md sm:flex-1 sm:shrink">
+            {searchSlot}
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-1">
         {moneySlot}

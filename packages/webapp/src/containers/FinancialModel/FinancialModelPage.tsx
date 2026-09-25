@@ -17,6 +17,7 @@ import { formatShortDate } from '@/utils/formatShortDate';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 const fmtMoney = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -73,9 +74,9 @@ export default function FinancialModelPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('financial_model.page.title')}
-        </h1>
+        </PageTitle>
         <span className="text-sm text-muted-foreground">
           {formatShortDate(fromDate)} — {formatShortDate(toDate)}
         </span>

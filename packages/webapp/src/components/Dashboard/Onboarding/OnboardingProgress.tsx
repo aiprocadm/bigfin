@@ -1,7 +1,7 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { Link } from 'react-router-dom';
-import { Check, CheckCircle2, ListChecks, Minus } from 'lucide-react';
+import { Check, CheckCircle2, Minus } from 'lucide-react';
 
 import { cn } from '@/lib/cn';
 import {
@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { ProgressRing } from '@/components/ui/progress';
 import {
   useOnboardingStatus,
   useSetOnboardingSkipped,
@@ -31,10 +32,18 @@ import { useOnboardingAutoRefresh } from './useOnboardingAutoRefresh';
  * нечего, а место в шапке дорогое, особенно на телефоне. Если же часть
  * шагов пропущена — остаётся тихое «Готово»: иначе пропущенный шаг нельзя
  * было бы вернуть, а это и есть главное отличие от Финтабло.
+ *
+ * КОЛЬЦО ВМЕСТО «7 ИЗ 8» (UI-045-6 ТЗ-4). Счётчик словами был самым широким
+ * элементом шапки после поиска. Кольцо занимает место одного значка и
+ * отвечает на тот же вопрос; число — в подсказке и в самом списке.
+ *
+ * СПИСОК ОДИН (решение R25). На главной раньше жил второй чек-лист из пяти
+ * своих шагов, и шапка говорила «7 из 8», а главная — «2 из 5». Теперь блок
+ * главной рисует ЭТОТ ЖЕ список (`OnboardingChecklist`) по тому же ответу
+ * сервера.
  */
 export function OnboardingProgress() {
   const { data: steps } = useOnboardingStatus();
-  const setSkipped = useSetOnboardingSkipped();
   const [open, setOpen] = React.useState(false);
 
   const list = steps ?? [];
@@ -74,16 +83,26 @@ export function OnboardingProgress() {
               done: summary.done,
               total: summary.total,
             })}
-            className="flex h-11 items-center gap-1.5 rounded-control px-2 text-xs font-medium text-text-primary hover:bg-surface-elevated sm:h-8"
+            title={counter}
+            className="flex h-11 w-11 items-center justify-center rounded-control hover:bg-fill-1 sm:h-9 sm:w-9"
           >
-            <ListChecks className="h-4 w-4 text-action" aria-hidden />
-            <span className="tabular-nums">
-              {/* На телефоне — «3/8»: слово «из» съедало бы место у поиска. */}
-              <span className="sm:hidden">
-                {summary.done}/{summary.total}
+            {/* Число сделанных — внутри кольца: пустое кольцо без цифры
+                на живом проходе читалось как крутилка загрузки. */}
+            <ProgressRing
+              size={28}
+              thickness={3}
+              rings={[
+                {
+                  label: intl.get('onboarding.title'),
+                  value: summary.total ? summary.done / summary.total : null,
+                  tone: 'chart-1',
+                },
+              ]}
+            >
+              <span className="text-caption tabular-nums text-text-primary">
+                {summary.done}
               </span>
-              <span className="hidden sm:inline">{counter}</span>
-            </span>
+            </ProgressRing>
           </button>
         )}
       </PopoverTrigger>
@@ -118,19 +137,37 @@ export function OnboardingProgress() {
           )}
         </div>
 
-        <ul className="flex flex-col divide-y divide-border">
-          {list.map((step) => (
-            <OnboardingStepRow
-              key={step.key}
-              step={step}
-              busy={setSkipped.isLoading}
-              onNavigate={() => setOpen(false)}
-              onSkip={(skip) => setSkipped.mutate({ key: step.key, skip })}
-            />
-          ))}
-        </ul>
+        <OnboardingChecklist steps={list} onNavigate={() => setOpen(false)} />
       </PopoverContent>
     </Popover>
+  );
+}
+
+/**
+ * Шаги онбординга списком — с «Пропустить» и «Вернуть». Один на шапку и
+ * главную (R25).
+ */
+export function OnboardingChecklist({
+  steps,
+  onNavigate,
+}: {
+  steps: OnboardingStepView[];
+  onNavigate?: () => void;
+}) {
+  const setSkipped = useSetOnboardingSkipped();
+
+  return (
+    <ul className="flex flex-col divide-y divide-border">
+      {steps.map((step) => (
+        <OnboardingStepRow
+          key={step.key}
+          step={step}
+          busy={setSkipped.isLoading}
+          onNavigate={() => onNavigate?.()}
+          onSkip={(skip) => setSkipped.mutate({ key: step.key, skip })}
+        />
+      ))}
+    </ul>
   );
 }
 

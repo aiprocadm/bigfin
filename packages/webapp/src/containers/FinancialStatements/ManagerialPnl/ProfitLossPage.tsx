@@ -9,6 +9,7 @@ import { INTERFACE_MODE } from '@/constants/interfaceMode';
 import ProfitLossSheet from '../ProfitLossSheet/ProfitLossSheet';
 import ManagerialPnl from './ManagerialPnl';
 import { profitLossViewOf, type ProfitLossView } from './profitLossView';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * «Прибыль (ОПиУ)»: управленческий или бухгалтерский (FT-010 ТЗ-3).
@@ -64,7 +65,11 @@ export default function ProfitLossPage() {
     <DashboardPageContent>
       <div className="flex flex-col gap-4 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-xl font-semibold">{intl.get('managerial_pnl.title')}</h1>
+          {/* Имя экрана одно для обоих видов — «Отчёт о прибылях и
+              убытках», как в меню и маршруте; какой из двух — говорит
+              переключатель рядом. Прежде заголовок «Управленческий ОПиУ»
+              спорил с подписью в шапке (O5, UI-045-1 ТЗ-4). */}
+          <PageTitle>{intl.get('profit_loss_sheet')}</PageTitle>
           {toggle}
         </div>
         <ManagerialPnl />

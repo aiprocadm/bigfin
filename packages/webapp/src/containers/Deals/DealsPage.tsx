@@ -26,6 +26,7 @@ import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useDealsTruncated } from '@/hooks/query/deals';
 import { ListTruncated } from '@/components/ui/list-truncated';
+import { PageTitle } from '@/components/ui/page-title';
 
 type StatusFilter = '' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -111,7 +112,7 @@ export default function DealsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">{intl.get('deals.page_title')}</h1>
+        <PageTitle>{intl.get('deals.page_title')}</PageTitle>
         <Button
           onClick={() => {
             setEditing(null);

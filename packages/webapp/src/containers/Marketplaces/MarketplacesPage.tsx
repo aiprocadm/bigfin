@@ -15,6 +15,7 @@ import { OzonSection } from './OzonSection';
 import { SummaryCards } from './SummaryCards';
 import { DateField } from '@/components/ui/date-field';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 const monthAgo = () => {
   const d = new Date();
@@ -65,9 +66,9 @@ export default function MarketplacesPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('marketplaces.page.title')}
-        </h1>
+        </PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('marketplaces.page.subtitle')}
         </p>

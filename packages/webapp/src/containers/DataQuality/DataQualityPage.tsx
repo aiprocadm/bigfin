@@ -12,6 +12,7 @@ import { FailedMailsTab } from './FailedMailsTab';
 import { DriftedBalancesTab } from './DriftedBalancesTab';
 import { AccrualShiftsTab } from './AccrualShiftsTab';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 type TabKey =
   | 'unmapped'
@@ -59,9 +60,9 @@ export default function DataQualityPage() {
     <div className="flex flex-col gap-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('data_quality.page_title')}
-        </h1>
+        </PageTitle>
         <div className="flex items-center gap-2">
           <span className="text-muted-foreground text-sm">
             {intl.get('data_quality.year')}

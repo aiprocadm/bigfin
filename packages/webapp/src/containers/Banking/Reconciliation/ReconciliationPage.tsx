@@ -19,6 +19,7 @@ import { formattedAmount } from '@/utils';
 import { showApiError } from '@/utils/showApiError';
 import { formatDay } from '../Trash/trashView';
 import { itemLabel, reconciliationHeadline, splitItems } from './reconciliationView';
+import { PageTitle } from '@/components/ui/page-title';
 
 type Mode = 'file' | 'bank';
 
@@ -66,7 +67,7 @@ export default function ReconciliationPage() {
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6">
       <div>
-        <h1 className="text-lg font-semibold">{intl.get('reconciliation.title')}</h1>
+        <PageTitle>{intl.get('reconciliation.title')}</PageTitle>
         <p className="text-sm text-text-secondary">{intl.get('reconciliation.hint')}</p>
       </div>
 

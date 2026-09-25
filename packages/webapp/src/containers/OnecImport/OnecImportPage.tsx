@@ -11,6 +11,7 @@ import {
   useOnecImportPreview,
 } from '@/hooks/query/onecImport';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
+import { PageTitle } from '@/components/ui/page-title';
 
 /**
  * ⑩ Импорт справочников из 1С (CommerceML): выбор файла → предпросмотр →
@@ -62,9 +63,9 @@ export default function OnecImportPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('onec_import.page.title')}
-        </h1>
+        </PageTitle>
         <p className="text-sm text-muted-foreground">
           {intl.get('onec_import.page.subtitle')}
         </p>

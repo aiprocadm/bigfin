@@ -40,6 +40,7 @@ import {
   formatOwnershipShare,
   type LegalEntityRow,
 } from './legalEntityView';
+import { PageTitle } from '@/components/ui/page-title';
 
 const selectClassName =
   'border-input bg-background h-9 w-full rounded-control border px-3 text-sm';
@@ -157,9 +158,9 @@ export default function LegalEntitiesPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('legal_entities.page.title')}
-        </h1>
+        </PageTitle>
         <Button type="button" onClick={openCreate}>
           {intl.get('legal_entities.add')}
         </Button>

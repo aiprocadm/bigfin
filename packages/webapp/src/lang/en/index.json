@@ -5733,5 +5733,18 @@
   "ai_cfo.context.sales_model_mixed": "mixed",
   "ai_cfo.context.save": "Save",
   "ai_cfo.context.saved": "Context saved, the memo will update",
-  "ai_cfo.context.no_right": "Only a user with settings rights can change the context."
+  "ai_cfo.context.no_right": "Only a user with settings rights can change the context.",
+  "sidebar.expand": "Expand menu",
+  "sidebar.collapse": "Collapse menu",
+  "topbar.search_commands": "Search and commands",
+  "command_palette.group.actions": "Actions",
+  "command_palette.group.go": "Go to",
+  "command_palette.group.operations": "Transactions",
+  "command_palette.operations_all": "All transactions for {amount}",
+  "command_palette.keywords.money_in": "income receive payment money in",
+  "command_palette.keywords.money_out": "expense pay payment money out",
+  "command_palette.keywords.invoice": "invoice sale customer",
+  "command_palette.keywords.bill": "bill purchase vendor supplier",
+  "command_palette.keywords.contact": "contact customer client counterparty",
+  "money_widget.sheet_title": "Money in accounts"
 }

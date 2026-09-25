@@ -1,10 +1,10 @@
-import { ArrowDownLeft, ArrowUpRight, Plus, Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { OPEN_SEARCH } from '@/store/types';
-import { DialogsName } from '@/constants/dialogs';
+import { cn } from '@/lib/cn';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,39 +15,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { Topbar } from '@/components/ui/Topbar';
+import { usePageTitleState } from '@/components/ui/page-title';
 import ConnectedMoneyWidget from './ConnectedMoneyWidget';
 import { OnboardingProgress } from './Onboarding/OnboardingProgress';
-import { useAuthActions, useDialogActions } from '@/hooks/state';
+import { useAuthActions } from '@/hooks/state';
 import { useAuthenticatedAccount } from '@/hooks/query';
 import { firstLettersArgs } from '@/utils';
 import { NotificationBell } from '@/containers/Notifications/InApp/NotificationBell';
-import { useGetUniversalSearchTypeOptions } from '@/containers/UniversalSearch/utils';
-import { searchScopeLabel } from '@/containers/UniversalSearch/searchScope';
+import { useAddActions } from './addActions';
+
+/** ⌘K на Mac, Ctrl+K на остальных — подсказка на поле поиска. */
+const isMac = () =>
+  typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || '');
 
 export const ConnectedTopbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { setLogout } = useAuthActions();
-  const { openDialog } = useDialogActions();
   const { data: user } = useAuthenticatedAccount();
+  const addActions = useAddActions();
 
-  // Открыть оверлей универсального поиска (как по горячей клавише «/»).
+  // Открыть командную строку (как по ⌘K / Ctrl+K и клавише «/»).
   const openSearch = () => dispatch({ type: OPEN_SEARCH });
 
-  // Заголовок текущей страницы (вернули в панель после удаления старой).
-  const pageTitle = useSelector((state) => state.dashboard?.pageTitle);
+  // Заголовок страницы в шапке — ТОЛЬКО когда крупный заголовок в теле ушёл
+  // за край при прокрутке (R10, UI-045-1). Пока он виден, шапка пуста:
+  // раньше здесь всегда стояла подпись маршрута, и заголовок читался дважды.
+  const { collapsed: pageTitle } = usePageTitleState();
 
-  // С3 карты v39: подпись поиска называет ТОТ вид записей, среди которого
-  // поиск и правда будет искать. Прежняя подпись обещала «по контрагентам,
-  // счетам…», а поиск смотрит один вид за раз — и «ничего не найдено»
-  // читалось как «такого нет в продукте».
-  const searchTypeOptions = useGetUniversalSearchTypeOptions();
-  const searchResourceType = useSelector(
-    (state) => state.globalSearch?.defaultResourceType,
-  );
-  const searchScope = searchScopeLabel(searchTypeOptions, searchResourceType);
+  // Подпись поиска — «Поиск и команды» (UI-042-5 → UI-045-4). Прежде она
+  // честно называла один вид записей («Поиск: клиенты»), потому что старый
+  // поиск искал по одному виду за раз. Командная строка ищет по всем видам
+  // сразу — и подпись наконец может это обещать.
+  const shortcut = isMac() ? '⌘K' : 'Ctrl K';
 
   const initials = user
     ? firstLettersArgs(user.first_name, user.last_name)
@@ -56,11 +57,16 @@ export const ConnectedTopbar = () => {
   return (
     <Topbar
       titleSlot={
-        pageTitle ? (
-          <h1 className="truncate text-[0.9375rem] font-semibold tracking-[-0.01em] text-text-primary">
-            {pageTitle}
-          </h1>
-        ) : null
+        // Не h1: заголовок страницы — в теле; здесь его «переехавшая» копия.
+        <span
+          aria-hidden
+          className={cn(
+            'block max-w-xs truncate text-headline text-text-primary transition-opacity duration-200 ease-standard',
+            pageTitle ? 'opacity-100' : 'opacity-0',
+          )}
+        >
+          {pageTitle}
+        </span>
       }
       searchSlot={
         <>
@@ -76,23 +82,23 @@ export const ConnectedTopbar = () => {
           >
             <Search className="h-5 w-5" aria-hidden />
           </Button>
-          <div className="relative hidden sm:block">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          {/* Поле-триггер: открывает оверлей универсального поиска. */}
-          <Input
-            readOnly
-            placeholder={
-              searchScope
-                ? intl.get('universal_search.placeholder_in', {
-                    resource: searchScope.toLowerCase(),
-                  })
-                : intl.get('search')
-            }
-            className="cursor-pointer pl-9"
+          {/* Поле-кнопка: открывает командную строку. Не поле ввода — набирать
+              здесь нечего, набирают в самой командной строке. */}
+          <button
+            type="button"
             onClick={openSearch}
-            onFocus={openSearch}
-          />
-          </div>
+            aria-label={intl.get('topbar.search_commands')}
+            aria-keyshortcuts="Meta+K Control+K"
+            className="hidden h-9 w-full min-w-0 items-center gap-2 rounded-control border-0 bg-fill-1 px-3 text-left text-body text-text-muted transition-colors hover:bg-fill-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action sm:flex"
+          >
+            <Search className="h-4 w-4 shrink-0" aria-hidden />
+            <span className="min-w-0 flex-1 truncate">
+              {intl.get('topbar.search_commands')}
+            </span>
+            <kbd className="hidden shrink-0 rounded-control bg-surface px-1.5 font-sans text-footnote text-text-muted md:inline">
+              {shortcut}
+            </kbd>
+          </button>
         </>
       }
       notificationsSlot={
@@ -108,17 +114,13 @@ export const ConnectedTopbar = () => {
       quickActionsSlot={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {/* Подпись видна на обычных экранах: главное действие панели не
-                должно быть загадкой из одного значка. На телефоне остаётся
-                только значок — там дорога каждая точка ширины. */}
-            <Button variant="primary" size="sm" className="gap-1.5">
+            {/* На телефоне кнопки нет: там «＋ Добавить» — в середине
+                нижней панели, под большим пальцем, с тем же списком. Две
+                одинаковые кнопки на экране в 390 точек отнимали место у
+                суммы денег. */}
+            <Button variant="primary" size="sm" className="hidden gap-1.5 sm:inline-flex">
               <Plus className="h-4 w-4" aria-hidden />
-              <span className="hidden sm:inline">
-                {intl.get('topbar.add')}
-              </span>
-              <span className="sr-only sm:hidden">
-                {intl.get('topbar.add')}
-              </span>
+              {intl.get('topbar.add')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
@@ -127,30 +129,21 @@ export const ConnectedTopbar = () => {
                 выставить счёт: счета выставляют раз в неделю, деньги ходят
                 каждый день. Прежний список начинался со счетов. */}
             <DropdownMenuLabel>{intl.get('topbar.add.money')}</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => openDialog(DialogsName.MoneyInForm)}>
-              <ArrowDownLeft className="mr-2 h-4 w-4 text-success" aria-hidden />
-              {intl.get('banking.label.add_money_in')}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => openDialog(DialogsName.MoneyOutForm)}
-            >
-              <ArrowUpRight className="mr-2 h-4 w-4 text-text-secondary" aria-hidden />
-              {intl.get('banking.label.add_money_out')}
-            </DropdownMenuItem>
+            {addActions
+              .filter((action) => action.kind === 'money')
+              .map((action) => (
+                <AddMenuItem key={action.id} action={action} />
+              ))}
 
             <DropdownMenuSeparator />
             <DropdownMenuLabel>
               {intl.get('topbar.add.documents')}
             </DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => history.push('/invoices/new')}>
-              {intl.get('topbar.add.invoice')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => history.push('/bills/new')}>
-              {intl.get('topbar.add.bill')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => history.push('/customers/new')}>
-              {intl.get('topbar.add.contact')}
-            </DropdownMenuItem>
+            {addActions
+              .filter((action) => action.kind === 'documents')
+              .map((action) => (
+                <AddMenuItem key={action.id} action={action} />
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       }
@@ -181,3 +174,17 @@ export const ConnectedTopbar = () => {
     />
   );
 };
+
+/** Пункт меню «＋ Добавить» — из общего списка действий. */
+function AddMenuItem({ action }: { action: ReturnType<typeof useAddActions>[number] }) {
+  const Icon = action.icon;
+  return (
+    <DropdownMenuItem onClick={action.run}>
+      <Icon
+        className={cn('mr-2 h-4 w-4', action.positive ? 'text-success' : 'text-text-secondary')}
+        aria-hidden
+      />
+      {action.label}
+    </DropdownMenuItem>
+  );
+}

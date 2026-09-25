@@ -30,6 +30,7 @@ import {
   isDirectionActive,
   type ProjectRow,
 } from './directionView';
+import { PageTitle } from '@/components/ui/page-title';
 
 interface DirectionFormValues {
   name: string;
@@ -139,9 +140,9 @@ export default function DirectionsPage() {
   return (
     <div className="flex flex-col gap-4 p-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('directions.page.title')}
-        </h1>
+        </PageTitle>
         <Button type="button" onClick={openCreate}>
           {intl.get('directions.add')}
         </Button>

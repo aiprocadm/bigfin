@@ -32,6 +32,7 @@ import {
   isMetricShown,
   shouldShowUnmapped,
 } from './expensesAnalysisView';
+import { PageTitle } from '@/components/ui/page-title';
 
 const money = (value: number | null | undefined) =>
   formatOrganizationMoney(value ?? 0);
@@ -101,9 +102,9 @@ export default function ExpensesAnalysisPage() {
 
   return (
     <div className="flex flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">
+      <PageTitle>
         {intl.get('expenses_analysis.page.title')}
-      </h1>
+      </PageTitle>
 
       {/*
         Предупреждение стоит НАД цифрами: точка безубыточности, посчитанная

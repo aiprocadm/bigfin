@@ -1,69 +1,49 @@
 import * as React from 'react';
 import intl from 'react-intl-universal';
-import { Link } from 'react-router-dom';
 
-import { useFirstStepsStatus } from './useFirstStepsStatus';
+import { useOnboardingStatus } from '@/hooks/query/onboarding';
+import { summarizeOnboarding } from '@/components/Dashboard/Onboarding/onboarding';
+import { OnboardingChecklist } from '@/components/Dashboard/Onboarding/OnboardingProgress';
 
 /**
- * Чек-лист «первые шаги» (Р4 карты v16, вопрос 23).
+ * Чек-лист «первые шаги» на главной.
  *
- * Главная новой организации выглядела так же, как у организации с годовым
- * оборотом. Отметки считаются по настоящим данным (заведён контрагент,
- * товар, счёт, получена оплата, добавлен банковский счёт) — и когда всё
- * сделано, секция исчезает целиком, чтобы не мозолить глаза опытным.
+ * ОДИН СПИСОК С ШАПКОЙ (решение R25 ТЗ-4, UI-045-6). Раньше здесь жил свой
+ * список из пяти шагов (контрагент, товар, счёт, оплата, банковский счёт),
+ * посчитанный витриной, а в шапке — серверный из восьми. Шапка говорила
+ * «7 из 8», главная — «2 из 5», и человек не понимал, каким верить. Теперь
+ * оба места читают один ответ сервера (`dashboard/onboarding`) и рисуют один
+ * и тот же список — с «Пропустить» и «Вернуть».
+ *
+ * Когда всё сделано, секция исчезает целиком, чтобы не мозолить глаза
+ * опытным; с пропущенными шагами — остаётся, чтобы их можно было вернуть.
  */
 export default function FirstStepsSection() {
-  const { steps, doneCount, allDone, isLoading } = useFirstStepsStatus();
+  const { data: steps, isLoading } = useOnboardingStatus();
+  const list = steps ?? [];
+  const summary = summarizeOnboarding(list);
 
-  if (isLoading || allDone) return null;
+  if (isLoading || list.length === 0 || summary.complete) return null;
 
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-sm font-semibold text-text-primary">
+        <h2 className="text-headline text-text-primary">
           {intl.get('homepage.first_steps.title')}
         </h2>
-        <span className="text-xs text-text-secondary">
-          {intl.get('homepage.first_steps.progress', {
-            done: doneCount,
-            total: steps.length,
+        <span className="text-footnote text-text-secondary">
+          {intl.get('onboarding.counter', {
+            done: summary.done,
+            total: summary.total,
           })}
         </span>
       </div>
 
-      <div className="flex flex-col divide-y rounded-default border border-border bg-surface">
-        {steps.map((step) => (
-          <Link
-            key={step.key}
-            to={step.href}
-            className="group flex items-center gap-3 p-3 transition-colors hover:bg-surface-elevated"
-          >
-            <span
-              aria-hidden
-              className={
-                'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ' +
-                (step.done
-                  ? 'border-green-600 bg-green-600 text-white'
-                  : 'border-border text-transparent')
-              }
-            >
-              ✓
-            </span>
-            <span
-              className={
-                'text-sm ' +
-                (step.done
-                  ? 'text-text-secondary line-through'
-                  : 'text-text-primary')
-              }
-            >
-              {intl.get(step.labelKey)}
-            </span>
-          </Link>
-        ))}
+      <div className="overflow-hidden rounded-default border border-border bg-surface">
+        <OnboardingChecklist steps={list} />
       </div>
 
-      <p className="text-xs text-text-secondary">
+      <p className="text-footnote text-text-secondary">
         {intl.get('homepage.first_steps.hint')}
       </p>
     </section>

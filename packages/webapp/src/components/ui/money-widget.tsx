@@ -4,6 +4,8 @@ import intl from 'react-intl-universal';
 import { cn } from '@/lib/cn';
 import { Sparkline } from './sparkline';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Sheet } from './sheet';
+import { useIsPhone } from './use-media-query';
 
 /**
  * Виджет «Деньги» в шапке (FIN-006 ТЗ-2) с разрезом по счетам (FIN-007) и
@@ -199,121 +201,184 @@ export function MoneyWidget({
   );
   const noGaps =
     accounts.length > 0 && accounts.every((a) => (a.gaps ?? []).length === 0);
+  const isPhone = useIsPhone();
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className={cn(
-            'flex items-center gap-2 rounded-control px-2 py-1 text-left hover:bg-surface-elevated',
-            className,
-          )}
-        >
-          <span className="flex flex-col">
-            {/* На телефоне полная сумма не помещалась и обрезалась слева:
-                человек видел «749 839,09 ₽» вместо «1 749 839,09 ₽». Там —
-                короткая запись, полная — в окне по нажатию. */}
-            <span className="text-headline tabular-nums">
-              <span className="sm:hidden">
-                {totalCompact || totalFormatted}
-              </span>
-              <span className="hidden sm:inline">{totalFormatted}</span>
-            </span>
+  const details = (
+    <>
+      {!calendarEnabled ? (
+        // Выключенный календарь — это ОТВЕТ, а не ошибка. Промолчать
+        // значило бы оставить человека гадать, почему прогноза нет.
+        <p className="text-sm text-text-secondary">
+          {intl.get('money_widget.calendar_off')}
+        </p>
+      ) : accounts.length === 0 ? (
+        <p className="text-sm text-text-secondary">
+          {intl.get('money_widget.no_accounts')}
+        </p>
+      ) : groups.length > 0 ? (
+        <div className="flex flex-col gap-3">
+          {grouped.map((group) => (
+            <section key={String(group.id)}>
+              <h4 className="mb-1 text-xs font-semibold text-text-secondary">
+                {group.name}
+              </h4>
+              {group.accounts.length === 0 ? (
+                <p className="text-xs text-text-secondary">
+                  {intl.get('money_widget.empty_group')}
+                </p>
+              ) : (
+                <ul className="flex flex-col divide-y divide-border">
+                  {group.accounts.map((account) => (
+                    <AccountRow
+                      key={account.accountId}
+                      account={account}
+                      today={today}
+                      formatMoney={formatMoney}
+                    />
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      ) : (
+        <ul className="flex flex-col divide-y divide-border">
+          {accounts.map((account) => (
+            <AccountRow
+              key={account.accountId}
+              account={account}
+              today={today}
+              formatMoney={formatMoney}
+            />
+          ))}
+        </ul>
+      )}
+
+      {calendarEnabled && noGaps && (
+        <p className="mt-2 text-xs text-text-secondary">
+          {intl.get('money_widget.no_gaps')}
+        </p>
+      )}
+
+      {plannedWithoutAccount > 0 && (
+        // Плановые операции без счёта в разрез не попадают. Промолчать —
+        // значит дать человеку сверить разрезы с общим итогом и не
+        // сойтись, не понимая почему.
+        <p className="mt-2 text-xs text-text-secondary">
+          {intl.get('money_widget.planned_without_account', {
+            count: plannedWithoutAccount,
+          })}
+        </p>
+      )}
+    </>
+  );
+
+  // Кнопка — общая для обоих видов; на телефоне она открывает шторку.
+  const trigger = (
+    <button
+      type="button"
+      className={cn(
+        'flex items-center gap-2 rounded-control px-2 py-1 text-left hover:bg-surface-elevated',
+        className,
+      )}
+    >
+      <span className="flex flex-col">
+        {/* На телефоне полная сумма не помещалась и обрезалась слева:
+            человек видел «749 839,09 ₽» вместо «1 749 839,09 ₽». Там —
+            короткая запись, полная — в окне по нажатию. */}
+        <span className="text-headline tabular-nums">
+          <span className="inline-flex items-center gap-1.5 sm:hidden">
+            {totalCompact || totalFormatted}
             {gap && (
               <span
+                role="img"
+                aria-label={intl.get('money_widget.gap_from', { date: gap.from })}
                 className={cn(
-                  'text-xs font-medium leading-tight',
-                  started ? 'text-danger' : 'text-warning',
+                  'inline-block h-2 w-2 rounded-full',
+                  started ? 'bg-danger' : 'bg-warning',
                 )}
-              >
-                {intl.get('money_widget.gap_from', { date: gap.from })}
-              </span>
+              />
             )}
           </span>
+          <span className="hidden sm:inline">{totalFormatted}</span>
+        </span>
+        {gap && (
+          // На телефоне строка «Разрыв с …» рвалась на две и налезала на
+          // соседей — там она в шторке, а здесь точка того же цвета рядом
+          // с суммой (подпись точки — для чтения с экрана).
+          <span
+            className={cn(
+              'hidden text-xs font-medium leading-tight sm:block',
+              started ? 'text-danger' : 'text-warning',
+            )}
+          >
+            {intl.get('money_widget.gap_from', { date: gap.from })}
+          </span>
+        )}
+      </span>
+      {sparkline.length > 1 && (
+        <span className="hidden sm:inline-flex">
+          <Sparkline
+            points={sparkline.map((value, index) => ({
+              label: String(index + 1),
+              value,
+            }))}
+            formatValue={formatMoney}
+            width={96}
+            height={24}
+          />
+        </span>
+      )}
+    </button>
+  );
+
+  // На телефоне — шторка снизу (UI-045-7 ТЗ-4). Всплывающее окно у верхнего
+  // края там не помещалось в ширину, а искорка 30 дней на телефоне была
+  // скрыта вовсе: в шторке место есть, и она показывается над счетами.
+  if (isPhone) {
+    return (
+      <>
+        {React.cloneElement(trigger, { onClick: () => setSheetOpen(true) })}
+        <Sheet
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          title={intl.get('money_widget.sheet_title')}
+          description={totalFormatted}
+        >
+          {gap && (
+            <p
+              className={cn(
+                'mb-3 text-subhead font-medium',
+                started ? 'text-danger' : 'text-warning',
+              )}
+            >
+              {intl.get('money_widget.gap_from', { date: gap.from })}
+            </p>
+          )}
           {sparkline.length > 1 && (
-            <span className="hidden sm:inline-flex">
+            <div className="mb-4">
               <Sparkline
                 points={sparkline.map((value, index) => ({
                   label: String(index + 1),
                   value,
                 }))}
                 formatValue={formatMoney}
-                width={96}
-                height={24}
+                width={320}
+                height={48}
               />
-            </span>
+            </div>
           )}
-        </button>
-      </PopoverTrigger>
+          {details}
+        </Sheet>
+      </>
+    );
+  }
 
-      <PopoverContent className="w-[420px] max-w-[92vw]">
-        {!calendarEnabled ? (
-          // Выключенный календарь — это ОТВЕТ, а не ошибка. Промолчать
-          // значило бы оставить человека гадать, почему прогноза нет.
-          <p className="text-sm text-text-secondary">
-            {intl.get('money_widget.calendar_off')}
-          </p>
-        ) : accounts.length === 0 ? (
-          <p className="text-sm text-text-secondary">
-            {intl.get('money_widget.no_accounts')}
-          </p>
-        ) : groups.length > 0 ? (
-          <div className="flex flex-col gap-3">
-            {grouped.map((group) => (
-              <section key={String(group.id)}>
-                <h4 className="mb-1 text-xs font-semibold text-text-secondary">
-                  {group.name}
-                </h4>
-                {group.accounts.length === 0 ? (
-                  <p className="text-xs text-text-secondary">
-                    {intl.get('money_widget.empty_group')}
-                  </p>
-                ) : (
-                  <ul className="flex flex-col divide-y divide-border">
-                    {group.accounts.map((account) => (
-                      <AccountRow
-                        key={account.accountId}
-                        account={account}
-                        today={today}
-                        formatMoney={formatMoney}
-                      />
-                    ))}
-                  </ul>
-                )}
-              </section>
-            ))}
-          </div>
-        ) : (
-          <ul className="flex flex-col divide-y divide-border">
-            {accounts.map((account) => (
-              <AccountRow
-                key={account.accountId}
-                account={account}
-                today={today}
-                formatMoney={formatMoney}
-              />
-            ))}
-          </ul>
-        )}
-
-        {calendarEnabled && noGaps && (
-          <p className="mt-2 text-xs text-text-secondary">
-            {intl.get('money_widget.no_gaps')}
-          </p>
-        )}
-
-        {plannedWithoutAccount > 0 && (
-          // Плановые операции без счёта в разрез не попадают. Промолчать —
-          // значит дать человеку сверить разрезы с общим итогом и не
-          // сойтись, не понимая почему.
-          <p className="mt-2 text-xs text-text-secondary">
-            {intl.get('money_widget.planned_without_account', {
-              count: plannedWithoutAccount,
-            })}
-          </p>
-        )}
-      </PopoverContent>
+  return (
+    <Popover>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <PopoverContent className="w-[420px] max-w-[92vw]">{details}</PopoverContent>
     </Popover>
   );
 }

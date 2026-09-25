@@ -31,6 +31,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 import { useFixedAssetsTruncated } from '@/hooks/query/fixed-assets';
 import { ListTruncated } from '@/components/ui/list-truncated';
+import { PageTitle } from '@/components/ui/page-title';
 
 const fmt = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
@@ -157,9 +158,9 @@ export default function FixedAssetsPage() {
     <div className="flex flex-col gap-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+        <PageTitle>
           {intl.get('fixed_assets.page.title')}
-        </h1>
+        </PageTitle>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => setShowAccrue(true)}>
             {intl.get('fixed_assets.action.accrue')}

@@ -12,6 +12,21 @@ import {
 } from 'recharts';
 
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import {
+  BAR_MAX_SIZE,
+  BAR_RADIUS,
+  CURVE,
+  ChartCard,
+  ChartLegend,
+  ChartTooltip,
+  chartAnimation,
+  chartColor,
+  formatAxisMoney,
+  formatAxisPercent,
+  gridProps,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 import type { TopContractors } from './useDashboardOverview';
 
 export interface TopContractorsSectionProps {
@@ -34,100 +49,113 @@ export interface TopContractorsSectionProps {
  * словами. График надо уметь читать, фразу читать не надо.
  */
 function TopContractorsSection({ data, onRetry }: TopContractorsSectionProps) {
-  // СБОЙ БЛОКА НЕ РОНЯЕТ ГЛАВНУЮ, но и молчать нельзя: пустой график
-  // читается как «клиентов нет», и это враньё.
-  if (data === null) {
-    return (
-      <section className="rounded-default border border-border bg-surface p-4">
-        <h2 className="mb-2 text-base font-medium text-text-primary">
-          {intl.get('dashboard.top_contractors.title')}
-        </h2>
-        <p className="text-sm text-text-secondary">
-          {intl.get('dashboard.top_contractors.error')}
-        </p>
-        {onRetry && (
-          <button
-            type="button"
-            onClick={onRetry}
-            className="mt-2 min-h-[44px] text-sm text-action hover:underline"
-          >
-            {intl.get('dashboard.top_contractors.retry')}
-          </button>
-        )}
-      </section>
-    );
-  }
-
   // Продаж за период не было — блока нет вовсе. Пустой график с подписью
   // «0 %» выглядит поломкой, а не ответом.
-  if (!data.rows.length) return null;
+  if (data !== null && !data.rows.length) return null;
 
-  const chartRows = data.rows.map((row) => ({
+  const chartRows = (data?.rows ?? []).map((row) => ({
     ...row,
     name: row.isRest
       ? intl.get('dashboard.top_contractors.rest')
       : row.name,
   }));
+  const revenueName = intl.get('dashboard.top_contractors.col.revenue');
+  const shareName = intl.get('dashboard.top_contractors.col.cumulative');
 
   return (
-    <section className="rounded-default border border-border bg-surface p-4">
-      <h2 className="mb-3 text-base font-medium text-text-primary">
-        {intl.get('dashboard.top_contractors.title')}
-      </h2>
-
-      <div className="h-64 w-full">
+    // СБОЙ БЛОКА НЕ РОНЯЕТ ГЛАВНУЮ, но и молчать нельзя: пустой график
+    // читается как «клиентов нет», и это враньё. Ошибка — состоянием
+    // карточки с «Повторить» (этап 46 ТЗ-4).
+    <ChartCard
+      title={intl.get('dashboard.top_contractors.title')}
+      // ВЫВОД СЛОВАМИ. Ради него блок и сделан.
+      summary={data ? verdictText(data) : undefined}
+      state={data === null ? 'error' : 'ready'}
+      onRetry={onRetry}
+      errorText={intl.get('dashboard.top_contractors.error')}
+      table={{
+        columns: [
+          { key: 'name', label: intl.get('dashboard.top_contractors.col.contractor') },
+          { key: 'revenue', label: revenueName, numeric: true, render: (row) => formatOrganizationMoney(row.revenue) },
+          { key: 'sharePercent', label: intl.get('dashboard.top_contractors.col.share'), numeric: true, render: (row) => `${row.sharePercent} %` },
+          { key: 'cumulativePercent', label: shareName, numeric: true, render: (row) => `${row.cumulativePercent} %` },
+        ],
+        rows: chartRows,
+      }}
+      legend={
+        <>
+          <ChartLegend
+            items={[
+              { key: 'revenue', label: revenueName, color: chartColor.ink },
+              { key: 'cumulativePercent', label: shareName, color: chartColor.expense, shape: 'line' },
+            ]}
+          />
+          <ul className="mt-3 flex flex-col divide-y divide-border">
+            {chartRows.map((row) => (
+              <li
+                key={`${row.contactId}-${row.name}`}
+                className="flex items-center justify-between gap-3 py-2 text-sm"
+              >
+                <span className="truncate">{row.name}</span>
+                <span className="shrink-0 tabular-nums text-text-secondary">
+                  {formatOrganizationMoney(row.revenue)} · {row.sharePercent}%
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      }
+    >
+      {() => (
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={chartRows}
-            margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} hide />
-            <YAxis yAxisId="money" tick={{ fontSize: 11 }} width={48} />
+          <ComposedChart data={chartRows} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="name" {...xAxisProps} interval={0} hide />
+            {/* Парето — единственный график с двумя осями (правило 8):
+                деньги слева, накопительная доля справа. */}
+            <YAxis yAxisId="money" {...yAxisProps} tickFormatter={formatAxisMoney} />
             <YAxis
               yAxisId="share"
               orientation="right"
               domain={[0, 100]}
-              tick={{ fontSize: 11 }}
-              width={36}
+              {...yAxisProps}
+              width={44}
+              tickFormatter={(value: number) => formatAxisPercent(value / 100)}
             />
             <Tooltip
-              formatter={(value: any, key: any) =>
-                key === 'cumulativePercent'
-                  ? `${value}%`
-                  : formatOrganizationMoney(Number(value) || 0)
+              content={
+                <ChartTooltip
+                  formatValue={(value, entry) =>
+                    entry.dataKey === 'cumulativePercent'
+                      ? formatAxisPercent(value / 100)
+                      : formatOrganizationMoney(value)
+                  }
+                />
               }
             />
-            <Bar yAxisId="money" dataKey="revenue" fill="var(--color-action)" />
+            <Bar
+              yAxisId="money"
+              dataKey="revenue"
+              name={revenueName}
+              fill={chartColor.ink}
+              radius={BAR_RADIUS}
+              maxBarSize={BAR_MAX_SIZE}
+              isAnimationActive={chartAnimation()}
+            />
             {/* Линия накопительной доли: по ней видно, где набирается 80 %. */}
             <Line
               yAxisId="share"
-              type="monotone"
+              type={CURVE.series}
               dataKey="cumulativePercent"
-              stroke="var(--color-text-secondary)"
+              name={shareName}
+              stroke={chartColor.expense}
+              strokeWidth={2}
               dot={false}
             />
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
-
-      {/* ВЫВОД СЛОВАМИ. Ради него блок и сделан. */}
-      <p className="mt-3 text-sm text-text-secondary">{verdictText(data)}</p>
-
-      <ul className="mt-3 flex flex-col divide-y divide-border">
-        {chartRows.map((row) => (
-          <li
-            key={`${row.contactId}-${row.name}`}
-            className="flex items-center justify-between gap-3 py-2 text-sm"
-          >
-            <span className="truncate">{row.name}</span>
-            <span className="shrink-0 tabular-nums text-text-secondary">
-              {formatOrganizationMoney(row.revenue)} · {row.sharePercent}%
-            </span>
-          </li>
-        ))}
-      </ul>
-    </section>
+      )}
+    </ChartCard>
   );
 }
 

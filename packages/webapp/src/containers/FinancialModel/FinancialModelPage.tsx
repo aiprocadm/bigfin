@@ -118,13 +118,9 @@ export default function FinancialModelPage() {
         />
       </div>
 
-      {/* График «маржа во времени» */}
-      <div className="rounded-control border p-4">
-        <div className="mb-2 text-sm font-medium">
-          {intl.get('financial_model.chart.margin_over_time')}
-        </div>
-        <MarginOverTimeChart data={data?.marginOverTime ?? []} />
-      </div>
+      {/* График «маржа во времени» — карточка набора со своим заголовком
+          и «Таблицей» (этап 46 ТЗ-4). */}
+      <MarginOverTimeChart data={data?.marginOverTime ?? []} />
 
       {/* Рентабельность по сегментам (Фаза 2) */}
       <h2 className="mt-2 text-lg font-semibold">

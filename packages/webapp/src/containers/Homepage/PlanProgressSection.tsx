@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -12,6 +11,19 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  CURVE,
+  ChartCard,
+  ChartLegend,
+  ChartTooltip,
+  chartColor,
+  formatAxisMoney,
+  gridProps,
+  seriesColor,
+  useHiddenSeries,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatDayMonth } from '@/utils/formatDayMonth';
@@ -205,54 +217,71 @@ function ProgressCard({
 function CumulativeChart({ points }: { points: CumulativePoint[] }) {
   const hasPlan = points.some((point) => point.plan !== null);
   const hasPrevious = points.some((point) => point.previous !== null);
+  const { hidden, toggle } = useHiddenSeries();
+  const factName = intl.get('dashboard.plan.cumulative.fact');
+  const planName = intl.get('dashboard.plan.cumulative.plan');
+  const previousName = intl.get('dashboard.plan.cumulative.previous');
+  const money = (value: number | null) => (value === null ? '—' : formatOrganizationMoney(value));
 
+  // Цвета (этап 46 ТЗ-4): факт — главный ряд чернилами, план — приглушённым
+  // пунктиром, база сравнения — второй категорией. Было три цвета «на
+  // месте» и сглаженные кривые.
   return (
-    <div className="flex flex-col gap-2">
-      <h3 className="text-sm font-medium text-text-primary">
-        {intl.get('dashboard.plan.cumulative.title')}
-      </h3>
-      <div className="h-56 w-full">
+    <ChartCard
+      title={intl.get('dashboard.plan.cumulative.title')}
+      pointCount={points.length}
+      table={{
+        columns: [
+          { key: 'date', label: intl.get('charts.col.day'), render: (row) => formatDayMonth(row.date) },
+          { key: 'fact', label: factName, numeric: true, render: (row) => money(row.fact) },
+          ...(hasPlan ? [{ key: 'plan', label: planName, numeric: true, render: (row: CumulativePoint) => money(row.plan) }] : []),
+          ...(hasPrevious ? [{ key: 'previous', label: previousName, numeric: true, render: (row: CumulativePoint) => money(row.previous) }] : []),
+        ],
+        rows: points,
+      }}
+      legend={
+        <ChartLegend
+          hidden={hidden}
+          onToggle={toggle}
+          items={[
+            { key: 'fact', label: factName, color: chartColor.ink, shape: 'line' as const },
+            ...(hasPlan ? [{ key: 'plan', label: planName, color: chartColor.expense, shape: 'line' as const }] : []),
+            ...(hasPrevious ? [{ key: 'previous', label: previousName, color: seriesColor(1), shape: 'line' as const }] : []),
+          ]}
+        />
+      }
+    >
+      {() => (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid {...gridProps} />
             <XAxis
               dataKey="date"
-              tickLine={false}
-              axisLine={false}
+              {...xAxisProps}
               tickFormatter={(value: string) => moment(value).format('D')}
               minTickGap={12}
             />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              width={80}
-              tickFormatter={(value: number) =>
-                new Intl.NumberFormat(
-                  intl.getInitOptions?.()?.currentLocale || 'ru',
-                  { notation: 'compact', maximumFractionDigits: 1 },
-                ).format(value)
-              }
-            />
+            <YAxis {...yAxisProps} tickFormatter={formatAxisMoney} />
             <Tooltip
-              labelFormatter={(label) => formatDayMonth(String(label))}
-              formatter={(value) => formatOrganizationMoney(Number(value))}
+              content={<ChartTooltip formatLabel={(label) => formatDayMonth(String(label))} />}
             />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
             <Line
-              type="monotone"
+              type={CURVE.series}
               dataKey="fact"
-              name={intl.get('dashboard.plan.cumulative.fact')}
-              stroke="rgb(var(--c-success))"
+              name={factName}
+              hide={hidden.has('fact')}
+              stroke={chartColor.ink}
               strokeWidth={2}
               dot={false}
               connectNulls={false}
             />
             {hasPlan && (
               <Line
-                type="monotone"
+                type={CURVE.series}
                 dataKey="plan"
-                name={intl.get('dashboard.plan.cumulative.plan')}
-                stroke="rgb(var(--c-action))"
+                name={planName}
+                hide={hidden.has('plan')}
+                stroke={chartColor.expense}
                 strokeWidth={2}
                 strokeDasharray="6 4"
                 dot={false}
@@ -261,10 +290,11 @@ function CumulativeChart({ points }: { points: CumulativePoint[] }) {
             )}
             {hasPrevious && (
               <Line
-                type="monotone"
+                type={CURVE.series}
                 dataKey="previous"
-                name={intl.get('dashboard.plan.cumulative.previous')}
-                stroke="rgb(var(--c-text-muted))"
+                name={previousName}
+                hide={hidden.has('previous')}
+                stroke={seriesColor(1)}
                 strokeWidth={2}
                 dot={false}
                 connectNulls={false}
@@ -272,7 +302,7 @@ function CumulativeChart({ points }: { points: CumulativePoint[] }) {
             )}
           </LineChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      )}
+    </ChartCard>
   );
 }

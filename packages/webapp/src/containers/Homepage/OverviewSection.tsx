@@ -10,6 +10,23 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  BAR_MAX_SIZE,
+  BAR_RADIUS,
+  CURVE,
+  ChartCard,
+  ChartLegend,
+  ChartTooltip,
+  chartAnimation,
+  chartColor,
+  formatAxisMoney,
+  gridProps,
+  useHiddenSeries,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formatMonthShort } from '@/utils/formatShortDate';
 import { ArrowDownRight, ArrowUpRight, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -187,7 +204,8 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
   }
 
   const chart = months.map((row) => ({
-    month: moment(row.month, 'YYYY-MM').format('MMM'),
+    // Месяц — в языке интерфейса (было «Oct/Nov» через глобальную локаль).
+    month: formatMonthShort(row.month),
     income: row.income,
     expenses: row.expenses,
     profit: row.profit,
@@ -279,42 +297,11 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
       */}
       <AttentionList items={attention ?? []} />
 
-      {/* Главный график продукта: доходы и расходы столбцами, прибыль линией. */}
-      <div className="rounded-default border border-border bg-surface p-4">
-        <h2 className="mb-3 text-base font-medium text-text-primary">
-          {intl.get('dashboard.chart.title')}
-        </h2>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chart}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="month" tickLine={false} axisLine={false} />
-              <YAxis tickLine={false} axisLine={false} width={80} />
-              <Tooltip />
-              <Bar
-                dataKey="income"
-                name={intl.get('dashboard.chart.income')}
-                fill="rgb(var(--c-success))"
-                radius={[4, 4, 0, 0]}
-              />
-              <Bar
-                dataKey="expenses"
-                name={intl.get('dashboard.chart.expenses')}
-                fill="rgb(var(--c-danger))"
-                radius={[4, 4, 0, 0]}
-              />
-              <Line
-                type="monotone"
-                dataKey="profit"
-                name={intl.get('dashboard.chart.profit')}
-                stroke="rgb(var(--c-action))"
-                strokeWidth={2}
-                dot={false}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {/* Главный график продукта: доходы и расходы столбцами, прибыль
+          линией (C3). Этап 46 ТЗ-4 (G2): расход больше не красный —
+          приглушённым (красный — только проблема), прибыль — ломаной,
+          оси — «1,6 млн ₽», есть «Таблица». */}
+      <MoneyByMonthsChart chart={chart} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Остатки по счетам: клик ведёт в операции этого счёта. */}
@@ -456,5 +443,90 @@ function CompareControl({
         </div>
       )}
     </div>
+  );
+}
+
+interface MonthPoint {
+  month: string;
+  income: number;
+  expenses: number;
+  profit: number;
+}
+
+/** «Деньги по месяцам» (C3): приход и расход столбиками, прибыль линией. */
+function MoneyByMonthsChart({ chart }: { chart: MonthPoint[] }) {
+  const { hidden, toggle } = useHiddenSeries();
+  const income = intl.get('dashboard.chart.income');
+  const expenses = intl.get('dashboard.chart.expenses');
+  const profit = intl.get('dashboard.chart.profit');
+  const money = (value: number) => formatOrganizationMoney(value);
+
+  return (
+    <ChartCard
+      title={intl.get('dashboard.chart.title')}
+      pointCount={chart.length}
+      // Двенадцать нулевых месяцев — это ответ «движений не было», а не
+      // график на шкале 0–4 ₽ (живой проход этапа 46).
+      state={chart.some((row) => row.income || row.expenses || row.profit) ? 'ready' : 'empty'}
+      table={{
+        columns: [
+          { key: 'month', label: intl.get('charts.col.period') },
+          { key: 'income', label: income, numeric: true, render: (row) => money(row.income) },
+          { key: 'expenses', label: expenses, numeric: true, render: (row) => money(row.expenses) },
+          { key: 'profit', label: profit, numeric: true, render: (row) => money(row.profit) },
+        ],
+        rows: chart,
+      }}
+      legend={
+        <ChartLegend
+          hidden={hidden}
+          onToggle={toggle}
+          items={[
+            { key: 'income', label: income, color: chartColor.income },
+            { key: 'expenses', label: expenses, color: chartColor.expense },
+            { key: 'profit', label: profit, color: chartColor.ink, shape: 'line' },
+          ]}
+        />
+      }
+    >
+      {({ xInterval }) => (
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart data={chart}>
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="month" {...xAxisProps} interval={xInterval} />
+            <YAxis {...yAxisProps} tickFormatter={formatAxisMoney} />
+            <Tooltip content={<ChartTooltip />} />
+            <Bar
+              dataKey="income"
+              name={income}
+              hide={hidden.has('income')}
+              fill={chartColor.income}
+              radius={BAR_RADIUS}
+              maxBarSize={BAR_MAX_SIZE}
+              isAnimationActive={chartAnimation()}
+            />
+            <Bar
+              dataKey="expenses"
+              name={expenses}
+              hide={hidden.has('expenses')}
+              fill={chartColor.expense}
+              radius={BAR_RADIUS}
+              maxBarSize={BAR_MAX_SIZE}
+              isAnimationActive={chartAnimation()}
+            />
+            <Line
+              type={CURVE.series}
+              dataKey="profit"
+              name={profit}
+              hide={hidden.has('profit')}
+              stroke={chartColor.ink}
+              strokeWidth={2}
+              dot={false}
+              isAnimationActive={chartAnimation()}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      )}
+    </ChartCard>
   );
 }

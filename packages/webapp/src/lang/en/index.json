@@ -5786,5 +5786,16 @@
   "managerial_pnl.margin_series.md_margin": "Contribution margin %",
   "managerial_pnl.margin_series.gp2_margin": "Gross profit %",
   "managerial_pnl.margin_series.op_margin": "Operating profit %",
-  "managerial_pnl.margin_series.np_margin": "Net profit %"
+  "managerial_pnl.margin_series.np_margin": "Net profit %",
+  "payment_calendar.view.aria": "Calendar view",
+  "payment_calendar.horizon.aria": "Horizon",
+  "payment_calendar.direction.aria": "Direction",
+  "payment_calendar.chart.title": "Balance by day",
+  "payment_calendar.chart.gap": "On {date} the balance goes below zero by {amount}",
+  "payment_calendar.chart.ok": "Money lasts until the end of the horizon",
+  "payment_calendar.quiet_days": "{count, plural, one {# day} other {# days}} without movement",
+  "budgets.card.usage": "Expenses used",
+  "budgets.card.used": "Spent {fact} of {plan}",
+  "budgets.card.elapsed": "Time elapsed in the year",
+  "financial_model.no_data_hint": "Appears once the period has revenue and expense operations with articles."
 }

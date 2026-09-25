@@ -42,8 +42,6 @@
   "containers/Notifications/InApp/NotificationsList.tsx": 1,
   "containers/Notifications/NotificationsSettingsPage.tsx": 1,
   "containers/PaymentCalendar/CalendarMatrixView.tsx": 2,
-  "containers/PaymentCalendar/DayRow.tsx": 3,
-  "containers/PaymentCalendar/PaymentCalendarPage.tsx": 2,
   "containers/PaymentCalendar/PeriodRow.tsx": 1,
   "containers/PaymentPortal/drawers/PaymentInvoicePreviewDrawer/PaymentInvoicePreviewDrawer.tsx": 1,
   "containers/Payroll/PayrollKpiTab.tsx": 1,

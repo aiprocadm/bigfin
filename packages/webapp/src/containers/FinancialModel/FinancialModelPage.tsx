@@ -18,12 +18,18 @@ import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatOrganizationNumber } from '@/utils/organizationNumber';
 import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { PageTitle } from '@/components/ui/page-title';
+import { StatCard } from '@/components/ui/stat-card';
 
 const fmtMoney = (n: number | null | undefined) =>
   formatOrganizationMoney(n ?? 0);
 const fmtPct = (frac: number | null | undefined) =>
   `${formatOrganizationNumber(Math.round((frac ?? 0) * 1000) / 10)}%`;
 
+/**
+ * Показатель финмодели — карточка кита (UI-050-4 ТЗ-4). Не посчитанный
+ * показатель — «нет данных» и строка о том, откуда он возьмётся, а не
+ * прочерк: «—» читалось как «ноль» или как поломка.
+ */
 function MetricCard({
   label,
   value,
@@ -31,10 +37,15 @@ function MetricCard({
   label: string;
   value: React.ReactNode;
 }) {
+  const missing = value === intl.get('financial_model.na');
   return (
-    <div className="flex flex-col gap-1 rounded-control border p-4">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-2xl font-semibold">{value}</span>
+    <div className="flex flex-col gap-1">
+      <StatCard label={label} value={missing ? null : value} />
+      {missing && (
+        <span className="px-1 text-footnote text-text-muted">
+          {intl.get('financial_model.no_data_hint')}
+        </span>
+      )}
     </div>
   );
 }

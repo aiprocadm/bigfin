@@ -28,17 +28,18 @@ export function DayRow({
   const weekend = isWeekend(day.date);
 
   return (
-    <div className={`border-b py-2 ${weekend ? 'bg-muted/40' : ''}`}>
+    // Цвета — из токенов (этап 50 ТЗ-4): отрицательный остаток — цветом
+    // проблемы, без значка-смайлика; выходные — приглушённым текстом.
+    <div className="border-b border-border py-2">
       <div
         className={`flex items-center justify-between px-2 ${
-          negative ? 'text-red-600 font-semibold' : ''
+          negative ? 'font-semibold text-danger' : ''
         }`}
       >
-        <span className={weekend && !negative ? 'text-muted-foreground' : ''}>
+        <span className={weekend && !negative ? 'text-text-muted' : ''}>
           {formatDay(day.date)}
         </span>
-        <span>
-          {negative ? '🔴 ' : ''}
+        <span className="tabular-nums">
           {intl.get('payment_calendar.balance')}: {money(day.balance)}
         </span>
       </div>
@@ -52,7 +53,8 @@ export function DayRow({
           key={i}
           ref={(node) => found && node?.scrollIntoView({ block: 'center' })}
           className={`flex items-center justify-between px-4 text-sm ${
-            line.direction === 'inflow' ? 'text-green-600' : 'text-red-500'
+            // Выплата — не авария: обычным текстом, приход — зелёным.
+            line.direction === 'inflow' ? 'text-success' : 'text-text-primary'
           }${found ? ' ring-2 ring-action rounded-control' : ''}`}
         >
           <span>{line.label}</span>

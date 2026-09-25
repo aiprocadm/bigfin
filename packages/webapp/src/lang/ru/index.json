@@ -5786,5 +5786,16 @@
   "managerial_pnl.margin_series.md_margin": "МД %",
   "managerial_pnl.margin_series.gp2_margin": "ВП2 %",
   "managerial_pnl.margin_series.op_margin": "ОП %",
-  "managerial_pnl.margin_series.np_margin": "ЧП %"
+  "managerial_pnl.margin_series.np_margin": "ЧП %",
+  "payment_calendar.view.aria": "Вид календаря",
+  "payment_calendar.horizon.aria": "Горизонт",
+  "payment_calendar.direction.aria": "Направление",
+  "payment_calendar.chart.title": "Остаток по дням",
+  "payment_calendar.chart.gap": "{date} остаток уйдёт в минус на {amount}",
+  "payment_calendar.chart.ok": "До конца горизонта денег хватает",
+  "payment_calendar.quiet_days": "{count, plural, one {# день} few {# дня} other {# дней}} без движения",
+  "budgets.card.usage": "Освоение расходов",
+  "budgets.card.used": "Освоено {fact} из {plan}",
+  "budgets.card.elapsed": "Прошло года",
+  "financial_model.no_data_hint": "Появится, когда за период будут операции с выручкой и расходами по статьям."
 }

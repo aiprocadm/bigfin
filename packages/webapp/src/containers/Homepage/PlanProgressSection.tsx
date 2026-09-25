@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -12,7 +11,22 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import {
+  CURVE,
+  ChartCard,
+  ChartLegend,
+  ChartTooltip,
+  chartColor,
+  formatAxisMoney,
+  gridProps,
+  seriesColor,
+  useHiddenSeries,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 
+import { cn } from '@/lib/cn';
+import { Button } from '@/components/ui/button';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatDayMonth } from '@/utils/formatDayMonth';
 
@@ -25,6 +39,8 @@ import {
 import type { OverviewParams } from './useOverviewParams';
 import { DirectionsPlanTable } from './DirectionsPlanTable';
 import { formatPercent } from './formatPercent';
+import { planRings } from './planRings';
+import { ProgressRing, formatShare } from '@/components/ui/progress';
 
 /**
  * Блок «План» на главной (FT-060, FT-062, FT-063 ТЗ-3).
@@ -70,6 +86,7 @@ export default function PlanProgressSection({
 
   return (
     <PlanFrame>
+      {hasProgress && <PlanRings plan={plan} />}
       {hasProgress ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {plan.income && (
@@ -114,18 +131,55 @@ function PlanFrame({ children }: { children: React.ReactNode }) {
  * «план выполнен» или как поломка.
  */
 function PlanHint({ budget }: { budget: HomepagePlan['budget'] }) {
+  // Карточка «Задайте план» вместо пустого графика (UI-047-2 ТЗ-4): на
+  // живом проходе первым на главной стоял пустой график плана со шкалой
+  // 0–4 (O8, G4). Одна строка «что сюда попадёт» и одна кнопка.
   return (
-    <p className="text-sm text-text-secondary">
-      {budget
-        ? intl.get('dashboard.plan.empty_budget', { name: budget.name })
-        : intl.get('dashboard.plan.no_budget')}{' '}
-      <Link
-        to="/budgets"
-        className="font-medium text-text-primary underline underline-offset-2"
-      >
-        {intl.get('dashboard.plan.open_budgets')}
+    <div className="flex flex-col items-start gap-3">
+      <p className="text-body text-text-secondary">
+        {budget
+          ? intl.get('dashboard.plan.empty_budget', { name: budget.name })
+          : intl.get('dashboard.plan.no_budget')}
+      </p>
+      {/* Кнопка внутри ссылки, а не ссылка в виде кнопки: общий сброс
+          красит ссылки цветом текста, и белая подпись на чернильной кнопке
+          пропадала (живой проход этапа 47). */}
+      <Link to="/budgets" className="no-underline">
+        <Button>{intl.get('dashboard.plan.open_budgets')}</Button>
       </Link>
-    </p>
+    </div>
+  );
+}
+
+/**
+ * Кольца плана (C2, R19): «идём по плану?» за секунду. Три кольца —
+ * доходы, расходы, прибыль, доля плана «с 1-го по сегодня»; справа — те же
+ * числа словами. Нет плана у кольца — «нет плана», не «0 %».
+ */
+function PlanRings({ plan }: { plan: HomepagePlan }) {
+  const rings = planRings(plan);
+  const tone = { income: 'chart-2', expenses: 'chart-3', profit: 'chart-1' } as const;
+  // Классы целиком, а не склейкой: Tailwind создаёт только то, что видит
+  // в исходнике буквально.
+  const dot = { income: 'bg-chart-2', expenses: 'bg-chart-3', profit: 'bg-chart-1' } as const;
+  const label = (key: string) => intl.get(`dashboard.plan.ring.${key}`);
+  return (
+    <div className="flex items-center gap-5">
+      <ProgressRing
+        size={112}
+        rings={rings.map((ring) => ({ label: label(ring.key), value: ring.value, tone: tone[ring.key] }))}
+      />
+      <ul className="flex min-w-0 flex-col gap-1.5">
+        {rings.map((ring) => (
+          <li key={ring.key} className="flex items-center gap-2 text-subhead">
+            <span aria-hidden className={cn('inline-block h-2 w-2 shrink-0 rounded-full', dot[ring.key])} />
+            <span className="text-text-secondary">{label(ring.key)}</span>
+            <span className="font-semibold tabular-nums text-text-primary">{formatShare(ring.value)}</span>
+          </li>
+        ))}
+        <li className="text-footnote text-text-muted">{intl.get('dashboard.plan.ring.hint')}</li>
+      </ul>
+    </div>
   );
 }
 
@@ -205,54 +259,73 @@ function ProgressCard({
 function CumulativeChart({ points }: { points: CumulativePoint[] }) {
   const hasPlan = points.some((point) => point.plan !== null);
   const hasPrevious = points.some((point) => point.previous !== null);
+  const { hidden, toggle } = useHiddenSeries();
+  const factName = intl.get('dashboard.plan.cumulative.fact');
+  const planName = intl.get('dashboard.plan.cumulative.plan');
+  const previousName = intl.get('dashboard.plan.cumulative.previous');
+  const money = (value: number | null) => (value === null ? '—' : formatOrganizationMoney(value));
 
+  // Цвета (этап 46 ТЗ-4): факт — главный ряд чернилами, план — приглушённым
+  // пунктиром, база сравнения — второй категорией. Было три цвета «на
+  // месте» и сглаженные кривые.
   return (
-    <div className="flex flex-col gap-2">
-      <h3 className="text-sm font-medium text-text-primary">
-        {intl.get('dashboard.plan.cumulative.title')}
-      </h3>
-      <div className="h-56 w-full">
+    <ChartCard
+      // Внутри карточки «План» — без второй рамки: карточка в карточке.
+      className="border-0 p-0"
+      title={intl.get('dashboard.plan.cumulative.title')}
+      pointCount={points.length}
+      table={{
+        columns: [
+          { key: 'date', label: intl.get('charts.col.day'), render: (row) => formatDayMonth(row.date) },
+          { key: 'fact', label: factName, numeric: true, render: (row) => money(row.fact) },
+          ...(hasPlan ? [{ key: 'plan', label: planName, numeric: true, render: (row: CumulativePoint) => money(row.plan) }] : []),
+          ...(hasPrevious ? [{ key: 'previous', label: previousName, numeric: true, render: (row: CumulativePoint) => money(row.previous) }] : []),
+        ],
+        rows: points,
+      }}
+      legend={
+        <ChartLegend
+          hidden={hidden}
+          onToggle={toggle}
+          items={[
+            { key: 'fact', label: factName, color: chartColor.ink, shape: 'line' as const },
+            ...(hasPlan ? [{ key: 'plan', label: planName, color: chartColor.expense, shape: 'line' as const }] : []),
+            ...(hasPrevious ? [{ key: 'previous', label: previousName, color: seriesColor(1), shape: 'line' as const }] : []),
+          ]}
+        />
+      }
+    >
+      {() => (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={points}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid {...gridProps} />
             <XAxis
               dataKey="date"
-              tickLine={false}
-              axisLine={false}
+              {...xAxisProps}
               tickFormatter={(value: string) => moment(value).format('D')}
               minTickGap={12}
             />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              width={80}
-              tickFormatter={(value: number) =>
-                new Intl.NumberFormat(
-                  intl.getInitOptions?.()?.currentLocale || 'ru',
-                  { notation: 'compact', maximumFractionDigits: 1 },
-                ).format(value)
-              }
-            />
+            <YAxis {...yAxisProps} tickFormatter={formatAxisMoney} />
             <Tooltip
-              labelFormatter={(label) => formatDayMonth(String(label))}
-              formatter={(value) => formatOrganizationMoney(Number(value))}
+              content={<ChartTooltip formatLabel={(label) => formatDayMonth(String(label))} />}
             />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
             <Line
-              type="monotone"
+              type={CURVE.series}
               dataKey="fact"
-              name={intl.get('dashboard.plan.cumulative.fact')}
-              stroke="rgb(var(--c-success))"
+              name={factName}
+              hide={hidden.has('fact')}
+              stroke={chartColor.ink}
               strokeWidth={2}
               dot={false}
               connectNulls={false}
             />
             {hasPlan && (
               <Line
-                type="monotone"
+                type={CURVE.series}
                 dataKey="plan"
-                name={intl.get('dashboard.plan.cumulative.plan')}
-                stroke="rgb(var(--c-action))"
+                name={planName}
+                hide={hidden.has('plan')}
+                stroke={chartColor.expense}
                 strokeWidth={2}
                 strokeDasharray="6 4"
                 dot={false}
@@ -261,10 +334,11 @@ function CumulativeChart({ points }: { points: CumulativePoint[] }) {
             )}
             {hasPrevious && (
               <Line
-                type="monotone"
+                type={CURVE.series}
                 dataKey="previous"
-                name={intl.get('dashboard.plan.cumulative.previous')}
-                stroke="rgb(var(--c-text-muted))"
+                name={previousName}
+                hide={hidden.has('previous')}
+                stroke={seriesColor(1)}
                 strokeWidth={2}
                 dot={false}
                 connectNulls={false}
@@ -272,7 +346,7 @@ function CumulativeChart({ points }: { points: CumulativePoint[] }) {
             )}
           </LineChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      )}
+    </ChartCard>
   );
 }

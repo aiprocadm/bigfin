@@ -30,8 +30,8 @@ const ALLOWED = [
   'containers/FinancialRatios/FinancialRatiosPage.tsx',
   // Форматирование величин в списках: количество, проценты, доли.
   'components/ui/list-view/list-format.ts',
-  // Сводные числа дашборда (не только деньги: счётчики документов).
-  'components/Dashboard/DashboardSummary.tsx',
+  // `components/Dashboard/DashboardSummary.tsx` удалён в этапе 46 ТЗ-4
+  // (UI-046-4, решение владельца): его не рисовал ни один экран.
 ];
 
 /**

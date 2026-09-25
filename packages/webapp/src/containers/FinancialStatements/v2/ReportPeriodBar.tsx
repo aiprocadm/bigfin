@@ -3,15 +3,20 @@ import intl from 'react-intl-universal';
 import { SlidersHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/cn';
 
-import {
-  QUICK_PERIODS,
-  ReportRange,
-  formatRangeLabel,
-  matchQuickPeriod,
-  reportRange,
-} from './reportPeriod';
+import { ReportRange, reportRange } from './reportPeriod';
 import {
   REPORT_BASES,
   REPORT_BUILD_BY,
@@ -47,22 +52,23 @@ export interface ReportPeriodBarProps {
   className?: string;
 }
 
-const selectClassName =
-  'border-input bg-background h-8 rounded-control border px-2 text-sm';
-
 /**
- * Полоса периода отчёта.
+ * Шапка отчёта v2 (UI-049-1 ТЗ-4) — общая для отчётов с полосой периода.
  *
- * ЗАЧЕМ. Период меняют чаще, чем всё остальное в отчёте вместе взятое, а жил
- * он внутри панели «Настроить отчёт»: открыть панель → выбрать даты →
- * применить → закрыть. Четыре действия там, где нужно одно.
+ * БЫЛО (O9 живого прохода): шесть кнопок периода, которые переносились на
+ * вторую строку, подпись отрезка отдельной строкой, «Масштаб» и «Учёт» —
+ * серые системные списки браузера.
  *
- * Здесь шесть готовых периодов и подпись текущего отрезка. Произвольные даты
- * остаются в панели настроек — они нужны редко, и тащить календарь в полосу
- * значит менять частую задачу на редкую.
+ * СТАЛО — одна строка, как в шаблоне «Отчёт» (§8):
+ * - период ОДНИМ полем «1 янв. – 31 дек. 2026 г.» с готовыми вариантами и
+ *   стрелками ‹ › (UI-044-2). Подпись отрезка — в самом поле, отчёт
+ *   печатают и пересылают — она видна всегда;
+ * - масштаб — сегментами;
+ * - «Учёт» и «Строить по» — в меню «Вид»: их меняют редко;
+ * - остальное — справа (юрлицо, настройки отчёта).
  *
- * Когда отрезок произвольный, НИ ОДНА кнопка не выглядит нажатой: нажатая
- * кнопка обещала бы, что показан именно её период.
+ * Каждый переключатель — ТОЛЬКО когда отчёт его поддерживает (FIN-012 ТЗ-2):
+ * неактивная кнопка хуже отсутствующей.
  */
 export const ReportPeriodBar = ({
   range,
@@ -77,105 +83,83 @@ export const ReportPeriodBar = ({
   onBuildByChange,
   className,
 }: ReportPeriodBarProps) => {
-  const active = matchQuickPeriod(range);
-  const label = formatRangeLabel(
-    range,
-    intl.getInitOptions?.()?.currentLocale || 'ru',
-  );
+  // Отрезок по умолчанию — текущий год, как у отчётов без выбранного периода.
+  const fallback = reportRange('year');
+  const value = {
+    from: range?.fromDate ?? fallback.fromDate,
+    to: range?.toDate ?? fallback.toDate,
+  };
+  const hasView = Boolean(onBasisChange || onBuildByChange);
 
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between',
+        'flex flex-wrap items-center gap-2 border-b border-border pb-4',
         className,
       )}
     >
-      <div className="flex min-w-0 flex-col gap-2">
-        <div
-          className="flex flex-wrap items-center gap-1"
-          role="group"
-          aria-label={intl.get('report_period.aria_label')}
-        >
-          {QUICK_PERIODS.map(({ kind, labelKey }) => (
-            <Button
-              key={kind}
-              type="button"
-              size="sm"
-              variant={active === kind ? 'primary' : 'ghost'}
-              aria-pressed={active === kind}
-              onClick={() => onRangeChange(reportRange(kind))}
-            >
-              {intl.get(labelKey)}
-            </Button>
-          ))}
-        </div>
+      <DateRangePicker
+        value={value}
+        onChange={(next) => onRangeChange({ fromDate: next.from, toDate: next.to })}
+      />
 
-        {label && (
-          // Подпись отрезка стоит ВСЕГДА, а не только при произвольных датах:
-          // «Квартал» не говорит, какой именно, а отчёт печатают и пересылают.
-          <p className="text-[0.8125rem] text-text-secondary">{label}</p>
-        )}
-      </div>
+      {onScaleChange && (
+        <SegmentedControl
+          size="sm"
+          aria-label={intl.get('report_controls.scale')}
+          value={scale ?? 'month'}
+          onChange={(next) => onScaleChange(next as ReportScale)}
+          options={REPORT_SCALES.map((item) => ({
+            value: item,
+            label: intl.get(`report_controls.scale.${item}`),
+          }))}
+        />
+      )}
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
-        {onScaleChange && (
-          <label className="flex items-center gap-1 text-xs text-text-secondary">
-            {intl.get('report_controls.scale')}
-            <select
-              className={selectClassName}
-              value={scale ?? 'month'}
-              onChange={(event) =>
-                onScaleChange(event.target.value as ReportScale)
-              }
-            >
-              {REPORT_SCALES.map((value) => (
-                <option key={value} value={value}>
-                  {intl.get(`report_controls.scale.${value}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {onBuildByChange && (
-          <label className="flex items-center gap-1 text-xs text-text-secondary">
-            {intl.get('report_controls.build_by')}
-            <select
-              className={selectClassName}
-              value={buildBy ?? 'periods'}
-              onChange={(event) =>
-                onBuildByChange(event.target.value as ReportBuildBy)
-              }
-            >
-              {REPORT_BUILD_BY.map((value) => (
-                <option key={value} value={value}>
-                  {intl.get(`report_controls.build_by.${value}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {onBasisChange && (
-          <label className="flex items-center gap-1 text-xs text-text-secondary">
-            {intl.get('report_controls.basis')}
-            <select
-              className={selectClassName}
-              value={basis ?? 'accrual'}
-              onChange={(event) =>
-                onBasisChange(event.target.value as ReportBasis)
-              }
-            >
-              {REPORT_BASES.map((value) => (
-                <option key={value} value={value}>
-                  {intl.get(`report_controls.basis.${value}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
+      <div className="ml-auto flex flex-wrap items-center gap-2">
         {extraSlot}
+        {hasView && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button type="button" size="sm" variant="ghost">
+                {intl.get('report_controls.view')}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-60">
+              {onBasisChange && (
+                <>
+                  <DropdownMenuLabel>{intl.get('report_controls.basis')}</DropdownMenuLabel>
+                  <DropdownMenuRadioGroup
+                    value={basis ?? 'accrual'}
+                    onValueChange={(next) => onBasisChange(next as ReportBasis)}
+                  >
+                    {REPORT_BASES.map((item) => (
+                      <DropdownMenuRadioItem key={item} value={item}>
+                        {intl.get(`report_controls.basis.${item}`)}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </>
+              )}
+              {onBasisChange && onBuildByChange && <DropdownMenuSeparator />}
+              {onBuildByChange && (
+                <>
+                  <DropdownMenuLabel>{intl.get('report_controls.build_by')}</DropdownMenuLabel>
+                  <DropdownMenuRadioGroup
+                    value={buildBy ?? 'periods'}
+                    onValueChange={(next) => onBuildByChange(next as ReportBuildBy)}
+                  >
+                    {REPORT_BUILD_BY.map((item) => (
+                      <DropdownMenuRadioItem key={item} value={item}>
+                        {intl.get(`report_controls.build_by.${item}`)}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
         {onCustomizeClick && (
           <Button
             type="button"

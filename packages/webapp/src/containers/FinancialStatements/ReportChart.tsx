@@ -1,7 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useQuery } from 'react-query';
-import moment from 'moment';
 import {
   Bar,
   CartesianGrid,
@@ -15,7 +14,23 @@ import {
 
 import useApiRequest from '@/hooks/useRequest';
 import { transformToCamelCase } from '@/utils';
-import { Skeleton } from '@/components/ui/skeleton';
+import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { formatMonthShortYear } from '@/utils/formatShortDate';
+import {
+  BAR_MAX_SIZE,
+  BAR_RADIUS,
+  CURVE,
+  ChartCard,
+  ChartLegend,
+  ChartTooltip,
+  chartAnimation,
+  chartColor,
+  formatAxisMoney,
+  gridProps,
+  useHiddenSeries,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 
 export type ReportChartKind = 'profit_loss' | 'cash_flow';
 
@@ -40,6 +55,10 @@ interface ReportChartProps {
  *
  * У ОПиУ столбцы — выручка, линия — прибыль. У ДДС столбцы — поступления и
  * выплаты.
+ *
+ * Этап 46 ТЗ-4 (G5): выплаты больше не красные (красный — только проблема),
+ * линия прибыли — ломаная, оси — «1,6 млн ₽», есть «Таблица»; над отчётом
+ * график сворачивается — главное на экране таблица.
  */
 export default function ReportChart({
   kind,
@@ -48,7 +67,8 @@ export default function ReportChart({
 }: ReportChartProps) {
   const apiRequest = useApiRequest();
 
-  const { data, isLoading, isError } = useQuery(
+  const { hidden, toggle } = useHiddenSeries();
+  const { data, isLoading, isError, refetch } = useQuery(
     ['REPORT_CHART', kind, fromDate, toDate],
     () =>
       apiRequest
@@ -59,71 +79,97 @@ export default function ReportChart({
     { enabled: Boolean(fromDate && toDate), keepPreviousData: true },
   );
 
-  if (isLoading) {
-    return <Skeleton className="mb-4 h-56 w-full" />;
-  }
-
-  // Сбой графика не должен закрывать таблицу: цифры важнее картинки.
-  if (isError || !data) return null;
-
-  const points: ReportChartPoint[] = (data as any).points ?? [];
+  const points: ReportChartPoint[] = (data as any)?.points ?? [];
   const hasNumbers = points.some(
     (point) => point.first !== 0 || point.second !== 0,
   );
 
   // Пустой график ничего не сообщает — за период просто нет движений.
-  if (!hasNumbers) return null;
+  if (!isLoading && !isError && !hasNumbers) return null;
 
   const rows = points.map((point) => ({
-    month: moment(point.month, 'YYYY-MM').format('MMM YY'),
+    month: formatMonthShortYear(point.month),
     first: point.first,
     second: point.second,
   }));
 
+  const isCashFlow = kind === 'cash_flow';
   const firstName = intl.get(
-    kind === 'profit_loss'
-      ? 'reports.chart.revenue'
-      : 'reports.chart.money_in',
+    isCashFlow ? 'reports.chart.money_in' : 'reports.chart.revenue',
   );
   const secondName = intl.get(
-    kind === 'profit_loss' ? 'reports.chart.profit' : 'reports.chart.money_out',
+    isCashFlow ? 'reports.chart.money_out' : 'reports.chart.profit',
   );
+  const secondColor = isCashFlow ? chartColor.expense : chartColor.ink;
 
   return (
-    <div className="mb-4 rounded-default border border-border bg-surface p-4">
-      <div className="h-56 w-full">
+    <ChartCard
+      className="mb-4"
+      title={intl.get(isCashFlow ? 'reports.chart.title.cash_flow' : 'reports.chart.title.profit_loss')}
+      state={isLoading ? 'loading' : isError ? 'error' : 'ready'}
+      onRetry={() => refetch()}
+      collapsible={{ storageKey: `bigfin.chart.report.${kind}` }}
+      pointCount={rows.length}
+      table={{
+        columns: [
+          { key: 'month', label: intl.get('charts.col.period') },
+          { key: 'first', label: firstName, numeric: true, render: (row) => formatOrganizationMoney(row.first) },
+          { key: 'second', label: secondName, numeric: true, render: (row) => formatOrganizationMoney(row.second) },
+        ],
+        rows,
+      }}
+      legend={
+        <ChartLegend
+          hidden={hidden}
+          onToggle={toggle}
+          items={[
+            { key: 'first', label: firstName, color: chartColor.income },
+            { key: 'second', label: secondName, color: secondColor, shape: isCashFlow ? 'dot' : 'line' },
+          ]}
+        />
+      }
+    >
+      {({ xInterval }) => (
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={rows}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="month" tickLine={false} axisLine={false} />
-            <YAxis tickLine={false} axisLine={false} width={80} />
-            <Tooltip />
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="month" {...xAxisProps} interval={xInterval} />
+            <YAxis {...yAxisProps} tickFormatter={formatAxisMoney} />
+            <Tooltip content={<ChartTooltip />} />
             <Bar
               dataKey="first"
               name={firstName}
-              fill="rgb(var(--c-success))"
-              radius={[4, 4, 0, 0]}
+              hide={hidden.has('first')}
+              fill={chartColor.income}
+              radius={BAR_RADIUS}
+              maxBarSize={BAR_MAX_SIZE}
+              isAnimationActive={chartAnimation()}
             />
-            {kind === 'cash_flow' ? (
+            {isCashFlow ? (
               <Bar
                 dataKey="second"
                 name={secondName}
-                fill="rgb(var(--c-danger))"
-                radius={[4, 4, 0, 0]}
+                hide={hidden.has('second')}
+                fill={secondColor}
+                radius={BAR_RADIUS}
+                maxBarSize={BAR_MAX_SIZE}
+                isAnimationActive={chartAnimation()}
               />
             ) : (
               <Line
-                type="monotone"
+                type={CURVE.series}
                 dataKey="second"
                 name={secondName}
-                stroke="rgb(var(--c-action))"
+                hide={hidden.has('second')}
+                stroke={secondColor}
                 strokeWidth={2}
                 dot={false}
+                isAnimationActive={chartAnimation()}
               />
             )}
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      )}
+    </ChartCard>
   );
 }

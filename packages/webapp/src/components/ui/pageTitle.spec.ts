@@ -64,7 +64,6 @@ const H1_ALLOWED: Record<string, string> = {
   'components/PageForm/PageFormBigNumber.tsx': 'крупная сумма старой формы',
   'components/EmptyStatus/EmptyStatus.tsx': 'старое пустое состояние (этап 52)',
   'components/Dashboard/DashboardErrorBoundary.tsx': 'экран сбоя вместо страницы',
-  'components/Dashboard/DashboardSummary.tsx': 'старая сводка, не в маршрутах',
 };
 
 interface RouteEntry {

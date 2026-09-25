@@ -1,5 +1,6 @@
 import React from 'react';
 import intl from 'react-intl-universal';
+import { LegalEntitySelect } from '../v2/LegalEntitySelect';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Download } from 'lucide-react';
@@ -268,29 +269,11 @@ export default function CashFlowArticles() {
           }))}
         />
         {showEntityPicker ? (
-            <label className="flex items-center gap-1 text-xs text-text-secondary">
-              {intl.get('cash_flow_articles.legal_entity')}
-              <select
-                className="border-input bg-background h-8 rounded-control border px-2 text-sm"
-                value={query.legalEntityIds?.[0] ?? ''}
-                onChange={(event) =>
-                  setQuery({
-                    legalEntityIds: event.target.value
-                      ? [Number(event.target.value)]
-                      : undefined,
-                  })
-                }
-              >
-                <option value="">
-                  {intl.get('cash_flow_articles.legal_entity.all')}
-                </option>
-                {legalEntities!.map((entity) => (
-                  <option key={entity.id} value={entity.id}>
-                    {entity.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <LegalEntitySelect
+              entities={legalEntities!}
+              value={query.legalEntityIds?.[0]}
+              onChange={(id) => setQuery({ legalEntityIds: id ? [id] : undefined })}
+            />
         ) : null}
       </div>
 

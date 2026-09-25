@@ -16,6 +16,20 @@ import HomepageCustomize from './HomepageCustomize';
 import { useOverviewParams } from './useOverviewParams';
 import { useHomepageWidgets } from './useHomepageWidgets';
 import { HomepageWidgetId, visibleWidgets } from './homepageWidgets';
+import { CompareControl, PERIOD_KINDS } from './OverviewSection';
+import { COMPARE_KINDS, type CompareKind } from './dashboardCompare';
+import { PageTitle } from '@/components/ui/page-title';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
 
 /**
  * Содержимое главной.
@@ -80,15 +94,63 @@ function HomepageContent() {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6 sm:px-6">
-      <div className="-mb-6 flex justify-end">
-        <HomepageCustomize
-          order={widgets.order}
-          hidden={widgets.hidden}
-          onOrderChange={widgets.setOrder}
-          onHiddenChange={widgets.setHidden}
-          onReset={widgets.reset}
-        />
+      {/* Заголовок главной (UI-047-1 ТЗ-4): период — сегментами справа, база
+          сравнения — в «⋯», там же «Настроить главную». Раньше выбор периода
+          стоял посреди страницы, у нижнего края первого экрана (O8). */}
+      <div className="-mb-4 flex flex-wrap items-center justify-between gap-3">
+        <PageTitle>{intl.get('sidebar.homepage')}</PageTitle>
+        <div className="flex items-center gap-2">
+          <SegmentedControl
+            size="sm"
+            aria-label={intl.get('dashboard.period.aria')}
+            value={params.period.kind === 'custom' ? 'month' : params.period.kind}
+            onChange={(kind) => params.choosePeriod(kind)}
+            options={PERIOD_KINDS.map((kind) => ({
+              value: kind,
+              label: intl.get(`dashboard.period.${kind}`),
+            }))}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label={intl.get('homepage.more')}>
+                <MoreHorizontal className="h-5 w-5" aria-hidden />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuLabel>{intl.get('dashboard.compare.label')}</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={params.compare.kind}
+                onValueChange={(kind) =>
+                  params.chooseCompare(
+                    kind === 'custom'
+                      ? { kind: 'custom', fromDate: params.compare.fromDate, toDate: params.compare.toDate }
+                      : { kind: kind as CompareKind },
+                  )
+                }
+              >
+                {COMPARE_KINDS.map((kind) => (
+                  <DropdownMenuRadioItem key={kind} value={kind}>
+                    {intl.get(`dashboard.compare.kind_${kind}`)}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <HomepageCustomize
+            order={widgets.order}
+            hidden={widgets.hidden}
+            onOrderChange={widgets.setOrder}
+            onHiddenChange={widgets.setHidden}
+            onReset={widgets.reset}
+          />
+        </div>
       </div>
+
+      {/* Свой период сравнения — поля дат прямо под заголовком, пока он
+          выбран: в меню их не впишешь. */}
+      {params.compare.kind === 'custom' && (
+        <CompareControl compare={params.compare} onChange={params.chooseCompare} />
+      )}
 
       {shown.map((id) => (
         <React.Fragment key={id}>{blocks[id]}</React.Fragment>

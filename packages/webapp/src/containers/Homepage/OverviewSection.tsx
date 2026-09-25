@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/charts';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatMonthShort } from '@/utils/formatShortDate';
+import { TopExpensesChart } from './TopExpensesChart';
 import { ArrowDownRight, ArrowUpRight, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
@@ -59,7 +60,7 @@ import {
 import type { OverviewParams } from './useOverviewParams';
 
 /** Виды периода в переключателе — без «произвольного»: он задаётся датами. */
-const PERIOD_KINDS: Array<Exclude<DashboardPeriodKind, 'custom'>> = [
+export const PERIOD_KINDS: Array<Exclude<DashboardPeriodKind, 'custom'>> = [
   'month',
   'quarter',
   'year',
@@ -141,14 +142,7 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
   // ПЕРИОД, БАЗА И ПОРЯДОК НАПРАВЛЕНИЙ ЖИВУТ ВЫШЕ, в содержимом главной:
   // блок «План» читает тот же ответ, и ключи запросов обязаны совпасть —
   // иначе запросов на главной стало бы два вместо одного (п. 2.3 ТЗ).
-  const {
-    period,
-    choosePeriod,
-    compare,
-    chooseCompare,
-    directionsSortBy,
-    setDirectionsSortBy,
-  } = params;
+  const { period, compare, directionsSortBy, setDirectionsSortBy } = params;
 
   const { data, isLoading, isError, refetch } = useDashboardOverview(
     period,
@@ -213,21 +207,9 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
 
   return (
     <section className="flex flex-col gap-6">
-      {/* Переключатель периода: выбор запоминается между сессиями. */}
-      <div className="flex flex-wrap items-center gap-2">
-        {PERIOD_KINDS.map((kind) => (
-          <Button
-            key={kind}
-            variant={period.kind === kind ? 'primary' : 'secondary'}
-            onClick={() => choosePeriod(kind)}
-          >
-            {intl.get(`dashboard.period.${kind}`)}
-          </Button>
-        ))}
-      </div>
-
-      <CompareControl compare={compare} onChange={chooseCompare} />
-
+      {/* Переключатель периода и «Сравнить с» живут в заголовке главной
+          (UI-047-1 ТЗ-4): раньше выбор периода стоял у нижнего края первого
+          экрана (O8), и было непонятно, к чему он относится. */}
       {/*
         ПЛИТКИ «ДЕНЬГИ НА СЧЕТАХ» ЗДЕСЬ БОЛЬШЕ НЕТ, и на то две причины.
 
@@ -291,11 +273,6 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
         </p>
       )}
 
-      {/*
-        «Требует внимания» идёт сразу под показателями: это то, ради чего
-        человек открыл главную — что нужно сделать прямо сейчас.
-      */}
-      <AttentionList items={attention ?? []} />
 
       {/* Главный график продукта: доходы и расходы столбцами, прибыль
           линией (C3). Этап 46 ТЗ-4 (G2): расход больше не красный —
@@ -326,36 +303,9 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
           </ul>
         </div>
 
-        {/* Топ статей расходов: полосой видно долю каждой. */}
-        <div className="rounded-default border border-border bg-surface p-4">
-          <h2 className="mb-3 text-base font-medium text-text-primary">
-            {intl.get('dashboard.top_expenses.title')}
-          </h2>
-          {topExpenses.length === 0 ? (
-            <p className="text-sm text-text-secondary">
-              {intl.get('dashboard.top_expenses.empty')}
-            </p>
-          ) : (
-            <ul className="flex flex-col gap-3">
-              {topExpenses.map((row) => (
-                <li key={`${row.id}-${row.name}`}>
-                  <div className="mb-1 flex items-center justify-between gap-3 text-sm">
-                    <span className="truncate">{row.name}</span>
-                    <span className="shrink-0 tabular-nums text-text-secondary">
-                      {row.formattedAmount} · {row.sharePercent}%
-                    </span>
-                  </div>
-                  <div className="h-2 w-full rounded-full bg-surface-elevated">
-                    <div
-                      className="h-2 rounded-full bg-danger"
-                      style={{ width: `${Math.min(row.sharePercent, 100)}%` }}
-                    />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        {/* «Куда уходят деньги» (C4): горизонтальные полосы топ-5 статей
+            расходов + «Прочее». Полосы были КРАСНЫМИ — расход не авария. */}
+        <TopExpensesChart rows={topExpenses} />
       </div>
 
       {/* «Кто приносит прибыль» и «Прибыльность направлений» (FIN-018).
@@ -374,6 +324,11 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
           refetch();
         }}
       />
+
+      {/* «Требует внимания» — последним в разборе периода (UI-047-1): что
+          сделать прямо сейчас, человек уже увидел в ленте денег и кольцах;
+          здесь — полный список. */}
+      <AttentionList items={attention ?? []} />
     </section>
   );
 }
@@ -386,7 +341,7 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
  * ряд из них занял бы полэкрана над самими цифрами. Свой период вводится
  * полем даты продукта — в формате организации, а не браузера.
  */
-function CompareControl({
+export function CompareControl({
   compare,
   onChange,
 }: {
@@ -530,3 +485,4 @@ function MoneyByMonthsChart({ chart }: { chart: MonthPoint[] }) {
     </ChartCard>
   );
 }
+

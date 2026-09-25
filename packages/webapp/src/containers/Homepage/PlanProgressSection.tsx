@@ -25,6 +25,8 @@ import {
   yAxisProps,
 } from '@/components/ui/charts';
 
+import { cn } from '@/lib/cn';
+import { Button } from '@/components/ui/button';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
 import { formatDayMonth } from '@/utils/formatDayMonth';
 
@@ -37,6 +39,8 @@ import {
 import type { OverviewParams } from './useOverviewParams';
 import { DirectionsPlanTable } from './DirectionsPlanTable';
 import { formatPercent } from './formatPercent';
+import { planRings } from './planRings';
+import { ProgressRing, formatShare } from '@/components/ui/progress';
 
 /**
  * Блок «План» на главной (FT-060, FT-062, FT-063 ТЗ-3).
@@ -82,6 +86,7 @@ export default function PlanProgressSection({
 
   return (
     <PlanFrame>
+      {hasProgress && <PlanRings plan={plan} />}
       {hasProgress ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {plan.income && (
@@ -126,18 +131,55 @@ function PlanFrame({ children }: { children: React.ReactNode }) {
  * «план выполнен» или как поломка.
  */
 function PlanHint({ budget }: { budget: HomepagePlan['budget'] }) {
+  // Карточка «Задайте план» вместо пустого графика (UI-047-2 ТЗ-4): на
+  // живом проходе первым на главной стоял пустой график плана со шкалой
+  // 0–4 (O8, G4). Одна строка «что сюда попадёт» и одна кнопка.
   return (
-    <p className="text-sm text-text-secondary">
-      {budget
-        ? intl.get('dashboard.plan.empty_budget', { name: budget.name })
-        : intl.get('dashboard.plan.no_budget')}{' '}
-      <Link
-        to="/budgets"
-        className="font-medium text-text-primary underline underline-offset-2"
-      >
-        {intl.get('dashboard.plan.open_budgets')}
+    <div className="flex flex-col items-start gap-3">
+      <p className="text-body text-text-secondary">
+        {budget
+          ? intl.get('dashboard.plan.empty_budget', { name: budget.name })
+          : intl.get('dashboard.plan.no_budget')}
+      </p>
+      {/* Кнопка внутри ссылки, а не ссылка в виде кнопки: общий сброс
+          красит ссылки цветом текста, и белая подпись на чернильной кнопке
+          пропадала (живой проход этапа 47). */}
+      <Link to="/budgets" className="no-underline">
+        <Button>{intl.get('dashboard.plan.open_budgets')}</Button>
       </Link>
-    </p>
+    </div>
+  );
+}
+
+/**
+ * Кольца плана (C2, R19): «идём по плану?» за секунду. Три кольца —
+ * доходы, расходы, прибыль, доля плана «с 1-го по сегодня»; справа — те же
+ * числа словами. Нет плана у кольца — «нет плана», не «0 %».
+ */
+function PlanRings({ plan }: { plan: HomepagePlan }) {
+  const rings = planRings(plan);
+  const tone = { income: 'chart-2', expenses: 'chart-3', profit: 'chart-1' } as const;
+  // Классы целиком, а не склейкой: Tailwind создаёт только то, что видит
+  // в исходнике буквально.
+  const dot = { income: 'bg-chart-2', expenses: 'bg-chart-3', profit: 'bg-chart-1' } as const;
+  const label = (key: string) => intl.get(`dashboard.plan.ring.${key}`);
+  return (
+    <div className="flex items-center gap-5">
+      <ProgressRing
+        size={112}
+        rings={rings.map((ring) => ({ label: label(ring.key), value: ring.value, tone: tone[ring.key] }))}
+      />
+      <ul className="flex min-w-0 flex-col gap-1.5">
+        {rings.map((ring) => (
+          <li key={ring.key} className="flex items-center gap-2 text-subhead">
+            <span aria-hidden className={cn('inline-block h-2 w-2 shrink-0 rounded-full', dot[ring.key])} />
+            <span className="text-text-secondary">{label(ring.key)}</span>
+            <span className="font-semibold tabular-nums text-text-primary">{formatShare(ring.value)}</span>
+          </li>
+        ))}
+        <li className="text-footnote text-text-muted">{intl.get('dashboard.plan.ring.hint')}</li>
+      </ul>
+    </div>
   );
 }
 
@@ -228,6 +270,8 @@ function CumulativeChart({ points }: { points: CumulativePoint[] }) {
   // месте» и сглаженные кривые.
   return (
     <ChartCard
+      // Внутри карточки «План» — без второй рамки: карточка в карточке.
+      className="border-0 p-0"
       title={intl.get('dashboard.plan.cumulative.title')}
       pointCount={points.length}
       table={{

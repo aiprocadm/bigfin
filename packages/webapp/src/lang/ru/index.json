@@ -5764,5 +5764,18 @@
   "dashboard.top_contractors.col.contractor": "Контрагент",
   "dashboard.top_contractors.col.revenue": "Выручка",
   "dashboard.top_contractors.col.share": "Доля",
-  "dashboard.top_contractors.col.cumulative": "Накопленная доля"
+  "dashboard.top_contractors.col.cumulative": "Накопленная доля",
+  "cash_timeline.horizon.aria": "Горизонт прогноза",
+  "cash_timeline.horizon.days": "{days} дней",
+  "homepage.more": "Ещё",
+  "dashboard.period.aria": "Период",
+  "dashboard.plan.ring.income": "Доходы",
+  "dashboard.plan.ring.expenses": "Расходы",
+  "dashboard.plan.ring.profit": "Прибыль",
+  "dashboard.plan.ring.hint": "Доля плана с 1-го числа по сегодня",
+  "dashboard.top_expenses.col.article": "Статья",
+  "all_transactions.more": "Ещё действия",
+  "all_transactions.view": "Вид",
+  "all_transactions.selected": "Выбрано: {count}",
+  "all_transactions.clear_selection": "Снять выбор"
 }

@@ -5764,5 +5764,18 @@
   "dashboard.top_contractors.col.contractor": "Counterparty",
   "dashboard.top_contractors.col.revenue": "Revenue",
   "dashboard.top_contractors.col.share": "Share",
-  "dashboard.top_contractors.col.cumulative": "Cumulative share"
+  "dashboard.top_contractors.col.cumulative": "Cumulative share",
+  "cash_timeline.horizon.aria": "Forecast horizon",
+  "cash_timeline.horizon.days": "{days} days",
+  "homepage.more": "More",
+  "dashboard.period.aria": "Period",
+  "dashboard.plan.ring.income": "Income",
+  "dashboard.plan.ring.expenses": "Expenses",
+  "dashboard.plan.ring.profit": "Profit",
+  "dashboard.plan.ring.hint": "Share of the plan from the 1st to today",
+  "dashboard.top_expenses.col.article": "Article",
+  "all_transactions.more": "More actions",
+  "all_transactions.view": "View",
+  "all_transactions.selected": "Selected: {count}",
+  "all_transactions.clear_selection": "Clear selection"
 }

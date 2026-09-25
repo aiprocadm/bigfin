@@ -33,6 +33,8 @@ export interface CashTimelineProps {
   formatHoverAmount?: (balance: number) => string;
   /** Как назвать день в подсказке при наведении. */
   formatHoverDay?: (date: string) => string;
+  /** Справа от подписи: переключатель горизонта 30 / 90 дней (C1). */
+  actions?: React.ReactNode;
   className?: string;
 }
 
@@ -63,6 +65,7 @@ export const CashTimeline = ({
   fallback,
   formatHoverAmount,
   formatHoverDay,
+  actions,
   className,
 }: CashTimelineProps) => {
   const geometry = React.useMemo(() => buildTimelineGeometry(points), [points]);
@@ -91,12 +94,15 @@ export const CashTimeline = ({
       className={cn('border-b border-border pb-6', className)}
       aria-labelledby="cash-timeline-title"
     >
-      <p
-        id="cash-timeline-title"
-        className="text-subhead text-text-secondary"
-      >
-        {intl.get('cash_timeline.title')}
-      </p>
+      <div className="flex items-center justify-between gap-3">
+        <p
+          id="cash-timeline-title"
+          className="text-subhead text-text-secondary"
+        >
+          {intl.get('cash_timeline.title')}
+        </p>
+        {actions}
+      </div>
 
       <div className="mt-1 flex flex-wrap items-baseline gap-x-4 gap-y-1">
         {/* Остаток СЕГОДНЯ красным не красится, даже когда впереди разрыв.

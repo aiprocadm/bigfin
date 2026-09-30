@@ -84,6 +84,9 @@ export function ReportCacheBar() {
   return (
     <div
       role="status"
+      // Время расчёта меняется от запуска к запуску, а сама строка то есть,
+      // то нет (кэш холодный или тёплый): эталонные снимки её прячут.
+      data-volatile=""
       className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-border bg-surface-elevated px-4 py-1.5 text-xs text-text-secondary"
     >
       {progress === null ? (

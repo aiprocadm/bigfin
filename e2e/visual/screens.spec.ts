@@ -20,6 +20,9 @@ const SIZES = [
 ] as const;
 const THEMES = ['light', 'dark'] as const;
 
+const HIDDEN_IN_SNAPSHOTS =
+  '.ReactQueryDevtools, [aria-label="Open React Query Devtools"], [data-volatile] { display: none !important; }';
+
 for (const size of SIZES) {
   for (const theme of THEMES) {
     test.describe(`эталоны ${size.name} — ${theme === 'light' ? 'светлая' : 'тёмная'}`, () => {
@@ -46,14 +49,17 @@ for (const size of SIZES) {
           if (!screen.guest) expect(page.url(), 'вход истёк: экран увёл на страницу входа').not.toContain('/auth/');
           if (screen.open) await screen.open(page);
           await page.waitForLoadState('networkidle');
+          await page.addStyleTag({ content: HIDDEN_IN_SNAPSHOTS });
           await page.waitForTimeout(800);
 
           await expect(page).toHaveScreenshot(`${screen.name}-${size.name}-${theme}.png`, {
             maxDiffPixelRatio: 0.002,
             animations: 'disabled',
             caret: 'hide',
-            // Значок панели отладки запросов — только в сборке для разработки.
-            style: '.ReactQueryDevtools, [aria-label="Open React Query Devtools"] { display: none !important; }',
+            // Прячем то, что не часть экрана: значок панели отладки (только
+            // в сборке для разработки) и строку «Данные на … (сохранённый
+            // расчёт)» — её время и само появление зависят от кэша.
+            style: HIDDEN_IN_SNAPSHOTS,
           });
           await page.close();
           await guest?.close();

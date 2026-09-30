@@ -15,7 +15,8 @@ export function EmptyStatus({
 }: any) {
   return (
     <div className={clsx(Style.root, classNames?.root)}>
-      <h1 className={clsx(Style.root_title, classNames?.title)}>{title}</h1>
+      {/* h2, а не h1: заголовок экрана один, и он выше (этап 56). */}
+      <h2 className={clsx(Style.root_title, classNames?.title)}>{title}</h2>
       <div className={clsx(Style.root_desc, classNames?.description)}>
         {description}
       </div>

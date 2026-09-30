@@ -21,7 +21,8 @@ export function PageFormBigNumber({ label, amount }: PageFormBigNumberProps) {
     <div className={clsx(CLASSES.PAGE_FORM_HEADER_BIG_NUMBERS)}>
       <div className={clsx(styles.root)}>
         <span className={clsx(styles.label)}>{label}</span>
-        <h1 className={clsx(styles.number)}>{amount}</h1>
+        {/* Сумма — не заголовок: заголовок формы один (этап 56). */}
+        <div className={clsx(styles.number)}>{amount}</div>
       </div>
     </div>
   );

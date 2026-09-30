@@ -49,7 +49,9 @@ export const FinancialSheetRoot = styled.div<FinancialSheetRootProps>`
 `}
 `;
 
-export const FinancialSheetTitle = styled.h1`
+// Название организации в шапке отчёта — не заголовок экрана: заголовок
+// один и крупный, его рисует каркас (этап 56, обход маршрутов).
+export const FinancialSheetTitle = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 20px;

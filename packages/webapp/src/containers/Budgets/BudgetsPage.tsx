@@ -15,6 +15,7 @@ import { ModuleDisabled } from '@/components/ui/module-disabled';
 import { useLocation } from 'react-router-dom';
 import { openIdFromSearch } from '@/containers/UniversalSearch/openFromSearch';
 import { PageTitle } from '@/components/ui/page-title';
+import { BudgetCard } from './BudgetCard';
 
 const SCENARIOS = ['optimistic', 'realistic', 'pessimistic'] as const;
 
@@ -65,21 +66,21 @@ export default function BudgetsPage() {
         />
       )}
 
-      <ul className="flex flex-col gap-1">
+      {/* Карточки бюджетов с кольцом освоения (C12, UI-050-2 ТЗ-4) вместо
+          списка подчёркнутых ссылок на пустой странице (O11). */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(budgets ?? []).map((b: Budget) => (
-          <li key={b.id}>
-            <button
-              className="text-left underline"
-              onClick={() => {
-                setSelected(b);
-                setScenario(b.activeScenario ?? 'realistic');
-              }}
-            >
-              {b.name} ({intl.get(`budgets.type.${b.type}`)}, {b.fiscalYear})
-            </button>
-          </li>
+          <BudgetCard
+            key={b.id}
+            budget={b}
+            selected={shownBudget?.id === b.id}
+            onOpen={() => {
+              setSelected(b);
+              setScenario(b.activeScenario ?? 'realistic');
+            }}
+          />
         ))}
-      </ul>
+      </div>
 
       {shownBudget && (
         <div className="flex flex-col gap-3">

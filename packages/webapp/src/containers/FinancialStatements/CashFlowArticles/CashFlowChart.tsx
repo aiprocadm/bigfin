@@ -1,17 +1,22 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import {
+  BAR_MAX_SIZE,
+  BAR_RADIUS,
+  ChartCard,
+  ChartLegend,
+  ChartTooltip,
+  chartAnimation,
+  chartColor,
+  formatAxisMoney,
+  gridProps,
+  useHiddenSeries,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 
 import { CashFlowPeriodPoint } from './cashFlowArticlesChart';
 
@@ -20,7 +25,7 @@ export interface CashFlowChartProps {
 }
 
 /**
- * График над отчётом «Деньги (ДДС по статьям)».
+ * График над отчётом «Деньги (ДДС по статьям)» (C7).
  *
  * ОТВЕЧАЕТ НА ОДИН ВОПРОС: как шли деньги по периодам — сколько пришло и
  * сколько ушло в каждом месяце (FT-001 ТЗ-3). Таблица под ним раскладывает
@@ -30,44 +35,71 @@ export interface CashFlowChartProps {
  * он был бы вторым источником тех же сумм, а расхождение картинки с
  * цифрами дороже отсутствия картинки.
  *
+ * ГЛАВНОЕ НА ЭКРАНЕ — ТАБЛИЦА (архетип «Отчёт», §8 ТЗ-4). График занимал
+ * весь первый экран, и таблица начиналась ниже края (O9, G8). Теперь он
+ * сворачивается и на телефоне и низком ноутбуке свёрнут сразу; выбор
+ * человека запоминается.
+ *
  * ВЫПЛАТЫ НЕ КРАСНЫЕ. Красный в продукте занят проблемами, которые требуют
  * действия сегодня. Потратить деньги — это не проблема, это работа.
  */
 export function CashFlowChart({ series }: CashFlowChartProps) {
-  return (
-    <div className="rounded-default border border-border bg-surface p-4">
-      <h2 className="mb-3 text-sm font-medium text-text-secondary">
-        {intl.get('cash_flow_articles.chart_title')}
-      </h2>
+  const { hidden, toggle } = useHiddenSeries();
+  const inflow = intl.get('cash_flow_articles.inflow');
+  const outflow = intl.get('cash_flow_articles.outflow');
 
-      <div className="h-56 w-full">
+  return (
+    <ChartCard
+      title={intl.get('cash_flow_articles.chart_title')}
+      collapsible={{ storageKey: 'bigfin.chart.cash_flow_articles' }}
+      pointCount={series.length}
+      table={{
+        columns: [
+          { key: 'label', label: intl.get('charts.col.period') },
+          { key: 'inflow', label: inflow, numeric: true, render: (row) => formatOrganizationMoney(row.inflow) },
+          { key: 'outflow', label: outflow, numeric: true, render: (row) => formatOrganizationMoney(row.outflow) },
+        ],
+        rows: series,
+      }}
+      legend={
+        <ChartLegend
+          hidden={hidden}
+          onToggle={toggle}
+          items={[
+            { key: 'inflow', label: inflow, color: chartColor.income },
+            { key: 'outflow', label: outflow, color: chartColor.expense },
+          ]}
+        />
+      }
+    >
+      {({ xInterval }) => (
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={series}
-            margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} width={64} />
-            <Tooltip
-              formatter={(value: any) =>
-                formatOrganizationMoney(Number(value) || 0)
-              }
-            />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
+          <BarChart data={series} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+            <CartesianGrid {...gridProps} />
+            <XAxis dataKey="label" {...xAxisProps} interval={xInterval} />
+            <YAxis {...yAxisProps} tickFormatter={formatAxisMoney} />
+            <Tooltip content={<ChartTooltip />} />
             <Bar
               dataKey="inflow"
-              name={intl.get('cash_flow_articles.inflow')}
-              fill="var(--color-action)"
+              name={inflow}
+              hide={hidden.has('inflow')}
+              fill={chartColor.income}
+              radius={BAR_RADIUS}
+              maxBarSize={BAR_MAX_SIZE}
+              isAnimationActive={chartAnimation()}
             />
             <Bar
               dataKey="outflow"
-              name={intl.get('cash_flow_articles.outflow')}
-              fill="var(--color-text-muted)"
+              name={outflow}
+              hide={hidden.has('outflow')}
+              fill={chartColor.expense}
+              radius={BAR_RADIUS}
+              maxBarSize={BAR_MAX_SIZE}
+              isAnimationActive={chartAnimation()}
             />
           </BarChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      )}
+    </ChartCard>
   );
 }

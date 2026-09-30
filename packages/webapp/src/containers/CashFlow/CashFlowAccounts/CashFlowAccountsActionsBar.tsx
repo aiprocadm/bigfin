@@ -123,6 +123,9 @@ function CashFlowAccountsActionsBar({
           className={Classes.MINIMAL}
           icon={<Icon icon="refresh-16" iconSize={14} />}
           onClick={handleRefreshBtnClick}
+          // Кнопка-значок без подписи читалкой экрана звучала «кнопка» (этап 55).
+          aria-label={intl.get('refresh')}
+          title={intl.get('refresh')}
         />
       </NavbarGroup>
     </DashboardActionsBar>

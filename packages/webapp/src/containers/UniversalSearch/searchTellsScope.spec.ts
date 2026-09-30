@@ -25,11 +25,15 @@ const read = (relative: string): string =>
 
 describe('подпись поиска', () => {
   const topbar = read('components/Dashboard/ConnectedTopbar.tsx');
-  const dialog = read('components/UniversalSearch/UniversalSearch.tsx');
+  // Старое окно `UniversalSearch` удалено в этапе 46 по решению владельца:
+  // с этапа 45 его место заняла командная строка, и открыть окно было
+  // нечем. Пустой ответ командной строки — «Ничего не нашлось» по всем
+  // видам сразу, и это правда.
+  const palette = read('components/ui/command-palette.tsx');
 
   it('исходники читаются', () => {
     expect(topbar).toContain('searchSlot');
-    expect(dialog).toContain('noResults');
+    expect(palette).toContain('command_palette.nothing');
   });
 
   it('подпись в шапке — из словаря, и обещание «везде» выполняется', () => {
@@ -43,20 +47,11 @@ describe('подпись поиска', () => {
     expect(palette).not.toContain('defaultResourceType');
   });
 
-  it('пустой ответ говорит, среди чего искали', () => {
-    expect(dialog).toContain('universal_search.no_results_in');
-    expect(dialog).toContain('universal_search.switch_type_hint');
-  });
-
   it('оба текста есть в обоих словарях', () => {
     const ru = JSON.parse(read('lang/ru/index.json'));
     const en = JSON.parse(read('lang/en/index.json'));
 
-    [
-      'universal_search.placeholder_in',
-      'universal_search.no_results_in',
-      'universal_search.switch_type_hint',
-    ].forEach((key) => {
+    ['topbar.search_commands', 'command_palette.nothing'].forEach((key) => {
       expect(ru[key]).toBeTruthy();
       expect(en[key]).toBeTruthy();
     });

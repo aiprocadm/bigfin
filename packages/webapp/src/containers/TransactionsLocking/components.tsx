@@ -358,7 +358,8 @@ const TransLockingInner = styled.div`
   flex: 1 1 0;
 `;
 
-const TransLockingItemTitle = styled.h1`
+// Название блока блокировки — h2: главный заголовок экрана один (этап 56).
+const TransLockingItemTitle = styled.h2`
   font-size: 18px;
   margin: 0 0 8px;
   line-height: 1;

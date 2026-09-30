@@ -163,6 +163,8 @@ interface MoneyOutFormV2Props {
   /** Поля копируемой операции — «Клонировать» из реестра (FT-022 ТЗ-3). */
   prefill?: Record<string, unknown> | null;
   onClose: () => void;
+  /** «Сохранить и ещё»: форма открывается заново, окно остаётся. */
+  onAgain?: () => void;
 }
 
 /**
@@ -175,6 +177,7 @@ function MoneyOutFormV2Root({
   accountType,
   prefill,
   onClose,
+  onAgain,
   openDialog,
 }: MoneyOutFormV2Props & WithDialogActionsProps) {
   const { featureCan } = useFeatureCan();
@@ -225,6 +228,7 @@ function MoneyOutFormV2Root({
       prefill={prefill ?? null}
       onSubmitTransaction={createTransaction}
       onClose={onClose}
+      onAgain={onAgain}
       openDialog={openDialog}
     />
   );
@@ -243,6 +247,7 @@ interface MoneyOutFormInnerProps {
   prefill: Record<string, unknown> | null;
   onSubmitTransaction: (values: Record<string, unknown>) => Promise<unknown>;
   onClose: () => void;
+  onAgain?: () => void;
   openDialog: WithDialogActionsProps['openDialog'];
 }
 
@@ -266,6 +271,7 @@ function MoneyOutFormInner({
   prefill,
   onSubmitTransaction,
   onClose,
+  onAgain,
   openDialog,
 }: MoneyOutFormInnerProps) {
   const schema = useMemo(() => getMoneyOutSchema(), []);
@@ -404,7 +410,7 @@ function MoneyOutFormInner({
     lastTransactionNoRef.current = settings.transactionNumber;
   };
 
-  const onSubmit = async (values: MoneyOutFormValues) => {
+  const onSubmit = async (values: MoneyOutFormValues, again = false) => {
     const payload: Record<string, unknown> = {
       date: values.date,
       amount: parseFormNumber(values.amount),
@@ -446,7 +452,11 @@ function MoneyOutFormInner({
         message: intl.get('money_out.saved'),
         intent: Intent.SUCCESS,
       });
-      onClose();
+      // «Сохранить и ещё» (UI-052-2 ТЗ-4): окно не закрывается, форма
+      // открывается чистой — с новым номером, — чтобы разнести пачку
+      // операций подряд, не открывая окно заново каждый раз.
+      if (again && onAgain) onAgain();
+      else onClose();
     } catch (error) {
       showApiError(error);
     }
@@ -456,7 +466,7 @@ function MoneyOutFormInner({
     <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((values) => onSubmit(values))}
           className="flex flex-col gap-4"
         >
           {/* Сумма — главное поле, крупно сверху */}
@@ -475,6 +485,10 @@ function MoneyOutFormInner({
                       inputMode="decimal"
                       placeholder="0"
                       className="h-14 w-full flex-1 border-0 bg-transparent text-right text-2xl font-semibold tabular-nums text-text-primary placeholder:text-text-muted focus:outline-none"
+                      // Фокус показывает рамка вокруг поля; синяя рамка
+                      // фокуса Blueprint (правило вне слоёв) рисовалась
+                      // второй — «двойная рамка» из этапа 43.
+                      style={{ outline: 'none' }}
                     />
                     <span className="shrink-0 text-base font-medium text-text-muted">
                       {amountCurrency}
@@ -576,25 +590,25 @@ function MoneyOutFormInner({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{intl.get('transaction_type')}</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value || undefined}
-                      onValueChange={field.onChange}
-                    >
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
                       <SelectTrigger>
                         <SelectValue
                           placeholder={intl.get('transaction_type')}
                         />
                       </SelectTrigger>
-                      <SelectContent>
-                        {transactionTypeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+                    </FormControl>
+                    <SelectContent>
+                      {transactionTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -693,34 +707,34 @@ function MoneyOutFormInner({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{intl.get('branch')}</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={
-                              field.value != null
-                                ? String(field.value)
-                                : undefined
-                            }
-                            onValueChange={(value) =>
-                              field.onChange(Number(value))
-                            }
-                          >
+                        <Select
+                          value={
+                            field.value != null
+                              ? String(field.value)
+                              : undefined
+                          }
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
+                        >
+                          <FormControl>
                             <SelectTrigger>
                               <SelectValue
                                 placeholder={intl.get('branch')}
                               />
                             </SelectTrigger>
-                            <SelectContent>
-                              {branches.map((branch) => (
-                                <SelectItem
-                                  key={branch.id}
-                                  value={String(branch.id)}
-                                >
-                                  {branch.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
+                          </FormControl>
+                          <SelectContent>
+                            {branches.map((branch) => (
+                              <SelectItem
+                                key={branch.id}
+                                value={String(branch.id)}
+                              >
+                                {branch.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -780,6 +794,16 @@ function MoneyOutFormInner({
                 опубликовать» — для владельца малого бизнеса это набор
                 слов: «опубликовать» звучит как «выложить в интернет».
                 Уведомление после говорит теми же словами. */}
+            {onAgain && (
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={form.formState.isSubmitting || !splitsOk}
+                onClick={form.handleSubmit((values) => onSubmit(values, true))}
+              >
+                {intl.get('money_form.save_and_more')}
+              </Button>
+            )}
             <Button type="submit" disabled={form.formState.isSubmitting || !splitsOk}>
               {form.formState.isSubmitting && <Spinner size="sm" />}
               {form.formState.isSubmitting

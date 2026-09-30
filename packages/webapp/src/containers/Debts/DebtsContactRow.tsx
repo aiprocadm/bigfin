@@ -53,7 +53,7 @@ export function DebtsContactRow({ contact, side }: Props) {
         <span className="flex items-center gap-4 text-sm">
           <span>{fmt(contact.total)}</span>
           {contact.overdueTotal > 0 && (
-            <span className="text-red-600">
+            <span className="text-danger">
               {intl.get('debts.overdue')}: {fmt(contact.overdueTotal)}
             </span>
           )}
@@ -71,7 +71,7 @@ export function DebtsContactRow({ contact, side }: Props) {
                 {intl.get('debts.doc', { number: d.number })} ·{' '}
                 {formatShortDate(d.dueDate)}
                 {d.overdueDays > 0 && (
-                  <span className="text-red-600">
+                  <span className="text-danger">
                     {' '}
                     · {intl.get('debts.overdue_days', { days: d.overdueDays })}
                   </span>

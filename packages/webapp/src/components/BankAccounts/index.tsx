@@ -37,7 +37,7 @@ function BankAccountBalance({ amount, loading }) {
       >
         {amount}
       </BankAccountBalanceAmount>
-      <BankAccountBalanceLabel>{intl.get('balance')}</BankAccountBalanceLabel>
+      <BankAccountBalanceLabel>{intl.get('cashflow.account.remaining')}</BankAccountBalanceLabel>
     </BankAccountBalanceWrap>
   );
 }
@@ -71,9 +71,9 @@ export function BankAccount({
         <BankAccountTitle className={clsx({ [Classes.SKELETON]: loading })}>
           {title}
         </BankAccountTitle>
-        <BnakAccountCode className={clsx({ [Classes.SKELETON]: loading })}>
-          {code}
-        </BnakAccountCode>
+        {/* Бухгалтерский номер счёта («10001») на карточке не показывается
+            (O12, UI-051-1 ТЗ-4): человеку без бухгалтерии он ничего не
+            говорит. Номер — в карточке самого счёта. */}
         {!loading && <BankAccountTypeIcon type={type} />}
       </BankAccountHeader>
 
@@ -163,7 +163,9 @@ const BankAccountBalanceLabel = styled.div`
   font-size: 10px;
   letter-spacing: 0.5px;
   margin-top: 3px;
-  opacity: 0.6;
+  /* Было opacity: 0.6 — 4:1 при норме 4.5:1 (axe, этап 55). Цвет вторичного
+     текста из токенов держит контраст в обеих темах. */
+  color: rgb(var(--c-text-secondary));
 `;
 
 const MetaLineWrap = styled.div`

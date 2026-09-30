@@ -421,13 +421,18 @@ export class GetDashboardOverviewService {
 
     const months: OverviewMonth[] = [];
 
+    // ПОМЕСЯЧНЫЕ СУММЫ ЛЕЖАТ В `horizontalTotals`. Здесь читалось
+    // `periods` — такого поля у узла отчёта нет, и график «Деньги по
+    // месяцам» на главной ВСЕГДА был нулевым, хотя плитки над ним показывали
+    // выручку (живой проход этапа 46 ТЗ-4). Проверка подменяла отчёт той же
+    // выдуманной формой и потому зеленела.
     for (let index = 0; index < OVERVIEW_MONTHS; index += 1) {
       const month = start.clone().add(index, 'months');
       const incomeAmount = Number(
-        income?.periods?.[index]?.total?.amount ?? 0,
+        income?.horizontalTotals?.[index]?.total?.amount ?? 0,
       );
       const expensesAmount = Number(
-        expenses?.periods?.[index]?.total?.amount ?? 0,
+        expenses?.horizontalTotals?.[index]?.total?.amount ?? 0,
       );
 
       months.push({

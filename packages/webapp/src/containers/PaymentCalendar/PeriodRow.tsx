@@ -51,7 +51,7 @@ export function PeriodRow({ period, days, onMaterialize }: PeriodRowProps) {
         onClick={() => setOpen((value) => !value)}
         className={`flex w-full items-center justify-between gap-3 px-2 text-left ${
           hasMovement ? 'hover:bg-muted/40' : 'cursor-default'
-        } ${negative ? 'font-semibold text-red-600' : ''}`}
+        } ${negative ? 'font-semibold text-danger' : ''}`}
       >
         <span className="flex items-center gap-1">
           {hasMovement && <Chevron className="h-4 w-4" aria-hidden="true" />}

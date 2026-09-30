@@ -49,9 +49,11 @@ export function HomepageCustomize({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" aria-label={intl.get('homepage.widgets.customize')}>
           <SlidersHorizontal className="h-4 w-4" aria-hidden />
-          {intl.get('homepage.widgets.customize')}
+          {/* На телефоне — только значок: заголовок главной с периодом и
+              «⋯» не помещался в 390 точек. */}
+          <span className="hidden sm:inline">{intl.get('homepage.widgets.customize')}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 max-w-[calc(100vw-2rem)]">

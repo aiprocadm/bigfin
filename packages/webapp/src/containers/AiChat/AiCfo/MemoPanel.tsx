@@ -14,6 +14,18 @@ import {
   YAxis,
 } from 'recharts';
 
+import {
+  BAR_MAX_SIZE,
+  BAR_RADIUS,
+  ChartCard,
+  ChartTooltip,
+  chartAnimation,
+  chartColor,
+  formatAxisMoney,
+  gridProps,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 import { AppToaster } from '@/components';
 import { Button } from '@/components/ui/button';
 import { DateField } from '@/components/ui/date-field';
@@ -189,26 +201,40 @@ function MemoSectionView({ section }: { section: AiCfoMemoSection }) {
 
       {chart.length > 0 && (
         // График из тех же чисел, что в тексте: своего запроса у него нет,
-        // иначе картинка могла бы разойтись с цифрами.
-        <div className="h-48 w-full min-w-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chart} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-              <YAxis
-                tick={{ fontSize: 11 }}
-                width={72}
-                tickFormatter={(value: any) => formatOrganizationMoney(Number(value) || 0)}
-              />
-              <Tooltip formatter={(value: any) => formatOrganizationMoney(Number(value) || 0)} />
-              <Bar
-                dataKey="value"
-                name={section.title}
-                fill="var(--color-action)"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        // иначе картинка могла бы разойтись с цифрами. Через общий набор
+        // (C21, этап 46 ТЗ-4): оси «тыс./млн ₽», «Таблица».
+        <ChartCard
+          className="min-w-0 border-0 p-0"
+          title={section.title}
+          heightOverride={{ desktop: 192, phone: 192 }}
+          pointCount={chart.length}
+          table={{
+            columns: [
+              { key: 'label', label: intl.get('charts.col.period') },
+              { key: 'value', label: section.title, numeric: true, render: (row: any) => formatOrganizationMoney(Number(row.value) || 0) },
+            ],
+            rows: chart as any[],
+          }}
+        >
+          {({ xInterval }) => (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chart} margin={{ top: 8, right: 8, bottom: 8, left: 8 }}>
+                <CartesianGrid {...gridProps} />
+                <XAxis dataKey="label" {...xAxisProps} interval={xInterval} />
+                <YAxis {...yAxisProps} tickFormatter={formatAxisMoney} />
+                <Tooltip content={<ChartTooltip />} />
+                <Bar
+                  dataKey="value"
+                  name={section.title}
+                  fill={chartColor.ink}
+                  radius={BAR_RADIUS}
+                  maxBarSize={BAR_MAX_SIZE}
+                  isAnimationActive={chartAnimation()}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </ChartCard>
       )}
     </section>
   );

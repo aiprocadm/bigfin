@@ -8,6 +8,8 @@ import { transformToCamelCase } from '@/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageTitle } from '@/components/ui/page-title';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { isThemeChoice, readStoredTheme, type ThemeChoice } from '@/theme/theme';
 
 /**
  * Личные настройки отображения (FIN-026 ТЗ-2).
@@ -71,6 +73,23 @@ export default function DisplayPreferencesPage() {
           {intl.get('display_preferences.page_hint')}
         </p>
       </div>
+
+      {/* Тема (UI-054-1 ТЗ-4; «Оформление» в меню настроек — это бланки): «Светлая / Тёмная / Как в системе».
+          По умолчанию — как в системе (R14). */}
+      <section className="flex max-w-2xl flex-col gap-2">
+        <h2 className="text-headline text-text-primary">{intl.get('display_preferences.theme')}</h2>
+        <SegmentedControl
+          className="self-start"
+          aria-label={intl.get('display_preferences.theme')}
+          value={isThemeChoice(prefs.theme) ? prefs.theme : readStoredTheme()}
+          onChange={(theme: ThemeChoice) => save.mutate({ theme })}
+          options={(['light', 'dark', 'system'] as const).map((value) => ({
+            value,
+            label: intl.get(`display_preferences.theme.${value}`),
+          }))}
+        />
+        <p className="text-footnote text-text-secondary">{intl.get('display_preferences.theme.hint')}</p>
+      </section>
 
       <ul className="flex max-w-2xl flex-col gap-3">
         {TOGGLES.map((toggle) => (

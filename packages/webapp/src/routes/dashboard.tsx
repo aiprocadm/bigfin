@@ -1,4 +1,5 @@
-import React, { lazy } from 'react';
+import React from 'react';
+import { lazyWithPreload } from '@/utils/lazyWithPreload';
 import intl from 'react-intl-universal';
 import { RESOURCES_TYPES } from '@/constants/resourcesTypes';
 
@@ -38,13 +39,13 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Accounts.
   {
     path: '/accounts/import',
-    component: lazy(() => import('@/containers/Accounts/AccountsImport')),
+    component: lazyWithPreload(() => import('@/containers/Accounts/AccountsImport')),
     breadcrumb: intl.get('accounts_import'),
     pageTitle: intl.get('accounts_import'),
   },
   {
     path: `/accounts`,
-    component: lazy(() => import('@/containers/Accounts/AccountsChart')),
+    component: lazyWithPreload(() => import('@/containers/Accounts/AccountsChart')),
     breadcrumb: intl.get('accounts_chart'),
     hotkey: 'shift+a',
     pageTitle: intl.get('accounts_chart'),
@@ -53,7 +54,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Accounting.
   {
     path: `/make-journal-entry`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/Accounting/MakeJournal/MakeJournalEntriesPage'),
     ),
@@ -66,7 +67,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/manual-journals/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/Accounting/MakeJournal/MakeJournalEntriesPage'),
     ),
@@ -78,7 +79,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/manual-journals/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Accounting/ManualJournalsImport'),
     ),
     breadcrumb: intl.get('edit'),
@@ -88,7 +89,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/manual-journals`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/Accounting/JournalsLanding/ManualJournalsList'),
     ),
@@ -99,7 +100,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/item/categories/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/ItemsCategories/ItemCategoriesImport'),
     ),
     backLink: true,
@@ -108,7 +109,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/items/categories`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/ItemsCategories/ItemCategoriesList'),
     ),
     breadcrumb: intl.get('categories'),
@@ -118,7 +119,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Items.
   {
     path: `/items/import`,
-    component: lazy(() => import('@/containers/Items/ItemsImportPage')),
+    component: lazyWithPreload(() => import('@/containers/Items/ItemsImportPage')),
     backLink: true,
     pageTitle: intl.get('items_import'),
     defaultSearchResource: RESOURCES_TYPES.ITEM,
@@ -126,7 +127,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
 
   {
     path: `/items/:id/edit`,
-    component: lazy(() => import('@/containers/Items/ItemFormPage')),
+    component: lazyWithPreload(() => import('@/containers/Items/ItemFormPage')),
     name: 'item-edit',
     breadcrumb: intl.get('edit_item'),
     pageTitle: intl.get('edit_item'),
@@ -135,7 +136,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/items/new`,
-    component: lazy(() => import('@/containers/Items/ItemFormPage')),
+    component: lazyWithPreload(() => import('@/containers/Items/ItemFormPage')),
     name: 'item-new',
     breadcrumb: intl.get('new_item'),
     hotkey: 'ctrl+shift+w',
@@ -145,7 +146,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/items`,
-    component: lazy(() => import('@/containers/Items/ItemsList')),
+    component: lazyWithPreload(() => import('@/containers/Items/ItemsList')),
     breadcrumb: intl.get('items'),
     hotkey: 'shift+w',
     pageTitle: intl.get('items_list'),
@@ -155,7 +156,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Inventory adjustments.
   {
     path: `/inventory-adjustments`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/InventoryAdjustments/InventoryAdjustmentList'),
     ),
     breadcrumb: intl.get('inventory_adjustments'),
@@ -166,7 +167,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Warehouse Transfer.
   {
     path: `/warehouses-transfers/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/WarehouseTransfers/WarehouseTransferForm/WarehouseTransferFormPage'
@@ -179,7 +180,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/warehouses-transfers/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/WarehouseTransfers/WarehouseTransferForm/WarehouseTransferFormPage'
@@ -192,7 +193,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/warehouses-transfers`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/WarehouseTransfers/WarehouseTransfersLanding/WarehouseTransfersList'
@@ -205,7 +206,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Financial Reports.
   {
     path: `/financial-reports/general-ledger`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/FinancialStatements/GeneralLedger/GeneralLedger'),
     ),
@@ -219,7 +220,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/balance-sheet`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/FinancialStatements/BalanceSheet/BalanceSheet'),
     ),
@@ -232,7 +233,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/trial-balance-sheet`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/TrialBalanceSheet/TrialBalanceSheet'
@@ -249,7 +250,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     path: `/financial-reports/profit-loss-sheet`,
     // Управленческий или бухгалтерский ОПиУ — переключатель на странице
     // (FT-010 ТЗ-3); бухгалтерский открывается прежним экраном.
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/ManagerialPnl/ProfitLossPage'
@@ -264,7 +265,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/financial-reports/receivable-aging-summary',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/ARAgingSummary/ARAgingSummary'
@@ -278,7 +279,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/financial-reports/payable-aging-summary',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/APAgingSummary/APAgingSummary'
@@ -292,7 +293,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/journal-sheet`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/FinancialStatements/Journal/Journal'),
     ),
     breadcrumb: intl.get('journal_sheet'),
@@ -304,7 +305,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/purchases-by-items`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/PurchasesByItems/PurchasesByItems'
@@ -318,7 +319,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/sales-by-items`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/FinancialStatements/SalesByItems/SalesByItems'),
     ),
@@ -332,7 +333,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/inventory-valuation`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/InventoryValuation/InventoryValuation'
@@ -346,7 +347,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/customers-balance-summary`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/CustomersBalanceSummary/CustomersBalanceSummary'
@@ -360,7 +361,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/vendors-balance-summary`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/VendorsBalanceSummary/VendorsBalanceSummary'
@@ -374,7 +375,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/transactions-by-customers`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/CustomersTransactions/CustomersTransactions'
@@ -390,7 +391,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/transactions-by-vendors`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/VendorsTransactions/VendorsTransactions'
@@ -407,7 +408,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   {
     // Главный денежный отчёт продукта: прямой метод, по статьям (FIN-013).
     path: `/financial-reports/cash-flow-articles`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/CashFlowArticles/CashFlowArticles'
@@ -421,7 +422,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/cash-flow`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/CashFlowStatement/CashFlowStatement'
@@ -435,7 +436,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/inventory-item-details`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/InventoryItemDetails/InventoryItemDetails'
@@ -454,7 +455,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
 
   {
     path: '/financial-reports/sales-tax-liability-summary',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/FinancialStatements/SalesTaxLiabilitySummary/SalesTaxLiabilitySummary'
@@ -467,7 +468,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/financial-reports/audit-log`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/FinancialStatements/AuditLog/AuditLogReport'),
     ),
     breadcrumb: intl.get('audit_log_report'),
@@ -477,7 +478,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/financial-reports',
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/FinancialStatements/FinancialReports'),
     ),
     breadcrumb: intl.get('financial_reports'),
@@ -486,7 +487,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Expenses.
   {
     path: `/expenses/import`,
-    component: lazy(() => import('@/containers/Expenses/ExpensesImport')),
+    component: lazyWithPreload(() => import('@/containers/Expenses/ExpensesImport')),
     breadcrumb: intl.get('expenses_import'),
     hotkey: 'ctrl+shift+x',
     pageTitle: intl.get('expenses_import'),
@@ -495,7 +496,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/expenses/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Expenses/ExpenseForm/ExpenseFormPage'),
     ),
     breadcrumb: intl.get('expenses'),
@@ -506,7 +507,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/expenses/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Expenses/ExpenseForm/ExpenseFormPage'),
     ),
     breadcrumb: intl.get('edit'),
@@ -516,7 +517,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/expenses`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Expenses/ExpensesLanding/ExpensesList'),
     ),
     breadcrumb: intl.get('expenses_list'),
@@ -527,14 +528,14 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Customers
   {
     path: `/customers/import`,
-    component: lazy(() => import('@/containers/Customers/CustomersImport')),
+    component: lazyWithPreload(() => import('@/containers/Customers/CustomersImport')),
     backLink: true,
     pageTitle: intl.get('customers_import'),
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
   },
   {
     path: `/customers/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Customers/CustomerForm/CustomerFormPage'),
     ),
     name: 'customer-edit',
@@ -545,7 +546,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/customers/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Customers/CustomerForm/CustomerFormPage'),
     ),
     name: 'customer-new',
@@ -557,7 +558,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/customers`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Customers/CustomersLandingV2/CustomersListSwitch'
@@ -572,14 +573,14 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Vendors
   {
     path: `/vendors/import`,
-    component: lazy(() => import('@/containers/Vendors/VendorsImport')),
+    component: lazyWithPreload(() => import('@/containers/Vendors/VendorsImport')),
     backLink: true,
     pageTitle: intl.get('vendors_import'),
     defaultSearchResource: RESOURCES_TYPES.VENDOR,
   },
   {
     path: `/vendors/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Vendors/VendorForm/VendorFormPage').then(module => ({ default: module.VendorFormPage })),
     ),
     name: 'vendor-edit',
@@ -590,7 +591,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/vendors/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Vendors/VendorForm/VendorFormPage').then(module => ({ default: module.VendorFormPage })),
     ),
     name: 'vendor-new',
@@ -602,7 +603,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/vendors`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Vendors/VendorsLandingV2/VendorsListSwitch'),
     ),
     breadcrumb: intl.get('vendors'),
@@ -614,7 +615,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Estimates
   {
     path: `/estimates/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Estimates/EstimatesImport'),
     ),
     name: 'estimate-edit',
@@ -625,7 +626,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/estimates/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/Sales/Estimates/EstimateForm/v2/EstimateFormPageV2'),
     ),
@@ -638,7 +639,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/estimates/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/Sales/Estimates/EstimateForm/v2/EstimateFormPageV2'),
     ),
@@ -652,7 +653,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/estimates`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/Sales/Estimates/EstimatesLanding/EstimatesList'),
     ),
@@ -666,7 +667,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Invoices.
   {
     path: `/invoices/import`,
-    component: lazy(() => import('@/containers/Sales/Invoices/InvoicesImport')),
+    component: lazyWithPreload(() => import('@/containers/Sales/Invoices/InvoicesImport')),
     name: 'invoice-edit',
     breadcrumb: intl.get('invoices_import'),
     pageTitle: intl.get('invoices_import'),
@@ -675,7 +676,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/invoices/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Invoices/InvoiceForm/v2/InvoiceFormPageV2'),
     ),
     name: 'invoice-edit',
@@ -687,7 +688,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/invoices/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Invoices/InvoiceForm/v2/InvoiceFormPageV2'),
     ),
     name: 'invoice-new',
@@ -700,7 +701,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/invoices`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Invoices/InvoicesLanding/InvoicesList'),
     ),
     breadcrumb: intl.get('invoices_list'),
@@ -711,7 +712,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Sales Receipts.
   {
     path: `/receipts/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Receipts/SaleReceiptsImport'),
     ),
     name: 'receipt-import',
@@ -722,7 +723,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/receipts/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Receipts/ReceiptForm/v2/ReceiptFormPageV2'),
     ),
     name: 'receipt-edit',
@@ -734,7 +735,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/receipts/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Receipts/ReceiptForm/v2/ReceiptFormPageV2'),
     ),
     name: 'receipt-new',
@@ -747,7 +748,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/receipts`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/Receipts/ReceiptsLanding/ReceiptsList'),
     ),
     breadcrumb: intl.get('receipts_list'),
@@ -759,7 +760,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Sales Credit notes.
   {
     path: `/credit-notes/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/CreditNotes/CreditNotesImport'),
     ),
     name: 'credit-note-import',
@@ -770,7 +771,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/credit-notes/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Sales/CreditNotes/CreditNoteForm/CreditNoteFormPage'
@@ -785,7 +786,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/credit-notes/new',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Sales/CreditNotes/CreditNoteForm/CreditNoteFormPage'
@@ -800,7 +801,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/credit-notes',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Sales/CreditNotes/CreditNotesLanding/CreditNotesList'
@@ -813,7 +814,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Payment receives
   {
     path: `/payments-received/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Sales/PaymentsReceived/PaymentsReceivedImport'),
     ),
     name: 'payment-receive-import',
@@ -824,7 +825,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/payments-received/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Sales/PaymentsReceived/PaymentReceiveForm/PaymentReceiveFormPage'
@@ -839,7 +840,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/payment-received/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Sales/PaymentsReceived/PaymentReceiveForm/PaymentReceiveFormPage'
@@ -854,7 +855,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/payments-received`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Sales/PaymentsReceived/PaymentsLanding/PaymentsReceivedList'
@@ -868,7 +869,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Bills
   {
     path: `/bills/import`,
-    component: lazy(() => import('@/containers/Purchases/Bills/BillImport')),
+    component: lazyWithPreload(() => import('@/containers/Purchases/Bills/BillImport')),
     name: 'bill-edit',
     // breadcrumb: intl.get('edit'),
     pageTitle: intl.get('bills_import'),
@@ -877,7 +878,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/bills/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Purchases/Bills/BillForm/v2/BillFormPageV2'),
     ),
     name: 'bill-edit',
@@ -889,7 +890,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/bills/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Purchases/Bills/BillForm/v2/BillFormPageV2'),
     ),
     name: 'bill-new',
@@ -902,7 +903,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/bills`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Purchases/Bills/BillsLanding/BillsList'),
     ),
     breadcrumb: intl.get('bills_list'),
@@ -913,7 +914,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   //  Purchases Credit note.
   {
     path: `/vendor-credits/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Purchases/CreditNotes/VendorCreditsImport'),
     ),
     name: 'vendor-credits-edit',
@@ -924,7 +925,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/vendor-credits/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Purchases/CreditNotes/CreditNoteForm/VendorCreditNoteFormPage'
@@ -939,7 +940,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/vendor-credits/new',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Purchases/CreditNotes/CreditNoteForm/VendorCreditNoteFormPage'
@@ -954,7 +955,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: '/vendor-credits',
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Purchases/CreditNotes/CreditNotesLanding/VendorsCreditNotesList'
@@ -968,7 +969,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Payment modes.
   {
     path: `/payments-made/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Purchases/PaymentsMade/PaymentsMadeImport'),
     ),
     name: 'payment-made-edit',
@@ -979,7 +980,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/payments-made/:id/edit`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Purchases/PaymentsMade/PaymentForm/PaymentMadeFormPage'
@@ -994,7 +995,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/payments-made/new`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Purchases/PaymentsMade/PaymentForm/PaymentMadeFormPage'
@@ -1009,7 +1010,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/payments-made`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Purchases/PaymentsMade/PaymentsLanding/PaymentMadeList'
@@ -1025,7 +1026,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
     // «операции одного счёта»: у того три сегмента пути, у этого два, так что
     // они не пересекаются, но порядок делает намерение явным.
     path: `/cashflow-accounts/transactions`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/CashFlow/AllTransactions/AllTransactionsPage'),
     ),
@@ -1036,22 +1037,22 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // пути — не пересекаются с «/cashflow-accounts/:id/…».
   {
     path: `/cashflow-accounts/trash`,
-    component: lazy(() => import('@/containers/Banking/Trash/TrashPage')),
+    component: lazyWithPreload(() => import('@/containers/Banking/Trash/TrashPage')),
     pageTitle: intl.get('trash.title'),
   },
   {
     path: `/cashflow-accounts/imports`,
-    component: lazy(() => import('@/containers/Banking/ImportHistory/ImportHistoryPage')),
+    component: lazyWithPreload(() => import('@/containers/Banking/ImportHistory/ImportHistoryPage')),
     pageTitle: intl.get('import_history.title'),
   },
   {
     path: `/cashflow-accounts/reconciliation`,
-    component: lazy(() => import('@/containers/Banking/Reconciliation/ReconciliationPage')),
+    component: lazyWithPreload(() => import('@/containers/Banking/Reconciliation/ReconciliationPage')),
     pageTitle: intl.get('reconciliation.title'),
   },
   {
     path: `/cashflow-accounts/:id/transactions`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/CashFlow/AccountTransactions/AccountTransactionsList'
@@ -1064,7 +1065,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/cashflow-accounts/:id/import`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/CashFlow/ImportIUncategorizedTransactions/ImportUncategorizedTransactionsPage'
@@ -1077,7 +1078,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/cashflow-accounts`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import('@/containers/CashFlow/CashFlowAccounts/CashFlowAccountsList'),
     ),
@@ -1086,7 +1087,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   },
   {
     path: `/transactions-locking`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/TransactionsLocking/TransactionsLockingPage'),
     ),
     pageTitle: intl.get('sidebar.transactions_locaking'),
@@ -1097,14 +1098,14 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // не удалены — их удаление отдельное решение владельца.
   {
     path: '/tax-rates/import',
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/TaxRates/containers/TaxRatesImport'),
     ),
     pageTitle: intl.get('tax_rates'),
   },
   {
     path: '/tax-rates',
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/TaxRates/pages/TaxRatesLanding'),
     ),
     pageTitle: intl.get('tax_rates'),
@@ -1112,7 +1113,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Bank Rules
   {
     path: '/bank-rules',
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Banking/Rules/RulesList/RulesLandingPage'),
     ),
     pageTitle: intl.get('bank_rules'),
@@ -1121,7 +1122,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Management Articles
   {
     path: `/management-articles`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/ManagementArticles/ManagementArticlesPage'),
     ),
     breadcrumb: intl.get('management_articles.page_title'),
@@ -1130,7 +1131,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Payment Calendar
   {
     path: `/payment-calendar`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/PaymentCalendar/PaymentCalendarPage'),
     ),
     breadcrumb: intl.get('payment_calendar.page_title'),
@@ -1140,7 +1141,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Budgets
   {
     path: `/budgets`,
-    component: lazy(() => import('@/containers/Budgets/BudgetsPage')),
+    component: lazyWithPreload(() => import('@/containers/Budgets/BudgetsPage')),
     breadcrumb: intl.get('budgets.page_title'),
     pageTitle: intl.get('budgets.page_title'),
     defaultSearchResource: RESOURCES_TYPES.BUDGET,
@@ -1148,14 +1149,14 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Debts (Долги)
   {
     path: `/debts`,
-    component: lazy(() => import('@/containers/Debts/DebtsPage')),
+    component: lazyWithPreload(() => import('@/containers/Debts/DebtsPage')),
     breadcrumb: intl.get('debts.title'),
     pageTitle: intl.get('debts.title'),
   },
   // Payment Requests (Заявки на оплату)
   {
     path: `/payment-requests`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/PaymentRequests/PaymentRequestsPage'),
     ),
     breadcrumb: intl.get('payment_requests.page_title'),
@@ -1165,7 +1166,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Deals (Сделки)
   {
     path: `/deals`,
-    component: lazy(() => import('@/containers/Deals/DealsPage')),
+    component: lazyWithPreload(() => import('@/containers/Deals/DealsPage')),
     breadcrumb: intl.get('deals.page_title'),
     pageTitle: intl.get('deals.page_title'),
     defaultSearchResource: RESOURCES_TYPES.DEAL,
@@ -1173,14 +1174,14 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Cost Allocation (Распределение расходов)
   {
     path: `/cost-allocation`,
-    component: lazy(() => import('@/containers/CostAllocation/CostAllocationPage')),
+    component: lazyWithPreload(() => import('@/containers/CostAllocation/CostAllocationPage')),
     breadcrumb: intl.get('cost_allocation.page.title'),
     pageTitle: intl.get('cost_allocation.page.title'),
   },
   // Payroll (Зарплата)
   {
     path: `/payroll`,
-    component: lazy(() => import('@/containers/Payroll/PayrollPage')),
+    component: lazyWithPreload(() => import('@/containers/Payroll/PayrollPage')),
     breadcrumb: intl.get('payroll.page_title'),
     pageTitle: intl.get('payroll.page_title'),
     defaultSearchResource: RESOURCES_TYPES.EMPLOYEE,
@@ -1188,21 +1189,21 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Data quality (Качество данных)
   {
     path: `/data-quality`,
-    component: lazy(() => import('@/containers/DataQuality/DataQualityPage')),
+    component: lazyWithPreload(() => import('@/containers/DataQuality/DataQualityPage')),
     breadcrumb: intl.get('data_quality.page_title'),
     pageTitle: intl.get('data_quality.page_title'),
   },
   // Dividends (Вывод средств собственнику)
   {
     path: `/dividends`,
-    component: lazy(() => import('@/containers/Dividends/DividendsPage')),
+    component: lazyWithPreload(() => import('@/containers/Dividends/DividendsPage')),
     breadcrumb: intl.get('dividends.page_title'),
     pageTitle: intl.get('dividends.page_title'),
   },
   // Credits (Кредиты и займы)
   {
     path: `/credits`,
-    component: lazy(() => import('@/containers/Credits/CreditsPage')),
+    component: lazyWithPreload(() => import('@/containers/Credits/CreditsPage')),
     breadcrumb: intl.get('credits.page.title'),
     pageTitle: intl.get('credits.page.title'),
     defaultSearchResource: RESOURCES_TYPES.CREDIT,
@@ -1211,7 +1212,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // навязывается: колонки «Юрлицо» и фильтры в других разделах скрыты.
   {
     path: `/legal-entities`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/LegalEntities/LegalEntitiesPage'),
     ),
     breadcrumb: intl.get('legal_entities.page.title'),
@@ -1222,7 +1223,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // серверных ручек не существовало ни одной.
   {
     path: `/directions`,
-    component: lazy(() => import('@/containers/Directions/DirectionsPage')),
+    component: lazyWithPreload(() => import('@/containers/Directions/DirectionsPage')),
     breadcrumb: intl.get('directions.page.title'),
     pageTitle: intl.get('directions.page.title'),
   },
@@ -1230,7 +1231,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // в выручке, точка безубыточности и запас прочности.
   {
     path: `/expenses-analysis`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/ExpensesAnalysis/ExpensesAnalysisPage'),
     ),
     breadcrumb: intl.get('expenses_analysis.page.title'),
@@ -1240,7 +1241,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // оценка по мультипликатору прибыли и доля владельца.
   {
     path: `/capitalization`,
-    component: lazy(
+    component: lazyWithPreload(
       () => import('@/containers/Capitalization/CapitalizationPage'),
     ),
     breadcrumb: intl.get('capitalization.page.title'),
@@ -1250,91 +1251,91 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // (этап 14 ТЗ-1): адрес прежний, чтобы закладки и пункт меню не сломались.
   {
     path: `/ai-chat`,
-    component: lazy(() => import('@/containers/AiChat/AiChatPage')),
+    component: lazyWithPreload(() => import('@/containers/AiChat/AiChatPage')),
     breadcrumb: intl.get('ai_cfo.page.title'),
     pageTitle: intl.get('ai_cfo.page.title'),
   },
   // Financial model (Финмодель)
   {
     path: `/financial-model`,
-    component: lazy(() => import('@/containers/FinancialModel/FinancialModelPage')),
+    component: lazyWithPreload(() => import('@/containers/FinancialModel/FinancialModelPage')),
     breadcrumb: intl.get('financial_model.page.title'),
     pageTitle: intl.get('financial_model.page.title'),
   },
   // MoySklad integration (㉛)
   {
     path: `/moysklad`,
-    component: lazy(() => import('@/containers/MoySklad/MoySkladPage')),
+    component: lazyWithPreload(() => import('@/containers/MoySklad/MoySkladPage')),
     breadcrumb: intl.get('moysklad.page.title'),
     pageTitle: intl.get('moysklad.page.title'),
   },
   // Marketplaces (⑱ WB/Ozon)
   {
     path: `/marketplaces`,
-    component: lazy(() => import('@/containers/Marketplaces/MarketplacesPage')),
+    component: lazyWithPreload(() => import('@/containers/Marketplaces/MarketplacesPage')),
     breadcrumb: intl.get('marketplaces.page.title'),
     pageTitle: intl.get('marketplaces.page.title'),
   },
   // Bank API sync (⑨c Тинькофф/Альфа)
   {
     path: `/bank-api-sync`,
-    component: lazy(() => import('@/containers/BankApiSync/BankApiSyncPage')),
+    component: lazyWithPreload(() => import('@/containers/BankApiSync/BankApiSyncPage')),
     breadcrumb: intl.get('bank_api.page.title'),
     pageTitle: intl.get('bank_api.page.title'),
   },
   // 1C export (⑩ выгрузка)
   {
     path: `/onec-export`,
-    component: lazy(() => import('@/containers/OnecExport/OnecExportPage')),
+    component: lazyWithPreload(() => import('@/containers/OnecExport/OnecExportPage')),
     breadcrumb: intl.get('onec_export.page.title'),
     pageTitle: intl.get('onec_export.page.title'),
   },
   // 1C import (⑩ импорт справочников CommerceML)
   {
     path: `/onec-import`,
-    component: lazy(() => import('@/containers/OnecImport/OnecImportPage')),
+    component: lazyWithPreload(() => import('@/containers/OnecImport/OnecImportPage')),
     breadcrumb: intl.get('onec_import.page.title'),
     pageTitle: intl.get('onec_import.page.title'),
   },
   // Acquiring (⑨d YooKassa)
   {
     path: `/acquiring`,
-    component: lazy(() => import('@/containers/Acquiring/AcquiringPage')),
+    component: lazyWithPreload(() => import('@/containers/Acquiring/AcquiringPage')),
     breadcrumb: intl.get('acquiring.page.title'),
     pageTitle: intl.get('acquiring.page.title'),
   },
   // Zenmoney import (⑨b Дзенмани)
   {
     path: `/zenmoney`,
-    component: lazy(() => import('@/containers/Zenmoney/ZenmoneyPage')),
+    component: lazyWithPreload(() => import('@/containers/Zenmoney/ZenmoneyPage')),
     breadcrumb: intl.get('zenmoney.page.title'),
     pageTitle: intl.get('zenmoney.page.title'),
   },
   // VAT analysis (㉖ Анализ НДС)
   {
     path: `/vat-analysis`,
-    component: lazy(() => import('@/containers/VatAnalysis/VatAnalysisPage')),
+    component: lazyWithPreload(() => import('@/containers/VatAnalysis/VatAnalysisPage')),
     breadcrumb: intl.get('vat_analysis.page.title'),
     pageTitle: intl.get('vat_analysis.page.title'),
   },
   // Financial ratios (㉕ Показатели)
   {
     path: `/financial-ratios`,
-    component: lazy(() => import('@/containers/FinancialRatios/FinancialRatiosPage')),
+    component: lazyWithPreload(() => import('@/containers/FinancialRatios/FinancialRatiosPage')),
     breadcrumb: intl.get('financial_ratios.page.title'),
     pageTitle: intl.get('financial_ratios.page.title'),
   },
   // CRM-интеграция (⑯a Битрикс24)
   {
     path: `/crm-integration`,
-    component: lazy(() => import('@/containers/CrmIntegration/CrmIntegrationPage')),
+    component: lazyWithPreload(() => import('@/containers/CrmIntegration/CrmIntegrationPage')),
     breadcrumb: intl.get('crm_integration.page.title'),
     pageTitle: intl.get('crm_integration.page.title'),
   },
   // Fixed Assets (Основные средства и амортизация)
   {
     path: `/fixed-assets`,
-    component: lazy(() => import('@/containers/FixedAssets/FixedAssetsPage')),
+    component: lazyWithPreload(() => import('@/containers/FixedAssets/FixedAssetsPage')),
     breadcrumb: intl.get('fixed_assets.page.title'),
     pageTitle: intl.get('fixed_assets.page.title'),
     defaultSearchResource: RESOURCES_TYPES.FIXED_ASSET,
@@ -1342,7 +1343,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Notifications (Уведомления — настройки)
   {
     path: `/settings/notifications`,
-    component: lazy(
+    component: lazyWithPreload(
       () =>
         import(
           '@/containers/Notifications/NotificationsSettingsPage'
@@ -1354,7 +1355,7 @@ export const getDashboardRoutes = (): DashboardRoute[] => [
   // Homepage
   {
     path: `/`,
-    component: lazy(() => import('@/containers/Homepage/Homepage')),
+    component: lazyWithPreload(() => import('@/containers/Homepage/Homepage')),
     breadcrumb: intl.get('homepage'),
   },
 ];

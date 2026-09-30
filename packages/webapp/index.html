@@ -13,7 +13,11 @@
     <link rel="apple-touch-icon" href="/pwa/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <script type="module" src="/public/preload-theme.js"></script>
+    <!-- Не модуль: модуль исполняется после разбора страницы, и экран
+         успевал вспыхнуть светлым (этап 54 ТЗ-4). Путь от корня: файлы
+         из public/ сборка кладёт в корень, и обычный (не модульный) скрипт
+         она не переписывает — «/public/…» в готовой сборке не нашёлся бы. -->
+    <script src="/preload-theme.js"></script>
     <title>Bigfin</title>
   </head>
   <body>

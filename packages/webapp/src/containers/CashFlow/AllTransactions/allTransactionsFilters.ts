@@ -150,3 +150,33 @@ export const countExtraFilters = (filters: ScreenFilters): number =>
       value !== null &&
       value !== '',
   ).length;
+
+/**
+ * Отборы, которые живут в шторке «Фильтры» (UI-048-1 ТЗ-4): всё, кроме
+ * периода, типа, режима и поиска — те стоят прямо в строке.
+ */
+export const SHEET_FILTER_KEYS = [
+  'articleId',
+  'projectId',
+  'tag',
+  'states',
+  'minAmount',
+  'maxAmount',
+  'accountId',
+] as const;
+
+const isSet = (value: unknown) =>
+  value !== undefined && value !== null && value !== '' && !(Array.isArray(value) && value.length === 0);
+
+/** Сколько отборов шторки включено — число на кнопке «Фильтры (N)». */
+export const countSheetFilters = (filters: ScreenFilters): number =>
+  SHEET_FILTER_KEYS.filter((key) => isSet((filters as any)[key])).length;
+
+/** «Сбросить» в шторке: снимает её отборы, строку не трогает. */
+export const resetSheetFilters = (filters: ScreenFilters): ScreenFilters => {
+  const next: ScreenFilters = { ...filters };
+  SHEET_FILTER_KEYS.forEach((key) => {
+    delete (next as any)[key];
+  });
+  return next;
+};

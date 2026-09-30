@@ -22,8 +22,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ScreenError } from '@/components/ui/screen-error';
 import { pickScreenState } from '@/components/ui/screen-state';
 import { cn } from '@/lib/cn';
+import {
+  CURVE,
+  ChartCard,
+  ChartTooltip,
+  chartColor,
+  formatAxisPercent,
+  gridProps,
+  xAxisProps,
+  yAxisProps,
+} from '@/components/ui/charts';
 
 import { formatMonthYear } from '@/utils/formatDayMonth';
+import { formatMonthShortYear } from '@/utils/formatShortDate';
 
 import {
   buildSplitRows,
@@ -206,37 +217,60 @@ export default function ExpensesAnalysisPage() {
       </div>
 
       {points.length > 0 && (
-        <Card title={intl.get('expenses_analysis.share_chart.title')}>
-          <div className="h-64 w-full">
+        // Карточка набора графиков (этап 46 ТЗ-4, G11): цвет из палитры
+        // (был цвет Recharts по умолчанию), ломаная вместо сглаженной.
+        // Месяц без выручки — разрыв: точки без доли не выбрасываются, а
+        // остаются пустыми, иначе линия соединяла бы соседей через пропуск.
+        <ChartCard
+          title={intl.get('expenses_analysis.share_chart.title')}
+          pointCount={(data?.monthly ?? []).length}
+          table={{
+            columns: [
+              { key: 'month', label: intl.get('charts.col.period'), render: (row: any) => formatMonthYear(row.month) },
+              {
+                key: 'share',
+                label: intl.get('expenses_analysis.share_chart.series'),
+                numeric: true,
+                render: (row: any) => (row.share == null ? na : percent(row.share)),
+              },
+            ],
+            rows: (data?.monthly ?? []) as any[],
+          }}
+        >
+          {({ xInterval }) => (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={points}>
-                <CartesianGrid strokeDasharray="3 3" />
+              <LineChart data={data?.monthly ?? []}>
+                <CartesianGrid {...gridProps} />
                 <XAxis
                   dataKey="month"
-                  tickFormatter={(month: any) =>
-                    moment(String(month), 'YYYY-MM').format('MMM YY')
+                  {...xAxisProps}
+                  interval={xInterval}
+                  tickFormatter={(month: any) => formatMonthShortYear(String(month))}
+                />
+                <YAxis {...yAxisProps} width={56} tickFormatter={(value: any) => formatAxisPercent(value)} />
+                <Tooltip
+                  content={
+                    <ChartTooltip
+                      formatValue={(value) => percent(value)}
+                      /* БЫЛО `moment(...).format('MMMM YYYY')` и давало
+                         «October 2026» в русском интерфейсе: месяц брался из
+                         глобальной локали. */
+                      formatLabel={(month) => formatMonthYear(String(month))}
+                    />
                   }
                 />
-                <YAxis tickFormatter={(value: any) => percent(value)} />
-                {/* recharts типизирует подписи как ReactNode — приводим сами. */}
-                <Tooltip
-                  formatter={(value: any) => percent(value)}
-                  /* БЫЛО `moment(...).format('MMMM YYYY')` и давало
-                     «October 2026» в русском интерфейсе: месяц брался из
-                     глобальной локали. */
-                  labelFormatter={(month: any) => formatMonthYear(month)}
-                />
                 <Line
-                  type="monotone"
+                  type={CURVE.series}
                   dataKey="share"
                   name={intl.get('expenses_analysis.share_chart.series')}
+                  stroke={chartColor.ink}
                   strokeWidth={2}
                   dot={false}
                 />
               </LineChart>
             </ResponsiveContainer>
-          </div>
-        </Card>
+          )}
+        </ChartCard>
       )}
 
       {(data?.topArticles?.length ?? 0) > 0 && (

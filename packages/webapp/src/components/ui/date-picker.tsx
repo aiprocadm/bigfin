@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
+import intl from 'react-intl-universal';
+
 import { cn } from '@/lib/cn';
 import { formatOrganizationDate } from '@/utils/organizationDate';
 import { Calendar } from './calendar';
@@ -12,23 +14,38 @@ export interface DatePickerProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  /**
+   * Связь с подписью поля. `FormControl` кладёт их сюда (id — цель
+   * `<label for>`, описание, признак ошибки); раньше они терялись, и кнопка
+   * даты оставалась без имени (axe: button-name, этап 55 ТЗ-4).
+   */
+  id?: string;
+  'aria-describedby'?: string;
+  'aria-invalid'?: boolean;
+  'aria-label'?: string;
 }
 
-export function DatePicker({
-  value,
-  onChange,
-  placeholder = 'Выберите дату',
-  disabled,
-  className,
-}: DatePickerProps) {
+export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(function DatePicker(
+  {
+    value,
+    onChange,
+    placeholder,
+    disabled,
+    className,
+    ...aria
+  },
+  ref,
+) {
   const [open, setOpen] = React.useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
+          ref={ref}
           type="button"
           disabled={disabled}
+          {...aria}
           className={cn(
             'flex h-11 w-full items-center gap-2 rounded-control border border-border bg-surface-elevated px-3 text-left text-sm sm:h-10',
             'focus:outline-none focus-visible:border-action focus-visible:ring-2 focus-visible:ring-action',
@@ -42,7 +59,7 @@ export function DatePicker({
               «ДД.ММ.ГГГГ» (Ж1 карты v32): организация может выбрать
               другой формат в настройках, и списки рядом печатают именно
               его. */}
-          {value ? formatOrganizationDate(value) : placeholder}
+          {value ? formatOrganizationDate(value) : placeholder ?? intl.get('date_picker.placeholder')}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -58,4 +75,4 @@ export function DatePicker({
       </PopoverContent>
     </Popover>
   );
-}
+});

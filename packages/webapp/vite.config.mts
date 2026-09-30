@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
+import { preloadFonts } from './build-plugins/preloadFonts';
 
 const allowedEnvPrefixes = ['VITE_', 'REACT_APP_', 'PUBLIC_URL'];
 
@@ -30,6 +31,7 @@ export default defineConfig(({ mode }) => {
       targets: ['defaults', 'not IE 11'],
       additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
     }),
+    preloadFonts(),
   ];
 
   return {

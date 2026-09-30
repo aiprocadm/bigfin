@@ -175,10 +175,10 @@ function AccountDetailsCardsV2Root({
             onValueChange={(value) => setCurrencyMode(value as CurrencyMode)}
           >
             <TabsList className="h-8 p-0.5">
-              <TabsTrigger value="fcy" className="px-2.5 py-1 text-xs">
+              <TabsTrigger value="fcy" noPanel className="px-2.5 py-1 text-xs">
                 {intl.get('account.drawer.currency_mode.fcy')}
               </TabsTrigger>
-              <TabsTrigger value="bcy" className="px-2.5 py-1 text-xs">
+              <TabsTrigger value="bcy" noPanel className="px-2.5 py-1 text-xs">
                 {intl.get('account.drawer.currency_mode.bcy')}
               </TabsTrigger>
             </TabsList>

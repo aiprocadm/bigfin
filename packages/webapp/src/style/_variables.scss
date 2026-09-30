@@ -5,7 +5,11 @@ $ns: bp4;
 
 :root {
   --color-primary: #8abbff;
-  --color-danger: red;
+  // Это же имя — токен Tailwind (`text-danger`, `bg-danger/10`). Прежнее
+  // значение `red` перебивало токен на всех новых экранах: #FF0000 на белом —
+  // 4:1 при норме 4.5:1 (axe, этап 55 ТЗ-4). Мост темы: старые экраны берут
+  // тот же красный, что и новые. Сторож: styles/legacyVarsDoNotShadowTokens.spec.ts.
+  --color-danger: rgb(var(--c-danger));
 
   // Green colors
   --color-green-500: #165a36;
@@ -320,7 +324,7 @@ $pt-popover-box-shadow:
   
 body.bp4-dark  {
   --color-primary: #8abbff;
-  --color-danger: rgb(213, 103, 103);
+  --color-danger: rgb(var(--c-danger));
 
   // Green colors (dark mode - lighter variants)
   --color-green-500: #72ca9b;

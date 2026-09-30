@@ -53,9 +53,12 @@ export function RegistryTypeChips({
 }) {
   const active = activeTypeChip(filters);
   const chips: Array<{ id: TypeChip; label: string }> = [
-    { id: 'all', label: intl.get('all_transactions.flow.all') },
-    { id: 'in', label: intl.get('all_transactions.flow.in') },
-    { id: 'out', label: intl.get('all_transactions.flow.out') },
+    // Короткие подписи — «Все / Приход / Расход» (UI-048-1 ТЗ-4): с
+    // длинными «Только поступления / Только списания» строка фильтров не
+    // помещалась в одну строку и на ноутбуке.
+    { id: 'all', label: intl.get('all_transactions.segment.all') },
+    { id: 'in', label: intl.get('all_transactions.segment.in') },
+    { id: 'out', label: intl.get('all_transactions.segment.out') },
     {
       id: 'uncategorized',
       label: intl.get('all_transactions.chip.uncategorized', { count: uncategorizedCount }),

@@ -52,9 +52,10 @@ function PaymentReceiveFormBigTotal() {
         <span className="big-amount__label">
           <T id={'amount_received'} />
         </span>
-        <h1 className="big-amount__number">
+        {/* Сумма — не заголовок экрана (этап 56); вид прежнего h1. */}
+        <div className="big-amount__number" style={{ fontSize: '2em', fontWeight: 'bold', margin: '0.67em 0' }}>
           <Money amount={amount} currency={currency_code} />
-        </h1>
+        </div>
       </div>
     </div>
   );

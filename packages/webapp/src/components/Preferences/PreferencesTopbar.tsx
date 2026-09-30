@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import classNames from 'classnames';
 import { CLASSES } from '@/constants/classes';
+import { usePageTitleState } from '@/components/ui/page-title';
 
 import UsersActions from '@/containers/Preferences/Users/UsersActions';
 import CurrenciesActions from '@/containers/Preferences/Currencies/CurrenciesActions';
@@ -30,6 +31,11 @@ interface PreferencesTopbarProps {
   preferencesPageTitle?: React.ReactNode;
 }
 
+function TopbarHeading({ children }: { children: React.ReactNode }) {
+  const { ownTitles } = usePageTitleState();
+  return ownTitles > 0 ? <h2>{children}</h2> : <h1>{children}</h1>;
+}
+
 function PreferencesTopbar({
   preferencesPageTitle,
 }: PreferencesTopbarProps) {
@@ -41,7 +47,11 @@ function PreferencesTopbar({
       )}
     >
       <div className="preferences-topbar__title">
-        <h2>{preferencesPageTitle}</h2>
+        {/* Название раздела настроек — главный заголовок экрана (h1): у
+            настроек своя раскладка без заголовка маршрута (этап 56). Если
+            раздел рисует свой крупный заголовок (`PageTitle`), здесь h2 —
+            заголовок на экране один. */}
+        <TopbarHeading>{preferencesPageTitle}</TopbarHeading>
       </div>
       <div className="preferences-topbar__actions">
         {/* Было `pathname` — такого свойства у маршрута нет. То же самое

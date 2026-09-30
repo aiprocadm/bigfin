@@ -59,12 +59,10 @@ const H1_ALLOWED: Record<string, string> = {
   'containers/ElementCustomize/ElementCustomizeHeader.tsx': 'окно настройки бланка',
   'containers/Setup/SetupLeftSection.tsx': 'мастер первой настройки, вне панели',
   'containers/Subscriptions/BillingSubscription.tsx': 'карточка тарифа, старая',
-  'containers/Sales/PaymentsReceived/PaymentReceiveForm/PaymentReceiveFormHeader.tsx':
-    'крупная сумма старой формы',
-  'components/PageForm/PageFormBigNumber.tsx': 'крупная сумма старой формы',
-  'components/EmptyStatus/EmptyStatus.tsx': 'старое пустое состояние (этап 52)',
   'components/Dashboard/DashboardErrorBoundary.tsx': 'экран сбоя вместо страницы',
-  'components/Dashboard/DashboardSummary.tsx': 'старая сводка, не в маршрутах',
+  // Настройки живут в своей раскладке, без заголовка маршрута: название
+  // раздела — их единственный h1 (обход маршрутов этапа 56).
+  'components/Preferences/PreferencesTopbar.tsx': 'заголовок раздела настроек',
 };
 
 interface RouteEntry {
@@ -107,6 +105,13 @@ describe('заголовок страницы — один', () => {
   it('экраны не рисуют заголовок голым <h1>', () => {
     const raw = [...tsxFiles('containers'), ...tsxFiles('components')].filter(
       (file) => !H1_ALLOWED[file] && /<h1[\s>]/.test(read(file)),
+    );
+    expect(raw).toEqual([]);
+  });
+
+  it('и через styled.h1 — тоже нет (название организации в шапке отчёта было h1)', () => {
+    const raw = [...tsxFiles('containers'), ...tsxFiles('components')].filter((file) =>
+      /styled\.h1\b/.test(read(file)),
     );
     expect(raw).toEqual([]);
   });

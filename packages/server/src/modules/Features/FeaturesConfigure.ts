@@ -92,13 +92,16 @@ export class FeaturesConfigure {
         name: Features.BUDGETS,
         defaultValue: false,
       },
+      // Новые списки клиентов и поставщиков — включены по умолчанию
+      // (UI-051-4 ТЗ-4): старые списки остаются за тем же флагом, и
+      // организация может вернуться к ним в модулях. Сами флаги не удаляются.
       {
         name: Features.CUSTOMERS_LIST_V2,
-        defaultValue: false,
+        defaultValue: true,
       },
       {
         name: Features.VENDORS_LIST_V2,
-        defaultValue: false,
+        defaultValue: true,
       },
       {
         name: Features.DEBTS,

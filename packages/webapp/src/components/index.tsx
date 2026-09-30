@@ -7,7 +7,6 @@ export * from './Dialog';
 export * from './AdvancedFilter/AdvancedFilterDropdown';
 export * from './AdvancedFilter/AdvancedFilterPopover';
 export * from './Dashboard';
-export * from './UniversalSearch/UniversalSearch';
 export * from './PdfPreview';
 export * from './Details';
 export * from './TotalLines/index';

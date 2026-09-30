@@ -223,6 +223,21 @@ describe('главная: всё одним ответом', () => {
     expect(overview.period.fromDate.startsWith(expectedMonth)).toBe(true);
   });
 
+  it('помесячные суммы читаются из поля, которое отчёт и правда отдаёт', () => {
+    // Подмена отчёта выше не проверяет форму настоящего отчёта: прежде она
+    // сама была выдуманной (`periods`), и график главной годами был нулевым.
+    // Сверяем имя поля со сборщиком отчёта.
+    const fs = require('fs');
+    const path = require('path');
+    const read = (file: string) => fs.readFileSync(path.join(__dirname, file), 'utf8');
+    const builder = read('../../FinancialStatements/modules/ProfitLossSheet/ProfitLossSheetDatePeriods.ts');
+    const service = read('GetDashboardOverview.service.ts');
+
+    expect(builder).toContain("R.assoc('horizontalTotals'");
+    expect(service).toContain('income?.horizontalTotals?.[index]');
+    expect(service).not.toMatch(/\?\.periods\?\.\[index\]/);
+  });
+
   it('график отдаёт двенадцать месяцев подряд', async () => {
     const { service } = buildService({
       current: report(0, 0),
@@ -232,14 +247,15 @@ describe('главная: всё одним ответом', () => {
           {
             id: ProfitLossAggregateNodeId.INCOME,
             total: { amount: 0 },
-            periods: Array.from({ length: 12 }, (_, i) => ({
+            // Форма настоящего отчёта (`ProfitLossSheetDatePeriods`).
+            horizontalTotals: Array.from({ length: 12 }, (_, i) => ({
               total: { amount: (i + 1) * 1000 },
             })),
           },
           {
             id: ProfitLossAggregateNodeId.EXPENSES,
             total: { amount: 0 },
-            periods: Array.from({ length: 12 }, () => ({
+            horizontalTotals: Array.from({ length: 12 }, () => ({
               total: { amount: 500 },
             })),
           },

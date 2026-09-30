@@ -7,6 +7,22 @@ import { getDisplayPreferences } from './displayPreferences';
 const FALLBACK_CURRENCY = 'RUB';
 
 /**
+ * Валюта организации — для мест, где сумма печатается не целиком (оси
+ * графиков, короткая запись «1,6 млн ₽»).
+ */
+export function organizationCurrency(): string {
+  try {
+    const organization = getCurrentOrganizationFactory()(store.getState()) as
+      | { base_currency?: string }
+      | undefined;
+    return organization?.base_currency || FALLBACK_CURRENCY;
+  } catch {
+    // Состояние ещё не готово — печатаем в рублях, продукт российский.
+    return FALLBACK_CURRENCY;
+  }
+}
+
+/**
  * Р1 карты v26. Сумма — по валюте организации, одной утилитой на весь
  * продукт.
  *
@@ -23,16 +39,7 @@ const FALLBACK_CURRENCY = 'RUB';
  * которые не являются компонентами.
  */
 export function formatOrganizationMoney(value: number): string {
-  let currency = FALLBACK_CURRENCY;
-
-  try {
-    const organization = getCurrentOrganizationFactory()(store.getState()) as
-      | { base_currency?: string }
-      | undefined;
-    currency = organization?.base_currency || FALLBACK_CURRENCY;
-  } catch {
-    // Состояние ещё не готово — печатаем в рублях, продукт российский.
-  }
+  const currency = organizationCurrency();
 
   // КОПЕЙКИ — ЛИЧНАЯ НАСТРОЙКА ЧЕЛОВЕКА (FIN-026). Раньше галочка на
   // экране настроек сохранялась и не меняла НИЧЕГО: её никто не читал.

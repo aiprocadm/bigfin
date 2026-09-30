@@ -47,7 +47,7 @@ export function BreakEvenPanel({ breakEven }: { breakEven?: BreakEvenResult }) {
             {intl.get('financial_model.breakeven.hint_mark')}
           </div>
         ) : !be?.breakEven?.applicable ? (
-          <div className="py-2 text-sm text-amber-600">
+          <div className="py-2 text-sm text-warning">
             {intl.get('financial_model.breakeven.unreachable')}
           </div>
         ) : (

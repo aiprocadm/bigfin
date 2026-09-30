@@ -66,4 +66,16 @@ describe('боковое меню', () => {
     render(<Sidebar groups={groups} activeHref="/" mini />);
     expect(screen.queryByRole('button', { name: 'Развернуть меню' })).toBeNull();
   });
+
+  it('наведение и фокус на пункте просят предзагрузку экрана (UI-055-3)', () => {
+    const onItemIntent = vi.fn();
+    render(<Sidebar groups={groups} activeHref="/financial-reports" onItemIntent={onItemIntent} />);
+    const link = screen.getByRole('link', { name: 'Баланс' });
+
+    // React ловит «навёл» по pointerover, «фокус» — по focusin.
+    fireEvent.pointerOver(link);
+    fireEvent.focusIn(link);
+    expect(onItemIntent).toHaveBeenCalledTimes(2);
+    expect(onItemIntent.mock.calls[0][0].href).toBe('/financial-reports/balance-sheet');
+  });
 });

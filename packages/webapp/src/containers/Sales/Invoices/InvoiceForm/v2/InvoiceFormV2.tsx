@@ -329,7 +329,10 @@ function InvoiceFormV2Root({
                       value={field.value ?? TaxType.Inclusive}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="h-8 w-52 sm:h-8">
+                      <SelectTrigger
+                        className="h-8 w-52 sm:h-8"
+                        aria-label={intl.get('invoice_form.label.amounts_are')}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

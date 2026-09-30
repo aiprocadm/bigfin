@@ -24,7 +24,19 @@ import { usePlannedOperationsTruncated } from '@/hooks/query/paymentCalendar';
 import { ListTruncated } from '@/components/ui/list-truncated';
 import { CalendarMatrixView } from './CalendarMatrixView';
 import { GapScenariosPanel } from './GapScenariosPanel';
-import { PageTitle } from '@/components/ui/page-title';
+import { PageHeader } from '@/components/ui/page-header';
+import { FilterBar } from '@/components/ui/filter-bar';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { BalanceByDayChart } from './BalanceByDayChart';
+import { groupQuietDays, type CalendarListItem } from './quietDays';
+import { formatDay } from './formatDay';
 
 // Деловые ошибки материализации → понятный текст (О3 карты v13).
 const MATERIALIZE_ERROR_KEYS: Record<string, string> = {
@@ -42,8 +54,6 @@ interface AccountRow {
   code?: string;
 }
 
-const filterSelectClassName =
-  'border-input bg-background h-9 rounded-control border px-3 text-sm';
 
 export default function PaymentCalendarPage() {
   const { search } = useLocation();
@@ -145,90 +155,17 @@ export default function PaymentCalendarPage() {
     todayRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   };
 
+  const selectTrigger = 'w-full';
+
   return (
     <div className="flex flex-col gap-4 p-6">
-      <div className="flex flex-wrap items-end gap-2">
-        <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {intl.get('payment_calendar.granularity')}
-          <select
-            className={filterSelectClassName}
-            value={granularity}
-            onChange={(event) =>
-              setGranularity(event.target.value as typeof granularity)
-            }
-          >
-            {['day', 'week', 'month', 'quarter', 'year'].map((value) => (
-              <option key={value} value={value}>
-                {intl.get(`payment_calendar.granularity.${value}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {intl.get('payment_calendar.source')}
-          <select
-            className={filterSelectClassName}
-            value={source}
-            onChange={(event) =>
-              setSource(event.target.value as typeof source)
-            }
-          >
-            <option value="cashflow">
-              {intl.get('payment_calendar.source.cashflow')}
-            </option>
-            <option value="pnl">
-              {intl.get('payment_calendar.source.pnl')}
-            </option>
-          </select>
-        </label>
-
-        <Button variant="secondary" onClick={scrollToToday}>
-          {intl.get('payment_calendar.today')}
-        </Button>
-      </div>
-
-      {gap && (
-        <div className="sticky top-0 z-10 flex flex-col gap-2 rounded-control bg-red-50 px-4 py-2 text-red-700">
-          <span>
-            ⚠{' '}
-            {intl.get('payment_calendar.gap_warning', {
-              days: gap.daysFromStart,
-              amount: formatOrganizationMoney(gap.amount),
-            })}
-          </span>
-          {/* «Что можно перенести» (FT-051 ТЗ-3). */}
-          <GapScenariosPanel />
-        </div>
-      )}
-      <div className="flex items-center justify-between">
-        <PageTitle>
-          {intl.get('payment_calendar.page_title')}
-        </PageTitle>
-        {/* Три горизонта и кнопка «Добавить плановую операцию» в строку на
-            телефоне не помещаются: ряд занимал 544 px при экране 390.
-            Переносим (И2 карты v33). */}
-        <div className="flex flex-wrap items-center gap-2">
-          {(['list', 'matrix'] as const).map((mode) => (
-            <Button
-              key={mode}
-              variant={view === mode ? 'primary' : 'secondary'}
-              size="sm"
-              onClick={() => setView(mode)}
-            >
-              {intl.get(`payment_calendar.view.${mode}`)}
-            </Button>
-          ))}
-          {(['week', 'month', 'quarter'] as const).map((h) => (
-            <Button
-              key={h}
-              variant={horizon === h ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setHorizon(h)}
-            >
-              {intl.get(`payment_calendar.horizon.${h}`)}
-            </Button>
-          ))}
+      {/* Заголовок — первым (UI-050-1 ТЗ-4): выборы «Отображение /
+          Источник» стояли над заголовком (O10). Одна главная кнопка —
+          «Добавить плановую операцию». */}
+      <PageHeader
+        className="mb-0"
+        title={intl.get('payment_calendar.page_title')}
+        action={
           <Button
             onClick={() => {
               setEditing(undefined);
@@ -238,43 +175,122 @@ export default function PaymentCalendarPage() {
             <Plus className="mr-2 h-4 w-4" />
             {intl.get('payment_calendar.add')}
           </Button>
-        </div>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-1">
-          {(['all', 'inflow', 'outflow'] as const).map((d) => (
-            <Button
-              key={d}
-              variant={direction === d ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setDirection(d)}
-            >
-              {d === 'all'
+        }
+      />
+
+      <FilterBar
+        activeCount={(granularity !== (isNarrow ? 'week' : 'day') ? 1 : 0) + (source !== 'cashflow' ? 1 : 0) + (accountId != null ? 1 : 0)}
+        onReset={() => {
+          setGranularity(isNarrow ? 'week' : 'day');
+          setSource('cashflow');
+          setAccountId(null);
+        }}
+        filters={
+          <>
+            <label className="flex flex-col gap-1 text-subhead text-text-secondary">
+              {intl.get('payment_calendar.granularity')}
+              <Select value={granularity} onValueChange={(value) => setGranularity(value as typeof granularity)}>
+                <SelectTrigger className={selectTrigger}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {(['day', 'week', 'month', 'quarter', 'year'] as const).map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {intl.get(`payment_calendar.granularity.${value}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
+            <label className="flex flex-col gap-1 text-subhead text-text-secondary">
+              {intl.get('payment_calendar.source')}
+              <Select value={source} onValueChange={(value) => setSource(value as typeof source)}>
+                <SelectTrigger className={selectTrigger}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cashflow">{intl.get('payment_calendar.source.cashflow')}</SelectItem>
+                  <SelectItem value="pnl">{intl.get('payment_calendar.source.pnl')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </label>
+            <label className="flex flex-col gap-1 text-subhead text-text-secondary">
+              {intl.get('payment_calendar.field.account')}
+              <Select
+                value={accountId == null ? 'all' : String(accountId)}
+                onValueChange={(value) => setAccountId(value === 'all' ? null : Number(value))}
+              >
+                <SelectTrigger className={selectTrigger}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{intl.get('payment_calendar.filter.all_accounts')}</SelectItem>
+                  {((accounts ?? []) as AccountRow[]).map((acc) => (
+                    <SelectItem key={acc.id} value={String(acc.id)}>
+                      {acc.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
+          </>
+        }
+        trailing={
+          <Button variant="ghost" onClick={scrollToToday}>
+            {intl.get('payment_calendar.today')}
+          </Button>
+        }
+      >
+        <SegmentedControl
+          aria-label={intl.get('payment_calendar.view.aria')}
+          value={view}
+          onChange={setView}
+          options={(['list', 'matrix'] as const).map((mode) => ({
+            value: mode,
+            label: intl.get(`payment_calendar.view.${mode}`),
+          }))}
+        />
+        <SegmentedControl
+          aria-label={intl.get('payment_calendar.horizon.aria')}
+          value={horizon}
+          onChange={setHorizon}
+          options={(['week', 'month', 'quarter'] as const).map((h) => ({
+            value: h,
+            label: intl.get(`payment_calendar.horizon.${h}`),
+          }))}
+        />
+        <SegmentedControl
+          aria-label={intl.get('payment_calendar.direction.aria')}
+          value={direction}
+          onChange={setDirection}
+          options={(['all', 'inflow', 'outflow'] as const).map((d) => ({
+            value: d,
+            label:
+              d === 'all'
                 ? intl.get('payment_calendar.filter.all')
-                : intl.get(`payment_calendar.direction.${d}`)}
-            </Button>
-          ))}
+                : intl.get(`payment_calendar.direction.${d}`),
+          }))}
+        />
+      </FilterBar>
+
+      {gap && (
+        // Разрыв — плашкой цвета проблемы из токенов (была палитра Tailwind
+        // «на месте»), без прилипания: над ней теперь прилипает шапка.
+        <div className="flex flex-col gap-2 rounded-control bg-danger/10 px-4 py-2 text-danger">
+          <span>
+            {intl.get('payment_calendar.gap_warning', {
+              days: gap.daysFromStart,
+              amount: formatOrganizationMoney(gap.amount),
+            })}
+          </span>
+          {/* «Что можно перенести» (FT-051 ТЗ-3). */}
+          <GapScenariosPanel />
         </div>
-        <select
-          className={filterSelectClassName}
-          aria-label={intl.get('payment_calendar.field.account')}
-          value={accountId == null ? '' : String(accountId)}
-          onChange={(e) =>
-            setAccountId(
-              e.target.value === '' ? null : Number(e.target.value),
-            )
-          }
-        >
-          <option value="">
-            {intl.get('payment_calendar.filter.all_accounts')}
-          </option>
-          {((accounts ?? []) as AccountRow[]).map((acc) => (
-            <option key={acc.id} value={acc.id}>
-              {acc.code ? `${acc.code} — ${acc.name}` : acc.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      )}
+
+      {/* Остаток по дням (C11) — над списком, только в дневном масштабе:
+          у периодов свой вид. */}
+      {view === 'list' && !byPeriods && days.length > 1 && <BalanceByDayChart days={days} />}
       {showForm && (
         <PlannedOperationDialog
           key={editing?.id ?? 'new'}
@@ -302,20 +318,53 @@ export default function PaymentCalendarPage() {
                 />
               </div>
             ))
-          : days.map((day: any) => (
-              /* Якорь сегодняшнего дня: к нему возвращает «На сегодня». */
-              <div
-                key={day.date}
-                ref={day.date === fromDate ? todayRef : undefined}
-              >
-                <DayRow
-                  day={day}
-                  onMaterialize={handleMaterialize}
-                  foundOperationId={foundOperationId}
-                />
-              </div>
-            ))}
+          : groupQuietDays(days, fromDate).map((item) =>
+              item.kind === 'quiet' ? (
+                <QuietDaysRow key={item.from} item={item} />
+              ) : (
+                /* Якорь сегодняшнего дня: к нему возвращает «На сегодня». */
+                <div
+                  key={item.day.date}
+                  ref={item.day.date === fromDate ? todayRef : undefined}
+                >
+                  <DayRow
+                    day={item.day}
+                    onMaterialize={handleMaterialize}
+                    foundOperationId={foundOperationId}
+                  />
+                </div>
+              ),
+            )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Свёрнутые тихие дни: «5 дней без движения · 26–30 сент.», по нажатию —
+ * раскрываются теми же строками дней (O10).
+ */
+function QuietDaysRow({ item }: { item: Extract<CalendarListItem, { kind: 'quiet' }> }) {
+  const [open, setOpen] = React.useState(false);
+  if (open) {
+    return (
+      <>
+        {item.days.map((day) => (
+          <DayRow key={day.date} day={day} />
+        ))}
+      </>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      className="flex w-full items-center justify-between border-0 border-b border-border bg-transparent px-2 py-2 text-left text-subhead text-text-muted hover:bg-fill-1"
+    >
+      <span>
+        {intl.get('payment_calendar.quiet_days', { count: item.days.length })} · {formatDay(item.from)} – {formatDay(item.to)}
+      </span>
+      <span>{formatOrganizationMoney(item.days[item.days.length - 1].balance)}</span>
+    </button>
   );
 }

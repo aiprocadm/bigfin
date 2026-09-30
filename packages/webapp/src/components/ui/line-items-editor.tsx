@@ -243,6 +243,7 @@ export function LineItemsEditor({
                           itemField.onChange(next);
                           onItemChange?.(index, next);
                         }}
+                        aria-label={`${intl.get('product_and_service')} · ${index + 1}`}
                         placeholder={intl.get('select_product')}
                         searchPlaceholder={intl.get('search')}
                         emptyText={intl.get('no_results')}
@@ -267,6 +268,7 @@ export function LineItemsEditor({
                           onChange={descField.onChange}
                           onBlur={descField.onBlur}
                           autoComplete="off"
+                          aria-label={`${intl.get('description')} · ${index + 1}`}
                           className={cellControlClass}
                         />
                       )}
@@ -274,16 +276,17 @@ export function LineItemsEditor({
                   </td>
                 )}
                 <td className="px-1.5 py-1">
-                  <NumericCell control={control} name={`${name}.${index}.quantity`} />
+                  <NumericCell control={control} name={`${name}.${index}.quantity`} label={`${intl.get('quantity')} · ${index + 1}`} />
                 </td>
                 <td className="px-1.5 py-1">
-                  <NumericCell control={control} name={`${name}.${index}.rate`} />
+                  <NumericCell control={control} name={`${name}.${index}.rate`} label={`${intl.get('rate')} · ${index + 1}`} />
                 </td>
                 {showDiscount && (
                   <td className="px-1.5 py-1">
                     <NumericCell
                       control={control}
                       name={`${name}.${index}.discount`}
+                      label={`${intl.get('discount')} · ${index + 1}`}
                     />
                   </td>
                 )}
@@ -298,6 +301,7 @@ export function LineItemsEditor({
                           items={taxRates ?? []}
                           value={(taxField.value as string) ?? ''}
                           onChange={taxField.onChange}
+                          aria-label={`${intl.get('line_items.tax')} · ${index + 1}`}
                           placeholder={intl.get('line_items.select_tax_rate')}
                           searchPlaceholder={intl.get('search')}
                           emptyText={intl.get('no_results')}
@@ -379,9 +383,12 @@ const cellControlClass =
 function NumericCell({
   control,
   name,
+  label,
 }: {
   control: Control<FieldValues>;
   name: string;
+  /** Подпись ячейки: заголовок столбца есть, но поле с ним не связано. */
+  label: string;
 }) {
   return (
     <Controller
@@ -396,6 +403,7 @@ function NumericCell({
           onBlur={field.onBlur}
           inputMode="decimal"
           autoComplete="off"
+          aria-label={label}
           aria-invalid={!!fieldState.error}
           className={cn(
             cellControlClass,

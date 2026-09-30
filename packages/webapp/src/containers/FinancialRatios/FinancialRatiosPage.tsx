@@ -118,7 +118,7 @@ export default function FinancialRatiosPage() {
         </div>
       )}
       {isError && (
-        <div className="text-sm text-red-600">
+        <div className="text-sm text-danger">
           {intl.get('financial_ratios.load_error')}
         </div>
       )}

@@ -28,6 +28,9 @@ export function AccountantOnly() {
       <EmptyState
         icon={<Calculator className="h-8 w-8" aria-hidden />}
         title={intl.get('accountant_only.title')}
+        // Заглушка заменяет экран целиком, вместе с заголовком маршрута, —
+        // её строка и есть главный заголовок (обход маршрутов этапа 56).
+        headingAs="h1"
         description={intl.get('accountant_only.description')}
         action={
           <Button onClick={() => history.push(INTERFACE_MODE_SETTINGS_PATH)}>

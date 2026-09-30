@@ -3,10 +3,10 @@
 }
 
 .customizePayment {
-  --color-background: #fbfbfb;
+  --payment-background: #fbfbfb;
   --color-divider: #e1e1e1;
 
-  --color-background: transparent;
+  --payment-background: transparent;
   --color-divider: rgba(255, 255, 255, 0.2);
 
   background-color: var(--background);

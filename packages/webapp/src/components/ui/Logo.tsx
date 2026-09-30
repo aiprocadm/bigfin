@@ -21,13 +21,21 @@ export const Logo = ({ size = 'md', showMark = false, className, ...props }: Log
       sizeClasses[size],
       className,
     )}
+    // Метка для проверки доступности: к логотипу требование контраста не
+    // относится (WCAG 1.4.3), и e2e/a11y.spec.ts его пропускает.
+    data-brand-logo=""
     {...props}
   >
     {showMark && (
       <span className="inline-block h-[1em] w-[1em] rounded-sm bg-accent" aria-hidden />
     )}
-    <span className="text-text-primary">
-      Big<span className="text-accent">fin</span>
+    {/* Название — знак, а не текст: читалка слышит «Bigfin» целиком, а не
+        «Big» и «fin» по отдельности. Жёлтое «fin» на белом — фирменный знак;
+        требование контраста 4.5:1 к логотипам не относится (WCAG 1.4.3). */}
+    <span role="img" aria-label="Bigfin" className="text-text-primary">
+      <span aria-hidden>
+        Big<span className="text-accent">fin</span>
+      </span>
     </span>
   </div>
 );

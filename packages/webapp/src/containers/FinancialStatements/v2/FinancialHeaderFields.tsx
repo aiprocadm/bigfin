@@ -88,23 +88,23 @@ export function ReportDateRangeFields() {
         render={({ field }) => (
           <FormItem className="max-w-xs">
             <FormLabel>{intl.get('report_date_range')}</FormLabel>
-            <FormControl>
-              <Select
-                value={typeof field.value === 'string' ? field.value : 'custom'}
-                onValueChange={handlePresetChange}
-              >
+            <Select
+              value={typeof field.value === 'string' ? field.value : 'custom'}
+              onValueChange={handlePresetChange}
+            >
+              <FormControl>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {dateRangePresets.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
+              </FormControl>
+              <SelectContent>
+                {dateRangePresets.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -169,23 +169,23 @@ export function ReportDisplayColumnsByField() {
       render={({ field }) => (
         <FormItem className="max-w-xs">
           <FormLabel>{intl.get('display_report_columns')}</FormLabel>
-          <FormControl>
-            <Select
-              value={typeof field.value === 'string' ? field.value : ''}
-              onValueChange={field.onChange}
-            >
+          <Select
+            value={typeof field.value === 'string' ? field.value : ''}
+            onValueChange={field.onChange}
+          >
+            <FormControl>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                {displayColumnsPresets.map((option) => (
-                  <SelectItem key={option.key} value={option.key}>
-                    {option.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormControl>
+            </FormControl>
+            <SelectContent>
+              {displayColumnsPresets.map((option) => (
+                <SelectItem key={option.key} value={option.key}>
+                  {option.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       )}
@@ -220,23 +220,23 @@ export function ReportFilterOptionField({
         return (
           <FormItem className="max-w-xs">
             <FormLabel>{label ?? intl.get('filter_accounts')}</FormLabel>
-            <FormControl>
-              <Select
-                value={typeof field.value === 'string' ? field.value : ''}
-                onValueChange={field.onChange}
-              >
+            <Select
+              value={typeof field.value === 'string' ? field.value : ''}
+              onValueChange={field.onChange}
+            >
+              <FormControl>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {items.map((option) => (
-                    <SelectItem key={option.key} value={option.key}>
-                      {option.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
+              </FormControl>
+              <SelectContent>
+                {items.map((option) => (
+                  <SelectItem key={option.key} value={option.key}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {selected?.hint ? (
               <p className="text-sm text-text-muted">{selected.hint}</p>
             ) : null}
@@ -271,23 +271,23 @@ export function ReportAccountingBasisField() {
         <FormItem className="max-w-xs">
           {/* В ключе accounting_basis двоеточие в конце — убираем для чистой подписи. */}
           <FormLabel>{intl.get('accounting_basis').replace(/:\s*$/, '')}</FormLabel>
-          <FormControl>
-            <Select
-              value={typeof field.value === 'string' ? field.value : ''}
-              onValueChange={field.onChange}
-            >
+          <Select
+            value={typeof field.value === 'string' ? field.value : ''}
+            onValueChange={field.onChange}
+          >
+            <FormControl>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                {options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormControl>
+            </FormControl>
+            <SelectContent>
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       )}

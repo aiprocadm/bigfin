@@ -20,6 +20,8 @@ export interface ComboboxProps {
   disabled?: boolean;
   id?: string;
   className?: string;
+  /** Подпись для читалки экрана, когда видимой подписи рядом нет (ячейка таблицы). */
+  'aria-label'?: string;
 }
 
 /**
@@ -38,6 +40,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
       disabled,
       id,
       className,
+      'aria-label': ariaLabel,
     },
     ref,
   ) => {
@@ -72,6 +75,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
             type="button"
             role="combobox"
             aria-expanded={open}
+            aria-label={ariaLabel}
             disabled={disabled}
             className={cn(
               'flex h-11 w-full items-center justify-between gap-2 rounded-control border border-border bg-surface-elevated px-3 py-2 text-sm sm:h-10',

@@ -3,7 +3,7 @@ import React, { useEffect, Suspense } from 'react';
 import { CLASSES } from '@/constants/classes';
 import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
 import { compose } from '@/utils';
-import { Spinner } from '@blueprintjs/core';
+import { PageSkeleton } from '@/components/ui/page-skeleton';
 
 import { withUniversalSearchActions } from '@/containers/UniversalSearch/withUniversalSearchActions';
 
@@ -86,11 +86,8 @@ function DashboardPage({
   return (
     <div className={CLASSES.DASHBOARD_PAGE}>
       <Suspense
-        fallback={
-          <div className="dashboard__fallback-loading">
-            <Spinner size={40} value={null} />
-          </div>
-        }
+        // Скелет вместо значка загрузки (UI-055-3 ТЗ-4).
+        fallback={<PageSkeleton />}
       >
         <Component />
       </Suspense>

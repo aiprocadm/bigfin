@@ -288,7 +288,7 @@ export default function CashFlowArticles() {
         >
           <TabsList>
             {CASHFLOW_GROUPINGS.map((group) => (
-              <TabsTrigger key={group} value={group}>
+              <TabsTrigger key={group} value={group} noPanel>
                 {intl.get(`cash_flow_articles.group.${group}`)}
               </TabsTrigger>
             ))}

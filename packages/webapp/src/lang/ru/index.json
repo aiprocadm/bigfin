@@ -5809,5 +5809,9 @@
   "display_preferences.theme.light": "Светлая",
   "display_preferences.theme.dark": "Тёмная",
   "display_preferences.theme.system": "Как в системе",
-  "display_preferences.theme.hint": "«Как в системе» следует настройке телефона или компьютера: вечером тёмная, днём светлая."
+  "display_preferences.theme.hint": "«Как в системе» следует настройке телефона или компьютера: вечером тёмная, днём светлая.",
+  "page_skeleton.loading": "Загружаем экран…",
+  "data_table.aria.page_size": "Строк на странице",
+  "invoice_form.label.discount_type": "Вид скидки",
+  "date_picker.placeholder": "Выберите дату"
 }

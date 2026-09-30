@@ -590,25 +590,25 @@ function MoneyInFormInner({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{intl.get('transaction_type')}</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value || undefined}
-                      onValueChange={field.onChange}
-                    >
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
                       <SelectTrigger>
                         <SelectValue
                           placeholder={intl.get('transaction_type')}
                         />
                       </SelectTrigger>
-                      <SelectContent>
-                        {transactionTypeOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
+                    </FormControl>
+                    <SelectContent>
+                      {transactionTypeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -707,34 +707,34 @@ function MoneyInFormInner({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{intl.get('branch')}</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={
-                              field.value != null
-                                ? String(field.value)
-                                : undefined
-                            }
-                            onValueChange={(value) =>
-                              field.onChange(Number(value))
-                            }
-                          >
+                        <Select
+                          value={
+                            field.value != null
+                              ? String(field.value)
+                              : undefined
+                          }
+                          onValueChange={(value) =>
+                            field.onChange(Number(value))
+                          }
+                        >
+                          <FormControl>
                             <SelectTrigger>
                               <SelectValue
                                 placeholder={intl.get('branch')}
                               />
                             </SelectTrigger>
-                            <SelectContent>
-                              {branches.map((branch) => (
-                                <SelectItem
-                                  key={branch.id}
-                                  value={String(branch.id)}
-                                >
-                                  {branch.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
+                          </FormControl>
+                          <SelectContent>
+                            {branches.map((branch) => (
+                              <SelectItem
+                                key={branch.id}
+                                value={String(branch.id)}
+                              >
+                                {branch.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

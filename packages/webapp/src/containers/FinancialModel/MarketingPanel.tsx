@@ -167,7 +167,7 @@ export function MarketingPanel({
                         {intl.get('financial_model.marketing.save')}
                       </button>
                       <button
-                        className={`${btn} text-red-600`}
+                        className={`${btn} text-danger`}
                         onClick={() => deleteChannel.mutate(c.id)}
                       >
                         {intl.get('financial_model.marketing.delete')}

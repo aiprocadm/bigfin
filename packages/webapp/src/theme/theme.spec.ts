@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { applyTheme, readStoredTheme, resolveTheme, setThemeChoice, THEME_STORAGE_KEY } from './theme';
+import { applyTheme, isAlwaysLightPath, readStoredTheme, resolveTheme, setThemeChoice, THEME_STORAGE_KEY } from './theme';
 
 afterEach(() => {
   window.localStorage.clear();
@@ -38,6 +38,22 @@ describe('тема оформления (R14)', () => {
     expect(preload).toContain('prefers-color-scheme: dark');
     expect(preload).toContain("'dark'");
     expect(preload).toContain("'bp4-dark'");
-    expect(preload).toContain('/payment');
+    expect(preload).toContain("'/payment/'");
+  });
+
+  it('index.html зовёт скрипт обычным тегом и по пути, который есть в сборке', () => {
+    const html = fs.readFileSync(path.resolve(__dirname, '../../index.html'), 'utf8');
+    const tag = html.match(/<script[^>]*preload-theme\.js[^>]*>/)?.[0] ?? '';
+    // Модуль исполнялся бы после разбора страницы — вспышка светлого.
+    expect(tag).not.toContain('type="module"');
+    // Файлы public/ в готовой сборке лежат в корне.
+    expect(tag).toContain('src="/preload-theme.js"');
+  });
+
+  it('всегда светлая только страница оплаты, не платёжный календарь', () => {
+    expect(isAlwaysLightPath('/payment/abc')).toBe(true);
+    expect(isAlwaysLightPath('/payment')).toBe(true);
+    expect(isAlwaysLightPath('/payment-calendar')).toBe(false);
+    expect(isAlwaysLightPath('/payment-requests')).toBe(false);
   });
 });

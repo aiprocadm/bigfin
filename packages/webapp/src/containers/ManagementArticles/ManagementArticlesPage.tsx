@@ -120,10 +120,10 @@ export default function ManagementArticlesPage() {
         onValueChange={(next) => setView(next as 'tree' | 'map')}
       >
         <TabsList>
-          <TabsTrigger value="tree">
+          <TabsTrigger value="tree" noPanel>
             {intl.get('management_articles.view.tree')}
           </TabsTrigger>
-          <TabsTrigger value="map">
+          <TabsTrigger value="map" noPanel>
             {intl.get('management_articles.view.map')}
           </TabsTrigger>
         </TabsList>
@@ -136,7 +136,7 @@ export default function ManagementArticlesPage() {
       <Tabs value={kind} onValueChange={selectKind}>
         <TabsList>
           {ARTICLE_KIND_TABS.map((tabKind) => (
-            <TabsTrigger key={tabKind} value={tabKind}>
+            <TabsTrigger key={tabKind} value={tabKind} noPanel>
               {intl.get(`management_articles.kind_tab.${tabKind}`)}
               {/* Счётчик рядом с названием: видно, где пусто, не щёлкая. */}
               <span className="ml-2 text-xs text-text-secondary tabular-nums">

@@ -80,20 +80,20 @@ export function ContactDuplicateFormV2({
           render={({ field }) => (
             <FormItem>
               <FormLabel>{intl.get('contact_type')}</FormLabel>
-              <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={intl.get('select_contact')} />
                   </SelectTrigger>
-                  <SelectContent>
-                    {contactTypeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
+                </FormControl>
+                <SelectContent>
+                  {contactTypeOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

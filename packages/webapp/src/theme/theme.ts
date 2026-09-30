@@ -50,7 +50,13 @@ export function resolveTheme(choice: ThemeChoice, systemDark = systemPrefersDark
   return choice;
 }
 
-const alwaysLight = () => typeof window !== 'undefined' && window.location.pathname.startsWith('/payment');
+/**
+ * Страница оплаты — `/payment/:linkId`. Именно со слешем: «/payment-calendar»
+ * (платёжный календарь) тоже начинается с «/payment», и проверка без слеша
+ * держала его всегда светлым (живой проход этапа 55).
+ */
+export const isAlwaysLightPath = (pathname: string) => pathname === '/payment' || pathname.startsWith('/payment/');
+const alwaysLight = () => typeof window !== 'undefined' && isAlwaysLightPath(window.location.pathname);
 
 export function applyTheme(choice: ThemeChoice): void {
   if (typeof document === 'undefined') return;

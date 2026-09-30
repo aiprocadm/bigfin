@@ -85,7 +85,7 @@ export function PlCashflowTab({ fromDate, toDate }: Props) {
                       <td
                         className={
                           'px-4 py-2 text-right font-medium' +
-                          (hasDiff ? ' text-amber-700' : '')
+                          (hasDiff ? ' text-warning' : '')
                         }
                       >
                         {fmt(row.diff)}
@@ -108,7 +108,7 @@ export function PlCashflowTab({ fromDate, toDate }: Props) {
                   <td
                     className={
                       'px-4 py-2 text-right' +
-                      ((totals.diff ?? 0) !== 0 ? ' text-amber-700' : '')
+                      ((totals.diff ?? 0) !== 0 ? ' text-warning' : '')
                     }
                   >
                     {fmt(totals.diff)}

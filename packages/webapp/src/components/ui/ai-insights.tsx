@@ -57,7 +57,7 @@ export function AiInsightsBlock({ scope, className }: AiInsightsBlockProps) {
               {insight.link && (
                 <Link
                   to={insight.link}
-                  className="text-sm text-accent underline-offset-4 hover:underline"
+                  className="text-sm text-action underline-offset-4 hover:underline"
                 >
                   {intl.get('ai_insights.check_in_report')}
                 </Link>

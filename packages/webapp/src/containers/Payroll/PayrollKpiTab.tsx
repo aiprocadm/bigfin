@@ -122,7 +122,7 @@ export function PayrollKpiTab() {
                     <td
                       className={`px-4 py-2 text-right ${
                         row.achievementPct != null && row.achievementPct < 100
-                          ? 'text-red-600'
+                          ? 'text-danger'
                           : ''
                       }`}
                     >

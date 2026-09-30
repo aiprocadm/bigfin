@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "lerna run dev",
     "build": "lerna run build",
+    "bundle:budget": "node scripts/bundle-budget.mjs",
     "typecheck": "lerna run typecheck",
     "dev:webapp": "lerna run dev --scope \"@bigfin/webapp\" --scope \"@bigfin/utils\" --scope \"@bigfin/pdf-templates\"",
     "build:webapp": "lerna run build --scope \"@bigfin/webapp\" --scope \"@bigfin/utils\" --scope \"@bigfin/pdf-templates\"",
@@ -30,6 +31,7 @@
     "format:check": "lerna run format:check"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
     "@commitlint/config-lerna-scopes": "^17.4.2",

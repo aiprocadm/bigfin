@@ -86,7 +86,7 @@ export function CrookedCurrencyTab({ fromDate, toDate }: Props) {
                 })
               : intl.get('data_quality.repost.nothing')}
             {repostResult.failed > 0 && (
-              <span className="ml-1 text-red-600">
+              <span className="ml-1 text-danger">
                 {intl.get('data_quality.repost.failed', {
                   failed: repostResult.failed,
                 })}
@@ -95,7 +95,7 @@ export function CrookedCurrencyTab({ fromDate, toDate }: Props) {
           </div>
         )}
         {repostError && (
-          <div className="text-sm text-red-600">
+          <div className="text-sm text-danger">
             {intl.get('data_quality.repost.error')}
           </div>
         )}
@@ -153,7 +153,7 @@ export function CrookedCurrencyTab({ fromDate, toDate }: Props) {
                   {fmt(row.journalTotal)}
                 </span>
               </span>
-              <span className="font-medium text-red-600">
+              <span className="font-medium text-danger">
                 −{fmt(row.difference)}
               </span>
             </div>

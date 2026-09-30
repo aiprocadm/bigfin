@@ -43,10 +43,19 @@ TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> & {
+    /**
+     * Вкладки — переключатель без панелей `TabsContent` (группировка строк
+     * отчёта, вид справочника): содержимое экран рисует сам. Тогда ссылка
+     * `aria-controls` вела бы на несуществующий элемент, и читалка экрана
+     * обещала бы панель, которой нет (axe: aria-valid-attr-value, этап 55).
+     */
+    noPanel?: boolean;
+  }
+>(({ className, noPanel, ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
+    {...(noPanel ? { 'aria-controls': undefined } : {})}
     className={cn(
       // Текущая вкладка ПОДЧЁРКИВАЕТСЯ, а не всплывает над полосой.
       // Тень оставлена тому, что и правда лежит поверх страницы, —

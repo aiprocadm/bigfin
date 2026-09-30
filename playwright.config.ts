@@ -31,11 +31,17 @@ const config: PlaywrightTestConfig = {
     'articles-map.spec.ts',
     'budget-plan-fact.spec.ts',
     'items.spec.ts',
+    // Этапы 55–56 ТЗ-4: доступность и эталонные снимки 26 экранов.
+    'a11y.spec.ts',
+    'visual/screens.spec.ts',
   ],
   // If a test fails, retry it additional 2 times
   retries: 0,
   // Artifacts folder where screenshots, videos, and traces are stored.
   outputDir: 'test-results/',
+  // Эталоны снимков экранов (этап 56 ТЗ-4) — одним списком без имени
+  // проекта и системы: снимаются на Linux (облачная копия, CI Ubuntu).
+  snapshotPathTemplate: '{testDir}/visual/snapshots/{arg}{ext}',
   use: {
     // Retry a test if its failing with enabled tracing. This allows you to analyse the DOM, console logs, network traffic etc.
     // More information: https://playwright.dev/docs/trace-viewer
@@ -62,6 +68,10 @@ const config: PlaywrightTestConfig = {
       name: 'Desktop Chrome',
       use: {
         ...devices['Desktop Chrome'],
+        // Своя сборка браузера (облачная копия, CI без загрузки браузеров).
+        launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH
+          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+          : undefined,
       },
     },
   ],

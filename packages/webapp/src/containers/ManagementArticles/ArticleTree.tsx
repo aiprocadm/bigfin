@@ -72,7 +72,7 @@ export function ArticleTree({
                     <span
                       className={
                         summary.needsAccounts
-                          ? 'text-xs text-amber-600'
+                          ? 'text-xs text-warning'
                           : 'text-xs text-muted-foreground'
                       }
                     >
@@ -157,7 +157,7 @@ function TierBadge({
       variant={tier.unassigned ? 'outline' : 'secondary'}
       className={
         tier.unassigned
-          ? 'font-normal text-amber-600'
+          ? 'font-normal text-warning'
           : tier.inherited
             ? 'font-normal text-text-secondary'
             : 'font-normal'

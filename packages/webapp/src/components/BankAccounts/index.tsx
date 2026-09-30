@@ -163,7 +163,9 @@ const BankAccountBalanceLabel = styled.div`
   font-size: 10px;
   letter-spacing: 0.5px;
   margin-top: 3px;
-  opacity: 0.6;
+  /* Было opacity: 0.6 — 4:1 при норме 4.5:1 (axe, этап 55). Цвет вторичного
+     текста из токенов держит контраст в обеих темах. */
+  color: rgb(var(--c-text-secondary));
 `;
 
 const MetaLineWrap = styled.div`

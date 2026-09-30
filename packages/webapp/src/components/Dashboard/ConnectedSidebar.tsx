@@ -25,6 +25,7 @@ import { isAccountantOnlyHidden } from '@/constants/interfaceMode';
 import { Features } from '@/constants/features';
 import { ISidebarMenuItemType } from '@/containers/Dashboard/Sidebar/interfaces';
 import { permissionAllows } from './permissionAllows';
+import { preloadRoute } from '@/routes/preloadRoute';
 
 // Файл был под `@ts-nocheck`; переписан под проверку типов в этапе 45 ТЗ-4,
 // когда меню понадобились значки групп и свёрнутый режим.
@@ -193,6 +194,8 @@ export const ConnectedSidebar = ({ forceMini = false }: ConnectedSidebarProps) =
       mini={forceMini || !!mini}
       onToggleMini={forceMini ? undefined : () => setMini(!mini)}
       onItemClick={(item) => history.push(item.href)}
+      // Экран начинает грузиться, пока указатель ещё над пунктом.
+      onItemIntent={(item) => preloadRoute(item.href)}
     />
   );
 };

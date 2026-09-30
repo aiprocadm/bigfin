@@ -37,6 +37,7 @@ export function DataTablePagination({
       <div className="flex items-center gap-2">
         <select
           className="h-8 rounded-control border border-border bg-surface-elevated px-2 text-text-primary"
+          aria-label={intl.get('data_table.aria.page_size')}
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
         >

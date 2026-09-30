@@ -10,8 +10,10 @@
   var systemDark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   var dark = choice === 'dark' || (choice === 'system' && systemDark);
 
-  // Страницы оплаты видит клиент — они всегда светлые.
-  if (window.location.pathname.indexOf('/payment') === 0) dark = false;
+  // Страницы оплаты видит клиент — они всегда светлые. Со слешем:
+  // «/payment-calendar» — наш платёжный календарь, ему тёмная тема положена.
+  var path = window.location.pathname;
+  if (path === '/payment' || path.indexOf('/payment/') === 0) dark = false;
 
   if (dark) {
     document.documentElement.classList.add('dark', 'bp4-dark');

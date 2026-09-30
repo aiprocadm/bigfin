@@ -217,7 +217,9 @@ export function Sparkline({
             className={cn('inline-flex items-center', className)}
             // Линия — не единственный носитель смысла: та же величина
             // доступна словами и читалке экрана, и наведению.
-            aria-label={hint}
+            // Подпись — у самого рисунка: `aria-label` у простого span без
+            // роли читалки не озвучивают (axe: aria-allowed-attr), а рисунок
+            // с ролью img без подписи — немой (axe: svg-img-alt).
           >
             <svg
               width={width}
@@ -225,6 +227,7 @@ export function Sparkline({
               viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
               preserveAspectRatio="none"
               role="img"
+              aria-label={hint}
               focusable="false"
             >
               {paths.map((d) => (

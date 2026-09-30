@@ -132,7 +132,7 @@ function PlTierNote({
           ` (${intl.get('management_articles.pl_type_inherited')})`}
       </p>
       {described.unassigned && (
-        <p className="text-xs text-amber-600">
+        <p className="text-xs text-warning">
           {intl.get('article_report_map.pl_tier_setup')}
         </p>
       )}

@@ -5809,5 +5809,9 @@
   "display_preferences.theme.light": "Light",
   "display_preferences.theme.dark": "Dark",
   "display_preferences.theme.system": "As in system",
-  "display_preferences.theme.hint": "«As in system» follows your phone or computer: dark in the evening, light by day."
+  "display_preferences.theme.hint": "«As in system» follows your phone or computer: dark in the evening, light by day.",
+  "page_skeleton.loading": "Loading the screen…",
+  "data_table.aria.page_size": "Rows per page",
+  "invoice_form.label.discount_type": "Discount type",
+  "date_picker.placeholder": "Pick a date"
 }

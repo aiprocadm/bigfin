@@ -121,6 +121,7 @@ export function InvoiceFormTotalsV2() {
                       value={String(field.value ?? '')}
                       inputMode="decimal"
                       autoComplete="off"
+                      aria-label={intl.get('invoice_form.label.discount')}
                       className="h-8 w-20 text-right tabular-nums sm:h-8"
                     />
                   </FormControl>
@@ -138,7 +139,10 @@ export function InvoiceFormTotalsV2() {
                     onValueChange={field.onChange}
                   >
                     <FormControl>
-                      <SelectTrigger className="h-8 w-20 sm:h-8">
+                      <SelectTrigger
+                        className="h-8 w-20 sm:h-8"
+                        aria-label={intl.get('invoice_form.label.discount_type')}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -170,6 +174,7 @@ export function InvoiceFormTotalsV2() {
                     value={String(field.value ?? '')}
                     inputMode="decimal"
                     autoComplete="off"
+                    aria-label={intl.get('invoice_form.label.adjustment')}
                     className="h-8 w-24 border-dashed text-right tabular-nums sm:h-8"
                   />
                 </FormControl>

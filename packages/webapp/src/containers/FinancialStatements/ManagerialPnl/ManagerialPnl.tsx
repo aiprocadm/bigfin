@@ -254,7 +254,7 @@ export default function ManagerialPnl() {
         >
           <TabsList>
             {PNL_GROUPINGS.map((group) => (
-              <TabsTrigger key={group} value={group}>
+              <TabsTrigger key={group} value={group} noPanel>
                 {intl.get(`managerial_pnl.group.${group}`)}
               </TabsTrigger>
             ))}

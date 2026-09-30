@@ -48,6 +48,11 @@ interface SidebarProps {
   /** Свернуть / развернуть меню. Без него кнопки нет (экраны настроек). */
   onToggleMini?: () => void;
   onItemClick?: (item: SidebarItemData) => void;
+  /**
+   * Человек навёл указатель или фокус на пункт — скорее всего, сейчас
+   * нажмёт. Меню зовёт предзагрузку экрана (UI-055-3 ТЗ-4).
+   */
+  onItemIntent?: (item: SidebarItemData) => void;
   className?: string;
 }
 
@@ -87,6 +92,7 @@ export const Sidebar = ({
   mini = false,
   onToggleMini,
   onItemClick,
+  onItemIntent,
   className,
 }: SidebarProps) => {
   // Если переданы группы — рендерим их; иначе плоский список как одну секцию.
@@ -142,6 +148,7 @@ export const Sidebar = ({
             activeHref={activeHref}
             mini={mini}
             onItemClick={onItemClick}
+            onItemIntent={onItemIntent}
             isFirst={gi === 0}
             openByDefault={!activeInsideGroup && gi === firstTitled}
           />
@@ -178,6 +185,7 @@ interface SidebarGroupProps {
   activeHref?: string;
   mini?: boolean;
   onItemClick?: (item: SidebarItemData) => void;
+  onItemIntent?: (item: SidebarItemData) => void;
   isFirst: boolean;
   /** Раскрыть, даже если текущей страницы внутри нет. */
   openByDefault?: boolean;
@@ -198,6 +206,7 @@ const SidebarGroup = ({
   activeHref,
   mini,
   onItemClick,
+  onItemIntent,
   isFirst,
   openByDefault = false,
 }: SidebarGroupProps) => {
@@ -342,6 +351,7 @@ const SidebarGroup = ({
               active={item.href === activeHref || item.active}
               mini={mini}
               onClick={onItemClick}
+              onIntent={onItemIntent}
             />
           ))}
         </div>
@@ -355,9 +365,10 @@ interface SidebarItemProps {
   active?: boolean;
   mini?: boolean;
   onClick?: (item: SidebarItemData) => void;
+  onIntent?: (item: SidebarItemData) => void;
 }
 
-const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
+const SidebarItem = ({ item, active, mini, onClick, onIntent }: SidebarItemProps) => {
   const Icon = item.icon;
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -372,6 +383,8 @@ const SidebarItem = ({ item, active, mini, onClick }: SidebarItemProps) => {
     <a
       href={item.href}
       onClick={handleClick}
+      onPointerEnter={onIntent ? () => onIntent(item) : undefined}
+      onFocus={onIntent ? () => onIntent(item) : undefined}
       aria-current={active ? 'page' : undefined}
       title={
         mini

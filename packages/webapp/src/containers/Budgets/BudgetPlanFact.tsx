@@ -149,7 +149,7 @@ export function BudgetPlanFact({
                   {columns.varianceAbs && (
                     <td
                       className={`px-2 py-1 text-right ${
-                        r.varianceAbs < 0 ? 'text-red-600' : ''
+                        r.varianceAbs < 0 ? 'text-danger' : ''
                       }`}
                     >
                       {fmt(r.varianceAbs)}

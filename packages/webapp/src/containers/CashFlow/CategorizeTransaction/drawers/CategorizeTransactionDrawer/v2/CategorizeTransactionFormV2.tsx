@@ -126,18 +126,18 @@ function CategorizeTransactionFormV2Root({ closeMatchingTransactionAside }: any)
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{intl.get('category')}</FormLabel>
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={intl.get('category')} />
                     </SelectTrigger>
-                    <SelectContent>
-                      {typeOptions.map((o) => (
-                        <SelectItem key={o.value} value={o.value}>{o.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                  </FormControl>
+                  <SelectContent>
+                    {typeOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>{o.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

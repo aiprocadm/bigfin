@@ -5813,5 +5813,14 @@
   "page_skeleton.loading": "Loading the screen…",
   "data_table.aria.page_size": "Rows per page",
   "invoice_form.label.discount_type": "Discount type",
-  "date_picker.placeholder": "Pick a date"
+  "date_picker.placeholder": "Pick a date",
+  "deals.funnel.title": "Deals by stage",
+  "deals.funnel.summary": "How many deals are in progress, completed and cancelled — and for how much revenue.",
+  "deals.funnel.empty": "No deals yet — the funnel will appear with the first deal.",
+  "deals.funnel.caption": "{count, plural, one {# deal} other {# deals}} · {amount}",
+  "deals.funnel.col.count": "Deals",
+  "deals.funnel.margin": "Margin",
+  "dashboard.directions_profit.sort_aria": "Sort directions",
+  "dashboard.directions_profit.col.direction": "Direction",
+  "directions.profit.period_aria": "Period"
 }

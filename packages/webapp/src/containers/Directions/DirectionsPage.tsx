@@ -31,6 +31,7 @@ import {
   type ProjectRow,
 } from './directionView';
 import { PageTitle } from '@/components/ui/page-title';
+import { DirectionsProfitPanel } from './DirectionsProfitPanel';
 
 interface DirectionFormValues {
   name: string;
@@ -139,7 +140,9 @@ export default function DirectionsPage() {
 
   return (
     <div className="flex flex-col gap-4 p-6">
-      <div className="flex items-center justify-between gap-4">
+      {/* С переносом: на телефоне кнопка уходит под заголовок, а не рвёт
+          его посреди слова («Направл-ения», живой проход). */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <PageTitle>
           {intl.get('directions.page.title')}
         </PageTitle>
@@ -151,6 +154,8 @@ export default function DirectionsPage() {
       <p className="text-sm text-text-muted">
         {intl.get('directions.page.hint')}
       </p>
+
+      <DirectionsProfitPanel />
 
       {rows.length === 0 ? (
         <p className="rounded-control border border-border p-6 text-sm text-text-secondary">

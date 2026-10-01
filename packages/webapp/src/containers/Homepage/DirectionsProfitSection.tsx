@@ -1,8 +1,25 @@
 import React from 'react';
 import intl from 'react-intl-universal';
 
-import { cn } from '@/lib/cn';
+import {
+  Bar,
+  Cell,
+  ComposedChart,
+  LabelList,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from 'recharts';
+
+import {
+  ChartCard,
+  chartAnimation,
+  chartColor,
+  yAxisProps,
+} from '@/components/ui/charts';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { formatOrganizationMoney } from '@/utils/organizationMoney';
+import { uiLocale } from '@/utils/formatShortDate';
 import type {
   DirectionProfitRow,
   DirectionsProfit,
@@ -28,6 +45,10 @@ export interface DirectionsProfitSectionProps {
  * требуют действия сегодня: кассовый разрыв, просрочка. Убыточное
  * направление — повод подумать, а не пожар. Красным оно обесценило бы
  * красный там, где он настоящий. Поэтому знак минус и пометка словами.
+ *
+ * C20 (UI-051-5 ТЗ-4): полосы — на общем наборе графиков, с «Таблицей»;
+ * тот же блок стоит на экране «Направления». Раньше полосы были рисованными
+ * `div`, без таблицы и без подсказки с суммой.
  */
 function DirectionsProfitSection({
   data,
@@ -35,121 +56,154 @@ function DirectionsProfitSection({
   onSortByChange,
   onRetry,
 }: DirectionsProfitSectionProps) {
-  if (data === null) {
-    return (
-      <section className="rounded-default border border-border bg-surface p-4">
-        <h2 className="mb-2 text-base font-medium text-text-primary">
-          {intl.get('dashboard.directions_profit.title')}
-        </h2>
-        <p className="text-sm text-text-secondary">
-          {intl.get('dashboard.directions_profit.error')}
-        </p>
-        {onRetry && (
-          <button
-            type="button"
-            onClick={onRetry}
-            className="mt-2 min-h-[44px] text-sm text-action hover:underline"
-          >
-            {intl.get('dashboard.directions_profit.retry')}
-          </button>
-        )}
-      </section>
-    );
-  }
-
   // НАПРАВЛЕНИЙ НЕТ — БЛОКА НЕТ ВОВСЕ, а не пустой блок: незачем предлагать
   // человеку то, чем он не пользуется.
-  if (!data.rows.length) return null;
+  if (data !== null && !data.rows.length) return null;
 
-  // Ширина полосы считается от самой большой прибыли по модулю: у убытка
-  // полоса такая же длинная, только в другую сторону по смыслу.
-  const scale = Math.max(...data.rows.map((row) => Math.abs(row.profit)), 1);
+  const rows = (data?.rows ?? []).map((row) => ({
+    ...row,
+    label: row.name,
+    formattedProfit: formatOrganizationMoney(row.profit),
+    // Длина полосы — прибыль ПО МОДУЛЮ: у убытка полоса такая же длинная,
+    // только приглушённая. Полосы влево от нуля налезали подписями на
+    // названия направлений (живой проход). Знак — в подписи словами.
+    size: Math.abs(row.profit),
+    caption: directionCaption(row),
+  }));
 
   return (
-    <section className="rounded-default border border-border bg-surface p-4">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-base font-medium text-text-primary">
-          {intl.get('dashboard.directions_profit.title')}
-        </h2>
-        {/* Два вопроса — два порядка: «где больше денег» и «где лучше
-            отдача». Это не одно и то же. */}
-        <div className="flex items-center gap-1">
-          {(['profit', 'margin'] as DirectionsSortBy[]).map((kind) => (
-            <button
-              key={kind}
-              type="button"
-              onClick={() => onSortByChange(kind)}
-              className={cn(
-                'min-h-[44px] rounded-default px-3 text-sm',
-                sortBy === kind
-                  ? 'bg-surface-elevated text-text-primary'
-                  : 'text-text-secondary hover:text-text-primary',
-              )}
-            >
-              {intl.get(`dashboard.directions_profit.sort_${kind}`)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <ul className="flex flex-col divide-y divide-border">
-        {data.rows.map((row) => (
-          <DirectionRow key={row.projectId} row={row} scale={scale} />
-        ))}
-      </ul>
-
-      {/* Операции без направления — отдельной строкой, а не потеряны: иначе
-          сумма блока не сойдётся с отчётом, и человек решит, что ошибка. */}
-      {data.unassigned && (
-        <p className="mt-3 border-t border-border pt-3 text-sm text-text-secondary">
-          {intl.get('dashboard.directions_profit.unassigned', {
-            amount: formatOrganizationMoney(data.unassigned.profit),
-          })}
-        </p>
+    <div className="flex flex-col gap-3">
+      {/* Два вопроса — два порядка: «где больше денег» и «где лучше
+          отдача». Это не одно и то же. Переключатель — над карточкой, а не
+          в её шапке: рядом с «График / Таблица» на телефоне не помещался. */}
+      {data !== null && (
+        <SegmentedControl
+          aria-label={intl.get('dashboard.directions_profit.sort_aria')}
+          value={sortBy}
+          onChange={onSortByChange}
+          options={(['profit', 'margin'] as DirectionsSortBy[]).map((kind) => ({
+            value: kind,
+            label: intl.get(`dashboard.directions_profit.sort_${kind}`),
+          }))}
+          className="self-start"
+        />
       )}
-    </section>
+      <ChartCard
+        title={intl.get('dashboard.directions_profit.title')}
+        state={data === null ? 'error' : 'ready'}
+        errorText={intl.get('dashboard.directions_profit.error')}
+        onRetry={onRetry}
+        heightOverride={{
+          desktop: Math.max(120, rows.length * 40),
+          phone: Math.max(120, rows.length * 40),
+        }}
+        table={{
+          columns: [
+            {
+              key: 'name',
+              label: intl.get('dashboard.directions_profit.col.direction'),
+            },
+            {
+              key: 'formattedProfit',
+              label: intl.get('deals.dashboard.profit'),
+              numeric: true,
+            },
+            {
+              key: 'marginPercent',
+              label: intl.get('deals.funnel.margin'),
+              numeric: true,
+              render: (row) => marginText(row as DirectionProfitRow),
+            },
+          ],
+          rows,
+        }}
+      >
+        {({ isPhone }) => (
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart
+              data={rows}
+              layout="vertical"
+              margin={{
+                top: 0,
+                right: isPhone ? 150 : 230,
+                bottom: 0,
+                left: 0,
+              }}
+            >
+              <XAxis type="number" hide />
+              <YAxis
+                type="category"
+                dataKey="label"
+                {...yAxisProps}
+                width={isPhone ? 96 : 140}
+                tickFormatter={(label: string) =>
+                  label.length > 18 ? `${label.slice(0, 17)}…` : label
+                }
+              />
+              <Bar
+                dataKey="size"
+                name={intl.get('deals.dashboard.profit')}
+                fill={chartColor.ink}
+                radius={4}
+                maxBarSize={18}
+                isAnimationActive={chartAnimation()}
+              >
+                {/* Убыток — приглушённым, не красным (см. выше). */}
+                {rows.map((row) => (
+                  <Cell
+                    key={String(row.projectId)}
+                    fill={row.isLoss ? chartColor.expense : chartColor.ink}
+                  />
+                ))}
+                <LabelList
+                  dataKey="caption"
+                  position="right"
+                  fontSize={12}
+                  fill={chartColor.axis}
+                />
+              </Bar>
+            </ComposedChart>
+          </ResponsiveContainer>
+        )}
+      </ChartCard>
+    </div>
   );
 }
 
-function DirectionRow({
-  row,
-  scale,
-}: {
-  row: DirectionProfitRow;
-  scale: number;
-}) {
-  const width = Math.round((Math.abs(row.profit) / scale) * 100);
+/** «Н/о» вместо выдуманного нуля: без выручки делить не на что. */
+export function marginText(
+  row: Pick<DirectionProfitRow, 'marginPercent'>,
+): string {
+  return row.marginPercent === null
+    ? intl.get('dashboard.directions_profit.margin_unknown')
+    : // «−153,3 %», как везде в продукте, а не «-153.33%».
+      `${new Intl.NumberFormat(uiLocale(), { maximumFractionDigits: 1 }).format(row.marginPercent)} %`;
+}
 
+/** Подпись у полосы: прибыль, рентабельность и пометка убытка словами. */
+export function directionCaption(row: DirectionProfitRow): string {
+  const text = `${formatOrganizationMoney(row.profit)} · ${marginText(row)}`;
+  return row.isLoss
+    ? `${text} · ${intl.get('dashboard.directions_profit.loss')}`
+    : text;
+}
+
+/**
+ * Операции без направления — отдельной строкой под блоком, а не потеряны:
+ * иначе сумма блока не сойдётся с отчётом, и человек решит, что ошибка.
+ */
+export function DirectionsUnassigned({
+  data,
+}: {
+  data: DirectionsProfit | null;
+}) {
+  if (!data?.unassigned || !data.rows.length) return null;
   return (
-    <li className="py-2">
-      <div className="mb-1 flex items-center justify-between gap-3 text-sm">
-        <span className="flex min-w-0 items-center gap-2">
-          <span className="truncate">{row.name}</span>
-          {row.isLoss && (
-            <span className="shrink-0 rounded-default bg-surface-elevated px-2 py-0.5 text-xs text-text-secondary">
-              {intl.get('dashboard.directions_profit.loss')}
-            </span>
-          )}
-        </span>
-        <span className="shrink-0 tabular-nums text-text-secondary">
-          {formatOrganizationMoney(row.profit)}
-          {' · '}
-          {/* «Н/о» вместо выдуманного нуля: без выручки делить не на что. */}
-          {row.marginPercent === null
-            ? intl.get('dashboard.directions_profit.margin_unknown')
-            : `${row.marginPercent}%`}
-        </span>
-      </div>
-      <div className="h-2 w-full rounded-full bg-surface-elevated">
-        <div
-          className={cn(
-            'h-2 rounded-full',
-            row.isLoss ? 'bg-text-muted' : 'bg-action',
-          )}
-          style={{ width: `${width}%` }}
-        />
-      </div>
-    </li>
+    <p className="-mt-2 text-subhead text-text-secondary">
+      {intl.get('dashboard.directions_profit.unassigned', {
+        amount: formatOrganizationMoney(data.unassigned.profit),
+      })}
+    </p>
   );
 }
 

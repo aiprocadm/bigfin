@@ -5813,5 +5813,14 @@
   "page_skeleton.loading": "Загружаем экран…",
   "data_table.aria.page_size": "Строк на странице",
   "invoice_form.label.discount_type": "Вид скидки",
-  "date_picker.placeholder": "Выберите дату"
+  "date_picker.placeholder": "Выберите дату",
+  "deals.funnel.title": "Сделки по этапам",
+  "deals.funnel.summary": "Сколько сделок в работе, завершено и отменено — и на какую выручку.",
+  "deals.funnel.empty": "Сделок пока нет — воронка появится с первой сделкой.",
+  "deals.funnel.caption": "{count, plural, one {# сделка} few {# сделки} other {# сделок}} · {amount}",
+  "deals.funnel.col.count": "Сделок",
+  "deals.funnel.margin": "Рентабельность",
+  "dashboard.directions_profit.sort_aria": "Порядок направлений",
+  "dashboard.directions_profit.col.direction": "Направление",
+  "directions.profit.period_aria": "Период"
 }

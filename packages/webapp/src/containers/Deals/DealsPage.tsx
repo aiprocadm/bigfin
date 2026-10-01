@@ -13,7 +13,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatCard } from '@/components/ui/stat-card';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+import { DealsFunnelChart } from './DealsFunnelChart';
+import { dealsFunnel, marginOf } from './dealsFunnel';
 import { useDeals, useDealsSummary, useDeleteDeal } from '@/hooks/query/deals';
 import { useEmployees } from '@/hooks/query/payroll';
 import { DealDialog } from './DealDialog';
@@ -97,6 +100,8 @@ export default function DealsPage() {
   );
   const totals = (summary as any)?.totals ?? { revenue: 0, costs: 0, profit: 0 };
   const top = ((summary as any)?.deals ?? []).slice(0, 3);
+  const funnel = dealsFunnel((summary as any)?.deals ?? []);
+  const margin = marginOf(totals.revenue, totals.profit);
 
   const onDelete = async (id: number) => {
     try {
@@ -123,42 +128,32 @@ export default function DealsPage() {
         </Button>
       </div>
 
-      {/* Дашборд */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">
-            {intl.get('deals.dashboard.title')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-6 text-sm">
-          <div>
-            {intl.get('deals.dashboard.profit')}:{' '}
-            <span className="font-medium">{fmt(totals.profit)}</span>
-          </div>
-          <div>
-            {intl.get('deals.dashboard.revenue')}:{' '}
-            <span className="font-medium">{fmt(totals.revenue)}</span>
-          </div>
-          <div className="text-muted-foreground">
-            {intl.get('deals.dashboard.top_by_profit')}:{' '}
-            {top.map((d: any) => d.name).join(' · ') || '—'}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Табы статуса */}
-      <div className="flex flex-wrap items-center gap-1">
-        {STATUS_TABS.map((tab) => (
-          <Button
-            key={tab.key || 'all'}
-            variant={status === tab.key ? 'primary' : 'ghost'}
-            size="sm"
-            onClick={() => setStatus(tab.key)}
-          >
-            {intl.get(tab.label)}
-          </Button>
-        ))}
+      {/* Итоги и воронка (UI-051-3, C17). Раньше — строка «Прибыль: … Доход:
+          … Топ по прибыли: …» в карточке «Сводка»: три числа одним шрифтом,
+          главное не выделялось. */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label={intl.get('deals.dashboard.profit')} value={fmt(totals.profit)} />
+        <StatCard label={intl.get('deals.dashboard.revenue')} value={fmt(totals.revenue)} />
+        <StatCard
+          label={intl.get('deals.funnel.margin')}
+          value={margin === null ? '—' : pct(margin)}
+        />
       </div>
+      <DealsFunnelChart steps={funnel} />
+      {top.length > 0 && (
+        <p className="text-subhead text-text-secondary">
+          {intl.get('deals.dashboard.top_by_profit')}: {top.map((d: any) => d.name).join(' · ')}
+        </p>
+      )}
+
+      {/* Статус — сегментами: выбирается ровно один. */}
+      <SegmentedControl
+        aria-label={intl.get('deals.field.status')}
+        value={status || 'all'}
+        onChange={(next) => setStatus(next === 'all' ? '' : (next as StatusFilter))}
+        options={STATUS_TABS.map((tab) => ({ value: tab.key || 'all', label: intl.get(tab.label) }))}
+        className="self-start"
+      />
 
       {/* Список */}
       <div className="flex flex-col divide-y rounded-control border">
@@ -198,7 +193,10 @@ export default function DealsPage() {
                 />
                 {m && (
                   <span className="text-muted-foreground">
-                    {fmt(m.profit)} · {pct(m.margin)}
+                    {/* Процент — только при выручке: «0 %» из ничего правило
+                        продукта запрещает (§12 ТЗ-4). */}
+                    {fmt(m.profit)}
+                    {marginOf(m.revenue ?? 0, m.profit ?? 0) !== null ? ` · ${pct(m.margin)}` : ''}
                   </span>
                 )}
                 <DropdownMenu>

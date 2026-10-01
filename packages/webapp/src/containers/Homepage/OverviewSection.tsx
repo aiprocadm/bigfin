@@ -48,7 +48,7 @@ import {
 import { useDashboardOverview } from './useDashboardOverview';
 import AttentionList from './AttentionList';
 import TopContractorsSection from './TopContractorsSection';
-import DirectionsProfitSection from './DirectionsProfitSection';
+import DirectionsProfitSection, { DirectionsUnassigned } from './DirectionsProfitSection';
 import { ComparisonBadge } from './ComparisonBadge';
 import { DashboardPeriodKind } from './dashboardPeriod';
 import {
@@ -324,6 +324,7 @@ export default function OverviewSection({ params }: { params: OverviewParams }) 
           refetch();
         }}
       />
+      <DirectionsUnassigned data={directionsProfit} />
 
       {/* «Требует внимания» — последним в разборе периода (UI-047-1): что
           сделать прямо сейчас, человек уже увидел в ленте денег и кольцах;
